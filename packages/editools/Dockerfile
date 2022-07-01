@@ -31,7 +31,6 @@ COPY . $APP_DIR
 
 ## Install application dependencies
 RUN yarn install
-RUN yarn postinstall
 
 ## Build application bundles
 RUN yarn build
