@@ -8,7 +8,11 @@ import Tag from './tag'
 import Publisher from './publisher'
 import Collection from './collection'
 import CollectionMember from './collection_member'
+import CollectionPick from './collection_pick'
 import InvitationCode from './invitation_code'
+import Image from './image'
+import Notify from './notify'
+import Announcement from './announcement'
 
 export const listDefinition = {
   User,
@@ -18,8 +22,12 @@ export const listDefinition = {
   Publisher,
   Collection,
   CollectionMember,
+  CollectionPick,
   InvitationCode,
   Story,
   Tag,
   Member,
+  Notify,
+  Announcement,
+  Photo: Image,
 }

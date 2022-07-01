@@ -206,6 +206,7 @@ type Comment {
   id: ID!
   member: Member
   story: Story
+  collection: Collection
   content: String
   parent: Comment
   root: Comment
@@ -237,6 +238,7 @@ input CommentWhereInput {
   id: IDFilter
   member: MemberWhereInput
   story: StoryWhereInput
+  collection: CollectionWhereInput
   content: StringFilter
   parent: CommentWhereInput
   root: CommentWhereInput
@@ -300,6 +302,7 @@ input CommentOrderByInput {
 input CommentUpdateInput {
   member: MemberRelateToOneForUpdateInput
   story: StoryRelateToOneForUpdateInput
+  collection: CollectionRelateToOneForUpdateInput
   content: String
   parent: CommentRelateToOneForUpdateInput
   root: CommentRelateToOneForUpdateInput
@@ -326,6 +329,12 @@ input StoryRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input CollectionRelateToOneForUpdateInput {
+  create: CollectionCreateInput
+  connect: CollectionWhereUniqueInput
+  disconnect: Boolean
+}
+
 input CommentRelateToOneForUpdateInput {
   create: CommentCreateInput
   connect: CommentWhereUniqueInput
@@ -347,6 +356,7 @@ input CommentUpdateArgs {
 input CommentCreateInput {
   member: MemberRelateToOneForCreateInput
   story: StoryRelateToOneForCreateInput
+  collection: CollectionRelateToOneForCreateInput
   content: String
   parent: CommentRelateToOneForCreateInput
   root: CommentRelateToOneForCreateInput
@@ -369,6 +379,11 @@ input MemberRelateToOneForCreateInput {
 input StoryRelateToOneForCreateInput {
   create: StoryCreateInput
   connect: StoryWhereUniqueInput
+}
+
+input CollectionRelateToOneForCreateInput {
+  create: CollectionCreateInput
+  connect: CollectionWhereUniqueInput
 }
 
 input CommentRelateToOneForCreateInput {
@@ -468,12 +483,6 @@ input PickUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input CollectionRelateToOneForUpdateInput {
-  create: CollectionCreateInput
-  connect: CollectionWhereUniqueInput
-  disconnect: Boolean
-}
-
 input CommentRelateToManyForUpdateInput {
   disconnect: [CommentWhereUniqueInput!]
   set: [CommentWhereUniqueInput!]
@@ -502,11 +511,6 @@ input PickCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input CollectionRelateToOneForCreateInput {
-  create: CollectionCreateInput
-  connect: CollectionWhereUniqueInput
 }
 
 input CommentRelateToManyForCreateInput {
@@ -628,7 +632,23 @@ type Collection {
   slug: String
   summary: String
   public: String
+  status: String
   format: String
+  heroImage: Photo
+  collectionpicks(
+    where: CollectionPickWhereInput! = {}
+    orderBy: [CollectionPickOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [CollectionPick!]
+  collectionpicksCount(where: CollectionPickWhereInput! = {}): Int
+  picks(
+    where: PickWhereInput! = {}
+    orderBy: [PickOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Pick!]
+  picksCount(where: PickWhereInput! = {}): Int
   comment(
     where: CommentWhereInput! = {}
     orderBy: [CommentOrderByInput!]! = []
@@ -656,7 +676,11 @@ input CollectionWhereInput {
   slug: StringFilter
   summary: StringFilter
   public: StringNullableFilter
+  status: StringNullableFilter
   format: StringNullableFilter
+  heroImage: PhotoWhereInput
+  collectionpicks: CollectionPickManyRelationFilter
+  picks: PickManyRelationFilter
   comment: CommentManyRelationFilter
   creator: MemberWhereInput
   createdAt: DateTimeNullableFilter
@@ -665,12 +689,25 @@ input CollectionWhereInput {
   updatedBy: UserWhereInput
 }
 
+input CollectionPickManyRelationFilter {
+  every: CollectionPickWhereInput
+  some: CollectionPickWhereInput
+  none: CollectionPickWhereInput
+}
+
+input PickManyRelationFilter {
+  every: PickWhereInput
+  some: PickWhereInput
+  none: PickWhereInput
+}
+
 input CollectionOrderByInput {
   id: OrderDirection
   title: OrderDirection
   slug: OrderDirection
   summary: OrderDirection
   public: OrderDirection
+  status: OrderDirection
   format: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -681,13 +718,37 @@ input CollectionUpdateInput {
   slug: String
   summary: String
   public: String
+  status: String
   format: String
+  heroImage: PhotoRelateToOneForUpdateInput
+  collectionpicks: CollectionPickRelateToManyForUpdateInput
+  picks: PickRelateToManyForUpdateInput
   comment: CommentRelateToManyForUpdateInput
   creator: MemberRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PhotoRelateToOneForUpdateInput {
+  create: PhotoCreateInput
+  connect: PhotoWhereUniqueInput
+  disconnect: Boolean
+}
+
+input CollectionPickRelateToManyForUpdateInput {
+  disconnect: [CollectionPickWhereUniqueInput!]
+  set: [CollectionPickWhereUniqueInput!]
+  create: [CollectionPickCreateInput!]
+  connect: [CollectionPickWhereUniqueInput!]
+}
+
+input PickRelateToManyForUpdateInput {
+  disconnect: [PickWhereUniqueInput!]
+  set: [PickWhereUniqueInput!]
+  create: [PickCreateInput!]
+  connect: [PickWhereUniqueInput!]
 }
 
 input CollectionUpdateArgs {
@@ -700,13 +761,32 @@ input CollectionCreateInput {
   slug: String
   summary: String
   public: String
+  status: String
   format: String
+  heroImage: PhotoRelateToOneForCreateInput
+  collectionpicks: CollectionPickRelateToManyForCreateInput
+  picks: PickRelateToManyForCreateInput
   comment: CommentRelateToManyForCreateInput
   creator: MemberRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input PhotoRelateToOneForCreateInput {
+  create: PhotoCreateInput
+  connect: PhotoWhereUniqueInput
+}
+
+input CollectionPickRelateToManyForCreateInput {
+  create: [CollectionPickCreateInput!]
+  connect: [CollectionPickWhereUniqueInput!]
+}
+
+input PickRelateToManyForCreateInput {
+  create: [PickCreateInput!]
+  connect: [PickWhereUniqueInput!]
 }
 
 type CollectionMember {
@@ -788,11 +868,108 @@ input CollectionMemberCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type CollectionPick {
+  id: ID!
+  story: Story
+  collection: Collection
+  summary: String
+  sort_order: Int
+  creator: Member
+  objective: String
+  picked_date: DateTime
+  updated_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input CollectionPickWhereUniqueInput {
+  id: ID
+}
+
+input CollectionPickWhereInput {
+  AND: [CollectionPickWhereInput!]
+  OR: [CollectionPickWhereInput!]
+  NOT: [CollectionPickWhereInput!]
+  id: IDFilter
+  story: StoryWhereInput
+  collection: CollectionWhereInput
+  summary: StringFilter
+  sort_order: IntNullableFilter
+  creator: MemberWhereInput
+  objective: StringNullableFilter
+  picked_date: DateTimeNullableFilter
+  updated_date: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input CollectionPickOrderByInput {
+  id: OrderDirection
+  summary: OrderDirection
+  sort_order: OrderDirection
+  objective: OrderDirection
+  picked_date: OrderDirection
+  updated_date: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input CollectionPickUpdateInput {
+  story: StoryRelateToOneForUpdateInput
+  collection: CollectionRelateToOneForUpdateInput
+  summary: String
+  sort_order: Int
+  creator: MemberRelateToOneForUpdateInput
+  objective: String
+  picked_date: DateTime
+  updated_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input CollectionPickUpdateArgs {
+  where: CollectionPickWhereUniqueInput!
+  data: CollectionPickUpdateInput!
+}
+
+input CollectionPickCreateInput {
+  story: StoryRelateToOneForCreateInput
+  collection: CollectionRelateToOneForCreateInput
+  summary: String
+  sort_order: Int
+  creator: MemberRelateToOneForCreateInput
+  objective: String
+  picked_date: DateTime
+  updated_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 type InvitationCode {
   id: ID!
   code: String
   send: Member
   receive: Member
+  expired: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -811,6 +988,7 @@ input InvitationCodeWhereInput {
   code: StringFilter
   send: MemberWhereInput
   receive: MemberWhereInput
+  expired: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -820,6 +998,7 @@ input InvitationCodeWhereInput {
 input InvitationCodeOrderByInput {
   id: OrderDirection
   code: OrderDirection
+  expired: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -828,6 +1007,7 @@ input InvitationCodeUpdateInput {
   code: String
   send: MemberRelateToOneForUpdateInput
   receive: MemberRelateToOneForUpdateInput
+  expired: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -843,6 +1023,7 @@ input InvitationCodeCreateInput {
   code: String
   send: MemberRelateToOneForCreateInput
   receive: MemberRelateToOneForCreateInput
+  expired: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -920,12 +1101,6 @@ input StoryWhereInput {
   updatedBy: UserWhereInput
 }
 
-input PickManyRelationFilter {
-  every: PickWhereInput
-  some: PickWhereInput
-  none: PickWhereInput
-}
-
 input StoryOrderByInput {
   id: OrderDirection
   title: OrderDirection
@@ -982,13 +1157,6 @@ input CategoryRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input PickRelateToManyForUpdateInput {
-  disconnect: [PickWhereUniqueInput!]
-  set: [PickWhereUniqueInput!]
-  create: [PickCreateInput!]
-  connect: [PickWhereUniqueInput!]
-}
-
 input StoryUpdateArgs {
   where: StoryWhereUniqueInput!
   data: StoryUpdateInput!
@@ -1027,11 +1195,6 @@ input PublisherRelateToOneForCreateInput {
 input CategoryRelateToOneForCreateInput {
   create: CategoryCreateInput
   connect: CategoryWhereUniqueInput
-}
-
-input PickRelateToManyForCreateInput {
-  create: [PickCreateInput!]
-  connect: [PickWhereUniqueInput!]
 }
 
 type Tag {
@@ -1104,6 +1267,7 @@ type Member {
   name: String
   nickname: String
   avatar: String
+  avatar_image: Photo
   intro: String
   email: String
   is_active: Boolean
@@ -1194,6 +1358,9 @@ type Member {
 
 input MemberWhereUniqueInput {
   id: ID
+  firebaseId: String
+  customId: String
+  email: String
 }
 
 input MemberWhereInput {
@@ -1206,6 +1373,7 @@ input MemberWhereInput {
   name: StringFilter
   nickname: StringFilter
   avatar: StringFilter
+  avatar_image: PhotoWhereInput
   intro: StringFilter
   email: StringFilter
   is_active: BooleanFilter
@@ -1279,6 +1447,7 @@ input MemberUpdateInput {
   name: String
   nickname: String
   avatar: String
+  avatar_image: PhotoRelateToOneForUpdateInput
   intro: String
   email: String
   is_active: Boolean
@@ -1353,6 +1522,7 @@ input MemberCreateInput {
   name: String
   nickname: String
   avatar: String
+  avatar_image: PhotoRelateToOneForCreateInput
   intro: String
   email: String
   is_active: Boolean
@@ -1403,6 +1573,237 @@ input InvitationCodeRelateToOneForCreateInput {
 input CollectionMemberRelateToManyForCreateInput {
   create: [CollectionMemberCreateInput!]
   connect: [CollectionMemberWhereUniqueInput!]
+}
+
+type Notify {
+  id: ID!
+  member: Member
+  type: String
+  sender: Member
+  objective: String
+  object_id: Int
+  state: String
+  action_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input NotifyWhereUniqueInput {
+  id: ID
+}
+
+input NotifyWhereInput {
+  AND: [NotifyWhereInput!]
+  OR: [NotifyWhereInput!]
+  NOT: [NotifyWhereInput!]
+  id: IDFilter
+  member: MemberWhereInput
+  type: StringNullableFilter
+  sender: MemberWhereInput
+  objective: StringNullableFilter
+  object_id: IntNullableFilter
+  state: StringNullableFilter
+  action_date: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input NotifyOrderByInput {
+  id: OrderDirection
+  type: OrderDirection
+  objective: OrderDirection
+  object_id: OrderDirection
+  state: OrderDirection
+  action_date: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input NotifyUpdateInput {
+  member: MemberRelateToOneForUpdateInput
+  type: String
+  sender: MemberRelateToOneForUpdateInput
+  objective: String
+  object_id: Int
+  state: String
+  action_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input NotifyUpdateArgs {
+  where: NotifyWhereUniqueInput!
+  data: NotifyUpdateInput!
+}
+
+input NotifyCreateInput {
+  member: MemberRelateToOneForCreateInput
+  type: String
+  sender: MemberRelateToOneForCreateInput
+  objective: String
+  object_id: Int
+  state: String
+  action_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Announcement {
+  id: ID!
+  name: String
+  status: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input AnnouncementWhereUniqueInput {
+  id: ID
+}
+
+input AnnouncementWhereInput {
+  AND: [AnnouncementWhereInput!]
+  OR: [AnnouncementWhereInput!]
+  NOT: [AnnouncementWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  status: StringNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input AnnouncementOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  status: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input AnnouncementUpdateInput {
+  name: String
+  status: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input AnnouncementUpdateArgs {
+  where: AnnouncementWhereUniqueInput!
+  data: AnnouncementUpdateInput!
+}
+
+input AnnouncementCreateInput {
+  name: String
+  status: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Photo {
+  id: ID!
+  name: String
+  file: CustomFileFieldOutput
+  urlOriginal: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+interface CustomFileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+input PhotoWhereUniqueInput {
+  id: ID
+}
+
+type LocalCustomFileFieldOutput implements CustomFileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+type CloudCustomFileFieldOutput implements CustomFileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+input PhotoWhereInput {
+  AND: [PhotoWhereInput!]
+  OR: [PhotoWhereInput!]
+  NOT: [PhotoWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  urlOriginal: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PhotoOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  urlOriginal: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PhotoUpdateInput {
+  name: String
+  file: CustomFileFieldInput
+  urlOriginal: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input CustomFileFieldInput {
+  upload: Upload
+  ref: String
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+input PhotoUpdateArgs {
+  where: PhotoWhereUniqueInput!
+  data: PhotoUpdateInput!
+}
+
+input PhotoCreateInput {
+  name: String
+  file: CustomFileFieldInput
+  urlOriginal: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
 }
 
 """
@@ -1479,6 +1880,17 @@ type Mutation {
   deleteCollectionMembers(
     where: [CollectionMemberWhereUniqueInput!]!
   ): [CollectionMember]
+  createCollectionPick(data: CollectionPickCreateInput!): CollectionPick
+  createCollectionPicks(data: [CollectionPickCreateInput!]!): [CollectionPick]
+  updateCollectionPick(
+    where: CollectionPickWhereUniqueInput!
+    data: CollectionPickUpdateInput!
+  ): CollectionPick
+  updateCollectionPicks(data: [CollectionPickUpdateArgs!]!): [CollectionPick]
+  deleteCollectionPick(where: CollectionPickWhereUniqueInput!): CollectionPick
+  deleteCollectionPicks(
+    where: [CollectionPickWhereUniqueInput!]!
+  ): [CollectionPick]
   createInvitationCode(data: InvitationCodeCreateInput!): InvitationCode
   createInvitationCodes(data: [InvitationCodeCreateInput!]!): [InvitationCode]
   updateInvitationCode(
@@ -1508,6 +1920,27 @@ type Mutation {
   updateMembers(data: [MemberUpdateArgs!]!): [Member]
   deleteMember(where: MemberWhereUniqueInput!): Member
   deleteMembers(where: [MemberWhereUniqueInput!]!): [Member]
+  createNotify(data: NotifyCreateInput!): Notify
+  createNotifies(data: [NotifyCreateInput!]!): [Notify]
+  updateNotify(where: NotifyWhereUniqueInput!, data: NotifyUpdateInput!): Notify
+  updateNotifies(data: [NotifyUpdateArgs!]!): [Notify]
+  deleteNotify(where: NotifyWhereUniqueInput!): Notify
+  deleteNotifies(where: [NotifyWhereUniqueInput!]!): [Notify]
+  createAnnouncement(data: AnnouncementCreateInput!): Announcement
+  createAnnouncements(data: [AnnouncementCreateInput!]!): [Announcement]
+  updateAnnouncement(
+    where: AnnouncementWhereUniqueInput!
+    data: AnnouncementUpdateInput!
+  ): Announcement
+  updateAnnouncements(data: [AnnouncementUpdateArgs!]!): [Announcement]
+  deleteAnnouncement(where: AnnouncementWhereUniqueInput!): Announcement
+  deleteAnnouncements(where: [AnnouncementWhereUniqueInput!]!): [Announcement]
+  createPhoto(data: PhotoCreateInput!): Photo
+  createPhotos(data: [PhotoCreateInput!]!): [Photo]
+  updatePhoto(where: PhotoWhereUniqueInput!, data: PhotoUpdateInput!): Photo
+  updatePhotos(data: [PhotoUpdateArgs!]!): [Photo]
+  deletePhoto(where: PhotoWhereUniqueInput!): Photo
+  deletePhotos(where: [PhotoWhereUniqueInput!]!): [Photo]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -1595,6 +2028,14 @@ type Query {
   ): [CollectionMember!]
   collectionMember(where: CollectionMemberWhereUniqueInput!): CollectionMember
   collectionMembersCount(where: CollectionMemberWhereInput! = {}): Int
+  collectionPicks(
+    where: CollectionPickWhereInput! = {}
+    orderBy: [CollectionPickOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [CollectionPick!]
+  collectionPick(where: CollectionPickWhereUniqueInput!): CollectionPick
+  collectionPicksCount(where: CollectionPickWhereInput! = {}): Int
   invitationCodes(
     where: InvitationCodeWhereInput! = {}
     orderBy: [InvitationCodeOrderByInput!]! = []
@@ -1627,6 +2068,30 @@ type Query {
   ): [Member!]
   member(where: MemberWhereUniqueInput!): Member
   membersCount(where: MemberWhereInput! = {}): Int
+  notifies(
+    where: NotifyWhereInput! = {}
+    orderBy: [NotifyOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Notify!]
+  notify(where: NotifyWhereUniqueInput!): Notify
+  notifiesCount(where: NotifyWhereInput! = {}): Int
+  announcements(
+    where: AnnouncementWhereInput! = {}
+    orderBy: [AnnouncementOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Announcement!]
+  announcement(where: AnnouncementWhereUniqueInput!): Announcement
+  announcementsCount(where: AnnouncementWhereInput! = {}): Int
+  photos(
+    where: PhotoWhereInput! = {}
+    orderBy: [PhotoOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Photo!]
+  photo(where: PhotoWhereUniqueInput!): Photo
+  photosCount(where: PhotoWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
