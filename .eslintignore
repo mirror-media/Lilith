@@ -1,0 +1,5 @@
+node_modules
+migrations
+public
+.keystone
+.git

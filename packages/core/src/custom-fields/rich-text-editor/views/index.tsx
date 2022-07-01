@@ -1,0 +1,92 @@
+import React from 'react';
+import { jsx, Stack } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+import {
+  CardValueComponent,
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
+  JSONValue,
+} from '@keystone-6/core/types';
+import { CellContainer, CellLink } from '@keystone-6/core/admin-ui/components';
+import {
+  EditorState, 
+  convertFromRaw, 
+  convertToRaw
+} from 'draft-js';
+import { RichTextEditor } from './editor'
+import decorators from './editor/entity-decorator'
+
+export const Field = ({
+  field,
+  value,
+  onChange,
+  autoFocus,
+}: FieldProps<typeof controller>) => {
+  return (
+    <FieldContainer>
+      <FieldLabel>
+        {field.label}
+        <Stack>
+          <RichTextEditor editorState={value} onChange={onChange} />
+        </Stack>
+      </FieldLabel>
+    </FieldContainer>
+  );
+};
+
+export const Cell: CellComponent = ({ item, field, linkTo }) => {
+  let value = item[field.path] + '';
+  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
+};
+Cell.supportsLinkTo = true;
+
+export const CardValue: CardValueComponent = ({ item, field }) => {
+  return (
+    <FieldContainer>
+      <FieldLabel>{field.label}</FieldLabel>
+      {item[field.path]}
+    </FieldContainer>
+  );
+};
+
+type Config = FieldControllerConfig<{ defaultValue: JSONValue }>;
+
+export const controller = (config: Config): FieldController<string, JSONValue> => {
+  return {
+    path: config.path,
+    label: config.label,
+    graphqlSelection: config.path,
+    defaultValue: null,
+    deserialize: data => {
+      const rawContentState = data[config.path];
+      if (rawContentState === null) {
+        return EditorState.createEmpty(decorators)
+      }
+      try {
+        const contentState = convertFromRaw(rawContentState)
+        const editorState = EditorState.createWithContent(contentState, decorators)
+        return editorState
+      } catch(err) {
+        console.error(err)
+        return EditorState.createEmpty(decorators)
+      }
+    },
+    serialize: (editorState: EditorState) => {
+      if (!editorState) {
+        return { [config.path]: null };
+      }
+
+      try {
+        const rawContentState = convertToRaw(editorState.getCurrentContent())
+        return {
+          [config.path]: rawContentState,
+        }
+      } catch (err) {
+        console.error(err)
+        return { [config.path]: null };
+      }
+    },
+  };
+};

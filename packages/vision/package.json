@@ -1,0 +1,27 @@
+{
+  "name": "@mirrormedia/lilith-vision",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "db-migrate": "keystone prisma migrate deploy",
+    "build": "keystone build",
+    "postinstall": "patch-package && keystone postinstall --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mirror-media/lilith.git",
+    "directory": "packages/vision"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@keystone-6/auth": "1.0.0",
+    "@keystone-6/core": "1.1.1",
+    "@keystone-6/fields-document": "1.0.1",
+    "@mirrormedia/lilith-core": "1.0.0",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^2.0.3",
+    "patch-package": "^6.4.7"
+  }
+}
