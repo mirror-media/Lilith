@@ -1,7 +1,7 @@
 // Modified from https://github.com/dburrows/draft-js-basic-html-editor/blob/master/src/utils/processInlineStylesAndEntities.js
 
 import _ from 'lodash'
-import { CUSTOM_STYLE_PREFIX_FONT_COLOR } from '../views/editor/font-color'
+const CUSTOM_STYLE_PREFIX_FONT_COLOR = 'FONT_COLOR_'
 
 function tagForCustomInlineStyle(style) {
   const customInlineStylePrefixs = [CUSTOM_STYLE_PREFIX_FONT_COLOR]
@@ -136,7 +136,7 @@ function _inlineTag(inlineTagMap, inlineStyleRanges, tagInsertMap = {}) {
   let sortedRanges = _.sortBy(inlineStyleRanges, 'offset')
 
   // map all the tag insertions we're going to do
-  sortedRanges.forEach(function (range) {
+  sortedRanges.forEach(function(range) {
     let tag = inlineTagMap[range.style]
 
     // handle dynamic inline style
@@ -210,7 +210,7 @@ function convertToHtml(inlineTagMap, entityTagMap, entityMap, block) {
   tagInsertMap = _inlineTag(inlineTagMap, inlineStyleRanges, tagInsertMap)
 
   // sort on position, as we'll need to keep track of offset
-  let orderedKeys = Object.keys(tagInsertMap).sort(function (a, b) {
+  let orderedKeys = Object.keys(tagInsertMap).sort(function(a, b) {
     a = Number(a)
     b = Number(b)
     if (a > b) {
@@ -224,9 +224,9 @@ function convertToHtml(inlineTagMap, entityTagMap, entityMap, block) {
 
   // insert tags into string, keep track of offset caused by our text insertions
   let offset = 0
-  orderedKeys.forEach(function (pos) {
+  orderedKeys.forEach(function(pos) {
     let index = Number(pos)
-    tagInsertMap[pos].forEach(function (tag) {
+    tagInsertMap[pos].forEach(function(tag) {
       html = html.substr(0, offset + index) + tag + html.substr(offset + index)
       offset += tag.length
     })
