@@ -5,6 +5,8 @@ set -eo pipefail
 yarn run db-migrate
 yarn start &
 
+sleep 15s
+
 # Create mount directory for service
 mkdir -p $MNT_DIR
 
