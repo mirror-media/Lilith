@@ -1,0 +1,17 @@
+node_modules
+.keystone
+keystone.db
+*.log
+
+
+
+.DS_Store
+.env
+config_mirror_tv.js
+config_mirrormedia.js
+config_readr.js
+config.js
+gcskeyfile.json
+.eslintcache
+
+packages/**/lib
