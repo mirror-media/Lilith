@@ -1,0 +1,21 @@
+  # Deploy container image to Cloud Runs
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        # read cloud run service names from substitution variable
+        IFS=',' read -r -a cloud_runs <<< $_CLOUD_RUN_SERVICE_NAMES
+
+        for cr in "${cloud_runs[@]}"
+        do
+        # deploy cloud run service iteratively
+        gcloud deploy $cr --image gcr.io/$PROJECT_ID/$_IMAGE_NAME:${BRANCH_NAME}_${SHORT_SHA} --region asia-east1
+        done
+
+timeout: 1200s
+
+substitutions:
+  _TARGET_PACKAGE: '' # default value
+  _IMAGE_NAME: '' # default value
+  _CLOUD_RUN_SERVICE_NAMES: '' # default value
