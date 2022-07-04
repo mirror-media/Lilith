@@ -1,3 +1,4 @@
+steps:
   # Deploy container image to Cloud Runs
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
