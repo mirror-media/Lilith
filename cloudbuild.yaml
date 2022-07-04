@@ -9,21 +9,29 @@ steps:
         cd packages/$_TARGET_PACKAGE
         gcloud builds submit --tag gcr.io/$PROJECT_ID/$_IMAGE_NAME:${BRANCH_NAME}_${SHORT_SHA}
 
-  # Deploy container image to dev Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
+  # Deploy container image to Cloud Runs
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
     args:
-      - 'run'
-      - 'deploy'
-      - '$_CLOUD_RUN_SERVICE_NAME'
-      - '--image'
-      - 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:${BRANCH_NAME}_${SHORT_SHA}'
-      - '--region'
-      - 'asia-east1'
+      - '-c'
+      - |
+
+        # read cloud run service names from substitution variable
+        IFS=',' read -r -a cloud_runs <<< "$_CLOUD_RUN_SERVICE_NAMES"
+
+        for cr in "${cloud_runs[@]}"
+        do
+
+        # deploy cloud run service iteratively
+        gcloud run deploy "$cr" --image
+        gcr.io/$PROJECT_ID/$_IMAGE_NAME:${BRANCH_NAME}_${SHORT_SHA} --region
+        asia-east1
+
+        done
 
 timeout: 1200s
 
 substitutions:
   _TARGET_PACKAGE: '' # default value
   _IMAGE_NAME: '' # default value
-  _CLOUD_RUN_SERVICE_NAME: '' # default value
+  _CLOUD_RUN_SERVICE_NAMES: '' # default value
