@@ -21,7 +21,6 @@ const {
 const listConfigurations = list ({
     fields: {
       story: relationship({ ref: 'Story', many: false }),
-      collection: relationship({ ref: 'Collection', many: false }),
       summary: text({ validation: { isRequired: false } }),
 	  sort_order: integer({ defaultValue: 2, }),
       creator: relationship({  
