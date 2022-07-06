@@ -21,7 +21,7 @@ We need `husky` and `lint-staged` installed first.
 `yarn install`
 
 ### Troubleshootings
-#### Q1: 我在 `packages/(vision|mesh|editools)` 資料夾底下跑 `yarn install` 時，在 `yarn postinstall` 階段發生錯誤。
+#### Q1: 我在 root 資料夾底下跑 `yarn install` 時，在 `yarn postinstall` 階段發生錯誤。
 
 A1: 如果錯誤訊息與 `@mirrormedia/lilith-core` 有關，可以嘗試先到 `packages/core` 底下，執行
   1. `yarn install`
