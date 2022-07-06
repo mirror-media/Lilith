@@ -1,4 +1,4 @@
-import { list } from '@keystone-6/core'
+import { list, graphql } from '@keystone-6/core'
 import { image, text, virtual } from '@keystone-6/core/fields'
 import { customFields, utils } from '@mirrormedia/lilith-core'
 const { allowRoles, admin, moderator, editor } = utils.accessControl
