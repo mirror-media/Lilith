@@ -1,19 +1,19 @@
+import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
 import {
   text,
   relationship,
   timestamp,
   select,
-  checkbox,
 } from '@keystone-6/core/fields';
-import { addTrackingFields } from '../../utils/trackingHandler'
-import {
+
+const {
   allowRoles,
   admin,
   moderator,
   editor,
   owner,
-} from '../../utils/accessControl'
+} = utils.accessControl
 
 
 const listConfigurations = list ({
@@ -22,9 +22,8 @@ const listConfigurations = list ({
 	validation: { isRequired: true, isUnique: true },
 	  db: { idField: { kind: 'uuid' } },
 	}),
-    send: relationship({ ref: 'Member.invited', many: false }),
-    receive: relationship({ ref: 'Member.invited_by', many: false }),
-    expired: checkbox({}),
+    send: relationship({ ref: 'Member.invited_by', many: false }),
+    receive: relationship({ ref: 'Member.invited', many: false }),
   },
   ui: {
     listView: {
@@ -41,4 +40,4 @@ const listConfigurations = list ({
   },
 })
 
-export default addTrackingFields(listConfigurations)
+export default utils.addTrackingFields(listConfigurations)

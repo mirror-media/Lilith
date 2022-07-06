@@ -1,8 +1,7 @@
 import { list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
-
-import { allowRoles, admin, moderator, editor } from '../../utils/accessControl'
-import { addTrackingFields } from '../../utils/trackingHandler'
+import { customFields, utils } from '@mirrormedia/lilith-core'
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 import { CustomFile } from '../../customFields'
 import { ImageFileAdapter } from '../../customFields/CustomFile/ImageFileAdapter'
@@ -65,4 +64,4 @@ const listConfigurations = list({
   },
 })
 
-export default addTrackingFields(listConfigurations)
+export default utils.addTrackingFields(listConfigurations)

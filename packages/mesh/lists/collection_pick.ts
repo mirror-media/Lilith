@@ -1,5 +1,5 @@
 import { list } from '@keystone-6/core'
-
+import { utils } from '@mirrormedia/lilith-core'
 import {
   text,
   relationship,
@@ -7,16 +7,15 @@ import {
   integer,
   select,
 } from '@keystone-6/core/fields'
-import { addTrackingFields } from '../../utils/trackingHandler'
 
 /*eslint-disable */
-import {
+const {
   allowRoles,
   admin,
   moderator,
   editor,
   owner,
-} from '../../utils/accessControl'
+} = utils.accessControl
 /*eslint-disable */
 
 const listConfigurations = list ({
@@ -48,4 +47,4 @@ const listConfigurations = list ({
     },
 })
 
-export default addTrackingFields(listConfigurations)
+export default utils.addTrackingFields(listConfigurations)
