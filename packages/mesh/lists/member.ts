@@ -1,8 +1,8 @@
-import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { text, relationship, checkbox } from '@keystone-6/core/fields'
-
-const { allowRoles, admin, moderator, editor } = utils.accessControl
+import { addTrackingFields } from '../../utils/trackingHandler'
+import { allowRoles, admin, moderator, editor } from '../../utils/accessControl'
+import { CustomRelationship } from '../../customFields/CustomRelationship'
 
 const listConfigurations = list({
   fields: {
@@ -11,25 +11,32 @@ const listConfigurations = list({
       validation: {
         isRequired: true,
       },
-      isindexed: 'unique',
+      isIndexed: 'unique',
     }),
     customId: text({
       label: 'customId',
       validation: {
         isRequired: true,
       },
-      isindexed: 'unique',
+      isIndexed: 'unique',
     }),
     name: text({
       validation: { isRequired: true },
-      isindexed: 'unique',
     }),
     nickname: text({ validation: { isRequired: true } }),
     avatar: text({ validation: { isRequired: false } }),
+    avatar_image: CustomRelationship({
+      label: 'PFP',
+      ref: 'Photo',
+      customConfig: {
+        isImage: true,
+      },
+    }),
     intro: text({ validation: { isRequired: false } }),
     email: text({
       validation: { isRequired: false },
       isFilterable: true,
+      isIndexed: 'unique',
     }),
     is_active: checkbox({
       defaultValue: true,
@@ -70,11 +77,11 @@ const listConfigurations = list({
       many: true,
     }),
     invited: relationship({
-      ref: 'InvitationCode.receive',
+      ref: 'InvitationCode.send',
       many: true,
     }),
     invited_by: relationship({
-      ref: 'InvitationCode.send',
+      ref: 'InvitationCode.receive',
       many: false,
     }),
     create_collection: relationship({
@@ -117,4 +124,4 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+export default addTrackingFields(listConfigurations)

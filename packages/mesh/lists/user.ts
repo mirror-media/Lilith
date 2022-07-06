@@ -1,4 +1,3 @@
-import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 
 import {
@@ -8,13 +7,12 @@ import {
   select,
   checkbox,
 } from '@keystone-6/core/fields'
-
-const {
+import {
   allowRolesForUsers,
   admin,
   moderator,
   editor,
-} = utils.accessControl
+} from '../../utils/accessControl'
 
 const listConfigurations = list({
   fields: {
