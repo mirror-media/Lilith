@@ -50,7 +50,7 @@ const listConfigurations = list ({
 		ref: 'CollectionPick.collection',
 		many: true,
 	  }),
-	  picks: relationship({ ref: 'Pick.collection', many: true }),V
+	  picks: relationship({ ref: 'Pick.collection', many: true }),
       comment: relationship({ ref: 'Comment', many: true }),
       creator: relationship({  
 	  	ref: 'Member',
