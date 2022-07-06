@@ -39,12 +39,9 @@ const listConfigurations = list ({
 		  {	label: '時間軸', value: 'timeline' },
 		]
 	  }),
-	  heroImage: CustomRelationship({
+	  heroImage: relationship({
 		label: '首圖',
 		ref: 'Photo',
-		customConfig: {
-		  isImage: true,
-		},
 	  }),
 	  collectionpicks: relationship({
 		ref: 'CollectionPick.collection',
