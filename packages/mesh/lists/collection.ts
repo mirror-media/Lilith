@@ -31,6 +31,15 @@ const listConfigurations = list ({
 		  {	label: '共筆', value: 'wiki' },
 		]
 	  }),
+      status: select({
+        label: '狀態',
+        datatype: 'enum',
+        options: [
+          { label: 'publish', value: 'publish' },
+          { label: 'draft', value: 'draft' },
+          { label: 'delete', value: 'delete' },
+        ],
+      }),
 	  format: select({
 		label: '型態',
 	 	datatype: 'enum',
