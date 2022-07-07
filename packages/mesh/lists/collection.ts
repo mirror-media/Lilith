@@ -57,7 +57,7 @@ const listConfigurations = list ({
 		many: true,
 	  }),
 	  picks: relationship({ ref: 'Pick.collection', many: true }),
-      comment: relationship({ ref: 'Comment', many: true }),
+      comment: relationship({ ref: 'Comment.collection', many: true }),
       creator: relationship({  
 	  	ref: 'Member',
 		many: false,
