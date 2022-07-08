@@ -52,17 +52,17 @@ const listConfigurations = list({
           }
 
           const rtn : Record<string, string> = {}
-          const filename = item?.imageFile_id
+          const filename = item?.file_id
 
           if (!filename) {
             return empty
           }
 
-          const extension = item?.imageFile_extension
-            ? '.' + item.imageFile_extension
+          const extension = item?.file_extension
+            ? '.' + item.file_extension
             : ''
-          const width = typeof item?.imageFile_width === 'number' ? item.imageFile_width : 0
-          const height = typeof item?.imageFile_height === 'number' ? item.imageFile_height : 0
+          const width = typeof item?.file_width === 'number' ? item.file_width : 0
+          const height = typeof item?.file_height === 'number' ? item.file_height : 0
 
           const resizedTargets =
             width >= height
