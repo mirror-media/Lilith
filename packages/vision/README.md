@@ -101,7 +101,7 @@ vision-nuxt 若是搭配 `cms` 模式的 lilith-vision，會遇到 authenticatio
 #### Q1: 我在 `packages/(vision|mesh|editools)` 資料夾底下跑 `yarn install` 時，在 `yarn postinstall` 階段發生錯誤。
 
 A1: 如果錯誤訊息與 `@mirrormedia/lilith-core` 有關，可以嘗試先到 `packages/core` 底下，執行
-  1. `yarn install`
-  2. `yarn build`
+  1. `yarn build`
+  2. `yarn install`
 
 確保 local 端有 `@mirrormedia-/lilith-core` 相關的檔案可以讓 `packages/(vision|mesh|editools)` 載入。
