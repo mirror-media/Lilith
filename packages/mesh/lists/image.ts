@@ -108,22 +108,6 @@ const listConfigurations = list({
     },
   },
 
-  hooks: {
-    resolveInput: async ({ inputData, item, resolvedData }) => {
-      await imageFileAdapter.startFileProcessingFlow(
-        resolvedData,
-        item,
-        inputData
-      )
-
-      return resolvedData
-    },
-    // beforeOperation: async ({ operation, item }) => {
-    //   if (operation === 'delete' && item.file_filename) {
-    //     imageFileAdapter.startDeleteProcess(`${item.file_filename}`)
-    //   }
-    // },
-  },
 })
 
 export default utils.addTrackingFields(listConfigurations)
