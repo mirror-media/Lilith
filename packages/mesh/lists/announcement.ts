@@ -25,6 +25,18 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
+    type: select({
+      options: [
+        { label: '新功能', value: 'features' },
+        { label: '維護', value: 'maintain' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: 'features',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
+      },
+    }),
   },
   ui: {
     listView: {
