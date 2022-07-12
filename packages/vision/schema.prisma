@@ -628,6 +628,7 @@ model InfoGraph {
   dataUpdated  DateTime
   relatedPosts Post[]    @relation("InfoGraph_relatedPosts")
   apiData      Json?
+  isHomepage   Boolean   @default(false)
   createdAt    DateTime?
   updatedAt    DateTime?
   createdBy    User?     @relation("InfoGraph_createdBy", fields: [createdById], references: [id])

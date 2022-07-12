@@ -2672,6 +2672,7 @@ type InfoGraph {
   ): [Post!]
   relatedPostsCount(where: PostWhereInput! = {}): Int
   apiData: JSON
+  isHomepage: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2701,6 +2702,7 @@ input InfoGraphWhereInput {
   infograph: StringFilter
   dataUpdated: DateTimeFilter
   relatedPosts: PostManyRelationFilter
+  isHomepage: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2715,6 +2717,7 @@ input InfoGraphOrderByInput {
   publishDate: OrderDirection
   infograph: OrderDirection
   dataUpdated: OrderDirection
+  isHomepage: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2731,6 +2734,7 @@ input InfoGraphUpdateInput {
   dataUpdated: DateTime
   relatedPosts: PostRelateToManyForUpdateInput
   apiData: JSON
+  isHomepage: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2754,6 +2758,7 @@ input InfoGraphCreateInput {
   dataUpdated: DateTime
   relatedPosts: PostRelateToManyForCreateInput
   apiData: JSON
+  isHomepage: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
