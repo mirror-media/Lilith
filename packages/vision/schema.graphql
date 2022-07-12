@@ -2327,7 +2327,13 @@ type PollOption {
   id: ID!
   name: String
   order: Int
-  poll: Poll
+  poll(
+    where: PollWhereInput! = {}
+    orderBy: [PollOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Poll!]
+  pollCount(where: PollWhereInput! = {}): Int
   result(
     where: PollResultWhereInput! = {}
     orderBy: [PollResultOrderByInput!]! = []
@@ -2353,7 +2359,7 @@ input PollOptionWhereInput {
   id: IDFilter
   name: StringFilter
   order: IntNullableFilter
-  poll: PollWhereInput
+  poll: PollManyRelationFilter
   result: PollResultManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2372,18 +2378,12 @@ input PollOptionOrderByInput {
 input PollOptionUpdateInput {
   name: String
   order: Int
-  poll: PollRelateToOneForUpdateInput
+  poll: PollRelateToManyForUpdateInput
   result: PollResultRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
-}
-
-input PollRelateToOneForUpdateInput {
-  create: PollCreateInput
-  connect: PollWhereUniqueInput
-  disconnect: Boolean
 }
 
 input PollOptionUpdateArgs {
@@ -2394,17 +2394,12 @@ input PollOptionUpdateArgs {
 input PollOptionCreateInput {
   name: String
   order: Int
-  poll: PollRelateToOneForCreateInput
+  poll: PollRelateToManyForCreateInput
   result: PollResultRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input PollRelateToOneForCreateInput {
-  create: PollCreateInput
-  connect: PollWhereUniqueInput
 }
 
 type PollResult {
@@ -2454,6 +2449,12 @@ input PollResultUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
+input PollRelateToOneForUpdateInput {
+  create: PollCreateInput
+  connect: PollWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PollOptionRelateToOneForUpdateInput {
   create: PollOptionCreateInput
   connect: PollOptionWhereUniqueInput
@@ -2473,6 +2474,11 @@ input PollResultCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input PollRelateToOneForCreateInput {
+  create: PollCreateInput
+  connect: PollWhereUniqueInput
 }
 
 input PollOptionRelateToOneForCreateInput {
