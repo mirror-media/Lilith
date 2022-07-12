@@ -99,6 +99,7 @@ model Post {
   relatedPosts                Post[]         @relation("Post_relatedPosts")
   publishDate                 DateTime
   ref_events                  Event[]        @relation("Event_ref_posts")
+  ref_polls                   Poll[]         @relation("Poll_ref_posts")
   project                     Project?       @relation("Post_project", fields: [projectId], references: [id])
   projectId                   Int?           @map("project")
   group                       Group?         @relation("Post_group", fields: [groupId], references: [id])
@@ -511,11 +512,13 @@ model Poll {
   choice      String?
   type        String?
   status      String?      @default("draft")
-  startTime   DateTime?
-  endTime     DateTime?
-  publishTime DateTime?
+  startTime   DateTime
+  endTime     DateTime
+  publishTime DateTime     @default(now())
+  description String       @default("")
   options     PollOption[] @relation("PollOption_poll")
   result      PollResult[] @relation("PollResult_poll")
+  ref_posts   Post[]       @relation("Poll_ref_posts")
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?        @relation("Poll_createdBy", fields: [createdById], references: [id])

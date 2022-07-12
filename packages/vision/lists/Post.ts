@@ -273,6 +273,18 @@ const listConfigurations = list({
       },
       many: true,
     }),
+    ref_polls: relationship({
+      label: '相關投票',
+      ref: 'Poll.ref_posts',
+      ui: {
+        inlineEdit: { fields: ['name'] },
+        hideCreate: true,
+        linkToItem: true,
+        inlineConnect: true,
+        inlineCreate: { fields: ['name'] },
+      },
+      many: true,
+    }),
     project: relationship({
       ref: 'Project.posts',
       ui: {

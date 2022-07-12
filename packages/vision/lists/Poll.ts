@@ -51,13 +51,23 @@ const listConfigurations = list({
       },
     }),
     startTime: timestamp({
-      label: '開始時間',
+      label: '開始時間（必填）',
+      validation: { isRequired: true },
     }),
     endTime: timestamp({
-      label: '結束時間',
+      label: '結束時間（必填）',
+      validation: { isRequired: true },
     }),
     publishTime: timestamp({
-      label: '發布時間',
+      label: '發布時間（必填）（預設為現在）',
+      validation: { isRequired: true },
+      defaultValue: { kind: 'now' },
+    }),
+    description: text({
+      label: '描述',
+      ui: {
+        displayMode: 'textarea',
+      },
     }),
     options: relationship({
       ref: 'PollOption.poll',
@@ -76,6 +86,18 @@ const listConfigurations = list({
       ref: 'PollResult.poll',
       ui: {
         hideCreate: true,
+      },
+      many: true,
+    }),
+    ref_posts: relationship({
+      label: '相關文章',
+      ref: 'Post.ref_polls',
+      ui: {
+        hideCreate: true,
+        inlineEdit: { fields: ['name'] },
+        linkToItem: true,
+        inlineConnect: true,
+        inlineCreate: { fields: ['name'] },
       },
       many: true,
     }),
