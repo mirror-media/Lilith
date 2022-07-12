@@ -29,7 +29,7 @@ const listConfigurations = list ({
       ]
 	}),
     story: relationship({ ref: 'Story.pick', many: false }),
-    collection: relationship({ ref: 'Collection', many: false }),
+    collection: relationship({ ref: 'Collection.picks', many: false }),
     comment: relationship({ ref: 'Comment', many: false}),
     pick_comment: relationship({ ref: 'Comment', many: true }),
 	//posts: relationship({ ref: 'Post.author', many: true }),

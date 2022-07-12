@@ -1,8 +1,7 @@
 import { list } from '@keystone-6/core'
 import { text, select } from '@keystone-6/core/fields'
-
-import { addTrackingFields } from '../../utils/trackingHandler'
-import { allowRoles, admin, moderator, editor } from '../../utils/accessControl'
+import { utils } from '@mirrormedia/lilith-core'
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
@@ -26,6 +25,18 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
+    type: select({
+      options: [
+        { label: '新功能', value: 'features' },
+        { label: '維護', value: 'maintain' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: 'features',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
+      },
+    }),
   },
   ui: {
     listView: {
@@ -42,4 +53,4 @@ const listConfigurations = list({
   },
 })
 
-export default addTrackingFields(listConfigurations)
+export default utils.addTrackingFields(listConfigurations)

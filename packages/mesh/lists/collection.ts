@@ -31,6 +31,15 @@ const listConfigurations = list ({
 		  {	label: '共筆', value: 'wiki' },
 		]
 	  }),
+      status: select({
+        label: '狀態',
+        datatype: 'enum',
+        options: [
+          { label: 'publish', value: 'publish' },
+          { label: 'draft', value: 'draft' },
+          { label: 'delete', value: 'delete' },
+        ],
+      }),
 	  format: select({
 		label: '型態',
 	 	datatype: 'enum',
@@ -39,7 +48,16 @@ const listConfigurations = list ({
 		  {	label: '時間軸', value: 'timeline' },
 		]
 	  }),
-      comment: relationship({ ref: 'Comment', many: true }),
+	  heroImage: relationship({
+		label: '首圖',
+		ref: 'Photo',
+	  }),
+	  collectionpicks: relationship({
+		ref: 'CollectionPick.collection',
+		many: true,
+	  }),
+	  picks: relationship({ ref: 'Pick.collection', many: true }),
+      comment: relationship({ ref: 'Comment.collection', many: true }),
       creator: relationship({  
 	  	ref: 'Member',
 		many: false,

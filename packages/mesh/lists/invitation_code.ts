@@ -5,6 +5,7 @@ import {
   relationship,
   timestamp,
   select,
+  checkbox,
 } from '@keystone-6/core/fields';
 
 const {
@@ -22,8 +23,9 @@ const listConfigurations = list ({
 	validation: { isRequired: true, isUnique: true },
 	  db: { idField: { kind: 'uuid' } },
 	}),
-    send: relationship({ ref: 'Member.invited_by', many: false }),
-    receive: relationship({ ref: 'Member.invited', many: false }),
+    send: relationship({ ref: 'Member.invited', many: false }),
+    receive: relationship({ ref: 'Member.invited_by', many: false }),
+    expired: checkbox({}),
   },
   ui: {
     listView: {
