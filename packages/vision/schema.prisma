@@ -494,6 +494,7 @@ model Photo {
   from_Video_coverPhoto     Video[]     @relation("Video_coverPhoto")
   from_Poll_image           Poll[]      @relation("Poll_image")
   from_Banner_mobileImage   Banner[]    @relation("Banner_mobileImage")
+  from_Banner_tabletImage   Banner[]    @relation("Banner_tabletImage")
   from_Banner_desktopImage  Banner[]    @relation("Banner_desktopImage")
   from_InfoGraph_heroImage  InfoGraph[] @relation("InfoGraph_heroImage")
 
@@ -570,6 +571,8 @@ model Banner {
   id             Int       @id @default(autoincrement())
   mobileImage    Photo?    @relation("Banner_mobileImage", fields: [mobileImageId], references: [id])
   mobileImageId  Int?      @map("mobileImage")
+  tabletImage    Photo?    @relation("Banner_tabletImage", fields: [tabletImageId], references: [id])
+  tabletImageId  Int?      @map("tabletImage")
   desktopImage   Photo?    @relation("Banner_desktopImage", fields: [desktopImageId], references: [id])
   desktopImageId Int?      @map("desktopImage")
   url            String    @default("")
@@ -584,6 +587,7 @@ model Banner {
   updatedById    Int?      @map("updatedBy")
 
   @@index([mobileImageId])
+  @@index([tabletImageId])
   @@index([desktopImageId])
   @@index([createdById])
   @@index([updatedById])

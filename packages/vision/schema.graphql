@@ -2440,6 +2440,7 @@ input PollOptionRelateToOneForCreateInput {
 type Banner {
   id: ID!
   mobileImage: Photo
+  tabletImage: Photo
   desktopImage: Photo
   url: String
   page: String
@@ -2461,6 +2462,7 @@ input BannerWhereInput {
   NOT: [BannerWhereInput!]
   id: IDFilter
   mobileImage: PhotoWhereInput
+  tabletImage: PhotoWhereInput
   desktopImage: PhotoWhereInput
   url: StringFilter
   page: StringFilter
@@ -2484,6 +2486,7 @@ input BannerOrderByInput {
 
 input BannerUpdateInput {
   mobileImage: PhotoRelateToOneForUpdateInput
+  tabletImage: PhotoRelateToOneForUpdateInput
   desktopImage: PhotoRelateToOneForUpdateInput
   url: String
   page: String
@@ -2502,6 +2505,7 @@ input BannerUpdateArgs {
 
 input BannerCreateInput {
   mobileImage: PhotoRelateToOneForCreateInput
+  tabletImage: PhotoRelateToOneForCreateInput
   desktopImage: PhotoRelateToOneForCreateInput
   url: String
   page: String
