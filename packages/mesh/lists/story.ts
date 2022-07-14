@@ -22,7 +22,10 @@ const {
 const listConfigurations = list ({
   fields: {
     title: text({ validation: { isRequired: false } }),
-    url: text({ validation: { isRequired: true } }),
+    url: text({ 
+		validation: { isRequired: true },
+		isIndexed: 'unique',
+	}),
     summary: text({ 
 	  validation: { isRequired: false },
 	  ui: { displayMode: 'textarea' },
