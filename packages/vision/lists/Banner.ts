@@ -17,6 +17,14 @@ const listConfigurations = list({
       },
       many: false,
     }),
+    tabletImage: customFields.relationship({
+      label: '平板用圖片',
+      ref: 'Photo',
+      customConfig: {
+        isImage: true,
+      },
+      many: false,
+    }),
     desktopImage: customFields.relationship({
       label: '桌機用圖片',
       ref: 'Photo',

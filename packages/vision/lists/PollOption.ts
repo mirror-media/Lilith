@@ -28,7 +28,7 @@ const listConfigurations = list({
         inlineConnect: true,
         inlineCreate: { fields: ['name'] },
       },
-      many: false,
+      many: true,
     }),
     result: relationship({
       ref: 'PollResult.option',

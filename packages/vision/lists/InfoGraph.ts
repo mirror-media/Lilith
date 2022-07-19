@@ -1,6 +1,12 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { text, select, json, timestamp } from '@keystone-6/core/fields'
+import {
+  text,
+  select,
+  json,
+  timestamp,
+  checkbox,
+} from '@keystone-6/core/fields'
 import { document } from '@keystone-6/fields-document'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -73,6 +79,7 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
+    isHomepage: checkbox({ label: '置於首頁', defaultValue: false }),
   },
   access: {
     operation: {

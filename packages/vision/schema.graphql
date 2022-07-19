@@ -163,6 +163,13 @@ type Post {
     skip: Int! = 0
   ): [Event!]
   ref_eventsCount(where: EventWhereInput! = {}): Int
+  ref_polls(
+    where: PollWhereInput! = {}
+    orderBy: [PollOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Poll!]
+  ref_pollsCount(where: PollWhereInput! = {}): Int
   project: Project
   group: Group
   category: Category
@@ -231,6 +238,7 @@ input PostWhereInput {
   relatedPosts: PostManyRelationFilter
   publishDate: DateTimeFilter
   ref_events: EventManyRelationFilter
+  ref_polls: PollManyRelationFilter
   project: ProjectWhereInput
   group: GroupWhereInput
   category: CategoryWhereInput
@@ -311,6 +319,12 @@ input EventManyRelationFilter {
   every: EventWhereInput
   some: EventWhereInput
   none: EventWhereInput
+}
+
+input PollManyRelationFilter {
+  every: PollWhereInput
+  some: PollWhereInput
+  none: PollWhereInput
 }
 
 input SDGManyRelationFilter {
@@ -394,6 +408,7 @@ input PostUpdateInput {
   relatedPosts: PostRelateToManyForUpdateInput
   publishDate: DateTime
   ref_events: EventRelateToManyForUpdateInput
+  ref_polls: PollRelateToManyForUpdateInput
   project: ProjectRelateToOneForUpdateInput
   group: GroupRelateToOneForUpdateInput
   category: CategoryRelateToOneForUpdateInput
@@ -433,6 +448,13 @@ input EventRelateToManyForUpdateInput {
   set: [EventWhereUniqueInput!]
   create: [EventCreateInput!]
   connect: [EventWhereUniqueInput!]
+}
+
+input PollRelateToManyForUpdateInput {
+  disconnect: [PollWhereUniqueInput!]
+  set: [PollWhereUniqueInput!]
+  create: [PollCreateInput!]
+  connect: [PollWhereUniqueInput!]
 }
 
 input ProjectRelateToOneForUpdateInput {
@@ -514,6 +536,7 @@ input PostCreateInput {
   relatedPosts: PostRelateToManyForCreateInput
   publishDate: DateTime
   ref_events: EventRelateToManyForCreateInput
+  ref_polls: PollRelateToManyForCreateInput
   project: ProjectRelateToOneForCreateInput
   group: GroupRelateToOneForCreateInput
   category: CategoryRelateToOneForCreateInput
@@ -546,6 +569,11 @@ input PostRelateToManyForCreateInput {
 input EventRelateToManyForCreateInput {
   create: [EventCreateInput!]
   connect: [EventWhereUniqueInput!]
+}
+
+input PollRelateToManyForCreateInput {
+  create: [PollCreateInput!]
+  connect: [PollWhereUniqueInput!]
 }
 
 input ProjectRelateToOneForCreateInput {
@@ -2146,6 +2174,7 @@ type Poll {
   startTime: DateTime
   endTime: DateTime
   publishTime: DateTime
+  description: String
   options(
     where: PollOptionWhereInput! = {}
     orderBy: [PollOptionOrderByInput!]! = []
@@ -2160,6 +2189,13 @@ type Poll {
     skip: Int! = 0
   ): [PollResult!]
   resultCount(where: PollResultWhereInput! = {}): Int
+  ref_posts(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Post!]
+  ref_postsCount(where: PostWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2181,11 +2217,13 @@ input PollWhereInput {
   choice: StringNullableFilter
   type: StringNullableFilter
   status: StringNullableFilter
-  startTime: DateTimeNullableFilter
-  endTime: DateTimeNullableFilter
-  publishTime: DateTimeNullableFilter
+  startTime: DateTimeFilter
+  endTime: DateTimeFilter
+  publishTime: DateTimeFilter
+  description: StringFilter
   options: PollOptionManyRelationFilter
   result: PollResultManyRelationFilter
+  ref_posts: PostManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2213,6 +2251,7 @@ input PollOrderByInput {
   startTime: OrderDirection
   endTime: OrderDirection
   publishTime: OrderDirection
+  description: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2226,8 +2265,10 @@ input PollUpdateInput {
   startTime: DateTime
   endTime: DateTime
   publishTime: DateTime
+  description: String
   options: PollOptionRelateToManyForUpdateInput
   result: PollResultRelateToManyForUpdateInput
+  ref_posts: PostRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2262,8 +2303,10 @@ input PollCreateInput {
   startTime: DateTime
   endTime: DateTime
   publishTime: DateTime
+  description: String
   options: PollOptionRelateToManyForCreateInput
   result: PollResultRelateToManyForCreateInput
+  ref_posts: PostRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2284,7 +2327,13 @@ type PollOption {
   id: ID!
   name: String
   order: Int
-  poll: Poll
+  poll(
+    where: PollWhereInput! = {}
+    orderBy: [PollOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Poll!]
+  pollCount(where: PollWhereInput! = {}): Int
   result(
     where: PollResultWhereInput! = {}
     orderBy: [PollResultOrderByInput!]! = []
@@ -2310,7 +2359,7 @@ input PollOptionWhereInput {
   id: IDFilter
   name: StringFilter
   order: IntNullableFilter
-  poll: PollWhereInput
+  poll: PollManyRelationFilter
   result: PollResultManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2329,18 +2378,12 @@ input PollOptionOrderByInput {
 input PollOptionUpdateInput {
   name: String
   order: Int
-  poll: PollRelateToOneForUpdateInput
+  poll: PollRelateToManyForUpdateInput
   result: PollResultRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
-}
-
-input PollRelateToOneForUpdateInput {
-  create: PollCreateInput
-  connect: PollWhereUniqueInput
-  disconnect: Boolean
 }
 
 input PollOptionUpdateArgs {
@@ -2351,17 +2394,12 @@ input PollOptionUpdateArgs {
 input PollOptionCreateInput {
   name: String
   order: Int
-  poll: PollRelateToOneForCreateInput
+  poll: PollRelateToManyForCreateInput
   result: PollResultRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input PollRelateToOneForCreateInput {
-  create: PollCreateInput
-  connect: PollWhereUniqueInput
 }
 
 type PollResult {
@@ -2411,6 +2449,12 @@ input PollResultUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
+input PollRelateToOneForUpdateInput {
+  create: PollCreateInput
+  connect: PollWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PollOptionRelateToOneForUpdateInput {
   create: PollOptionCreateInput
   connect: PollOptionWhereUniqueInput
@@ -2432,6 +2476,11 @@ input PollResultCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+input PollRelateToOneForCreateInput {
+  create: PollCreateInput
+  connect: PollWhereUniqueInput
+}
+
 input PollOptionRelateToOneForCreateInput {
   create: PollOptionCreateInput
   connect: PollOptionWhereUniqueInput
@@ -2440,6 +2489,7 @@ input PollOptionRelateToOneForCreateInput {
 type Banner {
   id: ID!
   mobileImage: Photo
+  tabletImage: Photo
   desktopImage: Photo
   url: String
   page: String
@@ -2461,6 +2511,7 @@ input BannerWhereInput {
   NOT: [BannerWhereInput!]
   id: IDFilter
   mobileImage: PhotoWhereInput
+  tabletImage: PhotoWhereInput
   desktopImage: PhotoWhereInput
   url: StringFilter
   page: StringFilter
@@ -2484,6 +2535,7 @@ input BannerOrderByInput {
 
 input BannerUpdateInput {
   mobileImage: PhotoRelateToOneForUpdateInput
+  tabletImage: PhotoRelateToOneForUpdateInput
   desktopImage: PhotoRelateToOneForUpdateInput
   url: String
   page: String
@@ -2502,6 +2554,7 @@ input BannerUpdateArgs {
 
 input BannerCreateInput {
   mobileImage: PhotoRelateToOneForCreateInput
+  tabletImage: PhotoRelateToOneForCreateInput
   desktopImage: PhotoRelateToOneForCreateInput
   url: String
   page: String
@@ -2668,6 +2721,7 @@ type InfoGraph {
   ): [Post!]
   relatedPostsCount(where: PostWhereInput! = {}): Int
   apiData: JSON
+  isHomepage: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2697,6 +2751,7 @@ input InfoGraphWhereInput {
   infograph: StringFilter
   dataUpdated: DateTimeFilter
   relatedPosts: PostManyRelationFilter
+  isHomepage: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2711,6 +2766,7 @@ input InfoGraphOrderByInput {
   publishDate: OrderDirection
   infograph: OrderDirection
   dataUpdated: OrderDirection
+  isHomepage: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2727,6 +2783,7 @@ input InfoGraphUpdateInput {
   dataUpdated: DateTime
   relatedPosts: PostRelateToManyForUpdateInput
   apiData: JSON
+  isHomepage: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2750,6 +2807,7 @@ input InfoGraphCreateInput {
   dataUpdated: DateTime
   relatedPosts: PostRelateToManyForCreateInput
   apiData: JSON
+  isHomepage: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

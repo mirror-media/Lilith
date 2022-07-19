@@ -99,6 +99,7 @@ model Post {
   relatedPosts                Post[]         @relation("Post_relatedPosts")
   publishDate                 DateTime
   ref_events                  Event[]        @relation("Event_ref_posts")
+  ref_polls                   Poll[]         @relation("Poll_ref_posts")
   project                     Project?       @relation("Post_project", fields: [projectId], references: [id])
   projectId                   Int?           @map("project")
   group                       Group?         @relation("Post_group", fields: [groupId], references: [id])
@@ -494,6 +495,7 @@ model Photo {
   from_Video_coverPhoto     Video[]     @relation("Video_coverPhoto")
   from_Poll_image           Poll[]      @relation("Poll_image")
   from_Banner_mobileImage   Banner[]    @relation("Banner_mobileImage")
+  from_Banner_tabletImage   Banner[]    @relation("Banner_tabletImage")
   from_Banner_desktopImage  Banner[]    @relation("Banner_desktopImage")
   from_InfoGraph_heroImage  InfoGraph[] @relation("InfoGraph_heroImage")
 
@@ -510,11 +512,13 @@ model Poll {
   choice      String?
   type        String?
   status      String?      @default("draft")
-  startTime   DateTime?
-  endTime     DateTime?
-  publishTime DateTime?
-  options     PollOption[] @relation("PollOption_poll")
+  startTime   DateTime
+  endTime     DateTime
+  publishTime DateTime     @default(now())
+  description String       @default("")
+  options     PollOption[] @relation("Poll_options")
   result      PollResult[] @relation("PollResult_poll")
+  ref_posts   Post[]       @relation("Poll_ref_posts")
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?        @relation("Poll_createdBy", fields: [createdById], references: [id])
@@ -531,8 +535,7 @@ model PollOption {
   id          Int          @id @default(autoincrement())
   name        String       @unique @default("")
   order       Int?
-  poll        Poll?        @relation("PollOption_poll", fields: [pollId], references: [id])
-  pollId      Int?         @map("poll")
+  poll        Poll[]       @relation("Poll_options")
   result      PollResult[] @relation("PollResult_option")
   createdAt   DateTime?
   updatedAt   DateTime?
@@ -541,7 +544,6 @@ model PollOption {
   updatedBy   User?        @relation("PollOption_updatedBy", fields: [updatedById], references: [id])
   updatedById Int?         @map("updatedBy")
 
-  @@index([pollId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -570,6 +572,8 @@ model Banner {
   id             Int       @id @default(autoincrement())
   mobileImage    Photo?    @relation("Banner_mobileImage", fields: [mobileImageId], references: [id])
   mobileImageId  Int?      @map("mobileImage")
+  tabletImage    Photo?    @relation("Banner_tabletImage", fields: [tabletImageId], references: [id])
+  tabletImageId  Int?      @map("tabletImage")
   desktopImage   Photo?    @relation("Banner_desktopImage", fields: [desktopImageId], references: [id])
   desktopImageId Int?      @map("desktopImage")
   url            String    @default("")
@@ -584,6 +588,7 @@ model Banner {
   updatedById    Int?      @map("updatedBy")
 
   @@index([mobileImageId])
+  @@index([tabletImageId])
   @@index([desktopImageId])
   @@index([createdById])
   @@index([updatedById])
@@ -624,6 +629,7 @@ model InfoGraph {
   dataUpdated  DateTime
   relatedPosts Post[]    @relation("InfoGraph_relatedPosts")
   apiData      Json?
+  isHomepage   Boolean   @default(false)
   createdAt    DateTime?
   updatedAt    DateTime?
   createdBy    User?     @relation("InfoGraph_createdBy", fields: [createdById], references: [id])
