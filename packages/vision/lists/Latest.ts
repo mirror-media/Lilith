@@ -66,7 +66,21 @@ const listConfigurations = list({
       },
       many: true,
     }),
-    active: checkbox({ label: '啟用', defaultValue: true }),
+    active: checkbox({
+      label: '啟用',
+      defaultValue: true,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
+    }),
     previewButton: virtual({
       field: graphql.field({
         type: graphql.String,
