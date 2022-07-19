@@ -58,6 +58,24 @@ const listConfigurations = list({
       many: true,
     }),
   },
+  hooks: {
+    validateInput: async ({ operation, inputData, addValidationError }) => {
+      if (operation == 'create') {
+        if (!('group' in inputData)) {
+          addValidationError('目錄不能空白')
+        }
+      }
+      if (operation == 'update') {
+        if (
+          'group' in inputData &&
+          'disconnect' in inputData['group'] &&
+          inputData['group']['disconnect'] == true
+        ) {
+          addValidationError('目錄不能空白')
+        }
+      }
+    },
+  },
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),
