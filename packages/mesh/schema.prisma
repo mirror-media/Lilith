@@ -271,7 +271,7 @@ model InvitationCode {
 model Story {
   id                        Int              @id @default(autoincrement())
   title                     String           @default("")
-  url                       String           @default("")
+  url                       String           @unique @default("")
   summary                   String           @default("")
   content                   String           @default("")
   writer                    String           @default("")
