@@ -27,7 +27,7 @@ const listConfigurations = list ({
 	 	datatype: 'enum',
 		options: [
 		  { label: '個人', value: 'private' },
-		  {	label: '公開', value: 'publis' },
+		  {	label: '公開', value: 'public' },
 		  {	label: '共筆', value: 'wiki' },
 		]
 	  }),
