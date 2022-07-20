@@ -786,26 +786,6 @@ input PhotoWhereUniqueInput {
   id: ID
 }
 
-type LocalImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  url: String!
-}
-
-type CloudImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  url: String!
-}
-
 type LocalCustomFileFieldOutput implements CustomFileFieldOutput {
   filename: String!
   filesize: Int!
@@ -2065,6 +2045,118 @@ input EmbedCodeCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Karaoke {
+  id: ID!
+  name: String
+  quote: String
+  audio: FileFieldOutput
+  imageFile: ImageFieldOutput
+  embedCode: String
+  previewButton: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+interface FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+input KaraokeWhereUniqueInput {
+  id: ID
+}
+
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+type CloudFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
+}
+
+type CloudImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
+}
+
+input KaraokeWhereInput {
+  AND: [KaraokeWhereInput!]
+  OR: [KaraokeWhereInput!]
+  NOT: [KaraokeWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  quote: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input KaraokeOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  quote: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input KaraokeUpdateInput {
+  name: String
+  quote: String
+  audio: FileFieldInput
+  imageFile: ImageFieldInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input FileFieldInput {
+  upload: Upload
+  ref: String
+}
+
+input KaraokeUpdateArgs {
+  where: KaraokeWhereUniqueInput!
+  data: KaraokeUpdateInput!
+}
+
+input KaraokeCreateInput {
+  name: String
+  quote: String
+  audio: FileFieldInput
+  imageFile: ImageFieldInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2219,6 +2311,15 @@ type Mutation {
   updateEmbedCodes(data: [EmbedCodeUpdateArgs!]!): [EmbedCode]
   deleteEmbedCode(where: EmbedCodeWhereUniqueInput!): EmbedCode
   deleteEmbedCodes(where: [EmbedCodeWhereUniqueInput!]!): [EmbedCode]
+  createKaraoke(data: KaraokeCreateInput!): Karaoke
+  createKaraokes(data: [KaraokeCreateInput!]!): [Karaoke]
+  updateKaraoke(
+    where: KaraokeWhereUniqueInput!
+    data: KaraokeUpdateInput!
+  ): Karaoke
+  updateKaraokes(data: [KaraokeUpdateArgs!]!): [Karaoke]
+  deleteKaraoke(where: KaraokeWhereUniqueInput!): Karaoke
+  deleteKaraokes(where: [KaraokeWhereUniqueInput!]!): [Karaoke]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -2388,6 +2489,14 @@ type Query {
   ): [EmbedCode!]
   embedCode(where: EmbedCodeWhereUniqueInput!): EmbedCode
   embedCodesCount(where: EmbedCodeWhereInput! = {}): Int
+  karaokes(
+    where: KaraokeWhereInput! = {}
+    orderBy: [KaraokeOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Karaoke!]
+  karaoke(where: KaraokeWhereUniqueInput!): Karaoke
+  karaokesCount(where: KaraokeWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
