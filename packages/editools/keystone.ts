@@ -81,7 +81,7 @@ export default withAuth(
           }
 
           res.send(
-            `<html><body><div style="height: 80vh; background-color: pink;"></div>${item?.embedCode}</body></html>`
+            `<html><body><div style="height: 80vh; background-color: pink;"></div>${item?.embedCode}<div style="height: 80vh; background-color: pink;"></div></body></html>`
           )
         })
       },
