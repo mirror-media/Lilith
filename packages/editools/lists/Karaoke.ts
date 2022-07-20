@@ -4,7 +4,7 @@ import config from '../config'
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, image, file, virtual } from '@keystone-6/core/fields'
+import { checkbox, text, image, file, virtual } from '@keystone-6/core/fields'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -24,6 +24,10 @@ const listConfigurations = list({
     }),
     audio: file(),
     imageFile: image(),
+    muteHint: checkbox({
+      label: '是否顯示聲音播放提醒',
+      defaultValue: false,
+    }),
     embedCode: virtual({
       label: 'embed code',
       field: graphql.field({
@@ -42,6 +46,7 @@ const listConfigurations = list({
               textArr:
                 typeof item?.quote === 'string' && item.quote.split('\n'),
               imgSrc,
+              muteHint: item?.muteHint,
             },
             embedCodeWebpackAssets
           )

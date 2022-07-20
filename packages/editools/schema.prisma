@@ -486,6 +486,7 @@ model Karaoke {
   imageFile_height    Int?
   imageFile_mode      String?
   imageFile_id        String?
+  muteHint            Boolean   @default(false)
   createdAt           DateTime?
   updatedAt           DateTime?
   createdBy           User?     @relation("Karaoke_createdBy", fields: [createdById], references: [id])
