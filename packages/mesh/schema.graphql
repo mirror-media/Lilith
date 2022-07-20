@@ -1364,6 +1364,8 @@ type Member {
 
 input MemberWhereUniqueInput {
   id: ID
+  firebaseId: String
+  customId: String
   email: String
 }
 

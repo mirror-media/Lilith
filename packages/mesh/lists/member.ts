@@ -11,14 +11,14 @@ const listConfigurations = list({
       validation: {
         isRequired: true,
       },
-      isindexed: 'unique',
+      isIndexed: 'unique',
     }),
     customId: text({
       label: 'customId',
       validation: {
         isRequired: true,
       },
-      isindexed: 'unique',
+      isIndexed: 'unique',
     }),
     name: text({
       validation: { isRequired: true },

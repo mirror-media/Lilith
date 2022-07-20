@@ -324,8 +324,8 @@ model Tag {
 
 model Member {
   id                           Int                @id @default(autoincrement())
-  firebaseId                   String             @default("")
-  customId                     String             @default("")
+  firebaseId                   String             @unique @default("")
+  customId                     String             @unique @default("")
   name                         String             @default("")
   nickname                     String             @default("")
   avatar                       String             @default("")
