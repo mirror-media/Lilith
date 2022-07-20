@@ -56,6 +56,9 @@ const listConfigurations = list ({
       ],
 	  defaultValue: 'none',
 	}),
+    paywall: checkbox({
+      defaultValue: false,
+    }),
 	follower: relationship({
 	  ref: 'Member.follow_publisher',
 	  many: true,
