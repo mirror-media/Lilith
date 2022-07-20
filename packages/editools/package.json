@@ -25,6 +25,10 @@
     "http-proxy-middleware": "^2.0.3",
     "patch-package": "^6.4.7"
   },
+  "resolutions": {
+    "react": "18.1.0",
+    "react-dom": "18.1.0"
+  },
   "devDependencies": {
     "typescript": "^4.7.4"
   }
