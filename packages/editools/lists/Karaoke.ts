@@ -37,7 +37,7 @@ const listConfigurations = list({
           const audioSrc = `${urlPrefix}/files/${item?.audio_filename}`
           const imgSrc =
             item?.imageFile_id &&
-            `${urlPrefix}/images/${item.imageFile_id}${item.imageFile_extension}`
+            `${urlPrefix}/images/${item.imageFile_id}.${item.imageFile_extension}`
 
           return embedCodeGen.buildEmbeddedCode(
             'react-karaoke',
