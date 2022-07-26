@@ -15,13 +15,42 @@ const listConfigurations = list({
       customConfig: {
         isImage: true,
       },
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['name', 'imageFile'],
+        inlineCreate: {
+          fields: ['name', 'imageFile'],
+        },
+      },
       many: false,
+    }),
+    tabletImage: CustomRelationship({
+      label: '平板用圖片',
+      ref: 'Photo',
+      customConfig: {
+        isImage: true,
+      },
+      many: false,
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['name', 'imageFile'],
+        inlineCreate: {
+          fields: ['name', 'imageFile'],
+        },
+      },
     }),
     desktopImage: customFields.relationship({
       label: '桌機用圖片',
       ref: 'Photo',
       customConfig: {
         isImage: true,
+      },
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['name', 'imageFile'],
+        inlineCreate: {
+          fields: ['name', 'imageFile'],
+        },
       },
       many: false,
     }),
@@ -58,6 +87,42 @@ const listConfigurations = list({
         isRequired: true,
       },
     }),
+  },
+  hooks: {
+    validateInput: async ({ operation, inputData, addValidationError }) => {
+      if (operation == 'create') {
+        if (
+          !('mobileImage' in inputData) ||
+          !('tabletImage' in inputData) ||
+          or('desktopImage' in inputData)
+        ) {
+          addValidationError('圖片不能空白')
+        }
+      }
+      if (operation == 'update') {
+        if (
+          'mobileImage' in inputData &&
+          'disconnect' in inputData['mobileImage'] &&
+          inputData['mobileImage']['disconnect'] == true
+        ) {
+          addValidationError('圖片不能空白')
+        }
+        if (
+          'tabletImage' in inputData &&
+          'disconnect' in inputData['tabletImage'] &&
+          inputData['tabletImage']['disconnect'] == true
+        ) {
+          addValidationError('圖片不能空白')
+        }
+        if (
+          'desktopImage' in inputData &&
+          'disconnect' in inputData['desktopImage'] &&
+          inputData['desktopImage']['disconnect'] == true
+        ) {
+          addValidationError('圖片不能空白')
+        }
+      }
+    },
   },
   access: {
     operation: {

@@ -64,10 +64,6 @@ function filterPosts({ session }: { session: Session }) {
 
 const listConfigurations = list({
   fields: {
-    slug: text({
-      label: 'slug（Longform 網址）',
-      isIndexed: 'unique',
-    }),
     name: text({
       label: '標題',
       validation: {
@@ -75,58 +71,6 @@ const listConfigurations = list({
         length: {
           min: 1,
         },
-      },
-    }),
-    titleSize: integer({
-      label: '標題字級（Longform 專用）',
-      validation: {
-        max: 200,
-        min: 20,
-      },
-    }),
-    titleColor: text({
-      label: '標題顏色Hex color code（Longform 專用）',
-      defaultValue: '#000',
-      validation: {
-        match: {
-          regex: new RegExp('^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'),
-          explanation: '標題顏色格式不符合 Hex color code',
-        },
-      },
-    }),
-    subtitle: text({
-      label: '副標（Longform）',
-      validation: {
-        isRequired: false,
-      },
-    }),
-    subtitleSize: integer({
-      label: '副標字級（Longform 專用）',
-      validation: {
-        max: 100,
-        min: 14,
-      },
-    }),
-    subtitleColor: text({
-      label: '副標顏色Hex color code（Longform 專用）',
-      defaultValue: '#000',
-      validation: {
-        match: {
-          regex: new RegExp('^^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'),
-          explanation: '副標顏色格式不符合 Hex color code',
-        },
-      },
-    }),
-    type: select({
-      options: [
-        { label: '文章', value: 'article' },
-        { label: 'Longform', value: 'project' },
-      ],
-      // We want to make sure new posts start off as a draft when they are created
-      defaultValue: 'article',
-      // fields also have the ability to configure their appearance in the Admin UI
-      ui: {
-        displayMode: 'segmented-control',
       },
     }),
     status: select({
@@ -146,9 +90,19 @@ const listConfigurations = list({
         },
       },
     }),
+    slug: text({
+      label: 'slug（Longform 網址）',
+      isIndexed: 'unique',
+    }),
     weight: integer({
       label: '權重',
       defaultValue: 85,
+    }),
+    publishDate: timestamp({
+      label: '發布日期',
+      validation: {
+        isRequired: true,
+      },
     }),
     heroImage: customFields.relationship({
       label: '首圖',
@@ -163,26 +117,6 @@ const listConfigurations = list({
     ogImage: customFields.relationship({
       label: 'og Image',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
-    }),
-    headLogo: customFields.relationship({
-      label: '自訂 Logo（Longform 專用）',
-      ref: 'Photo',
-      // ui: {
-      //     hideCreate: true,
-      // },
-      customConfig: {
-        isImage: true,
-      },
-    }),
-    heroMob: customFields.relationship({
-      label: '手機首圖（Longform 專用）',
-      ref: 'Photo',
-      // ui: {
-      //     hideCreate: true,
-      // },
       customConfig: {
         isImage: true,
       },
@@ -218,30 +152,6 @@ const listConfigurations = list({
       label: '記者（一般文章使用）',
       ui: { displayMode: 'textarea' },
     }),
-    author: text({
-      label: '作者（Longform 專用）',
-      ui: { displayMode: 'textarea' },
-    }),
-    photographer: text({
-      label: '攝影（Longform 專用）',
-      ui: { displayMode: 'textarea' },
-    }),
-    video: text({
-      label: '影音（Longform 專用）',
-      ui: { displayMode: 'textarea' },
-    }),
-    designer: text({
-      label: '設計（Longform 專用）',
-      ui: { displayMode: 'textarea' },
-    }),
-    engineer: text({
-      label: '工程（Longform 專用）',
-      ui: { displayMode: 'textarea' },
-    }),
-    data: text({
-      label: '資料分析（Longform 專用）',
-      ui: { displayMode: 'textarea' },
-    }),
     content: customFields.richTextEditor({
       label: '內文',
     }),
@@ -255,15 +165,21 @@ const listConfigurations = list({
         labelField: 'name',
       },
     }),
-    publishDate: timestamp({
-      label: '發布日期',
-      validation: {
-        isRequired: true,
-      },
-    }),
     ref_events: relationship({
       label: '相關活動',
       ref: 'Event.ref_posts',
+      ui: {
+        inlineEdit: { fields: ['name'] },
+        hideCreate: true,
+        linkToItem: true,
+        inlineConnect: true,
+        inlineCreate: { fields: ['name'] },
+      },
+      many: true,
+    }),
+    ref_polls: relationship({
+      label: '相關投票',
+      ref: 'Poll.ref_posts',
       ui: {
         inlineEdit: { fields: ['name'] },
         hideCreate: true,
@@ -354,6 +270,58 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
         listView: {
           fieldMode: 'read',
+        },
+      },
+    }),
+    type: select({
+      options: [
+        { label: '文章', value: 'article' },
+        { label: 'Longform', value: 'project' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: 'article',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
+      },
+    }),
+    longform: relationship({
+      label: 'Longform',
+      ref: 'Longform',
+      many: false,
+      ui: {
+        displayMode: 'cards',
+        cardFields: [
+          'titleSize',
+          'titleColor',
+          'subtitle',
+          'subtitleSize',
+          'subtitleColor',
+          'headLogo',
+          'heroMob',
+          'author',
+          'photographer',
+          'video',
+          'designer',
+          'engineer',
+          'data',
+        ],
+        inlineCreate: {
+          fields: [
+            'titleSize',
+            'titleColor',
+            'subtitle',
+            'subtitleSize',
+            'subtitleColor',
+            'headLogo',
+            'heroMob',
+            'author',
+            'photographer',
+            'video',
+            'designer',
+            'engineer',
+            'data',
+          ],
         },
       },
     }),
