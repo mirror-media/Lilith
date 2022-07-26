@@ -99,7 +99,8 @@ const listConfigurations = list({
       defaultValue: 85,
     }),
     publishDate: timestamp({
-      label: '發布日期',
+      label: '發布日期（預設：現在時間）',
+	  defaultVaule: { kind: 'now' },
       validation: {
         isRequired: true,
       },
