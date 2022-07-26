@@ -2262,13 +2262,13 @@
     tiny-warning "^1.0.3"
     tslib "^2.3.0"
 
-"@readr-media/react-embed-code-generator@1.1.0-beta.1":
-  version "1.1.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-1.1.0-beta.1.tgz#1d2414af364afab35076de881f25254bd36d9b0b"
-  integrity sha512-rlw8puvjkS4DB/1x77I1DO/C0EkRPpvliaE6Tbc8oAYFSQhLLgKHztP5HVatsFeNVPAIbfr/3Bteqyy6LtB/Ew==
+"@readr-media/react-embed-code-generator@1.1.0-beta.4":
+  version "1.1.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-1.1.0-beta.4.tgz#a3f1841d7bd77ac3663913c64664237a22244f73"
+  integrity sha512-kyHN0gLpUQqoJPfxoEKvkH8WXRSMNUPxiY///WNR5w+PciQBgNWdyS8ePN/PRfSk4wJy5nSc1NzJXXLPSwrKcA==
   dependencies:
     "@readr-media/react-feedback" "^1.0.6"
-    "@readr-media/react-karaoke" "1.0.0-beta.0"
+    "@readr-media/react-karaoke" "1.0.0-beta.4"
     "@readr-media/react-qa-list" "^1.0.4"
     "@readr-media/react-questionnaire" "^1.0.9"
     lodash "^4.17.21"
@@ -2290,10 +2290,10 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
-"@readr-media/react-karaoke@1.0.0-beta.0":
-  version "1.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-karaoke/-/react-karaoke-1.0.0-beta.0.tgz#e5d61a51ca61800de2b35079b41b96fd89102d9c"
-  integrity sha512-Co1YPTS/Yu55T40QBW6ZjLqM+qAF+97L2klc4apDGgGtLtZ/fHxzC7atqSUvYITYJzusaDimA0uSGDf84tCedg==
+"@readr-media/react-karaoke@1.0.0-beta.4":
+  version "1.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-karaoke/-/react-karaoke-1.0.0-beta.4.tgz#4147d9fe4505240a95fe7d74c731293d9e03ec56"
+  integrity sha512-XTxAWynD1mjP/at1LR3QYSTBhQyVwsI0h6IoaNZEJwxlurT5Q/QIL6hASNW2DivrwDbpOdFVC0gzxUbAziq10g==
   dependencies:
     react "18.1.0"
     react-dom "^18.1.0"
