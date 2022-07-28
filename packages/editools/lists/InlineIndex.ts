@@ -21,9 +21,9 @@ const listConfigurations = list({
       many: true,
       ui: {
         displayMode: 'cards',
-        cardFields: ['name', 'url', 'imageFile', 'color'],
+        cardFields: ['name', 'slug', 'imageFile', 'color'],
         inlineCreate: {
-          fields: ['name', 'url', 'imageFile', 'color'],
+          fields: ['name', 'slug', 'imageFile', 'color'],
         },
       },
     }),
@@ -31,14 +31,43 @@ const listConfigurations = list({
       label: 'embed code',
       field: graphql.field({
         type: graphql.String,
-        resolve: async (item: Record<string, unknown>): Promise<string> => {
-          return embedCodeGen.buildEmbeddedCode(
-            'react-inlineindex',
-            {
-            },
-            embedCodeWebpackAssets
-          )
-		},
+        resolve: async (
+          item: Record<string, unknown>,
+          arg,
+          context
+        ): Promise<string> => {
+          const indexData = await context.query.InlineIndex.findOne({
+            where: { id: item.id },
+            query: `
+              id
+              index {
+                id
+                slug
+                name
+                color
+                imageFile {
+                  url
+                }
+              }
+            `,
+          }).then((item) => item.index)
+          let indexItemsCode = ''
+          indexData.forEach((item) => {
+            indexItemsCode += `
+            <li class='item'>
+              <a class='item__link' href='#${item.slug}'>
+                  <img src='${item.imageFile?.url ||
+                    ''}' class='item__img' alt='${item.name}'/>
+                  <span class='item__name'>${item.name}</span>
+              </a>
+          </li>
+          `
+          })
+          return `<body> <ul class='toc'>${indexItemsCode}</ul>
+        <style>${item.style}</style>
+    </body>
+          `
+        },
       }),
     }),
     style: text({
@@ -51,11 +80,11 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve(item: Record<string, unknown>): string {
-          return ``
+          return `/demo/inline-indices/${item?.id}`
         },
       }),
       ui: {
-        views: require.resolve('./karaoke-preview-button'),
+        views: require.resolve('./preview-button'),
       },
     }),
   },
