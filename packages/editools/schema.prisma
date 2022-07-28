@@ -50,6 +50,10 @@ model User {
   from_Question_updatedBy            Question[]            @relation("Question_updatedBy")
   from_EmbedCode_createdBy           EmbedCode[]           @relation("EmbedCode_createdBy")
   from_EmbedCode_updatedBy           EmbedCode[]           @relation("EmbedCode_updatedBy")
+  from_InlineIndex_createdBy         InlineIndex[]         @relation("InlineIndex_createdBy")
+  from_InlineIndex_updatedBy         InlineIndex[]         @relation("InlineIndex_updatedBy")
+  from_IndexItem_createdBy           IndexItem[]           @relation("IndexItem_createdBy")
+  from_IndexItem_updatedBy           IndexItem[]           @relation("IndexItem_updatedBy")
   from_Karaoke_createdBy             Karaoke[]             @relation("Karaoke_createdBy")
   from_Karaoke_updatedBy             Karaoke[]             @relation("Karaoke_updatedBy")
 }
@@ -469,6 +473,45 @@ model EmbedCode {
   updatedById Int?      @map("updatedBy")
 
   @@index([formId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model InlineIndex {
+  id          Int         @id @default(autoincrement())
+  name        String      @default("")
+  index       IndexItem[] @relation("IndexItem_index")
+  style       String      @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?       @relation("InlineIndex_createdBy", fields: [createdById], references: [id])
+  createdById Int?        @map("createdBy")
+  updatedBy   User?       @relation("InlineIndex_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?        @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model IndexItem {
+  id                  Int           @id @default(autoincrement())
+  name                String        @default("")
+  url                 String        @default("")
+  imageFile_filesize  Int?
+  imageFile_extension String?
+  imageFile_width     Int?
+  imageFile_height    Int?
+  imageFile_mode      String?
+  imageFile_id        String?
+  color               String        @default("")
+  index               InlineIndex[] @relation("IndexItem_index")
+  createdAt           DateTime?
+  updatedAt           DateTime?
+  createdBy           User?         @relation("IndexItem_createdBy", fields: [createdById], references: [id])
+  createdById         Int?          @map("createdBy")
+  updatedBy           User?         @relation("IndexItem_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?          @map("updatedBy")
+
   @@index([createdById])
   @@index([updatedById])
 }

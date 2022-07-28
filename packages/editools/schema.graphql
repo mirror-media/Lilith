@@ -2045,6 +2045,188 @@ input EmbedCodeCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type InlineIndex {
+  id: ID!
+  name: String
+  index(
+    where: IndexItemWhereInput! = {}
+    orderBy: [IndexItemOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [IndexItem!]
+  indexCount(where: IndexItemWhereInput! = {}): Int
+  embedCode: String
+  style: String
+  previewButton: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input InlineIndexWhereUniqueInput {
+  id: ID
+}
+
+input InlineIndexWhereInput {
+  AND: [InlineIndexWhereInput!]
+  OR: [InlineIndexWhereInput!]
+  NOT: [InlineIndexWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  index: IndexItemManyRelationFilter
+  style: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input IndexItemManyRelationFilter {
+  every: IndexItemWhereInput
+  some: IndexItemWhereInput
+  none: IndexItemWhereInput
+}
+
+input InlineIndexOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  style: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input InlineIndexUpdateInput {
+  name: String
+  index: IndexItemRelateToManyForUpdateInput
+  style: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input IndexItemRelateToManyForUpdateInput {
+  disconnect: [IndexItemWhereUniqueInput!]
+  set: [IndexItemWhereUniqueInput!]
+  create: [IndexItemCreateInput!]
+  connect: [IndexItemWhereUniqueInput!]
+}
+
+input InlineIndexUpdateArgs {
+  where: InlineIndexWhereUniqueInput!
+  data: InlineIndexUpdateInput!
+}
+
+input InlineIndexCreateInput {
+  name: String
+  index: IndexItemRelateToManyForCreateInput
+  style: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input IndexItemRelateToManyForCreateInput {
+  create: [IndexItemCreateInput!]
+  connect: [IndexItemWhereUniqueInput!]
+}
+
+type IndexItem {
+  id: ID!
+  name: String
+  url: String
+  imageFile: ImageFieldOutput
+  color: String
+  index(
+    where: InlineIndexWhereInput! = {}
+    orderBy: [InlineIndexOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [InlineIndex!]
+  indexCount(where: InlineIndexWhereInput! = {}): Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input IndexItemWhereUniqueInput {
+  id: ID
+}
+
+input IndexItemWhereInput {
+  AND: [IndexItemWhereInput!]
+  OR: [IndexItemWhereInput!]
+  NOT: [IndexItemWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  url: StringFilter
+  color: StringFilter
+  index: InlineIndexManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input InlineIndexManyRelationFilter {
+  every: InlineIndexWhereInput
+  some: InlineIndexWhereInput
+  none: InlineIndexWhereInput
+}
+
+input IndexItemOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  url: OrderDirection
+  color: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input IndexItemUpdateInput {
+  name: String
+  url: String
+  imageFile: ImageFieldInput
+  color: String
+  index: InlineIndexRelateToManyForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input InlineIndexRelateToManyForUpdateInput {
+  disconnect: [InlineIndexWhereUniqueInput!]
+  set: [InlineIndexWhereUniqueInput!]
+  create: [InlineIndexCreateInput!]
+  connect: [InlineIndexWhereUniqueInput!]
+}
+
+input IndexItemUpdateArgs {
+  where: IndexItemWhereUniqueInput!
+  data: IndexItemUpdateInput!
+}
+
+input IndexItemCreateInput {
+  name: String
+  url: String
+  imageFile: ImageFieldInput
+  color: String
+  index: InlineIndexRelateToManyForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input InlineIndexRelateToManyForCreateInput {
+  create: [InlineIndexCreateInput!]
+  connect: [InlineIndexWhereUniqueInput!]
+}
+
 type Karaoke {
   id: ID!
   name: String
@@ -2316,6 +2498,24 @@ type Mutation {
   updateEmbedCodes(data: [EmbedCodeUpdateArgs!]!): [EmbedCode]
   deleteEmbedCode(where: EmbedCodeWhereUniqueInput!): EmbedCode
   deleteEmbedCodes(where: [EmbedCodeWhereUniqueInput!]!): [EmbedCode]
+  createInlineIndex(data: InlineIndexCreateInput!): InlineIndex
+  createInlineIndices(data: [InlineIndexCreateInput!]!): [InlineIndex]
+  updateInlineIndex(
+    where: InlineIndexWhereUniqueInput!
+    data: InlineIndexUpdateInput!
+  ): InlineIndex
+  updateInlineIndices(data: [InlineIndexUpdateArgs!]!): [InlineIndex]
+  deleteInlineIndex(where: InlineIndexWhereUniqueInput!): InlineIndex
+  deleteInlineIndices(where: [InlineIndexWhereUniqueInput!]!): [InlineIndex]
+  createIndexItem(data: IndexItemCreateInput!): IndexItem
+  createIndexItems(data: [IndexItemCreateInput!]!): [IndexItem]
+  updateIndexItem(
+    where: IndexItemWhereUniqueInput!
+    data: IndexItemUpdateInput!
+  ): IndexItem
+  updateIndexItems(data: [IndexItemUpdateArgs!]!): [IndexItem]
+  deleteIndexItem(where: IndexItemWhereUniqueInput!): IndexItem
+  deleteIndexItems(where: [IndexItemWhereUniqueInput!]!): [IndexItem]
   createKaraoke(data: KaraokeCreateInput!): Karaoke
   createKaraokes(data: [KaraokeCreateInput!]!): [Karaoke]
   updateKaraoke(
@@ -2494,6 +2694,22 @@ type Query {
   ): [EmbedCode!]
   embedCode(where: EmbedCodeWhereUniqueInput!): EmbedCode
   embedCodesCount(where: EmbedCodeWhereInput! = {}): Int
+  inlineIndices(
+    where: InlineIndexWhereInput! = {}
+    orderBy: [InlineIndexOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [InlineIndex!]
+  inlineIndex(where: InlineIndexWhereUniqueInput!): InlineIndex
+  inlineIndicesCount(where: InlineIndexWhereInput! = {}): Int
+  indexItems(
+    where: IndexItemWhereInput! = {}
+    orderBy: [IndexItemOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [IndexItem!]
+  indexItem(where: IndexItemWhereUniqueInput!): IndexItem
+  indexItemsCount(where: IndexItemWhereInput! = {}): Int
   karaokes(
     where: KaraokeWhereInput! = {}
     orderBy: [KaraokeOrderByInput!]! = []
