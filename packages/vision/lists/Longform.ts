@@ -31,6 +31,10 @@ const listConfigurations = list({
       label: 'slug（Longform 網址）',
       isIndexed: 'unique',
     }),
+    subtitle: text({
+      label: '副標（Longform 網址）',
+      isIndexed: 'unique',
+    }),
     titleSize: integer({
       label: '標題字級（Longform 專用）',
       validation: {
@@ -113,6 +117,7 @@ const listConfigurations = list({
       label: '資料分析（Longform 專用）',
       ui: { displayMode: 'textarea' },
     }),
+  },
   ui: {
     labelField: 'name',
     listView: {

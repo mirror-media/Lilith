@@ -24,7 +24,7 @@ const listConfigurations = list({
       },
       many: false,
     }),
-    tabletImage: CustomRelationship({
+    tabletImage: customFields.relationship({
       label: '平板用圖片',
       ref: 'Photo',
       customConfig: {

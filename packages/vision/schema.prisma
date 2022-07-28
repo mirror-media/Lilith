@@ -62,43 +62,30 @@ model User {
   from_Download_updatedBy     Download[]     @relation("Download_updatedBy")
   from_InfoGraph_createdBy    InfoGraph[]    @relation("InfoGraph_createdBy")
   from_InfoGraph_updatedBy    InfoGraph[]    @relation("InfoGraph_updatedBy")
+  from_Longform_createdBy     Longform[]     @relation("Longform_createdBy")
+  from_Longform_updatedBy     Longform[]     @relation("Longform_updatedBy")
 }
 
 model Post {
   id                          Int            @id @default(autoincrement())
-  slug                        String         @unique @default("")
   name                        String         @default("")
-  titleSize                   Int?
-  titleColor                  String         @default("#000")
-  subtitle                    String         @default("")
-  subtitleSize                Int?
-  subtitleColor               String         @default("#000")
-  type                        String?        @default("article")
   status                      String?        @default("draft")
+  slug                        String         @unique @default("")
   weight                      Int?           @default(85)
+  publishDate                 DateTime
   heroImage                   Photo?         @relation("Post_heroImage", fields: [heroImageId], references: [id])
   heroImageId                 Int?           @map("heroImage")
   ogImage                     Photo?         @relation("Post_ogImage", fields: [ogImageId], references: [id])
   ogImageId                   Int?           @map("ogImage")
-  headLogo                    Photo?         @relation("Post_headLogo", fields: [headLogoId], references: [id])
-  headLogoId                  Int?           @map("headLogo")
-  heroMob                     Photo?         @relation("Post_heroMob", fields: [heroMobId], references: [id])
-  heroMobId                   Int?           @map("heroMob")
   heroStyle                   String?        @default("normal")
   heroVideo                   String         @default("")
   heroCaption                 String         @default("")
   ref_authors                 Author[]       @relation("Author_ref_posts")
   reporter                    String         @default("")
-  author                      String         @default("")
-  photographer                String         @default("")
-  video                       String         @default("")
-  designer                    String         @default("")
-  engineer                    String         @default("")
-  data                        String         @default("")
   content                     Json?
   relatedPosts                Post[]         @relation("Post_relatedPosts")
-  publishDate                 DateTime
   ref_events                  Event[]        @relation("Event_ref_posts")
+  ref_polls                   Poll[]         @relation("Poll_ref_posts")
   project                     Project?       @relation("Post_project", fields: [projectId], references: [id])
   projectId                   Int?           @map("project")
   group                       Group?         @relation("Post_group", fields: [groupId], references: [id])
@@ -110,6 +97,9 @@ model Post {
   sdg                         SDG[]          @relation("Post_sdg")
   tags                        Tag[]          @relation("Post_tags")
   copyright                   String?        @default("reserved")
+  type                        String?        @default("article")
+  longform                    Longform?      @relation("Post_longform", fields: [longformId], references: [id])
+  longformId                  Int?           @map("longform")
   apiData                     Json?
   createdAt                   DateTime?
   updatedAt                   DateTime?
@@ -124,12 +114,11 @@ model Post {
 
   @@index([heroImageId])
   @@index([ogImageId])
-  @@index([headLogoId])
-  @@index([heroMobId])
   @@index([projectId])
   @@index([groupId])
   @@index([categoryId])
   @@index([classifyId])
+  @@index([longformId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -264,7 +253,6 @@ model LatestNew {
   type        String?    @default("news")
   content     Json?
   download    Download[] @relation("Download_latest")
-  active      Boolean    @default(true)
   apiData     Json?
   createdAt   DateTime?
   updatedAt   DateTime?
@@ -481,8 +469,6 @@ model Photo {
   updatedById               Int?        @map("updatedBy")
   from_Post_heroImage       Post[]      @relation("Post_heroImage")
   from_Post_ogImage         Post[]      @relation("Post_ogImage")
-  from_Post_headLogo        Post[]      @relation("Post_headLogo")
-  from_Post_heroMob         Post[]      @relation("Post_heroMob")
   from_Group_heroImage      Group[]     @relation("Group_heroImage")
   from_SDG_heroImage        SDG[]       @relation("SDG_heroImage")
   from_Event_heroImage      Event[]     @relation("Event_heroImage")
@@ -494,8 +480,11 @@ model Photo {
   from_Video_coverPhoto     Video[]     @relation("Video_coverPhoto")
   from_Poll_image           Poll[]      @relation("Poll_image")
   from_Banner_mobileImage   Banner[]    @relation("Banner_mobileImage")
+  from_Banner_tabletImage   Banner[]    @relation("Banner_tabletImage")
   from_Banner_desktopImage  Banner[]    @relation("Banner_desktopImage")
   from_InfoGraph_heroImage  InfoGraph[] @relation("InfoGraph_heroImage")
+  from_Longform_headLogo    Longform[]  @relation("Longform_headLogo")
+  from_Longform_heroMob     Longform[]  @relation("Longform_heroMob")
 
   @@index([createdById])
   @@index([updatedById])
@@ -514,6 +503,7 @@ model Poll {
   endTime     DateTime?
   publishTime DateTime?
   options     PollOption[] @relation("PollOption_poll")
+  ref_posts   Post[]       @relation("Poll_ref_posts")
   result      PollResult[] @relation("PollResult_poll")
   createdAt   DateTime?
   updatedAt   DateTime?
@@ -570,6 +560,8 @@ model Banner {
   id             Int       @id @default(autoincrement())
   mobileImage    Photo?    @relation("Banner_mobileImage", fields: [mobileImageId], references: [id])
   mobileImageId  Int?      @map("mobileImage")
+  tabletImage    Photo?    @relation("Banner_tabletImage", fields: [tabletImageId], references: [id])
+  tabletImageId  Int?      @map("tabletImage")
   desktopImage   Photo?    @relation("Banner_desktopImage", fields: [desktopImageId], references: [id])
   desktopImageId Int?      @map("desktopImage")
   url            String    @default("")
@@ -584,6 +576,7 @@ model Banner {
   updatedById    Int?      @map("updatedBy")
 
   @@index([mobileImageId])
+  @@index([tabletImageId])
   @@index([desktopImageId])
   @@index([createdById])
   @@index([updatedById])
@@ -632,6 +625,39 @@ model InfoGraph {
   updatedById  Int?      @map("updatedBy")
 
   @@index([heroImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Longform {
+  id                 Int       @id @default(autoincrement())
+  slug               String    @unique @default("")
+  subtitle           String    @unique @default("")
+  titleSize          Int?
+  titleColor         String    @default("#000")
+  subtitleSize       Int?
+  subtitleColor      String    @default("#000")
+  headLogo           Photo?    @relation("Longform_headLogo", fields: [headLogoId], references: [id])
+  headLogoId         Int?      @map("headLogo")
+  heroMob            Photo?    @relation("Longform_heroMob", fields: [heroMobId], references: [id])
+  heroMobId          Int?      @map("heroMob")
+  reporter           String    @default("")
+  author             String    @default("")
+  photographer       String    @default("")
+  video              String    @default("")
+  designer           String    @default("")
+  engineer           String    @default("")
+  data               String    @default("")
+  createdAt          DateTime?
+  updatedAt          DateTime?
+  createdBy          User?     @relation("Longform_createdBy", fields: [createdById], references: [id])
+  createdById        Int?      @map("createdBy")
+  updatedBy          User?     @relation("Longform_updatedBy", fields: [updatedById], references: [id])
+  updatedById        Int?      @map("updatedBy")
+  from_Post_longform Post[]    @relation("Post_longform")
+
+  @@index([headLogoId])
+  @@index([heroMobId])
   @@index([createdById])
   @@index([updatedById])
 }

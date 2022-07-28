@@ -116,20 +116,13 @@ input UserCreateInput {
 
 type Post {
   id: ID!
-  slug: String
   name: String
-  titleSize: Int
-  titleColor: String
-  subtitle: String
-  subtitleSize: Int
-  subtitleColor: String
-  type: String
   status: String
+  slug: String
   weight: Int
+  publishDate: DateTime
   heroImage: Photo
   ogImage: Photo
-  headLogo: Photo
-  heroMob: Photo
   heroStyle: String
   heroVideo: String
   heroCaption: String
@@ -141,12 +134,6 @@ type Post {
   ): [Author!]
   ref_authorsCount(where: AuthorWhereInput! = {}): Int
   reporter: String
-  author: String
-  photographer: String
-  video: String
-  designer: String
-  engineer: String
-  data: String
   content: JSON
   relatedPosts(
     where: PostWhereInput! = {}
@@ -155,7 +142,6 @@ type Post {
     skip: Int! = 0
   ): [Post!]
   relatedPostsCount(where: PostWhereInput! = {}): Int
-  publishDate: DateTime
   ref_events(
     where: EventWhereInput! = {}
     orderBy: [EventOrderByInput!]! = []
@@ -163,6 +149,13 @@ type Post {
     skip: Int! = 0
   ): [Event!]
   ref_eventsCount(where: EventWhereInput! = {}): Int
+  ref_polls(
+    where: PollWhereInput! = {}
+    orderBy: [PollOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Poll!]
+  ref_pollsCount(where: PollWhereInput! = {}): Int
   project: Project
   group: Group
   category: Category
@@ -182,6 +175,8 @@ type Post {
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   copyright: String
+  type: String
+  longform: Longform
   previewButton: String
   apiData: JSON
   createdAt: DateTime
@@ -203,34 +198,21 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
-  slug: StringFilter
   name: StringFilter
-  titleSize: IntNullableFilter
-  titleColor: StringFilter
-  subtitle: StringFilter
-  subtitleSize: IntNullableFilter
-  subtitleColor: StringFilter
-  type: StringNullableFilter
   status: StringNullableFilter
+  slug: StringFilter
   weight: IntNullableFilter
+  publishDate: DateTimeFilter
   heroImage: PhotoWhereInput
   ogImage: PhotoWhereInput
-  headLogo: PhotoWhereInput
-  heroMob: PhotoWhereInput
   heroStyle: StringNullableFilter
   heroVideo: StringFilter
   heroCaption: StringFilter
   ref_authors: AuthorManyRelationFilter
   reporter: StringFilter
-  author: StringFilter
-  photographer: StringFilter
-  video: StringFilter
-  designer: StringFilter
-  engineer: StringFilter
-  data: StringFilter
   relatedPosts: PostManyRelationFilter
-  publishDate: DateTimeFilter
   ref_events: EventManyRelationFilter
+  ref_polls: PollManyRelationFilter
   project: ProjectWhereInput
   group: GroupWhereInput
   category: CategoryWhereInput
@@ -238,21 +220,12 @@ input PostWhereInput {
   sdg: SDGManyRelationFilter
   tags: TagManyRelationFilter
   copyright: StringNullableFilter
+  type: StringNullableFilter
+  longform: LongformWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input IntNullableFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: IntNullableFilter
 }
 
 input StringNullableFilter {
@@ -284,16 +257,15 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
-input AuthorManyRelationFilter {
-  every: AuthorWhereInput
-  some: AuthorWhereInput
-  none: AuthorWhereInput
-}
-
-input PostManyRelationFilter {
-  every: PostWhereInput
-  some: PostWhereInput
-  none: PostWhereInput
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
 }
 
 input DateTimeFilter {
@@ -307,10 +279,28 @@ input DateTimeFilter {
   not: DateTimeFilter
 }
 
+input AuthorManyRelationFilter {
+  every: AuthorWhereInput
+  some: AuthorWhereInput
+  none: AuthorWhereInput
+}
+
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
+}
+
 input EventManyRelationFilter {
   every: EventWhereInput
   some: EventWhereInput
   none: EventWhereInput
+}
+
+input PollManyRelationFilter {
+  every: PollWhereInput
+  some: PollWhereInput
+  none: PollWhereInput
 }
 
 input SDGManyRelationFilter {
@@ -338,62 +328,38 @@ input DateTimeNullableFilter {
 
 input PostOrderByInput {
   id: OrderDirection
-  slug: OrderDirection
   name: OrderDirection
-  titleSize: OrderDirection
-  titleColor: OrderDirection
-  subtitle: OrderDirection
-  subtitleSize: OrderDirection
-  subtitleColor: OrderDirection
-  type: OrderDirection
   status: OrderDirection
+  slug: OrderDirection
   weight: OrderDirection
+  publishDate: OrderDirection
   heroStyle: OrderDirection
   heroVideo: OrderDirection
   heroCaption: OrderDirection
   reporter: OrderDirection
-  author: OrderDirection
-  photographer: OrderDirection
-  video: OrderDirection
-  designer: OrderDirection
-  engineer: OrderDirection
-  data: OrderDirection
-  publishDate: OrderDirection
   copyright: OrderDirection
+  type: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input PostUpdateInput {
-  slug: String
   name: String
-  titleSize: Int
-  titleColor: String
-  subtitle: String
-  subtitleSize: Int
-  subtitleColor: String
-  type: String
   status: String
+  slug: String
   weight: Int
+  publishDate: DateTime
   heroImage: PhotoRelateToOneForUpdateInput
   ogImage: PhotoRelateToOneForUpdateInput
-  headLogo: PhotoRelateToOneForUpdateInput
-  heroMob: PhotoRelateToOneForUpdateInput
   heroStyle: String
   heroVideo: String
   heroCaption: String
   ref_authors: AuthorRelateToManyForUpdateInput
   reporter: String
-  author: String
-  photographer: String
-  video: String
-  designer: String
-  engineer: String
-  data: String
   content: JSON
   relatedPosts: PostRelateToManyForUpdateInput
-  publishDate: DateTime
   ref_events: EventRelateToManyForUpdateInput
+  ref_polls: PollRelateToManyForUpdateInput
   project: ProjectRelateToOneForUpdateInput
   group: GroupRelateToOneForUpdateInput
   category: CategoryRelateToOneForUpdateInput
@@ -401,6 +367,8 @@ input PostUpdateInput {
   sdg: SDGRelateToManyForUpdateInput
   tags: TagRelateToManyForUpdateInput
   copyright: String
+  type: String
+  longform: LongformRelateToOneForUpdateInput
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -433,6 +401,13 @@ input EventRelateToManyForUpdateInput {
   set: [EventWhereUniqueInput!]
   create: [EventCreateInput!]
   connect: [EventWhereUniqueInput!]
+}
+
+input PollRelateToManyForUpdateInput {
+  disconnect: [PollWhereUniqueInput!]
+  set: [PollWhereUniqueInput!]
+  create: [PollCreateInput!]
+  connect: [PollWhereUniqueInput!]
 }
 
 input ProjectRelateToOneForUpdateInput {
@@ -473,6 +448,12 @@ input TagRelateToManyForUpdateInput {
   connect: [TagWhereUniqueInput!]
 }
 
+input LongformRelateToOneForUpdateInput {
+  create: LongformCreateInput
+  connect: LongformWhereUniqueInput
+  disconnect: Boolean
+}
+
 input UserRelateToOneForUpdateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
@@ -485,35 +466,22 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  slug: String
   name: String
-  titleSize: Int
-  titleColor: String
-  subtitle: String
-  subtitleSize: Int
-  subtitleColor: String
-  type: String
   status: String
+  slug: String
   weight: Int
+  publishDate: DateTime
   heroImage: PhotoRelateToOneForCreateInput
   ogImage: PhotoRelateToOneForCreateInput
-  headLogo: PhotoRelateToOneForCreateInput
-  heroMob: PhotoRelateToOneForCreateInput
   heroStyle: String
   heroVideo: String
   heroCaption: String
   ref_authors: AuthorRelateToManyForCreateInput
   reporter: String
-  author: String
-  photographer: String
-  video: String
-  designer: String
-  engineer: String
-  data: String
   content: JSON
   relatedPosts: PostRelateToManyForCreateInput
-  publishDate: DateTime
   ref_events: EventRelateToManyForCreateInput
+  ref_polls: PollRelateToManyForCreateInput
   project: ProjectRelateToOneForCreateInput
   group: GroupRelateToOneForCreateInput
   category: CategoryRelateToOneForCreateInput
@@ -521,6 +489,8 @@ input PostCreateInput {
   sdg: SDGRelateToManyForCreateInput
   tags: TagRelateToManyForCreateInput
   copyright: String
+  type: String
+  longform: LongformRelateToOneForCreateInput
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -546,6 +516,11 @@ input PostRelateToManyForCreateInput {
 input EventRelateToManyForCreateInput {
   create: [EventCreateInput!]
   connect: [EventWhereUniqueInput!]
+}
+
+input PollRelateToManyForCreateInput {
+  create: [PollCreateInput!]
+  connect: [PollWhereUniqueInput!]
 }
 
 input ProjectRelateToOneForCreateInput {
@@ -576,6 +551,11 @@ input SDGRelateToManyForCreateInput {
 input TagRelateToManyForCreateInput {
   create: [TagCreateInput!]
   connect: [TagWhereUniqueInput!]
+}
+
+input LongformRelateToOneForCreateInput {
+  create: LongformCreateInput
+  connect: LongformWhereUniqueInput
 }
 
 input UserRelateToOneForCreateInput {
@@ -1150,7 +1130,6 @@ type LatestNew {
     skip: Int! = 0
   ): [Download!]
   downloadCount(where: DownloadWhereInput! = {}): Int
-  active: Boolean
   previewButton: String
   apiData: JSON
   createdAt: DateTime
@@ -1175,7 +1154,6 @@ input LatestNewWhereInput {
   publishTime: DateTimeNullableFilter
   type: StringNullableFilter
   download: DownloadManyRelationFilter
-  active: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1196,7 +1174,6 @@ input LatestNewOrderByInput {
   status: OrderDirection
   publishTime: OrderDirection
   type: OrderDirection
-  active: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1210,7 +1187,6 @@ input LatestNewUpdateInput {
   type: String
   content: JSON
   download: DownloadRelateToManyForUpdateInput
-  active: Boolean
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -1239,7 +1215,6 @@ input LatestNewCreateInput {
   type: String
   content: JSON
   download: DownloadRelateToManyForCreateInput
-  active: Boolean
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -2153,6 +2128,13 @@ type Poll {
     skip: Int! = 0
   ): [PollOption!]
   optionsCount(where: PollOptionWhereInput! = {}): Int
+  ref_posts(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Post!]
+  ref_postsCount(where: PostWhereInput! = {}): Int
   result(
     where: PollResultWhereInput! = {}
     orderBy: [PollResultOrderByInput!]! = []
@@ -2185,6 +2167,7 @@ input PollWhereInput {
   endTime: DateTimeNullableFilter
   publishTime: DateTimeNullableFilter
   options: PollOptionManyRelationFilter
+  ref_posts: PostManyRelationFilter
   result: PollResultManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2227,6 +2210,7 @@ input PollUpdateInput {
   endTime: DateTime
   publishTime: DateTime
   options: PollOptionRelateToManyForUpdateInput
+  ref_posts: PostRelateToManyForUpdateInput
   result: PollResultRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -2263,6 +2247,7 @@ input PollCreateInput {
   endTime: DateTime
   publishTime: DateTime
   options: PollOptionRelateToManyForCreateInput
+  ref_posts: PostRelateToManyForCreateInput
   result: PollResultRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -2440,6 +2425,7 @@ input PollOptionRelateToOneForCreateInput {
 type Banner {
   id: ID!
   mobileImage: Photo
+  tabletImage: Photo
   desktopImage: Photo
   url: String
   page: String
@@ -2461,6 +2447,7 @@ input BannerWhereInput {
   NOT: [BannerWhereInput!]
   id: IDFilter
   mobileImage: PhotoWhereInput
+  tabletImage: PhotoWhereInput
   desktopImage: PhotoWhereInput
   url: StringFilter
   page: StringFilter
@@ -2484,6 +2471,7 @@ input BannerOrderByInput {
 
 input BannerUpdateInput {
   mobileImage: PhotoRelateToOneForUpdateInput
+  tabletImage: PhotoRelateToOneForUpdateInput
   desktopImage: PhotoRelateToOneForUpdateInput
   url: String
   page: String
@@ -2502,6 +2490,7 @@ input BannerUpdateArgs {
 
 input BannerCreateInput {
   mobileImage: PhotoRelateToOneForCreateInput
+  tabletImage: PhotoRelateToOneForCreateInput
   desktopImage: PhotoRelateToOneForCreateInput
   url: String
   page: String
@@ -2756,6 +2745,129 @@ input InfoGraphCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Longform {
+  id: ID!
+  slug: String
+  subtitle: String
+  titleSize: Int
+  titleColor: String
+  subtitleSize: Int
+  subtitleColor: String
+  headLogo: Photo
+  heroMob: Photo
+  reporter: String
+  author: String
+  photographer: String
+  video: String
+  designer: String
+  engineer: String
+  data: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input LongformWhereUniqueInput {
+  id: ID
+  slug: String
+  subtitle: String
+}
+
+input LongformWhereInput {
+  AND: [LongformWhereInput!]
+  OR: [LongformWhereInput!]
+  NOT: [LongformWhereInput!]
+  id: IDFilter
+  slug: StringFilter
+  subtitle: StringFilter
+  titleSize: IntNullableFilter
+  titleColor: StringFilter
+  subtitleSize: IntNullableFilter
+  subtitleColor: StringFilter
+  headLogo: PhotoWhereInput
+  heroMob: PhotoWhereInput
+  reporter: StringFilter
+  author: StringFilter
+  photographer: StringFilter
+  video: StringFilter
+  designer: StringFilter
+  engineer: StringFilter
+  data: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input LongformOrderByInput {
+  id: OrderDirection
+  slug: OrderDirection
+  subtitle: OrderDirection
+  titleSize: OrderDirection
+  titleColor: OrderDirection
+  subtitleSize: OrderDirection
+  subtitleColor: OrderDirection
+  reporter: OrderDirection
+  author: OrderDirection
+  photographer: OrderDirection
+  video: OrderDirection
+  designer: OrderDirection
+  engineer: OrderDirection
+  data: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input LongformUpdateInput {
+  slug: String
+  subtitle: String
+  titleSize: Int
+  titleColor: String
+  subtitleSize: Int
+  subtitleColor: String
+  headLogo: PhotoRelateToOneForUpdateInput
+  heroMob: PhotoRelateToOneForUpdateInput
+  reporter: String
+  author: String
+  photographer: String
+  video: String
+  designer: String
+  engineer: String
+  data: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input LongformUpdateArgs {
+  where: LongformWhereUniqueInput!
+  data: LongformUpdateInput!
+}
+
+input LongformCreateInput {
+  slug: String
+  subtitle: String
+  titleSize: Int
+  titleColor: String
+  subtitleSize: Int
+  subtitleColor: String
+  headLogo: PhotoRelateToOneForCreateInput
+  heroMob: PhotoRelateToOneForCreateInput
+  reporter: String
+  author: String
+  photographer: String
+  video: String
+  designer: String
+  engineer: String
+  data: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2948,6 +3060,15 @@ type Mutation {
   updateInfoGraphs(data: [InfoGraphUpdateArgs!]!): [InfoGraph]
   deleteInfoGraph(where: InfoGraphWhereUniqueInput!): InfoGraph
   deleteInfoGraphs(where: [InfoGraphWhereUniqueInput!]!): [InfoGraph]
+  createLongform(data: LongformCreateInput!): Longform
+  createLongforms(data: [LongformCreateInput!]!): [Longform]
+  updateLongform(
+    where: LongformWhereUniqueInput!
+    data: LongformUpdateInput!
+  ): Longform
+  updateLongforms(data: [LongformUpdateArgs!]!): [Longform]
+  deleteLongform(where: LongformWhereUniqueInput!): Longform
+  deleteLongforms(where: [LongformWhereUniqueInput!]!): [Longform]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -3171,6 +3292,14 @@ type Query {
   ): [InfoGraph!]
   infoGraph(where: InfoGraphWhereUniqueInput!): InfoGraph
   infoGraphsCount(where: InfoGraphWhereInput! = {}): Int
+  longforms(
+    where: LongformWhereInput! = {}
+    orderBy: [LongformOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Longform!]
+  longform(where: LongformWhereUniqueInput!): Longform
+  longformsCount(where: LongformWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
