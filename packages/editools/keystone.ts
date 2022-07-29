@@ -105,12 +105,12 @@ export default withAuth(
                 .status(404)
                 .send(`Inline-Index ${inlineIndicesId} is not found`)
             }
-            let renderTemplete = `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div style="margin: 0 auto; max-width: 600px;">${item?.embedCode}</div>`
-            item.index?.map((index) => {
-              renderTemplete += index.embedCode
-            })
-            renderTemplete += `</html > `
-            res.send(renderTemplete)
+
+            res.send(
+              `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div style="margin: 0 auto; max-width: 600px;">${
+                item?.embedCode
+              }</div>${item.index?.map((index) => index.embedCode)}</html>`
+            )
           }
         )
       },

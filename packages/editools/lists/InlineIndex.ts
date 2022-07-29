@@ -1,12 +1,10 @@
 import config from '../config'
 // eslint-disable-next-line
 // @ts-ignore
-import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import { text, virtual, relationship } from '@keystone-6/core/fields'
 
-const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
@@ -50,17 +48,22 @@ const listConfigurations = list({
                 }
               }
             `,
-          }).then((item) => item.index)
+          })
           let indexItemsCode = ''
-          indexData.forEach((item) => {
+          indexData?.index?.forEach((item) => {
+            const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
+            const leftArea = item.imageFile?.url
+              ? `<img src='${urlPrefix}${item.imageFile?.url}' class='item__img' alt='${item.name}'/>`
+              : `<div class='item__color'>
+                  <div class='item__color--item' style='background: ${item.color};'></div>
+                </div>`
             indexItemsCode += `
             <li class='item'>
               <a class='item__link' href='#${item.slug}'>
-                  <img src='${item.imageFile?.url ||
-                    ''}' class='item__img' alt='${item.name}'/>
+                  ${leftArea}
                   <span class='item__name'>${item.name}</span>
               </a>
-          </li>
+            </li>
           `
           })
           return `<ul class='toc'>${indexItemsCode}</ul><style>${item.style}</style>`
