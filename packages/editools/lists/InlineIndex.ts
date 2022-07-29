@@ -63,10 +63,7 @@ const listConfigurations = list({
           </li>
           `
           })
-          return `<body> <ul class='toc'>${indexItemsCode}</ul>
-        <style>${item.style}</style>
-    </body>
-          `
+          return `<ul class='toc'>${indexItemsCode}</ul><style>${item.style}</style>`
         },
       }),
     }),

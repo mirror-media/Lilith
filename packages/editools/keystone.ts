@@ -99,7 +99,7 @@ export default withAuth(
             if (!item) {
               return res
                 .status(404)
-                .send(`Karaoke ${inlineIndicesId} is not found`)
+                .send(`Inline-Index ${inlineIndicesId} is not found`)
             }
 
             res.send(
