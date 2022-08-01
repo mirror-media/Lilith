@@ -61,7 +61,7 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./karaoke-preview-button'),
+        views: require.resolve('./preview-button'),
       },
     }),
   },

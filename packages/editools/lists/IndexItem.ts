@@ -1,38 +1,54 @@
 import config from '../config'
 // eslint-disable-next-line
 // @ts-ignore
-import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core'
-import { text, image, relationship } from '@keystone-6/core/fields'
+import { list, graphql } from '@keystone-6/core'
+import { text, image, relationship, virtual } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
     name: text({
-      label: '文字',
+      label: '標題',
       validation: { isRequired: true },
     }),
-    url: text({
-      label: '網址',
+    slug: text({
+      label: 'slug',
       validation: { isRequired: true },
     }),
-    imageFile: image(),
+    imageFile: image({
+      label: '圖片',
+    }),
     color: text({
       label: '色塊色碼（沒有圖）',
-      validation: { isRequired: true },
+      defaultValue: '#fff',
     }),
-	index: relationship({
-	  label: '索引列表',
-	  ref: 'InlineIndex.index',
-	  many: true,
-	}),
+    index: relationship({
+      label: '索引列表',
+      ref: 'InlineIndex.index',
+      many: true,
+    }),
+    originCode: text({
+      label: '原始 embed code',
+      ui: {
+        displayMode: 'textarea',
+      },
+    }),
+    embedCode: virtual({
+      label: 'embed code',
+      field: graphql.field({
+        type: graphql.String,
+        resolve: async (item: Record<string, unknown>): Promise<string> => {
+          return `<div id='${item.name}'>${item.originCode}</div>`
+        },
+      }),
+    }),
   },
   ui: {
     listView: {
       initialSort: { field: 'id', direction: 'DESC' },
-      initialColumns: ['name', 'url'],
+      initialColumns: ['name', 'slug'],
       pageSize: 50,
     },
     labelField: 'name',

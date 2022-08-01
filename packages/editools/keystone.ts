@@ -84,6 +84,35 @@ export default withAuth(
             `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div style="height: 80vh; background-color: pink;"></div>${item?.embedCode}<div style="height: 80vh; background-color: pink;"></div></body></html>`
           )
         })
+
+        app.get(
+          '/demo/inline-indices/:id',
+          authenticationMw,
+          async (req, res) => {
+            const inlineIndicesId = req.params.id
+            const context = await createContext(req, res)
+            const item = await context.query.InlineIndex.findOne({
+              where: { id: inlineIndicesId },
+              query: `
+                embedCode
+                index {
+                  embedCode
+                }
+              `,
+            })
+            if (!item) {
+              return res
+                .status(404)
+                .send(`Inline-Index ${inlineIndicesId} is not found`)
+            }
+
+            res.send(
+              `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div style="margin: 0 auto; max-width: 600px;">${
+                item?.embedCode
+              }</div>${item.index?.map((index) => index.embedCode)}</html>`
+            )
+          }
+        )
       },
     },
   })

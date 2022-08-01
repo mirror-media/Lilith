@@ -496,15 +496,16 @@ model InlineIndex {
 model IndexItem {
   id                  Int           @id @default(autoincrement())
   name                String        @default("")
-  url                 String        @default("")
+  slug                String        @default("")
   imageFile_filesize  Int?
   imageFile_extension String?
   imageFile_width     Int?
   imageFile_height    Int?
   imageFile_mode      String?
   imageFile_id        String?
-  color               String        @default("")
+  color               String        @default("#fff")
   index               InlineIndex[] @relation("IndexItem_index")
+  originCode          String        @default("")
   createdAt           DateTime?
   updatedAt           DateTime?
   createdBy           User?         @relation("IndexItem_createdBy", fields: [createdById], references: [id])

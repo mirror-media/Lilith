@@ -1,12 +1,10 @@
 import config from '../config'
 // eslint-disable-next-line
 // @ts-ignore
-import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import { text, virtual, relationship } from '@keystone-6/core/fields'
 
-const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
@@ -21,9 +19,9 @@ const listConfigurations = list({
       many: true,
       ui: {
         displayMode: 'cards',
-        cardFields: ['name', 'url', 'imageFile', 'color'],
+        cardFields: ['name', 'slug', 'imageFile', 'color'],
         inlineCreate: {
-          fields: ['name', 'url', 'imageFile', 'color'],
+          fields: ['name', 'slug', 'imageFile', 'color'],
         },
       },
     }),
@@ -31,14 +29,45 @@ const listConfigurations = list({
       label: 'embed code',
       field: graphql.field({
         type: graphql.String,
-        resolve: async (item: Record<string, unknown>): Promise<string> => {
-          return embedCodeGen.buildEmbeddedCode(
-            'react-inlineindex',
-            {
-            },
-            embedCodeWebpackAssets
-          )
-		},
+        resolve: async (
+          item: Record<string, unknown>,
+          arg,
+          context
+        ): Promise<string> => {
+          const indexData = await context.query.InlineIndex.findOne({
+            where: { id: item.id },
+            query: `
+              id
+              index {
+                id
+                slug
+                name
+                color
+                imageFile {
+                  url
+                }
+              }
+            `,
+          })
+          let indexItemsCode = ''
+          indexData?.index?.forEach((item) => {
+            const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
+            const leftArea = item.imageFile?.url
+              ? `<img src='${urlPrefix}${item.imageFile?.url}' class='item__img' alt='${item.name}'/>`
+              : `<div class='item__color'>
+                  <div class='item__color--item' style='background: ${item.color};'></div>
+                </div>`
+            indexItemsCode += `
+            <li class='item'>
+              <a class='item__link' href='#${item.slug}'>
+                  ${leftArea}
+                  <span class='item__name'>${item.name}</span>
+              </a>
+            </li>
+          `
+          })
+          return `<ul class='toc'>${indexItemsCode}</ul><style>${item.style}</style>`
+        },
       }),
     }),
     style: text({
@@ -51,11 +80,11 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve(item: Record<string, unknown>): string {
-          return ``
+          return `/demo/inline-indices/${item?.id}`
         },
       }),
       ui: {
-        views: require.resolve('./karaoke-preview-button'),
+        views: require.resolve('./preview-button'),
       },
     }),
   },

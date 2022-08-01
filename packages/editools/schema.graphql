@@ -2148,7 +2148,7 @@ input IndexItemRelateToManyForCreateInput {
 type IndexItem {
   id: ID!
   name: String
-  url: String
+  slug: String
   imageFile: ImageFieldOutput
   color: String
   index(
@@ -2158,6 +2158,8 @@ type IndexItem {
     skip: Int! = 0
   ): [InlineIndex!]
   indexCount(where: InlineIndexWhereInput! = {}): Int
+  originCode: String
+  embedCode: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2174,9 +2176,10 @@ input IndexItemWhereInput {
   NOT: [IndexItemWhereInput!]
   id: IDFilter
   name: StringFilter
-  url: StringFilter
+  slug: StringFilter
   color: StringFilter
   index: InlineIndexManyRelationFilter
+  originCode: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2192,18 +2195,20 @@ input InlineIndexManyRelationFilter {
 input IndexItemOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  url: OrderDirection
+  slug: OrderDirection
   color: OrderDirection
+  originCode: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input IndexItemUpdateInput {
   name: String
-  url: String
+  slug: String
   imageFile: ImageFieldInput
   color: String
   index: InlineIndexRelateToManyForUpdateInput
+  originCode: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2224,10 +2229,11 @@ input IndexItemUpdateArgs {
 
 input IndexItemCreateInput {
   name: String
-  url: String
+  slug: String
   imageFile: ImageFieldInput
   color: String
   index: InlineIndexRelateToManyForCreateInput
+  originCode: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
