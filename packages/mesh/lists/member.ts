@@ -11,25 +11,29 @@ const listConfigurations = list({
       validation: {
         isRequired: true,
       },
-      isindexed: 'unique',
+      isIndexed: 'unique',
     }),
     customId: text({
       label: 'customId',
       validation: {
         isRequired: true,
       },
-      isindexed: 'unique',
+      isIndexed: 'unique',
     }),
     name: text({
       validation: { isRequired: true },
-      isindexed: 'unique',
     }),
     nickname: text({ validation: { isRequired: true } }),
     avatar: text({ validation: { isRequired: false } }),
     intro: text({ validation: { isRequired: false } }),
+    avatar_image: relationship({
+      label: 'PFP',
+      ref: 'Photo',
+    }),
     email: text({
       validation: { isRequired: false },
       isFilterable: true,
+      isIndexed: 'unique',
     }),
     is_active: checkbox({
       defaultValue: true,
@@ -70,11 +74,11 @@ const listConfigurations = list({
       many: true,
     }),
     invited: relationship({
-      ref: 'InvitationCode.receive',
+      ref: 'InvitationCode.send',
       many: true,
     }),
     invited_by: relationship({
-      ref: 'InvitationCode.send',
+      ref: 'InvitationCode.receive',
       many: false,
     }),
     create_collection: relationship({

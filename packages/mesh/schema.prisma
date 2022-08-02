@@ -150,6 +150,7 @@ model Publisher {
   lang              String?   @default("zh-TW")
   full_content      Boolean   @default(false)
   full_screen_ad    String?   @default("none")
+  paywall           Boolean   @default(false)
   follower          Member[]  @relation("Member_follow_publisher")
   createdAt         DateTime?
   updatedAt         DateTime?
@@ -225,13 +226,13 @@ model CollectionPick {
   id           Int         @id @default(autoincrement())
   story        Story?      @relation("CollectionPick_story", fields: [storyId], references: [id])
   storyId      Int?        @map("story")
-  collection   Collection? @relation("CollectionPick_collection", fields: [collectionId], references: [id])
-  collectionId Int?        @map("collection")
   summary      String      @default("")
   sort_order   Int?        @default(2)
   creator      Member?     @relation("CollectionPick_creator", fields: [creatorId], references: [id])
   creatorId    Int?        @map("creator")
   objective    String?
+  collection   Collection? @relation("CollectionPick_collection", fields: [collectionId], references: [id])
+  collectionId Int?        @map("collection")
   picked_date  DateTime?
   updated_date DateTime?
   createdAt    DateTime?
@@ -242,8 +243,8 @@ model CollectionPick {
   updatedById  Int?        @map("updatedBy")
 
   @@index([storyId])
-  @@index([collectionId])
   @@index([creatorId])
+  @@index([collectionId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -271,7 +272,7 @@ model InvitationCode {
 model Story {
   id                        Int              @id @default(autoincrement())
   title                     String           @default("")
-  url                       String           @default("")
+  url                       String           @unique @default("")
   summary                   String           @default("")
   content                   String           @default("")
   writer                    String           @default("")
@@ -328,9 +329,9 @@ model Member {
   name                         String             @default("")
   nickname                     String             @default("")
   avatar                       String             @default("")
+  intro                        String             @default("")
   avatar_image                 Photo?             @relation("Member_avatar_image", fields: [avatar_imageId], references: [id])
   avatar_imageId               Int?               @map("avatar_image")
-  intro                        String             @default("")
   email                        String             @unique @default("")
   is_active                    Boolean            @default(true)
   verified                     Boolean            @default(false)
@@ -393,6 +394,7 @@ model Announcement {
   id          Int       @id @default(autoincrement())
   name        String    @default("")
   status      String?   @default("draft")
+  type        String?   @default("features")
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?     @relation("Announcement_createdBy", fields: [createdById], references: [id])
@@ -408,8 +410,11 @@ model Photo {
   id                        Int          @id @default(autoincrement())
   name                      String       @default("")
   file_filesize             Int?
+  file_extension            String?
+  file_width                Int?
+  file_height               Int?
   file_mode                 String?
-  file_filename             String?
+  file_id                   String?
   urlOriginal               String       @default("")
   createdAt                 DateTime?
   updatedAt                 DateTime?

@@ -1,12 +1,8 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { text } from '@keystone-6/core/fields'
+import { text, file } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator } = utils.accessControl
-
-import { GcsFileAdapter } from '../utils/GcsFileAdapter'
-
-const gcsFileAdapter = new GcsFileAdapter('video')
 
 const listConfigurations = list({
   fields: {
@@ -17,12 +13,7 @@ const listConfigurations = list({
     youtubeUrl: text({
       label: 'Youtube網址',
     }),
-    file: customFields.file({
-      label: '檔案',
-      customConfig: {
-        fileType: 'video',
-      },
-    }),
+    file: file(),
     coverPhoto: customFields.relationship({
       label: '首圖',
       ref: 'Photo',
@@ -92,18 +83,6 @@ const listConfigurations = list({
     },
   },
 
-  hooks: {
-    resolveInput: async ({ operation, inputData, item, resolvedData }) => {
-      gcsFileAdapter.startFileProcessingFlow(resolvedData, item, inputData)
-      console.log(operation)
-      return resolvedData
-    },
-    beforeOperation: async ({ operation, item }) => {
-      if (operation === 'delete' && item.file_filename) {
-        gcsFileAdapter.startDeleteProcess(`${item.file_filename}`)
-      }
-    },
-  },
 })
 
 export default utils.addTrackingFields(listConfigurations)

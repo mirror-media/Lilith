@@ -530,6 +530,7 @@ type Publisher {
   lang: String
   full_content: Boolean
   full_screen_ad: String
+  paywall: Boolean
   follower(
     where: MemberWhereInput! = {}
     orderBy: [MemberOrderByInput!]! = []
@@ -562,6 +563,7 @@ input PublisherWhereInput {
   lang: StringNullableFilter
   full_content: BooleanFilter
   full_screen_ad: StringNullableFilter
+  paywall: BooleanFilter
   follower: MemberManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -581,6 +583,7 @@ input PublisherOrderByInput {
   lang: OrderDirection
   full_content: OrderDirection
   full_screen_ad: OrderDirection
+  paywall: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -596,6 +599,7 @@ input PublisherUpdateInput {
   lang: String
   full_content: Boolean
   full_screen_ad: String
+  paywall: Boolean
   follower: MemberRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -619,6 +623,7 @@ input PublisherCreateInput {
   lang: String
   full_content: Boolean
   full_screen_ad: String
+  paywall: Boolean
   follower: MemberRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -871,11 +876,11 @@ input CollectionMemberCreateInput {
 type CollectionPick {
   id: ID!
   story: Story
-  collection: Collection
   summary: String
   sort_order: Int
   creator: Member
   objective: String
+  collection: Collection
   picked_date: DateTime
   updated_date: DateTime
   createdAt: DateTime
@@ -894,11 +899,11 @@ input CollectionPickWhereInput {
   NOT: [CollectionPickWhereInput!]
   id: IDFilter
   story: StoryWhereInput
-  collection: CollectionWhereInput
   summary: StringFilter
   sort_order: IntNullableFilter
   creator: MemberWhereInput
   objective: StringNullableFilter
+  collection: CollectionWhereInput
   picked_date: DateTimeNullableFilter
   updated_date: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
@@ -931,11 +936,11 @@ input CollectionPickOrderByInput {
 
 input CollectionPickUpdateInput {
   story: StoryRelateToOneForUpdateInput
-  collection: CollectionRelateToOneForUpdateInput
   summary: String
   sort_order: Int
   creator: MemberRelateToOneForUpdateInput
   objective: String
+  collection: CollectionRelateToOneForUpdateInput
   picked_date: DateTime
   updated_date: DateTime
   createdAt: DateTime
@@ -951,11 +956,11 @@ input CollectionPickUpdateArgs {
 
 input CollectionPickCreateInput {
   story: StoryRelateToOneForCreateInput
-  collection: CollectionRelateToOneForCreateInput
   summary: String
   sort_order: Int
   creator: MemberRelateToOneForCreateInput
   objective: String
+  collection: CollectionRelateToOneForCreateInput
   picked_date: DateTime
   updated_date: DateTime
   createdAt: DateTime
@@ -1070,6 +1075,7 @@ type Story {
 
 input StoryWhereUniqueInput {
   id: ID
+  url: String
 }
 
 input StoryWhereInput {
@@ -1267,8 +1273,8 @@ type Member {
   name: String
   nickname: String
   avatar: String
-  avatar_image: Photo
   intro: String
+  avatar_image: Photo
   email: String
   is_active: Boolean
   verified: Boolean
@@ -1373,8 +1379,8 @@ input MemberWhereInput {
   name: StringFilter
   nickname: StringFilter
   avatar: StringFilter
-  avatar_image: PhotoWhereInput
   intro: StringFilter
+  avatar_image: PhotoWhereInput
   email: StringFilter
   is_active: BooleanFilter
   verified: BooleanFilter
@@ -1447,8 +1453,8 @@ input MemberUpdateInput {
   name: String
   nickname: String
   avatar: String
-  avatar_image: PhotoRelateToOneForUpdateInput
   intro: String
+  avatar_image: PhotoRelateToOneForUpdateInput
   email: String
   is_active: Boolean
   verified: Boolean
@@ -1522,8 +1528,8 @@ input MemberCreateInput {
   name: String
   nickname: String
   avatar: String
-  avatar_image: PhotoRelateToOneForCreateInput
   intro: String
+  avatar_image: PhotoRelateToOneForCreateInput
   email: String
   is_active: Boolean
   verified: Boolean
@@ -1660,6 +1666,7 @@ type Announcement {
   id: ID!
   name: String
   status: String
+  type: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1677,6 +1684,7 @@ input AnnouncementWhereInput {
   id: IDFilter
   name: StringFilter
   status: StringNullableFilter
+  type: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1687,6 +1695,7 @@ input AnnouncementOrderByInput {
   id: OrderDirection
   name: OrderDirection
   status: OrderDirection
+  type: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1694,6 +1703,7 @@ input AnnouncementOrderByInput {
 input AnnouncementUpdateInput {
   name: String
   status: String
+  type: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1708,6 +1718,7 @@ input AnnouncementUpdateArgs {
 input AnnouncementCreateInput {
   name: String
   status: String
+  type: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1717,7 +1728,8 @@ input AnnouncementCreateInput {
 type Photo {
   id: ID!
   name: String
-  file: CustomFileFieldOutput
+  file: ImageFieldOutput
+  resized: ResizedImages
   urlOriginal: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1725,27 +1737,52 @@ type Photo {
   updatedBy: User
 }
 
-interface CustomFileFieldOutput {
-  filename: String!
+interface ImageFieldOutput {
+  id: ID!
   filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
   ref: String!
   url: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
+}
+
+type ResizedImages {
+  original: String
+  w480: String
+  w800: String
+  w1200: String
+  w1600: String
+  w2400: String
 }
 
 input PhotoWhereUniqueInput {
   id: ID
 }
 
-type LocalCustomFileFieldOutput implements CustomFileFieldOutput {
-  filename: String!
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
   filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
   ref: String!
   url: String!
 }
 
-type CloudCustomFileFieldOutput implements CustomFileFieldOutput {
-  filename: String!
+type CloudImageFieldOutput implements ImageFieldOutput {
+  id: ID!
   filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
   ref: String!
   url: String!
 }
@@ -1773,7 +1810,7 @@ input PhotoOrderByInput {
 
 input PhotoUpdateInput {
   name: String
-  file: CustomFileFieldInput
+  file: ImageFieldInput
   urlOriginal: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1781,7 +1818,7 @@ input PhotoUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input CustomFileFieldInput {
+input ImageFieldInput {
   upload: Upload
   ref: String
 }
@@ -1798,7 +1835,7 @@ input PhotoUpdateArgs {
 
 input PhotoCreateInput {
   name: String
-  file: CustomFileFieldInput
+  file: ImageFieldInput
   urlOriginal: String
   createdAt: DateTime
   updatedAt: DateTime

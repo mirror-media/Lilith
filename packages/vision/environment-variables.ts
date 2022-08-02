@@ -15,7 +15,7 @@ const {
 
 enum DatabaseProvider {
   Sqlite = 'sqlite',
-  Postgres = 'postgresql'
+  Postgres = 'postgresql',
 }
 
 export default {
@@ -23,12 +23,20 @@ export default {
   accessControlStrategy: ACCESS_CONTROL_STRATEGY || 'cms', // the value could be one of 'cms', 'gql' or 'preview'
   previewServerOrigin: PREVIEW_SERVER_ORIGIN || 'http://localhost:3001',
   database: {
-    provider: DATABASE_PROVIDER === 'sqlite' ? DatabaseProvider.Sqlite : DatabaseProvider.Postgres,
-    url: DATABASE_URL || 'postgres://account:passwd@localhost:5432/openwarehouse-k6',
+    provider:
+      DATABASE_PROVIDER === 'sqlite'
+        ? DatabaseProvider.Sqlite
+        : DatabaseProvider.Postgres,
+    url:
+      DATABASE_URL || 'postgres://account:passwd@localhost:5432/lilith-vision',
   },
   session: {
-    secret: SESSION_SECRET || 'default_session_secret_and_it_should_be_more_than_32_characters',
-    maxAge: parseInt(SESSION_MAX_AGE) ||  60 * 60 * 24 * 1, // 1 days
+    secret:
+      SESSION_SECRET ||
+      'default_session_secret_and_it_should_be_more_than_32_characters',
+    maxAge:
+      (typeof SESSION_MAX_AGE === 'string' && parseInt(SESSION_MAX_AGE)) ||
+      60 * 60 * 24 * 1, // 1 days
   },
   gcs: {
     bucket: GCS_BUCKET || 'static-vision-tw-dev',

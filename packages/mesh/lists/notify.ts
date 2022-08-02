@@ -1,12 +1,12 @@
 import { list } from '@keystone-6/core'
+import { customFields, utils } from '@mirrormedia/lilith-core'
 import {
   relationship,
   timestamp,
   select,
   integer,
 } from '@keystone-6/core/fields'
-import { addTrackingFields } from '../../utils/trackingHandler'
-import { allowRoles, admin, moderator, editor } from '../../utils/accessControl'
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
@@ -64,4 +64,4 @@ const listConfigurations = list({
   },
 })
 
-export default addTrackingFields(listConfigurations)
+export default utils.addTrackingFields(listConfigurations)

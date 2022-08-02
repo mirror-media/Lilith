@@ -86,6 +86,24 @@ const listConfigurations = list({
   ui: {
     labelField: 'breadcrumb',
   },
+  hooks: {
+    validateInput: async ({ operation, inputData, addValidationError }) => {
+      if (operation == 'create') {
+        if (!('category' in inputData)) {
+          addValidationError('目錄不能空白')
+        }
+      }
+      if (operation == 'update') {
+        if (
+          'category' in inputData &&
+          'disconnect' in inputData['category'] &&
+          inputData['category']['disconnect'] == true
+        ) {
+          addValidationError('目錄不能空白')
+        }
+      }
+    },
+  },
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),
