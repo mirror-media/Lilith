@@ -1,9 +1,7 @@
 import { config } from '@keystone-6/core'
 import { listDefinition as lists } from './lists'
 import appConfig from './config'
-import { createProxyMiddleware } from 'http-proxy-middleware'
 import envVar from './environment-variables'
-import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 
@@ -50,6 +48,71 @@ export default withAuth(
       local: {
         storagePath: appConfig.images.storagePath,
         baseUrl: appConfig.images.baseUrl,
+      },
+    },
+    server: {
+      extendExpressApp: (app, createContext) => {
+        // eslint-disable-next-line
+        // @ts-ignore
+        // Check if the request is sent by an authenticated user
+        const authenticationMw = async (req, res, next) => {
+          const context = await createContext(req, res)
+
+          // User has been logged in
+          if (context?.session?.data?.role) {
+            return next()
+          }
+
+          // Otherwise, redirect them to login page
+          res.redirect('/signin')
+        }
+
+        app.get('/demo/karaokes/:id', authenticationMw, async (req, res) => {
+          const karaokeId = req.params.id
+
+          const context = await createContext(req, res)
+          const item = await context.query.Karaoke.findOne({
+            where: { id: karaokeId },
+            query: 'embedCode',
+          })
+
+          if (!item) {
+            return res.status(404).send(`Karaoke ${karaokeId} is not found`)
+          }
+
+          res.send(
+            `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div style="height: 80vh; background-color: pink;"></div>${item?.embedCode}<div style="height: 80vh; background-color: pink;"></div></body></html>`
+          )
+        })
+
+        app.get(
+          '/demo/inline-indices/:id',
+          authenticationMw,
+          async (req, res) => {
+            const inlineIndicesId = req.params.id
+            const context = await createContext(req, res)
+            const item = await context.query.InlineIndex.findOne({
+              where: { id: inlineIndicesId },
+              query: `
+                embedCode
+                index {
+                  embedCode
+                }
+              `,
+            })
+            if (!item) {
+              return res
+                .status(404)
+                .send(`Inline-Index ${inlineIndicesId} is not found`)
+            }
+
+            res.send(
+              `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div style="margin: 0 auto; max-width: 600px;">${
+                item?.embedCode
+              }</div>${item.index?.map((index) => index.embedCode)}</html>`
+            )
+          }
+        )
       },
     },
   })

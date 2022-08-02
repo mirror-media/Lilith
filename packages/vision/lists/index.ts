@@ -22,6 +22,7 @@ import Image from './Image'
 import Banner from './Banner'
 import Download from './Download'
 import InfoGraph from './InfoGraph'
+import Longform from './Longform'
 
 export const listDefinition = {
   User,
@@ -48,4 +49,5 @@ export const listDefinition = {
   Banner,
   Download,
   InfoGraph,
+  Longform,
 }

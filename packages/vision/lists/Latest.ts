@@ -66,7 +66,6 @@ const listConfigurations = list({
       },
       many: true,
     }),
-    active: checkbox({ label: '啟用', defaultValue: true }),
     previewButton: virtual({
       field: graphql.field({
         type: graphql.String,

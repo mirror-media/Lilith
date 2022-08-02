@@ -1,11 +1,8 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { GcsFileAdapter } from '../utils/GcsFileAdapter'
 import { list } from '@keystone-6/core'
-import { text } from '@keystone-6/core/fields'
+import { text, file } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
-
-const gcsFileAdapter = new GcsFileAdapter('audio')
 
 const listConfigurations = list({
   fields: {
@@ -13,12 +10,7 @@ const listConfigurations = list({
       label: '標題',
       validation: { isRequired: true },
     }),
-    file: customFields.file({
-      label: '檔案',
-      customConfig: {
-        fileType: 'audio',
-      },
-    }),
+    file: file(),
     coverPhoto: customFields.relationship({
       label: '首圖',
       ref: 'Photo',
@@ -82,18 +74,6 @@ const listConfigurations = list({
       delete: allowRoles(admin),
     },
 /*eslint-disable */
-  },
-  hooks: {
-    resolveInput: async ({ operation, inputData, item, resolvedData }) => {
-      gcsFileAdapter.startFileProcessingFlow(resolvedData, item, inputData)
-
-      return resolvedData
-    },
-    beforeOperation: async ({ operation, item }) => {
-      if (operation === 'delete' && item.file_filename) {
-        gcsFileAdapter.startDeleteProcess(`${item.file_filename}`)
-      }
-    },
   },
 })
 

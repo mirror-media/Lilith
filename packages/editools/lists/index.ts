@@ -15,6 +15,9 @@ import Condition from './Condition'
 import Conditions from './Conditions'
 import Question from './Question'
 import EmbedCode from './EmbedCode'
+import Karaoke from './Karaoke'
+import IndexItem from './IndexItem'
+import InlineIndex from './InlineIndex'
 
 export const listDefinition = {
   User,
@@ -34,4 +37,7 @@ export const listDefinition = {
   ConditionCollection: Conditions,
   Question,
   EmbedCode,
+  InlineIndex,
+  IndexItem,
+  Karaoke,
 }
