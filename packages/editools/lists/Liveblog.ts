@@ -1,6 +1,7 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { text, relationship, checkbox } from '@keystone-6/core/fields'
+import { saveLiveblogJSON, deleteLiveblogJSON } from './utils'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -87,6 +88,22 @@ const listConfigurations = list({
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
+    },
+  },
+  hooks: {
+    afterOperation: ({ operation, item, originalItem, context }) => {
+      if (operation === 'create' && item.active) {
+        saveLiveblogJSON(item.id, context)
+      } else if (operation === 'update') {
+        if (item.active) {
+          saveLiveblogJSON(item.id, context)
+        } else if (originalItem.active) {
+          // active turned off
+          deleteLiveblogJSON(originalItem.slug)
+        }
+      } else if (operation === 'delete' && originalItem.active) {
+        deleteLiveblogJSON(originalItem.slug)
+      }
     },
   },
 })
