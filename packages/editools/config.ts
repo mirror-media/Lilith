@@ -32,6 +32,10 @@ const images = {
   storagePath: envVar.images.storagePath,
 }
 
+const liveblogFiles = {
+  storagePath: envVar.liveblogFiles.storagePath,
+}
+
 export default {
   database,
   session,
@@ -39,4 +43,5 @@ export default {
   googleCloudStorage,
   files,
   images,
+  liveblogFiles,
 }

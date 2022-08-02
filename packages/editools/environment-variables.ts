@@ -11,6 +11,7 @@ const {
   FILES_STORAGE_PATH,
   IMAGES_BASE_URL,
   IMAGES_STORAGE_PATH,
+  LIVEBLOG_FILES_STORAGE_PATH,
 } = process.env
 
 enum DatabaseProvider {
@@ -47,5 +48,8 @@ export default {
   images: {
     baseUrl: IMAGES_BASE_URL || '/images',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
+  },
+  liveblogFiles: {
+    storagePath: LIVEBLOG_FILES_STORAGE_PATH || 'public/files/liveblogs/',
   },
 }
