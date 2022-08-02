@@ -1,14 +1,14 @@
 import envVar from './environment-variables'
 
-const database : { provider: 'postgresql'|'sqlite', url: string} = {
+const database: { provider: 'postgresql' | 'sqlite'; url: string } = {
   provider: envVar.database.provider,
   url: envVar.database.url,
 }
 
-const session : { secret: string, maxAge: number} = {
+const session: { secret: string; maxAge: number } = {
   secret: envVar.session.secret,
   maxAge: envVar.session.maxAge,
-} 
+}
 
 const storage = {
   gcpUrlBase: `https://storage.googleapis.com/${envVar.gcs.bucket}/`,
@@ -19,7 +19,7 @@ const storage = {
 
 const googleCloudStorage = {
   origin: 'https://storage.googleapis.com',
-  bucket:  envVar.gcs.bucket,
+  bucket: envVar.gcs.bucket,
 }
 
 const files = {
