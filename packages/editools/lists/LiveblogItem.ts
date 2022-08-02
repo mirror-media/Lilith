@@ -7,6 +7,7 @@ import {
   json,
   checkbox,
 } from '@keystone-6/core/fields'
+import { saveLiveblogJSON } from './utils'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -110,22 +111,41 @@ const listConfigurations = list({
     resolveInput: ({ resolvedData }) => {
       const { name } = resolvedData
       if (name) {
-        const apiData = customFields.draftConverter.convertToApiData(name).toJS()
+        const apiData = customFields.draftConverter
+          .convertToApiData(name)
+          .toJS()
         resolvedData.apiData = apiData
       }
       return resolvedData
     },
-    afterOperation: ({ operation, item, originalItem }) => {
-      if (item.liveblogId) {
-        if (
-          operation == 'update' &&
-          item.status == 'draft' &&
-          originalItem.status != 'published'
+    afterOperation: ({ operation, item, originalItem, context }) => {
+      // let saveLiveblogJSON to handle if liveblog not active
+      if (
+        operation === 'create' &&
+        item.liveblogId &&
+        item.status === 'published'
+      ) {
+        saveLiveblogJSON(item.liveblogId, context)
+      } else if (operation === 'update') {
+        if (item.liveblogId && item.status === 'published') {
+          saveLiveblogJSON(item.liveblogId, context)
+        } else if (
+          originalItem.liveblogId &&
+          originalItem.status === 'published' &&
+          item.status === 'draft'
         ) {
-          return true
+          // published one turned into draft
+          saveLiveblogJSON(originalItem.liveblogId, context)
+        } else if (originalItem.liveblogId && !item.liveblogId) {
+          // liveblogItem removed from liveblog
+          saveLiveblogJSON(originalItem.liveblogId, context)
         }
-        const query = 'query () {  }'
-        console.log(query)
+      } else if (
+        operation === 'delete' &&
+        originalItem.liveblogId &&
+        originalItem.status === 'published'
+      ) {
+        saveLiveblogJSON(originalItem.liveblogId, context)
       }
     },
   },
