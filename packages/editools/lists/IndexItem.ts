@@ -1,4 +1,3 @@
-import config from '../config'
 // eslint-disable-next-line
 // @ts-ignore
 import { utils } from '@mirrormedia/lilith-core'
@@ -40,7 +39,7 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
-          return `<div id='${item.name}'>${item.originCode}</div>`
+          return `<div id='${item.slug}'>${item.originCode}</div>`
         },
       }),
     }),
