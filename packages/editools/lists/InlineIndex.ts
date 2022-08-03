@@ -19,9 +19,9 @@ const listConfigurations = list({
       many: true,
       ui: {
         displayMode: 'cards',
-        cardFields: ['name', 'slug', 'imageFile', 'color'],
+        cardFields: ['name', 'slug', 'order', 'imageFile', 'color'],
         inlineCreate: {
-          fields: ['name', 'slug', 'imageFile', 'color'],
+          fields: ['name', 'slug', 'order', 'imageFile', 'color'],
         },
       },
     }),
@@ -43,6 +43,7 @@ const listConfigurations = list({
                 slug
                 name
                 color
+                order
                 imageFile {
                   url
                 }
@@ -50,14 +51,17 @@ const listConfigurations = list({
             `,
           })
           let indexItemsCode = ''
-          indexData?.index?.forEach((item) => {
-            const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
-            const leftArea = item.imageFile?.url
-              ? `<img src='${urlPrefix}${item.imageFile?.url}' class='item__img' alt='${item.name}'/>`
-              : `<div class='item__color'>
+          const { index } = indexData
+          index
+            .sort((a, b) => a.order - b.order)
+            .forEach((item) => {
+              const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
+              const leftArea = item.imageFile?.url
+                ? `<img src='${urlPrefix}${item.imageFile?.url}' class='item__img' alt='${item.name}'/>`
+                : `<div class='item__color'>
                   <div class='item__color--item' style='background: ${item.color};'></div>
                 </div>`
-            indexItemsCode += `
+              indexItemsCode += `
             <li class='item'>
               <a class='item__link' href='#${item.slug}'>
                   ${leftArea}
@@ -65,7 +69,7 @@ const listConfigurations = list({
               </a>
             </li>
           `
-          })
+            })
           return `<ul class='toc'>${indexItemsCode}</ul><style>${item.style}</style>`
         },
       }),
