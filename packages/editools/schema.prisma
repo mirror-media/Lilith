@@ -503,6 +503,7 @@ model IndexItem {
   id                  Int           @id @default(autoincrement())
   name                String        @default("")
   slug                String        @default("")
+  order               Int
   imageFile_filesize  Int?
   imageFile_extension String?
   imageFile_width     Int?
