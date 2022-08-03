@@ -39,6 +39,12 @@ const listConfigurations = list({
       ref: 'Video',
     }),
     active: checkbox({ label: '啟用', defaultValue: true }),
+    credit: text({
+      label: 'credit',
+      ui: {
+        displayMode: 'textarea',
+      },
+    }),
     liveblog_items: relationship({
       ref: 'LiveblogItem.liveblog',
       ui: {

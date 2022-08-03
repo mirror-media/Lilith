@@ -120,6 +120,8 @@ type LiveblogItem {
   status: String
   publishTime: DateTime
   heroImage: Photo
+  heroVideo: Video
+  imageCaption: String
   author: String
   name: JSON
   boost: Boolean
@@ -148,6 +150,8 @@ input LiveblogItemWhereInput {
   status: StringNullableFilter
   publishTime: DateTimeNullableFilter
   heroImage: PhotoWhereInput
+  heroVideo: VideoWhereInput
+  imageCaption: StringFilter
   author: StringFilter
   boost: BooleanFilter
   liveblog: LiveblogWhereInput
@@ -203,6 +207,7 @@ input LiveblogItemOrderByInput {
   title: OrderDirection
   status: OrderDirection
   publishTime: OrderDirection
+  imageCaption: OrderDirection
   author: OrderDirection
   boost: OrderDirection
   createdAt: OrderDirection
@@ -214,6 +219,8 @@ input LiveblogItemUpdateInput {
   status: String
   publishTime: DateTime
   heroImage: PhotoRelateToOneForUpdateInput
+  heroVideo: VideoRelateToOneForUpdateInput
+  imageCaption: String
   author: String
   name: JSON
   boost: Boolean
@@ -229,6 +236,12 @@ input LiveblogItemUpdateInput {
 input PhotoRelateToOneForUpdateInput {
   create: PhotoCreateInput
   connect: PhotoWhereUniqueInput
+  disconnect: Boolean
+}
+
+input VideoRelateToOneForUpdateInput {
+  create: VideoCreateInput
+  connect: VideoWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -260,6 +273,8 @@ input LiveblogItemCreateInput {
   status: String
   publishTime: DateTime
   heroImage: PhotoRelateToOneForCreateInput
+  heroVideo: VideoRelateToOneForCreateInput
+  imageCaption: String
   author: String
   name: JSON
   boost: Boolean
@@ -275,6 +290,11 @@ input LiveblogItemCreateInput {
 input PhotoRelateToOneForCreateInput {
   create: PhotoCreateInput
   connect: PhotoWhereUniqueInput
+}
+
+input VideoRelateToOneForCreateInput {
+  create: VideoCreateInput
+  connect: VideoWhereUniqueInput
 }
 
 input LiveblogRelateToOneForCreateInput {
@@ -300,6 +320,7 @@ type Liveblog {
   heroImage: Photo
   heroVideo: Video
   active: Boolean
+  credit: String
   liveblog_items(
     where: LiveblogItemWhereInput! = {}
     orderBy: [LiveblogItemOrderByInput!]! = []
@@ -331,6 +352,7 @@ input LiveblogWhereInput {
   heroImage: PhotoWhereInput
   heroVideo: VideoWhereInput
   active: BooleanFilter
+  credit: StringFilter
   liveblog_items: LiveblogItemManyRelationFilter
   tags: TagWhereInput
   publisher: PublisherWhereInput
@@ -352,6 +374,7 @@ input LiveblogOrderByInput {
   slug: OrderDirection
   desc: OrderDirection
   active: OrderDirection
+  credit: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -363,6 +386,7 @@ input LiveblogUpdateInput {
   heroImage: PhotoRelateToOneForUpdateInput
   heroVideo: VideoRelateToOneForUpdateInput
   active: Boolean
+  credit: String
   liveblog_items: LiveblogItemRelateToManyForUpdateInput
   tags: TagRelateToOneForUpdateInput
   publisher: PublisherRelateToOneForUpdateInput
@@ -370,12 +394,6 @@ input LiveblogUpdateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
-}
-
-input VideoRelateToOneForUpdateInput {
-  create: VideoCreateInput
-  connect: VideoWhereUniqueInput
-  disconnect: Boolean
 }
 
 input LiveblogItemRelateToManyForUpdateInput {
@@ -403,6 +421,7 @@ input LiveblogCreateInput {
   heroImage: PhotoRelateToOneForCreateInput
   heroVideo: VideoRelateToOneForCreateInput
   active: Boolean
+  credit: String
   liveblog_items: LiveblogItemRelateToManyForCreateInput
   tags: TagRelateToOneForCreateInput
   publisher: PublisherRelateToOneForCreateInput
@@ -410,11 +429,6 @@ input LiveblogCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input VideoRelateToOneForCreateInput {
-  create: VideoCreateInput
-  connect: VideoWhereUniqueInput
 }
 
 input LiveblogItemRelateToManyForCreateInput {

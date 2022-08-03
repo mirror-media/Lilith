@@ -43,6 +43,16 @@ const listConfigurations = list({
         isImage: true,
       },
     }),
+    heroVideo: customFields.relationship({
+      label: '首屏影片',
+      ref: 'Video',
+    }),
+    imageCaption: text({
+      label: '首圖圖說',
+      ui: {
+        displayMode: 'textarea',
+      },
+    }),
     author: text({
       label: '作者',
     }),
