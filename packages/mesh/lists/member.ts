@@ -61,6 +61,14 @@ const listConfigurations = list({
       ref: 'Member.follower',
       many: true,
     }),
+    block: relationship({
+      ref: 'Member.blocked',
+      many: true,
+    }),
+    blocked: relationship({
+      ref: 'Member.block',
+      many: true,
+    }),
     following_category: relationship({
       ref: 'Category',
       many: true,

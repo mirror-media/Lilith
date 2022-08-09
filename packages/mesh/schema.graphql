@@ -883,6 +883,10 @@ type CollectionPick {
   collection: Collection
   picked_date: DateTime
   updated_date: DateTime
+  customer_year: String
+  customer_month: String
+  customer_day: String
+  custom_time: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -906,6 +910,10 @@ input CollectionPickWhereInput {
   collection: CollectionWhereInput
   picked_date: DateTimeNullableFilter
   updated_date: DateTimeNullableFilter
+  customer_year: StringFilter
+  customer_month: StringFilter
+  customer_day: StringFilter
+  custom_time: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -930,6 +938,10 @@ input CollectionPickOrderByInput {
   objective: OrderDirection
   picked_date: OrderDirection
   updated_date: OrderDirection
+  customer_year: OrderDirection
+  customer_month: OrderDirection
+  customer_day: OrderDirection
+  custom_time: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -943,6 +955,10 @@ input CollectionPickUpdateInput {
   collection: CollectionRelateToOneForUpdateInput
   picked_date: DateTime
   updated_date: DateTime
+  customer_year: String
+  customer_month: String
+  customer_day: String
+  custom_time: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -963,6 +979,10 @@ input CollectionPickCreateInput {
   collection: CollectionRelateToOneForCreateInput
   picked_date: DateTime
   updated_date: DateTime
+  customer_year: String
+  customer_month: String
+  customer_day: String
+  custom_time: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1313,6 +1333,20 @@ type Member {
     skip: Int! = 0
   ): [Member!]
   followingCount(where: MemberWhereInput! = {}): Int
+  block(
+    where: MemberWhereInput! = {}
+    orderBy: [MemberOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Member!]
+  blockCount(where: MemberWhereInput! = {}): Int
+  blocked(
+    where: MemberWhereInput! = {}
+    orderBy: [MemberOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Member!]
+  blockedCount(where: MemberWhereInput! = {}): Int
   following_category(
     where: CategoryWhereInput! = {}
     orderBy: [CategoryOrderByInput!]! = []
@@ -1389,6 +1423,8 @@ input MemberWhereInput {
   member_like: CommentManyRelationFilter
   follower: MemberManyRelationFilter
   following: MemberManyRelationFilter
+  block: MemberManyRelationFilter
+  blocked: MemberManyRelationFilter
   following_category: CategoryManyRelationFilter
   following_collection: CollectionManyRelationFilter
   follow_publisher: PublisherManyRelationFilter
@@ -1463,6 +1499,8 @@ input MemberUpdateInput {
   member_like: CommentRelateToManyForUpdateInput
   follower: MemberRelateToManyForUpdateInput
   following: MemberRelateToManyForUpdateInput
+  block: MemberRelateToManyForUpdateInput
+  blocked: MemberRelateToManyForUpdateInput
   following_category: CategoryRelateToManyForUpdateInput
   following_collection: CollectionRelateToManyForUpdateInput
   follow_publisher: PublisherRelateToManyForUpdateInput
@@ -1538,6 +1576,8 @@ input MemberCreateInput {
   member_like: CommentRelateToManyForCreateInput
   follower: MemberRelateToManyForCreateInput
   following: MemberRelateToManyForCreateInput
+  block: MemberRelateToManyForCreateInput
+  blocked: MemberRelateToManyForCreateInput
   following_category: CategoryRelateToManyForCreateInput
   following_collection: CollectionRelateToManyForCreateInput
   follow_publisher: PublisherRelateToManyForCreateInput
