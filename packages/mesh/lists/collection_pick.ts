@@ -38,9 +38,9 @@ const listConfigurations = list ({
       collection: relationship({ ref: 'Collection.collectionpicks', many: false }),
 	  picked_date: timestamp({ validation: { isRequired: false} }),
 	  updated_date: timestamp({ validation: { isRequired: false} }),
-	  customer_year: text({ label: '使用者自訂年' }),
-	  customer_month: text({ label: '使用者自訂月' }),
-	  customer_day: text({ label: '使用者自訂日' }),
+	  customer_year: integer({ label: '使用者自訂年' }),
+	  customer_month: integer({ label: '使用者自訂月' }),
+	  customer_day: integer({ label: '使用者自訂日' }),
 	  custom_time: timestamp({ validation: { isRequired: false} }),
     },
     ui: {

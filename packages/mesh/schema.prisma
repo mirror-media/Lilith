@@ -235,9 +235,9 @@ model CollectionPick {
   collectionId   Int?        @map("collection")
   picked_date    DateTime?
   updated_date   DateTime?
-  customer_year  String      @default("")
-  customer_month String      @default("")
-  customer_day   String      @default("")
+  customer_year  Int?
+  customer_month Int?
+  customer_day   Int?
   custom_time    DateTime?
   createdAt      DateTime?
   updatedAt      DateTime?
