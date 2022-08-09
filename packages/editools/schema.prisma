@@ -537,6 +537,7 @@ model Karaoke {
   imageFile_height    Int?
   imageFile_mode      String?
   imageFile_id        String?
+  imageLink           String    @default("")
   muteHint            Boolean   @default(false)
   createdAt           DateTime?
   updatedAt           DateTime?

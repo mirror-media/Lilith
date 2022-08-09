@@ -2270,6 +2270,7 @@ type Karaoke {
   quote: String
   audio: FileFieldOutput
   imageFile: ImageFieldOutput
+  imageLink: String
   muteHint: Boolean
   embedCode: String
   previewButton: String
@@ -2324,6 +2325,7 @@ input KaraokeWhereInput {
   id: IDFilter
   name: StringFilter
   quote: StringFilter
+  imageLink: StringFilter
   muteHint: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2335,6 +2337,7 @@ input KaraokeOrderByInput {
   id: OrderDirection
   name: OrderDirection
   quote: OrderDirection
+  imageLink: OrderDirection
   muteHint: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -2345,6 +2348,7 @@ input KaraokeUpdateInput {
   quote: String
   audio: FileFieldInput
   imageFile: ImageFieldInput
+  imageLink: String
   muteHint: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -2362,6 +2366,7 @@ input KaraokeCreateInput {
   quote: String
   audio: FileFieldInput
   imageFile: ImageFieldInput
+  imageLink: String
   muteHint: Boolean
   createdAt: DateTime
   updatedAt: DateTime
