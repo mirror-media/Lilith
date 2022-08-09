@@ -223,28 +223,28 @@ model CollectionMember {
 }
 
 model CollectionPick {
-  id             Int         @id @default(autoincrement())
-  story          Story?      @relation("CollectionPick_story", fields: [storyId], references: [id])
-  storyId        Int?        @map("story")
-  summary        String      @default("")
-  sort_order     Int?        @default(2)
-  creator        Member?     @relation("CollectionPick_creator", fields: [creatorId], references: [id])
-  creatorId      Int?        @map("creator")
-  objective      String?
-  collection     Collection? @relation("CollectionPick_collection", fields: [collectionId], references: [id])
-  collectionId   Int?        @map("collection")
-  picked_date    DateTime?
-  updated_date   DateTime?
-  customer_year  Int?
-  customer_month Int?
-  customer_day   Int?
-  custom_time    DateTime?
-  createdAt      DateTime?
-  updatedAt      DateTime?
-  createdBy      User?       @relation("CollectionPick_createdBy", fields: [createdById], references: [id])
-  createdById    Int?        @map("createdBy")
-  updatedBy      User?       @relation("CollectionPick_updatedBy", fields: [updatedById], references: [id])
-  updatedById    Int?        @map("updatedBy")
+  id           Int         @id @default(autoincrement())
+  story        Story?      @relation("CollectionPick_story", fields: [storyId], references: [id])
+  storyId      Int?        @map("story")
+  summary      String      @default("")
+  sort_order   Int?        @default(2)
+  creator      Member?     @relation("CollectionPick_creator", fields: [creatorId], references: [id])
+  creatorId    Int?        @map("creator")
+  objective    String?
+  collection   Collection? @relation("CollectionPick_collection", fields: [collectionId], references: [id])
+  collectionId Int?        @map("collection")
+  picked_date  DateTime?
+  updated_date DateTime?
+  custom_year  Int?
+  custom_month Int?
+  custom_day   Int?
+  custom_time  DateTime?
+  createdAt    DateTime?
+  updatedAt    DateTime?
+  createdBy    User?       @relation("CollectionPick_createdBy", fields: [createdById], references: [id])
+  createdById  Int?        @map("createdBy")
+  updatedBy    User?       @relation("CollectionPick_updatedBy", fields: [updatedById], references: [id])
+  updatedById  Int?        @map("updatedBy")
 
   @@index([storyId])
   @@index([creatorId])

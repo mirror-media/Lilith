@@ -883,9 +883,9 @@ type CollectionPick {
   collection: Collection
   picked_date: DateTime
   updated_date: DateTime
-  customer_year: Int
-  customer_month: Int
-  customer_day: Int
+  custom_year: Int
+  custom_month: Int
+  custom_day: Int
   custom_time: DateTime
   createdAt: DateTime
   updatedAt: DateTime
@@ -910,9 +910,9 @@ input CollectionPickWhereInput {
   collection: CollectionWhereInput
   picked_date: DateTimeNullableFilter
   updated_date: DateTimeNullableFilter
-  customer_year: IntNullableFilter
-  customer_month: IntNullableFilter
-  customer_day: IntNullableFilter
+  custom_year: IntNullableFilter
+  custom_month: IntNullableFilter
+  custom_day: IntNullableFilter
   custom_time: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -938,9 +938,9 @@ input CollectionPickOrderByInput {
   objective: OrderDirection
   picked_date: OrderDirection
   updated_date: OrderDirection
-  customer_year: OrderDirection
-  customer_month: OrderDirection
-  customer_day: OrderDirection
+  custom_year: OrderDirection
+  custom_month: OrderDirection
+  custom_day: OrderDirection
   custom_time: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -955,9 +955,9 @@ input CollectionPickUpdateInput {
   collection: CollectionRelateToOneForUpdateInput
   picked_date: DateTime
   updated_date: DateTime
-  customer_year: Int
-  customer_month: Int
-  customer_day: Int
+  custom_year: Int
+  custom_month: Int
+  custom_day: Int
   custom_time: DateTime
   createdAt: DateTime
   updatedAt: DateTime
@@ -979,9 +979,9 @@ input CollectionPickCreateInput {
   collection: CollectionRelateToOneForCreateInput
   picked_date: DateTime
   updated_date: DateTime
-  customer_year: Int
-  customer_month: Int
-  customer_day: Int
+  custom_year: Int
+  custom_month: Int
+  custom_day: Int
   custom_time: DateTime
   createdAt: DateTime
   updatedAt: DateTime
