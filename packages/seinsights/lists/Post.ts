@@ -2,7 +2,6 @@ import envVar from '../environment-variables'
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import { text, integer, relationship, select, json, timestamp, virtual,} from '@keystone-6/core/fields'
-import { document } from '@keystone-6/fields-document'
 
 
 const {
@@ -154,29 +153,9 @@ const listConfigurations = list({
         displayMode: 'textarea',
       }
     }),
-    content: document({
+    content: customFields.richTextEditor({
       label: '內文',
-      formatting: {
-        blockTypes: {
-          blockquote: true,
-          code: true
-        },
-        inlineMarks: {
-          bold: true,
-          code: true,
-          italic: true,
-          underline: true
-        },
-        headingLevels: [2, 3, 4],
-        listTypes: {
-          ordered: true,
-          unordered: true
-        }
-      }
     }),
-    // content: customFields.richTextEditor({
-    //   label: '內文',
-    // }),
     relatedPosts: customFields.relationship({
       label: '延伸閱讀',
       ref: 'Post',
@@ -210,13 +189,13 @@ const listConfigurations = list({
     //     views: require.resolve('./preview-button'),
     //   },
     // }),
-    // apiData: json({
-    //   label: '資料庫使用',
-    //   ui: {
-    //     createView: { fieldMode: 'hidden' },
-    //     itemView: { fieldMode: 'hidden' },
-    //   },
-    // }),
+    apiData: json({
+      label: '資料庫使用',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
+    }),
   },
   ui: {
     labelField: 'title',
@@ -239,11 +218,11 @@ const listConfigurations = list({
   hooks: {
     resolveInput: async ({ resolvedData, context }) => {
       const { content, category } = resolvedData
-      // if (content) {
-      //   resolvedData.apiData = customFields.draftConverter
-      //     .convertToApiData(content)
-      //     .toJS()
-      // }
+      if (content) {
+        resolvedData.apiData = customFields.draftConverter
+          .convertToApiData(content)
+          .toJS()
+      }
 
       //relate section and post by corresponding category
       if (category) {

@@ -320,7 +320,7 @@ type Column {
   slug: String
   type: ColumnTypeType
   profile_photo: Photo
-  intro: Column_intro_Document
+  intro: JSON
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
@@ -335,16 +335,13 @@ type Column {
     skip: Int! = 0
   ): [Specialfeature!]
   specialfeaturesCount(where: SpecialfeatureWhereInput! = {}): Int
+  apiData: JSON
 }
 
 enum ColumnTypeType {
   trend
   entrepreneur
   publication
-}
-
-type Column_intro_Document {
-  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 input ColumnWhereUniqueInput {
@@ -393,6 +390,7 @@ input ColumnUpdateInput {
   intro: JSON
   posts: PostRelateToManyForUpdateInput
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
+  apiData: JSON
 }
 
 input SpecialfeatureRelateToManyForUpdateInput {
@@ -415,6 +413,7 @@ input ColumnCreateInput {
   intro: JSON
   posts: PostRelateToManyForCreateInput
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
+  apiData: JSON
 }
 
 input SpecialfeatureRelateToManyForCreateInput {
@@ -540,7 +539,7 @@ type Event {
   region: EventRegionType
   section: Section
   heroImage: Photo
-  content: Event_content_Document
+  content: JSON
   event_start: DateTime
   event_end: DateTime
   isTop: Boolean
@@ -559,6 +558,7 @@ type Event {
     skip: Int! = 0
   ): [Event!]
   relatedEventsCount(where: EventWhereInput! = {}): Int
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -620,10 +620,6 @@ enum EventRegionType {
   PEH
   KMN
   LNN
-}
-
-type Event_content_Document {
-  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 input EventWhereUniqueInput {
@@ -727,6 +723,7 @@ input EventUpdateInput {
   bannaerImage: PhotoRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
   relatedEvents: EventRelateToManyForUpdateInput
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -768,6 +765,7 @@ input EventCreateInput {
   bannaerImage: PhotoRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
   relatedEvents: EventRelateToManyForCreateInput
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -795,7 +793,7 @@ type Job {
   section: Section
   company: String
   profile_photo: Photo
-  content: Job_content_Document
+  content: JSON
   tags(
     where: TagWhereInput! = {}
     orderBy: [TagOrderByInput!]! = []
@@ -810,6 +808,7 @@ type Job {
     skip: Int! = 0
   ): [Job!]
   relatedJobsCount(where: JobWhereInput! = {}): Int
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -873,10 +872,6 @@ enum JobRegionType {
   PEH
   KMN
   LNN
-}
-
-type Job_content_Document {
-  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 input JobWhereUniqueInput {
@@ -966,6 +961,7 @@ input JobUpdateInput {
   content: JSON
   tags: TagRelateToManyForUpdateInput
   relatedJobs: JobRelateToManyForUpdateInput
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -997,6 +993,7 @@ input JobCreateInput {
   content: JSON
   tags: TagRelateToManyForCreateInput
   relatedJobs: JobRelateToManyForCreateInput
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1209,7 +1206,7 @@ type Post {
   heroImage: Photo
   heroCaption: String
   brief: String
-  content: Post_content_Document
+  content: JSON
   relatedPosts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
@@ -1235,10 +1232,6 @@ enum PostStatusType {
   draft
   scheduled
   archived
-}
-
-type Post_content_Document {
-  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 input PostWhereUniqueInput {
@@ -1377,7 +1370,7 @@ type Resource {
   region: ResourceRegionType
   section: Section
   profile_photo: Photo
-  content: Resource_content_Document
+  content: JSON
   relatedResources(
     where: ResourceWhereInput! = {}
     orderBy: [ResourceOrderByInput!]! = []
@@ -1385,6 +1378,7 @@ type Resource {
     skip: Int! = 0
   ): [Resource!]
   relatedResourcesCount(where: ResourceWhereInput! = {}): Int
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1429,10 +1423,6 @@ enum ResourceRegionType {
   PEH
   KMN
   LNN
-}
-
-type Resource_content_Document {
-  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 input ResourceWhereUniqueInput {
@@ -1487,6 +1477,7 @@ input ResourceUpdateInput {
   profile_photo: PhotoRelateToOneForUpdateInput
   content: JSON
   relatedResources: ResourceRelateToManyForUpdateInput
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1513,6 +1504,7 @@ input ResourceCreateInput {
   profile_photo: PhotoRelateToOneForCreateInput
   content: JSON
   relatedResources: ResourceRelateToManyForCreateInput
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1691,7 +1683,7 @@ type Specialfeature {
   weight: Int
   status: SpecialfeatureStatusType
   publishDate: DateTime
-  content: Specialfeature_content_Document
+  content: JSON
   columns(
     where: ColumnWhereInput! = {}
     orderBy: [ColumnOrderByInput!]! = []
@@ -1722,6 +1714,7 @@ type Specialfeature {
     skip: Int! = 0
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1733,10 +1726,6 @@ enum SpecialfeatureStatusType {
   draft
   scheduled
   archived
-}
-
-type Specialfeature_content_Document {
-  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 input SpecialfeatureWhereUniqueInput {
@@ -1807,6 +1796,7 @@ input SpecialfeatureUpdateInput {
   relatedPosts: PostRelateToManyForUpdateInput
   specialfeatureLists: SpecialfeatureListRelateToManyForUpdateInput
   tags: TagRelateToManyForUpdateInput
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1839,6 +1829,7 @@ input SpecialfeatureCreateInput {
   relatedPosts: PostRelateToManyForCreateInput
   specialfeatureLists: SpecialfeatureListRelateToManyForCreateInput
   tags: TagRelateToManyForCreateInput
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1858,7 +1849,7 @@ type SpecialfeatureList {
   status: SpecialfeatureListStatusType
   publishDate: DateTime
   heroImage: Photo
-  content: SpecialfeatureList_content_Document
+  content: JSON
   specialfeatures(
     where: SpecialfeatureWhereInput! = {}
     orderBy: [SpecialfeatureOrderByInput!]! = []
@@ -1867,6 +1858,7 @@ type SpecialfeatureList {
   ): [Specialfeature!]
   specialfeaturesCount(where: SpecialfeatureWhereInput! = {}): Int
   url: String
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1878,10 +1870,6 @@ enum SpecialfeatureListStatusType {
   draft
   scheduled
   archived
-}
-
-type SpecialfeatureList_content_Document {
-  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 input SpecialfeatureListWhereUniqueInput {
@@ -1937,6 +1925,7 @@ input SpecialfeatureListUpdateInput {
   content: JSON
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
   url: String
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1958,6 +1947,7 @@ input SpecialfeatureListCreateInput {
   content: JSON
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
   url: String
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

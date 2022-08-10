@@ -66,9 +66,10 @@ model Column {
   type            ColumnTypeType
   profile_photo   Photo?           @relation("Column_profile_photo", fields: [profile_photoId], references: [id])
   profile_photoId Int?             @map("profile_photo")
-  intro           Json             @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  intro           Json?
   posts           Post[]           @relation("Column_posts")
   specialfeatures Specialfeature[] @relation("Column_specialfeatures")
+  apiData         Json?
 
   @@index([profile_photoId])
 }
@@ -107,7 +108,7 @@ model Event {
   sectionId                Int?                 @map("section")
   heroImage                Photo?               @relation("Event_heroImage", fields: [heroImageId], references: [id])
   heroImageId              Int?                 @map("heroImage")
-  content                  Json                 @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  content                  Json?
   event_start              DateTime?
   event_end                DateTime?
   isTop                    Boolean              @default(false)
@@ -115,6 +116,7 @@ model Event {
   bannaerImageId           Int?                 @map("bannaerImage")
   tags                     Tag[]                @relation("Event_tags")
   relatedEvents            Event[]              @relation("Event_relatedEvents")
+  apiData                  Json?
   createdAt                DateTime?
   updatedAt                DateTime?
   createdBy                User?                @relation("Event_createdBy", fields: [createdById], references: [id])
@@ -143,9 +145,10 @@ model Job {
   company              String           @default("")
   profile_photo        Photo?           @relation("Job_profile_photo", fields: [profile_photoId], references: [id])
   profile_photoId      Int?             @map("profile_photo")
-  content              Json             @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  content              Json?
   tags                 Tag[]            @relation("Job_tags")
   relatedJobs          Job[]            @relation("Job_relatedJobs")
+  apiData              Json?
   createdAt            DateTime?
   updatedAt            DateTime?
   createdBy            User?            @relation("Job_createdBy", fields: [createdById], references: [id])
@@ -215,7 +218,7 @@ model Post {
   heroImageId                      Int?             @map("heroImage")
   heroCaption                      String           @default("")
   brief                            String           @default("")
-  content                          Json             @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  content                          Json?
   relatedPosts                     Post[]           @relation("Post_relatedPosts")
   tags                             Tag[]            @relation("Post_tags")
   createdAt                        DateTime?
@@ -244,8 +247,9 @@ model Resource {
   sectionId                      Int?               @map("section")
   profile_photo                  Photo?             @relation("Resource_profile_photo", fields: [profile_photoId], references: [id])
   profile_photoId                Int?               @map("profile_photo")
-  content                        Json               @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  content                        Json?
   relatedResources               Resource[]         @relation("Resource_relatedResources")
+  apiData                        Json?
   createdAt                      DateTime?
   updatedAt                      DateTime?
   createdBy                      User?              @relation("Resource_createdBy", fields: [createdById], references: [id])
@@ -294,7 +298,7 @@ model Specialfeature {
   weight                           Int?                      @default(85)
   status                           SpecialfeatureStatusType? @default(draft)
   publishDate                      DateTime?
-  content                          Json                      @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  content                          Json?
   columns                          Column[]                  @relation("Column_specialfeatures")
   heroImage                        Photo?                    @relation("Specialfeature_heroImage", fields: [heroImageId], references: [id])
   heroImageId                      Int?                      @map("heroImage")
@@ -302,6 +306,7 @@ model Specialfeature {
   relatedPosts                     Post[]                    @relation("Specialfeature_relatedPosts")
   specialfeatureLists              SpecialfeatureList[]      @relation("Specialfeature_specialfeatureLists")
   tags                             Tag[]                     @relation("Specialfeature_tags")
+  apiData                          Json?
   createdAt                        DateTime?
   updatedAt                        DateTime?
   createdBy                        User?                     @relation("Specialfeature_createdBy", fields: [createdById], references: [id])
@@ -324,9 +329,10 @@ model SpecialfeatureList {
   publishDate     DateTime?
   heroImage       Photo?                        @relation("SpecialfeatureList_heroImage", fields: [heroImageId], references: [id])
   heroImageId     Int?                          @map("heroImage")
-  content         Json                          @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  content         Json?
   specialfeatures Specialfeature[]              @relation("Specialfeature_specialfeatureLists")
   url             String                        @default("")
+  apiData         Json?
   createdAt       DateTime?
   updatedAt       DateTime?
   createdBy       User?                         @relation("SpecialfeatureList_createdBy", fields: [createdById], references: [id])

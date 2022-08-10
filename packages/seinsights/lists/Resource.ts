@@ -6,7 +6,6 @@ import {
   json,
   select,
 } from '@keystone-6/core/fields'
-import { document } from '@keystone-6/fields-document'
 
 import config from '../config'
 
@@ -62,29 +61,9 @@ const listConfigurations = list({
         isImage: true,
       },
     }),
-    content: document({
+    content: customFields.richTextEditor({
       label: '敘述',
-      formatting: {
-        blockTypes: {
-          blockquote: true,
-          code: true
-        },
-        inlineMarks: {
-          bold: true,
-          code: true,
-          italic: true,
-          underline: true
-        },
-        headingLevels: [2, 3, 4],
-        listTypes: {
-          ordered: true,
-          unordered: true
-        }
-      }
     }),
-    // // content: customFields.richTextEditor({
-    // //   label: '敘述',
-    // // }),
     relatedResources: relationship({
       label: '相關社會企業檔案',
       ref: 'Resource',
@@ -97,13 +76,13 @@ const listConfigurations = list({
       },
       many: true,
     }),
-    // apiData: json({
-    //   label: '資料庫使用',
-    //   ui: {
-    //     createView: { fieldMode: 'hidden' },
-    //     itemView: { fieldMode: 'hidden' },
-    //   },
-    // }),
+    apiData: json({
+      label: '資料庫使用',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
   },
   access: {
     operation: {
@@ -114,15 +93,15 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    // resolveInput: ({ resolvedData }) => {
-    //   const { content } = resolvedData
-    //   if (content) {
-    //     resolvedData.apiData = customFields.draftConverter
-    //       .convertToApiData(content)
-    //       .toJS()
-    //   }
-    //   return resolvedData
-    // },
+    resolveInput: ({ resolvedData }) => {
+      const { content } = resolvedData
+      if (content) {
+        resolvedData.apiData = customFields.draftConverter
+          .convertToApiData(content)
+          .toJS()
+      }
+      return resolvedData
+    },
   },
 })
 

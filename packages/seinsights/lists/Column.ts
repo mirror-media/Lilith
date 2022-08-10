@@ -1,7 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { document } from '@keystone-6/fields-document'
-import { text, relationship, select } from '@keystone-6/core/fields'
+import { text, relationship, select,json } from '@keystone-6/core/fields'
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 enum ColumnType {
@@ -56,31 +55,9 @@ const listConfigurations = list({
         isImage: true,
       },
     }),
-    intro: document({
-      label: '敘述',
-      formatting: {
-        inlineMarks: {
-          bold: true,
-          italic: true,
-          underline: true,
-          strikethrough: true,
-        },
-        listTypes: {
-          ordered: true,
-          unordered: true,
-        },
-        alignment: {
-          center: true,
-          end: true,
-        },
-        headingLevels: [1, 2, 3],
-        blockTypes: {
-          blockquote: true,
-          code: true,
-        },
-        softBreaks: true,
-      },
-    }),
+    intro: customFields.richTextEditor({
+        label: '敘述',
+      }),
     posts: relationship({
       label: '作者文章post',
       ref: 'Post.columns',
@@ -105,11 +82,18 @@ const listConfigurations = list({
       },
       many: true,
     }),
+    apiData: json({
+      label: '資料庫使用',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
   },
   ui: {
     // isHidden: true,
     listView: {
-      initialColumns: ['name', 'slug', 'column_type'],
+      initialColumns: ['name', 'slug', 'type'],
     },
   },
   access: {
@@ -120,7 +104,16 @@ const listConfigurations = list({
       delete: allowRoles(admin),
     },
   },
-  hooks: {},
+  hooks: {
+    resolveInput: async ({ resolvedData, context }) => {
+    const { content } = resolvedData
+    if (content) {
+      resolvedData.apiData = customFields.draftConverter
+        .convertToApiData(content)
+        .toJS()
+    }}
+  },
+
 })
 
 export default listConfigurations
