@@ -18,7 +18,7 @@ const storage = {
 }
 
 const googleCloudStorage = {
-  origin: 'https://storage.googleapis.com',
+  origin: envVar.gcs.baseUrl,
   bucket: envVar.gcs.bucket,
 }
 
