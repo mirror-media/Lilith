@@ -223,28 +223,27 @@ const listConfigurations = list({
           .convertToApiData(content)
           .toJS()
       }
-
       //relate section and post by corresponding category
-      if (category) {
-        if (category?.disconnect === true) {
-          resolvedData.section = {
-            disconnect: true,
-          }
-        } else if (category?.connect?.id) {
-          // Find section id according to category id
-          const categoryItem = await context.query.Category.findOne({
-            where: { id: category.connect.id },
-            query: 'section { id }',
-          })
-          if (categoryItem?.section?.id) {
-            resolvedData.section = {
-              connect: {
-                id: Number(categoryItem.section.id),
-              },
-            }
-          }
-        }
-      }
+      // if (category) {
+      //   if (category?.disconnect === true) {
+      //     resolvedData.section = {
+      //       disconnect: true,
+      //     }
+      //   } else if (category?.connect?.id) {
+      //     // Find section id according to category id
+      //     const categoryItem = await context.query.Category.findOne({
+      //       where: { id: category.connect.id },
+      //       query: 'section { id }',
+      //     })
+      //     if (categoryItem?.section?.id) {
+      //       resolvedData.section = {
+      //         connect: {
+      //           id: Number(categoryItem.section.id),
+      //         },
+      //       }
+      //     }
+      //   }
+      // }
       return resolvedData
     },
     validateInput: async ({ operation, item, context, resolvedData, addValidationError }) => {
@@ -271,43 +270,6 @@ const listConfigurations = list({
           if (status != 'draft') {
             addValidationError('需要填入發布時間')
           }
-        }
-      }
-    },
-    afterOperation: async ({ operation, originalItem, item, resolvedData, context }) => {
-      if (operation == 'delete') {
-        const orig_id = originalItem['id']
-        const backupItem = originalItem
-        delete backupItem['id']
-        const fields = [
-          'heroImage',
-          'section',
-          'category',
-          'createdBy',
-          'updatedBy',
-        ]
-        fields.forEach(function (field) {
-          const fieldId = field + 'Id'
-          //console.log("id: " + fieldId)
-          if (originalItem[fieldId] !== null) {
-            const fieldValue = { connect: { id: originalItem[fieldId] } }
-            backupItem[field] = fieldValue
-          }
-          delete backupItem[fieldId]
-        })
-        const new_post = await context.db.Post.createOne({
-          data: backupItem,
-        })
-        //console.log(context.prisma)
-        const update_post = await context.prisma.post.update({
-          where: { id: new_post['id'] },
-          data: {
-            id: orig_id,
-            status: 'archived',
-          },
-        })
-        if (!update_post) {
-          console.log(update_post, item, resolvedData)
         }
       }
     },
