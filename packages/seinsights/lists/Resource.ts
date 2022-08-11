@@ -20,19 +20,6 @@ const listConfigurations = list({
         isRequired: true,
       },
     }),
-    slug: text({
-      label: 'slug',
-      isIndexed: 'unique',
-      validation: {
-        length: {
-          min: 1,
-        },
-        match: {
-          regex: new RegExp('^[a-zA-Z0-9]*$'),
-          explanation: '限輸入英文或數字',
-        }
-      }
-    }),
     region: select({
       label: '地區',
       type: 'enum',

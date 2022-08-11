@@ -21,19 +21,6 @@ enum Status {
 
 const listConfigurations = list({
   fields: {
-    slug: text({
-      label: 'slug',
-      isIndexed: 'unique',
-      validation: {
-        length: {
-          min: 1,
-        },
-        match: {
-          regex: new RegExp('^[a-zA-Z0-9]*$'),
-          explanation: '限輸入英文或數字',
-        }
-      }
-    }),
     title: text({
       label: '標題',
     }),
@@ -102,7 +89,7 @@ const listConfigurations = list({
   ui: {
     labelField: 'title',
     listView: {
-      initialColumns: ['id', 'title', 'publishDate', 'slug', 'status'],
+      initialColumns: ['id', 'title', 'publishDate', 'status'],
       initialSort: { field: 'publishDate', direction: 'DESC' },
       pageSize: 50,
     },

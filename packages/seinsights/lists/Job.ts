@@ -46,19 +46,6 @@ const listConfigurations = list({
       label: '名稱',
       validation: { isRequired: true },
     }),
-    slug: text({
-      label: 'slug',
-      isIndexed: 'unique',
-      validation: {
-        length: {
-          min: 1,
-        },
-        match: {
-          regex: new RegExp('^[a-zA-Z0-9]*$'),
-          explanation: '限輸入英文或數字',
-        }
-      }
-    }),
     jobStatus: select({
       label: '徵才狀態',
       type: 'enum',
@@ -176,7 +163,7 @@ const listConfigurations = list({
   ui: {
     labelField: 'name',
     listView: {
-      initialColumns: ['id', 'name', 'slug', 'status'],
+      initialColumns: ['id', 'name', 'status'],
     },
   },
 
