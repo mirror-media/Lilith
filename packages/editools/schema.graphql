@@ -2137,7 +2137,6 @@ type InlineIndex {
   ): [IndexItem!]
   indexCount(where: IndexItemWhereInput! = {}): Int
   embedCode: String
-  style: String
   previewButton: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -2156,7 +2155,6 @@ input InlineIndexWhereInput {
   id: IDFilter
   name: StringFilter
   index: IndexItemManyRelationFilter
-  style: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2172,7 +2170,6 @@ input IndexItemManyRelationFilter {
 input InlineIndexOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  style: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2180,7 +2177,6 @@ input InlineIndexOrderByInput {
 input InlineIndexUpdateInput {
   name: String
   index: IndexItemRelateToManyForUpdateInput
-  style: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2202,7 +2198,6 @@ input InlineIndexUpdateArgs {
 input InlineIndexCreateInput {
   name: String
   index: IndexItemRelateToManyForCreateInput
-  style: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2221,7 +2216,7 @@ type IndexItem {
   order: Int
   imageFile: ImageFieldOutput
   imageLink: String
-  color: String
+  borderColor: String
   index(
     where: InlineIndexWhereInput! = {}
     orderBy: [InlineIndexOrderByInput!]! = []
@@ -2250,7 +2245,7 @@ input IndexItemWhereInput {
   slug: StringFilter
   order: IntFilter
   imageLink: StringFilter
-  color: StringFilter
+  borderColor: StringFilter
   index: InlineIndexManyRelationFilter
   originCode: StringFilter
   createdAt: DateTimeNullableFilter
@@ -2271,7 +2266,7 @@ input IndexItemOrderByInput {
   slug: OrderDirection
   order: OrderDirection
   imageLink: OrderDirection
-  color: OrderDirection
+  borderColor: OrderDirection
   originCode: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -2283,7 +2278,7 @@ input IndexItemUpdateInput {
   order: Int
   imageFile: ImageFieldInput
   imageLink: String
-  color: String
+  borderColor: String
   index: InlineIndexRelateToManyForUpdateInput
   originCode: String
   createdAt: DateTime
@@ -2310,7 +2305,7 @@ input IndexItemCreateInput {
   order: Int
   imageFile: ImageFieldInput
   imageLink: String
-  color: String
+  borderColor: String
   index: InlineIndexRelateToManyForCreateInput
   originCode: String
   createdAt: DateTime

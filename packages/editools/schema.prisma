@@ -498,7 +498,6 @@ model InlineIndex {
   id          Int         @id @default(autoincrement())
   name        String      @default("")
   index       IndexItem[] @relation("IndexItem_index")
-  style       String      @default("")
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?       @relation("InlineIndex_createdBy", fields: [createdById], references: [id])
@@ -522,7 +521,7 @@ model IndexItem {
   imageFile_mode      String?
   imageFile_id        String?
   imageLink           String        @default("")
-  color               String        @default("#fff")
+  borderColor         String        @default("#000")
   index               InlineIndex[] @relation("IndexItem_index")
   originCode          String        @default("")
   createdAt           DateTime?

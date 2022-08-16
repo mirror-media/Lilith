@@ -28,19 +28,19 @@ const listConfigurations = list({
     }),
     imageFile: image({
       label: '圖片',
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor),
-		  update: allowRoles(admin, moderator),
-		  create: allowRoles(admin, moderator),
-		  delete: allowRoles(admin),
-		},
-  },
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor),
+          update: allowRoles(admin, moderator),
+          create: allowRoles(admin, moderator),
+          delete: allowRoles(admin),
+        },
+      },
     }),
     imageLink: text(),
-    color: text({
-      label: '色塊色碼（沒有圖）',
-      defaultValue: '#fff',
+    borderColor: text({
+      label: '色塊邊框色碼（沒有圖）',
+      defaultValue: '#000',
     }),
     index: relationship({
       label: '索引列表',

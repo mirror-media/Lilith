@@ -19,9 +19,9 @@ const listConfigurations = list({
       many: true,
       ui: {
         displayMode: 'cards',
-        cardFields: ['name', 'slug', 'order', 'imageFile', 'color'],
+        cardFields: ['name', 'slug', 'order', 'imageFile'],
         inlineCreate: {
-          fields: ['name', 'slug', 'order', 'imageFile', 'color'],
+          fields: ['name', 'slug', 'order', 'imageFile'],
         },
       },
     }),
@@ -42,7 +42,7 @@ const listConfigurations = list({
                 id
                 slug
                 name
-                color
+                borderColor
                 order
                 imageFile {
                   url
@@ -51,6 +51,75 @@ const listConfigurations = list({
             `,
           })
           let indexItemsCode = ''
+          const style = `
+          .toc { 
+            list-style: none;
+            padding: 25px 0;
+            border-top: 2px solid #000928;
+            border-bottom: 2px solid #000928;
+           } 
+          .item + .item { 
+            margin-top: 16px;
+            }
+          .item__link { 
+            display: flex; 
+            align-items: center; 
+            text-decoration:none; 
+          } 
+          .item__img { 
+            width: 129px; 
+            height: 72px; 
+          } 
+          .item__color { 
+            width: 129px; 
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center; 
+          } 
+          .item__color--item { 
+            width: 64px; 
+            height: 22px; 
+          }
+          .item:nth-child(4n+1) .item__color--item { 
+            background: #F5EBFF;
+          } 
+          .item:nth-child(4n+2) .item__color--item { 
+            background: #EBF02C;
+          } 
+          .item:nth-child(4n+3) .item__color--item { 
+            background: #C4C4C4;
+          } 
+          .item:nth-child(4n) .item__color--item { 
+            background: #E4B671;
+          } 
+          .item__name { 
+            font-weight: 700; 
+            font-size: 16px; 
+            line-height: 23px; 
+            letter-spacing: 0.03em; 
+            color: #000928; 
+            margin-left: 16px; 
+          } 
+
+          @media (min-width: 768px) { 
+            .toc { 
+              display: flex; 
+              flex-wrap: wrap; 
+            } 
+            .item { 
+              width: calc(50% - 20px); 
+            } 
+            .item + .item { 
+              margin-top: 0; 
+            } 
+            .item:nth-child(2n) { 
+              margin-left: 40px; 
+            } 
+            .item:nth-child(n+3) { 
+              margin-top:20px; 
+            } 
+          }`
           const { index } = indexData
           index
             .sort((a, b) => a.order - b.order)
@@ -59,7 +128,7 @@ const listConfigurations = list({
               const leftArea = item.imageFile?.url
                 ? `<img src='${urlPrefix}${item.imageFile?.url}' class='item__img' alt='${item.name}'/>`
                 : `<div class='item__color'>
-                  <div class='item__color--item' style='background: ${item.color};'></div>
+                  <div class='item__color--item' style='border: 1px solid ${item.borderColor};'></div>
                 </div>`
               indexItemsCode += `
             <li class='item'>
@@ -70,15 +139,9 @@ const listConfigurations = list({
             </li>
           `
             })
-          return `<ul class='toc'>${indexItemsCode}</ul><style>${item.style}</style>`
+          return `<ul class='toc'>${indexItemsCode}</ul><style>${style}</style>`
         },
       }),
-    }),
-    style: text({
-      label: 'Style',
-      ui: {
-        displayMode: 'textarea',
-      },
     }),
     previewButton: virtual({
       field: graphql.field({
