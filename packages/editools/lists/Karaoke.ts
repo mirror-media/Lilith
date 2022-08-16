@@ -47,6 +47,14 @@ const listConfigurations = list({
         createView: { fieldMode: imageFileACL },
         itemView: { fieldMode: imageFileACL },
       },
+	  access: {
+		operation: {
+		  query: allowRoles(admin, moderator, editor),
+		  update: allowRoles(admin, moderator),
+		  create: allowRoles(admin, moderator),
+		  delete: allowRoles(admin),
+		},
+	  },
     }),
     imageLink: text(),
     muteHint: checkbox({

@@ -263,6 +263,8 @@ model Form {
   heroImageId         Int?                  @map("heroImage")
   mobileImage         Photo?                @relation("Form_mobileImage", fields: [mobileImageId], references: [id])
   mobileImageId       Int?                  @map("mobileImage")
+  imageLink           String                @default("")
+  mobilImageLink      String                @default("")
   heroVideo           Video?                @relation("Form_heroVideo", fields: [heroVideoId], references: [id])
   heroVideoId         Int?                  @map("heroVideo")
   active              Boolean               @default(true)
@@ -448,6 +450,7 @@ model Question {
   publishTime DateTime?
   heroImage   Photo?    @relation("Question_heroImage", fields: [heroImageId], references: [id])
   heroImageId Int?      @map("heroImage")
+  imageLink   String    @default("")
   author      String    @default("")
   content     Json?
   boost       Boolean   @default(false)
@@ -513,6 +516,7 @@ model IndexItem {
   imageFile_height    Int?
   imageFile_mode      String?
   imageFile_id        String?
+  imageLink           String        @default("")
   color               String        @default("#fff")
   index               InlineIndex[] @relation("IndexItem_index")
   originCode          String        @default("")

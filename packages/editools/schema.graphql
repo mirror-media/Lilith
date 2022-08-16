@@ -1024,6 +1024,8 @@ type Form {
   content: JSON
   heroImage: Photo
   mobileImage: Photo
+  imageLink: String
+  mobilImageLink: String
   heroVideo: Video
   active: Boolean
   fields(
@@ -1100,6 +1102,8 @@ input FormWhereInput {
   type: FormTypeTypeNullableFilter
   heroImage: PhotoWhereInput
   mobileImage: PhotoWhereInput
+  imageLink: StringFilter
+  mobilImageLink: StringFilter
   heroVideo: VideoWhereInput
   active: BooleanFilter
   fields: FieldManyRelationFilter
@@ -1159,6 +1163,8 @@ input FormOrderByInput {
   name: OrderDirection
   slug: OrderDirection
   type: OrderDirection
+  imageLink: OrderDirection
+  mobilImageLink: OrderDirection
   active: OrderDirection
   updateTime: OrderDirection
   feedback: OrderDirection
@@ -1173,6 +1179,8 @@ input FormUpdateInput {
   content: JSON
   heroImage: PhotoRelateToOneForUpdateInput
   mobileImage: PhotoRelateToOneForUpdateInput
+  imageLink: String
+  mobilImageLink: String
   heroVideo: VideoRelateToOneForUpdateInput
   active: Boolean
   fields: FieldRelateToManyForUpdateInput
@@ -1238,6 +1246,8 @@ input FormCreateInput {
   content: JSON
   heroImage: PhotoRelateToOneForCreateInput
   mobileImage: PhotoRelateToOneForCreateInput
+  imageLink: String
+  mobilImageLink: String
   heroVideo: VideoRelateToOneForCreateInput
   active: Boolean
   fields: FieldRelateToManyForCreateInput
@@ -1926,6 +1936,7 @@ type Question {
   status: String
   publishTime: DateTime
   heroImage: Photo
+  imageLink: String
   author: String
   content: JSON
   boost: Boolean
@@ -1965,6 +1976,7 @@ input QuestionWhereInput {
   status: StringNullableFilter
   publishTime: DateTimeNullableFilter
   heroImage: PhotoWhereInput
+  imageLink: StringFilter
   author: StringFilter
   boost: BooleanFilter
   subject: TagWhereInput
@@ -1981,6 +1993,7 @@ input QuestionOrderByInput {
   title: OrderDirection
   status: OrderDirection
   publishTime: OrderDirection
+  imageLink: OrderDirection
   author: OrderDirection
   boost: OrderDirection
   createdAt: OrderDirection
@@ -1992,6 +2005,7 @@ input QuestionUpdateInput {
   status: String
   publishTime: DateTime
   heroImage: PhotoRelateToOneForUpdateInput
+  imageLink: String
   author: String
   content: JSON
   boost: Boolean
@@ -2015,6 +2029,7 @@ input QuestionCreateInput {
   status: String
   publishTime: DateTime
   heroImage: PhotoRelateToOneForCreateInput
+  imageLink: String
   author: String
   content: JSON
   boost: Boolean
@@ -2180,6 +2195,7 @@ type IndexItem {
   slug: String
   order: Int
   imageFile: ImageFieldOutput
+  imageLink: String
   color: String
   index(
     where: InlineIndexWhereInput! = {}
@@ -2208,6 +2224,7 @@ input IndexItemWhereInput {
   name: StringFilter
   slug: StringFilter
   order: IntFilter
+  imageLink: StringFilter
   color: StringFilter
   index: InlineIndexManyRelationFilter
   originCode: StringFilter
@@ -2228,6 +2245,7 @@ input IndexItemOrderByInput {
   name: OrderDirection
   slug: OrderDirection
   order: OrderDirection
+  imageLink: OrderDirection
   color: OrderDirection
   originCode: OrderDirection
   createdAt: OrderDirection
@@ -2239,6 +2257,7 @@ input IndexItemUpdateInput {
   slug: String
   order: Int
   imageFile: ImageFieldInput
+  imageLink: String
   color: String
   index: InlineIndexRelateToManyForUpdateInput
   originCode: String
@@ -2265,6 +2284,7 @@ input IndexItemCreateInput {
   slug: String
   order: Int
   imageFile: ImageFieldInput
+  imageLink: String
   color: String
   index: InlineIndexRelateToManyForCreateInput
   originCode: String

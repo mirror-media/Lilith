@@ -44,7 +44,12 @@ const listConfigurations = list({
       customConfig: {
         isImage: true,
       },
+      ui: {
+        createView: { fieldMode: allowRoles(admin, moderator, editor) },
+        itemView: { fieldMode: allowRoles(admin, moderator, editor) },
+      },
     }),
+    imageLink: text(),
     author: text({
       label: '作者',
     }),

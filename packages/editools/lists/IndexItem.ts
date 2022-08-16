@@ -28,7 +28,12 @@ const listConfigurations = list({
     }),
     imageFile: image({
       label: '圖片',
+      ui: {
+        createView: { fieldMode: allowRoles(admin, moderator, editor) },
+        itemView: { fieldMode: allowRoles(admin, moderator, editor) },
+      },
     }),
+    imageLink: text(),
     color: text({
       label: '色塊色碼（沒有圖）',
       defaultValue: '#fff',

@@ -55,6 +55,14 @@ const listConfigurations = list({
       customConfig: {
         isImage: true,
       },
+	  access: {
+		operation: {
+		  query: allowRoles(admin, moderator, editor),
+		  update: allowRoles(admin, moderator),
+		  create: allowRoles(admin, moderator),
+		  delete: allowRoles(admin),
+		},
+	  },
     }),
     mobileImage: customFields.relationship({
       label: '手機首圖',
@@ -62,10 +70,28 @@ const listConfigurations = list({
       customConfig: {
         isImage: true,
       },
+	  access: {
+		operation: {
+		  query: allowRoles(admin, moderator, editor),
+		  update: allowRoles(admin, moderator),
+		  create: allowRoles(admin, moderator),
+		  delete: allowRoles(admin),
+		},
+	  },
     }),
+    imageLink: text(),
+    mobilImageLink: text(),
     heroVideo: customFields.relationship({
       label: '首屏影片',
       ref: 'Video',
+	  access: {
+		operation: {
+		  query: allowRoles(admin, moderator, editor),
+		  update: allowRoles(admin, moderator),
+		  create: allowRoles(admin, moderator),
+		  delete: allowRoles(admin),
+		},
+	  },
     }),
     active: checkbox({ label: '啟用', defaultValue: true }),
     fields: relationship({
