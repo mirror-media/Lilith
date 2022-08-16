@@ -1024,9 +1024,10 @@ type Form {
   content: JSON
   heroImage: Photo
   mobileImage: Photo
-  imageLink: String
-  mobilImageLink: String
+  heroImageLink: String
+  mobileImageLink: String
   heroVideo: Video
+  heroVideoLink: String
   active: Boolean
   fields(
     where: FieldWhereInput! = {}
@@ -1102,9 +1103,10 @@ input FormWhereInput {
   type: FormTypeTypeNullableFilter
   heroImage: PhotoWhereInput
   mobileImage: PhotoWhereInput
-  imageLink: StringFilter
-  mobilImageLink: StringFilter
+  heroImageLink: StringFilter
+  mobileImageLink: StringFilter
   heroVideo: VideoWhereInput
+  heroVideoLink: StringFilter
   active: BooleanFilter
   fields: FieldManyRelationFilter
   answers: FormAnswerManyRelationFilter
@@ -1163,8 +1165,9 @@ input FormOrderByInput {
   name: OrderDirection
   slug: OrderDirection
   type: OrderDirection
-  imageLink: OrderDirection
-  mobilImageLink: OrderDirection
+  heroImageLink: OrderDirection
+  mobileImageLink: OrderDirection
+  heroVideoLink: OrderDirection
   active: OrderDirection
   updateTime: OrderDirection
   feedback: OrderDirection
@@ -1179,9 +1182,10 @@ input FormUpdateInput {
   content: JSON
   heroImage: PhotoRelateToOneForUpdateInput
   mobileImage: PhotoRelateToOneForUpdateInput
-  imageLink: String
-  mobilImageLink: String
+  heroImageLink: String
+  mobileImageLink: String
   heroVideo: VideoRelateToOneForUpdateInput
+  heroVideoLink: String
   active: Boolean
   fields: FieldRelateToManyForUpdateInput
   answers: FormAnswerRelateToManyForUpdateInput
@@ -1246,9 +1250,10 @@ input FormCreateInput {
   content: JSON
   heroImage: PhotoRelateToOneForCreateInput
   mobileImage: PhotoRelateToOneForCreateInput
-  imageLink: String
-  mobilImageLink: String
+  heroImageLink: String
+  mobileImageLink: String
   heroVideo: VideoRelateToOneForCreateInput
+  heroVideoLink: String
   active: Boolean
   fields: FieldRelateToManyForCreateInput
   answers: FormAnswerRelateToManyForCreateInput
@@ -1297,6 +1302,7 @@ type Field {
   type: FieldTypeType
   status: String
   heroImage: Photo
+  heroImageLink: String
   content: JSON
   sortOrder: Int
   form: Form
@@ -1355,6 +1361,7 @@ input FieldWhereInput {
   type: FieldTypeTypeNullableFilter
   status: StringNullableFilter
   heroImage: PhotoWhereInput
+  heroImageLink: StringFilter
   sortOrder: IntNullableFilter
   form: FormWhereInput
   options: FieldOptionManyRelationFilter
@@ -1402,6 +1409,7 @@ input FieldOrderByInput {
   name: OrderDirection
   type: OrderDirection
   status: OrderDirection
+  heroImageLink: OrderDirection
   sortOrder: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1412,6 +1420,7 @@ input FieldUpdateInput {
   type: FieldTypeType
   status: String
   heroImage: PhotoRelateToOneForUpdateInput
+  heroImageLink: String
   content: JSON
   sortOrder: Int
   form: FormRelateToOneForUpdateInput
@@ -1456,6 +1465,7 @@ input FieldCreateInput {
   type: FieldTypeType
   status: String
   heroImage: PhotoRelateToOneForCreateInput
+  heroImageLink: String
   content: JSON
   sortOrder: Int
   form: FormRelateToOneForCreateInput
@@ -1489,6 +1499,7 @@ type FieldOption {
   id: ID!
   name: String
   heroImage: Photo
+  heroImageLink: String
   content: String
   value: String
   sortOrder: Int
@@ -1517,6 +1528,7 @@ input FieldOptionWhereInput {
   id: IDFilter
   name: StringFilter
   heroImage: PhotoWhereInput
+  heroImageLink: StringFilter
   content: StringFilter
   value: StringFilter
   sortOrder: IntNullableFilter
@@ -1531,6 +1543,7 @@ input FieldOptionWhereInput {
 input FieldOptionOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  heroImageLink: OrderDirection
   content: OrderDirection
   value: OrderDirection
   sortOrder: OrderDirection
@@ -1541,6 +1554,7 @@ input FieldOptionOrderByInput {
 input FieldOptionUpdateInput {
   name: String
   heroImage: PhotoRelateToOneForUpdateInput
+  heroImageLink: String
   content: String
   value: String
   sortOrder: Int
@@ -1566,6 +1580,7 @@ input FieldOptionUpdateArgs {
 input FieldOptionCreateInput {
   name: String
   heroImage: PhotoRelateToOneForCreateInput
+  heroImageLink: String
   content: String
   value: String
   sortOrder: Int
@@ -1586,7 +1601,9 @@ type FormAnswer {
   id: ID!
   name: String
   heroImage: Photo
+  heroImageLink: String
   mobileImage: Photo
+  mobileHeroImageLink: String
   content: JSON
   form: Form
   conditionCollection(
@@ -1613,7 +1630,9 @@ input FormAnswerWhereInput {
   id: IDFilter
   name: StringFilter
   heroImage: PhotoWhereInput
+  heroImageLink: StringFilter
   mobileImage: PhotoWhereInput
+  mobileHeroImageLink: StringFilter
   form: FormWhereInput
   conditionCollection: ConditionCollectionManyRelationFilter
   createdAt: DateTimeNullableFilter
@@ -1625,6 +1644,8 @@ input FormAnswerWhereInput {
 input FormAnswerOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  heroImageLink: OrderDirection
+  mobileHeroImageLink: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1632,7 +1653,9 @@ input FormAnswerOrderByInput {
 input FormAnswerUpdateInput {
   name: String
   heroImage: PhotoRelateToOneForUpdateInput
+  heroImageLink: String
   mobileImage: PhotoRelateToOneForUpdateInput
+  mobileHeroImageLink: String
   content: JSON
   form: FormRelateToOneForUpdateInput
   conditionCollection: ConditionCollectionRelateToManyForUpdateInput
@@ -1650,7 +1673,9 @@ input FormAnswerUpdateArgs {
 input FormAnswerCreateInput {
   name: String
   heroImage: PhotoRelateToOneForCreateInput
+  heroImageLink: String
   mobileImage: PhotoRelateToOneForCreateInput
+  mobileHeroImageLink: String
   content: JSON
   form: FormRelateToOneForCreateInput
   conditionCollection: ConditionCollectionRelateToManyForCreateInput

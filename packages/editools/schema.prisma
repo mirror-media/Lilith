@@ -263,10 +263,11 @@ model Form {
   heroImageId         Int?                  @map("heroImage")
   mobileImage         Photo?                @relation("Form_mobileImage", fields: [mobileImageId], references: [id])
   mobileImageId       Int?                  @map("mobileImage")
-  imageLink           String                @default("")
-  mobilImageLink      String                @default("")
+  heroImageLink       String                @default("")
+  mobileImageLink     String                @default("")
   heroVideo           Video?                @relation("Form_heroVideo", fields: [heroVideoId], references: [id])
   heroVideoId         Int?                  @map("heroVideo")
+  heroVideoLink       String                @default("")
   active              Boolean               @default(true)
   fields              Field[]               @relation("Field_form")
   answers             FormAnswer[]          @relation("FormAnswer_form")
@@ -302,6 +303,7 @@ model Field {
   status              String?               @default("draft")
   heroImage           Photo?                @relation("Field_heroImage", fields: [heroImageId], references: [id])
   heroImageId         Int?                  @map("heroImage")
+  heroImageLink       String                @default("")
   content             Json?
   sortOrder           Int?
   form                Form?                 @relation("Field_form", fields: [formId], references: [id])
@@ -325,22 +327,23 @@ model Field {
 }
 
 model FieldOption {
-  id          Int         @id @default(autoincrement())
-  name        String      @default("")
-  heroImage   Photo?      @relation("FieldOption_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?        @map("heroImage")
-  content     String      @default("")
-  value       String      @default("")
-  sortOrder   Int?
-  field       Field?      @relation("FieldOption_field", fields: [fieldId], references: [id])
-  fieldId     Int?        @map("field")
-  condition   Condition[] @relation("Condition_option")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?       @relation("FieldOption_createdBy", fields: [createdById], references: [id])
-  createdById Int?        @map("createdBy")
-  updatedBy   User?       @relation("FieldOption_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?        @map("updatedBy")
+  id            Int         @id @default(autoincrement())
+  name          String      @default("")
+  heroImage     Photo?      @relation("FieldOption_heroImage", fields: [heroImageId], references: [id])
+  heroImageId   Int?        @map("heroImage")
+  heroImageLink String      @default("")
+  content       String      @default("")
+  value         String      @default("")
+  sortOrder     Int?
+  field         Field?      @relation("FieldOption_field", fields: [fieldId], references: [id])
+  fieldId       Int?        @map("field")
+  condition     Condition[] @relation("Condition_option")
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?       @relation("FieldOption_createdBy", fields: [createdById], references: [id])
+  createdById   Int?        @map("createdBy")
+  updatedBy     User?       @relation("FieldOption_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?        @map("updatedBy")
 
   @@index([heroImageId])
   @@index([fieldId])
@@ -353,8 +356,10 @@ model FormAnswer {
   name                String                @default("")
   heroImage           Photo?                @relation("FormAnswer_heroImage", fields: [heroImageId], references: [id])
   heroImageId         Int?                  @map("heroImage")
+  heroImageLink       String                @default("")
   mobileImage         Photo?                @relation("FormAnswer_mobileImage", fields: [mobileImageId], references: [id])
   mobileImageId       Int?                  @map("mobileImage")
+  mobileHeroImageLink String                @default("")
   content             Json?
   form                Form?                 @relation("FormAnswer_form", fields: [formId], references: [id])
   formId              Int?                  @map("form")

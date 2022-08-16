@@ -62,7 +62,7 @@ const listConfigurations = list({
 		  create: allowRoles(admin, moderator),
 		  delete: allowRoles(admin),
 		},
-	  },
+      },
     }),
     mobileImage: customFields.relationship({
       label: '手機首圖',
@@ -77,10 +77,14 @@ const listConfigurations = list({
 		  create: allowRoles(admin, moderator),
 		  delete: allowRoles(admin),
 		},
-	  },
+      },
     }),
-    imageLink: text(),
-    mobilImageLink: text(),
+    heroImageLink: text({
+      label: '首圖網址',
+    }),
+    mobileImageLink: text({
+      label: '手機首圖網址',
+    }),
     heroVideo: customFields.relationship({
       label: '首屏影片',
       ref: 'Video',
@@ -91,7 +95,10 @@ const listConfigurations = list({
 		  create: allowRoles(admin, moderator),
 		  delete: allowRoles(admin),
 		},
-	  },
+      },
+    }),
+    heroVideoLink: text({
+      label: '首屏影片網址',
     }),
     active: checkbox({ label: '啟用', defaultValue: true }),
     fields: relationship({

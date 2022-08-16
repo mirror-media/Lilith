@@ -28,10 +28,14 @@ const listConfigurations = list({
     }),
     imageFile: image({
       label: '圖片',
-      ui: {
-        createView: { fieldMode: allowRoles(admin, moderator, editor) },
-        itemView: { fieldMode: allowRoles(admin, moderator, editor) },
-      },
+	  access: {
+		operation: {
+		  query: allowRoles(admin, moderator, editor),
+		  update: allowRoles(admin, moderator),
+		  create: allowRoles(admin, moderator),
+		  delete: allowRoles(admin),
+		},
+  },
     }),
     imageLink: text(),
     color: text({

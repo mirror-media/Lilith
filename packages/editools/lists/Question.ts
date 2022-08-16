@@ -44,10 +44,14 @@ const listConfigurations = list({
       customConfig: {
         isImage: true,
       },
-      ui: {
-        createView: { fieldMode: allowRoles(admin, moderator, editor) },
-        itemView: { fieldMode: allowRoles(admin, moderator, editor) },
-      },
+	  access: {
+		operation: {
+		  query: allowRoles(admin, moderator, editor),
+		  update: allowRoles(admin, moderator),
+		  create: allowRoles(admin, moderator),
+		  delete: allowRoles(admin),
+		},
+  },
     }),
     imageLink: text(),
     author: text({

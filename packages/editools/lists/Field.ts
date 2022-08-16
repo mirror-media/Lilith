@@ -62,7 +62,10 @@ const listConfigurations = list({
 		  create: allowRoles(admin, moderator),
 		  delete: allowRoles(admin),
 		},
-	  },
+  	  },
+    }),
+    heroImageLink: text({
+      label: '首圖網址',
     }),
     content: customFields.richTextEditor({
       label: '內文',
