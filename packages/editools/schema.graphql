@@ -122,9 +122,11 @@ type LiveblogItem {
   heroImage: Photo
   heroVideo: Video
   imageCaption: String
+  type: String
   author: String
   name: JSON
   boost: Boolean
+  external: String
   liveblog: Liveblog
   tags: Tag
   apiData: JSON
@@ -152,8 +154,10 @@ input LiveblogItemWhereInput {
   heroImage: PhotoWhereInput
   heroVideo: VideoWhereInput
   imageCaption: StringFilter
+  type: StringNullableFilter
   author: StringFilter
   boost: BooleanFilter
+  external: StringFilter
   liveblog: LiveblogWhereInput
   tags: TagWhereInput
   createdAt: DateTimeNullableFilter
@@ -208,8 +212,10 @@ input LiveblogItemOrderByInput {
   status: OrderDirection
   publishTime: OrderDirection
   imageCaption: OrderDirection
+  type: OrderDirection
   author: OrderDirection
   boost: OrderDirection
+  external: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -221,9 +227,11 @@ input LiveblogItemUpdateInput {
   heroImage: PhotoRelateToOneForUpdateInput
   heroVideo: VideoRelateToOneForUpdateInput
   imageCaption: String
+  type: String
   author: String
   name: JSON
   boost: Boolean
+  external: String
   liveblog: LiveblogRelateToOneForUpdateInput
   tags: TagRelateToOneForUpdateInput
   apiData: JSON
@@ -275,9 +283,11 @@ input LiveblogItemCreateInput {
   heroImage: PhotoRelateToOneForCreateInput
   heroVideo: VideoRelateToOneForCreateInput
   imageCaption: String
+  type: String
   author: String
   name: JSON
   boost: Boolean
+  external: String
   liveblog: LiveblogRelateToOneForCreateInput
   tags: TagRelateToOneForCreateInput
   apiData: JSON
@@ -321,6 +331,7 @@ type Liveblog {
   heroVideo: Video
   active: Boolean
   credit: String
+  css: String
   liveblog_items(
     where: LiveblogItemWhereInput! = {}
     orderBy: [LiveblogItemOrderByInput!]! = []
@@ -353,6 +364,7 @@ input LiveblogWhereInput {
   heroVideo: VideoWhereInput
   active: BooleanFilter
   credit: StringFilter
+  css: StringFilter
   liveblog_items: LiveblogItemManyRelationFilter
   tags: TagWhereInput
   publisher: PublisherWhereInput
@@ -375,6 +387,7 @@ input LiveblogOrderByInput {
   desc: OrderDirection
   active: OrderDirection
   credit: OrderDirection
+  css: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -387,6 +400,7 @@ input LiveblogUpdateInput {
   heroVideo: VideoRelateToOneForUpdateInput
   active: Boolean
   credit: String
+  css: String
   liveblog_items: LiveblogItemRelateToManyForUpdateInput
   tags: TagRelateToOneForUpdateInput
   publisher: PublisherRelateToOneForUpdateInput
@@ -422,6 +436,7 @@ input LiveblogCreateInput {
   heroVideo: VideoRelateToOneForCreateInput
   active: Boolean
   credit: String
+  css: String
   liveblog_items: LiveblogItemRelateToManyForCreateInput
   tags: TagRelateToOneForCreateInput
   publisher: PublisherRelateToOneForCreateInput

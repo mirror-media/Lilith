@@ -53,6 +53,21 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
+    type: select({                                                                                                                                                                                                                 
+      options: [
+        { label: '外連', value: 'external' },
+        { label: '文章', value: 'article' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: 'article',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
+        listView: {
+          fieldMode: 'read',
+        },
+      },
+    }),
     author: text({
       label: '作者',
     }),
@@ -62,6 +77,9 @@ const listConfigurations = list({
     boost: checkbox({
       label: '置頂',
       dfaultValue: false,
+    }),
+    external: text({
+      label: '外連連結',
     }),
     liveblog: relationship({
       ref: 'Liveblog.liveblog_items',

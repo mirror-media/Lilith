@@ -45,6 +45,12 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
+    css: text({
+      label: '客製css',
+      ui: {
+        displayMode: 'textarea',
+      },
+    }),
     liveblog_items: relationship({
       ref: 'LiveblogItem.liveblog',
       ui: {
