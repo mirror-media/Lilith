@@ -58,7 +58,7 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
-          return `<div id='${item.slug}'>${item.originCode}</div>`
+          return `<div id='${item.slug}' style='scroll-margin-top: 100px;'>${item.originCode}</div>`
         },
       }),
     }),
