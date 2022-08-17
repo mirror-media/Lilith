@@ -38,9 +38,9 @@ const listConfigurations = list({
       },
     }),
     imageLink: text(),
-    borderColor: text({
-      label: '色塊邊框色碼（沒有圖）',
-      defaultValue: '#000',
+    color: text({
+      label: '色塊色碼（沒有圖）',
+      defaultValue: '#fff',
     }),
     index: relationship({
       label: '索引列表',

@@ -19,9 +19,9 @@ const listConfigurations = list({
       many: true,
       ui: {
         displayMode: 'cards',
-        cardFields: ['name', 'slug', 'order', 'imageFile'],
+        cardFields: ['name', 'slug', 'order', 'imageFile', 'color'],
         inlineCreate: {
-          fields: ['name', 'slug', 'order', 'imageFile'],
+          fields: ['name', 'slug', 'order', 'imageFile', 'color'],
         },
       },
     }),
@@ -42,7 +42,7 @@ const listConfigurations = list({
                 id
                 slug
                 name
-                borderColor
+                color
                 order
                 imageFile {
                   url
@@ -80,19 +80,8 @@ const listConfigurations = list({
           .item__color--item { 
             width: 64px; 
             height: 22px; 
+            border: 1px solid #000;
           }
-          .item:nth-child(4n+1) .item__color--item { 
-            background: #F5EBFF;
-          } 
-          .item:nth-child(4n+2) .item__color--item { 
-            background: #EBF02C;
-          } 
-          .item:nth-child(4n+3) .item__color--item { 
-            background: #C4C4C4;
-          } 
-          .item:nth-child(4n) .item__color--item { 
-            background: #E4B671;
-          } 
           .item__name { 
             font-weight: 700; 
             font-size: 16px; 
@@ -128,7 +117,7 @@ const listConfigurations = list({
               const leftArea = item.imageFile?.url
                 ? `<img src='${urlPrefix}${item.imageFile?.url}' class='item__img' alt='${item.name}'/>`
                 : `<div class='item__color'>
-                  <div class='item__color--item' style='border: 1px solid ${item.borderColor};'></div>
+                  <div class='item__color--item' style='background: ${item.color};'></div>
                 </div>`
               indexItemsCode += `
             <li class='item'>

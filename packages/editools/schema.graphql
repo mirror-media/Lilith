@@ -2216,7 +2216,7 @@ type IndexItem {
   order: Int
   imageFile: ImageFieldOutput
   imageLink: String
-  borderColor: String
+  color: String
   index(
     where: InlineIndexWhereInput! = {}
     orderBy: [InlineIndexOrderByInput!]! = []
@@ -2245,7 +2245,7 @@ input IndexItemWhereInput {
   slug: StringFilter
   order: IntFilter
   imageLink: StringFilter
-  borderColor: StringFilter
+  color: StringFilter
   index: InlineIndexManyRelationFilter
   originCode: StringFilter
   createdAt: DateTimeNullableFilter
@@ -2266,7 +2266,7 @@ input IndexItemOrderByInput {
   slug: OrderDirection
   order: OrderDirection
   imageLink: OrderDirection
-  borderColor: OrderDirection
+  color: OrderDirection
   originCode: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -2278,7 +2278,7 @@ input IndexItemUpdateInput {
   order: Int
   imageFile: ImageFieldInput
   imageLink: String
-  borderColor: String
+  color: String
   index: InlineIndexRelateToManyForUpdateInput
   originCode: String
   createdAt: DateTime
@@ -2305,7 +2305,7 @@ input IndexItemCreateInput {
   order: Int
   imageFile: ImageFieldInput
   imageLink: String
-  borderColor: String
+  color: String
   index: InlineIndexRelateToManyForCreateInput
   originCode: String
   createdAt: DateTime

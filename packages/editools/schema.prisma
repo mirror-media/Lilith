@@ -521,7 +521,7 @@ model IndexItem {
   imageFile_mode      String?
   imageFile_id        String?
   imageLink           String        @default("")
-  borderColor         String        @default("#000")
+  color               String        @default("#fff")
   index               InlineIndex[] @relation("IndexItem_index")
   originCode          String        @default("")
   createdAt           DateTime?
