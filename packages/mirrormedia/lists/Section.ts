@@ -21,12 +21,16 @@ const listConfigurations = list ({
     description: text({
        label: '簡介',  
     }),
-    //categories: relationship({
- 	//  label: '分類', many: 'true', ref: 'PostCategory' 
-    //}),
-    //extend_cats: relationship({
- 	//  label: '其他分類', many: 'true', ref: 'PostCategory' 
-    //}),
+    categories: relationship({
+ 	  label: '分類', 
+      many: true, 
+      ref: 'PostCategory' 
+    }),
+    extend_cats: relationship({
+ 	  label: '其他分類', 
+      many: true, 
+      ref: 'PostCategory' 
+    }),
     heroImage: relationship({
 	  ref: 'Photo',
       label: '首圖',  
@@ -75,7 +79,10 @@ const listConfigurations = list ({
       label: 'javascript', 
 	  ui: { displayMode: 'textarea' } 
     }),
-
+    posts: relationship({
+      ref: "Post.sections",
+      many: true,
+    }),
   },
   access: {
 	operation: {

@@ -12,44 +12,61 @@ const {
 
 const listConfigurations = list ({
   fields: {
-	    name: text({
-       isIndexed: 'unique', label: '標籤名稱', validation: { isRequired: true} 
+	name: text({
+      isIndexed: 'unique', 
+      label: '標籤名稱', 
+      validation: { isRequired: true} 
     }),
     brief: text({
-       label: '前言',  
+      label: '前言',  
+      ui: { displayMode: 'textarea' } 
     }),
     heroVideo: relationship({
-       ref: 'Video', label: 'Leading Video' 
+      ref: 'Video', label: 'Leading Video' 
     }),
     heroImage: relationship({
-       ref: 'Photo', label: '首圖',  
+      ref: 'Photo', label: '首圖',  
     }),
     heroImageSize: select({
-       defaultValue: 'normal', options: [ { label: 'extend', value: 'extend' }, { label: 'normal', value: 'normal' }, { label: 'small', value: 'small' }], label: '首圖尺寸',
+      defaultValue: 'normal', 
+      options: [ 
+        { label: 'extend', value: 'extend' }, 
+        { label: 'normal', value: 'normal' }, 
+        { label: 'small', value: 'small' }
+      ], 
+      label: '首圖尺寸',
     }),
     og_title: text({
-       validation: { isRequired: false}, label: 'FB分享標題' 
+      validation: { isRequired: false}, 
+      label: 'FB分享標題' 
     }),
     og_description: text({
-       validation: { isRequired: false}, label: 'FB分享說明',  
+      validation: { isRequired: false}, 
+      label: 'FB分享說明',  
     }),
     og_image: relationship({
       ref: 'Photo',
- label: 'FB分享縮圖' 
+      label: 'FB分享縮圖' 
     }),
     isFeatured: checkbox({
-       label: '置頂', isIndexed: true 
-    }),
-    isAudioSiteOnly: checkbox({
-       isIndexed: true, label: '僅用於語音網站',  
+      label: '置頂', isIndexed: true 
     }),
     css: text({
-       ui: { displayMode: 'textarea' }, label: 'CSS' 
+      ui: { displayMode: 'textarea' }, 
+      label: 'CSS' 
     }),
     javascript: text({
-       label: 'javascript', ui: { displayMode: 'textarea' } 
+      label: 'javascript', 
+      ui: { displayMode: 'textarea' } 
     }),
-
+    posts: relationship({
+      ref: 'Post.tags',
+      many: true
+    }),
+    topics: relationship({
+      ref: 'Topic.tags',
+      many: true
+    }),
   },
   access: {
 	operation: {

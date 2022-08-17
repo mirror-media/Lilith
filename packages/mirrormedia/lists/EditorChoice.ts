@@ -12,9 +12,11 @@ const {
 
 const listConfigurations = list ({
   fields: {
-	//choices: relationship({
-    //  ref: 'Post', many: 'false', label: '精選文章' 
-    //}),
+	choices: relationship({
+      ref: 'Post', 
+      many: 'false', 
+      label: '精選文章' 
+    }),
     state: select({
       defaultValue: 'draft', 
       options: [ 

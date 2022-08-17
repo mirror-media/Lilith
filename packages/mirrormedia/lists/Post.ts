@@ -1,6 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
-import {checkbox,relationship,timestamp,text,select} from '@keystone-6/core/fields';
+import { checkbox, relationship, timestamp, text, select, json } from '@keystone-6/core/fields';
 	  
 const {
   allowRoles,
@@ -12,7 +12,7 @@ const {
 
 const listConfigurations = list ({
   fields: {
-	name: text({
+	slug: text({
       validation: { isRequired: true}, 
       label: '網址名稱（英文）', 
       isIndexed: 'unique' 
@@ -43,7 +43,7 @@ const listConfigurations = list ({
     sections: relationship({
       label: '分區', 
       many: true, 
-      ref: 'Section' 
+      ref: 'Section.posts' 
     }),
     categories: relationship({
       ref: 'PostCategory', 
@@ -127,10 +127,10 @@ const listConfigurations = list ({
     }),
     topics: relationship({
       label: '專題',  
-      ref: 'Topic',
+      ref: 'Topic.posts',
     }),
     tags: relationship({
-      ref: 'Tag', 
+      ref: 'Tag.posts', 
       many: true, 
       label: '標籤' 
     }),
@@ -207,7 +207,21 @@ const listConfigurations = list ({
     }),
     createTime: timestamp({
     }),
-
+    apiData: json({
+      label: '資料庫使用',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
+  },
+  ui: {
+    labelField: 'slug',
+    listView: {
+      initialColumns: ['id', 'slug', 'status'],
+      initialSort: { field: 'publishedDate', direction: 'DESC' },
+      pageSize: 50,
+    },
   },
   access: {
 	operation: {
@@ -217,5 +231,15 @@ const listConfigurations = list ({
 	  delete: allowRoles(admin),
 	},
   },
+  hooks: {
+	resolveInput: async ({ resolvedData, context }) => {
+      const { content } = resolvedData                                                                                                                             
+      if (content) {
+        resolvedData.apiData = customFields.draftConverter
+          .convertToApiData(content)
+          .toJS()
+      }
+	}
+  }
 })
 export default utils.addTrackingFields(listConfigurations)

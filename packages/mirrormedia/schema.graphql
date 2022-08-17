@@ -3,7 +3,7 @@
 
 type Post {
   id: ID!
-  name: String
+  slug: String
   title: String
   subtitle: String
   state: String
@@ -103,6 +103,7 @@ type Post {
   adTrace: String
   redirect: String
   createTime: DateTime
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -114,7 +115,7 @@ scalar DateTime
 
 input PostWhereUniqueInput {
   id: ID
-  name: String
+  slug: String
 }
 
 input PostWhereInput {
@@ -122,7 +123,7 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
-  name: StringFilter
+  slug: StringFilter
   title: StringFilter
   subtitle: StringFilter
   state: StringNullableFilter
@@ -289,7 +290,7 @@ input BooleanFilter {
 
 input PostOrderByInput {
   id: OrderDirection
-  name: OrderDirection
+  slug: OrderDirection
   title: OrderDirection
   subtitle: OrderDirection
   state: OrderDirection
@@ -324,7 +325,7 @@ enum OrderDirection {
 }
 
 input PostUpdateInput {
-  name: String
+  slug: String
   title: String
   subtitle: String
   state: String
@@ -364,6 +365,7 @@ input PostUpdateInput {
   adTrace: String
   redirect: String
   createTime: DateTime
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -435,7 +437,7 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  name: String
+  slug: String
   title: String
   subtitle: String
   state: String
@@ -475,6 +477,7 @@ input PostCreateInput {
   adTrace: String
   redirect: String
   createTime: DateTime
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -528,6 +531,13 @@ input UserRelateToOneForCreateInput {
 
 type EditorChoice {
   id: ID!
+  choices(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Post!]
+  choicesCount(where: PostWhereInput! = {}): Int
   state: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -544,6 +554,7 @@ input EditorChoiceWhereInput {
   OR: [EditorChoiceWhereInput!]
   NOT: [EditorChoiceWhereInput!]
   id: IDFilter
+  choices: PostManyRelationFilter
   state: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -559,6 +570,7 @@ input EditorChoiceOrderByInput {
 }
 
 input EditorChoiceUpdateInput {
+  choices: PostRelateToManyForUpdateInput
   state: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -572,6 +584,7 @@ input EditorChoiceUpdateArgs {
 }
 
 input EditorChoiceCreateInput {
+  choices: PostRelateToManyForCreateInput
   state: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -584,7 +597,7 @@ type Topic {
   name: String
   subtitle: String
   state: String
-  brief: JSON
+  brief: String
   leading: String
   heroVideo: Video
   heroImage: Photo
@@ -605,6 +618,13 @@ type Topic {
     skip: Int! = 0
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  posts(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Post!]
+  postsCount(where: PostWhereInput! = {}): Int
   javascript: String
   dfp: String
   mobile_dfp: String
@@ -626,6 +646,7 @@ input TopicWhereInput {
   name: StringFilter
   subtitle: StringFilter
   state: StringNullableFilter
+  brief: StringFilter
   leading: StringNullableFilter
   heroVideo: VideoWhereInput
   heroImage: PhotoWhereInput
@@ -640,6 +661,7 @@ input TopicWhereInput {
   sort: StringNullableFilter
   style: StringFilter
   tags: TagManyRelationFilter
+  posts: PostManyRelationFilter
   javascript: StringFilter
   dfp: StringFilter
   mobile_dfp: StringFilter
@@ -654,6 +676,7 @@ input TopicOrderByInput {
   name: OrderDirection
   subtitle: OrderDirection
   state: OrderDirection
+  brief: OrderDirection
   leading: OrderDirection
   heroImageSize: OrderDirection
   og_title: OrderDirection
@@ -675,7 +698,7 @@ input TopicUpdateInput {
   name: String
   subtitle: String
   state: String
-  brief: JSON
+  brief: String
   leading: String
   heroVideo: VideoRelateToOneForUpdateInput
   heroImage: PhotoRelateToOneForUpdateInput
@@ -690,6 +713,7 @@ input TopicUpdateInput {
   sort: String
   style: String
   tags: TagRelateToManyForUpdateInput
+  posts: PostRelateToManyForUpdateInput
   javascript: String
   dfp: String
   mobile_dfp: String
@@ -708,7 +732,7 @@ input TopicCreateInput {
   name: String
   subtitle: String
   state: String
-  brief: JSON
+  brief: String
   leading: String
   heroVideo: VideoRelateToOneForCreateInput
   heroImage: PhotoRelateToOneForCreateInput
@@ -723,6 +747,7 @@ input TopicCreateInput {
   sort: String
   style: String
   tags: TagRelateToManyForCreateInput
+  posts: PostRelateToManyForCreateInput
   javascript: String
   dfp: String
   mobile_dfp: String
@@ -1140,6 +1165,20 @@ type Section {
   name: String
   title: String
   description: String
+  categories(
+    where: PostCategoryWhereInput! = {}
+    orderBy: [PostCategoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [PostCategory!]
+  categoriesCount(where: PostCategoryWhereInput! = {}): Int
+  extend_cats(
+    where: PostCategoryWhereInput! = {}
+    orderBy: [PostCategoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [PostCategory!]
+  extend_catsCount(where: PostCategoryWhereInput! = {}): Int
   heroImage: Photo
   isFeatured: Boolean
   style: String
@@ -1157,6 +1196,13 @@ type Section {
   topicsCount(where: TopicWhereInput! = {}): Int
   css: String
   javascript: String
+  posts(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Post!]
+  postsCount(where: PostWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1175,6 +1221,8 @@ input SectionWhereInput {
   name: StringFilter
   title: StringFilter
   description: StringFilter
+  categories: PostCategoryManyRelationFilter
+  extend_cats: PostCategoryManyRelationFilter
   heroImage: PhotoWhereInput
   isFeatured: BooleanFilter
   style: StringNullableFilter
@@ -1186,6 +1234,7 @@ input SectionWhereInput {
   topics: TopicManyRelationFilter
   css: StringFilter
   javascript: StringFilter
+  posts: PostManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1219,6 +1268,8 @@ input SectionUpdateInput {
   name: String
   title: String
   description: String
+  categories: PostCategoryRelateToManyForUpdateInput
+  extend_cats: PostCategoryRelateToManyForUpdateInput
   heroImage: PhotoRelateToOneForUpdateInput
   isFeatured: Boolean
   style: String
@@ -1230,6 +1281,7 @@ input SectionUpdateInput {
   topics: TopicRelateToManyForUpdateInput
   css: String
   javascript: String
+  posts: PostRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1252,6 +1304,8 @@ input SectionCreateInput {
   name: String
   title: String
   description: String
+  categories: PostCategoryRelateToManyForCreateInput
+  extend_cats: PostCategoryRelateToManyForCreateInput
   heroImage: PhotoRelateToOneForCreateInput
   isFeatured: Boolean
   style: String
@@ -1263,6 +1317,7 @@ input SectionCreateInput {
   topics: TopicRelateToManyForCreateInput
   css: String
   javascript: String
+  posts: PostRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1499,9 +1554,22 @@ type Tag {
   og_description: String
   og_image: Photo
   isFeatured: Boolean
-  isAudioSiteOnly: Boolean
   css: String
   javascript: String
+  posts(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Post!]
+  postsCount(where: PostWhereInput! = {}): Int
+  topics(
+    where: TopicWhereInput! = {}
+    orderBy: [TopicOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Topic!]
+  topicsCount(where: TopicWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1527,9 +1595,10 @@ input TagWhereInput {
   og_description: StringFilter
   og_image: PhotoWhereInput
   isFeatured: BooleanFilter
-  isAudioSiteOnly: BooleanFilter
   css: StringFilter
   javascript: StringFilter
+  posts: PostManyRelationFilter
+  topics: TopicManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1544,7 +1613,6 @@ input TagOrderByInput {
   og_title: OrderDirection
   og_description: OrderDirection
   isFeatured: OrderDirection
-  isAudioSiteOnly: OrderDirection
   css: OrderDirection
   javascript: OrderDirection
   createdAt: OrderDirection
@@ -1561,9 +1629,10 @@ input TagUpdateInput {
   og_description: String
   og_image: PhotoRelateToOneForUpdateInput
   isFeatured: Boolean
-  isAudioSiteOnly: Boolean
   css: String
   javascript: String
+  posts: PostRelateToManyForUpdateInput
+  topics: TopicRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1585,9 +1654,10 @@ input TagCreateInput {
   og_description: String
   og_image: PhotoRelateToOneForCreateInput
   isFeatured: Boolean
-  isAudioSiteOnly: Boolean
   css: String
   javascript: String
+  posts: PostRelateToManyForCreateInput
+  topics: TopicRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
