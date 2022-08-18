@@ -7,6 +7,7 @@ const {
   SESSION_SECRET,
   SESSION_MAX_AGE,
   GCS_BUCKET,
+  GCS_BASE_URL,
   FILES_BASE_URL,
   FILES_STORAGE_PATH,
   IMAGES_BASE_URL,
@@ -39,7 +40,8 @@ export default {
     maxAge: (SESSION_MAX_AGE && parseInt(SESSION_MAX_AGE)) || 60 * 60 * 24 * 1, // 1 days
   },
   gcs: {
-    bucket: GCS_BUCKET || 'static-editools-tw-dev',
+    bucket: GCS_BUCKET || 'editools-gcs-dev.readr.tw',
+    baseUrl: GCS_BASE_URL || 'https://storage.googleapis.com',
   },
   files: {
     baseUrl: FILES_BASE_URL || '/files',

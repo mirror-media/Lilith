@@ -59,28 +59,34 @@ model User {
 }
 
 model LiveblogItem {
-  id          Int       @id @default(autoincrement())
-  title       String    @default("")
-  status      String?   @default("draft")
-  publishTime DateTime?
-  heroImage   Photo?    @relation("LiveblogItem_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?      @map("heroImage")
-  author      String    @default("")
-  name        Json?
-  boost       Boolean   @default(false)
-  liveblog    Liveblog? @relation("LiveblogItem_liveblog", fields: [liveblogId], references: [id])
-  liveblogId  Int?      @map("liveblog")
-  tags        Tag?      @relation("LiveblogItem_tags", fields: [tagsId], references: [id])
-  tagsId      Int?      @map("tags")
-  apiData     Json?
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("LiveblogItem_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("LiveblogItem_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
+  id           Int       @id @default(autoincrement())
+  title        String    @default("")
+  status       String?   @default("draft")
+  publishTime  DateTime?
+  heroImage    Photo?    @relation("LiveblogItem_heroImage", fields: [heroImageId], references: [id])
+  heroImageId  Int?      @map("heroImage")
+  heroVideo    Video?    @relation("LiveblogItem_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId  Int?      @map("heroVideo")
+  imageCaption String    @default("")
+  type         String?   @default("article")
+  author       String    @default("")
+  name         Json?
+  boost        Boolean   @default(false)
+  external     String    @default("")
+  liveblog     Liveblog? @relation("LiveblogItem_liveblog", fields: [liveblogId], references: [id])
+  liveblogId   Int?      @map("liveblog")
+  tags         Tag?      @relation("LiveblogItem_tags", fields: [tagsId], references: [id])
+  tagsId       Int?      @map("tags")
+  apiData      Json?
+  createdAt    DateTime?
+  updatedAt    DateTime?
+  createdBy    User?     @relation("LiveblogItem_createdBy", fields: [createdById], references: [id])
+  createdById  Int?      @map("createdBy")
+  updatedBy    User?     @relation("LiveblogItem_updatedBy", fields: [updatedById], references: [id])
+  updatedById  Int?      @map("updatedBy")
 
   @@index([heroImageId])
+  @@index([heroVideoId])
   @@index([liveblogId])
   @@index([tagsId])
   @@index([createdById])
@@ -97,6 +103,8 @@ model Liveblog {
   heroVideo      Video?         @relation("Liveblog_heroVideo", fields: [heroVideoId], references: [id])
   heroVideoId    Int?           @map("heroVideo")
   active         Boolean        @default(true)
+  credit         String         @default("")
+  css            String         @default("")
   liveblog_items LiveblogItem[] @relation("LiveblogItem_liveblog")
   tags           Tag?           @relation("Liveblog_tags", fields: [tagsId], references: [id])
   tagsId         Int?           @map("tags")
@@ -162,27 +170,28 @@ model AudioFile {
 }
 
 model Video {
-  id                      Int        @id @default(autoincrement())
-  name                    String     @default("")
-  youtubeUrl              String     @default("")
-  file_filesize           Int?
-  file_mode               String?
-  file_filename           String?
-  coverPhoto              Photo?     @relation("Video_coverPhoto", fields: [coverPhotoId], references: [id])
-  coverPhotoId            Int?       @map("coverPhoto")
-  description             String     @default("")
-  tags                    String     @default("")
-  meta                    String     @default("")
-  url                     String     @default("")
-  duration                String     @default("")
-  createdAt               DateTime?
-  updatedAt               DateTime?
-  createdBy               User?      @relation("Video_createdBy", fields: [createdById], references: [id])
-  createdById             Int?       @map("createdBy")
-  updatedBy               User?      @relation("Video_updatedBy", fields: [updatedById], references: [id])
-  updatedById             Int?       @map("updatedBy")
-  from_Liveblog_heroVideo Liveblog[] @relation("Liveblog_heroVideo")
-  from_Form_heroVideo     Form[]     @relation("Form_heroVideo")
+  id                          Int            @id @default(autoincrement())
+  name                        String         @default("")
+  youtubeUrl                  String         @default("")
+  file_filesize               Int?
+  file_mode                   String?
+  file_filename               String?
+  coverPhoto                  Photo?         @relation("Video_coverPhoto", fields: [coverPhotoId], references: [id])
+  coverPhotoId                Int?           @map("coverPhoto")
+  description                 String         @default("")
+  tags                        String         @default("")
+  meta                        String         @default("")
+  url                         String         @default("")
+  duration                    String         @default("")
+  createdAt                   DateTime?
+  updatedAt                   DateTime?
+  createdBy                   User?          @relation("Video_createdBy", fields: [createdById], references: [id])
+  createdById                 Int?           @map("createdBy")
+  updatedBy                   User?          @relation("Video_updatedBy", fields: [updatedById], references: [id])
+  updatedById                 Int?           @map("updatedBy")
+  from_LiveblogItem_heroVideo LiveblogItem[] @relation("LiveblogItem_heroVideo")
+  from_Liveblog_heroVideo     Liveblog[]     @relation("Liveblog_heroVideo")
+  from_Form_heroVideo         Form[]         @relation("Form_heroVideo")
 
   @@index([coverPhotoId])
   @@index([createdById])
@@ -254,8 +263,11 @@ model Form {
   heroImageId         Int?                  @map("heroImage")
   mobileImage         Photo?                @relation("Form_mobileImage", fields: [mobileImageId], references: [id])
   mobileImageId       Int?                  @map("mobileImage")
+  heroImageLink       String                @default("")
+  mobileImageLink     String                @default("")
   heroVideo           Video?                @relation("Form_heroVideo", fields: [heroVideoId], references: [id])
   heroVideoId         Int?                  @map("heroVideo")
+  heroVideoLink       String                @default("")
   active              Boolean               @default(true)
   fields              Field[]               @relation("Field_form")
   answers             FormAnswer[]          @relation("FormAnswer_form")
@@ -291,6 +303,7 @@ model Field {
   status              String?               @default("draft")
   heroImage           Photo?                @relation("Field_heroImage", fields: [heroImageId], references: [id])
   heroImageId         Int?                  @map("heroImage")
+  heroImageLink       String                @default("")
   content             Json?
   sortOrder           Int?
   form                Form?                 @relation("Field_form", fields: [formId], references: [id])
@@ -314,22 +327,23 @@ model Field {
 }
 
 model FieldOption {
-  id          Int         @id @default(autoincrement())
-  name        String      @default("")
-  heroImage   Photo?      @relation("FieldOption_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?        @map("heroImage")
-  content     String      @default("")
-  value       String      @default("")
-  sortOrder   Int?
-  field       Field?      @relation("FieldOption_field", fields: [fieldId], references: [id])
-  fieldId     Int?        @map("field")
-  condition   Condition[] @relation("Condition_option")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?       @relation("FieldOption_createdBy", fields: [createdById], references: [id])
-  createdById Int?        @map("createdBy")
-  updatedBy   User?       @relation("FieldOption_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?        @map("updatedBy")
+  id            Int         @id @default(autoincrement())
+  name          String      @default("")
+  heroImage     Photo?      @relation("FieldOption_heroImage", fields: [heroImageId], references: [id])
+  heroImageId   Int?        @map("heroImage")
+  heroImageLink String      @default("")
+  content       String      @default("")
+  value         String      @default("")
+  sortOrder     Int?
+  field         Field?      @relation("FieldOption_field", fields: [fieldId], references: [id])
+  fieldId       Int?        @map("field")
+  condition     Condition[] @relation("Condition_option")
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?       @relation("FieldOption_createdBy", fields: [createdById], references: [id])
+  createdById   Int?        @map("createdBy")
+  updatedBy     User?       @relation("FieldOption_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?        @map("updatedBy")
 
   @@index([heroImageId])
   @@index([fieldId])
@@ -342,8 +356,10 @@ model FormAnswer {
   name                String                @default("")
   heroImage           Photo?                @relation("FormAnswer_heroImage", fields: [heroImageId], references: [id])
   heroImageId         Int?                  @map("heroImage")
+  heroImageLink       String                @default("")
   mobileImage         Photo?                @relation("FormAnswer_mobileImage", fields: [mobileImageId], references: [id])
   mobileImageId       Int?                  @map("mobileImage")
+  mobileHeroImageLink String                @default("")
   content             Json?
   form                Form?                 @relation("FormAnswer_form", fields: [formId], references: [id])
   formId              Int?                  @map("form")
@@ -439,6 +455,7 @@ model Question {
   publishTime DateTime?
   heroImage   Photo?    @relation("Question_heroImage", fields: [heroImageId], references: [id])
   heroImageId Int?      @map("heroImage")
+  imageLink   String    @default("")
   author      String    @default("")
   content     Json?
   boost       Boolean   @default(false)
@@ -481,7 +498,6 @@ model InlineIndex {
   id          Int         @id @default(autoincrement())
   name        String      @default("")
   index       IndexItem[] @relation("IndexItem_index")
-  style       String      @default("")
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?       @relation("InlineIndex_createdBy", fields: [createdById], references: [id])
@@ -497,12 +513,14 @@ model IndexItem {
   id                  Int           @id @default(autoincrement())
   name                String        @default("")
   slug                String        @default("")
+  order               Int
   imageFile_filesize  Int?
   imageFile_extension String?
   imageFile_width     Int?
   imageFile_height    Int?
   imageFile_mode      String?
   imageFile_id        String?
+  imageLink           String        @default("")
   color               String        @default("#fff")
   index               InlineIndex[] @relation("IndexItem_index")
   originCode          String        @default("")
@@ -530,6 +548,7 @@ model Karaoke {
   imageFile_height    Int?
   imageFile_mode      String?
   imageFile_id        String?
+  imageLink           String    @default("")
   muteHint            Boolean   @default(false)
   createdAt           DateTime?
   updatedAt           DateTime?

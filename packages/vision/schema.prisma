@@ -11,61 +11,6 @@ generator client {
   output   = "node_modules/.prisma/client"
 }
 
-model User {
-  id                          Int            @id @default(autoincrement())
-  name                        String         @default("")
-  email                       String         @unique @default("")
-  password                    String
-  role                        String
-  isProtected                 Boolean        @default(false)
-  from_Post_createdBy         Post[]         @relation("Post_createdBy")
-  from_Post_updatedBy         Post[]         @relation("Post_updatedBy")
-  from_Tag_createdBy          Tag[]          @relation("Tag_createdBy")
-  from_Tag_updatedBy          Tag[]          @relation("Tag_updatedBy")
-  from_Classify_createdBy     Classify[]     @relation("Classify_createdBy")
-  from_Classify_updatedBy     Classify[]     @relation("Classify_updatedBy")
-  from_Category_createdBy     Category[]     @relation("Category_createdBy")
-  from_Category_updatedBy     Category[]     @relation("Category_updatedBy")
-  from_Group_createdBy        Group[]        @relation("Group_createdBy")
-  from_Group_updatedBy        Group[]        @relation("Group_updatedBy")
-  from_SDG_createdBy          SDG[]          @relation("SDG_createdBy")
-  from_SDG_updatedBy          SDG[]          @relation("SDG_updatedBy")
-  from_Project_createdBy      Project[]      @relation("Project_createdBy")
-  from_Project_updatedBy      Project[]      @relation("Project_updatedBy")
-  from_LatestNew_createdBy    LatestNew[]    @relation("LatestNew_createdBy")
-  from_LatestNew_updatedBy    LatestNew[]    @relation("LatestNew_updatedBy")
-  from_Event_createdBy        Event[]        @relation("Event_createdBy")
-  from_Event_updatedBy        Event[]        @relation("Event_updatedBy")
-  from_EditorChoice_createdBy EditorChoice[] @relation("EditorChoice_createdBy")
-  from_EditorChoice_updatedBy EditorChoice[] @relation("EditorChoice_updatedBy")
-  from_PromoteStory_createdBy PromoteStory[] @relation("PromoteStory_createdBy")
-  from_PromoteStory_updatedBy PromoteStory[] @relation("PromoteStory_updatedBy")
-  from_PromoteEvent_createdBy PromoteEvent[] @relation("PromoteEvent_createdBy")
-  from_PromoteEvent_updatedBy PromoteEvent[] @relation("PromoteEvent_updatedBy")
-  from_Influence_createdBy    Influence[]    @relation("Influence_createdBy")
-  from_Influence_updatedBy    Influence[]    @relation("Influence_updatedBy")
-  from_AudioFile_createdBy    AudioFile[]    @relation("AudioFile_createdBy")
-  from_AudioFile_updatedBy    AudioFile[]    @relation("AudioFile_updatedBy")
-  from_Video_createdBy        Video[]        @relation("Video_createdBy")
-  from_Video_updatedBy        Video[]        @relation("Video_updatedBy")
-  from_Photo_createdBy        Photo[]        @relation("Photo_createdBy")
-  from_Photo_updatedBy        Photo[]        @relation("Photo_updatedBy")
-  from_Poll_createdBy         Poll[]         @relation("Poll_createdBy")
-  from_Poll_updatedBy         Poll[]         @relation("Poll_updatedBy")
-  from_PollOption_createdBy   PollOption[]   @relation("PollOption_createdBy")
-  from_PollOption_updatedBy   PollOption[]   @relation("PollOption_updatedBy")
-  from_PollResult_createdBy   PollResult[]   @relation("PollResult_createdBy")
-  from_PollResult_updatedBy   PollResult[]   @relation("PollResult_updatedBy")
-  from_Banner_createdBy       Banner[]       @relation("Banner_createdBy")
-  from_Banner_updatedBy       Banner[]       @relation("Banner_updatedBy")
-  from_Download_createdBy     Download[]     @relation("Download_createdBy")
-  from_Download_updatedBy     Download[]     @relation("Download_updatedBy")
-  from_InfoGraph_createdBy    InfoGraph[]    @relation("InfoGraph_createdBy")
-  from_InfoGraph_updatedBy    InfoGraph[]    @relation("InfoGraph_updatedBy")
-  from_Longform_createdBy     Longform[]     @relation("Longform_createdBy")
-  from_Longform_updatedBy     Longform[]     @relation("Longform_updatedBy")
-}
-
 model Post {
   id                          Int            @id @default(autoincrement())
   name                        String         @default("")
@@ -109,8 +54,8 @@ model Post {
   updatedById                 Int?           @map("updatedBy")
   from_Post_relatedPosts      Post[]         @relation("Post_relatedPosts")
   from_EditorChoice_post      EditorChoice[] @relation("EditorChoice_post")
-  from_PromoteStory_post      PromoteStory[] @relation("PromoteStory_post")
   from_InfoGraph_relatedPosts InfoGraph[]    @relation("InfoGraph_relatedPosts")
+  from_PromoteStory_post      PromoteStory[] @relation("PromoteStory_post")
 
   @@index([heroImageId])
   @@index([ogImageId])
@@ -119,21 +64,6 @@ model Post {
   @@index([categoryId])
   @@index([classifyId])
   @@index([longformId])
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model Tag {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique @default("")
-  posts       Post[]    @relation("Post_tags")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("Tag_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("Tag_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
-
   @@index([createdById])
   @@index([updatedById])
 }
@@ -205,20 +135,113 @@ model Group {
   @@index([updatedById])
 }
 
-model SDG {
-  id          Int        @id @default(autoincrement())
-  name        String     @default("")
-  url         String     @unique @default("")
-  category    Category[] @relation("Category_sdg")
-  posts       Post[]     @relation("Post_sdg")
-  heroImage   Photo?     @relation("SDG_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?       @map("heroImage")
+model Photo {
+  id                        Int         @id @default(autoincrement())
+  name                      String      @default("")
+  imageFile_filesize        Int?
+  imageFile_extension       String?
+  imageFile_width           Int?
+  imageFile_height          Int?
+  imageFile_mode            String?
+  imageFile_id              String?
+  file_filesize             Int?
+  file_mode                 String?
+  file_filename             String?
+  urlOriginal               String      @default("")
+  createdAt                 DateTime?
+  updatedAt                 DateTime?
+  createdBy                 User?       @relation("Photo_createdBy", fields: [createdById], references: [id])
+  createdById               Int?        @map("createdBy")
+  updatedBy                 User?       @relation("Photo_updatedBy", fields: [updatedById], references: [id])
+  updatedById               Int?        @map("updatedBy")
+  from_Post_heroImage       Post[]      @relation("Post_heroImage")
+  from_Post_ogImage         Post[]      @relation("Post_ogImage")
+  from_Group_heroImage      Group[]     @relation("Group_heroImage")
+  from_Banner_mobileImage   Banner[]    @relation("Banner_mobileImage")
+  from_Banner_tabletImage   Banner[]    @relation("Banner_tabletImage")
+  from_Banner_desktopImage  Banner[]    @relation("Banner_desktopImage")
+  from_InfoGraph_heroImage  InfoGraph[] @relation("InfoGraph_heroImage")
+  from_Event_heroImage      Event[]     @relation("Event_heroImage")
+  from_Event_hosted_logo    Event[]     @relation("Event_hosted_logo")
+  from_Event_hosted_logo2   Event[]     @relation("Event_hosted_logo2")
+  from_Event_hosted_logo3   Event[]     @relation("Event_hosted_logo3")
+  from_Influence_heroImage  Influence[] @relation("Influence_heroImage")
+  from_Author_profile_photo Author[]    @relation("Author_profile_photo")
+  from_Video_coverPhoto     Video[]     @relation("Video_coverPhoto")
+  from_Poll_image           Poll[]      @relation("Poll_image")
+  from_SDG_heroImage        SDG[]       @relation("SDG_heroImage")
+  from_Longform_headLogo    Longform[]  @relation("Longform_headLogo")
+  from_Longform_heroMob     Longform[]  @relation("Longform_heroMob")
+
+  @@index([createdById])
+  @@index([updatedById])
+  @@map("Image")
+}
+
+model Banner {
+  id             Int       @id @default(autoincrement())
+  mobileImage    Photo?    @relation("Banner_mobileImage", fields: [mobileImageId], references: [id])
+  mobileImageId  Int?      @map("mobileImage")
+  tabletImage    Photo?    @relation("Banner_tabletImage", fields: [tabletImageId], references: [id])
+  tabletImageId  Int?      @map("tabletImage")
+  desktopImage   Photo?    @relation("Banner_desktopImage", fields: [desktopImageId], references: [id])
+  desktopImageId Int?      @map("desktopImage")
+  url            String    @default("")
+  page           String
+  register_start DateTime
+  register_end   DateTime
+  createdAt      DateTime?
+  updatedAt      DateTime?
+  createdBy      User?     @relation("Banner_createdBy", fields: [createdById], references: [id])
+  createdById    Int?      @map("createdBy")
+  updatedBy      User?     @relation("Banner_updatedBy", fields: [updatedById], references: [id])
+  updatedById    Int?      @map("updatedBy")
+
+  @@index([mobileImageId])
+  @@index([tabletImageId])
+  @@index([desktopImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model EditorChoice {
+  id          Int       @id @default(autoincrement())
+  post        Post?     @relation("EditorChoice_post", fields: [postId], references: [id])
+  postId      Int?      @map("post")
+  weight      Int?      @default(2)
+  active      Boolean   @default(true)
   createdAt   DateTime?
   updatedAt   DateTime?
-  createdBy   User?      @relation("SDG_createdBy", fields: [createdById], references: [id])
-  createdById Int?       @map("createdBy")
-  updatedBy   User?      @relation("SDG_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?       @map("updatedBy")
+  createdBy   User?     @relation("EditorChoice_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("EditorChoice_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([postId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model InfoGraph {
+  id           Int       @id @default(autoincrement())
+  name         String    @unique @default("")
+  slug         String    @unique @default("")
+  status       String?
+  heroImage    Photo?    @relation("InfoGraph_heroImage", fields: [heroImageId], references: [id])
+  heroImageId  Int?      @map("heroImage")
+  publishDate  DateTime
+  infograph    String    @default("")
+  dataSource   Json      @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  content      Json?
+  dataUpdated  DateTime
+  relatedPosts Post[]    @relation("InfoGraph_relatedPosts")
+  apiData      Json?
+  createdAt    DateTime?
+  updatedAt    DateTime?
+  createdBy    User?     @relation("InfoGraph_createdBy", fields: [createdById], references: [id])
+  createdById  Int?      @map("createdBy")
+  updatedBy    User?     @relation("InfoGraph_updatedBy", fields: [updatedById], references: [id])
+  updatedById  Int?      @map("updatedBy")
 
   @@index([heroImageId])
   @@index([createdById])
@@ -304,24 +327,6 @@ model Event {
 
   @@index([categoryId])
   @@index([heroImageId])
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model EditorChoice {
-  id          Int       @id @default(autoincrement())
-  post        Post?     @relation("EditorChoice_post", fields: [postId], references: [id])
-  postId      Int?      @map("post")
-  weight      Int?      @default(2)
-  active      Boolean   @default(true)
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("EditorChoice_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("EditorChoice_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
-
-  @@index([postId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -448,47 +453,19 @@ model Video {
   @@index([updatedById])
 }
 
-model Photo {
-  id                        Int         @id @default(autoincrement())
-  name                      String      @default("")
-  imageFile_filesize        Int?
-  imageFile_extension       String?
-  imageFile_width           Int?
-  imageFile_height          Int?
-  imageFile_mode            String?
-  imageFile_id              String?
-  file_filesize             Int?
-  file_mode                 String?
-  file_filename             String?
-  urlOriginal               String      @default("")
-  createdAt                 DateTime?
-  updatedAt                 DateTime?
-  createdBy                 User?       @relation("Photo_createdBy", fields: [createdById], references: [id])
-  createdById               Int?        @map("createdBy")
-  updatedBy                 User?       @relation("Photo_updatedBy", fields: [updatedById], references: [id])
-  updatedById               Int?        @map("updatedBy")
-  from_Post_heroImage       Post[]      @relation("Post_heroImage")
-  from_Post_ogImage         Post[]      @relation("Post_ogImage")
-  from_Group_heroImage      Group[]     @relation("Group_heroImage")
-  from_SDG_heroImage        SDG[]       @relation("SDG_heroImage")
-  from_Event_heroImage      Event[]     @relation("Event_heroImage")
-  from_Event_hosted_logo    Event[]     @relation("Event_hosted_logo")
-  from_Event_hosted_logo2   Event[]     @relation("Event_hosted_logo2")
-  from_Event_hosted_logo3   Event[]     @relation("Event_hosted_logo3")
-  from_Influence_heroImage  Influence[] @relation("Influence_heroImage")
-  from_Author_profile_photo Author[]    @relation("Author_profile_photo")
-  from_Video_coverPhoto     Video[]     @relation("Video_coverPhoto")
-  from_Poll_image           Poll[]      @relation("Poll_image")
-  from_Banner_mobileImage   Banner[]    @relation("Banner_mobileImage")
-  from_Banner_tabletImage   Banner[]    @relation("Banner_tabletImage")
-  from_Banner_desktopImage  Banner[]    @relation("Banner_desktopImage")
-  from_InfoGraph_heroImage  InfoGraph[] @relation("InfoGraph_heroImage")
-  from_Longform_headLogo    Longform[]  @relation("Longform_headLogo")
-  from_Longform_heroMob     Longform[]  @relation("Longform_heroMob")
+model Tag {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique @default("")
+  posts       Post[]    @relation("Post_tags")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("Tag_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("Tag_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
-  @@map("Image")
 }
 
 model Poll {
@@ -556,30 +533,98 @@ model PollResult {
   @@index([updatedById])
 }
 
-model Banner {
-  id             Int       @id @default(autoincrement())
-  mobileImage    Photo?    @relation("Banner_mobileImage", fields: [mobileImageId], references: [id])
-  mobileImageId  Int?      @map("mobileImage")
-  tabletImage    Photo?    @relation("Banner_tabletImage", fields: [tabletImageId], references: [id])
-  tabletImageId  Int?      @map("tabletImage")
-  desktopImage   Photo?    @relation("Banner_desktopImage", fields: [desktopImageId], references: [id])
-  desktopImageId Int?      @map("desktopImage")
-  url            String    @default("")
-  page           String
-  register_start DateTime
-  register_end   DateTime
-  createdAt      DateTime?
-  updatedAt      DateTime?
-  createdBy      User?     @relation("Banner_createdBy", fields: [createdById], references: [id])
-  createdById    Int?      @map("createdBy")
-  updatedBy      User?     @relation("Banner_updatedBy", fields: [updatedById], references: [id])
-  updatedById    Int?      @map("updatedBy")
+model SDG {
+  id          Int        @id @default(autoincrement())
+  name        String     @default("")
+  url         String     @unique @default("")
+  category    Category[] @relation("Category_sdg")
+  posts       Post[]     @relation("Post_sdg")
+  heroImage   Photo?     @relation("SDG_heroImage", fields: [heroImageId], references: [id])
+  heroImageId Int?       @map("heroImage")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?      @relation("SDG_createdBy", fields: [createdById], references: [id])
+  createdById Int?       @map("createdBy")
+  updatedBy   User?      @relation("SDG_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?       @map("updatedBy")
 
-  @@index([mobileImageId])
-  @@index([tabletImageId])
-  @@index([desktopImageId])
+  @@index([heroImageId])
   @@index([createdById])
   @@index([updatedById])
+}
+
+model Award {
+  id          Int       @id @default(autoincrement())
+  year        String?   @default("2022")
+  name        String    @default("")
+  report      String    @default("")
+  url         String    @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("Award_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("Award_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model User {
+  id                          Int            @id @default(autoincrement())
+  name                        String         @default("")
+  email                       String         @unique @default("")
+  password                    String
+  role                        String
+  isProtected                 Boolean        @default(false)
+  from_Post_createdBy         Post[]         @relation("Post_createdBy")
+  from_Post_updatedBy         Post[]         @relation("Post_updatedBy")
+  from_Classify_createdBy     Classify[]     @relation("Classify_createdBy")
+  from_Classify_updatedBy     Classify[]     @relation("Classify_updatedBy")
+  from_Category_createdBy     Category[]     @relation("Category_createdBy")
+  from_Category_updatedBy     Category[]     @relation("Category_updatedBy")
+  from_Group_createdBy        Group[]        @relation("Group_createdBy")
+  from_Group_updatedBy        Group[]        @relation("Group_updatedBy")
+  from_Photo_createdBy        Photo[]        @relation("Photo_createdBy")
+  from_Photo_updatedBy        Photo[]        @relation("Photo_updatedBy")
+  from_Banner_createdBy       Banner[]       @relation("Banner_createdBy")
+  from_Banner_updatedBy       Banner[]       @relation("Banner_updatedBy")
+  from_EditorChoice_createdBy EditorChoice[] @relation("EditorChoice_createdBy")
+  from_EditorChoice_updatedBy EditorChoice[] @relation("EditorChoice_updatedBy")
+  from_InfoGraph_createdBy    InfoGraph[]    @relation("InfoGraph_createdBy")
+  from_InfoGraph_updatedBy    InfoGraph[]    @relation("InfoGraph_updatedBy")
+  from_Project_createdBy      Project[]      @relation("Project_createdBy")
+  from_Project_updatedBy      Project[]      @relation("Project_updatedBy")
+  from_LatestNew_createdBy    LatestNew[]    @relation("LatestNew_createdBy")
+  from_LatestNew_updatedBy    LatestNew[]    @relation("LatestNew_updatedBy")
+  from_Event_createdBy        Event[]        @relation("Event_createdBy")
+  from_Event_updatedBy        Event[]        @relation("Event_updatedBy")
+  from_PromoteStory_createdBy PromoteStory[] @relation("PromoteStory_createdBy")
+  from_PromoteStory_updatedBy PromoteStory[] @relation("PromoteStory_updatedBy")
+  from_PromoteEvent_createdBy PromoteEvent[] @relation("PromoteEvent_createdBy")
+  from_PromoteEvent_updatedBy PromoteEvent[] @relation("PromoteEvent_updatedBy")
+  from_Influence_createdBy    Influence[]    @relation("Influence_createdBy")
+  from_Influence_updatedBy    Influence[]    @relation("Influence_updatedBy")
+  from_AudioFile_createdBy    AudioFile[]    @relation("AudioFile_createdBy")
+  from_AudioFile_updatedBy    AudioFile[]    @relation("AudioFile_updatedBy")
+  from_Video_createdBy        Video[]        @relation("Video_createdBy")
+  from_Video_updatedBy        Video[]        @relation("Video_updatedBy")
+  from_Tag_createdBy          Tag[]          @relation("Tag_createdBy")
+  from_Tag_updatedBy          Tag[]          @relation("Tag_updatedBy")
+  from_Poll_createdBy         Poll[]         @relation("Poll_createdBy")
+  from_Poll_updatedBy         Poll[]         @relation("Poll_updatedBy")
+  from_PollOption_createdBy   PollOption[]   @relation("PollOption_createdBy")
+  from_PollOption_updatedBy   PollOption[]   @relation("PollOption_updatedBy")
+  from_PollResult_createdBy   PollResult[]   @relation("PollResult_createdBy")
+  from_PollResult_updatedBy   PollResult[]   @relation("PollResult_updatedBy")
+  from_SDG_createdBy          SDG[]          @relation("SDG_createdBy")
+  from_SDG_updatedBy          SDG[]          @relation("SDG_updatedBy")
+  from_Award_createdBy        Award[]        @relation("Award_createdBy")
+  from_Award_updatedBy        Award[]        @relation("Award_updatedBy")
+  from_Download_createdBy     Download[]     @relation("Download_createdBy")
+  from_Download_updatedBy     Download[]     @relation("Download_updatedBy")
+  from_Longform_createdBy     Longform[]     @relation("Longform_createdBy")
+  from_Longform_updatedBy     Longform[]     @relation("Longform_updatedBy")
 }
 
 model Download {
@@ -599,32 +644,6 @@ model Download {
   updatedBy     User?       @relation("Download_updatedBy", fields: [updatedById], references: [id])
   updatedById   Int?        @map("updatedBy")
 
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model InfoGraph {
-  id           Int       @id @default(autoincrement())
-  name         String    @unique @default("")
-  slug         String    @unique @default("")
-  status       String?
-  heroImage    Photo?    @relation("InfoGraph_heroImage", fields: [heroImageId], references: [id])
-  heroImageId  Int?      @map("heroImage")
-  publishDate  DateTime
-  infograph    String    @default("")
-  dataSource   Json      @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
-  content      Json?
-  dataUpdated  DateTime
-  relatedPosts Post[]    @relation("InfoGraph_relatedPosts")
-  apiData      Json?
-  createdAt    DateTime?
-  updatedAt    DateTime?
-  createdBy    User?     @relation("InfoGraph_createdBy", fields: [createdById], references: [id])
-  createdById  Int?      @map("createdBy")
-  updatedBy    User?     @relation("InfoGraph_updatedBy", fields: [updatedById], references: [id])
-  updatedById  Int?      @map("updatedBy")
-
-  @@index([heroImageId])
   @@index([createdById])
   @@index([updatedById])
 }

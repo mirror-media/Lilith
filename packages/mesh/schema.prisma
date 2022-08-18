@@ -235,6 +235,10 @@ model CollectionPick {
   collectionId Int?        @map("collection")
   picked_date  DateTime?
   updated_date DateTime?
+  custom_year  Int?
+  custom_month Int?
+  custom_day   Int?
+  custom_time  DateTime?
   createdAt    DateTime?
   updatedAt    DateTime?
   createdBy    User?       @relation("CollectionPick_createdBy", fields: [createdById], references: [id])
@@ -340,6 +344,8 @@ model Member {
   member_like                  Comment[]          @relation("Comment_like")
   follower                     Member[]           @relation("Member_follower")
   following                    Member[]           @relation("Member_follower")
+  block                        Member[]           @relation("Member_block")
+  blocked                      Member[]           @relation("Member_block")
   following_category           Category[]         @relation("Member_following_category")
   following_collection         Collection[]       @relation("Member_following_collection")
   follow_publisher             Publisher[]        @relation("Member_follow_publisher")

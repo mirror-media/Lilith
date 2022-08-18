@@ -7,7 +7,25 @@ import { list, graphql } from '@keystone-6/core'
 import { checkbox, text, image, file, virtual } from '@keystone-6/core/fields'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
-const { allowRoles, admin, moderator, editor } = utils.accessControl
+const {
+  allowRoles,
+  admin,
+  moderator,
+  editor,
+  contributor,
+} = utils.accessControl
+
+type Session = {
+  data: {
+    id: string
+    role: string
+  }
+}
+
+function imageFileACL({ session }: { session: Session }) {
+  const fieldMode = session?.data?.role == 'contributor' ? 'hidden' : 'edit'
+  return fieldMode
+}
 
 const listConfigurations = list({
   fields: {
@@ -23,7 +41,14 @@ const listConfigurations = list({
       },
     }),
     audio: file(),
-    imageFile: image(),
+    //external users can't upload files to our GCS. They can only use the image from their sources.
+    imageFile: image({
+      ui: {
+        createView: { fieldMode: imageFileACL },
+        itemView: { fieldMode: imageFileACL },
+      },
+    }),
+    imageLink: text(),
     muteHint: checkbox({
       label: '是否顯示聲音播放提醒',
       defaultValue: false,
@@ -36,8 +61,9 @@ const listConfigurations = list({
           const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
           const audioSrc = `${urlPrefix}/files/${item?.audio_filename}`
           const imgSrc =
-            item?.imageFile_id &&
-            `${urlPrefix}/images/${item.imageFile_id}.${item.imageFile_extension}`
+            (item?.imageLink && `${item.imageLink}`) ||
+            (item?.imageFile_id &&
+              `${urlPrefix}/images/${item.imageFile_id}.${item.imageFile_extension}`)
 
           return embedCodeGen.buildEmbeddedCode(
             'react-karaoke',
@@ -76,9 +102,9 @@ const listConfigurations = list({
 
   access: {
     operation: {
-      query: allowRoles(admin, moderator, editor),
-      update: allowRoles(admin, moderator),
-      create: allowRoles(admin, moderator),
+      query: allowRoles(admin, moderator, editor, contributor),
+      update: allowRoles(admin, moderator, contributor),
+      create: allowRoles(admin, moderator, contributor),
       delete: allowRoles(admin),
     },
   },

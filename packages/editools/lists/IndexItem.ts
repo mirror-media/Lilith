@@ -1,9 +1,14 @@
-import config from '../config'
 // eslint-disable-next-line
 // @ts-ignore
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, image, relationship, virtual } from '@keystone-6/core/fields'
+import {
+  text,
+  image,
+  relationship,
+  virtual,
+  integer,
+} from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -17,9 +22,22 @@ const listConfigurations = list({
       label: 'slug',
       validation: { isRequired: true },
     }),
+    order: integer({
+      label: '排序',
+      validation: { isRequired: true },
+    }),
     imageFile: image({
       label: '圖片',
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor),
+          update: allowRoles(admin, moderator),
+          create: allowRoles(admin, moderator),
+          delete: allowRoles(admin),
+        },
+      },
     }),
+    imageLink: text(),
     color: text({
       label: '色塊色碼（沒有圖）',
       defaultValue: '#fff',
@@ -40,7 +58,7 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
-          return `<div id='${item.name}'>${item.originCode}</div>`
+          return `<div id='${item.slug}' style='scroll-margin-top: 100px;'>${item.originCode}</div>`
         },
       }),
     }),
@@ -48,7 +66,7 @@ const listConfigurations = list({
   ui: {
     listView: {
       initialSort: { field: 'id', direction: 'DESC' },
-      initialColumns: ['name', 'slug'],
+      initialColumns: ['name', 'slug', 'order'],
       pageSize: 50,
     },
     labelField: 'name',
