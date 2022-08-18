@@ -1,4 +1,3 @@
-import User from './User'
 import Post from './Post'
 import Tag from './Tag'
 import Classify from './Classify'
@@ -18,6 +17,8 @@ import EditorChoice from './EditorChoice'
 import PromoteStory from './PromoteStory'
 import PromoteEvent from './PromoteEvent'
 import Influence from './Influence'
+import Award from './Award'
+import User from './User'
 import Image from './Image'
 import Banner from './Banner'
 import Download from './Download'
@@ -25,29 +26,30 @@ import InfoGraph from './InfoGraph'
 import Longform from './Longform'
 
 export const listDefinition = {
-  User,
   Post,
-  Tag,
   Classify,
   Category,
   Group: Group,
-  SDG: Sdg,
+  Photo: Image,
+  Banner,
+  EditorChoice,
+  InfoGraph,
   Project,
   LatestNew: Latest,
   Event,
-  EditorChoice,
   PromoteStory,
   PromoteEvent,
   Influence,
   AudioFile: Audio, // workaround：K6不支持Audio作為list name，因為複數問題（但不知為何Video就可以）
   Author,
   Video,
-  Photo: Image,
+  Tag,
   Poll,
   PollOption,
   PollResult,
-  Banner,
+  SDG: Sdg,
+  Award,
+  User,
   Download,
-  InfoGraph,
   Longform,
 }

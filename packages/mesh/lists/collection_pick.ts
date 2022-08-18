@@ -38,6 +38,10 @@ const listConfigurations = list ({
       collection: relationship({ ref: 'Collection.collectionpicks', many: false }),
 	  picked_date: timestamp({ validation: { isRequired: false} }),
 	  updated_date: timestamp({ validation: { isRequired: false} }),
+	  custom_year: integer({ label: '使用者自訂年' }),
+	  custom_month: integer({ label: '使用者自訂月' }),
+	  custom_day: integer({ label: '使用者自訂日' }),
+	  custom_time: timestamp({ validation: { isRequired: false} }),
     },
     ui: {
       listView: {

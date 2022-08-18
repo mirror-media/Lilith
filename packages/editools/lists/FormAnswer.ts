@@ -16,6 +16,17 @@ const listConfigurations = list({
       customConfig: {
         isImage: true,
       },
+	  access: {
+		operation: {
+		  query: allowRoles(admin, moderator, editor),
+		  update: allowRoles(admin, moderator),
+		  create: allowRoles(admin, moderator),
+		  delete: allowRoles(admin),
+		},
+  	  },
+    }),
+    heroImageLink: text({
+      label: '首圖網址',
     }),
     mobileImage: customFields.relationship({
       label: '手機首圖',
@@ -23,6 +34,17 @@ const listConfigurations = list({
       customConfig: {
         isImage: true,
       },
+	  access: {
+		operation: {
+		  query: allowRoles(admin, moderator, editor),
+		  update: allowRoles(admin, moderator),
+		  create: allowRoles(admin, moderator),
+		  delete: allowRoles(admin),
+		},
+  	  },
+    }),
+    mobileHeroImageLink: text({
+      label: '手機首圖網址',
     }),
     content: customFields.richTextEditor({
       label: '結果內容',

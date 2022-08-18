@@ -19,9 +19,9 @@ const listConfigurations = list({
       many: true,
       ui: {
         displayMode: 'cards',
-        cardFields: ['name', 'slug', 'imageFile', 'color'],
+        cardFields: ['name', 'slug', 'order', 'imageFile', 'color'],
         inlineCreate: {
-          fields: ['name', 'slug', 'imageFile', 'color'],
+          fields: ['name', 'slug', 'order', 'imageFile', 'color'],
         },
       },
     }),
@@ -43,6 +43,7 @@ const listConfigurations = list({
                 slug
                 name
                 color
+                order
                 imageFile {
                   url
                 }
@@ -50,14 +51,75 @@ const listConfigurations = list({
             `,
           })
           let indexItemsCode = ''
-          indexData?.index?.forEach((item) => {
-            const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
-            const leftArea = item.imageFile?.url
-              ? `<img src='${urlPrefix}${item.imageFile?.url}' class='item__img' alt='${item.name}'/>`
-              : `<div class='item__color'>
+          const style = `
+          .toc { 
+            list-style: none;
+            padding: 25px 0;
+            border-top: 2px solid #000928;
+            border-bottom: 2px solid #000928;
+           } 
+          .item + .item { 
+            margin-top: 16px;
+            }
+          .item__link { 
+            display: flex; 
+            align-items: center; 
+            text-decoration:none; 
+          } 
+          .item__img { 
+            width: 129px; 
+            height: 72px; 
+          } 
+          .item__color { 
+            width: 129px; 
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center; 
+          } 
+          .item__color--item { 
+            width: 64px; 
+            height: 22px; 
+            border: 1px solid #000;
+          }
+          .item__name { 
+            font-weight: 700; 
+            font-size: 16px; 
+            line-height: 23px; 
+            letter-spacing: 0.03em; 
+            color: #000928; 
+            margin-left: 16px; 
+          } 
+
+          @media (min-width: 768px) { 
+            .toc { 
+              display: flex; 
+              flex-wrap: wrap; 
+            } 
+            .item { 
+              width: calc(50% - 20px); 
+            } 
+            .item + .item { 
+              margin-top: 0; 
+            } 
+            .item:nth-child(2n) { 
+              margin-left: 40px; 
+            } 
+            .item:nth-child(n+3) { 
+              margin-top:20px; 
+            } 
+          }`
+          const { index } = indexData
+          index
+            .sort((a, b) => a.order - b.order)
+            .forEach((item) => {
+              const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
+              const leftArea = item.imageFile?.url
+                ? `<img src='${urlPrefix}${item.imageFile?.url}' class='item__img' alt='${item.name}'/>`
+                : `<div class='item__color'>
                   <div class='item__color--item' style='background: ${item.color};'></div>
                 </div>`
-            indexItemsCode += `
+              indexItemsCode += `
             <li class='item'>
               <a class='item__link' href='#${item.slug}'>
                   ${leftArea}
@@ -65,16 +127,10 @@ const listConfigurations = list({
               </a>
             </li>
           `
-          })
-          return `<ul class='toc'>${indexItemsCode}</ul><style>${item.style}</style>`
+            })
+          return `<ul class='toc'>${indexItemsCode}</ul><style>${style}</style>`
         },
       }),
-    }),
-    style: text({
-      label: 'Style',
-      ui: {
-        displayMode: 'textarea',
-      },
     }),
     previewButton: virtual({
       field: graphql.field({
