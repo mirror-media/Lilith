@@ -23,7 +23,7 @@
     "express": "^4.17.1",
     "http-proxy-middleware": "^2.0.3",
     "patch-package": "^6.4.7"
-  }
+  },
   "devDependencies": {
     "typescript": "^4.7.4"
   }
