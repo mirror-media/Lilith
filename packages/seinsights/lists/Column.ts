@@ -1,6 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { text, relationship, select,json } from '@keystone-6/core/fields'
+import { text, relationship, select, json } from '@keystone-6/core/fields'
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 enum ColumnType {
@@ -8,7 +8,6 @@ enum ColumnType {
   Entrepreneur = 'entrepreneur',
   Publication = 'publication',
 }
-
 
 const listConfigurations = list({
   fields: {
@@ -43,8 +42,8 @@ const listConfigurations = list({
       },
     }),
     intro: customFields.richTextEditor({
-        label: '敘述',
-      }),
+      label: '敘述',
+    }),
     posts: relationship({
       label: '作者文章post',
       ref: 'Post.columns',
@@ -73,7 +72,7 @@ const listConfigurations = list({
       label: '資料庫使用',
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
       },
     }),
   },
@@ -92,15 +91,16 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    resolveInput: async ({ resolvedData, context }) => {
-    const { content } = resolvedData
-    if (content) {
-      resolvedData.apiData = customFields.draftConverter
-        .convertToApiData(content)
-        .toJS()
-    }}
+    resolveInput: ({ resolvedData }) => {
+      const { intro } = resolvedData
+      if (intro) {
+        resolvedData.apiData = customFields.draftConverter
+          .convertToApiData(intro)
+          .toJS()
+      }
+      return resolvedData
+    },
   },
-
 })
 
 export default listConfigurations
