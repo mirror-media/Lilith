@@ -1,20 +1,14 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { list, graphql } from '@keystone-6/core'
-import {
-  text,
-  relationship,
-  json,
-  select,
-} from '@keystone-6/core/fields'
+import { list } from '@keystone-6/core'
+import { text, relationship, json, select } from '@keystone-6/core/fields'
 
 import config from '../config'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
-
 const listConfigurations = list({
   fields: {
-    name: text({ 
+    name: text({
       label: '社會企業名稱',
       validation: {
         isRequired: true,
@@ -67,7 +61,7 @@ const listConfigurations = list({
       label: '資料庫使用',
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
       },
     }),
   },

@@ -22,6 +22,9 @@ const listConfigurations = list({
     specialfeatures: relationship({
       ref: 'Specialfeature.tags',
       ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
         itemView: {
           fieldMode: 'hidden',
         },
@@ -31,6 +34,9 @@ const listConfigurations = list({
     jobs: relationship({
       ref: 'Job.tags',
       ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
         itemView: {
           fieldMode: 'hidden',
         },
@@ -40,6 +46,9 @@ const listConfigurations = list({
     events: relationship({
       ref: 'Event.tags',
       ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
         itemView: {
           fieldMode: 'hidden',
         },

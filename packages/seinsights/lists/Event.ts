@@ -177,7 +177,7 @@ const listConfigurations = list({
       label: '資料庫使用',
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
       },
     }),
   },

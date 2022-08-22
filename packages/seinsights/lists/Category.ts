@@ -4,7 +4,7 @@ import { integer, text, relationship, select } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
-enum CategoryStatus{
+enum CategoryStatus {
   Active = 'active',
   Inactive = 'inactive',
 }
@@ -25,19 +25,19 @@ const listConfigurations = list({
       },
     }),
     status: select({
-        type:'enum',
-        options: [
-          {label: 'active', value: CategoryStatus.Active},
-          {label: 'inactive', value: CategoryStatus.Inactive},
-        ],
-        validation: {
-            isRequired: true,
-          },
-        ui: {
-          displayMode: 'segmented-control',
-        },
+      type: 'enum',
+      options: [
+        { label: 'active', value: CategoryStatus.Active },
+        { label: 'inactive', value: CategoryStatus.Inactive },
+      ],
+      validation: {
+        isRequired: true,
+      },
+      ui: {
+        displayMode: 'segmented-control',
+      },
     }),
-     heroImage: customFields.relationship({
+    heroImage: customFields.relationship({
       label: 'Banner圖片',
       ref: 'Photo',
       ui: {
@@ -58,6 +58,9 @@ const listConfigurations = list({
     posts: relationship({
       ref: 'Post.category',
       ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
         itemView: {
           fieldMode: 'hidden',
         },

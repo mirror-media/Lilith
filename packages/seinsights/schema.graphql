@@ -188,7 +188,6 @@ input UserRelateToOneForCreateInput {
 type Category {
   id: ID!
   name: String
-  slug: String
   order: Int
   status: CategoryStatusType
   heroImage: Photo
@@ -213,7 +212,6 @@ enum CategoryStatusType {
 
 input CategoryWhereUniqueInput {
   id: ID
-  slug: String
   order: Int
 }
 
@@ -223,7 +221,6 @@ input CategoryWhereInput {
   NOT: [CategoryWhereInput!]
   id: IDFilter
   name: StringFilter
-  slug: StringFilter
   order: IntNullableFilter
   status: CategoryStatusTypeNullableFilter
   heroImage: PhotoWhereInput
@@ -251,7 +248,6 @@ input PostManyRelationFilter {
 input CategoryOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  slug: OrderDirection
   order: OrderDirection
   status: OrderDirection
   createdAt: OrderDirection
@@ -260,7 +256,6 @@ input CategoryOrderByInput {
 
 input CategoryUpdateInput {
   name: String
-  slug: String
   order: Int
   status: CategoryStatusType
   heroImage: PhotoRelateToOneForUpdateInput
@@ -292,7 +287,6 @@ input CategoryUpdateArgs {
 
 input CategoryCreateInput {
   name: String
-  slug: String
   order: Int
   status: CategoryStatusType
   heroImage: PhotoRelateToOneForCreateInput
@@ -317,7 +311,6 @@ input PostRelateToManyForCreateInput {
 type Column {
   id: ID!
   name: String
-  slug: String
   type: ColumnTypeType
   profile_photo: Photo
   intro: JSON
@@ -346,7 +339,6 @@ enum ColumnTypeType {
 
 input ColumnWhereUniqueInput {
   id: ID
-  slug: String
 }
 
 input ColumnWhereInput {
@@ -355,7 +347,6 @@ input ColumnWhereInput {
   NOT: [ColumnWhereInput!]
   id: IDFilter
   name: StringFilter
-  slug: StringFilter
   type: ColumnTypeTypeNullableFilter
   profile_photo: PhotoWhereInput
   posts: PostManyRelationFilter
@@ -378,13 +369,11 @@ input SpecialfeatureManyRelationFilter {
 input ColumnOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  slug: OrderDirection
   type: OrderDirection
 }
 
 input ColumnUpdateInput {
   name: String
-  slug: String
   type: ColumnTypeType
   profile_photo: PhotoRelateToOneForUpdateInput
   intro: JSON
@@ -407,7 +396,6 @@ input ColumnUpdateArgs {
 
 input ColumnCreateInput {
   name: String
-  slug: String
   type: ColumnTypeType
   profile_photo: PhotoRelateToOneForCreateInput
   intro: JSON
@@ -532,7 +520,6 @@ input SpecialfeatureRelateToOneForCreateInput {
 type Event {
   id: ID!
   name: String
-  slug: String
   eventStatus: EventEventStatusType
   status: EventStatusType
   type: EventTypeType
@@ -624,7 +611,6 @@ enum EventRegionType {
 
 input EventWhereUniqueInput {
   id: ID
-  slug: String
 }
 
 input EventWhereInput {
@@ -633,7 +619,6 @@ input EventWhereInput {
   NOT: [EventWhereInput!]
   id: IDFilter
   name: StringFilter
-  slug: StringFilter
   eventStatus: EventEventStatusTypeNullableFilter
   status: EventStatusTypeNullableFilter
   type: EventTypeTypeNullableFilter
@@ -695,7 +680,6 @@ input EventManyRelationFilter {
 input EventOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  slug: OrderDirection
   eventStatus: OrderDirection
   status: OrderDirection
   type: OrderDirection
@@ -709,7 +693,6 @@ input EventOrderByInput {
 
 input EventUpdateInput {
   name: String
-  slug: String
   eventStatus: EventEventStatusType
   status: EventStatusType
   type: EventTypeType
@@ -751,7 +734,6 @@ input EventUpdateArgs {
 
 input EventCreateInput {
   name: String
-  slug: String
   eventStatus: EventEventStatusType
   status: EventStatusType
   type: EventTypeType
@@ -785,7 +767,6 @@ input EventRelateToManyForCreateInput {
 type Job {
   id: ID!
   name: String
-  slug: String
   jobStatus: JobJobStatusType
   status: JobStatusType
   type: JobTypeType
@@ -876,7 +857,6 @@ enum JobRegionType {
 
 input JobWhereUniqueInput {
   id: ID
-  slug: String
 }
 
 input JobWhereInput {
@@ -885,7 +865,6 @@ input JobWhereInput {
   NOT: [JobWhereInput!]
   id: IDFilter
   name: StringFilter
-  slug: StringFilter
   jobStatus: JobJobStatusTypeNullableFilter
   status: JobStatusTypeNullableFilter
   type: JobTypeTypeNullableFilter
@@ -938,7 +917,6 @@ input JobManyRelationFilter {
 input JobOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  slug: OrderDirection
   jobStatus: OrderDirection
   status: OrderDirection
   type: OrderDirection
@@ -950,7 +928,6 @@ input JobOrderByInput {
 
 input JobUpdateInput {
   name: String
-  slug: String
   jobStatus: JobJobStatusType
   status: JobStatusType
   type: JobTypeType
@@ -982,7 +959,6 @@ input JobUpdateArgs {
 
 input JobCreateInput {
   name: String
-  slug: String
   jobStatus: JobJobStatusType
   status: JobStatusType
   type: JobTypeType
@@ -1188,7 +1164,6 @@ input PhotoCreateInput {
 
 type Post {
   id: ID!
-  slug: String
   title: String
   subtitle: String
   weight: Int
@@ -1221,6 +1196,7 @@ type Post {
     skip: Int! = 0
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1236,7 +1212,6 @@ enum PostStatusType {
 
 input PostWhereUniqueInput {
   id: ID
-  slug: String
 }
 
 input PostWhereInput {
@@ -1244,7 +1219,6 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
-  slug: StringFilter
   title: StringFilter
   subtitle: StringFilter
   weight: IntNullableFilter
@@ -1279,7 +1253,6 @@ input ColumnManyRelationFilter {
 
 input PostOrderByInput {
   id: OrderDirection
-  slug: OrderDirection
   title: OrderDirection
   subtitle: OrderDirection
   weight: OrderDirection
@@ -1292,7 +1265,6 @@ input PostOrderByInput {
 }
 
 input PostUpdateInput {
-  slug: String
   title: String
   subtitle: String
   weight: Int
@@ -1307,6 +1279,7 @@ input PostUpdateInput {
   content: JSON
   relatedPosts: PostRelateToManyForUpdateInput
   tags: TagRelateToManyForUpdateInput
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1332,7 +1305,6 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  slug: String
   title: String
   subtitle: String
   weight: Int
@@ -1347,6 +1319,7 @@ input PostCreateInput {
   content: JSON
   relatedPosts: PostRelateToManyForCreateInput
   tags: TagRelateToManyForCreateInput
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1366,7 +1339,6 @@ input ColumnRelateToManyForCreateInput {
 type Resource {
   id: ID!
   name: String
-  slug: String
   region: ResourceRegionType
   section: Section
   profile_photo: Photo
@@ -1427,7 +1399,6 @@ enum ResourceRegionType {
 
 input ResourceWhereUniqueInput {
   id: ID
-  slug: String
 }
 
 input ResourceWhereInput {
@@ -1436,7 +1407,6 @@ input ResourceWhereInput {
   NOT: [ResourceWhereInput!]
   id: IDFilter
   name: StringFilter
-  slug: StringFilter
   region: ResourceRegionTypeNullableFilter
   section: SectionWhereInput
   profile_photo: PhotoWhereInput
@@ -1463,7 +1433,6 @@ input ResourceManyRelationFilter {
 input ResourceOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  slug: OrderDirection
   region: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1471,7 +1440,6 @@ input ResourceOrderByInput {
 
 input ResourceUpdateInput {
   name: String
-  slug: String
   region: ResourceRegionType
   section: SectionRelateToOneForUpdateInput
   profile_photo: PhotoRelateToOneForUpdateInput
@@ -1498,7 +1466,6 @@ input ResourceUpdateArgs {
 
 input ResourceCreateInput {
   name: String
-  slug: String
   region: ResourceRegionType
   section: SectionRelateToOneForCreateInput
   profile_photo: PhotoRelateToOneForCreateInput
@@ -1519,7 +1486,6 @@ input ResourceRelateToManyForCreateInput {
 type Section {
   id: ID!
   name: String
-  slug: String
   order: Int
   status: SectionStatusType
   isPresent: Boolean
@@ -1572,7 +1538,6 @@ enum SectionStatusType {
 
 input SectionWhereUniqueInput {
   id: ID
-  slug: String
   order: Int
 }
 
@@ -1582,7 +1547,6 @@ input SectionWhereInput {
   NOT: [SectionWhereInput!]
   id: IDFilter
   name: StringFilter
-  slug: StringFilter
   order: IntNullableFilter
   status: SectionStatusTypeNullableFilter
   isPresent: BooleanFilter
@@ -1614,7 +1578,6 @@ input CategoryManyRelationFilter {
 input SectionOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  slug: OrderDirection
   order: OrderDirection
   status: OrderDirection
   isPresent: OrderDirection
@@ -1624,7 +1587,6 @@ input SectionOrderByInput {
 
 input SectionUpdateInput {
   name: String
-  slug: String
   order: Int
   status: SectionStatusType
   isPresent: Boolean
@@ -1654,7 +1616,6 @@ input SectionUpdateArgs {
 
 input SectionCreateInput {
   name: String
-  slug: String
   order: Int
   status: SectionStatusType
   isPresent: Boolean
@@ -1677,7 +1638,6 @@ input CategoryRelateToManyForCreateInput {
 
 type Specialfeature {
   id: ID!
-  slug: String
   title: String
   subtitle: String
   weight: Int
@@ -1730,7 +1690,6 @@ enum SpecialfeatureStatusType {
 
 input SpecialfeatureWhereUniqueInput {
   id: ID
-  slug: String
 }
 
 input SpecialfeatureWhereInput {
@@ -1738,7 +1697,6 @@ input SpecialfeatureWhereInput {
   OR: [SpecialfeatureWhereInput!]
   NOT: [SpecialfeatureWhereInput!]
   id: IDFilter
-  slug: StringFilter
   title: StringFilter
   subtitle: StringFilter
   weight: IntNullableFilter
@@ -1771,7 +1729,6 @@ input SpecialfeatureListManyRelationFilter {
 
 input SpecialfeatureOrderByInput {
   id: OrderDirection
-  slug: OrderDirection
   title: OrderDirection
   subtitle: OrderDirection
   weight: OrderDirection
@@ -1783,7 +1740,6 @@ input SpecialfeatureOrderByInput {
 }
 
 input SpecialfeatureUpdateInput {
-  slug: String
   title: String
   subtitle: String
   weight: Int
@@ -1816,7 +1772,6 @@ input SpecialfeatureUpdateArgs {
 }
 
 input SpecialfeatureCreateInput {
-  slug: String
   title: String
   subtitle: String
   weight: Int
@@ -1843,7 +1798,6 @@ input SpecialfeatureListRelateToManyForCreateInput {
 
 type SpecialfeatureList {
   id: ID!
-  slug: String
   title: String
   weight: Int
   status: SpecialfeatureListStatusType
@@ -1874,7 +1828,6 @@ enum SpecialfeatureListStatusType {
 
 input SpecialfeatureListWhereUniqueInput {
   id: ID
-  slug: String
 }
 
 input SpecialfeatureListWhereInput {
@@ -1882,7 +1835,6 @@ input SpecialfeatureListWhereInput {
   OR: [SpecialfeatureListWhereInput!]
   NOT: [SpecialfeatureListWhereInput!]
   id: IDFilter
-  slug: StringFilter
   title: StringFilter
   weight: IntNullableFilter
   status: SpecialfeatureListStatusTypeNullableFilter
@@ -1905,7 +1857,6 @@ input SpecialfeatureListStatusTypeNullableFilter {
 
 input SpecialfeatureListOrderByInput {
   id: OrderDirection
-  slug: OrderDirection
   title: OrderDirection
   weight: OrderDirection
   status: OrderDirection
@@ -1916,7 +1867,6 @@ input SpecialfeatureListOrderByInput {
 }
 
 input SpecialfeatureListUpdateInput {
-  slug: String
   title: String
   weight: Int
   status: SpecialfeatureListStatusType
@@ -1938,7 +1888,6 @@ input SpecialfeatureListUpdateArgs {
 }
 
 input SpecialfeatureListCreateInput {
-  slug: String
   title: String
   weight: Int
   status: SpecialfeatureListStatusType
@@ -1957,7 +1906,6 @@ input SpecialfeatureListCreateInput {
 type Tag {
   id: ID!
   name: String
-  slug: String
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
@@ -1994,7 +1942,6 @@ type Tag {
 
 input TagWhereUniqueInput {
   id: ID
-  slug: String
 }
 
 input TagWhereInput {
@@ -2003,7 +1950,6 @@ input TagWhereInput {
   NOT: [TagWhereInput!]
   id: IDFilter
   name: StringFilter
-  slug: StringFilter
   posts: PostManyRelationFilter
   specialfeatures: SpecialfeatureManyRelationFilter
   jobs: JobManyRelationFilter
@@ -2017,14 +1963,12 @@ input TagWhereInput {
 input TagOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  slug: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input TagUpdateInput {
   name: String
-  slug: String
   posts: PostRelateToManyForUpdateInput
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
   jobs: JobRelateToManyForUpdateInput
@@ -2042,7 +1986,6 @@ input TagUpdateArgs {
 
 input TagCreateInput {
   name: String
-  slug: String
   posts: PostRelateToManyForCreateInput
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
   jobs: JobRelateToManyForCreateInput

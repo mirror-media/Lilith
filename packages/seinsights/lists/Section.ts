@@ -1,9 +1,15 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { integer, text, relationship, checkbox, select } from '@keystone-6/core/fields'
+import {
+  integer,
+  text,
+  relationship,
+  checkbox,
+  select,
+} from '@keystone-6/core/fields'
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
-enum SectionStatus{
+enum SectionStatus {
   Active = 'active',
   Inactive = 'inactive',
 }
@@ -13,29 +19,29 @@ const listConfigurations = list({
     name: text({
       label: '名稱',
       validation: {
-        isRequired: true
-      }
+        isRequired: true,
+      },
     }),
     order: integer({
       label: '排序',
       isIndexed: 'unique',
     }),
     status: select({
-        type:'enum',
-        options: [
-          {label: 'active', value: SectionStatus.Active},
-          {label: 'inactive', value: SectionStatus.Inactive},
-        ],
-        validation: {
-            isRequired: true,
-          },
-        ui: {
-          displayMode: 'segmented-control',
-        },
+      type: 'enum',
+      options: [
+        { label: 'active', value: SectionStatus.Active },
+        { label: 'inactive', value: SectionStatus.Inactive },
+      ],
+      validation: {
+        isRequired: true,
+      },
+      ui: {
+        displayMode: 'segmented-control',
+      },
     }),
-    isPresent: checkbox({ 
-      label: '前台顯示', 
-      defaultValue: true 
+    isPresent: checkbox({
+      label: '前台顯示',
+      defaultValue: true,
     }),
     heroImage: customFields.relationship({
       label: 'Banner圖片',
@@ -58,6 +64,9 @@ const listConfigurations = list({
     posts: relationship({
       ref: 'Post.section',
       ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
         itemView: {
           fieldMode: 'hidden',
         },
@@ -67,6 +76,9 @@ const listConfigurations = list({
     jobs: relationship({
       ref: 'Job.section',
       ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
         itemView: {
           fieldMode: 'hidden',
         },
@@ -76,6 +88,9 @@ const listConfigurations = list({
     events: relationship({
       ref: 'Event.section',
       ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
         itemView: {
           fieldMode: 'hidden',
         },
@@ -85,6 +100,9 @@ const listConfigurations = list({
     resources: relationship({
       ref: 'Resource.section',
       ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
         itemView: {
           fieldMode: 'hidden',
         },

@@ -38,7 +38,6 @@ model Banner {
 model Category {
   id          Int                @id @default(autoincrement())
   name        String             @default("")
-  slug        String             @unique @default("")
   order       Int?               @unique
   status      CategoryStatusType
   heroImage   Photo?             @relation("Category_heroImage", fields: [heroImageId], references: [id])
@@ -62,7 +61,6 @@ model Category {
 model Column {
   id              Int              @id @default(autoincrement())
   name            String           @default("")
-  slug            String           @unique @default("")
   type            ColumnTypeType
   profile_photo   Photo?           @relation("Column_profile_photo", fields: [profile_photoId], references: [id])
   profile_photoId Int?             @map("profile_photo")
@@ -99,7 +97,6 @@ model EditorChoice {
 model Event {
   id                       Int                  @id @default(autoincrement())
   name                     String               @default("")
-  slug                     String               @unique @default("")
   eventStatus              EventEventStatusType
   status                   EventStatusType      @default(draft)
   type                     EventTypeType
@@ -135,7 +132,6 @@ model Event {
 model Job {
   id                   Int              @id @default(autoincrement())
   name                 String           @default("")
-  slug                 String           @unique @default("")
   jobStatus            JobJobStatusType
   status               JobStatusType    @default(draft)
   type                 JobTypeType
@@ -203,7 +199,6 @@ model Photo {
 
 model Post {
   id                               Int              @id @default(autoincrement())
-  slug                             String           @unique @default("")
   title                            String           @default("")
   subtitle                         String           @default("")
   weight                           Int?             @default(85)
@@ -221,6 +216,7 @@ model Post {
   content                          Json?
   relatedPosts                     Post[]           @relation("Post_relatedPosts")
   tags                             Tag[]            @relation("Post_tags")
+  apiData                          Json?
   createdAt                        DateTime?
   updatedAt                        DateTime?
   createdBy                        User?            @relation("Post_createdBy", fields: [createdById], references: [id])
@@ -241,7 +237,6 @@ model Post {
 model Resource {
   id                             Int                @id @default(autoincrement())
   name                           String             @default("")
-  slug                           String             @unique @default("")
   region                         ResourceRegionType
   section                        Section?           @relation("Resource_section", fields: [sectionId], references: [id])
   sectionId                      Int?               @map("section")
@@ -267,7 +262,6 @@ model Resource {
 model Section {
   id          Int               @id @default(autoincrement())
   name        String            @default("")
-  slug        String            @unique @default("")
   order       Int?              @unique
   status      SectionStatusType
   isPresent   Boolean           @default(true)
@@ -292,7 +286,6 @@ model Section {
 
 model Specialfeature {
   id                               Int                       @id @default(autoincrement())
-  slug                             String                    @unique @default("")
   title                            String                    @default("")
   subtitle                         String                    @default("")
   weight                           Int?                      @default(85)
@@ -322,7 +315,6 @@ model Specialfeature {
 
 model SpecialfeatureList {
   id              Int                           @id @default(autoincrement())
-  slug            String                        @unique @default("")
   title           String                        @default("")
   weight          Int?                          @default(85)
   status          SpecialfeatureListStatusType? @default(draft)
@@ -348,7 +340,6 @@ model SpecialfeatureList {
 model Tag {
   id              Int              @id @default(autoincrement())
   name            String           @default("")
-  slug            String           @unique @default("")
   posts           Post[]           @relation("Post_tags")
   specialfeatures Specialfeature[] @relation("Specialfeature_tags")
   jobs            Job[]            @relation("Job_tags")

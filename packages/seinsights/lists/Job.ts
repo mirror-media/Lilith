@@ -1,22 +1,16 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { list, graphql } from '@keystone-6/core'
+import { list } from '@keystone-6/core'
 import {
   text,
   relationship,
   select,
   json,
-  virtual,
+  // virtual,
 } from '@keystone-6/core/fields'
 
 import config from '../config'
 
-const {
-  allowRoles,
-  admin,
-  moderator,
-  editor,
-} = utils.accessControl
-
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 enum Status {
   Published = 'published',
@@ -37,9 +31,6 @@ enum JobType {
   Volunteer = 'volunteer',
 }
 
-
-
-
 const listConfigurations = list({
   fields: {
     name: text({
@@ -58,7 +49,7 @@ const listConfigurations = list({
       },
       ui: {
         displayMode: 'segmented-control',
-      }
+      },
     }),
     status: select({
       label: '狀態',
@@ -94,7 +85,7 @@ const listConfigurations = list({
       },
       ui: {
         displayMode: 'segmented-control',
-      }
+      },
     }),
     region: select({
       label: '地區',
@@ -156,7 +147,7 @@ const listConfigurations = list({
       label: '資料庫使用',
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
       },
     }),
   },
@@ -210,7 +201,6 @@ const listConfigurations = list({
     //       }
     //     }
     //   }
-
 
     // },
   },

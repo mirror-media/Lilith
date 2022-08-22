@@ -1,14 +1,19 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { list, graphql } from '@keystone-6/core'
-import { text, integer, relationship, select, json, timestamp, virtual } from '@keystone-6/core/fields'
+import {
+  list,
+  // graphql
+} from '@keystone-6/core'
+import {
+  text,
+  integer,
+  relationship,
+  select,
+  json,
+  timestamp,
+  // virtual
+} from '@keystone-6/core/fields'
 
-const {
-  allowRoles,
-  admin,
-  moderator,
-  editor,
-} = utils.accessControl
-
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 enum Status {
   Published = 'published',
@@ -16,7 +21,6 @@ enum Status {
   Scheduled = 'scheduled',
   Archived = 'archived',
 }
-
 
 const listConfigurations = list({
   fields: {
@@ -32,7 +36,7 @@ const listConfigurations = list({
       validation: {
         min: 1,
         max: 9999,
-      }
+      },
     }),
     status: select({
       label: '狀態',
@@ -88,11 +92,11 @@ const listConfigurations = list({
     }),
     specialfeatureLists: relationship({
       label: 'Special Feature List',
-      ref : 'SpecialfeatureList.specialfeatures',
+      ref: 'SpecialfeatureList.specialfeatures',
       many: true,
       ui: {
         labelField: 'title',
-      }
+      },
     }),
     tags: relationship({
       ref: 'Tag.specialfeatures',
@@ -120,7 +124,7 @@ const listConfigurations = list({
       label: '資料庫使用',
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
       },
     }),
   },
@@ -139,7 +143,6 @@ const listConfigurations = list({
       create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin),
     },
-
   },
   hooks: {
     resolveInput: async ({ resolvedData }) => {
@@ -152,8 +155,12 @@ const listConfigurations = list({
 
       return resolvedData
     },
-    validateInput: async ({ operation, item, resolvedData, addValidationError }) => {
-
+    validateInput: async ({
+      operation,
+      item,
+      resolvedData,
+      addValidationError,
+    }) => {
       // publishDate is must while status is not `draft`
       if (operation == 'create') {
         const { status } = resolvedData
@@ -166,13 +173,12 @@ const listConfigurations = list({
       }
       if (operation == 'update') {
         if (resolvedData.status && resolvedData.status != 'draft') {
-          let publishDate = resolvedData.publishDate || item.publishDate
+          const publishDate = resolvedData.publishDate || item.publishDate
           if (!publishDate) {
             addValidationError('需要填入發布時間')
           }
-        }
-        else if (resolvedData.publishDate === null) {
-          let status = resolvedData.status || item.status
+        } else if (resolvedData.publishDate === null) {
+          const status = resolvedData.status || item.status
           if (status != 'draft') {
             addValidationError('需要填入發布時間')
           }
