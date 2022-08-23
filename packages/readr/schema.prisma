@@ -263,7 +263,7 @@ model Post {
   name                      String            @default("")
   subtitle                  String            @default("")
   state                     String?           @default("draft")
-  publisheTime              DateTime?
+  publishedTime             DateTime?
   categories                Category[]        @relation("Post_categories")
   writers                   Author[]          @relation("Author_posts")
   photographers             Author[]          @relation("Post_photographers")
@@ -314,7 +314,7 @@ model Post {
   from_Feature_featurePost  Feature[]         @relation("Feature_featurePost")
 
   @@index([state])
-  @@index([publisheTime])
+  @@index([publishedTime])
   @@index([heroVideoId])
   @@index([heroImageId])
   @@index([style])

@@ -1041,7 +1041,7 @@ type Post {
   name: String
   subtitle: String
   state: String
-  publisheTime: DateTime
+  publishedTime: DateTime
   categories(
     where: CategoryWhereInput! = {}
     orderBy: [CategoryOrderByInput!]! = []
@@ -1162,7 +1162,7 @@ input PostWhereInput {
   name: StringFilter
   subtitle: StringFilter
   state: StringNullableFilter
-  publisheTime: DateTimeNullableFilter
+  publishedTime: DateTimeNullableFilter
   categories: CategoryManyRelationFilter
   writers: AuthorManyRelationFilter
   photographers: AuthorManyRelationFilter
@@ -1231,7 +1231,7 @@ input PostOrderByInput {
   name: OrderDirection
   subtitle: OrderDirection
   state: OrderDirection
-  publisheTime: OrderDirection
+  publishedTime: OrderDirection
   otherByline: OrderDirection
   heroCaption: OrderDirection
   heroImageSize: OrderDirection
@@ -1251,7 +1251,7 @@ input PostUpdateInput {
   name: String
   subtitle: String
   state: String
-  publisheTime: DateTime
+  publishedTime: DateTime
   categories: CategoryRelateToManyForUpdateInput
   writers: AuthorRelateToManyForUpdateInput
   photographers: AuthorRelateToManyForUpdateInput
@@ -1349,7 +1349,7 @@ input PostCreateInput {
   name: String
   subtitle: String
   state: String
-  publisheTime: DateTime
+  publishedTime: DateTime
   categories: CategoryRelateToManyForCreateInput
   writers: AuthorRelateToManyForCreateInput
   photographers: AuthorRelateToManyForCreateInput

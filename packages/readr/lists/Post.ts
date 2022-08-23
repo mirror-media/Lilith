@@ -39,7 +39,7 @@ const listConfigurations = list ({
       defaultValue: 'draft', 
       isIndexed: true 
     }),
-    publisheTime: timestamp({
+    publishedTime: timestamp({
       isIndexed: true, 
       label: '發佈日期',  
     }),
