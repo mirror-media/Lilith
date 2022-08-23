@@ -34,7 +34,7 @@ const listConfigurations = list ({
     twitter: text({
       isIndexed: false 
     }),
-    instantgram: text({
+    instagram: text({
       isIndexed: true,  
     }),
     address: text({

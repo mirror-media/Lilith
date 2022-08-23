@@ -47,7 +47,7 @@ CREATE TABLE "Author" (
     "homepage" TEXT NOT NULL DEFAULT E'',
     "facebook" TEXT NOT NULL DEFAULT E'',
     "twitter" TEXT NOT NULL DEFAULT E'',
-    "instantgram" TEXT NOT NULL DEFAULT E'',
+    "instagram" TEXT NOT NULL DEFAULT E'',
     "address" TEXT NOT NULL DEFAULT E'',
     "bio" TEXT NOT NULL DEFAULT E'',
     "createdAt" TIMESTAMP(3),
@@ -161,7 +161,7 @@ CREATE TABLE "Post" (
     "name" TEXT NOT NULL DEFAULT E'',
     "subtitle" TEXT NOT NULL DEFAULT E'',
     "state" TEXT DEFAULT E'draft',
-    "publisheTime" TIMESTAMP(3),
+    "publishedTime" TIMESTAMP(3),
     "otherByline" TEXT NOT NULL DEFAULT E'',
     "heroVideo" INTEGER,
     "heroImage" INTEGER,
@@ -470,7 +470,7 @@ CREATE INDEX "Author_name_idx" ON "Author"("name");
 CREATE INDEX "Author_image_idx" ON "Author"("image");
 
 -- CreateIndex
-CREATE INDEX "Author_instantgram_idx" ON "Author"("instantgram");
+CREATE INDEX "Author_instagram_idx" ON "Author"("instagram");
 
 -- CreateIndex
 CREATE INDEX "Author_createdBy_idx" ON "Author"("createdBy");
@@ -533,7 +533,7 @@ CREATE UNIQUE INDEX "Post_project_key" ON "Post"("project");
 CREATE INDEX "Post_state_idx" ON "Post"("state");
 
 -- CreateIndex
-CREATE INDEX "Post_publisheTime_idx" ON "Post"("publisheTime");
+CREATE INDEX "Post_publishedTime_idx" ON "Post"("publishedTime");
 
 -- CreateIndex
 CREATE INDEX "Post_heroVideo_idx" ON "Post"("heroVideo");

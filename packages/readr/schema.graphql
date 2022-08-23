@@ -378,7 +378,7 @@ type Author {
   homepage: String
   facebook: String
   twitter: String
-  instantgram: String
+  instagram: String
   address: String
   bio: String
   posts(
@@ -431,7 +431,7 @@ input AuthorWhereInput {
   homepage: StringFilter
   facebook: StringFilter
   twitter: StringFilter
-  instantgram: StringFilter
+  instagram: StringFilter
   address: StringFilter
   bio: StringFilter
   posts: PostManyRelationFilter
@@ -469,7 +469,7 @@ input AuthorOrderByInput {
   homepage: OrderDirection
   facebook: OrderDirection
   twitter: OrderDirection
-  instantgram: OrderDirection
+  instagram: OrderDirection
   address: OrderDirection
   bio: OrderDirection
   createdAt: OrderDirection
@@ -483,7 +483,7 @@ input AuthorUpdateInput {
   homepage: String
   facebook: String
   twitter: String
-  instantgram: String
+  instagram: String
   address: String
   bio: String
   posts: PostRelateToManyForUpdateInput
@@ -529,7 +529,7 @@ input AuthorCreateInput {
   homepage: String
   facebook: String
   twitter: String
-  instantgram: String
+  instagram: String
   address: String
   bio: String
   posts: PostRelateToManyForCreateInput

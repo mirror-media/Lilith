@@ -81,7 +81,7 @@ model Author {
   homepage                  String    @default("")
   facebook                  String    @default("")
   twitter                   String    @default("")
-  instantgram               String    @default("")
+  instagram                 String    @default("")
   address                   String    @default("")
   bio                       String    @default("")
   posts                     Post[]    @relation("Author_posts")
@@ -102,7 +102,7 @@ model Author {
 
   @@index([name])
   @@index([imageId])
-  @@index([instantgram])
+  @@index([instagram])
   @@index([createdById])
   @@index([updatedById])
 }
