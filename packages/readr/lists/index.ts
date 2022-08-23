@@ -13,6 +13,7 @@ import EditorChoice from './EditorChoice'
 import User from './User'
 import Author from './Author'
 import Image from './Image'
+import ProjectChecklist from './ProjectChecklist'
 
 export const listDefinition = {
   EditorChoice,
@@ -29,5 +30,6 @@ export const listDefinition = {
   Feature,
   Gallery,
   Project,
+  ProjectChecklist,
   Quote
 }

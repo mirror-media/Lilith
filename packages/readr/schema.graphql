@@ -1135,6 +1135,7 @@ type Post {
   ogDescription: String
   ogImage: Photo
   isFeatured: Boolean
+  project: ProjectChecklist
   css: String
   summaryApiData: JSON
   apiData: JSON
@@ -1185,6 +1186,7 @@ input PostWhereInput {
   ogDescription: StringFilter
   ogImage: PhotoWhereInput
   isFeatured: BooleanFilter
+  project: ProjectChecklistWhereInput
   css: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1277,6 +1279,7 @@ input PostUpdateInput {
   ogDescription: String
   ogImage: PhotoRelateToOneForUpdateInput
   isFeatured: Boolean
+  project: ProjectChecklistRelateToOneForUpdateInput
   css: String
   summaryApiData: JSON
   apiData: JSON
@@ -1329,6 +1332,12 @@ input DataSetRelateToManyForUpdateInput {
   connect: [DataSetWhereUniqueInput!]
 }
 
+input ProjectChecklistRelateToOneForUpdateInput {
+  create: ProjectChecklistCreateInput
+  connect: ProjectChecklistWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PostUpdateArgs {
   where: PostWhereUniqueInput!
   data: PostUpdateInput!
@@ -1368,6 +1377,7 @@ input PostCreateInput {
   ogDescription: String
   ogImage: PhotoRelateToOneForCreateInput
   isFeatured: Boolean
+  project: ProjectChecklistRelateToOneForCreateInput
   css: String
   summaryApiData: JSON
   apiData: JSON
@@ -1407,6 +1417,11 @@ input CollaborationRelateToManyForCreateInput {
 input DataSetRelateToManyForCreateInput {
   create: [DataSetCreateInput!]
   connect: [DataSetWhereUniqueInput!]
+}
+
+input ProjectChecklistRelateToOneForCreateInput {
+  create: ProjectChecklistCreateInput
+  connect: ProjectChecklistWhereUniqueInput
 }
 
 type Collaboration {
@@ -1968,6 +1983,134 @@ input ProjectCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type ProjectChecklist {
+  id: ID!
+  project: Post
+  asanaCheck: Boolean
+  uiCheck: Boolean
+  performanceCheck: Boolean
+  ga: Boolean
+  gtm: Boolean
+  og: Boolean
+  module: String
+  document: String
+  asana: String
+  tracking: String
+  sourceCode: String
+  gaLink: String
+  retro: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ProjectChecklistWhereUniqueInput {
+  id: ID
+}
+
+input ProjectChecklistWhereInput {
+  AND: [ProjectChecklistWhereInput!]
+  OR: [ProjectChecklistWhereInput!]
+  NOT: [ProjectChecklistWhereInput!]
+  id: IDFilter
+  project: PostWhereInput
+  asanaCheck: BooleanFilter
+  uiCheck: BooleanFilter
+  performanceCheck: BooleanFilter
+  ga: BooleanFilter
+  gtm: BooleanFilter
+  og: BooleanFilter
+  module: StringFilter
+  document: StringFilter
+  asana: StringFilter
+  tracking: StringFilter
+  sourceCode: StringFilter
+  gaLink: StringFilter
+  retro: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ProjectChecklistOrderByInput {
+  id: OrderDirection
+  asanaCheck: OrderDirection
+  uiCheck: OrderDirection
+  performanceCheck: OrderDirection
+  ga: OrderDirection
+  gtm: OrderDirection
+  og: OrderDirection
+  module: OrderDirection
+  document: OrderDirection
+  asana: OrderDirection
+  tracking: OrderDirection
+  sourceCode: OrderDirection
+  gaLink: OrderDirection
+  retro: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ProjectChecklistUpdateInput {
+  project: PostRelateToOneForUpdateInput
+  asanaCheck: Boolean
+  uiCheck: Boolean
+  performanceCheck: Boolean
+  ga: Boolean
+  gtm: Boolean
+  og: Boolean
+  module: String
+  document: String
+  asana: String
+  tracking: String
+  sourceCode: String
+  gaLink: String
+  retro: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PostRelateToOneForUpdateInput {
+  create: PostCreateInput
+  connect: PostWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ProjectChecklistUpdateArgs {
+  where: ProjectChecklistWhereUniqueInput!
+  data: ProjectChecklistUpdateInput!
+}
+
+input ProjectChecklistCreateInput {
+  project: PostRelateToOneForCreateInput
+  asanaCheck: Boolean
+  uiCheck: Boolean
+  performanceCheck: Boolean
+  ga: Boolean
+  gtm: Boolean
+  og: Boolean
+  module: String
+  document: String
+  asana: String
+  tracking: String
+  sourceCode: String
+  gaLink: String
+  retro: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input PostRelateToOneForCreateInput {
+  create: PostCreateInput
+  connect: PostWhereUniqueInput
+}
+
 type Quote {
   id: ID!
   name: String
@@ -2169,6 +2312,23 @@ type Mutation {
   updateProjects(data: [ProjectUpdateArgs!]!): [Project]
   deleteProject(where: ProjectWhereUniqueInput!): Project
   deleteProjects(where: [ProjectWhereUniqueInput!]!): [Project]
+  createProjectChecklist(data: ProjectChecklistCreateInput!): ProjectChecklist
+  createProjectChecklists(
+    data: [ProjectChecklistCreateInput!]!
+  ): [ProjectChecklist]
+  updateProjectChecklist(
+    where: ProjectChecklistWhereUniqueInput!
+    data: ProjectChecklistUpdateInput!
+  ): ProjectChecklist
+  updateProjectChecklists(
+    data: [ProjectChecklistUpdateArgs!]!
+  ): [ProjectChecklist]
+  deleteProjectChecklist(
+    where: ProjectChecklistWhereUniqueInput!
+  ): ProjectChecklist
+  deleteProjectChecklists(
+    where: [ProjectChecklistWhereUniqueInput!]!
+  ): [ProjectChecklist]
   createQuote(data: QuoteCreateInput!): Quote
   createQuotes(data: [QuoteCreateInput!]!): [Quote]
   updateQuote(where: QuoteWhereUniqueInput!, data: QuoteUpdateInput!): Quote
@@ -2318,6 +2478,14 @@ type Query {
   ): [Project!]
   project(where: ProjectWhereUniqueInput!): Project
   projectsCount(where: ProjectWhereInput! = {}): Int
+  projectChecklists(
+    where: ProjectChecklistWhereInput! = {}
+    orderBy: [ProjectChecklistOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ProjectChecklist!]
+  projectChecklist(where: ProjectChecklistWhereUniqueInput!): ProjectChecklist
+  projectChecklistsCount(where: ProjectChecklistWhereInput! = {}): Int
   quotes(
     where: QuoteWhereInput! = {}
     orderBy: [QuoteOrderByInput!]! = []
