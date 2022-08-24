@@ -271,6 +271,7 @@ model Form {
   active              Boolean               @default(true)
   fields              Field[]               @relation("Field_form")
   answers             FormAnswer[]          @relation("FormAnswer_form")
+  updateTimeDesc      String                @default("")
   updateTime          DateTime?
   questions           Question[]            @relation("Form_questions")
   tags                Tag[]                 @relation("Form_tags")

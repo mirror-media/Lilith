@@ -55,13 +55,13 @@ const listConfigurations = list({
       customConfig: {
         isImage: true,
       },
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor),
-		  update: allowRoles(admin, moderator),
-		  create: allowRoles(admin, moderator),
-		  delete: allowRoles(admin),
-		},
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor),
+          update: allowRoles(admin, moderator),
+          create: allowRoles(admin, moderator),
+          delete: allowRoles(admin),
+        },
       },
     }),
     mobileImage: customFields.relationship({
@@ -70,13 +70,13 @@ const listConfigurations = list({
       customConfig: {
         isImage: true,
       },
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor),
-		  update: allowRoles(admin, moderator),
-		  create: allowRoles(admin, moderator),
-		  delete: allowRoles(admin),
-		},
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor),
+          update: allowRoles(admin, moderator),
+          create: allowRoles(admin, moderator),
+          delete: allowRoles(admin),
+        },
       },
     }),
     heroImageLink: text({
@@ -88,13 +88,13 @@ const listConfigurations = list({
     heroVideo: customFields.relationship({
       label: '首屏影片',
       ref: 'Video',
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor),
-		  update: allowRoles(admin, moderator),
-		  create: allowRoles(admin, moderator),
-		  delete: allowRoles(admin),
-		},
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor),
+          update: allowRoles(admin, moderator),
+          create: allowRoles(admin, moderator),
+          delete: allowRoles(admin),
+        },
       },
     }),
     heroVideoLink: text({
@@ -139,6 +139,9 @@ const listConfigurations = list({
         inlineConnect: true,
       },
       many: true,
+    }),
+    updateTimeDesc: text({
+      label: '更新時間說明（若空白則顯示「最後更新時間」）',
     }),
     updateTime: customFields.timestamp({
       label: '最後更新時間',

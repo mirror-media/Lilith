@@ -1043,6 +1043,7 @@ type Form {
     skip: Int! = 0
   ): [FormAnswer!]
   answersCount(where: FormAnswerWhereInput! = {}): Int
+  updateTimeDesc: String
   updateTime: DateTime
   questions(
     where: QuestionWhereInput! = {}
@@ -1110,6 +1111,7 @@ input FormWhereInput {
   active: BooleanFilter
   fields: FieldManyRelationFilter
   answers: FormAnswerManyRelationFilter
+  updateTimeDesc: StringFilter
   updateTime: DateTimeNullableFilter
   questions: QuestionManyRelationFilter
   tags: TagManyRelationFilter
@@ -1169,6 +1171,7 @@ input FormOrderByInput {
   mobileImageLink: OrderDirection
   heroVideoLink: OrderDirection
   active: OrderDirection
+  updateTimeDesc: OrderDirection
   updateTime: OrderDirection
   feedback: OrderDirection
   createdAt: OrderDirection
@@ -1189,6 +1192,7 @@ input FormUpdateInput {
   active: Boolean
   fields: FieldRelateToManyForUpdateInput
   answers: FormAnswerRelateToManyForUpdateInput
+  updateTimeDesc: String
   updateTime: DateTime
   questions: QuestionRelateToManyForUpdateInput
   tags: TagRelateToManyForUpdateInput
@@ -1257,6 +1261,7 @@ input FormCreateInput {
   active: Boolean
   fields: FieldRelateToManyForCreateInput
   answers: FormAnswerRelateToManyForCreateInput
+  updateTimeDesc: String
   updateTime: DateTime
   questions: QuestionRelateToManyForCreateInput
   tags: TagRelateToManyForCreateInput
