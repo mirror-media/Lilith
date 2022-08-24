@@ -278,7 +278,7 @@ model Post {
   heroImageId               Int?              @map("heroImage")
   heroCaption               String            @default("")
   heroImageSize             String?           @default("normal")
-  style                     String?           @default("article")
+  style                     String?           @default("news")
   summary                   Json?
   content                   Json?
   actionList                Json?

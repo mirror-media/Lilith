@@ -105,7 +105,7 @@ const listConfigurations = list ({
     }),
     style: select({
       isIndexed: true, 
-      defaultValue: 'article', 
+      defaultValue: 'news', 
       options: [ 
         { label: 'review', value: 'review' }, 
         { label: 'news', value: 'news' }, 
@@ -308,7 +308,8 @@ const listConfigurations = list ({
           .convertToApiData(citation)
           .toJS()
       }
-	}
+      return resolvedData
+	},
   }
 })
 export default utils.addTrackingFields(listConfigurations)
