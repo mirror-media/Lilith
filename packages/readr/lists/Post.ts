@@ -15,7 +15,10 @@ const listConfigurations = list ({
 	slug: text({
       validation: { isRequired: true}, 
       label: '網址名稱（英文）', 
-      isIndexed: 'unique' 
+      isIndexed: 'unique', 
+	  db: {
+		isNullable: true,
+	  }
     }),
 	sortOrder: integer({
 	  label: '排列順序',
@@ -26,7 +29,10 @@ const listConfigurations = list ({
     }),
     subtitle: text({
       label: '副標', 
-      validation: { isRequired: false} 
+      validation: { isRequired: false},
+	  db: {
+		isNullable: true,
+	  }
     }),
     state: select({
       label: '狀態', 
@@ -39,7 +45,7 @@ const listConfigurations = list ({
       defaultValue: 'draft', 
       isIndexed: true 
     }),
-    publishedTime: timestamp({
+    publishTime: timestamp({
       isIndexed: true, 
       label: '發佈日期',  
     }),
@@ -80,7 +86,10 @@ const listConfigurations = list ({
     }),
     otherByline: text({
       validation: { isRequired: false}, 
-      label: '作者（其他）' 
+      label: '作者（其他）', 
+	  db: {
+		isNullable: true,
+	  }
     }),
     heroVideo: relationship({
       label: 'Leading Video',
@@ -92,7 +101,10 @@ const listConfigurations = list ({
     }),
     heroCaption: text({
       label: '首圖圖說', 
-      validation: { isRequired: false} 
+      validation: { isRequired: false},
+	  db: {
+		isNullable: true,
+	  }
     }),
     heroImageSize: select({
       label: '首圖尺寸', 
@@ -123,7 +135,10 @@ const listConfigurations = list ({
       label: '文章樣式',  
     }),
     summary: customFields.richTextEditor({
-       label: '重點摘要', 
+       label: '重點摘要',  
+    }),
+    brief: customFields.richTextEditor({
+       label: '前言',  
     }),
     content: customFields.richTextEditor({
        label: '內文', 
@@ -146,6 +161,12 @@ const listConfigurations = list ({
       many: true, 
       label: '標籤' 
     }),
+	wordCount: integer({
+	  label: '字數',
+	}),
+	readingTime: integer({
+	  label: '閱讀時間',
+	}),
     collabration: relationship({
       ref: 'Collaboration.posts', 
       many: true, 
@@ -163,11 +184,17 @@ const listConfigurations = list ({
     }),
     ogTitle: text({
       validation: { isRequired: false}, 
-      label: 'FB分享標題' 
+      label: 'FB分享標題', 
+	  db: {
+		isNullable: true,
+	  }
     }),
     ogDescription: text({
       label: 'FB分享說明', 
-      validation: { isRequired: false} 
+      validation: { isRequired: false}, 
+	  db: {
+		isNullable: true,
+	  }
     }),
     ogImage: relationship({
       label: 'FB分享縮圖',  
@@ -247,6 +274,13 @@ const listConfigurations = list ({
         itemView: { fieldMode: 'hidden' },
       },
     }),
+    briefApiData: json({
+      label: '資料庫使用',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
     apiData: json({
       label: '資料庫使用',
       ui: {
@@ -287,7 +321,7 @@ const listConfigurations = list ({
   },
   hooks: {
 	resolveInput: async ({ resolvedData, context }) => {
-      const { summary, content, actionList, citation } = resolvedData                                                                                                                             
+      const { summary, brief, content, actionList, citation } = resolvedData                                                                                                                             
       if (content) {
         resolvedData.apiData = customFields.draftConverter
           .convertToApiData(content)
@@ -296,6 +330,11 @@ const listConfigurations = list ({
       if (summary) {
         resolvedData.summaryApiData = customFields.draftConverter
           .convertToApiData(summary)
+          .toJS()
+      }
+      if (brief) {
+        resolvedData.briefApiData = customFields.draftConverter
+          .convertToApiData(brief)
           .toJS()
       }
       if (actionList) {

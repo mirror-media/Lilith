@@ -156,31 +156,35 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Post" (
     "id" SERIAL NOT NULL,
-    "slug" TEXT NOT NULL DEFAULT E'',
+    "slug" TEXT,
     "sortOrder" INTEGER,
     "name" TEXT NOT NULL DEFAULT E'',
-    "subtitle" TEXT NOT NULL DEFAULT E'',
+    "subtitle" TEXT,
     "state" TEXT DEFAULT E'draft',
-    "publishedTime" TIMESTAMP(3),
-    "otherByline" TEXT NOT NULL DEFAULT E'',
+    "publishTime" TIMESTAMP(3),
+    "otherByline" TEXT,
     "heroVideo" INTEGER,
     "heroImage" INTEGER,
-    "heroCaption" TEXT NOT NULL DEFAULT E'',
+    "heroCaption" TEXT,
     "heroImageSize" TEXT DEFAULT E'normal',
-    "style" TEXT DEFAULT E'article',
+    "style" TEXT DEFAULT E'news',
     "summary" JSONB,
+    "brief" JSONB,
     "content" JSONB,
     "actionList" JSONB,
     "citation" JSONB,
     "readringTime" INTEGER,
     "projects" INTEGER,
-    "ogTitle" TEXT NOT NULL DEFAULT E'',
-    "ogDescription" TEXT NOT NULL DEFAULT E'',
+    "wordCount" INTEGER,
+    "readingTime" INTEGER,
+    "ogTitle" TEXT,
+    "ogDescription" TEXT,
     "ogImage" INTEGER,
     "isFeatured" BOOLEAN NOT NULL DEFAULT false,
     "project" INTEGER,
     "css" TEXT NOT NULL DEFAULT E'',
     "summaryApiData" JSONB,
+    "briefApiData" JSONB,
     "apiData" JSONB,
     "actionlistApiData" JSONB,
     "citationApiData" JSONB,
@@ -533,7 +537,7 @@ CREATE UNIQUE INDEX "Post_project_key" ON "Post"("project");
 CREATE INDEX "Post_state_idx" ON "Post"("state");
 
 -- CreateIndex
-CREATE INDEX "Post_publishedTime_idx" ON "Post"("publishedTime");
+CREATE INDEX "Post_publishTime_idx" ON "Post"("publishTime");
 
 -- CreateIndex
 CREATE INDEX "Post_heroVideo_idx" ON "Post"("heroVideo");

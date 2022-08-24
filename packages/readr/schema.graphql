@@ -1041,7 +1041,7 @@ type Post {
   name: String
   subtitle: String
   state: String
-  publishedTime: DateTime
+  publishTime: DateTime
   categories(
     where: CategoryWhereInput! = {}
     orderBy: [CategoryOrderByInput!]! = []
@@ -1098,6 +1098,7 @@ type Post {
   heroImageSize: String
   style: String
   summary: JSON
+  brief: JSON
   content: JSON
   actionList: JSON
   citation: JSON
@@ -1110,6 +1111,8 @@ type Post {
     skip: Int! = 0
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  wordCount: Int
+  readingTime: Int
   collabration(
     where: CollaborationWhereInput! = {}
     orderBy: [CollaborationOrderByInput!]! = []
@@ -1138,6 +1141,7 @@ type Post {
   project: ProjectChecklist
   css: String
   summaryApiData: JSON
+  briefApiData: JSON
   apiData: JSON
   actionlistApiData: JSON
   citationApiData: JSON
@@ -1157,12 +1161,12 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
-  slug: StringFilter
+  slug: StringNullableFilter
   sortOrder: IntNullableFilter
   name: StringFilter
-  subtitle: StringFilter
+  subtitle: StringNullableFilter
   state: StringNullableFilter
-  publishedTime: DateTimeNullableFilter
+  publishTime: DateTimeNullableFilter
   categories: CategoryManyRelationFilter
   writers: AuthorManyRelationFilter
   photographers: AuthorManyRelationFilter
@@ -1170,20 +1174,22 @@ input PostWhereInput {
   designers: AuthorManyRelationFilter
   engineers: AuthorManyRelationFilter
   dataAnalysts: AuthorManyRelationFilter
-  otherByline: StringFilter
+  otherByline: StringNullableFilter
   heroVideo: VideoWhereInput
   heroImage: PhotoWhereInput
-  heroCaption: StringFilter
+  heroCaption: StringNullableFilter
   heroImageSize: StringNullableFilter
   style: StringNullableFilter
   readringTime: IntNullableFilter
   projects: ProjectWhereInput
   tags: TagManyRelationFilter
+  wordCount: IntNullableFilter
+  readingTime: IntNullableFilter
   collabration: CollaborationManyRelationFilter
   relatedPosts: PostManyRelationFilter
   data: DataSetManyRelationFilter
-  ogTitle: StringFilter
-  ogDescription: StringFilter
+  ogTitle: StringNullableFilter
+  ogDescription: StringNullableFilter
   ogImage: PhotoWhereInput
   isFeatured: BooleanFilter
   project: ProjectChecklistWhereInput
@@ -1231,12 +1237,14 @@ input PostOrderByInput {
   name: OrderDirection
   subtitle: OrderDirection
   state: OrderDirection
-  publishedTime: OrderDirection
+  publishTime: OrderDirection
   otherByline: OrderDirection
   heroCaption: OrderDirection
   heroImageSize: OrderDirection
   style: OrderDirection
   readringTime: OrderDirection
+  wordCount: OrderDirection
+  readingTime: OrderDirection
   ogTitle: OrderDirection
   ogDescription: OrderDirection
   isFeatured: OrderDirection
@@ -1251,7 +1259,7 @@ input PostUpdateInput {
   name: String
   subtitle: String
   state: String
-  publishedTime: DateTime
+  publishTime: DateTime
   categories: CategoryRelateToManyForUpdateInput
   writers: AuthorRelateToManyForUpdateInput
   photographers: AuthorRelateToManyForUpdateInput
@@ -1266,12 +1274,15 @@ input PostUpdateInput {
   heroImageSize: String
   style: String
   summary: JSON
+  brief: JSON
   content: JSON
   actionList: JSON
   citation: JSON
   readringTime: Int
   projects: ProjectRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
+  wordCount: Int
+  readingTime: Int
   collabration: CollaborationRelateToManyForUpdateInput
   relatedPosts: PostRelateToManyForUpdateInput
   data: DataSetRelateToManyForUpdateInput
@@ -1282,6 +1293,7 @@ input PostUpdateInput {
   project: ProjectChecklistRelateToOneForUpdateInput
   css: String
   summaryApiData: JSON
+  briefApiData: JSON
   apiData: JSON
   actionlistApiData: JSON
   citationApiData: JSON
@@ -1349,7 +1361,7 @@ input PostCreateInput {
   name: String
   subtitle: String
   state: String
-  publishedTime: DateTime
+  publishTime: DateTime
   categories: CategoryRelateToManyForCreateInput
   writers: AuthorRelateToManyForCreateInput
   photographers: AuthorRelateToManyForCreateInput
@@ -1364,12 +1376,15 @@ input PostCreateInput {
   heroImageSize: String
   style: String
   summary: JSON
+  brief: JSON
   content: JSON
   actionList: JSON
   citation: JSON
   readringTime: Int
   projects: ProjectRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
+  wordCount: Int
+  readingTime: Int
   collabration: CollaborationRelateToManyForCreateInput
   relatedPosts: PostRelateToManyForCreateInput
   data: DataSetRelateToManyForCreateInput
@@ -1380,6 +1395,7 @@ input PostCreateInput {
   project: ProjectChecklistRelateToOneForCreateInput
   css: String
   summaryApiData: JSON
+  briefApiData: JSON
   apiData: JSON
   actionlistApiData: JSON
   citationApiData: JSON

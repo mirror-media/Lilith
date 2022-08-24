@@ -258,12 +258,12 @@ model User {
 
 model Post {
   id                        Int               @id @default(autoincrement())
-  slug                      String            @unique @default("")
+  slug                      String?           @unique
   sortOrder                 Int?
   name                      String            @default("")
-  subtitle                  String            @default("")
+  subtitle                  String?
   state                     String?           @default("draft")
-  publishedTime             DateTime?
+  publishTime               DateTime?
   categories                Category[]        @relation("Post_categories")
   writers                   Author[]          @relation("Author_posts")
   photographers             Author[]          @relation("Post_photographers")
@@ -271,15 +271,16 @@ model Post {
   designers                 Author[]          @relation("Post_designers")
   engineers                 Author[]          @relation("Post_engineers")
   dataAnalysts              Author[]          @relation("Post_dataAnalysts")
-  otherByline               String            @default("")
+  otherByline               String?
   heroVideo                 Video?            @relation("Post_heroVideo", fields: [heroVideoId], references: [id])
   heroVideoId               Int?              @map("heroVideo")
   heroImage                 Photo?            @relation("Post_heroImage", fields: [heroImageId], references: [id])
   heroImageId               Int?              @map("heroImage")
-  heroCaption               String            @default("")
+  heroCaption               String?
   heroImageSize             String?           @default("normal")
   style                     String?           @default("news")
   summary                   Json?
+  brief                     Json?
   content                   Json?
   actionList                Json?
   citation                  Json?
@@ -287,11 +288,13 @@ model Post {
   projects                  Project?          @relation("Post_projects", fields: [projectsId], references: [id])
   projectsId                Int?              @map("projects")
   tags                      Tag[]             @relation("Post_tags")
+  wordCount                 Int?
+  readingTime               Int?
   collabration              Collaboration[]   @relation("Collaboration_posts")
   relatedPosts              Post[]            @relation("Post_relatedPosts")
   data                      DataSet[]         @relation("DataSet_relatedPosts")
-  ogTitle                   String            @default("")
-  ogDescription             String            @default("")
+  ogTitle                   String?
+  ogDescription             String?
   ogImage                   Photo?            @relation("Post_ogImage", fields: [ogImageId], references: [id])
   ogImageId                 Int?              @map("ogImage")
   isFeatured                Boolean           @default(false)
@@ -299,6 +302,7 @@ model Post {
   projectId                 Int?              @unique @map("project")
   css                       String            @default("")
   summaryApiData            Json?
+  briefApiData              Json?
   apiData                   Json?
   actionlistApiData         Json?
   citationApiData           Json?
@@ -314,7 +318,7 @@ model Post {
   from_Feature_featurePost  Feature[]         @relation("Feature_featurePost")
 
   @@index([state])
-  @@index([publishedTime])
+  @@index([publishTime])
   @@index([heroVideoId])
   @@index([heroImageId])
   @@index([style])
