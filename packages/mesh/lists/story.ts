@@ -53,6 +53,7 @@ const listConfigurations = list ({
     paywall: checkbox({
       defaultValue: false,
     }),
+	origid: text({}),
 	full_screen_ad: select({
 	  label: '蓋板',
 	  datatype: 'enum',
