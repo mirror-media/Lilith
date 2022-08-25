@@ -1,7 +1,7 @@
 import config from '../config'
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { image, text, virtual } from '@keystone-6/core/fields'
+import { image, text, relationship, virtual } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -103,6 +103,11 @@ const listConfigurations = list({
           fieldMode: 'read',
         },
       },
+    }),
+    tags: relationship({
+      ref: 'Tag.images',
+      many: true,
+      label: '相關標籤',
     }),
     urlOriginal: text({
       ui: {

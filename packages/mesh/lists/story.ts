@@ -42,6 +42,7 @@ const listConfigurations = list ({
 	category: relationship({ ref: 'Category', many: false }),
 	pick: relationship({ ref: 'Pick.story', many: true }),
 	comment: relationship({ ref: 'Comment.story', many: true }),
+	related: relationship({ ref: 'Story', many: true }),
     published_date: timestamp({ validation: { isRequired: false } }),
     og_title: text({ validation: { isRequired: false } }),
     og_image: text({ validation: { isRequired: false } }),

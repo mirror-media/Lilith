@@ -53,6 +53,11 @@ const listConfigurations = list ({
       many: true,
       label: '相關文章',
     }),
+    images: relationship({
+      ref: 'Photo.tags',
+      many: true,
+      label: '相關標籤',
+    }),
     projects: relationship({
       ref: 'Project.tags',
       many: true,

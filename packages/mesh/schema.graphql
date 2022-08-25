@@ -1079,6 +1079,13 @@ type Story {
     skip: Int! = 0
   ): [Comment!]
   commentCount(where: CommentWhereInput! = {}): Int
+  related(
+    where: StoryWhereInput! = {}
+    orderBy: [StoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Story!]
+  relatedCount(where: StoryWhereInput! = {}): Int
   published_date: DateTime
   og_title: String
   og_image: String
@@ -1113,6 +1120,7 @@ input StoryWhereInput {
   category: CategoryWhereInput
   pick: PickManyRelationFilter
   comment: CommentManyRelationFilter
+  related: StoryManyRelationFilter
   published_date: DateTimeNullableFilter
   og_title: StringFilter
   og_image: StringFilter
@@ -1125,6 +1133,12 @@ input StoryWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input StoryManyRelationFilter {
+  every: StoryWhereInput
+  some: StoryWhereInput
+  none: StoryWhereInput
 }
 
 input StoryOrderByInput {
@@ -1157,6 +1171,7 @@ input StoryUpdateInput {
   category: CategoryRelateToOneForUpdateInput
   pick: PickRelateToManyForUpdateInput
   comment: CommentRelateToManyForUpdateInput
+  related: StoryRelateToManyForUpdateInput
   published_date: DateTime
   og_title: String
   og_image: String
@@ -1183,6 +1198,13 @@ input CategoryRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input StoryRelateToManyForUpdateInput {
+  disconnect: [StoryWhereUniqueInput!]
+  set: [StoryWhereUniqueInput!]
+  create: [StoryCreateInput!]
+  connect: [StoryWhereUniqueInput!]
+}
+
 input StoryUpdateArgs {
   where: StoryWhereUniqueInput!
   data: StoryUpdateInput!
@@ -1199,6 +1221,7 @@ input StoryCreateInput {
   category: CategoryRelateToOneForCreateInput
   pick: PickRelateToManyForCreateInput
   comment: CommentRelateToManyForCreateInput
+  related: StoryRelateToManyForCreateInput
   published_date: DateTime
   og_title: String
   og_image: String
@@ -1221,6 +1244,11 @@ input PublisherRelateToOneForCreateInput {
 input CategoryRelateToOneForCreateInput {
   create: CategoryCreateInput
   connect: CategoryWhereUniqueInput
+}
+
+input StoryRelateToManyForCreateInput {
+  create: [StoryCreateInput!]
+  connect: [StoryWhereUniqueInput!]
 }
 
 type Tag {

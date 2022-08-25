@@ -19,6 +19,9 @@ const listConfigurations = list ({
     }),
     email: text({
       isIndexed: 'unique',
+	  db: {
+		isNullable: true,
+	  }
     }),
     image: relationship({
       label: '照片',  
@@ -45,6 +48,11 @@ const listConfigurations = list ({
     }),
     posts: relationship({
       ref: 'Post.writers',
+      many: true,
+      label: '文章',
+    }),
+    notes: relationship({
+      ref: 'ProjectNote.writers',
       many: true,
       label: '文章',
     }),

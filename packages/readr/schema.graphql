@@ -243,6 +243,13 @@ type Photo {
   imageFile: ImageFieldOutput
   resized: ResizedImages
   file: CustomFileFieldOutput
+  tags(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
   urlOriginal: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -313,11 +320,18 @@ input PhotoWhereInput {
   NOT: [PhotoWhereInput!]
   id: IDFilter
   name: StringFilter
+  tags: TagManyRelationFilter
   urlOriginal: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input TagManyRelationFilter {
+  every: TagWhereInput
+  some: TagWhereInput
+  none: TagWhereInput
 }
 
 input PhotoOrderByInput {
@@ -332,6 +346,7 @@ input PhotoUpdateInput {
   name: String
   imageFile: ImageFieldInput
   file: CustomFileFieldInput
+  tags: TagRelateToManyForUpdateInput
   urlOriginal: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -354,6 +369,13 @@ input CustomFileFieldInput {
   ref: String
 }
 
+input TagRelateToManyForUpdateInput {
+  disconnect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
+}
+
 input PhotoUpdateArgs {
   where: PhotoWhereUniqueInput!
   data: PhotoUpdateInput!
@@ -363,11 +385,17 @@ input PhotoCreateInput {
   name: String
   imageFile: ImageFieldInput
   file: CustomFileFieldInput
+  tags: TagRelateToManyForCreateInput
   urlOriginal: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input TagRelateToManyForCreateInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
 }
 
 type Author {
@@ -388,6 +416,13 @@ type Author {
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  notes(
+    where: ProjectNoteWhereInput! = {}
+    orderBy: [ProjectNoteOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ProjectNote!]
+  notesCount(where: ProjectNoteWhereInput! = {}): Int
   quote(
     where: QuoteWhereInput! = {}
     orderBy: [QuoteOrderByInput!]! = []
@@ -426,7 +461,7 @@ input AuthorWhereInput {
   NOT: [AuthorWhereInput!]
   id: IDFilter
   name: StringFilter
-  email: StringFilter
+  email: StringNullableFilter
   image: PhotoWhereInput
   homepage: StringFilter
   facebook: StringFilter
@@ -435,6 +470,7 @@ input AuthorWhereInput {
   address: StringFilter
   bio: StringFilter
   posts: PostManyRelationFilter
+  notes: ProjectNoteManyRelationFilter
   quote: QuoteManyRelationFilter
   gallery: GalleryManyRelationFilter
   projects: ProjectManyRelationFilter
@@ -442,6 +478,12 @@ input AuthorWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input ProjectNoteManyRelationFilter {
+  every: ProjectNoteWhereInput
+  some: ProjectNoteWhereInput
+  none: ProjectNoteWhereInput
 }
 
 input QuoteManyRelationFilter {
@@ -487,6 +529,7 @@ input AuthorUpdateInput {
   address: String
   bio: String
   posts: PostRelateToManyForUpdateInput
+  notes: ProjectNoteRelateToManyForUpdateInput
   quote: QuoteRelateToManyForUpdateInput
   gallery: GalleryRelateToManyForUpdateInput
   projects: ProjectRelateToManyForUpdateInput
@@ -494,6 +537,13 @@ input AuthorUpdateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ProjectNoteRelateToManyForUpdateInput {
+  disconnect: [ProjectNoteWhereUniqueInput!]
+  set: [ProjectNoteWhereUniqueInput!]
+  create: [ProjectNoteCreateInput!]
+  connect: [ProjectNoteWhereUniqueInput!]
 }
 
 input QuoteRelateToManyForUpdateInput {
@@ -533,6 +583,7 @@ input AuthorCreateInput {
   address: String
   bio: String
   posts: PostRelateToManyForCreateInput
+  notes: ProjectNoteRelateToManyForCreateInput
   quote: QuoteRelateToManyForCreateInput
   gallery: GalleryRelateToManyForCreateInput
   projects: ProjectRelateToManyForCreateInput
@@ -540,6 +591,11 @@ input AuthorCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input ProjectNoteRelateToManyForCreateInput {
+  create: [ProjectNoteCreateInput!]
+  connect: [ProjectNoteWhereUniqueInput!]
 }
 
 input QuoteRelateToManyForCreateInput {
@@ -759,6 +815,13 @@ type Tag {
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  images(
+    where: PhotoWhereInput! = {}
+    orderBy: [PhotoOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Photo!]
+  imagesCount(where: PhotoWhereInput! = {}): Int
   projects(
     where: ProjectWhereInput! = {}
     orderBy: [ProjectOrderByInput!]! = []
@@ -791,6 +854,7 @@ input TagWhereInput {
   ogImage: PhotoWhereInput
   isFeatured: BooleanFilter
   posts: PostManyRelationFilter
+  images: PhotoManyRelationFilter
   projects: ProjectManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -801,6 +865,12 @@ input TagWhereInput {
 input BooleanFilter {
   equals: Boolean
   not: BooleanFilter
+}
+
+input PhotoManyRelationFilter {
+  every: PhotoWhereInput
+  some: PhotoWhereInput
+  none: PhotoWhereInput
 }
 
 input TagOrderByInput {
@@ -825,6 +895,7 @@ input TagUpdateInput {
   ogImage: PhotoRelateToOneForUpdateInput
   isFeatured: Boolean
   posts: PostRelateToManyForUpdateInput
+  images: PhotoRelateToManyForUpdateInput
   projects: ProjectRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -836,6 +907,13 @@ input VideoRelateToOneForUpdateInput {
   create: VideoCreateInput
   connect: VideoWhereUniqueInput
   disconnect: Boolean
+}
+
+input PhotoRelateToManyForUpdateInput {
+  disconnect: [PhotoWhereUniqueInput!]
+  set: [PhotoWhereUniqueInput!]
+  create: [PhotoCreateInput!]
+  connect: [PhotoWhereUniqueInput!]
 }
 
 input TagUpdateArgs {
@@ -853,6 +931,7 @@ input TagCreateInput {
   ogImage: PhotoRelateToOneForCreateInput
   isFeatured: Boolean
   posts: PostRelateToManyForCreateInput
+  images: PhotoRelateToManyForCreateInput
   projects: ProjectRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -865,12 +944,17 @@ input VideoRelateToOneForCreateInput {
   connect: VideoWhereUniqueInput
 }
 
+input PhotoRelateToManyForCreateInput {
+  create: [PhotoCreateInput!]
+  connect: [PhotoWhereUniqueInput!]
+}
+
 type Category {
   id: ID!
   slug: String
   title: String
   isFeatured: Boolean
-  state: Boolean
+  state: String
   style: String
   heroImage: Photo
   ogTitle: String
@@ -903,7 +987,7 @@ input CategoryWhereInput {
   slug: StringFilter
   title: StringFilter
   isFeatured: BooleanFilter
-  state: BooleanFilter
+  state: StringNullableFilter
   style: StringNullableFilter
   heroImage: PhotoWhereInput
   ogTitle: StringFilter
@@ -937,7 +1021,7 @@ input CategoryUpdateInput {
   slug: String
   title: String
   isFeatured: Boolean
-  state: Boolean
+  state: String
   style: String
   heroImage: PhotoRelateToOneForUpdateInput
   ogTitle: String
@@ -961,7 +1045,7 @@ input CategoryCreateInput {
   slug: String
   title: String
   isFeatured: Boolean
-  state: Boolean
+  state: String
   style: String
   heroImage: PhotoRelateToOneForCreateInput
   ogTitle: String
@@ -1138,6 +1222,13 @@ type Post {
   ogDescription: String
   ogImage: Photo
   isFeatured: Boolean
+  note(
+    where: ProjectNoteWhereInput! = {}
+    orderBy: [ProjectNoteOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ProjectNote!]
+  noteCount(where: ProjectNoteWhereInput! = {}): Int
   project: ProjectChecklist
   css: String
   summaryApiData: JSON
@@ -1192,6 +1283,7 @@ input PostWhereInput {
   ogDescription: StringNullableFilter
   ogImage: PhotoWhereInput
   isFeatured: BooleanFilter
+  note: ProjectNoteManyRelationFilter
   project: ProjectChecklistWhereInput
   css: StringFilter
   createdAt: DateTimeNullableFilter
@@ -1210,12 +1302,6 @@ input AuthorManyRelationFilter {
   every: AuthorWhereInput
   some: AuthorWhereInput
   none: AuthorWhereInput
-}
-
-input TagManyRelationFilter {
-  every: TagWhereInput
-  some: TagWhereInput
-  none: TagWhereInput
 }
 
 input CollaborationManyRelationFilter {
@@ -1290,6 +1376,7 @@ input PostUpdateInput {
   ogDescription: String
   ogImage: PhotoRelateToOneForUpdateInput
   isFeatured: Boolean
+  note: ProjectNoteRelateToManyForUpdateInput
   project: ProjectChecklistRelateToOneForUpdateInput
   css: String
   summaryApiData: JSON
@@ -1321,13 +1408,6 @@ input ProjectRelateToOneForUpdateInput {
   create: ProjectCreateInput
   connect: ProjectWhereUniqueInput
   disconnect: Boolean
-}
-
-input TagRelateToManyForUpdateInput {
-  disconnect: [TagWhereUniqueInput!]
-  set: [TagWhereUniqueInput!]
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
 }
 
 input CollaborationRelateToManyForUpdateInput {
@@ -1392,6 +1472,7 @@ input PostCreateInput {
   ogDescription: String
   ogImage: PhotoRelateToOneForCreateInput
   isFeatured: Boolean
+  note: ProjectNoteRelateToManyForCreateInput
   project: ProjectChecklistRelateToOneForCreateInput
   css: String
   summaryApiData: JSON
@@ -1418,11 +1499,6 @@ input AuthorRelateToManyForCreateInput {
 input ProjectRelateToOneForCreateInput {
   create: ProjectCreateInput
   connect: ProjectWhereUniqueInput
-}
-
-input TagRelateToManyForCreateInput {
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
 }
 
 input CollaborationRelateToManyForCreateInput {
@@ -2127,6 +2203,196 @@ input PostRelateToOneForCreateInput {
   connect: PostWhereUniqueInput
 }
 
+type ProjectNote {
+  id: ID!
+  post(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Post!]
+  postCount(where: PostWhereInput! = {}): Int
+  title: String
+  writers(
+    where: AuthorWhereInput! = {}
+    orderBy: [AuthorOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Author!]
+  writersCount(where: AuthorWhereInput! = {}): Int
+  category(
+    where: NoteCategoryWhereInput! = {}
+    orderBy: [NoteCategoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [NoteCategory!]
+  categoryCount(where: NoteCategoryWhereInput! = {}): Int
+  publishTime: DateTime
+  content: JSON
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ProjectNoteWhereUniqueInput {
+  id: ID
+}
+
+input ProjectNoteWhereInput {
+  AND: [ProjectNoteWhereInput!]
+  OR: [ProjectNoteWhereInput!]
+  NOT: [ProjectNoteWhereInput!]
+  id: IDFilter
+  post: PostManyRelationFilter
+  title: StringFilter
+  writers: AuthorManyRelationFilter
+  category: NoteCategoryManyRelationFilter
+  publishTime: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input NoteCategoryManyRelationFilter {
+  every: NoteCategoryWhereInput
+  some: NoteCategoryWhereInput
+  none: NoteCategoryWhereInput
+}
+
+input ProjectNoteOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  publishTime: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ProjectNoteUpdateInput {
+  post: PostRelateToManyForUpdateInput
+  title: String
+  writers: AuthorRelateToManyForUpdateInput
+  category: NoteCategoryRelateToManyForUpdateInput
+  publishTime: DateTime
+  content: JSON
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input NoteCategoryRelateToManyForUpdateInput {
+  disconnect: [NoteCategoryWhereUniqueInput!]
+  set: [NoteCategoryWhereUniqueInput!]
+  create: [NoteCategoryCreateInput!]
+  connect: [NoteCategoryWhereUniqueInput!]
+}
+
+input ProjectNoteUpdateArgs {
+  where: ProjectNoteWhereUniqueInput!
+  data: ProjectNoteUpdateInput!
+}
+
+input ProjectNoteCreateInput {
+  post: PostRelateToManyForCreateInput
+  title: String
+  writers: AuthorRelateToManyForCreateInput
+  category: NoteCategoryRelateToManyForCreateInput
+  publishTime: DateTime
+  content: JSON
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input NoteCategoryRelateToManyForCreateInput {
+  create: [NoteCategoryCreateInput!]
+  connect: [NoteCategoryWhereUniqueInput!]
+}
+
+type NoteCategory {
+  id: ID!
+  slug: String
+  title: String
+  isFeatured: Boolean
+  state: String
+  note(
+    where: ProjectNoteWhereInput! = {}
+    orderBy: [ProjectNoteOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ProjectNote!]
+  noteCount(where: ProjectNoteWhereInput! = {}): Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input NoteCategoryWhereUniqueInput {
+  id: ID
+}
+
+input NoteCategoryWhereInput {
+  AND: [NoteCategoryWhereInput!]
+  OR: [NoteCategoryWhereInput!]
+  NOT: [NoteCategoryWhereInput!]
+  id: IDFilter
+  slug: StringFilter
+  title: StringFilter
+  isFeatured: BooleanFilter
+  state: StringNullableFilter
+  note: ProjectNoteManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input NoteCategoryOrderByInput {
+  id: OrderDirection
+  slug: OrderDirection
+  title: OrderDirection
+  isFeatured: OrderDirection
+  state: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input NoteCategoryUpdateInput {
+  slug: String
+  title: String
+  isFeatured: Boolean
+  state: String
+  note: ProjectNoteRelateToManyForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input NoteCategoryUpdateArgs {
+  where: NoteCategoryWhereUniqueInput!
+  data: NoteCategoryUpdateInput!
+}
+
+input NoteCategoryCreateInput {
+  slug: String
+  title: String
+  isFeatured: Boolean
+  state: String
+  note: ProjectNoteRelateToManyForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 type Quote {
   id: ID!
   name: String
@@ -2345,6 +2611,24 @@ type Mutation {
   deleteProjectChecklists(
     where: [ProjectChecklistWhereUniqueInput!]!
   ): [ProjectChecklist]
+  createProjectNote(data: ProjectNoteCreateInput!): ProjectNote
+  createProjectNotes(data: [ProjectNoteCreateInput!]!): [ProjectNote]
+  updateProjectNote(
+    where: ProjectNoteWhereUniqueInput!
+    data: ProjectNoteUpdateInput!
+  ): ProjectNote
+  updateProjectNotes(data: [ProjectNoteUpdateArgs!]!): [ProjectNote]
+  deleteProjectNote(where: ProjectNoteWhereUniqueInput!): ProjectNote
+  deleteProjectNotes(where: [ProjectNoteWhereUniqueInput!]!): [ProjectNote]
+  createNoteCategory(data: NoteCategoryCreateInput!): NoteCategory
+  createNoteCategories(data: [NoteCategoryCreateInput!]!): [NoteCategory]
+  updateNoteCategory(
+    where: NoteCategoryWhereUniqueInput!
+    data: NoteCategoryUpdateInput!
+  ): NoteCategory
+  updateNoteCategories(data: [NoteCategoryUpdateArgs!]!): [NoteCategory]
+  deleteNoteCategory(where: NoteCategoryWhereUniqueInput!): NoteCategory
+  deleteNoteCategories(where: [NoteCategoryWhereUniqueInput!]!): [NoteCategory]
   createQuote(data: QuoteCreateInput!): Quote
   createQuotes(data: [QuoteCreateInput!]!): [Quote]
   updateQuote(where: QuoteWhereUniqueInput!, data: QuoteUpdateInput!): Quote
@@ -2502,6 +2786,22 @@ type Query {
   ): [ProjectChecklist!]
   projectChecklist(where: ProjectChecklistWhereUniqueInput!): ProjectChecklist
   projectChecklistsCount(where: ProjectChecklistWhereInput! = {}): Int
+  projectNotes(
+    where: ProjectNoteWhereInput! = {}
+    orderBy: [ProjectNoteOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ProjectNote!]
+  projectNote(where: ProjectNoteWhereUniqueInput!): ProjectNote
+  projectNotesCount(where: ProjectNoteWhereInput! = {}): Int
+  noteCategories(
+    where: NoteCategoryWhereInput! = {}
+    orderBy: [NoteCategoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [NoteCategory!]
+  noteCategory(where: NoteCategoryWhereUniqueInput!): NoteCategory
+  noteCategoriesCount(where: NoteCategoryWhereInput! = {}): Int
   quotes(
     where: QuoteWhereInput! = {}
     orderBy: [QuoteOrderByInput!]! = []

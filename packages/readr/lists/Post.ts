@@ -204,6 +204,38 @@ const listConfigurations = list ({
       label: '置頂', 
       isIndexed: true 
     }),
+    note: relationship({
+      label: '專題筆記',
+      ref: 'ProjectNote.post',
+      many: true,
+      ui: {
+        displayMode: 'cards',
+		linkToItem: true,
+        cardFields: [
+          'title',
+          'writers',
+          'publishTime',
+          'content',
+        ],
+        inlineCreate: {
+          fields: [
+            'title',
+            'writers',
+            'publishTime',
+            'content',
+          ],
+        },
+        inlineCreate: {
+          fields: [
+            'title',
+            'writers',
+            'publishTime',
+            'content',
+          ],
+        },
+      },
+
+    }),
     project: relationship({
       label: 'checklist',
       ref: 'ProjectChecklist.project',

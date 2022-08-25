@@ -288,6 +288,7 @@ model Story {
   categoryId                Int?             @map("category")
   pick                      Pick[]           @relation("Pick_story")
   comment                   Comment[]        @relation("Comment_story")
+  related                   Story[]          @relation("Story_related")
   published_date            DateTime?
   og_title                  String           @default("")
   og_image                  String           @default("")
@@ -303,6 +304,7 @@ model Story {
   updatedBy                 User?            @relation("Story_updatedBy", fields: [updatedById], references: [id])
   updatedById               Int?             @map("updatedBy")
   from_CollectionPick_story CollectionPick[] @relation("CollectionPick_story")
+  from_Story_related        Story[]          @relation("Story_related")
 
   @@index([sourceId])
   @@index([authorId])
