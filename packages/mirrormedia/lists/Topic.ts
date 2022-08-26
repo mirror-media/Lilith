@@ -114,6 +114,9 @@ const listConfigurations = list ({
       label: 'CSS', 
       ui: { displayMode: 'textarea' } 
     }),
+    uuid: text({
+      label: 'UUID', 
+    }),
     tags: relationship({
       ref: 'Tag.topics', 
       label: '標籤', 

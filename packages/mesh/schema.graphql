@@ -1079,12 +1079,20 @@ type Story {
     skip: Int! = 0
   ): [Comment!]
   commentCount(where: CommentWhereInput! = {}): Int
+  related(
+    where: StoryWhereInput! = {}
+    orderBy: [StoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Story!]
+  relatedCount(where: StoryWhereInput! = {}): Int
   published_date: DateTime
   og_title: String
   og_image: String
   og_description: String
   full_content: Boolean
   paywall: Boolean
+  origid: String
   full_screen_ad: String
   is_active: Boolean
   createdAt: DateTime
@@ -1113,18 +1121,26 @@ input StoryWhereInput {
   category: CategoryWhereInput
   pick: PickManyRelationFilter
   comment: CommentManyRelationFilter
+  related: StoryManyRelationFilter
   published_date: DateTimeNullableFilter
   og_title: StringFilter
   og_image: StringFilter
   og_description: StringFilter
   full_content: BooleanFilter
   paywall: BooleanFilter
+  origid: StringFilter
   full_screen_ad: StringNullableFilter
   is_active: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input StoryManyRelationFilter {
+  every: StoryWhereInput
+  some: StoryWhereInput
+  none: StoryWhereInput
 }
 
 input StoryOrderByInput {
@@ -1140,6 +1156,7 @@ input StoryOrderByInput {
   og_description: OrderDirection
   full_content: OrderDirection
   paywall: OrderDirection
+  origid: OrderDirection
   full_screen_ad: OrderDirection
   is_active: OrderDirection
   createdAt: OrderDirection
@@ -1157,12 +1174,14 @@ input StoryUpdateInput {
   category: CategoryRelateToOneForUpdateInput
   pick: PickRelateToManyForUpdateInput
   comment: CommentRelateToManyForUpdateInput
+  related: StoryRelateToManyForUpdateInput
   published_date: DateTime
   og_title: String
   og_image: String
   og_description: String
   full_content: Boolean
   paywall: Boolean
+  origid: String
   full_screen_ad: String
   is_active: Boolean
   createdAt: DateTime
@@ -1183,6 +1202,13 @@ input CategoryRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input StoryRelateToManyForUpdateInput {
+  disconnect: [StoryWhereUniqueInput!]
+  set: [StoryWhereUniqueInput!]
+  create: [StoryCreateInput!]
+  connect: [StoryWhereUniqueInput!]
+}
+
 input StoryUpdateArgs {
   where: StoryWhereUniqueInput!
   data: StoryUpdateInput!
@@ -1199,12 +1225,14 @@ input StoryCreateInput {
   category: CategoryRelateToOneForCreateInput
   pick: PickRelateToManyForCreateInput
   comment: CommentRelateToManyForCreateInput
+  related: StoryRelateToManyForCreateInput
   published_date: DateTime
   og_title: String
   og_image: String
   og_description: String
   full_content: Boolean
   paywall: Boolean
+  origid: String
   full_screen_ad: String
   is_active: Boolean
   createdAt: DateTime
@@ -1221,6 +1249,11 @@ input PublisherRelateToOneForCreateInput {
 input CategoryRelateToOneForCreateInput {
   create: CategoryCreateInput
   connect: CategoryWhereUniqueInput
+}
+
+input StoryRelateToManyForCreateInput {
+  create: [StoryCreateInput!]
+  connect: [StoryWhereUniqueInput!]
 }
 
 type Tag {

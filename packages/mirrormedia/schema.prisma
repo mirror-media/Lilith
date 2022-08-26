@@ -117,6 +117,7 @@ model Topic {
   source              String?
   sort                String?
   style               String    @default("")
+  uuid                String    @default("")
   tags                Tag[]     @relation("Tag_topics")
   posts               Post[]    @relation("Post_topics")
   javascript          String    @default("")
@@ -369,6 +370,7 @@ model Tag {
   og_imageId     Int?      @map("og_image")
   isFeatured     Boolean   @default(false)
   css            String    @default("")
+  uuid           String    @default("")
   javascript     String    @default("")
   posts          Post[]    @relation("Post_tags")
   topics         Topic[]   @relation("Tag_topics")

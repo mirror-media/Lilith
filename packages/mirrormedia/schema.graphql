@@ -611,6 +611,7 @@ type Topic {
   source: String
   sort: String
   style: String
+  uuid: String
   tags(
     where: TagWhereInput! = {}
     orderBy: [TagOrderByInput!]! = []
@@ -660,6 +661,7 @@ input TopicWhereInput {
   source: StringNullableFilter
   sort: StringNullableFilter
   style: StringFilter
+  uuid: StringFilter
   tags: TagManyRelationFilter
   posts: PostManyRelationFilter
   javascript: StringFilter
@@ -687,6 +689,7 @@ input TopicOrderByInput {
   source: OrderDirection
   sort: OrderDirection
   style: OrderDirection
+  uuid: OrderDirection
   javascript: OrderDirection
   dfp: OrderDirection
   mobile_dfp: OrderDirection
@@ -712,6 +715,7 @@ input TopicUpdateInput {
   source: String
   sort: String
   style: String
+  uuid: String
   tags: TagRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
   javascript: String
@@ -746,6 +750,7 @@ input TopicCreateInput {
   source: String
   sort: String
   style: String
+  uuid: String
   tags: TagRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
   javascript: String
@@ -1555,6 +1560,7 @@ type Tag {
   og_image: Photo
   isFeatured: Boolean
   css: String
+  uuid: String
   javascript: String
   posts(
     where: PostWhereInput! = {}
@@ -1596,6 +1602,7 @@ input TagWhereInput {
   og_image: PhotoWhereInput
   isFeatured: BooleanFilter
   css: StringFilter
+  uuid: StringFilter
   javascript: StringFilter
   posts: PostManyRelationFilter
   topics: TopicManyRelationFilter
@@ -1614,6 +1621,7 @@ input TagOrderByInput {
   og_description: OrderDirection
   isFeatured: OrderDirection
   css: OrderDirection
+  uuid: OrderDirection
   javascript: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1630,6 +1638,7 @@ input TagUpdateInput {
   og_image: PhotoRelateToOneForUpdateInput
   isFeatured: Boolean
   css: String
+  uuid: String
   javascript: String
   posts: PostRelateToManyForUpdateInput
   topics: TopicRelateToManyForUpdateInput
@@ -1655,6 +1664,7 @@ input TagCreateInput {
   og_image: PhotoRelateToOneForCreateInput
   isFeatured: Boolean
   css: String
+  uuid: String
   javascript: String
   posts: PostRelateToManyForCreateInput
   topics: TopicRelateToManyForCreateInput
