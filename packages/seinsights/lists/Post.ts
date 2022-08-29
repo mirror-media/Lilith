@@ -141,11 +141,11 @@ const listConfigurations = list({
     heroCaption: text({
       label: '首圖圖說',
     }),
-    brief: text({
+    heroCreditUrl:text({
+      label: '首圖來源網址',
+    }),
+    brief: customFields.richTextEditor({
       label: '前言',
-      ui: {
-        displayMode: 'textarea',
-      }
     }),
     content: customFields.richTextEditor({
       label: '內文',

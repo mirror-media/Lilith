@@ -218,7 +218,8 @@ model Post {
   heroImage                        Photo?           @relation("Post_heroImage", fields: [heroImageId], references: [id])
   heroImageId                      Int?             @map("heroImage")
   heroCaption                      String           @default("")
-  brief                            String           @default("")
+  heroCreditUrl                    String           @default("")
+  brief                            Json?
   content                          Json?
   relatedPosts                     Post[]           @relation("Post_relatedPosts")
   tags                             Tag[]            @relation("Post_tags")

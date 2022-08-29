@@ -1208,7 +1208,8 @@ type Post {
   region: String
   heroImage: Photo
   heroCaption: String
-  brief: String
+  heroCreditUrl: String
+  brief: JSON
   content: JSON
   relatedPosts(
     where: PostWhereInput! = {}
@@ -1259,7 +1260,7 @@ input PostWhereInput {
   region: StringNullableFilter
   heroImage: PhotoWhereInput
   heroCaption: StringFilter
-  brief: StringFilter
+  heroCreditUrl: StringFilter
   relatedPosts: PostManyRelationFilter
   tags: TagManyRelationFilter
   oldCategory: StringNullableFilter
@@ -1291,7 +1292,7 @@ input PostOrderByInput {
   publishDate: OrderDirection
   region: OrderDirection
   heroCaption: OrderDirection
-  brief: OrderDirection
+  heroCreditUrl: OrderDirection
   oldCategory: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1309,7 +1310,8 @@ input PostUpdateInput {
   region: String
   heroImage: PhotoRelateToOneForUpdateInput
   heroCaption: String
-  brief: String
+  heroCreditUrl: String
+  brief: JSON
   content: JSON
   relatedPosts: PostRelateToManyForUpdateInput
   tags: TagRelateToManyForUpdateInput
@@ -1351,7 +1353,8 @@ input PostCreateInput {
   region: String
   heroImage: PhotoRelateToOneForCreateInput
   heroCaption: String
-  brief: String
+  heroCreditUrl: String
+  brief: JSON
   content: JSON
   relatedPosts: PostRelateToManyForCreateInput
   tags: TagRelateToManyForCreateInput
