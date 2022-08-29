@@ -1227,6 +1227,7 @@ type Post {
   tagsCount(where: TagWhereInput! = {}): Int
   oldCategory: String
   apiData: JSON
+  apiDataBrief: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1317,6 +1318,7 @@ input PostUpdateInput {
   tags: TagRelateToManyForUpdateInput
   oldCategory: String
   apiData: JSON
+  apiDataBrief: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1360,6 +1362,7 @@ input PostCreateInput {
   tags: TagRelateToManyForCreateInput
   oldCategory: String
   apiData: JSON
+  apiDataBrief: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1379,6 +1382,7 @@ input ColumnRelateToManyForCreateInput {
 type Resource {
   id: ID!
   name: String
+  status: ResourceStatusType
   region: ResourceRegionType
   section: Section
   profile_photo: Photo
@@ -1395,6 +1399,13 @@ type Resource {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+}
+
+enum ResourceStatusType {
+  published
+  draft
+  scheduled
+  archived
 }
 
 enum ResourceRegionType {
@@ -1448,6 +1459,7 @@ input ResourceWhereInput {
   NOT: [ResourceWhereInput!]
   id: IDFilter
   name: StringFilter
+  status: ResourceStatusTypeNullableFilter
   region: ResourceRegionTypeNullableFilter
   section: SectionWhereInput
   profile_photo: PhotoWhereInput
@@ -1456,6 +1468,13 @@ input ResourceWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input ResourceStatusTypeNullableFilter {
+  equals: ResourceStatusType
+  in: [ResourceStatusType!]
+  notIn: [ResourceStatusType!]
+  not: ResourceStatusTypeNullableFilter
 }
 
 input ResourceRegionTypeNullableFilter {
@@ -1474,6 +1493,7 @@ input ResourceManyRelationFilter {
 input ResourceOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  status: OrderDirection
   region: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1481,6 +1501,7 @@ input ResourceOrderByInput {
 
 input ResourceUpdateInput {
   name: String
+  status: ResourceStatusType
   region: ResourceRegionType
   section: SectionRelateToOneForUpdateInput
   profile_photo: PhotoRelateToOneForUpdateInput
@@ -1507,6 +1528,7 @@ input ResourceUpdateArgs {
 
 input ResourceCreateInput {
   name: String
+  status: ResourceStatusType
   region: ResourceRegionType
   section: SectionRelateToOneForCreateInput
   profile_photo: PhotoRelateToOneForCreateInput

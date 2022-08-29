@@ -5,11 +5,36 @@ import { text, relationship, json, select } from '@keystone-6/core/fields'
 import config from '../config'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
-
+enum Status {
+  Published = 'published',
+  Draft = 'draft',
+  Scheduled = 'scheduled',
+  Archived = 'archived',
+}
 const listConfigurations = list({
   fields: {
     name: text({
       label: '社會企業名稱',
+      validation: {
+        isRequired: true,
+      },
+    }),
+    status: select({
+      label: '狀態',
+      type: 'enum',
+      options: [
+        { label: '出版', value: Status.Published },
+        { label: '草稿', value: Status.Draft },
+        { label: '排程', value: Status.Scheduled },
+        { label: '下架', value: Status.Archived },
+      ],
+      defaultValue: 'draft',
+      ui: {
+        displayMode: 'segmented-control',
+        listView: {
+          fieldMode: 'read',
+        },
+      },
       validation: {
         isRequired: true,
       },
