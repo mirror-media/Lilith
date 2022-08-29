@@ -121,6 +121,13 @@ const listConfigurations = list({
       },
       many: true,
     }),
+    region: select({
+      label: '地區',
+      options:[
+        { label: '台灣', value: 'tw'},
+        { label: '國際', value: 'global'},
+      ]
+    }),
     heroImage: customFields.relationship({
       label: '首圖',
       ref: 'Photo',
@@ -176,6 +183,18 @@ const listConfigurations = list({
     //     views: require.resolve('./preview-button'),
     //   },
     // }),
+    oldCategory:select({
+      'label': '舊內容分類（工程用）',
+      options:[
+        { label: 'article', value: 'article' },
+        { label: 'news', value: 'news' },
+        { label: 'story', value: 'story' },
+      ],
+      ui:{
+        createView:{fieldMode: 'hidden'},
+        itemView: { fieldMode: 'read' },
+      }
+    }),
     apiData: json({
       label: '資料庫使用',
       ui: {
