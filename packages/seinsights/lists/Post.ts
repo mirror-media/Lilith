@@ -141,6 +141,9 @@ const listConfigurations = list({
     heroCaption: text({
       label: '首圖圖說',
     }),
+    heroCreditUrl:text({
+      label: '首圖來源網址',
+    }),
     brief: customFields.richTextEditor({
       label: '前言',
     }),
