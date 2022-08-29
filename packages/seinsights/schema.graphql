@@ -527,6 +527,8 @@ type Event {
   section: Section
   heroImage: Photo
   content: JSON
+  location: String
+  organization: String
   event_start: DateTime
   event_end: DateTime
   isTop: Boolean
@@ -572,6 +574,7 @@ enum EventTypeType {
 enum EventRegionType {
   global
   NAME
+  UK
   EURO
   NZAU
   AFR
@@ -625,6 +628,8 @@ input EventWhereInput {
   region: EventRegionTypeNullableFilter
   section: SectionWhereInput
   heroImage: PhotoWhereInput
+  location: StringFilter
+  organization: StringFilter
   event_start: DateTimeNullableFilter
   event_end: DateTimeNullableFilter
   isTop: BooleanFilter
@@ -684,6 +689,8 @@ input EventOrderByInput {
   status: OrderDirection
   type: OrderDirection
   region: OrderDirection
+  location: OrderDirection
+  organization: OrderDirection
   event_start: OrderDirection
   event_end: OrderDirection
   isTop: OrderDirection
@@ -700,6 +707,8 @@ input EventUpdateInput {
   section: SectionRelateToOneForUpdateInput
   heroImage: PhotoRelateToOneForUpdateInput
   content: JSON
+  location: String
+  organization: String
   event_start: DateTime
   event_end: DateTime
   isTop: Boolean
@@ -741,6 +750,8 @@ input EventCreateInput {
   section: SectionRelateToOneForCreateInput
   heroImage: PhotoRelateToOneForCreateInput
   content: JSON
+  location: String
+  organization: String
   event_start: DateTime
   event_end: DateTime
   isTop: Boolean
@@ -773,6 +784,9 @@ type Job {
   region: JobRegionType
   section: Section
   company: String
+  loaction: String
+  official_website: String
+  official_website_titile: String
   profile_photo: Photo
   content: JSON
   tags(
@@ -818,6 +832,7 @@ enum JobTypeType {
 enum JobRegionType {
   global
   NAME
+  UK
   EURO
   NZAU
   AFR
@@ -871,6 +886,9 @@ input JobWhereInput {
   region: JobRegionTypeNullableFilter
   section: SectionWhereInput
   company: StringFilter
+  loaction: StringFilter
+  official_website: StringFilter
+  official_website_titile: StringFilter
   profile_photo: PhotoWhereInput
   tags: TagManyRelationFilter
   relatedJobs: JobManyRelationFilter
@@ -922,6 +940,9 @@ input JobOrderByInput {
   type: OrderDirection
   region: OrderDirection
   company: OrderDirection
+  loaction: OrderDirection
+  official_website: OrderDirection
+  official_website_titile: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -934,6 +955,9 @@ input JobUpdateInput {
   region: JobRegionType
   section: SectionRelateToOneForUpdateInput
   company: String
+  loaction: String
+  official_website: String
+  official_website_titile: String
   profile_photo: PhotoRelateToOneForUpdateInput
   content: JSON
   tags: TagRelateToManyForUpdateInput
@@ -965,6 +989,9 @@ input JobCreateInput {
   region: JobRegionType
   section: SectionRelateToOneForCreateInput
   company: String
+  loaction: String
+  official_website: String
+  official_website_titile: String
   profile_photo: PhotoRelateToOneForCreateInput
   content: JSON
   tags: TagRelateToManyForCreateInput
@@ -1178,6 +1205,7 @@ type Post {
     skip: Int! = 0
   ): [Column!]
   columnsCount(where: ColumnWhereInput! = {}): Int
+  region: String
   heroImage: Photo
   heroCaption: String
   brief: String
@@ -1196,6 +1224,7 @@ type Post {
     skip: Int! = 0
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  oldCategory: String
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -1227,11 +1256,13 @@ input PostWhereInput {
   section: SectionWhereInput
   category: CategoryWhereInput
   columns: ColumnManyRelationFilter
+  region: StringNullableFilter
   heroImage: PhotoWhereInput
   heroCaption: StringFilter
   brief: StringFilter
   relatedPosts: PostManyRelationFilter
   tags: TagManyRelationFilter
+  oldCategory: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1258,8 +1289,10 @@ input PostOrderByInput {
   weight: OrderDirection
   status: OrderDirection
   publishDate: OrderDirection
+  region: OrderDirection
   heroCaption: OrderDirection
   brief: OrderDirection
+  oldCategory: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1273,12 +1306,14 @@ input PostUpdateInput {
   section: SectionRelateToOneForUpdateInput
   category: CategoryRelateToOneForUpdateInput
   columns: ColumnRelateToManyForUpdateInput
+  region: String
   heroImage: PhotoRelateToOneForUpdateInput
   heroCaption: String
   brief: String
   content: JSON
   relatedPosts: PostRelateToManyForUpdateInput
   tags: TagRelateToManyForUpdateInput
+  oldCategory: String
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -1313,12 +1348,14 @@ input PostCreateInput {
   section: SectionRelateToOneForCreateInput
   category: CategoryRelateToOneForCreateInput
   columns: ColumnRelateToManyForCreateInput
+  region: String
   heroImage: PhotoRelateToOneForCreateInput
   heroCaption: String
   brief: String
   content: JSON
   relatedPosts: PostRelateToManyForCreateInput
   tags: TagRelateToManyForCreateInput
+  oldCategory: String
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -1360,6 +1397,7 @@ type Resource {
 enum ResourceRegionType {
   global
   NAME
+  UK
   EURO
   NZAU
   AFR

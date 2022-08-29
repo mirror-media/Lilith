@@ -95,32 +95,34 @@ model EditorChoice {
 }
 
 model Event {
-  id                       Int                  @id @default(autoincrement())
-  name                     String               @default("")
-  eventStatus              EventEventStatusType
-  status                   EventStatusType      @default(draft)
-  type                     EventTypeType
-  region                   EventRegionType
-  section                  Section?             @relation("Event_section", fields: [sectionId], references: [id])
-  sectionId                Int?                 @map("section")
-  heroImage                Photo?               @relation("Event_heroImage", fields: [heroImageId], references: [id])
-  heroImageId              Int?                 @map("heroImage")
+  id                       Int                   @id @default(autoincrement())
+  name                     String                @default("")
+  eventStatus              EventEventStatusType?
+  status                   EventStatusType       @default(draft)
+  type                     EventTypeType?
+  region                   EventRegionType?
+  section                  Section?              @relation("Event_section", fields: [sectionId], references: [id])
+  sectionId                Int?                  @map("section")
+  heroImage                Photo?                @relation("Event_heroImage", fields: [heroImageId], references: [id])
+  heroImageId              Int?                  @map("heroImage")
   content                  Json?
+  location                 String                @default("")
+  organization             String                @default("")
   event_start              DateTime?
   event_end                DateTime?
-  isTop                    Boolean              @default(false)
-  bannaerImage             Photo?               @relation("Event_bannaerImage", fields: [bannaerImageId], references: [id])
-  bannaerImageId           Int?                 @map("bannaerImage")
-  tags                     Tag[]                @relation("Event_tags")
-  relatedEvents            Event[]              @relation("Event_relatedEvents")
+  isTop                    Boolean               @default(false)
+  bannaerImage             Photo?                @relation("Event_bannaerImage", fields: [bannaerImageId], references: [id])
+  bannaerImageId           Int?                  @map("bannaerImage")
+  tags                     Tag[]                 @relation("Event_tags")
+  relatedEvents            Event[]               @relation("Event_relatedEvents")
   apiData                  Json?
   createdAt                DateTime?
   updatedAt                DateTime?
-  createdBy                User?                @relation("Event_createdBy", fields: [createdById], references: [id])
-  createdById              Int?                 @map("createdBy")
-  updatedBy                User?                @relation("Event_updatedBy", fields: [updatedById], references: [id])
-  updatedById              Int?                 @map("updatedBy")
-  from_Event_relatedEvents Event[]              @relation("Event_relatedEvents")
+  createdBy                User?                 @relation("Event_createdBy", fields: [createdById], references: [id])
+  createdById              Int?                  @map("createdBy")
+  updatedBy                User?                 @relation("Event_updatedBy", fields: [updatedById], references: [id])
+  updatedById              Int?                  @map("updatedBy")
+  from_Event_relatedEvents Event[]               @relation("Event_relatedEvents")
 
   @@index([sectionId])
   @@index([heroImageId])
@@ -130,28 +132,31 @@ model Event {
 }
 
 model Job {
-  id                   Int              @id @default(autoincrement())
-  name                 String           @default("")
-  jobStatus            JobJobStatusType
-  status               JobStatusType    @default(draft)
-  type                 JobTypeType
-  region               JobRegionType
-  section              Section?         @relation("Job_section", fields: [sectionId], references: [id])
-  sectionId            Int?             @map("section")
-  company              String           @default("")
-  profile_photo        Photo?           @relation("Job_profile_photo", fields: [profile_photoId], references: [id])
-  profile_photoId      Int?             @map("profile_photo")
-  content              Json?
-  tags                 Tag[]            @relation("Job_tags")
-  relatedJobs          Job[]            @relation("Job_relatedJobs")
-  apiData              Json?
-  createdAt            DateTime?
-  updatedAt            DateTime?
-  createdBy            User?            @relation("Job_createdBy", fields: [createdById], references: [id])
-  createdById          Int?             @map("createdBy")
-  updatedBy            User?            @relation("Job_updatedBy", fields: [updatedById], references: [id])
-  updatedById          Int?             @map("updatedBy")
-  from_Job_relatedJobs Job[]            @relation("Job_relatedJobs")
+  id                      Int               @id @default(autoincrement())
+  name                    String            @default("")
+  jobStatus               JobJobStatusType?
+  status                  JobStatusType     @default(draft)
+  type                    JobTypeType?
+  region                  JobRegionType?
+  section                 Section?          @relation("Job_section", fields: [sectionId], references: [id])
+  sectionId               Int?              @map("section")
+  company                 String            @default("")
+  loaction                String            @default("")
+  official_website        String            @default("")
+  official_website_titile String            @default("")
+  profile_photo           Photo?            @relation("Job_profile_photo", fields: [profile_photoId], references: [id])
+  profile_photoId         Int?              @map("profile_photo")
+  content                 Json?
+  tags                    Tag[]             @relation("Job_tags")
+  relatedJobs             Job[]             @relation("Job_relatedJobs")
+  apiData                 Json?
+  createdAt               DateTime?
+  updatedAt               DateTime?
+  createdBy               User?             @relation("Job_createdBy", fields: [createdById], references: [id])
+  createdById             Int?              @map("createdBy")
+  updatedBy               User?             @relation("Job_updatedBy", fields: [updatedById], references: [id])
+  updatedById             Int?              @map("updatedBy")
+  from_Job_relatedJobs    Job[]             @relation("Job_relatedJobs")
 
   @@index([sectionId])
   @@index([profile_photoId])
@@ -209,6 +214,7 @@ model Post {
   category                         Category?        @relation("Post_category", fields: [categoryId], references: [id])
   categoryId                       Int?             @map("category")
   columns                          Column[]         @relation("Column_posts")
+  region                           String?
   heroImage                        Photo?           @relation("Post_heroImage", fields: [heroImageId], references: [id])
   heroImageId                      Int?             @map("heroImage")
   heroCaption                      String           @default("")
@@ -216,6 +222,7 @@ model Post {
   content                          Json?
   relatedPosts                     Post[]           @relation("Post_relatedPosts")
   tags                             Tag[]            @relation("Post_tags")
+  oldCategory                      String?
   apiData                          Json?
   createdAt                        DateTime?
   updatedAt                        DateTime?
@@ -425,6 +432,7 @@ enum EventTypeType {
 enum EventRegionType {
   global
   NAME
+  UK
   EURO
   NZAU
   AFR
@@ -484,6 +492,7 @@ enum JobTypeType {
 enum JobRegionType {
   global
   NAME
+  UK
   EURO
   NZAU
   AFR
@@ -531,6 +540,7 @@ enum PostStatusType {
 enum ResourceRegionType {
   global
   NAME
+  UK
   EURO
   NZAU
   AFR

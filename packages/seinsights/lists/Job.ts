@@ -44,9 +44,9 @@ const listConfigurations = list({
         { label: '徵才中', value: JobStatus.Opening },
         { label: '過往徵才', value: JobStatus.Closed },
       ],
-      validation: {
-        isRequired: true,
-      },
+      // validation: {
+      //   isRequired: true,
+      // },
       ui: {
         displayMode: 'segmented-control',
       },
@@ -80,9 +80,9 @@ const listConfigurations = list({
         { label: '實習', value: JobType.Intern },
         { label: '志工', value: JobType.Volunteer },
       ],
-      validation: {
-        isRequired: true,
-      },
+      // validation: {
+      //   isRequired: true,
+      // },
       ui: {
         displayMode: 'segmented-control',
       },
@@ -91,9 +91,9 @@ const listConfigurations = list({
       label: '地區',
       type: 'enum',
       options: config.region_options,
-      validation: {
-        isRequired: true,
-      },
+      // validation: {
+      //   isRequired: true,
+      // },
     }),
     section: relationship({
       label: '關注領域',
@@ -107,6 +107,15 @@ const listConfigurations = list({
     }),
     company: text({
       label: '公司',
+    }),
+    loaction: text({
+      label: '地點',
+    }),
+    official_website: text({
+      label: '官網網址',
+    }),
+    official_website_titile: text({
+      label: '官網名稱',
     }),
     profile_photo: customFields.relationship({
       label: '企業頭貼',
@@ -160,7 +169,8 @@ const listConfigurations = list({
 
   access: {
     operation: {
-      update: allowRoles(admin, moderator, editor),
+      update: () => true,
+      // update: allowRoles(admin, moderator, editor),
       create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin),
     },
