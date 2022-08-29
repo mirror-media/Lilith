@@ -225,6 +225,7 @@ model Post {
   tags                             Tag[]            @relation("Post_tags")
   oldCategory                      String?
   apiData                          Json?
+  apiDataBrief                     Json?
   createdAt                        DateTime?
   updatedAt                        DateTime?
   createdBy                        User?            @relation("Post_createdBy", fields: [createdById], references: [id])
@@ -245,6 +246,7 @@ model Post {
 model Resource {
   id                             Int                @id @default(autoincrement())
   name                           String             @default("")
+  status                         ResourceStatusType @default(draft)
   region                         ResourceRegionType
   section                        Section?           @relation("Resource_section", fields: [sectionId], references: [id])
   sectionId                      Int?               @map("section")
@@ -532,6 +534,13 @@ enum JobRegionType {
 }
 
 enum PostStatusType {
+  published
+  draft
+  scheduled
+  archived
+}
+
+enum ResourceStatusType {
   published
   draft
   scheduled
