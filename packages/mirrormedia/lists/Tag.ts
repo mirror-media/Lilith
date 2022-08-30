@@ -55,6 +55,9 @@ const listConfigurations = list ({
       ui: { displayMode: 'textarea' }, 
       label: 'CSS' 
     }),
+    uuid: text({
+      label: 'UUID', 
+    }),
     javascript: text({
       label: 'javascript', 
       ui: { displayMode: 'textarea' } 

@@ -29,38 +29,8 @@ const listConfigurations = list ({
         { label: 'active', value: 'active' }, 
         { label: 'archived', value: 'archived' }],  
     }),
-    style: select({
-      options: [ 
-        { label: 'feature', value: 'feature' }, 
-        { label: 'listing', value: 'listing' }, 
-        { label: 'tile', value: 'tile' }],  
-    }),
-    heroImage: relationship({
-      label: '首圖',
-      ref: 'Photo',
-    }),
-    ogTitle: text({
-      label: 'FB分享標題', 
-      validation: { isRequired: false} 
-    }),
-    ogDescription: text({
-      label: 'FB分享說明', 
-      validation: { isRequired: false} 
-    }),
-    ogImage: relationship({
-      label: 'FB分享縮圖',  
-      ref: 'Photo',
-    }),
-    css: text({
-      label: 'CSS', 
-      ui: { displayMode: 'textarea' } 
-    }),
-    javascript: text({
-      label: 'javascript', 
-      ui: { displayMode: 'textarea' } 
-    }),
-	relatedPost: relationship({
-	  ref: 'Post',
+	note: relationship({
+	  ref: 'ProjectNote.category',
 	  many: true,
 	}),
 

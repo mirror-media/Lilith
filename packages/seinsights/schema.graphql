@@ -1228,6 +1228,7 @@ type Post {
   oldCategory: String
   apiDataBrief: JSON
   apiData: JSON
+  apiDataBrief: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1319,6 +1320,7 @@ input PostUpdateInput {
   oldCategory: String
   apiDataBrief: JSON
   apiData: JSON
+  apiDataBrief: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1363,6 +1365,7 @@ input PostCreateInput {
   oldCategory: String
   apiDataBrief: JSON
   apiData: JSON
+  apiDataBrief: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

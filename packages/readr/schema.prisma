@@ -47,6 +47,7 @@ model Photo {
   file_filesize                Int?
   file_mode                    String?
   file_filename                String?
+  tags                         Tag[]           @relation("Photo_tags")
   urlOriginal                  String          @default("")
   createdAt                    DateTime?
   updatedAt                    DateTime?
@@ -73,32 +74,33 @@ model Photo {
 }
 
 model Author {
-  id                        Int       @id @default(autoincrement())
-  name                      String    @default("")
-  email                     String    @unique @default("")
-  image                     Photo?    @relation("Author_image", fields: [imageId], references: [id])
-  imageId                   Int?      @map("image")
-  homepage                  String    @default("")
-  facebook                  String    @default("")
-  twitter                   String    @default("")
-  instagram                 String    @default("")
-  address                   String    @default("")
-  bio                       String    @default("")
-  posts                     Post[]    @relation("Author_posts")
-  quote                     Quote[]   @relation("Quote_writer")
-  gallery                   Gallery[] @relation("Gallery_writer")
-  projects                  Project[] @relation("Author_projects")
+  id                        Int           @id @default(autoincrement())
+  name                      String        @default("")
+  email                     String?       @unique
+  image                     Photo?        @relation("Author_image", fields: [imageId], references: [id])
+  imageId                   Int?          @map("image")
+  homepage                  String        @default("")
+  facebook                  String        @default("")
+  twitter                   String        @default("")
+  instagram                 String        @default("")
+  address                   String        @default("")
+  bio                       String        @default("")
+  posts                     Post[]        @relation("Author_posts")
+  notes                     ProjectNote[] @relation("Author_notes")
+  quote                     Quote[]       @relation("Quote_writer")
+  gallery                   Gallery[]     @relation("Gallery_writer")
+  projects                  Project[]     @relation("Author_projects")
   createdAt                 DateTime?
   updatedAt                 DateTime?
-  createdBy                 User?     @relation("Author_createdBy", fields: [createdById], references: [id])
-  createdById               Int?      @map("createdBy")
-  updatedBy                 User?     @relation("Author_updatedBy", fields: [updatedById], references: [id])
-  updatedById               Int?      @map("updatedBy")
-  from_Post_photographers   Post[]    @relation("Post_photographers")
-  from_Post_cameraOperators Post[]    @relation("Post_cameraOperators")
-  from_Post_designers       Post[]    @relation("Post_designers")
-  from_Post_engineers       Post[]    @relation("Post_engineers")
-  from_Post_dataAnalysts    Post[]    @relation("Post_dataAnalysts")
+  createdBy                 User?         @relation("Author_createdBy", fields: [createdById], references: [id])
+  createdById               Int?          @map("createdBy")
+  updatedBy                 User?         @relation("Author_updatedBy", fields: [updatedById], references: [id])
+  updatedById               Int?          @map("updatedBy")
+  from_Post_photographers   Post[]        @relation("Post_photographers")
+  from_Post_cameraOperators Post[]        @relation("Post_cameraOperators")
+  from_Post_designers       Post[]        @relation("Post_designers")
+  from_Post_engineers       Post[]        @relation("Post_engineers")
+  from_Post_dataAnalysts    Post[]        @relation("Post_dataAnalysts")
 
   @@index([name])
   @@index([imageId])
@@ -172,6 +174,7 @@ model Tag {
   ogImageId     Int?      @map("ogImage")
   isFeatured    Boolean   @default(false)
   posts         Post[]    @relation("Post_tags")
+  images        Photo[]   @relation("Photo_tags")
   projects      Project[] @relation("Project_tags")
   createdAt     DateTime?
   updatedAt     DateTime?
@@ -191,7 +194,7 @@ model Category {
   slug                    String    @default("")
   title                   String    @default("")
   isFeatured              Boolean   @default(false)
-  state                   Boolean   @default(false)
+  state                   String?
   style                   String?
   heroImage               Photo?    @relation("Category_heroImage", fields: [heroImageId], references: [id])
   heroImageId             Int?      @map("heroImage")
@@ -252,6 +255,10 @@ model User {
   from_Project_updatedBy          Project[]          @relation("Project_updatedBy")
   from_ProjectChecklist_createdBy ProjectChecklist[] @relation("ProjectChecklist_createdBy")
   from_ProjectChecklist_updatedBy ProjectChecklist[] @relation("ProjectChecklist_updatedBy")
+  from_ProjectNote_createdBy      ProjectNote[]      @relation("ProjectNote_createdBy")
+  from_ProjectNote_updatedBy      ProjectNote[]      @relation("ProjectNote_updatedBy")
+  from_NoteCategory_createdBy     NoteCategory[]     @relation("NoteCategory_createdBy")
+  from_NoteCategory_updatedBy     NoteCategory[]     @relation("NoteCategory_updatedBy")
   from_Quote_createdBy            Quote[]            @relation("Quote_createdBy")
   from_Quote_updatedBy            Quote[]            @relation("Quote_updatedBy")
 }
@@ -298,6 +305,7 @@ model Post {
   ogImage                   Photo?            @relation("Post_ogImage", fields: [ogImageId], references: [id])
   ogImageId                 Int?              @map("ogImage")
   isFeatured                Boolean           @default(false)
+  note                      ProjectNote[]     @relation("Post_note")
   project                   ProjectChecklist? @relation("Post_project", fields: [projectId], references: [id])
   projectId                 Int?              @unique @map("project")
   css                       String            @default("")
@@ -491,6 +499,45 @@ model ProjectChecklist {
   createdById      Int?      @map("createdBy")
   updatedBy        User?     @relation("ProjectChecklist_updatedBy", fields: [updatedById], references: [id])
   updatedById      Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model ProjectNote {
+  id          Int            @id @default(autoincrement())
+  post        Post[]         @relation("Post_note")
+  title       String         @default("")
+  writers     Author[]       @relation("Author_notes")
+  category    NoteCategory[] @relation("NoteCategory_note")
+  publishTime DateTime?
+  content     Json?
+  apiData     Json?
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?          @relation("ProjectNote_createdBy", fields: [createdById], references: [id])
+  createdById Int?           @map("createdBy")
+  updatedBy   User?          @relation("ProjectNote_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?           @map("updatedBy")
+
+  @@index([publishTime])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model NoteCategory {
+  id          Int           @id @default(autoincrement())
+  slug        String        @default("")
+  title       String        @default("")
+  isFeatured  Boolean       @default(false)
+  state       String?
+  note        ProjectNote[] @relation("NoteCategory_note")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?         @relation("NoteCategory_createdBy", fields: [createdById], references: [id])
+  createdById Int?          @map("createdBy")
+  updatedBy   User?         @relation("NoteCategory_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?          @map("updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
