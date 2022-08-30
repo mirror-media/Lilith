@@ -209,13 +209,6 @@ const listConfigurations = list({
         itemView: { fieldMode: 'read' },
       },
     }),
-    apiDataBrief: json({
-      label: 'Brief資料庫使用',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
-      },
-    }),
   },
   ui: {
     labelField: 'title',
@@ -241,6 +234,11 @@ const listConfigurations = list({
       if (content) {
         resolvedData.apiData = customFields.draftConverter
           .convertToApiData(content)
+          .toJS()
+      }
+      if (brief) {
+        resolvedData.apiDataBrief = customFields.draftConverter
+          .convertToApiData(brief)
           .toJS()
       }
       //relate section and post by corresponding category

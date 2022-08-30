@@ -226,7 +226,6 @@ model Post {
   oldCategory                      String?
   apiDataBrief                     Json?
   apiData                          Json?
-  apiDataBrief                     Json?
   createdAt                        DateTime?
   updatedAt                        DateTime?
   createdBy                        User?            @relation("Post_createdBy", fields: [createdById], references: [id])
