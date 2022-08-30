@@ -1226,8 +1226,8 @@ type Post {
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   oldCategory: String
-  apiData: JSON
   apiDataBrief: JSON
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1317,8 +1317,8 @@ input PostUpdateInput {
   relatedPosts: PostRelateToManyForUpdateInput
   tags: TagRelateToManyForUpdateInput
   oldCategory: String
-  apiData: JSON
   apiDataBrief: JSON
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1361,8 +1361,8 @@ input PostCreateInput {
   relatedPosts: PostRelateToManyForCreateInput
   tags: TagRelateToManyForCreateInput
   oldCategory: String
-  apiData: JSON
   apiDataBrief: JSON
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
