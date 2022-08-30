@@ -195,15 +195,15 @@ const listConfigurations = list({
         itemView: { fieldMode: 'read' },
       }
     }),
-    apiData: json({
-      label: '資料庫使用',
+    apiDataBrief: json({
+      label: 'Brief資料庫使用',
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
       },
     }),
-    apiDataBrief: json({
-      label: 'Brief資料庫使用',
+    apiData: json({
+      label: '資料庫使用',
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
@@ -237,7 +237,7 @@ const listConfigurations = list({
           .toJS()
       }
       if (brief) {
-        resolvedData.apiData = customFields.draftConverter
+        resolvedData.apiDataBrief = customFields.draftConverter
           .convertToApiData(brief)
           .toJS()
       }

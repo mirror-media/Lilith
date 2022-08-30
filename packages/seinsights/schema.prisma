@@ -224,8 +224,8 @@ model Post {
   relatedPosts                     Post[]           @relation("Post_relatedPosts")
   tags                             Tag[]            @relation("Post_tags")
   oldCategory                      String?
-  apiData                          Json?
   apiDataBrief                     Json?
+  apiData                          Json?
   createdAt                        DateTime?
   updatedAt                        DateTime?
   createdBy                        User?            @relation("Post_createdBy", fields: [createdById], references: [id])
