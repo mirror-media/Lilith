@@ -311,6 +311,7 @@ input PostRelateToManyForCreateInput {
 type Column {
   id: ID!
   name: String
+  columnName: String
   type: ColumnTypeType
   profile_photo: Photo
   intro: JSON
@@ -347,6 +348,7 @@ input ColumnWhereInput {
   NOT: [ColumnWhereInput!]
   id: IDFilter
   name: StringFilter
+  columnName: StringFilter
   type: ColumnTypeTypeNullableFilter
   profile_photo: PhotoWhereInput
   posts: PostManyRelationFilter
@@ -369,11 +371,13 @@ input SpecialfeatureManyRelationFilter {
 input ColumnOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  columnName: OrderDirection
   type: OrderDirection
 }
 
 input ColumnUpdateInput {
   name: String
+  columnName: String
   type: ColumnTypeType
   profile_photo: PhotoRelateToOneForUpdateInput
   intro: JSON
@@ -396,6 +400,7 @@ input ColumnUpdateArgs {
 
 input ColumnCreateInput {
   name: String
+  columnName: String
   type: ColumnTypeType
   profile_photo: PhotoRelateToOneForCreateInput
   intro: JSON

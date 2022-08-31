@@ -12,7 +12,11 @@ enum ColumnType {
 const listConfigurations = list({
   fields: {
     name: text({
-      label: '姓名',
+      label: '作家姓名',
+      validation: { isRequired: true },
+    }),
+    columnName: text({
+      label: '專欄姓名',
       validation: { isRequired: true },
     }),
     type: select({
