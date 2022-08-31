@@ -19,7 +19,7 @@ const listConfigurations = list({
         isRequired: true,
       },
     }),
-    slogan:text({
+    slogan: text({
       label: '口號',
     }),
     status: select({
@@ -116,7 +116,8 @@ const listConfigurations = list({
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),
-      update: allowRoles(admin, moderator),
+      update: () => true,
+      // update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
     },
