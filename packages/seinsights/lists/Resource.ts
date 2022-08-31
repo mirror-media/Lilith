@@ -19,6 +19,9 @@ const listConfigurations = list({
         isRequired: true,
       },
     }),
+    slogan:text({
+      label: '口號',
+    }),
     status: select({
       label: '狀態',
       type: 'enum',
