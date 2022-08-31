@@ -108,7 +108,7 @@ const listConfigurations = list({
     company: text({
       label: '公司',
     }),
-    loaction: text({
+    location: text({
       label: '地點',
     }),
     official_website: text({
