@@ -77,6 +77,7 @@ enum Region {
 const region_options = [
 { label: '全球', value: Region.Global},
 { label: '美加', value: Region.NorthAmerica },
+{ label: '英國', value: Region.UK },
 { label: '歐洲', value: Region.Europe },
 { label: '紐澳', value: Region.NewZealandAustralia },
 { label: '非洲', value: Region.Africa},

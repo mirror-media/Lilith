@@ -121,6 +121,13 @@ const listConfigurations = list({
       },
       many: true,
     }),
+    region: select({
+      label: '地區',
+      options:[
+        { label: '台灣', value: 'tw'},
+        { label: '國際', value: 'global'},
+      ]
+    }),
     heroImage: customFields.relationship({
       label: '首圖',
       ref: 'Photo',
@@ -134,11 +141,11 @@ const listConfigurations = list({
     heroCaption: text({
       label: '首圖圖說',
     }),
-    brief: text({
+    heroCreditUrl:text({
+      label: '首圖來源網址',
+    }),
+    brief: customFields.richTextEditor({
       label: '前言',
-      ui: {
-        displayMode: 'textarea',
-      }
     }),
     content: customFields.richTextEditor({
       label: '內文',
@@ -176,6 +183,25 @@ const listConfigurations = list({
     //     views: require.resolve('./preview-button'),
     //   },
     // }),
+    oldCategory:select({
+      'label': '舊內容分類（工程用）',
+      options:[
+        { label: 'article', value: 'article' },
+        { label: 'news', value: 'news' },
+        { label: 'story', value: 'story' },
+      ],
+      ui:{
+        createView:{fieldMode: 'hidden'},
+        itemView: { fieldMode: 'read' },
+      }
+    }),
+    apiDataBrief: json({
+      label: 'Brief資料庫使用',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
+    }),
     apiData: json({
       label: '資料庫使用',
       ui: {
@@ -204,10 +230,15 @@ const listConfigurations = list({
   },
   hooks: {
     resolveInput: async ({ resolvedData, context }) => {
-      const { content, category } = resolvedData
+      const { content, category , brief} = resolvedData
       if (content) {
         resolvedData.apiData = customFields.draftConverter
           .convertToApiData(content)
+          .toJS()
+      }
+      if (brief) {
+        resolvedData.apiDataBrief = customFields.draftConverter
+          .convertToApiData(brief)
           .toJS()
       }
       //relate section and post by corresponding category
