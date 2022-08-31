@@ -61,7 +61,7 @@ model Category {
 model Column {
   id              Int              @id @default(autoincrement())
   name            String           @default("")
-  type            ColumnTypeType
+  type            ColumnTypeType?
   profile_photo   Photo?           @relation("Column_profile_photo", fields: [profile_photoId], references: [id])
   profile_photoId Int?             @map("profile_photo")
   intro           Json?
