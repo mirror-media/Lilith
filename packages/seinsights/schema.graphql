@@ -1382,6 +1382,7 @@ input ColumnRelateToManyForCreateInput {
 type Resource {
   id: ID!
   name: String
+  slogan: String
   status: ResourceStatusType
   region: ResourceRegionType
   section: Section
@@ -1463,6 +1464,7 @@ input ResourceWhereInput {
   NOT: [ResourceWhereInput!]
   id: IDFilter
   name: StringFilter
+  slogan: StringFilter
   status: ResourceStatusTypeNullableFilter
   region: ResourceRegionTypeNullableFilter
   section: SectionWhereInput
@@ -1497,6 +1499,7 @@ input ResourceManyRelationFilter {
 input ResourceOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  slogan: OrderDirection
   status: OrderDirection
   region: OrderDirection
   createdAt: OrderDirection
@@ -1505,6 +1508,7 @@ input ResourceOrderByInput {
 
 input ResourceUpdateInput {
   name: String
+  slogan: String
   status: ResourceStatusType
   region: ResourceRegionType
   section: SectionRelateToOneForUpdateInput
@@ -1536,6 +1540,7 @@ input ResourceUpdateArgs {
 
 input ResourceCreateInput {
   name: String
+  slogan: String
   status: ResourceStatusType
   region: ResourceRegionType
   section: SectionRelateToOneForCreateInput

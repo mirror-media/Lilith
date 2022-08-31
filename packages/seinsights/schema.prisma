@@ -246,6 +246,7 @@ model Post {
 model Resource {
   id                             Int                 @id @default(autoincrement())
   name                           String              @default("")
+  slogan                         String              @default("")
   status                         ResourceStatusType  @default(draft)
   region                         ResourceRegionType?
   section                        Section?            @relation("Resource_section", fields: [sectionId], references: [id])
