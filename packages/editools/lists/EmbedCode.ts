@@ -44,7 +44,8 @@ const listConfigurations = list({
               feedback
               updatedAt
               createdAt
-              updateTime 
+              updateTime
+              updateTimeDesc
               heroImage {
                 resized {
                   w480 w800 w1200 w1600 w2400 original

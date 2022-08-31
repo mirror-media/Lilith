@@ -45,9 +45,9 @@ const listConfigurations = list({
         { label: '即將舉辦（舉辦中）', value: EventStatus.Opening },
         { label: '過往活動', value: EventStatus.Closed },
       ],
-      validation: {
-        isRequired: true,
-      },
+      // validation: {
+      //   isRequired: true,
+      // },
       ui: {
         displayMode: 'segmented-control',
       },
@@ -79,9 +79,9 @@ const listConfigurations = list({
         { label: '社企流', value: Type.SEInsight },
         { label: '外部活動', value: Type.External },
       ],
-      validation: {
-        isRequired: true,
-      },
+      // validation: {
+      //   isRequired: true,
+      // },
       ui: {
         displayMode: 'segmented-control',
       },
@@ -90,9 +90,9 @@ const listConfigurations = list({
       label: '地區',
       type: 'enum',
       options: config.region_options,
-      validation: {
-        isRequired: true,
-      },
+      // validation: {
+      //   isRequired: true,
+      // },
     }),
     section: relationship({
       label: '關注領域',
@@ -117,6 +117,12 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '敘述',
+    }),
+    location: text({
+      label: '地點',
+    }),
+    organization: text({
+      label: '舉辦單位',
     }),
     event_start: timestamp({
       label: '開始時間',
@@ -184,7 +190,8 @@ const listConfigurations = list({
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),
-      update: allowRoles(admin, moderator),
+      update: () => true,
+      // update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
     },
