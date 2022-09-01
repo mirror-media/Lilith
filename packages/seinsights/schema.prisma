@@ -36,21 +36,22 @@ model Banner {
 }
 
 model Category {
-  id          Int                @id @default(autoincrement())
-  name        String             @default("")
-  order       Int?               @unique
-  status      CategoryStatusType
-  heroImage   Photo?             @relation("Category_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?               @map("heroImage")
-  section     Section?           @relation("Category_section", fields: [sectionId], references: [id])
-  sectionId   Int?               @map("section")
-  posts       Post[]             @relation("Post_category")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?              @relation("Category_createdBy", fields: [createdById], references: [id])
-  createdById Int?               @map("createdBy")
-  updatedBy   User?              @relation("Category_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?               @map("updatedBy")
+  id              Int                @id @default(autoincrement())
+  name            String             @default("")
+  order           Int?               @unique
+  status          CategoryStatusType
+  heroImage       Photo?             @relation("Category_heroImage", fields: [heroImageId], references: [id])
+  heroImageId     Int?               @map("heroImage")
+  section         Section?           @relation("Category_section", fields: [sectionId], references: [id])
+  sectionId       Int?               @map("section")
+  posts           Post[]             @relation("Post_category")
+  specialfeatures Specialfeature[]   @relation("Specialfeature_category")
+  createdAt       DateTime?
+  updatedAt       DateTime?
+  createdBy       User?              @relation("Category_createdBy", fields: [createdById], references: [id])
+  createdById     Int?               @map("createdBy")
+  updatedBy       User?              @relation("Category_updatedBy", fields: [updatedById], references: [id])
+  updatedById     Int?               @map("updatedBy")
 
   @@index([heroImageId])
   @@index([sectionId])
@@ -210,18 +211,18 @@ model Post {
   weight                           Int?             @default(85)
   status                           PostStatusType?  @default(draft)
   publishDate                      DateTime?
-  section                          Section?         @relation("Post_section", fields: [sectionId], references: [id])
-  sectionId                        Int?             @map("section")
-  category                         Category?        @relation("Post_category", fields: [categoryId], references: [id])
-  categoryId                       Int?             @map("category")
-  columns                          Column[]         @relation("Column_posts")
-  region                           String?
   heroImage                        Photo?           @relation("Post_heroImage", fields: [heroImageId], references: [id])
   heroImageId                      Int?             @map("heroImage")
   heroCaption                      String           @default("")
   heroCreditUrl                    String           @default("")
   brief                            Json?
   content                          Json?
+  columns                          Column[]         @relation("Column_posts")
+  section                          Section?         @relation("Post_section", fields: [sectionId], references: [id])
+  sectionId                        Int?             @map("section")
+  category                         Category?        @relation("Post_category", fields: [categoryId], references: [id])
+  categoryId                       Int?             @map("category")
+  region                           String?
   relatedPosts                     Post[]           @relation("Post_relatedPosts")
   tags                             Tag[]            @relation("Post_tags")
   oldCategory                      String?
@@ -237,9 +238,9 @@ model Post {
   from_Post_relatedPosts           Post[]           @relation("Post_relatedPosts")
   from_Specialfeature_relatedPosts Specialfeature[] @relation("Specialfeature_relatedPosts")
 
+  @@index([heroImageId])
   @@index([sectionId])
   @@index([categoryId])
-  @@index([heroImageId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -276,24 +277,25 @@ model Resource {
 }
 
 model Section {
-  id          Int               @id @default(autoincrement())
-  name        String            @default("")
-  order       Int?              @unique
-  status      SectionStatusType
-  isPresent   Boolean           @default(true)
-  heroImage   Photo?            @relation("Section_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?              @map("heroImage")
-  category    Category[]        @relation("Category_section")
-  posts       Post[]            @relation("Post_section")
-  jobs        Job[]             @relation("Job_section")
-  events      Event[]           @relation("Event_section")
-  resources   Resource[]        @relation("Resource_section")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?             @relation("Section_createdBy", fields: [createdById], references: [id])
-  createdById Int?              @map("createdBy")
-  updatedBy   User?             @relation("Section_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?              @map("updatedBy")
+  id              Int               @id @default(autoincrement())
+  name            String            @default("")
+  order           Int?              @unique
+  status          SectionStatusType
+  isPresent       Boolean           @default(true)
+  heroImage       Photo?            @relation("Section_heroImage", fields: [heroImageId], references: [id])
+  heroImageId     Int?              @map("heroImage")
+  category        Category[]        @relation("Category_section")
+  posts           Post[]            @relation("Post_section")
+  specialfeatures Specialfeature[]  @relation("Specialfeature_section")
+  jobs            Job[]             @relation("Job_section")
+  events          Event[]           @relation("Event_section")
+  resources       Resource[]        @relation("Resource_section")
+  createdAt       DateTime?
+  updatedAt       DateTime?
+  createdBy       User?             @relation("Section_createdBy", fields: [createdById], references: [id])
+  createdById     Int?              @map("createdBy")
+  updatedBy       User?             @relation("Section_updatedBy", fields: [updatedById], references: [id])
+  updatedById     Int?              @map("updatedBy")
 
   @@index([heroImageId])
   @@index([createdById])
@@ -307,11 +309,17 @@ model Specialfeature {
   weight                           Int?                      @default(85)
   status                           SpecialfeatureStatusType? @default(draft)
   publishDate                      DateTime?
-  content                          Json?
-  columns                          Column[]                  @relation("Column_specialfeatures")
   heroImage                        Photo?                    @relation("Specialfeature_heroImage", fields: [heroImageId], references: [id])
   heroImageId                      Int?                      @map("heroImage")
   heroCaption                      String                    @default("")
+  heroCreditUrl                    String                    @default("")
+  content                          Json?
+  columns                          Column[]                  @relation("Column_specialfeatures")
+  section                          Section?                  @relation("Specialfeature_section", fields: [sectionId], references: [id])
+  sectionId                        Int?                      @map("section")
+  category                         Category?                 @relation("Specialfeature_category", fields: [categoryId], references: [id])
+  categoryId                       Int?                      @map("category")
+  region                           String?
   relatedPosts                     Post[]                    @relation("Specialfeature_relatedPosts")
   specialfeatureLists              SpecialfeatureList[]      @relation("Specialfeature_specialfeatureLists")
   tags                             Tag[]                     @relation("Specialfeature_tags")
@@ -325,6 +333,8 @@ model Specialfeature {
   from_EditorChoice_specialfeature EditorChoice[]            @relation("EditorChoice_specialfeature")
 
   @@index([heroImageId])
+  @@index([sectionId])
+  @@index([categoryId])
   @@index([createdById])
   @@index([updatedById])
 }

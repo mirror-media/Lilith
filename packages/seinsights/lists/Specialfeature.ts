@@ -59,14 +59,6 @@ const listConfigurations = list({
       label: '發布日期',
       defaultVaule: { kind: 'now' },
     }),
-    content: customFields.richTextEditor({
-      label: '內文',
-    }),
-    columns: relationship({
-      label: '作者',
-      ref: 'Column.specialfeatures',
-      many: true,
-    }),
     heroImage: customFields.relationship({
       label: '首圖',
       ref: 'Photo',
@@ -79,6 +71,40 @@ const listConfigurations = list({
     }),
     heroCaption: text({
       label: '首圖圖說',
+    }),
+    heroCreditUrl: text({
+      label: '首圖來源網址',
+    }),
+    content: customFields.richTextEditor({
+      label: '內文',
+    }),
+    columns: relationship({
+      label: '作者',
+      ref: 'Column.specialfeatures',
+      many: true,
+    }),
+    section: relationship({
+      label: '大分類',
+      ref: 'Section.specialfeatures',
+      ui: {
+        hideCreate: true,
+      },
+      many: false,
+    }),
+    category: relationship({
+      label: '小分類',
+      ref: 'Category.specialfeatures',
+      ui: {
+        hideCreate: true,
+      },
+      many: false,
+    }),
+    region: select({
+      label: '地區',
+      options: [
+        { label: '台灣', value: 'tw' },
+        { label: '國際', value: 'global' },
+      ],
     }),
     relatedPosts: customFields.relationship({
       label: '相關文章',

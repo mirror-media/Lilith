@@ -1,15 +1,16 @@
 import envVar from '../environment-variables'
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { list, graphql } from '@keystone-6/core'
-import { text, integer, relationship, select, json, timestamp, virtual,} from '@keystone-6/core/fields'
+import { list } from '@keystone-6/core'
+import {
+  text,
+  integer,
+  relationship,
+  select,
+  json,
+  timestamp,
+} from '@keystone-6/core/fields'
 
-
-const {
-  allowRoles,
-  admin,
-  moderator,
-  editor,
-} = utils.accessControl
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 enum UserRole {
   Admin = 'admin',
@@ -31,7 +32,6 @@ type Session = {
     role: UserRole
   }
 }
-
 
 function filterPosts({ session }: { session: Session }) {
   switch (envVar.accessControlStrategy) {
@@ -69,7 +69,7 @@ const listConfigurations = list({
       validation: {
         min: 1,
         max: 9999,
-      }
+      },
     }),
     status: select({
       label: '狀態',
@@ -92,42 +92,6 @@ const listConfigurations = list({
       label: '發布日期',
       defaultVaule: { kind: 'now' },
     }),
-    section: relationship({
-      label: '大分類',
-      ref: 'Section.posts',
-      ui: {
-        displayMode: 'cards',
-        cardFields: ['name'],
-        itemView: {
-          fieldMode: 'read',
-        },
-      },
-      many: false,
-    }),
-    category: relationship({
-      label: '小分類',
-      ref: 'Category.posts',
-      ui: {
-        hideCreate: true,
-      },
-      many: false,
-    }),
-    columns: relationship({
-      label: '作者',
-      ref: 'Column.posts',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        hideCreate: true,
-      },
-      many: true,
-    }),
-    region: select({
-      label: '地區',
-      options:[
-        { label: '台灣', value: 'tw'},
-        { label: '國際', value: 'global'},
-      ]
-    }),
     heroImage: customFields.relationship({
       label: '首圖',
       ref: 'Photo',
@@ -141,7 +105,7 @@ const listConfigurations = list({
     heroCaption: text({
       label: '首圖圖說',
     }),
-    heroCreditUrl:text({
+    heroCreditUrl: text({
       label: '首圖來源網址',
     }),
     brief: customFields.richTextEditor({
@@ -149,6 +113,38 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
+    }),
+    columns: relationship({
+      label: '作者',
+      ref: 'Column.posts',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        hideCreate: true,
+      },
+      many: true,
+    }),
+    section: relationship({
+      label: '大分類',
+      ref: 'Section.posts',
+      ui: {
+        hideCreate: true,
+      },
+      many: false,
+    }),
+    category: relationship({
+      label: '小分類',
+      ref: 'Category.posts',
+      ui: {
+        hideCreate: true,
+      },
+      many: false,
+    }),
+    region: select({
+      label: '地區',
+      options: [
+        { label: '台灣', value: 'tw' },
+        { label: '國際', value: 'global' },
+      ],
     }),
     relatedPosts: customFields.relationship({
       label: '延伸閱讀',
@@ -171,7 +167,7 @@ const listConfigurations = list({
       },
       many: true,
     }),
-    // 
+    //
     // previewButton: virtual({
     //   field: graphql.field({
     //     type: graphql.String,
@@ -183,17 +179,17 @@ const listConfigurations = list({
     //     views: require.resolve('./preview-button'),
     //   },
     // }),
-    oldCategory:select({
-      'label': '舊內容分類（工程用）',
-      options:[
+    oldCategory: select({
+      label: '舊內容分類（工程用）',
+      options: [
         { label: 'article', value: 'article' },
         { label: 'news', value: 'news' },
         { label: 'story', value: 'story' },
       ],
-      ui:{
-        createView:{fieldMode: 'hidden'},
+      ui: {
+        createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
-      }
+      },
     }),
     apiDataBrief: json({
       label: 'Brief資料庫使用',
@@ -229,8 +225,8 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    resolveInput: async ({ resolvedData, context }) => {
-      const { content, category , brief} = resolvedData
+    resolveInput: async ({ resolvedData }) => {
+      const { content, brief } = resolvedData
       if (content) {
         resolvedData.apiData = customFields.draftConverter
           .convertToApiData(content)
@@ -264,8 +260,12 @@ const listConfigurations = list({
       // }
       return resolvedData
     },
-    validateInput: async ({ operation, item, context, resolvedData, addValidationError }) => {
-
+    validateInput: async ({
+      operation,
+      item,
+      resolvedData,
+      addValidationError,
+    }) => {
       // publishDate is must while status is not `draft`
       if (operation == 'create') {
         const { status } = resolvedData
@@ -278,13 +278,12 @@ const listConfigurations = list({
       }
       if (operation == 'update') {
         if (resolvedData.status && resolvedData.status != 'draft') {
-          let publishDate = resolvedData.publishDate || item.publishDate
+          const publishDate = resolvedData.publishDate || item.publishDate
           if (!publishDate) {
             addValidationError('需要填入發布時間')
           }
-        }
-        else if (resolvedData.publishDate === null) {
-          let status = resolvedData.status || item.status
+        } else if (resolvedData.publishDate === null) {
+          const status = resolvedData.status || item.status
           if (status != 'draft') {
             addValidationError('需要填入發布時間')
           }
@@ -295,4 +294,3 @@ const listConfigurations = list({
 })
 
 export default utils.addTrackingFields(listConfigurations)
-
