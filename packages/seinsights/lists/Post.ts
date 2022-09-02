@@ -195,21 +195,21 @@ const listConfigurations = list({
       label: 'Brief資料庫使用',
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     apiData: json({
       label: '資料庫使用',
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
   },
   ui: {
     labelField: 'title',
     listView: {
-      initialColumns: ['id', 'title', 'publishDate', 'status'],
+      initialColumns: ['title', 'publishDate', 'status'],
       initialSort: { field: 'publishDate', direction: 'DESC' },
     },
   },
