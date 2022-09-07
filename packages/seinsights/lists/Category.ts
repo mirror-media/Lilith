@@ -67,6 +67,18 @@ const listConfigurations = list({
       },
       many: true,
     }),
+    specialfeatures: relationship({
+      ref: 'Specialfeature.category',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+      many: true,
+    }),
   },
   hooks: {},
   access: {

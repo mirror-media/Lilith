@@ -199,6 +199,13 @@ type Category {
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  specialfeatures(
+    where: SpecialfeatureWhereInput! = {}
+    orderBy: [SpecialfeatureOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Specialfeature!]
+  specialfeaturesCount(where: SpecialfeatureWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -226,6 +233,7 @@ input CategoryWhereInput {
   heroImage: PhotoWhereInput
   section: SectionWhereInput
   posts: PostManyRelationFilter
+  specialfeatures: SpecialfeatureManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -245,6 +253,12 @@ input PostManyRelationFilter {
   none: PostWhereInput
 }
 
+input SpecialfeatureManyRelationFilter {
+  every: SpecialfeatureWhereInput
+  some: SpecialfeatureWhereInput
+  none: SpecialfeatureWhereInput
+}
+
 input CategoryOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -261,6 +275,7 @@ input CategoryUpdateInput {
   heroImage: PhotoRelateToOneForUpdateInput
   section: SectionRelateToOneForUpdateInput
   posts: PostRelateToManyForUpdateInput
+  specialfeatures: SpecialfeatureRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -280,6 +295,13 @@ input PostRelateToManyForUpdateInput {
   connect: [PostWhereUniqueInput!]
 }
 
+input SpecialfeatureRelateToManyForUpdateInput {
+  disconnect: [SpecialfeatureWhereUniqueInput!]
+  set: [SpecialfeatureWhereUniqueInput!]
+  create: [SpecialfeatureCreateInput!]
+  connect: [SpecialfeatureWhereUniqueInput!]
+}
+
 input CategoryUpdateArgs {
   where: CategoryWhereUniqueInput!
   data: CategoryUpdateInput!
@@ -292,6 +314,7 @@ input CategoryCreateInput {
   heroImage: PhotoRelateToOneForCreateInput
   section: SectionRelateToOneForCreateInput
   posts: PostRelateToManyForCreateInput
+  specialfeatures: SpecialfeatureRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -308,9 +331,15 @@ input PostRelateToManyForCreateInput {
   connect: [PostWhereUniqueInput!]
 }
 
+input SpecialfeatureRelateToManyForCreateInput {
+  create: [SpecialfeatureCreateInput!]
+  connect: [SpecialfeatureWhereUniqueInput!]
+}
+
 type Column {
   id: ID!
   name: String
+  columnName: String
   type: ColumnTypeType
   profile_photo: Photo
   intro: JSON
@@ -347,6 +376,7 @@ input ColumnWhereInput {
   NOT: [ColumnWhereInput!]
   id: IDFilter
   name: StringFilter
+  columnName: StringFilter
   type: ColumnTypeTypeNullableFilter
   profile_photo: PhotoWhereInput
   posts: PostManyRelationFilter
@@ -360,33 +390,22 @@ input ColumnTypeTypeNullableFilter {
   not: ColumnTypeTypeNullableFilter
 }
 
-input SpecialfeatureManyRelationFilter {
-  every: SpecialfeatureWhereInput
-  some: SpecialfeatureWhereInput
-  none: SpecialfeatureWhereInput
-}
-
 input ColumnOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  columnName: OrderDirection
   type: OrderDirection
 }
 
 input ColumnUpdateInput {
   name: String
+  columnName: String
   type: ColumnTypeType
   profile_photo: PhotoRelateToOneForUpdateInput
   intro: JSON
   posts: PostRelateToManyForUpdateInput
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
   apiData: JSON
-}
-
-input SpecialfeatureRelateToManyForUpdateInput {
-  disconnect: [SpecialfeatureWhereUniqueInput!]
-  set: [SpecialfeatureWhereUniqueInput!]
-  create: [SpecialfeatureCreateInput!]
-  connect: [SpecialfeatureWhereUniqueInput!]
 }
 
 input ColumnUpdateArgs {
@@ -396,17 +415,13 @@ input ColumnUpdateArgs {
 
 input ColumnCreateInput {
   name: String
+  columnName: String
   type: ColumnTypeType
   profile_photo: PhotoRelateToOneForCreateInput
   intro: JSON
   posts: PostRelateToManyForCreateInput
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
   apiData: JSON
-}
-
-input SpecialfeatureRelateToManyForCreateInput {
-  create: [SpecialfeatureCreateInput!]
-  connect: [SpecialfeatureWhereUniqueInput!]
 }
 
 type EditorChoice {
@@ -1196,8 +1211,11 @@ type Post {
   weight: Int
   status: PostStatusType
   publishDate: DateTime
-  section: Section
-  category: Category
+  heroImage: Photo
+  heroCaption: String
+  heroCreditUrl: String
+  brief: JSON
+  content: JSON
   columns(
     where: ColumnWhereInput! = {}
     orderBy: [ColumnOrderByInput!]! = []
@@ -1205,12 +1223,9 @@ type Post {
     skip: Int! = 0
   ): [Column!]
   columnsCount(where: ColumnWhereInput! = {}): Int
+  section: Section
+  category: Category
   region: String
-  heroImage: Photo
-  heroCaption: String
-  heroCreditUrl: String
-  brief: JSON
-  content: JSON
   relatedPosts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
@@ -1255,13 +1270,13 @@ input PostWhereInput {
   weight: IntNullableFilter
   status: PostStatusTypeNullableFilter
   publishDate: DateTimeNullableFilter
-  section: SectionWhereInput
-  category: CategoryWhereInput
-  columns: ColumnManyRelationFilter
-  region: StringNullableFilter
   heroImage: PhotoWhereInput
   heroCaption: StringFilter
   heroCreditUrl: StringFilter
+  columns: ColumnManyRelationFilter
+  section: SectionWhereInput
+  category: CategoryWhereInput
+  region: StringNullableFilter
   relatedPosts: PostManyRelationFilter
   tags: TagManyRelationFilter
   oldCategory: StringNullableFilter
@@ -1291,9 +1306,9 @@ input PostOrderByInput {
   weight: OrderDirection
   status: OrderDirection
   publishDate: OrderDirection
-  region: OrderDirection
   heroCaption: OrderDirection
   heroCreditUrl: OrderDirection
+  region: OrderDirection
   oldCategory: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1305,15 +1320,15 @@ input PostUpdateInput {
   weight: Int
   status: PostStatusType
   publishDate: DateTime
-  section: SectionRelateToOneForUpdateInput
-  category: CategoryRelateToOneForUpdateInput
-  columns: ColumnRelateToManyForUpdateInput
-  region: String
   heroImage: PhotoRelateToOneForUpdateInput
   heroCaption: String
   heroCreditUrl: String
   brief: JSON
   content: JSON
+  columns: ColumnRelateToManyForUpdateInput
+  section: SectionRelateToOneForUpdateInput
+  category: CategoryRelateToOneForUpdateInput
+  region: String
   relatedPosts: PostRelateToManyForUpdateInput
   tags: TagRelateToManyForUpdateInput
   oldCategory: String
@@ -1325,17 +1340,17 @@ input PostUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input CategoryRelateToOneForUpdateInput {
-  create: CategoryCreateInput
-  connect: CategoryWhereUniqueInput
-  disconnect: Boolean
-}
-
 input ColumnRelateToManyForUpdateInput {
   disconnect: [ColumnWhereUniqueInput!]
   set: [ColumnWhereUniqueInput!]
   create: [ColumnCreateInput!]
   connect: [ColumnWhereUniqueInput!]
+}
+
+input CategoryRelateToOneForUpdateInput {
+  create: CategoryCreateInput
+  connect: CategoryWhereUniqueInput
+  disconnect: Boolean
 }
 
 input PostUpdateArgs {
@@ -1349,15 +1364,15 @@ input PostCreateInput {
   weight: Int
   status: PostStatusType
   publishDate: DateTime
-  section: SectionRelateToOneForCreateInput
-  category: CategoryRelateToOneForCreateInput
-  columns: ColumnRelateToManyForCreateInput
-  region: String
   heroImage: PhotoRelateToOneForCreateInput
   heroCaption: String
   heroCreditUrl: String
   brief: JSON
   content: JSON
+  columns: ColumnRelateToManyForCreateInput
+  section: SectionRelateToOneForCreateInput
+  category: CategoryRelateToOneForCreateInput
+  region: String
   relatedPosts: PostRelateToManyForCreateInput
   tags: TagRelateToManyForCreateInput
   oldCategory: String
@@ -1369,14 +1384,14 @@ input PostCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
-input CategoryRelateToOneForCreateInput {
-  create: CategoryCreateInput
-  connect: CategoryWhereUniqueInput
-}
-
 input ColumnRelateToManyForCreateInput {
   create: [ColumnCreateInput!]
   connect: [ColumnWhereUniqueInput!]
+}
+
+input CategoryRelateToOneForCreateInput {
+  create: CategoryCreateInput
+  connect: CategoryWhereUniqueInput
 }
 
 type Resource {
@@ -1584,6 +1599,13 @@ type Section {
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  specialfeatures(
+    where: SpecialfeatureWhereInput! = {}
+    orderBy: [SpecialfeatureOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Specialfeature!]
+  specialfeaturesCount(where: SpecialfeatureWhereInput! = {}): Int
   jobs(
     where: JobWhereInput! = {}
     orderBy: [JobOrderByInput!]! = []
@@ -1633,6 +1655,7 @@ input SectionWhereInput {
   heroImage: PhotoWhereInput
   category: CategoryManyRelationFilter
   posts: PostManyRelationFilter
+  specialfeatures: SpecialfeatureManyRelationFilter
   jobs: JobManyRelationFilter
   events: EventManyRelationFilter
   resources: ResourceManyRelationFilter
@@ -1673,6 +1696,7 @@ input SectionUpdateInput {
   heroImage: PhotoRelateToOneForUpdateInput
   category: CategoryRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
+  specialfeatures: SpecialfeatureRelateToManyForUpdateInput
   jobs: JobRelateToManyForUpdateInput
   events: EventRelateToManyForUpdateInput
   resources: ResourceRelateToManyForUpdateInput
@@ -1702,6 +1726,7 @@ input SectionCreateInput {
   heroImage: PhotoRelateToOneForCreateInput
   category: CategoryRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
+  specialfeatures: SpecialfeatureRelateToManyForCreateInput
   jobs: JobRelateToManyForCreateInput
   events: EventRelateToManyForCreateInput
   resources: ResourceRelateToManyForCreateInput
@@ -1723,6 +1748,9 @@ type Specialfeature {
   weight: Int
   status: SpecialfeatureStatusType
   publishDate: DateTime
+  heroImage: Photo
+  heroCaption: String
+  heroCreditUrl: String
   content: JSON
   columns(
     where: ColumnWhereInput! = {}
@@ -1731,8 +1759,9 @@ type Specialfeature {
     skip: Int! = 0
   ): [Column!]
   columnsCount(where: ColumnWhereInput! = {}): Int
-  heroImage: Photo
-  heroCaption: String
+  section: Section
+  category: Category
+  region: String
   relatedPosts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
@@ -1782,9 +1811,13 @@ input SpecialfeatureWhereInput {
   weight: IntNullableFilter
   status: SpecialfeatureStatusTypeNullableFilter
   publishDate: DateTimeNullableFilter
-  columns: ColumnManyRelationFilter
   heroImage: PhotoWhereInput
   heroCaption: StringFilter
+  heroCreditUrl: StringFilter
+  columns: ColumnManyRelationFilter
+  section: SectionWhereInput
+  category: CategoryWhereInput
+  region: StringNullableFilter
   relatedPosts: PostManyRelationFilter
   specialfeatureLists: SpecialfeatureListManyRelationFilter
   tags: TagManyRelationFilter
@@ -1815,6 +1848,8 @@ input SpecialfeatureOrderByInput {
   status: OrderDirection
   publishDate: OrderDirection
   heroCaption: OrderDirection
+  heroCreditUrl: OrderDirection
+  region: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1825,10 +1860,14 @@ input SpecialfeatureUpdateInput {
   weight: Int
   status: SpecialfeatureStatusType
   publishDate: DateTime
-  content: JSON
-  columns: ColumnRelateToManyForUpdateInput
   heroImage: PhotoRelateToOneForUpdateInput
   heroCaption: String
+  heroCreditUrl: String
+  content: JSON
+  columns: ColumnRelateToManyForUpdateInput
+  section: SectionRelateToOneForUpdateInput
+  category: CategoryRelateToOneForUpdateInput
+  region: String
   relatedPosts: PostRelateToManyForUpdateInput
   specialfeatureLists: SpecialfeatureListRelateToManyForUpdateInput
   tags: TagRelateToManyForUpdateInput
@@ -1857,10 +1896,14 @@ input SpecialfeatureCreateInput {
   weight: Int
   status: SpecialfeatureStatusType
   publishDate: DateTime
-  content: JSON
-  columns: ColumnRelateToManyForCreateInput
   heroImage: PhotoRelateToOneForCreateInput
   heroCaption: String
+  heroCreditUrl: String
+  content: JSON
+  columns: ColumnRelateToManyForCreateInput
+  section: SectionRelateToOneForCreateInput
+  category: CategoryRelateToOneForCreateInput
+  region: String
   relatedPosts: PostRelateToManyForCreateInput
   specialfeatureLists: SpecialfeatureListRelateToManyForCreateInput
   tags: TagRelateToManyForCreateInput

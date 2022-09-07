@@ -73,6 +73,18 @@ const listConfigurations = list({
       },
       many: true,
     }),
+    specialfeatures: relationship({
+      ref: 'Specialfeature.section',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+      many: true,
+    }),
     jobs: relationship({
       ref: 'Job.section',
       ui: {
