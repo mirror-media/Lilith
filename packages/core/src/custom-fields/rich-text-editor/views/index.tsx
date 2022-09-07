@@ -25,7 +25,10 @@ export const Field = ({
       <FieldLabel>
         {field.label}
         <Stack>
-          <RichTextEditor editorState={value} onChange={onChange} />
+          <RichTextEditor
+            editorState={value}
+            onChange={(editorState) => onChange?.(editorState)}
+          />
         </Stack>
       </FieldLabel>
     </FieldContainer>
@@ -51,16 +54,14 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   )
 }
 
-type Config = FieldControllerConfig<{ defaultValue: JSONValue }>
-
 export const controller = (
-  config: Config
-): FieldController<string, JSONValue> => {
+  config: FieldControllerConfig
+): FieldController<EditorState, JSONValue> => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
-    defaultValue: null,
+    defaultValue: EditorState.createEmpty(decorators),
     deserialize: (data) => {
       const rawContentState = data[config.path]
       if (rawContentState === null) {
