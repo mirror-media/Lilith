@@ -66,6 +66,14 @@ const listConfigurations = list({
     content: customFields.richTextEditor({
       label: '內文',
     }),
+    topSpecialfeature: relationship({
+      label: '導讀文章（置頂文章）',
+      ref: 'Specialfeature',
+      many: false,
+      ui: {
+        labelField: 'title',
+      },
+    }),
     specialfeatures: relationship({
       label: 'SpecialFeature',
       ref: 'Specialfeature.specialfeatureLists',
@@ -76,6 +84,14 @@ const listConfigurations = list({
     }),
     url: text({
       label: '外連網址',
+    }),
+    section: relationship({
+      label: '大分類',
+      ref: 'Section.specialfeatureLists',
+      ui: {
+        hideCreate: true,
+      },
+      many: false,
     }),
     apiData: json({
       label: '資料庫使用',

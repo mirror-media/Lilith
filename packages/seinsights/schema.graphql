@@ -546,8 +546,6 @@ type Event {
   organization: String
   event_start: DateTime
   event_end: DateTime
-  isTop: Boolean
-  bannaerImage: Photo
   tags(
     where: TagWhereInput! = {}
     orderBy: [TagOrderByInput!]! = []
@@ -647,8 +645,6 @@ input EventWhereInput {
   organization: StringFilter
   event_start: DateTimeNullableFilter
   event_end: DateTimeNullableFilter
-  isTop: BooleanFilter
-  bannaerImage: PhotoWhereInput
   tags: TagManyRelationFilter
   relatedEvents: EventManyRelationFilter
   createdAt: DateTimeNullableFilter
@@ -708,7 +704,6 @@ input EventOrderByInput {
   organization: OrderDirection
   event_start: OrderDirection
   event_end: OrderDirection
-  isTop: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -726,8 +721,6 @@ input EventUpdateInput {
   organization: String
   event_start: DateTime
   event_end: DateTime
-  isTop: Boolean
-  bannaerImage: PhotoRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
   relatedEvents: EventRelateToManyForUpdateInput
   apiData: JSON
@@ -769,8 +762,6 @@ input EventCreateInput {
   organization: String
   event_start: DateTime
   event_end: DateTime
-  isTop: Boolean
-  bannaerImage: PhotoRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
   relatedEvents: EventRelateToManyForCreateInput
   apiData: JSON
@@ -1207,8 +1198,8 @@ input PhotoCreateInput {
 type Post {
   id: ID!
   title: String
-  subtitle: String
   weight: Int
+  storyType: String
   status: PostStatusType
   publishDate: DateTime
   heroImage: Photo
@@ -1266,8 +1257,8 @@ input PostWhereInput {
   NOT: [PostWhereInput!]
   id: IDFilter
   title: StringFilter
-  subtitle: StringFilter
   weight: IntNullableFilter
+  storyType: StringNullableFilter
   status: PostStatusTypeNullableFilter
   publishDate: DateTimeNullableFilter
   heroImage: PhotoWhereInput
@@ -1302,8 +1293,8 @@ input ColumnManyRelationFilter {
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
-  subtitle: OrderDirection
   weight: OrderDirection
+  storyType: OrderDirection
   status: OrderDirection
   publishDate: OrderDirection
   heroCaption: OrderDirection
@@ -1316,8 +1307,8 @@ input PostOrderByInput {
 
 input PostUpdateInput {
   title: String
-  subtitle: String
   weight: Int
+  storyType: String
   status: PostStatusType
   publishDate: DateTime
   heroImage: PhotoRelateToOneForUpdateInput
@@ -1360,8 +1351,8 @@ input PostUpdateArgs {
 
 input PostCreateInput {
   title: String
-  subtitle: String
   weight: Int
+  storyType: String
   status: PostStatusType
   publishDate: DateTime
   heroImage: PhotoRelateToOneForCreateInput
@@ -1627,6 +1618,13 @@ type Section {
     skip: Int! = 0
   ): [Resource!]
   resourcesCount(where: ResourceWhereInput! = {}): Int
+  specialfeatureLists(
+    where: SpecialfeatureListWhereInput! = {}
+    orderBy: [SpecialfeatureListOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [SpecialfeatureList!]
+  specialfeatureListsCount(where: SpecialfeatureListWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1659,6 +1657,7 @@ input SectionWhereInput {
   jobs: JobManyRelationFilter
   events: EventManyRelationFilter
   resources: ResourceManyRelationFilter
+  specialfeatureLists: SpecialfeatureListManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1676,6 +1675,12 @@ input CategoryManyRelationFilter {
   every: CategoryWhereInput
   some: CategoryWhereInput
   none: CategoryWhereInput
+}
+
+input SpecialfeatureListManyRelationFilter {
+  every: SpecialfeatureListWhereInput
+  some: SpecialfeatureListWhereInput
+  none: SpecialfeatureListWhereInput
 }
 
 input SectionOrderByInput {
@@ -1700,6 +1705,7 @@ input SectionUpdateInput {
   jobs: JobRelateToManyForUpdateInput
   events: EventRelateToManyForUpdateInput
   resources: ResourceRelateToManyForUpdateInput
+  specialfeatureLists: SpecialfeatureListRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1711,6 +1717,13 @@ input CategoryRelateToManyForUpdateInput {
   set: [CategoryWhereUniqueInput!]
   create: [CategoryCreateInput!]
   connect: [CategoryWhereUniqueInput!]
+}
+
+input SpecialfeatureListRelateToManyForUpdateInput {
+  disconnect: [SpecialfeatureListWhereUniqueInput!]
+  set: [SpecialfeatureListWhereUniqueInput!]
+  create: [SpecialfeatureListCreateInput!]
+  connect: [SpecialfeatureListWhereUniqueInput!]
 }
 
 input SectionUpdateArgs {
@@ -1730,6 +1743,7 @@ input SectionCreateInput {
   jobs: JobRelateToManyForCreateInput
   events: EventRelateToManyForCreateInput
   resources: ResourceRelateToManyForCreateInput
+  specialfeatureLists: SpecialfeatureListRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1739,6 +1753,11 @@ input SectionCreateInput {
 input CategoryRelateToManyForCreateInput {
   create: [CategoryCreateInput!]
   connect: [CategoryWhereUniqueInput!]
+}
+
+input SpecialfeatureListRelateToManyForCreateInput {
+  create: [SpecialfeatureListCreateInput!]
+  connect: [SpecialfeatureListWhereUniqueInput!]
 }
 
 type Specialfeature {
@@ -1834,12 +1853,6 @@ input SpecialfeatureStatusTypeNullableFilter {
   not: SpecialfeatureStatusTypeNullableFilter
 }
 
-input SpecialfeatureListManyRelationFilter {
-  every: SpecialfeatureListWhereInput
-  some: SpecialfeatureListWhereInput
-  none: SpecialfeatureListWhereInput
-}
-
 input SpecialfeatureOrderByInput {
   id: OrderDirection
   title: OrderDirection
@@ -1878,13 +1891,6 @@ input SpecialfeatureUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input SpecialfeatureListRelateToManyForUpdateInput {
-  disconnect: [SpecialfeatureListWhereUniqueInput!]
-  set: [SpecialfeatureListWhereUniqueInput!]
-  create: [SpecialfeatureListCreateInput!]
-  connect: [SpecialfeatureListWhereUniqueInput!]
-}
-
 input SpecialfeatureUpdateArgs {
   where: SpecialfeatureWhereUniqueInput!
   data: SpecialfeatureUpdateInput!
@@ -1914,11 +1920,6 @@ input SpecialfeatureCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
-input SpecialfeatureListRelateToManyForCreateInput {
-  create: [SpecialfeatureListCreateInput!]
-  connect: [SpecialfeatureListWhereUniqueInput!]
-}
-
 type SpecialfeatureList {
   id: ID!
   title: String
@@ -1927,6 +1928,7 @@ type SpecialfeatureList {
   publishDate: DateTime
   heroImage: Photo
   content: JSON
+  topSpecialfeature: Specialfeature
   specialfeatures(
     where: SpecialfeatureWhereInput! = {}
     orderBy: [SpecialfeatureOrderByInput!]! = []
@@ -1935,6 +1937,7 @@ type SpecialfeatureList {
   ): [Specialfeature!]
   specialfeaturesCount(where: SpecialfeatureWhereInput! = {}): Int
   url: String
+  section: Section
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -1963,8 +1966,10 @@ input SpecialfeatureListWhereInput {
   status: SpecialfeatureListStatusTypeNullableFilter
   publishDate: DateTimeNullableFilter
   heroImage: PhotoWhereInput
+  topSpecialfeature: SpecialfeatureWhereInput
   specialfeatures: SpecialfeatureManyRelationFilter
   url: StringFilter
+  section: SectionWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1996,8 +2001,10 @@ input SpecialfeatureListUpdateInput {
   publishDate: DateTime
   heroImage: PhotoRelateToOneForUpdateInput
   content: JSON
+  topSpecialfeature: SpecialfeatureRelateToOneForUpdateInput
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
   url: String
+  section: SectionRelateToOneForUpdateInput
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -2017,8 +2024,10 @@ input SpecialfeatureListCreateInput {
   publishDate: DateTime
   heroImage: PhotoRelateToOneForCreateInput
   content: JSON
+  topSpecialfeature: SpecialfeatureRelateToOneForCreateInput
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
   url: String
+  section: SectionRelateToOneForCreateInput
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -2172,6 +2181,584 @@ input UserCreateInput {
   role: String
 }
 
+type AboutUs {
+  id: ID!
+  aboutUs: JSON
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input AboutUsWhereUniqueInput {
+  id: ID
+}
+
+input AboutUsWhereInput {
+  AND: [AboutUsWhereInput!]
+  OR: [AboutUsWhereInput!]
+  NOT: [AboutUsWhereInput!]
+  id: IDFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input AboutUsOrderByInput {
+  id: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input AboutUsUpdateInput {
+  aboutUs: JSON
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input AboutUsUpdateArgs {
+  where: AboutUsWhereUniqueInput!
+  data: AboutUsUpdateInput!
+}
+
+input AboutUsCreateInput {
+  aboutUs: JSON
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type EventBanner {
+  id: ID!
+  name: String
+  order: Int
+  heroImage: Photo
+  status: EventBannerStatusType
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum EventBannerStatusType {
+  published
+  draft
+  scheduled
+  archived
+}
+
+input EventBannerWhereUniqueInput {
+  id: ID
+  order: Int
+}
+
+input EventBannerWhereInput {
+  AND: [EventBannerWhereInput!]
+  OR: [EventBannerWhereInput!]
+  NOT: [EventBannerWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  order: IntNullableFilter
+  heroImage: PhotoWhereInput
+  status: EventBannerStatusTypeNullableFilter
+  publishDate: DateTimeNullableFilter
+  url: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input EventBannerStatusTypeNullableFilter {
+  equals: EventBannerStatusType
+  in: [EventBannerStatusType!]
+  notIn: [EventBannerStatusType!]
+  not: EventBannerStatusTypeNullableFilter
+}
+
+input EventBannerOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  order: OrderDirection
+  status: OrderDirection
+  publishDate: OrderDirection
+  url: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input EventBannerUpdateInput {
+  name: String
+  order: Int
+  heroImage: PhotoRelateToOneForUpdateInput
+  status: EventBannerStatusType
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input EventBannerUpdateArgs {
+  where: EventBannerWhereUniqueInput!
+  data: EventBannerUpdateInput!
+}
+
+input EventBannerCreateInput {
+  name: String
+  order: Int
+  heroImage: PhotoRelateToOneForCreateInput
+  status: EventBannerStatusType
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type HomepageBanner {
+  id: ID!
+  name: String
+  order: Int
+  heroImage: Photo
+  status: HomepageBannerStatusType
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum HomepageBannerStatusType {
+  published
+  draft
+  scheduled
+  archived
+}
+
+input HomepageBannerWhereUniqueInput {
+  id: ID
+  order: Int
+}
+
+input HomepageBannerWhereInput {
+  AND: [HomepageBannerWhereInput!]
+  OR: [HomepageBannerWhereInput!]
+  NOT: [HomepageBannerWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  order: IntNullableFilter
+  heroImage: PhotoWhereInput
+  status: HomepageBannerStatusTypeNullableFilter
+  publishDate: DateTimeNullableFilter
+  url: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input HomepageBannerStatusTypeNullableFilter {
+  equals: HomepageBannerStatusType
+  in: [HomepageBannerStatusType!]
+  notIn: [HomepageBannerStatusType!]
+  not: HomepageBannerStatusTypeNullableFilter
+}
+
+input HomepageBannerOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  order: OrderDirection
+  status: OrderDirection
+  publishDate: OrderDirection
+  url: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input HomepageBannerUpdateInput {
+  name: String
+  order: Int
+  heroImage: PhotoRelateToOneForUpdateInput
+  status: HomepageBannerStatusType
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input HomepageBannerUpdateArgs {
+  where: HomepageBannerWhereUniqueInput!
+  data: HomepageBannerUpdateInput!
+}
+
+input HomepageBannerCreateInput {
+  name: String
+  order: Int
+  heroImage: PhotoRelateToOneForCreateInput
+  status: HomepageBannerStatusType
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type JobBanner {
+  id: ID!
+  name: String
+  order: Int
+  heroImage: Photo
+  status: JobBannerStatusType
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum JobBannerStatusType {
+  published
+  draft
+  scheduled
+  archived
+}
+
+input JobBannerWhereUniqueInput {
+  id: ID
+  order: Int
+}
+
+input JobBannerWhereInput {
+  AND: [JobBannerWhereInput!]
+  OR: [JobBannerWhereInput!]
+  NOT: [JobBannerWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  order: IntNullableFilter
+  heroImage: PhotoWhereInput
+  status: JobBannerStatusTypeNullableFilter
+  publishDate: DateTimeNullableFilter
+  url: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input JobBannerStatusTypeNullableFilter {
+  equals: JobBannerStatusType
+  in: [JobBannerStatusType!]
+  notIn: [JobBannerStatusType!]
+  not: JobBannerStatusTypeNullableFilter
+}
+
+input JobBannerOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  order: OrderDirection
+  status: OrderDirection
+  publishDate: OrderDirection
+  url: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input JobBannerUpdateInput {
+  name: String
+  order: Int
+  heroImage: PhotoRelateToOneForUpdateInput
+  status: JobBannerStatusType
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input JobBannerUpdateArgs {
+  where: JobBannerWhereUniqueInput!
+  data: JobBannerUpdateInput!
+}
+
+input JobBannerCreateInput {
+  name: String
+  order: Int
+  heroImage: PhotoRelateToOneForCreateInput
+  status: JobBannerStatusType
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Menubar {
+  id: ID!
+  name: String
+  order: Int
+  isActive: Boolean
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input MenubarWhereUniqueInput {
+  id: ID
+  order: Int
+}
+
+input MenubarWhereInput {
+  AND: [MenubarWhereInput!]
+  OR: [MenubarWhereInput!]
+  NOT: [MenubarWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  order: IntNullableFilter
+  isActive: BooleanFilter
+  publishDate: DateTimeNullableFilter
+  url: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input MenubarOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  order: OrderDirection
+  isActive: OrderDirection
+  publishDate: OrderDirection
+  url: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input MenubarUpdateInput {
+  name: String
+  order: Int
+  isActive: Boolean
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input MenubarUpdateArgs {
+  where: MenubarWhereUniqueInput!
+  data: MenubarUpdateInput!
+}
+
+input MenubarCreateInput {
+  name: String
+  order: Int
+  isActive: Boolean
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type ResourceBanner {
+  id: ID!
+  name: String
+  order: Int
+  heroImage: Photo
+  status: ResourceBannerStatusType
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum ResourceBannerStatusType {
+  published
+  draft
+  scheduled
+  archived
+}
+
+input ResourceBannerWhereUniqueInput {
+  id: ID
+  order: Int
+}
+
+input ResourceBannerWhereInput {
+  AND: [ResourceBannerWhereInput!]
+  OR: [ResourceBannerWhereInput!]
+  NOT: [ResourceBannerWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  order: IntNullableFilter
+  heroImage: PhotoWhereInput
+  status: ResourceBannerStatusTypeNullableFilter
+  publishDate: DateTimeNullableFilter
+  url: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ResourceBannerStatusTypeNullableFilter {
+  equals: ResourceBannerStatusType
+  in: [ResourceBannerStatusType!]
+  notIn: [ResourceBannerStatusType!]
+  not: ResourceBannerStatusTypeNullableFilter
+}
+
+input ResourceBannerOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  order: OrderDirection
+  status: OrderDirection
+  publishDate: OrderDirection
+  url: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ResourceBannerUpdateInput {
+  name: String
+  order: Int
+  heroImage: PhotoRelateToOneForUpdateInput
+  status: ResourceBannerStatusType
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ResourceBannerUpdateArgs {
+  where: ResourceBannerWhereUniqueInput!
+  data: ResourceBannerUpdateInput!
+}
+
+input ResourceBannerCreateInput {
+  name: String
+  order: Int
+  heroImage: PhotoRelateToOneForCreateInput
+  status: ResourceBannerStatusType
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type SpecialfeatureEditorChoice {
+  id: ID!
+  order: Int
+  specialfeature: Specialfeature
+  status: SpecialfeatureEditorChoiceStatusType
+  publishDate: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum SpecialfeatureEditorChoiceStatusType {
+  published
+  draft
+  scheduled
+  archived
+}
+
+input SpecialfeatureEditorChoiceWhereUniqueInput {
+  id: ID
+  order: Int
+}
+
+input SpecialfeatureEditorChoiceWhereInput {
+  AND: [SpecialfeatureEditorChoiceWhereInput!]
+  OR: [SpecialfeatureEditorChoiceWhereInput!]
+  NOT: [SpecialfeatureEditorChoiceWhereInput!]
+  id: IDFilter
+  order: IntNullableFilter
+  specialfeature: SpecialfeatureWhereInput
+  status: SpecialfeatureEditorChoiceStatusTypeNullableFilter
+  publishDate: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input SpecialfeatureEditorChoiceStatusTypeNullableFilter {
+  equals: SpecialfeatureEditorChoiceStatusType
+  in: [SpecialfeatureEditorChoiceStatusType!]
+  notIn: [SpecialfeatureEditorChoiceStatusType!]
+  not: SpecialfeatureEditorChoiceStatusTypeNullableFilter
+}
+
+input SpecialfeatureEditorChoiceOrderByInput {
+  id: OrderDirection
+  order: OrderDirection
+  status: OrderDirection
+  publishDate: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input SpecialfeatureEditorChoiceUpdateInput {
+  order: Int
+  specialfeature: SpecialfeatureRelateToOneForUpdateInput
+  status: SpecialfeatureEditorChoiceStatusType
+  publishDate: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input SpecialfeatureEditorChoiceUpdateArgs {
+  where: SpecialfeatureEditorChoiceWhereUniqueInput!
+  data: SpecialfeatureEditorChoiceUpdateInput!
+}
+
+input SpecialfeatureEditorChoiceCreateInput {
+  order: Int
+  specialfeature: SpecialfeatureRelateToOneForCreateInput
+  status: SpecialfeatureEditorChoiceStatusType
+  publishDate: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2295,6 +2882,83 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  createAboutUs(data: AboutUsCreateInput!): AboutUs
+  createAboutuses(data: [AboutUsCreateInput!]!): [AboutUs]
+  updateAboutUs(
+    where: AboutUsWhereUniqueInput!
+    data: AboutUsUpdateInput!
+  ): AboutUs
+  updateAboutuses(data: [AboutUsUpdateArgs!]!): [AboutUs]
+  deleteAboutUs(where: AboutUsWhereUniqueInput!): AboutUs
+  deleteAboutuses(where: [AboutUsWhereUniqueInput!]!): [AboutUs]
+  createEventBanner(data: EventBannerCreateInput!): EventBanner
+  createEventBanners(data: [EventBannerCreateInput!]!): [EventBanner]
+  updateEventBanner(
+    where: EventBannerWhereUniqueInput!
+    data: EventBannerUpdateInput!
+  ): EventBanner
+  updateEventBanners(data: [EventBannerUpdateArgs!]!): [EventBanner]
+  deleteEventBanner(where: EventBannerWhereUniqueInput!): EventBanner
+  deleteEventBanners(where: [EventBannerWhereUniqueInput!]!): [EventBanner]
+  createHomepageBanner(data: HomepageBannerCreateInput!): HomepageBanner
+  createHomepageBanners(data: [HomepageBannerCreateInput!]!): [HomepageBanner]
+  updateHomepageBanner(
+    where: HomepageBannerWhereUniqueInput!
+    data: HomepageBannerUpdateInput!
+  ): HomepageBanner
+  updateHomepageBanners(data: [HomepageBannerUpdateArgs!]!): [HomepageBanner]
+  deleteHomepageBanner(where: HomepageBannerWhereUniqueInput!): HomepageBanner
+  deleteHomepageBanners(
+    where: [HomepageBannerWhereUniqueInput!]!
+  ): [HomepageBanner]
+  createJobBanner(data: JobBannerCreateInput!): JobBanner
+  createJobBanners(data: [JobBannerCreateInput!]!): [JobBanner]
+  updateJobBanner(
+    where: JobBannerWhereUniqueInput!
+    data: JobBannerUpdateInput!
+  ): JobBanner
+  updateJobBanners(data: [JobBannerUpdateArgs!]!): [JobBanner]
+  deleteJobBanner(where: JobBannerWhereUniqueInput!): JobBanner
+  deleteJobBanners(where: [JobBannerWhereUniqueInput!]!): [JobBanner]
+  createMenubar(data: MenubarCreateInput!): Menubar
+  createMenubars(data: [MenubarCreateInput!]!): [Menubar]
+  updateMenubar(
+    where: MenubarWhereUniqueInput!
+    data: MenubarUpdateInput!
+  ): Menubar
+  updateMenubars(data: [MenubarUpdateArgs!]!): [Menubar]
+  deleteMenubar(where: MenubarWhereUniqueInput!): Menubar
+  deleteMenubars(where: [MenubarWhereUniqueInput!]!): [Menubar]
+  createResourceBanner(data: ResourceBannerCreateInput!): ResourceBanner
+  createResourceBanners(data: [ResourceBannerCreateInput!]!): [ResourceBanner]
+  updateResourceBanner(
+    where: ResourceBannerWhereUniqueInput!
+    data: ResourceBannerUpdateInput!
+  ): ResourceBanner
+  updateResourceBanners(data: [ResourceBannerUpdateArgs!]!): [ResourceBanner]
+  deleteResourceBanner(where: ResourceBannerWhereUniqueInput!): ResourceBanner
+  deleteResourceBanners(
+    where: [ResourceBannerWhereUniqueInput!]!
+  ): [ResourceBanner]
+  createSpecialfeatureEditorChoice(
+    data: SpecialfeatureEditorChoiceCreateInput!
+  ): SpecialfeatureEditorChoice
+  createSpecialfeatureEditorChoices(
+    data: [SpecialfeatureEditorChoiceCreateInput!]!
+  ): [SpecialfeatureEditorChoice]
+  updateSpecialfeatureEditorChoice(
+    where: SpecialfeatureEditorChoiceWhereUniqueInput!
+    data: SpecialfeatureEditorChoiceUpdateInput!
+  ): SpecialfeatureEditorChoice
+  updateSpecialfeatureEditorChoices(
+    data: [SpecialfeatureEditorChoiceUpdateArgs!]!
+  ): [SpecialfeatureEditorChoice]
+  deleteSpecialfeatureEditorChoice(
+    where: SpecialfeatureEditorChoiceWhereUniqueInput!
+  ): SpecialfeatureEditorChoice
+  deleteSpecialfeatureEditorChoices(
+    where: [SpecialfeatureEditorChoiceWhereUniqueInput!]!
+  ): [SpecialfeatureEditorChoice]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -2440,6 +3104,66 @@ type Query {
   ): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
+  aboutuses(
+    where: AboutUsWhereInput! = {}
+    orderBy: [AboutUsOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [AboutUs!]
+  aboutUs(where: AboutUsWhereUniqueInput!): AboutUs
+  aboutusesCount(where: AboutUsWhereInput! = {}): Int
+  eventBanners(
+    where: EventBannerWhereInput! = {}
+    orderBy: [EventBannerOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [EventBanner!]
+  eventBanner(where: EventBannerWhereUniqueInput!): EventBanner
+  eventBannersCount(where: EventBannerWhereInput! = {}): Int
+  homepageBanners(
+    where: HomepageBannerWhereInput! = {}
+    orderBy: [HomepageBannerOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [HomepageBanner!]
+  homepageBanner(where: HomepageBannerWhereUniqueInput!): HomepageBanner
+  homepageBannersCount(where: HomepageBannerWhereInput! = {}): Int
+  jobBanners(
+    where: JobBannerWhereInput! = {}
+    orderBy: [JobBannerOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [JobBanner!]
+  jobBanner(where: JobBannerWhereUniqueInput!): JobBanner
+  jobBannersCount(where: JobBannerWhereInput! = {}): Int
+  menubars(
+    where: MenubarWhereInput! = {}
+    orderBy: [MenubarOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Menubar!]
+  menubar(where: MenubarWhereUniqueInput!): Menubar
+  menubarsCount(where: MenubarWhereInput! = {}): Int
+  resourceBanners(
+    where: ResourceBannerWhereInput! = {}
+    orderBy: [ResourceBannerOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ResourceBanner!]
+  resourceBanner(where: ResourceBannerWhereUniqueInput!): ResourceBanner
+  resourceBannersCount(where: ResourceBannerWhereInput! = {}): Int
+  specialfeatureEditorChoices(
+    where: SpecialfeatureEditorChoiceWhereInput! = {}
+    orderBy: [SpecialfeatureEditorChoiceOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [SpecialfeatureEditorChoice!]
+  specialfeatureEditorChoice(
+    where: SpecialfeatureEditorChoiceWhereUniqueInput!
+  ): SpecialfeatureEditorChoice
+  specialfeatureEditorChoicesCount(
+    where: SpecialfeatureEditorChoiceWhereInput! = {}
+  ): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

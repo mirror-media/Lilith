@@ -121,6 +121,18 @@ const listConfigurations = list({
       },
       many: true,
     }),
+    specialfeatureLists: relationship({
+      ref: 'SpecialfeatureList.section',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+      many: true,
+    }),
   },
   access: {
     operation: {

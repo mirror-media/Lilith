@@ -60,9 +60,6 @@ const listConfigurations = list({
     title: text({
       label: '標題',
     }),
-    subtitle: text({
-      label: '副標',
-    }),
     weight: integer({
       label: '權重',
       defaultValue: 85,
@@ -70,6 +67,12 @@ const listConfigurations = list({
         min: 1,
         max: 9999,
       },
+    }),
+    storyType: select({
+      label: '文體story-type',
+      options: [
+        { label: '趨勢', value: 'trend' },
+        {label: '案例', value:'case'}]
     }),
     status: select({
       label: '狀態',
@@ -115,7 +118,7 @@ const listConfigurations = list({
       label: '內文',
     }),
     columns: relationship({
-      label: '作者',
+      label: '專欄作者',
       ref: 'Column.posts',
       ui: {
         createView: { fieldMode: 'hidden' },
