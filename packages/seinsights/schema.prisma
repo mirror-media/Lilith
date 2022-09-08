@@ -207,6 +207,7 @@ model Post {
   id                               Int              @id @default(autoincrement())
   title                            String           @default("")
   weight                           Int?             @default(85)
+  storyType                        String?
   status                           PostStatusType?  @default(draft)
   publishDate                      DateTime?
   heroImage                        Photo?           @relation("Post_heroImage", fields: [heroImageId], references: [id])
