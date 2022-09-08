@@ -100,8 +100,13 @@ type InfoBoxInputType = {
 }
 
 function InfoBoxInput(props: InfoBoxInputType) {
-  const { isOpen, onChange, onCancel, title, rawContentStateForInfoBoxEditor } =
-    props
+  const {
+    isOpen,
+    onChange,
+    onCancel,
+    title,
+    rawContentStateForInfoBoxEditor,
+  } = props
   const rawContentState = rawContentStateForInfoBoxEditor || {
     blocks: [],
     entityMap: {},

@@ -544,7 +544,7 @@ export class RichTextEditor extends React.Component<
           </DraftEditorControls>
           <TextEditorWrapper
             onClick={() => {
-              ;(this.refs.editor as HTMLElement)?.focus()
+              ;(this.refs.editor as HTMLElement)?.focus() // eslint-disable-line
             }}
           >
             <Editor
