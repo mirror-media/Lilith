@@ -12,10 +12,12 @@ export type JsonFieldConfig<
 > = CommonFieldConfig<ListTypeInfo> & {
   defaultValue?: JSONValue
   db?: { map?: string }
+  disabledButtons: string[]
 }
 
 export const richTextEditor = <ListTypeInfo extends BaseListTypeInfo>({
   defaultValue = null,
+  disabledButtons = [],
   ...config
 }: JsonFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> => (
   meta
@@ -44,7 +46,7 @@ export const richTextEditor = <ListTypeInfo extends BaseListTypeInfo>({
       },
       output: graphql.field({ type: graphql.JSON }),
       views: require.resolve('./views'),
-      getAdminMeta: () => ({ defaultValue }),
+      getAdminMeta: () => ({ defaultValue, disabledButtons }),
     },
     {
       default:

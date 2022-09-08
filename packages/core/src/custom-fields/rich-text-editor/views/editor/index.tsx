@@ -21,11 +21,44 @@ import styled, { css } from 'styled-components'
 import { DividerButton } from './divider'
 import { FontColorButton, CUSTOM_STYLE_PREFIX_FONT_COLOR } from './font-color'
 
+export const buttonNames = {
+  // inline styles
+  bold: 'bold',
+  italic: 'italic',
+  underline: 'underline',
+  code: 'code',
+
+  // block styles
+  h2: 'header-two',
+  h3: 'header-three',
+  h4: 'header-four',
+  blockquote: 'blockquote',
+  ul: 'unordered-list-item',
+  ol: 'ordered-list-item',
+  codeBlock: 'code-block',
+
+  // custom styles
+  annotation: 'annotation',
+  divider: 'divider',
+  embed: 'embed',
+  fontColor: 'font-color',
+  image: 'image',
+  infoBox: 'info-box',
+  link: 'link',
+  slideshow: 'slideshow',
+  table: 'table',
+}
+
+type ButtonStyleProps = {
+  isActive: boolean
+  isDisabled: boolean
+  readOnly: boolean
+}
+
 const buttonStyle = css`
   /* Rich-editor default setting (.RichEditor-styleButton)*/
   margin-right: 16px;
   padding: 2px 0;
-  display: inline-block;
   /* Custom Setting */
   border-radius: 6px;
   text-align: center;
@@ -34,13 +67,13 @@ const buttonStyle = css`
   margin: 0px 0px 10px 0px;
   background-color: #fff;
   border: solid 1px rgb(193, 199, 208);
-  cursor: ${(props) => {
+  cursor: ${(props: ButtonStyleProps) => {
     if (props.readOnly) {
       return 'not-allowed'
     }
     return 'pointer'
   }};
-  color: ${(props) => {
+  color: ${(props: ButtonStyleProps) => {
     if (props.readOnly) {
       return '#c1c7d0'
     }
@@ -50,7 +83,7 @@ const buttonStyle = css`
     return '#6b7280'
   }};
   border: solid 1px
-    ${(props) => {
+    ${(props: ButtonStyleProps) => {
       if (props.readOnly) {
         return '#c1c7d0'
       }
@@ -59,7 +92,7 @@ const buttonStyle = css`
       }
       return '#6b7280'
     }};
-  box-shadow: ${(props) => {
+  box-shadow: ${(props: ButtonStyleProps) => {
     if (props.readOnly) {
       return 'unset'
     }
@@ -69,6 +102,13 @@ const buttonStyle = css`
     return 'unset'
   }};
   transition: box-shadow 100ms linear;
+
+  display: ${(props: ButtonStyleProps) => {
+    if (props.isDisabled) {
+      return 'none'
+    }
+    return 'inline-block'
+  }};
 `
 
 const CustomFontColorButton = styled(FontColorButton)<{
@@ -85,6 +125,7 @@ const CustomButton = styled.div<{ isActive: boolean; readOnly: boolean }>`
 const CustomAnnotationButton = styled(AnnotationButton)<{
   isActive: boolean
   readOnly: boolean
+  isDisabled: boolean
 }>`
   ${buttonStyle}
 `
@@ -92,6 +133,7 @@ const CustomAnnotationButton = styled(AnnotationButton)<{
 const CustomLinkButton = styled(LinkButton)<{
   isActive: boolean
   readOnly: boolean
+  isDisabled: boolean
 }>`
   ${buttonStyle}
 `
@@ -233,8 +275,9 @@ const EnlargeButtonWrapper = styled.div`
 `
 
 type RichTextEditorProps = {
-  onChange: (editorState) => void
+  onChange: (editorState: EditorState) => void
   editorState: EditorState
+  disabledButtons: string[]
 }
 type State = {
   isEnlarged?: boolean
@@ -407,6 +450,7 @@ export class RichTextEditor extends React.Component<
   }
 
   render() {
+    const { disabledButtons } = this.props
     let { editorState } = this.props
 
     if (!(editorState instanceof EditorState)) {
@@ -443,6 +487,7 @@ export class RichTextEditor extends React.Component<
             <DraftEditorControlsWrapper>
               <ButtonGroup>
                 <BlockStyleControls
+                  disabledButtons={disabledButtons}
                   editorState={editorState}
                   onToggle={this.toggleBlockType}
                   readOnly={this.state.readOnly}
@@ -450,6 +495,7 @@ export class RichTextEditor extends React.Component<
               </ButtonGroup>
               <ButtonGroup>
                 <InlineStyleControls
+                  disabledButtons={disabledButtons}
                   editorState={editorState}
                   onToggle={this.toggleInlineStyle}
                   readOnly={this.state.readOnly}
@@ -466,6 +512,7 @@ export class RichTextEditor extends React.Component<
             <DraftEditorControlsWrapper>
               <ButtonGroup>
                 <CustomLinkButton
+                  isDisabled={disabledButtons.includes(buttonNames.link)}
                   isActive={entityType === 'LINK'}
                   editorState={editorState}
                   onChange={this.onChange}
@@ -474,6 +521,7 @@ export class RichTextEditor extends React.Component<
               </ButtonGroup>
               <ButtonGroup>
                 <CustomFontColorButton
+                  isDisabled={disabledButtons.includes(buttonNames.fontColor)}
                   isActive={Object.prototype.hasOwnProperty.call(
                     customStyle,
                     'color'
@@ -485,12 +533,14 @@ export class RichTextEditor extends React.Component<
               </ButtonGroup>
               <ButtonGroup>
                 <CustomDividerButton
+                  isDisabled={disabledButtons.includes(buttonNames.divider)}
                   editorState={editorState}
                   onChange={this.onChange}
                 ></CustomDividerButton>
               </ButtonGroup>
               <ButtonGroup>
                 <CustomAnnotationButton
+                  isDisabled={disabledButtons.includes(buttonNames.annotation)}
                   isActive={entityType === 'ANNOTATION'}
                   editorState={editorState}
                   onChange={this.onChange}
@@ -507,6 +557,7 @@ export class RichTextEditor extends React.Component<
 
               <ButtonGroup>
                 <CustomImageButton
+                  isDisabled={disabledButtons.includes(buttonNames.image)}
                   editorState={editorState}
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
@@ -514,6 +565,7 @@ export class RichTextEditor extends React.Component<
               </ButtonGroup>
               <ButtonGroup>
                 <CustomSlideshowButton
+                  isDisabled={disabledButtons.includes(buttonNames.slideshow)}
                   editorState={editorState}
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
@@ -521,6 +573,7 @@ export class RichTextEditor extends React.Component<
               </ButtonGroup>
               <ButtonGroup>
                 <CustomInfoBoxButton
+                  isDisabled={disabledButtons.includes(buttonNames.infoBox)}
                   editorState={editorState}
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
@@ -528,6 +581,7 @@ export class RichTextEditor extends React.Component<
               </ButtonGroup>
               <ButtonGroup>
                 <CustomEmbeddedCodeButton
+                  isDisabled={disabledButtons.includes(buttonNames.embed)}
                   editorState={editorState}
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
@@ -535,6 +589,7 @@ export class RichTextEditor extends React.Component<
               </ButtonGroup>
               <ButtonGroup>
                 <CustomTableButton
+                  isDisabled={disabledButtons.includes(buttonNames.table)}
                   editorState={editorState}
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
@@ -579,7 +634,7 @@ const styleMap = {
   },
 }
 
-function getBlockStyle(block) {
+function getBlockStyle(block: { getType: () => string }) {
   switch (block.getType()) {
     case 'blockquote':
       return 'RichEditor-blockquote'
@@ -592,14 +647,15 @@ function getBlockStyle(block) {
 type StyleButtonProps = {
   active: boolean
   label: string
-  onToggle: (string) => void
+  onToggle: (buttonName: string) => void
   style: string
   icon: string
   readOnly: boolean
+  isDisabled: boolean
 }
 
 class StyleButton extends React.Component<StyleButtonProps> {
-  onToggle = (e) => {
+  onToggle = (e: React.MouseEvent) => {
     e.preventDefault()
     this.props.onToggle(this.props.style)
   }
@@ -607,6 +663,7 @@ class StyleButton extends React.Component<StyleButtonProps> {
   render() {
     return (
       <CustomButton
+        isDisabled={this.props.isDisabled}
         isActive={this.props.active}
         onMouseDown={this.onToggle}
         readOnly={this.props.readOnly}
@@ -619,17 +676,26 @@ class StyleButton extends React.Component<StyleButtonProps> {
 }
 
 const blockStyles = [
-  { label: 'H2', style: 'header-two', icon: '' },
-  { label: 'H3', style: 'header-three', icon: '' },
-  { label: 'H4', style: 'header-four', icon: '' },
-  { label: 'Blockquote', style: 'blockquote', icon: 'fas fa-quote-right' },
-  { label: 'UL', style: 'unordered-list-item', icon: 'fas fa-list-ul' },
-  { label: 'OL', style: 'ordered-list-item', icon: 'fas fa-list-ol' },
-  { label: 'Code Block', style: 'code-block', icon: 'fas fa-code' },
+  { label: 'H2', style: buttonNames.h2, icon: '' },
+  { label: 'H3', style: buttonNames.h3, icon: '' },
+  { label: 'H4', style: buttonNames.h4, icon: '' },
+  {
+    label: 'Blockquote',
+    style: buttonNames.blockquote,
+    icon: 'fas fa-quote-right',
+  },
+  { label: 'UL', style: buttonNames.ul, icon: 'fas fa-list-ul' },
+  { label: 'OL', style: buttonNames.ol, icon: 'fas fa-list-ol' },
+  { label: 'Code Block', style: buttonNames.codeBlock, icon: 'fas fa-code' },
 ]
 
-const BlockStyleControls = (props) => {
-  const { editorState } = props
+const BlockStyleControls = (props: {
+  editorState: EditorState
+  disabledButtons: string[]
+  onToggle: (buttonName: string) => void
+  readOnly: boolean
+}) => {
+  const { editorState, disabledButtons } = props
   const selection = editorState.getSelection()
   const blockType = editorState
     .getCurrentContent()
@@ -639,6 +705,7 @@ const BlockStyleControls = (props) => {
     <div className="RichEditor-controls">
       {blockStyles.map((type) => (
         <StyleButton
+          isDisabled={disabledButtons.includes(type.style)}
           key={type.label}
           active={type.style === blockType}
           label={type.label}
@@ -653,18 +720,36 @@ const BlockStyleControls = (props) => {
 }
 
 const inlineStyles = [
-  { label: 'Bold', style: 'BOLD', icon: 'fas fa-bold' },
-  { label: 'Italic', style: 'ITALIC', icon: 'fas fa-italic' },
-  { label: 'Underline', style: 'UNDERLINE', icon: 'fas fa-underline' },
-  { label: 'Monospace', style: 'CODE', icon: 'fas fa-terminal' },
+  { label: 'Bold', style: buttonNames.bold.toUpperCase(), icon: 'fas fa-bold' },
+  {
+    label: 'Italic',
+    style: buttonNames.italic.toUpperCase(),
+    icon: 'fas fa-italic',
+  },
+  {
+    label: 'Underline',
+    style: buttonNames.underline.toUpperCase(),
+    icon: 'fas fa-underline',
+  },
+  {
+    label: 'Monospace',
+    style: buttonNames.code.toUpperCase(),
+    icon: 'fas fa-terminal',
+  },
 ]
 
-const InlineStyleControls = (props) => {
+const InlineStyleControls = (props: {
+  editorState: EditorState
+  disabledButtons: string[]
+  onToggle: (buttonName: string) => void
+  readOnly: boolean
+}) => {
   const currentStyle = props.editorState.getCurrentInlineStyle()
   return (
     <div className="RichEditor-controls">
       {inlineStyles.map((type) => (
         <StyleButton
+          isDisabled={props.disabledButtons.includes(type.style.toLowerCase())}
           key={type.label}
           active={currentStyle.has(type.style)}
           label={type.label}

@@ -26,6 +26,7 @@ export const Field = ({
         {field.label}
         <Stack>
           <RichTextEditor
+            disabledButtons={field.disabledButtons}
             editorState={value}
             onChange={(editorState) => onChange?.(editorState)}
           />
@@ -55,9 +56,10 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 }
 
 export const controller = (
-  config: FieldControllerConfig
-): FieldController<EditorState, JSONValue> => {
+  config: FieldControllerConfig<{ disabledButtons: string[] }>
+): FieldController<EditorState, JSONValue> & { disabledButtons: string[] } => {
   return {
+    disabledButtons: config.fieldMeta?.disabledButtons ?? [],
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
