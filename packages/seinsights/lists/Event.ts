@@ -130,20 +130,6 @@ const listConfigurations = list({
     event_end: timestamp({
       label: '結束時間',
     }),
-    isTop: checkbox({
-      label: '是否置頂（呈現於列表頁）',
-    }),
-    bannaerImage: customFields.relationship({
-      label: 'Banner圖（呈現於列表頁）',
-      ref: 'Photo',
-      ui: {
-        hideCreate: true,
-      },
-      customConfig: {
-        isImage: true,
-      },
-      many: false,
-    }),
     tags: relationship({
       label: '標籤',
       ref: 'Tag.events',

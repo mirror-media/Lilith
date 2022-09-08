@@ -60,9 +60,6 @@ const listConfigurations = list({
     title: text({
       label: '標題',
     }),
-    subtitle: text({
-      label: '副標',
-    }),
     weight: integer({
       label: '權重',
       defaultValue: 85,
@@ -115,7 +112,7 @@ const listConfigurations = list({
       label: '內文',
     }),
     columns: relationship({
-      label: '作者',
+      label: '專欄作者',
       ref: 'Column.posts',
       ui: {
         createView: { fieldMode: 'hidden' },
