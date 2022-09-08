@@ -49,6 +49,16 @@ export const buttonNames = {
   table: 'table',
 }
 
+const disabledButtonsOnBasicEditor = [
+  buttonNames.annotation,
+  buttonNames.divider,
+  buttonNames.embed,
+  buttonNames.image,
+  buttonNames.infoBox,
+  buttonNames.slideshow,
+  buttonNames.table,
+]
+
 type ButtonStyleProps = {
   isActive: boolean
   isDisabled: boolean
@@ -277,8 +287,11 @@ const EnlargeButtonWrapper = styled.div`
 type RichTextEditorProps = {
   onChange: (editorState: EditorState) => void
   editorState: EditorState
-  disabledButtons: string[]
+  disabledButtons?: string[]
 }
+
+type BasicEditorProps = RichTextEditorProps
+
 type State = {
   isEnlarged?: boolean
   readOnly?: boolean
@@ -444,6 +457,14 @@ export class RichTextEditor extends React.Component<
         onEditStart,
         onEditFinish,
         getMainEditorReadOnly: () => this.state.readOnly,
+        renderBasicEditor: (propsOfBasicEditor: BasicEditorProps) => {
+          return (
+            <RichTextEditor
+              {...propsOfBasicEditor}
+              disabledButtons={disabledButtonsOnBasicEditor}
+            />
+          )
+        },
       }
     }
     return atomicBlockObj
@@ -460,6 +481,16 @@ export class RichTextEditor extends React.Component<
 
     const entityType = this.getEntityType(editorState)
     const customStyle = this.getCustomStyle(editorState.getCurrentInlineStyle())
+
+    const renderBasicEditor = (propsOfBasicEditor: BasicEditorProps) => {
+      return (
+        <RichTextEditor
+          {...propsOfBasicEditor}
+          disabledButtons={disabledButtonsOnBasicEditor}
+        />
+      )
+    }
+
     return (
       <DraftEditor isEnlarged={isEnlarged}>
         <DraftEditorWrapper>
@@ -545,6 +576,7 @@ export class RichTextEditor extends React.Component<
                   editorState={editorState}
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
+                  renderBasicEditor={renderBasicEditor}
                 />
               </ButtonGroup>
               {/* <ButtonGroup>
@@ -577,6 +609,7 @@ export class RichTextEditor extends React.Component<
                   editorState={editorState}
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
+                  renderBasicEditor={renderBasicEditor}
                 />
               </ButtonGroup>
               <ButtonGroup>
