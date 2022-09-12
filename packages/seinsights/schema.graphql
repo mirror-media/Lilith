@@ -2181,7 +2181,7 @@ input UserCreateInput {
   role: String
 }
 
-type AboutUs {
+type About {
   id: ID!
   aboutUs: JSON
   apiData: JSON
@@ -2191,14 +2191,14 @@ type AboutUs {
   updatedBy: User
 }
 
-input AboutUsWhereUniqueInput {
+input AboutWhereUniqueInput {
   id: ID
 }
 
-input AboutUsWhereInput {
-  AND: [AboutUsWhereInput!]
-  OR: [AboutUsWhereInput!]
-  NOT: [AboutUsWhereInput!]
+input AboutWhereInput {
+  AND: [AboutWhereInput!]
+  OR: [AboutWhereInput!]
+  NOT: [AboutWhereInput!]
   id: IDFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2206,13 +2206,13 @@ input AboutUsWhereInput {
   updatedBy: UserWhereInput
 }
 
-input AboutUsOrderByInput {
+input AboutOrderByInput {
   id: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
-input AboutUsUpdateInput {
+input AboutUpdateInput {
   aboutUs: JSON
   apiData: JSON
   createdAt: DateTime
@@ -2221,12 +2221,12 @@ input AboutUsUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input AboutUsUpdateArgs {
-  where: AboutUsWhereUniqueInput!
-  data: AboutUsUpdateInput!
+input AboutUpdateArgs {
+  where: AboutWhereUniqueInput!
+  data: AboutUpdateInput!
 }
 
-input AboutUsCreateInput {
+input AboutCreateInput {
   aboutUs: JSON
   apiData: JSON
   createdAt: DateTime
@@ -2882,15 +2882,12 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
-  createAboutUs(data: AboutUsCreateInput!): AboutUs
-  createAboutuses(data: [AboutUsCreateInput!]!): [AboutUs]
-  updateAboutUs(
-    where: AboutUsWhereUniqueInput!
-    data: AboutUsUpdateInput!
-  ): AboutUs
-  updateAboutuses(data: [AboutUsUpdateArgs!]!): [AboutUs]
-  deleteAboutUs(where: AboutUsWhereUniqueInput!): AboutUs
-  deleteAboutuses(where: [AboutUsWhereUniqueInput!]!): [AboutUs]
+  createAbout(data: AboutCreateInput!): About
+  createAbouts(data: [AboutCreateInput!]!): [About]
+  updateAbout(where: AboutWhereUniqueInput!, data: AboutUpdateInput!): About
+  updateAbouts(data: [AboutUpdateArgs!]!): [About]
+  deleteAbout(where: AboutWhereUniqueInput!): About
+  deleteAbouts(where: [AboutWhereUniqueInput!]!): [About]
   createEventBanner(data: EventBannerCreateInput!): EventBanner
   createEventBanners(data: [EventBannerCreateInput!]!): [EventBanner]
   updateEventBanner(
@@ -3104,14 +3101,14 @@ type Query {
   ): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
-  aboutuses(
-    where: AboutUsWhereInput! = {}
-    orderBy: [AboutUsOrderByInput!]! = []
+  abouts(
+    where: AboutWhereInput! = {}
+    orderBy: [AboutOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [AboutUs!]
-  aboutUs(where: AboutUsWhereUniqueInput!): AboutUs
-  aboutusesCount(where: AboutUsWhereInput! = {}): Int
+  ): [About!]
+  about(where: AboutWhereUniqueInput!): About
+  aboutsCount(where: AboutWhereInput! = {}): Int
   eventBanners(
     where: EventBannerWhereInput! = {}
     orderBy: [EventBannerOrderByInput!]! = []

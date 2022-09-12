@@ -419,8 +419,8 @@ model User {
   from_SpecialfeatureList_updatedBy         SpecialfeatureList[]         @relation("SpecialfeatureList_updatedBy")
   from_Tag_createdBy                        Tag[]                        @relation("Tag_createdBy")
   from_Tag_updatedBy                        Tag[]                        @relation("Tag_updatedBy")
-  from_AboutUs_createdBy                    AboutUs[]                    @relation("AboutUs_createdBy")
-  from_AboutUs_updatedBy                    AboutUs[]                    @relation("AboutUs_updatedBy")
+  from_About_createdBy                      About[]                      @relation("About_createdBy")
+  from_About_updatedBy                      About[]                      @relation("About_updatedBy")
   from_EventBanner_createdBy                EventBanner[]                @relation("EventBanner_createdBy")
   from_EventBanner_updatedBy                EventBanner[]                @relation("EventBanner_updatedBy")
   from_HomepageBanner_createdBy             HomepageBanner[]             @relation("HomepageBanner_createdBy")
@@ -435,15 +435,15 @@ model User {
   from_SpecialfeatureEditorChoice_updatedBy SpecialfeatureEditorChoice[] @relation("SpecialfeatureEditorChoice_updatedBy")
 }
 
-model AboutUs {
+model About {
   id          Int       @id @default(autoincrement())
   aboutUs     Json?
   apiData     Json?
   createdAt   DateTime?
   updatedAt   DateTime?
-  createdBy   User?     @relation("AboutUs_createdBy", fields: [createdById], references: [id])
+  createdBy   User?     @relation("About_createdBy", fields: [createdById], references: [id])
   createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("AboutUs_updatedBy", fields: [updatedById], references: [id])
+  updatedBy   User?     @relation("About_updatedBy", fields: [updatedById], references: [id])
   updatedById Int?      @map("updatedBy")
 
   @@index([createdById])
