@@ -35,7 +35,7 @@ export const listDefinition = {
   SpecialfeatureList,
   Tag,
   User,
-  AboutUs,
+  About: AboutUs,
   EventBanner,
   HomepageBanner,
   JobBanner,
