@@ -1,6 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
-import { text, select, checkbox, relationship, integer } from '@keystone-6/core/fields';
+import { relationship, checkbox, select, text, integer } from '@keystone-6/core/fields';
 
 const {
   allowRoles,
@@ -13,11 +13,7 @@ const {
 const listConfigurations = list({
   fields: {
     name: text({
-      label: '名稱',
-      validation: { isRequired: true },
-    }),
-    description: text({
-      label: '簡介',
+      label: '名稱', validation: { isRequired: true }
     }),
     slug: text({
       label: 'slug',
@@ -40,34 +36,23 @@ const listConfigurations = list({
       validation: { isRequired: true },
       ui: { displayMode: 'segmented-control' },
     }),
-    isFeatured: checkbox({
-      label: '置頂',
-    }),
     heroImage: relationship({
+      label: 'Banner圖片',
       ref: 'Photo',
-      label: '圖片',
     }),
-    categories: relationship({
-      ref: 'Category.sections',
-      label: '分類',
-      many: true,
+    sections: relationship({
+      ref: "Section.categories",
+      many: false,
     }),
     posts: relationship({
-      ref: "Post.sections",
+      ref: "Post.categories",
       many: true,
       ui: {
         createView: { fieldMode: 'hidden'},
         itemView: { fieldMode: 'hidden' },
       }
     }),
-    topics: relationship({
-      ref: "Topic.sections",
-      many: true,
-      ui: {
-        createView: { fieldMode: 'hidden'},
-        itemView: { fieldMode: 'hidden' },
-      }
-    }),
+
   },
   access: {
     operation: {

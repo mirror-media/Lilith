@@ -1,91 +1,59 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { text } from '@keystone-6/core/fields'
+import { text, file, relationship, select, checkbox, timestamp, json } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator } = utils.accessControl
 
-import { GcsFileAdapter } from '../utils/GcsFileAdapter'
-
-const gcsFileAdapter = new GcsFileAdapter('video')
 
 const listConfigurations = list({
   fields: {
     name: text({
-      label: '標題',
+      label: 'name',
       validation: { isRequired: true },
     }),
-    youtubeUrl: text({
-      label: 'Youtube網址',
-    }),
-    file: customFields.file({
+    file: file({
       label: '檔案',
-      customConfig: {
-        fileType: 'video',
-      },
     }),
-    coverPhoto: customFields.relationship({
+    content: customFields.richTextEditor({
+      label: '敘述',
+    }),
+    heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
       ui: {
         hideCreate: true,
       },
-      customConfig: {
-        isImage: true,
-      },
     }),
-    description: text({
-      label: '描述',
-      ui: {
-        displayMode: 'textarea',
-      },
+    isFeed: checkbox({
+      label: '供稿',
     }),
-    // todo
-    tags: text({
+    state: select({
+      label: '狀態',
+      options: [
+        { label: '草稿', value: 'draft' },
+        { label: '已發布', value: 'published' },
+        { label: '預約發佈', value: 'scheduled' },
+      ],
+      defaultValue: 'draft',
+      isIndexed: true
+    }),
+    publishedDate: timestamp({
+      isIndexed: true,
+      label: '發佈日期',
+    }),
+    tags: relationship({
       label: '標籤',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
-      },
+      ref: 'Tag',
+      many: true,
     }),
-    meta: text({
-      label: '中繼資料',
+    apiData: json({
+      label: '資料庫使用',
       ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
-      },
-    }),
-    url: text({
-      label: '檔案網址',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
-      },
-    }),
-    duration: text({
-      label: '影片長度（秒）',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
   },
-
   access: {
     operation: {
       query: () => true,
@@ -96,15 +64,14 @@ const listConfigurations = list({
   },
 
   hooks: {
-    resolveInput: async ({ inputData, item, resolvedData }) => {
-      gcsFileAdapter.startFileProcessingFlow(resolvedData, item, inputData)
-
-      return resolvedData
-    },
-    beforeOperation: async ({ operation, item }) => {
-      if (operation === 'delete' && item.file_filename) {
-        gcsFileAdapter.startDeleteProcess(`${item.file_filename}`)
+    resolveInput: async ({ resolvedData }) => {
+      const { content } = resolvedData
+      if (content) {
+        resolvedData.apiData = customFields.draftConverter
+          .convertToApiData(content)
+          .toJS()
       }
+      return resolvedData
     },
   },
 })

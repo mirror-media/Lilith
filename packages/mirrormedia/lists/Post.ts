@@ -1,7 +1,7 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
 import { checkbox, relationship, timestamp, text, select, json } from '@keystone-6/core/fields';
-	  
+
 const {
   allowRoles,
   admin,
@@ -10,202 +10,192 @@ const {
   owner,
 } = utils.accessControl
 
-const listConfigurations = list ({
+const listConfigurations = list({
   fields: {
-	slug: text({
-      validation: { isRequired: true}, 
-      label: '網址名稱（英文）', 
-      isIndexed: 'unique' 
+    slug: text({
+      label: 'slug網址名稱（英文）',
+      isIndexed: 'unique',
+      validation: { isRequired: true }
     }),
     title: text({
-      label: '標題', 
-      validation: { isRequired: true} 
+      label: '標題',
+      validation: { isRequired: true }
     }),
     subtitle: text({
-      label: '副標', 
-      validation: { isRequired: false} 
+      label: '副標',
+      validation: { isRequired: false }
     }),
     state: select({
-      label: '狀態', 
-      options: [ 
-        { label: 'draft', value: 'draft' },        { label: 'published', value: 'published' }, 
-        { label: 'scheduled', value: 'scheduled' }, 
-        { label: 'archived', value: 'archived' }, 
-        { label: 'invisible', value: 'invisible' }
-      ], 
-      defaultValue: 'draft', 
-      isIndexed: true 
+      label: '狀態',
+      options: [
+        { label: '草稿', value: 'draft' }, 
+        { label: '已發布', value: 'published' },
+        { label: '預約發佈', value: 'scheduled' },
+        { label: '下線', value: 'archived' },
+        { label: '前台不可見', value: 'invisible' }
+      ],
+      defaultValue: 'draft',
+      isIndexed: true
     }),
     publishedDate: timestamp({
-      isIndexed: true, 
-      label: '發佈日期',  
+      isIndexed: true,
+      label: '發佈日期',
     }),
     sections: relationship({
-      label: '分區', 
-      many: true, 
-      ref: 'Section.posts' 
+      label: '大分類',
+      ref: 'Section.posts',
+      many: true,
     }),
     categories: relationship({
-      ref: 'PostCategory', 
-      label: '分類', 
-      many: true 
+      label: '小分類',
+      ref: 'Category.posts',
+      many: true,
     }),
     writers: relationship({
-      ref: 'Contact', 
-      many: true, 
-      label: '作者' 
+      label: '作者',
+      ref: 'Contact',
+      many: true,
     }),
     photographers: relationship({
-      many: true, 
-      label: '攝影', 
-      ref: 'Contact' 
+      label: '攝影',
+      ref: 'Contact',
+      many: true,
     }),
     camera_man: relationship({
-      label: '影音', 
-      many: true, 
-      ref: 'Contact' 
+      label: '影音',
+      ref: 'Contact',
+      many: true,
     }),
     designers: relationship({
-      label: '設計', 
-      many: true, 
-      ref: 'Contact' 
+      label: '設計',
+      ref: 'Contact',
+      many: true,
     }),
     engineers: relationship({
-      many: true, 
-      label: '工程', 
-      ref: 'Contact' 
+      label: '工程',
+      ref: 'Contact',
+      many: true,
     }),
     vocals: relationship({
-      ref: 'Contact', 
-      label: '主播', 
-      many: true 
+      label: '主播',
+      ref: 'Contact',
+      many: true,
     }),
     extend_byline: text({
-      validation: { isRequired: false}, 
-      label: '作者（其他）' 
+      label: '作者（其他）',
+      validation: { isRequired: false },
     }),
     heroVideo: relationship({
-      label: 'Leading Video',
+      label: '首圖影片（Leading Video）',
       ref: 'Video',
     }),
     heroImage: relationship({
-       label: '首圖',  
-       ref: 'Photo',
+      label: '首圖',
+      ref: 'Photo',
     }),
     heroCaption: text({
-      label: '首圖圖說', 
-      validation: { isRequired: false} 
+      label: '首圖圖說',
+      validation: { isRequired: false }
     }),
     heroImageSize: select({
-      label: '首圖尺寸', 
-      options: [ 
-        { label: 'extend', value: 'extend' }, 
-        { label: 'normal', value: 'normal' }, 
-        { label: 'small', value: 'small' }
-      ], 
-      defaultValue: 'normal' 
+      label: '首圖尺寸',
+      options: [
+        { label: 'Normal', value: 'normal' },
+        { label: 'Wide', value: 'wide' },
+        { label: 'Small', value: 'small' }
+      ],
+      defaultValue: 'normal'
     }),
     style: select({
-      isIndexed: true, 
-      defaultValue: 'article', 
-      options: [ 
-        { label: 'article', value: 'article' }, 
-        { label: 'wide', value: 'wide' }, 
-        { label: 'projects', value: 'projects' }, 
-        { label: 'photography', value: 'photography' }, 
-        { label: 'script', value: 'script' }, 
-        { label: 'campaign', value: 'campaign' }, 
-        { label: 'readr', value: 'readr' }
-      ], 
-      label: '文章樣式',  
+      label: '文章樣式',
+      isIndexed: true,
+      defaultValue: 'article',
+      options: [
+        { label: 'Article', value: 'article' },
+        { label: 'Wide', value: 'wide' },
+        { label: 'Projects', value: 'projects' },
+        { label: 'Photography', value: 'photography' },
+        { label: 'Script', value: 'script' },
+        { label: 'Campaign', value: 'campaign' },
+      ],
     }),
-    brief: text({
-       label: '前言',  
+    brief: customFields.richTextEditor({
+      label: '前言',
     }),
     content: customFields.richTextEditor({
-       label: '內文', 
+      label: '內文',
     }),
     topics: relationship({
-      label: '專題',  
+      label: '專題',
       ref: 'Topic.posts',
     }),
-    tags: relationship({
-      ref: 'Tag.posts', 
-      many: true, 
-      label: '標籤' 
-    }),
     titleColor: select({
-      options: [ 
-        { label: 'light', value: 'light' }, 
-        { label: 'dark', value: 'dark' }], 
-      label: '標題模式',  
+      label: '標題模式',
+      options: [
+        { label: 'light', value: 'light' },
+        { label: 'dark', value: 'dark' }],
+        defaultValue: 'light',
     }),
     relateds: relationship({
-      ref: 'Post', 
-      many: true, 
-      label: '相關文章',  
+      label: '相關文章',
+      ref: 'Post',
+      many: true,
+    }),
+    tags: relationship({
+      label: '標籤',
+      ref: 'Tag.posts',
+      many: true,
     }),
     og_title: text({
-      validation: { isRequired: false}, 
-      label: 'FB分享標題' 
+      label: 'FB分享標題',
+      validation: { isRequired: false },
     }),
     og_description: text({
-      label: 'FB分享說明', 
-      validation: { isRequired: false} 
+      label: 'FB分享說明',
+      validation: { isRequired: false }
     }),
     og_image: relationship({
-      label: 'FB分享縮圖',  
+      label: 'FB分享縮圖',
       ref: 'Photo',
     }),
     isFeatured: checkbox({
-      label: '置頂', 
-      isIndexed: true 
+      label: '置頂',
+      defaultValue: false,
     }),
     isAdvertised: checkbox({
-      label: '廣告文案', 
-      isIndexed: true 
+      label: '廣告文案',
+      defaultValue: false,
     }),
     hiddenAdvertised: checkbox({
-      label: 'google廣告違規', 
-      defaultValue: false 
+      label: 'google廣告違規',
+      defaultValue: false,
     }),
     isCampaign: checkbox({
-      isIndexed: true, 
-      label: '活動' 
+      label: '活動',
+      defaultValue: false,
     }),
     isAdult: checkbox({
-      isIndexed: true, label: '18禁',  
+      label: '18禁',
+      defaultValue: false,
     }),
     lockJS: checkbox({
-      isIndexed: true, label: '鎖定右鍵',  
-    }),
-    isAudioSiteOnly: checkbox({
-      label: '僅用於語音網站', 
-      isIndexed: true 
-    }),
-    device: select({
-      label: '裝置', 
-      defaultValue: 'all', 
-      isIndexed: true, 
-      options: [ 
-        { label: 'all', value: 'all' }, 
-        { label: 'web', value: 'web' }, 
-        { label: 'app', value: 'app' }
-      ] 
-    }),
-    css: text({
-      ui: { displayMode: 'textarea' }, 
-      label: 'CSS' 
+      label: '鎖定右鍵',
+      defaultValue: false,
     }),
     adTrace: text({
-      label: '追蹤代碼', 
-      ui: { displayMode: 'textarea' } 
+      label: '追蹤代碼',
+      ui: { displayMode: 'textarea' }
     }),
-    redirect: text({
-      validation: { isRequired: false}, 
-      label: '廣編文轉址 slug' 
+    css: text({
+      ui: { displayMode: 'textarea' },
+      label: 'CSS'
     }),
-    createTime: timestamp({
+    apiDataBrief: json({
+      label: 'Brief資料庫使用',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     apiData: json({
       label: '資料庫使用',
@@ -218,28 +208,34 @@ const listConfigurations = list ({
   ui: {
     labelField: 'slug',
     listView: {
-      initialColumns: ['id', 'slug', 'status'],
+      initialColumns: ['id', 'slug', 'state'],
       initialSort: { field: 'publishedDate', direction: 'DESC' },
       pageSize: 50,
     },
   },
   access: {
-	operation: {
-	  query: allowRoles(admin, moderator, editor),
-	  update: allowRoles(admin, moderator),
-	  create: allowRoles(admin, moderator),
-	  delete: allowRoles(admin),
-	},
+    operation: {
+      query: allowRoles(admin, moderator, editor),
+      update: allowRoles(admin, moderator),
+      create: allowRoles(admin, moderator),
+      delete: allowRoles(admin),
+    },
   },
   hooks: {
-	resolveInput: async ({ resolvedData, context }) => {
-      const { content } = resolvedData                                                                                                                             
+    resolveInput: async ({ resolvedData }) => {
+      const { content, brief } = resolvedData
       if (content) {
         resolvedData.apiData = customFields.draftConverter
           .convertToApiData(content)
           .toJS()
       }
-	}
+      if (brief) {
+        resolvedData.apiDataBrief = customFields.draftConverter
+          .convertToApiData(brief)
+          .toJS()
+      }
+      return resolvedData
+    }
   }
 })
 export default utils.addTrackingFields(listConfigurations)
