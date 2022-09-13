@@ -1,7 +1,7 @@
 import config from '../config'
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { image, text, virtual } from '@keystone-6/core/fields'
+import { image, text, virtual, checkbox } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -11,7 +11,7 @@ const listConfigurations = list({
   },
   fields: {
     name: text({
-      label: '標題',
+      label: 'name',
       validation: { isRequired: true },
     }),
     imageFile: image(),
@@ -53,7 +53,7 @@ const listConfigurations = list({
             })
           }
 
-          const rtn : Record<string, string> = {}
+          const rtn: Record<string, string> = {}
           const filename = item?.imageFile_id
 
           if (!filename) {
@@ -116,6 +116,9 @@ const listConfigurations = list({
           fieldMode: 'read',
         },
       },
+    }),
+    copyRight: checkbox({
+      label: '版權',
     }),
   },
   ui: {

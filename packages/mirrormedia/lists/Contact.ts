@@ -1,7 +1,7 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
-import {relationship,text} from '@keystone-6/core/fields';
-	  
+import { text } from '@keystone-6/core/fields';
+
 const {
   allowRoles,
   admin,
@@ -10,48 +10,25 @@ const {
   owner,
 } = utils.accessControl
 
-const listConfigurations = list ({
+const listConfigurations = list({
   fields: {
-	name: text({
-      isIndexed: true, 
-      label: '作者姓名', 
-      validation: { isRequired: true} 
+    name: text({
+      isIndexed: true,
+      label: '作者姓名',
+      validation: { isRequired: true }
     }),
-    email: text({
-      isIndexed: 'unique',
+    content: text({
+      label: '敘述',
+      ui: { displayMode: 'textarea' }
     }),
-    image: relationship({
-      label: '照片',  
-      ref: 'Photo',
-    }),
-    homepage: text({
-      label: '個人首頁', 
-      isIndexed: false 
-    }),
-    facebook: text({
-       isIndexed: false,  
-    }),
-    twitter: text({
-      isIndexed: false 
-    }),
-    instantgram: text({
-      isIndexed: true,  
-    }),
-    address: text({
-      collapse: 'true',  
-    }),
-    bio: text({
-      label: '簡介',  
-    }),
-
   },
   access: {
-	operation: {
-	  query: allowRoles(admin, moderator, editor),
-	  update: allowRoles(admin, moderator),
-	  create: allowRoles(admin, moderator),
-	  delete: allowRoles(admin),
-	},
+    operation: {
+      query: allowRoles(admin, moderator, editor),
+      update: allowRoles(admin, moderator),
+      create: allowRoles(admin, moderator),
+      delete: allowRoles(admin),
+    },
   },
 })
 export default utils.addTrackingFields(listConfigurations)

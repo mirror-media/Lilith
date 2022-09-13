@@ -47,7 +47,6 @@ const listConfigurations = list({
     isProtected: checkbox({
       defaultValue: false,
     }),
-    // posts: relationship({ ref: 'Post.author', many: true }),
   },
 
   ui: {
