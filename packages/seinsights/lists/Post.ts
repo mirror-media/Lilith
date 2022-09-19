@@ -219,13 +219,14 @@ const listConfigurations = list({
 
   access: {
     operation: {
+      query: () => true,
       update: allowRoles(admin, moderator, editor),
       create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin),
     },
-    filter: {
-      query: filterPosts,
-    },
+    // filter: {
+    //   query: filterPosts,
+    // },
   },
   hooks: {
     resolveInput: async ({ resolvedData }) => {
