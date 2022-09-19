@@ -90,6 +90,42 @@ const listConfigurations = list({
       },
       many: true,
     }),
+    events: relationship({
+      ref: 'Event.category',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+      many: true,
+    }),
+    jobs: relationship({
+      ref: 'Job.category',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+      many: true,
+    }),
+    resources: relationship({
+      ref: 'Resource.category',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+      many: true,
+    }),
   },
   hooks: {},
   access: {

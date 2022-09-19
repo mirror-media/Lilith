@@ -96,8 +96,8 @@ const listConfigurations = list({
       },
       many: true,
     }),
-    jobs: relationship({
-      ref: 'Job.section',
+    events: relationship({
+      ref: 'Event.section',
       ui: {
         createView: {
           fieldMode: 'hidden',
@@ -108,8 +108,8 @@ const listConfigurations = list({
       },
       many: true,
     }),
-    events: relationship({
-      ref: 'Event.section',
+    jobs: relationship({
+      ref: 'Job.section',
       ui: {
         createView: {
           fieldMode: 'hidden',

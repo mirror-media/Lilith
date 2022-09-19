@@ -127,20 +127,20 @@ const listConfigurations = list({
       many: true,
     }),
     section: relationship({
-      label: '大分類',
+      label: '主分類',
       ref: 'Section.posts',
       ui: {
         hideCreate: true,
       },
-      many: false,
+      many: true,
     }),
     category: relationship({
-      label: '小分類',
+      label: '子分類',
       ref: 'Category.posts',
       ui: {
         hideCreate: true,
       },
-      many: false,
+      many: true,
     }),
     region: select({
       label: '地區',

@@ -86,12 +86,12 @@ const listConfigurations = list({
       label: '外連網址',
     }),
     section: relationship({
-      label: '大分類',
+      label: '主分類',
       ref: 'Section.specialfeatureLists',
       ui: {
         hideCreate: true,
       },
-      many: false,
+      many: true,
     }),
     apiData: json({
       label: '資料庫使用',
