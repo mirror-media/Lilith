@@ -38,6 +38,7 @@ model Banner {
 model Category {
   id              Int                @id @default(autoincrement())
   name            String             @default("")
+  slug            String             @unique @default("")
   order           Int?               @unique
   status          CategoryStatusType
   heroImage       Photo?             @relation("Category_heroImage", fields: [heroImageId], references: [id])
@@ -278,6 +279,7 @@ model Resource {
 model Section {
   id                  Int                  @id @default(autoincrement())
   name                String               @default("")
+  slug                String               @unique @default("")
   order               Int?                 @unique
   status              SectionStatusType
   isPresent           Boolean              @default(true)

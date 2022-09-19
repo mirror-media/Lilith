@@ -35,8 +35,5 @@
     "react": "18.1.0",
     "react-dom": "18.1.0"
   },
-  "version": "0.0.0",
-  "dependencies": {
-    "prisma": "^4.2.1"
-  }
+  "version": "0.0.0"
 }

@@ -188,6 +188,7 @@ input UserRelateToOneForCreateInput {
 type Category {
   id: ID!
   name: String
+  slug: String
   order: Int
   status: CategoryStatusType
   heroImage: Photo
@@ -219,6 +220,7 @@ enum CategoryStatusType {
 
 input CategoryWhereUniqueInput {
   id: ID
+  slug: String
   order: Int
 }
 
@@ -228,6 +230,7 @@ input CategoryWhereInput {
   NOT: [CategoryWhereInput!]
   id: IDFilter
   name: StringFilter
+  slug: StringFilter
   order: IntNullableFilter
   status: CategoryStatusTypeNullableFilter
   heroImage: PhotoWhereInput
@@ -262,6 +265,7 @@ input SpecialfeatureManyRelationFilter {
 input CategoryOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  slug: OrderDirection
   order: OrderDirection
   status: OrderDirection
   createdAt: OrderDirection
@@ -270,6 +274,7 @@ input CategoryOrderByInput {
 
 input CategoryUpdateInput {
   name: String
+  slug: String
   order: Int
   status: CategoryStatusType
   heroImage: PhotoRelateToOneForUpdateInput
@@ -309,6 +314,7 @@ input CategoryUpdateArgs {
 
 input CategoryCreateInput {
   name: String
+  slug: String
   order: Int
   status: CategoryStatusType
   heroImage: PhotoRelateToOneForCreateInput
@@ -1572,6 +1578,7 @@ input ResourceRelateToManyForCreateInput {
 type Section {
   id: ID!
   name: String
+  slug: String
   order: Int
   status: SectionStatusType
   isPresent: Boolean
@@ -1638,6 +1645,7 @@ enum SectionStatusType {
 
 input SectionWhereUniqueInput {
   id: ID
+  slug: String
   order: Int
 }
 
@@ -1647,6 +1655,7 @@ input SectionWhereInput {
   NOT: [SectionWhereInput!]
   id: IDFilter
   name: StringFilter
+  slug: StringFilter
   order: IntNullableFilter
   status: SectionStatusTypeNullableFilter
   isPresent: BooleanFilter
@@ -1686,6 +1695,7 @@ input SpecialfeatureListManyRelationFilter {
 input SectionOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  slug: OrderDirection
   order: OrderDirection
   status: OrderDirection
   isPresent: OrderDirection
@@ -1695,6 +1705,7 @@ input SectionOrderByInput {
 
 input SectionUpdateInput {
   name: String
+  slug: String
   order: Int
   status: SectionStatusType
   isPresent: Boolean
@@ -1733,6 +1744,7 @@ input SectionUpdateArgs {
 
 input SectionCreateInput {
   name: String
+  slug: String
   order: Int
   status: SectionStatusType
   isPresent: Boolean
