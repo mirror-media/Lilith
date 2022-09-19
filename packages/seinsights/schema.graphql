@@ -207,6 +207,27 @@ type Category {
     skip: Int! = 0
   ): [Specialfeature!]
   specialfeaturesCount(where: SpecialfeatureWhereInput! = {}): Int
+  events(
+    where: EventWhereInput! = {}
+    orderBy: [EventOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Event!]
+  eventsCount(where: EventWhereInput! = {}): Int
+  jobs(
+    where: JobWhereInput! = {}
+    orderBy: [JobOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Job!]
+  jobsCount(where: JobWhereInput! = {}): Int
+  resources(
+    where: ResourceWhereInput! = {}
+    orderBy: [ResourceOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Resource!]
+  resourcesCount(where: ResourceWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -237,6 +258,9 @@ input CategoryWhereInput {
   section: SectionWhereInput
   posts: PostManyRelationFilter
   specialfeatures: SpecialfeatureManyRelationFilter
+  events: EventManyRelationFilter
+  jobs: JobManyRelationFilter
+  resources: ResourceManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -262,6 +286,24 @@ input SpecialfeatureManyRelationFilter {
   none: SpecialfeatureWhereInput
 }
 
+input EventManyRelationFilter {
+  every: EventWhereInput
+  some: EventWhereInput
+  none: EventWhereInput
+}
+
+input JobManyRelationFilter {
+  every: JobWhereInput
+  some: JobWhereInput
+  none: JobWhereInput
+}
+
+input ResourceManyRelationFilter {
+  every: ResourceWhereInput
+  some: ResourceWhereInput
+  none: ResourceWhereInput
+}
+
 input CategoryOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -281,6 +323,9 @@ input CategoryUpdateInput {
   section: SectionRelateToOneForUpdateInput
   posts: PostRelateToManyForUpdateInput
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
+  events: EventRelateToManyForUpdateInput
+  jobs: JobRelateToManyForUpdateInput
+  resources: ResourceRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -307,6 +352,27 @@ input SpecialfeatureRelateToManyForUpdateInput {
   connect: [SpecialfeatureWhereUniqueInput!]
 }
 
+input EventRelateToManyForUpdateInput {
+  disconnect: [EventWhereUniqueInput!]
+  set: [EventWhereUniqueInput!]
+  create: [EventCreateInput!]
+  connect: [EventWhereUniqueInput!]
+}
+
+input JobRelateToManyForUpdateInput {
+  disconnect: [JobWhereUniqueInput!]
+  set: [JobWhereUniqueInput!]
+  create: [JobCreateInput!]
+  connect: [JobWhereUniqueInput!]
+}
+
+input ResourceRelateToManyForUpdateInput {
+  disconnect: [ResourceWhereUniqueInput!]
+  set: [ResourceWhereUniqueInput!]
+  create: [ResourceCreateInput!]
+  connect: [ResourceWhereUniqueInput!]
+}
+
 input CategoryUpdateArgs {
   where: CategoryWhereUniqueInput!
   data: CategoryUpdateInput!
@@ -321,6 +387,9 @@ input CategoryCreateInput {
   section: SectionRelateToOneForCreateInput
   posts: PostRelateToManyForCreateInput
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
+  events: EventRelateToManyForCreateInput
+  jobs: JobRelateToManyForCreateInput
+  resources: ResourceRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -340,6 +409,21 @@ input PostRelateToManyForCreateInput {
 input SpecialfeatureRelateToManyForCreateInput {
   create: [SpecialfeatureCreateInput!]
   connect: [SpecialfeatureWhereUniqueInput!]
+}
+
+input EventRelateToManyForCreateInput {
+  create: [EventCreateInput!]
+  connect: [EventWhereUniqueInput!]
+}
+
+input JobRelateToManyForCreateInput {
+  create: [JobCreateInput!]
+  connect: [JobWhereUniqueInput!]
+}
+
+input ResourceRelateToManyForCreateInput {
+  create: [ResourceCreateInput!]
+  connect: [ResourceWhereUniqueInput!]
 }
 
 type Column {
@@ -545,7 +629,20 @@ type Event {
   status: EventStatusType
   type: EventTypeType
   region: EventRegionType
-  section: Section
+  section(
+    where: SectionWhereInput! = {}
+    orderBy: [SectionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Section!]
+  sectionCount(where: SectionWhereInput! = {}): Int
+  category(
+    where: CategoryWhereInput! = {}
+    orderBy: [CategoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Category!]
+  categoryCount(where: CategoryWhereInput! = {}): Int
   heroImage: Photo
   content: JSON
   location: String
@@ -645,7 +742,8 @@ input EventWhereInput {
   status: EventStatusTypeNullableFilter
   type: EventTypeTypeNullableFilter
   region: EventRegionTypeNullableFilter
-  section: SectionWhereInput
+  section: SectionManyRelationFilter
+  category: CategoryManyRelationFilter
   heroImage: PhotoWhereInput
   location: StringFilter
   organization: StringFilter
@@ -687,16 +785,22 @@ input EventRegionTypeNullableFilter {
   not: EventRegionTypeNullableFilter
 }
 
+input SectionManyRelationFilter {
+  every: SectionWhereInput
+  some: SectionWhereInput
+  none: SectionWhereInput
+}
+
+input CategoryManyRelationFilter {
+  every: CategoryWhereInput
+  some: CategoryWhereInput
+  none: CategoryWhereInput
+}
+
 input TagManyRelationFilter {
   every: TagWhereInput
   some: TagWhereInput
   none: TagWhereInput
-}
-
-input EventManyRelationFilter {
-  every: EventWhereInput
-  some: EventWhereInput
-  none: EventWhereInput
 }
 
 input EventOrderByInput {
@@ -720,7 +824,8 @@ input EventUpdateInput {
   status: EventStatusType
   type: EventTypeType
   region: EventRegionType
-  section: SectionRelateToOneForUpdateInput
+  section: SectionRelateToManyForUpdateInput
+  category: CategoryRelateToManyForUpdateInput
   heroImage: PhotoRelateToOneForUpdateInput
   content: JSON
   location: String
@@ -736,18 +841,25 @@ input EventUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
+input SectionRelateToManyForUpdateInput {
+  disconnect: [SectionWhereUniqueInput!]
+  set: [SectionWhereUniqueInput!]
+  create: [SectionCreateInput!]
+  connect: [SectionWhereUniqueInput!]
+}
+
+input CategoryRelateToManyForUpdateInput {
+  disconnect: [CategoryWhereUniqueInput!]
+  set: [CategoryWhereUniqueInput!]
+  create: [CategoryCreateInput!]
+  connect: [CategoryWhereUniqueInput!]
+}
+
 input TagRelateToManyForUpdateInput {
   disconnect: [TagWhereUniqueInput!]
   set: [TagWhereUniqueInput!]
   create: [TagCreateInput!]
   connect: [TagWhereUniqueInput!]
-}
-
-input EventRelateToManyForUpdateInput {
-  disconnect: [EventWhereUniqueInput!]
-  set: [EventWhereUniqueInput!]
-  create: [EventCreateInput!]
-  connect: [EventWhereUniqueInput!]
 }
 
 input EventUpdateArgs {
@@ -761,7 +873,8 @@ input EventCreateInput {
   status: EventStatusType
   type: EventTypeType
   region: EventRegionType
-  section: SectionRelateToOneForCreateInput
+  section: SectionRelateToManyForCreateInput
+  category: CategoryRelateToManyForCreateInput
   heroImage: PhotoRelateToOneForCreateInput
   content: JSON
   location: String
@@ -777,14 +890,19 @@ input EventCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+input SectionRelateToManyForCreateInput {
+  create: [SectionCreateInput!]
+  connect: [SectionWhereUniqueInput!]
+}
+
+input CategoryRelateToManyForCreateInput {
+  create: [CategoryCreateInput!]
+  connect: [CategoryWhereUniqueInput!]
+}
+
 input TagRelateToManyForCreateInput {
   create: [TagCreateInput!]
   connect: [TagWhereUniqueInput!]
-}
-
-input EventRelateToManyForCreateInput {
-  create: [EventCreateInput!]
-  connect: [EventWhereUniqueInput!]
 }
 
 type Job {
@@ -794,7 +912,20 @@ type Job {
   status: JobStatusType
   type: JobTypeType
   region: JobRegionType
-  section: Section
+  section(
+    where: SectionWhereInput! = {}
+    orderBy: [SectionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Section!]
+  sectionCount(where: SectionWhereInput! = {}): Int
+  category(
+    where: CategoryWhereInput! = {}
+    orderBy: [CategoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Category!]
+  categoryCount(where: CategoryWhereInput! = {}): Int
   company: String
   location: String
   official_website: String
@@ -896,7 +1027,8 @@ input JobWhereInput {
   status: JobStatusTypeNullableFilter
   type: JobTypeTypeNullableFilter
   region: JobRegionTypeNullableFilter
-  section: SectionWhereInput
+  section: SectionManyRelationFilter
+  category: CategoryManyRelationFilter
   company: StringFilter
   location: StringFilter
   official_website: StringFilter
@@ -938,12 +1070,6 @@ input JobRegionTypeNullableFilter {
   not: JobRegionTypeNullableFilter
 }
 
-input JobManyRelationFilter {
-  every: JobWhereInput
-  some: JobWhereInput
-  none: JobWhereInput
-}
-
 input JobOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -965,7 +1091,8 @@ input JobUpdateInput {
   status: JobStatusType
   type: JobTypeType
   region: JobRegionType
-  section: SectionRelateToOneForUpdateInput
+  section: SectionRelateToManyForUpdateInput
+  category: CategoryRelateToManyForUpdateInput
   company: String
   location: String
   official_website: String
@@ -981,13 +1108,6 @@ input JobUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input JobRelateToManyForUpdateInput {
-  disconnect: [JobWhereUniqueInput!]
-  set: [JobWhereUniqueInput!]
-  create: [JobCreateInput!]
-  connect: [JobWhereUniqueInput!]
-}
-
 input JobUpdateArgs {
   where: JobWhereUniqueInput!
   data: JobUpdateInput!
@@ -999,7 +1119,8 @@ input JobCreateInput {
   status: JobStatusType
   type: JobTypeType
   region: JobRegionType
-  section: SectionRelateToOneForCreateInput
+  section: SectionRelateToManyForCreateInput
+  category: CategoryRelateToManyForCreateInput
   company: String
   location: String
   official_website: String
@@ -1013,11 +1134,6 @@ input JobCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input JobRelateToManyForCreateInput {
-  create: [JobCreateInput!]
-  connect: [JobWhereUniqueInput!]
 }
 
 type Photo {
@@ -1220,8 +1336,20 @@ type Post {
     skip: Int! = 0
   ): [Column!]
   columnsCount(where: ColumnWhereInput! = {}): Int
-  section: Section
-  category: Category
+  section(
+    where: SectionWhereInput! = {}
+    orderBy: [SectionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Section!]
+  sectionCount(where: SectionWhereInput! = {}): Int
+  category(
+    where: CategoryWhereInput! = {}
+    orderBy: [CategoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Category!]
+  categoryCount(where: CategoryWhereInput! = {}): Int
   region: String
   relatedPosts(
     where: PostWhereInput! = {}
@@ -1271,8 +1399,8 @@ input PostWhereInput {
   heroCaption: StringFilter
   heroCreditUrl: StringFilter
   columns: ColumnManyRelationFilter
-  section: SectionWhereInput
-  category: CategoryWhereInput
+  section: SectionManyRelationFilter
+  category: CategoryManyRelationFilter
   region: StringNullableFilter
   relatedPosts: PostManyRelationFilter
   tags: TagManyRelationFilter
@@ -1323,8 +1451,8 @@ input PostUpdateInput {
   brief: JSON
   content: JSON
   columns: ColumnRelateToManyForUpdateInput
-  section: SectionRelateToOneForUpdateInput
-  category: CategoryRelateToOneForUpdateInput
+  section: SectionRelateToManyForUpdateInput
+  category: CategoryRelateToManyForUpdateInput
   region: String
   relatedPosts: PostRelateToManyForUpdateInput
   tags: TagRelateToManyForUpdateInput
@@ -1344,12 +1472,6 @@ input ColumnRelateToManyForUpdateInput {
   connect: [ColumnWhereUniqueInput!]
 }
 
-input CategoryRelateToOneForUpdateInput {
-  create: CategoryCreateInput
-  connect: CategoryWhereUniqueInput
-  disconnect: Boolean
-}
-
 input PostUpdateArgs {
   where: PostWhereUniqueInput!
   data: PostUpdateInput!
@@ -1367,8 +1489,8 @@ input PostCreateInput {
   brief: JSON
   content: JSON
   columns: ColumnRelateToManyForCreateInput
-  section: SectionRelateToOneForCreateInput
-  category: CategoryRelateToOneForCreateInput
+  section: SectionRelateToManyForCreateInput
+  category: CategoryRelateToManyForCreateInput
   region: String
   relatedPosts: PostRelateToManyForCreateInput
   tags: TagRelateToManyForCreateInput
@@ -1386,18 +1508,26 @@ input ColumnRelateToManyForCreateInput {
   connect: [ColumnWhereUniqueInput!]
 }
 
-input CategoryRelateToOneForCreateInput {
-  create: CategoryCreateInput
-  connect: CategoryWhereUniqueInput
-}
-
 type Resource {
   id: ID!
   name: String
   slogan: String
   status: ResourceStatusType
   region: ResourceRegionType
-  section: Section
+  section(
+    where: SectionWhereInput! = {}
+    orderBy: [SectionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Section!]
+  sectionCount(where: SectionWhereInput! = {}): Int
+  category(
+    where: CategoryWhereInput! = {}
+    orderBy: [CategoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Category!]
+  categoryCount(where: CategoryWhereInput! = {}): Int
   profile_photo: Photo
   content: JSON
   contact: JSON
@@ -1479,7 +1609,8 @@ input ResourceWhereInput {
   slogan: StringFilter
   status: ResourceStatusTypeNullableFilter
   region: ResourceRegionTypeNullableFilter
-  section: SectionWhereInput
+  section: SectionManyRelationFilter
+  category: CategoryManyRelationFilter
   profile_photo: PhotoWhereInput
   relatedResources: ResourceManyRelationFilter
   createdAt: DateTimeNullableFilter
@@ -1502,12 +1633,6 @@ input ResourceRegionTypeNullableFilter {
   not: ResourceRegionTypeNullableFilter
 }
 
-input ResourceManyRelationFilter {
-  every: ResourceWhereInput
-  some: ResourceWhereInput
-  none: ResourceWhereInput
-}
-
 input ResourceOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -1523,7 +1648,8 @@ input ResourceUpdateInput {
   slogan: String
   status: ResourceStatusType
   region: ResourceRegionType
-  section: SectionRelateToOneForUpdateInput
+  section: SectionRelateToManyForUpdateInput
+  category: CategoryRelateToManyForUpdateInput
   profile_photo: PhotoRelateToOneForUpdateInput
   content: JSON
   contact: JSON
@@ -1538,13 +1664,6 @@ input ResourceUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input ResourceRelateToManyForUpdateInput {
-  disconnect: [ResourceWhereUniqueInput!]
-  set: [ResourceWhereUniqueInput!]
-  create: [ResourceCreateInput!]
-  connect: [ResourceWhereUniqueInput!]
-}
-
 input ResourceUpdateArgs {
   where: ResourceWhereUniqueInput!
   data: ResourceUpdateInput!
@@ -1555,7 +1674,8 @@ input ResourceCreateInput {
   slogan: String
   status: ResourceStatusType
   region: ResourceRegionType
-  section: SectionRelateToOneForCreateInput
+  section: SectionRelateToManyForCreateInput
+  category: CategoryRelateToManyForCreateInput
   profile_photo: PhotoRelateToOneForCreateInput
   content: JSON
   contact: JSON
@@ -1568,11 +1688,6 @@ input ResourceCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input ResourceRelateToManyForCreateInput {
-  create: [ResourceCreateInput!]
-  connect: [ResourceWhereUniqueInput!]
 }
 
 type Section {
@@ -1604,13 +1719,6 @@ type Section {
     skip: Int! = 0
   ): [Specialfeature!]
   specialfeaturesCount(where: SpecialfeatureWhereInput! = {}): Int
-  jobs(
-    where: JobWhereInput! = {}
-    orderBy: [JobOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Job!]
-  jobsCount(where: JobWhereInput! = {}): Int
   events(
     where: EventWhereInput! = {}
     orderBy: [EventOrderByInput!]! = []
@@ -1618,6 +1726,13 @@ type Section {
     skip: Int! = 0
   ): [Event!]
   eventsCount(where: EventWhereInput! = {}): Int
+  jobs(
+    where: JobWhereInput! = {}
+    orderBy: [JobOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Job!]
+  jobsCount(where: JobWhereInput! = {}): Int
   resources(
     where: ResourceWhereInput! = {}
     orderBy: [ResourceOrderByInput!]! = []
@@ -1663,8 +1778,8 @@ input SectionWhereInput {
   category: CategoryManyRelationFilter
   posts: PostManyRelationFilter
   specialfeatures: SpecialfeatureManyRelationFilter
-  jobs: JobManyRelationFilter
   events: EventManyRelationFilter
+  jobs: JobManyRelationFilter
   resources: ResourceManyRelationFilter
   specialfeatureLists: SpecialfeatureListManyRelationFilter
   createdAt: DateTimeNullableFilter
@@ -1678,12 +1793,6 @@ input SectionStatusTypeNullableFilter {
   in: [SectionStatusType!]
   notIn: [SectionStatusType!]
   not: SectionStatusTypeNullableFilter
-}
-
-input CategoryManyRelationFilter {
-  every: CategoryWhereInput
-  some: CategoryWhereInput
-  none: CategoryWhereInput
 }
 
 input SpecialfeatureListManyRelationFilter {
@@ -1713,21 +1822,14 @@ input SectionUpdateInput {
   category: CategoryRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
-  jobs: JobRelateToManyForUpdateInput
   events: EventRelateToManyForUpdateInput
+  jobs: JobRelateToManyForUpdateInput
   resources: ResourceRelateToManyForUpdateInput
   specialfeatureLists: SpecialfeatureListRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
-}
-
-input CategoryRelateToManyForUpdateInput {
-  disconnect: [CategoryWhereUniqueInput!]
-  set: [CategoryWhereUniqueInput!]
-  create: [CategoryCreateInput!]
-  connect: [CategoryWhereUniqueInput!]
 }
 
 input SpecialfeatureListRelateToManyForUpdateInput {
@@ -1752,19 +1854,14 @@ input SectionCreateInput {
   category: CategoryRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
-  jobs: JobRelateToManyForCreateInput
   events: EventRelateToManyForCreateInput
+  jobs: JobRelateToManyForCreateInput
   resources: ResourceRelateToManyForCreateInput
   specialfeatureLists: SpecialfeatureListRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input CategoryRelateToManyForCreateInput {
-  create: [CategoryCreateInput!]
-  connect: [CategoryWhereUniqueInput!]
 }
 
 input SpecialfeatureListRelateToManyForCreateInput {
@@ -1790,8 +1887,20 @@ type Specialfeature {
     skip: Int! = 0
   ): [Column!]
   columnsCount(where: ColumnWhereInput! = {}): Int
-  section: Section
-  category: Category
+  section(
+    where: SectionWhereInput! = {}
+    orderBy: [SectionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Section!]
+  sectionCount(where: SectionWhereInput! = {}): Int
+  category(
+    where: CategoryWhereInput! = {}
+    orderBy: [CategoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Category!]
+  categoryCount(where: CategoryWhereInput! = {}): Int
   region: String
   relatedPosts(
     where: PostWhereInput! = {}
@@ -1846,8 +1955,8 @@ input SpecialfeatureWhereInput {
   heroCaption: StringFilter
   heroCreditUrl: StringFilter
   columns: ColumnManyRelationFilter
-  section: SectionWhereInput
-  category: CategoryWhereInput
+  section: SectionManyRelationFilter
+  category: CategoryManyRelationFilter
   region: StringNullableFilter
   relatedPosts: PostManyRelationFilter
   specialfeatureLists: SpecialfeatureListManyRelationFilter
@@ -1890,8 +1999,8 @@ input SpecialfeatureUpdateInput {
   heroCreditUrl: String
   content: JSON
   columns: ColumnRelateToManyForUpdateInput
-  section: SectionRelateToOneForUpdateInput
-  category: CategoryRelateToOneForUpdateInput
+  section: SectionRelateToManyForUpdateInput
+  category: CategoryRelateToManyForUpdateInput
   region: String
   relatedPosts: PostRelateToManyForUpdateInput
   specialfeatureLists: SpecialfeatureListRelateToManyForUpdateInput
@@ -1919,8 +2028,8 @@ input SpecialfeatureCreateInput {
   heroCreditUrl: String
   content: JSON
   columns: ColumnRelateToManyForCreateInput
-  section: SectionRelateToOneForCreateInput
-  category: CategoryRelateToOneForCreateInput
+  section: SectionRelateToManyForCreateInput
+  category: CategoryRelateToManyForCreateInput
   region: String
   relatedPosts: PostRelateToManyForCreateInput
   specialfeatureLists: SpecialfeatureListRelateToManyForCreateInput
@@ -1949,7 +2058,13 @@ type SpecialfeatureList {
   ): [Specialfeature!]
   specialfeaturesCount(where: SpecialfeatureWhereInput! = {}): Int
   url: String
-  section: Section
+  section(
+    where: SectionWhereInput! = {}
+    orderBy: [SectionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Section!]
+  sectionCount(where: SectionWhereInput! = {}): Int
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -1981,7 +2096,7 @@ input SpecialfeatureListWhereInput {
   topSpecialfeature: SpecialfeatureWhereInput
   specialfeatures: SpecialfeatureManyRelationFilter
   url: StringFilter
-  section: SectionWhereInput
+  section: SectionManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2016,7 +2131,7 @@ input SpecialfeatureListUpdateInput {
   topSpecialfeature: SpecialfeatureRelateToOneForUpdateInput
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
   url: String
-  section: SectionRelateToOneForUpdateInput
+  section: SectionRelateToManyForUpdateInput
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -2039,7 +2154,7 @@ input SpecialfeatureListCreateInput {
   topSpecialfeature: SpecialfeatureRelateToOneForCreateInput
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
   url: String
-  section: SectionRelateToOneForCreateInput
+  section: SectionRelateToManyForCreateInput
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime

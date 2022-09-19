@@ -45,8 +45,11 @@ model Category {
   heroImageId     Int?               @map("heroImage")
   section         Section?           @relation("Category_section", fields: [sectionId], references: [id])
   sectionId       Int?               @map("section")
-  posts           Post[]             @relation("Post_category")
-  specialfeatures Specialfeature[]   @relation("Specialfeature_category")
+  posts           Post[]             @relation("Category_posts")
+  specialfeatures Specialfeature[]   @relation("Category_specialfeatures")
+  events          Event[]            @relation("Category_events")
+  jobs            Job[]              @relation("Category_jobs")
+  resources       Resource[]         @relation("Category_resources")
   createdAt       DateTime?
   updatedAt       DateTime?
   createdBy       User?              @relation("Category_createdBy", fields: [createdById], references: [id])
@@ -104,8 +107,8 @@ model Event {
   status                   EventStatusType       @default(draft)
   type                     EventTypeType?
   region                   EventRegionType?
-  section                  Section?              @relation("Event_section", fields: [sectionId], references: [id])
-  sectionId                Int?                  @map("section")
+  section                  Section[]             @relation("Event_section")
+  category                 Category[]            @relation("Category_events")
   heroImage                Photo?                @relation("Event_heroImage", fields: [heroImageId], references: [id])
   heroImageId              Int?                  @map("heroImage")
   content                  Json?
@@ -124,7 +127,6 @@ model Event {
   updatedById              Int?                  @map("updatedBy")
   from_Event_relatedEvents Event[]               @relation("Event_relatedEvents")
 
-  @@index([sectionId])
   @@index([heroImageId])
   @@index([createdById])
   @@index([updatedById])
@@ -137,8 +139,8 @@ model Job {
   status                  JobStatusType     @default(draft)
   type                    JobTypeType?
   region                  JobRegionType?
-  section                 Section?          @relation("Job_section", fields: [sectionId], references: [id])
-  sectionId               Int?              @map("section")
+  section                 Section[]         @relation("Job_section")
+  category                Category[]        @relation("Category_jobs")
   company                 String            @default("")
   location                String            @default("")
   official_website        String            @default("")
@@ -157,7 +159,6 @@ model Job {
   updatedById             Int?              @map("updatedBy")
   from_Job_relatedJobs    Job[]             @relation("Job_relatedJobs")
 
-  @@index([sectionId])
   @@index([profile_photoId])
   @@index([createdById])
   @@index([updatedById])
@@ -218,10 +219,8 @@ model Post {
   brief                            Json?
   content                          Json?
   columns                          Column[]         @relation("Column_posts")
-  section                          Section?         @relation("Post_section", fields: [sectionId], references: [id])
-  sectionId                        Int?             @map("section")
-  category                         Category?        @relation("Post_category", fields: [categoryId], references: [id])
-  categoryId                       Int?             @map("category")
+  section                          Section[]        @relation("Post_section")
+  category                         Category[]       @relation("Category_posts")
   region                           String?
   relatedPosts                     Post[]           @relation("Post_relatedPosts")
   tags                             Tag[]            @relation("Post_tags")
@@ -239,8 +238,6 @@ model Post {
   from_Specialfeature_relatedPosts Specialfeature[] @relation("Specialfeature_relatedPosts")
 
   @@index([heroImageId])
-  @@index([sectionId])
-  @@index([categoryId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -251,8 +248,8 @@ model Resource {
   slogan                         String              @default("")
   status                         ResourceStatusType  @default(draft)
   region                         ResourceRegionType?
-  section                        Section?            @relation("Resource_section", fields: [sectionId], references: [id])
-  sectionId                      Int?                @map("section")
+  section                        Section[]           @relation("Resource_section")
+  category                       Category[]          @relation("Category_resources")
   profile_photo                  Photo?              @relation("Resource_profile_photo", fields: [profile_photoId], references: [id])
   profile_photoId                Int?                @map("profile_photo")
   content                        Json?
@@ -270,7 +267,6 @@ model Resource {
   updatedById                    Int?                @map("updatedBy")
   from_Resource_relatedResources Resource[]          @relation("Resource_relatedResources")
 
-  @@index([sectionId])
   @@index([profile_photoId])
   @@index([createdById])
   @@index([updatedById])
@@ -287,11 +283,11 @@ model Section {
   heroImageId         Int?                 @map("heroImage")
   category            Category[]           @relation("Category_section")
   posts               Post[]               @relation("Post_section")
-  specialfeatures     Specialfeature[]     @relation("Specialfeature_section")
-  jobs                Job[]                @relation("Job_section")
+  specialfeatures     Specialfeature[]     @relation("Section_specialfeatures")
   events              Event[]              @relation("Event_section")
+  jobs                Job[]                @relation("Job_section")
   resources           Resource[]           @relation("Resource_section")
-  specialfeatureLists SpecialfeatureList[] @relation("SpecialfeatureList_section")
+  specialfeatureLists SpecialfeatureList[] @relation("Section_specialfeatureLists")
   createdAt           DateTime?
   updatedAt           DateTime?
   createdBy           User?                @relation("Section_createdBy", fields: [createdById], references: [id])
@@ -317,10 +313,8 @@ model Specialfeature {
   heroCreditUrl                                  String                       @default("")
   content                                        Json?
   columns                                        Column[]                     @relation("Column_specialfeatures")
-  section                                        Section?                     @relation("Specialfeature_section", fields: [sectionId], references: [id])
-  sectionId                                      Int?                         @map("section")
-  category                                       Category?                    @relation("Specialfeature_category", fields: [categoryId], references: [id])
-  categoryId                                     Int?                         @map("category")
+  section                                        Section[]                    @relation("Section_specialfeatures")
+  category                                       Category[]                   @relation("Category_specialfeatures")
   region                                         String?
   relatedPosts                                   Post[]                       @relation("Specialfeature_relatedPosts")
   specialfeatureLists                            SpecialfeatureList[]         @relation("Specialfeature_specialfeatureLists")
@@ -337,8 +331,6 @@ model Specialfeature {
   from_SpecialfeatureEditorChoice_specialfeature SpecialfeatureEditorChoice[] @relation("SpecialfeatureEditorChoice_specialfeature")
 
   @@index([heroImageId])
-  @@index([sectionId])
-  @@index([categoryId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -356,8 +348,7 @@ model SpecialfeatureList {
   topSpecialfeatureId Int?                          @map("topSpecialfeature")
   specialfeatures     Specialfeature[]              @relation("Specialfeature_specialfeatureLists")
   url                 String                        @default("")
-  section             Section?                      @relation("SpecialfeatureList_section", fields: [sectionId], references: [id])
-  sectionId           Int?                          @map("section")
+  section             Section[]                     @relation("Section_specialfeatureLists")
   apiData             Json?
   createdAt           DateTime?
   updatedAt           DateTime?
@@ -368,7 +359,6 @@ model SpecialfeatureList {
 
   @@index([heroImageId])
   @@index([topSpecialfeatureId])
-  @@index([sectionId])
   @@index([createdById])
   @@index([updatedById])
 }

@@ -95,14 +95,24 @@ const listConfigurations = list({
       // },
     }),
     section: relationship({
-      label: '關注領域',
+      label: '主分類',
       ref: 'Section.events',
       ui: {
         displayMode: 'select',
         hideCreate: true,
         labelField: 'name',
       },
-      many: false,
+      many: true,
+    }),
+    category: relationship({
+      label: '子分類',
+      ref: 'Category.events',
+      ui: {
+        displayMode: 'select',
+        hideCreate: true,
+        labelField: 'name',
+      },
+      many: true,
     }),
     heroImage: customFields.relationship({
       label: '活動首圖',
