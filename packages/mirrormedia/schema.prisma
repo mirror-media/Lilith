@@ -214,6 +214,7 @@ model Magazine {
   pdfFile_filesize Int?
   pdfFile_mode     String?
   pdfFile_filename String?
+  urlOriginal      String    @default("")
   coverPhoto       Photo?    @relation("Magazine_coverPhoto", fields: [coverPhotoId], references: [id])
   coverPhotoId     Int?      @map("coverPhoto")
   type             String?   @default("weekly")
@@ -240,6 +241,7 @@ model AudioFile {
   file_filesize Int?
   file_mode     String?
   file_filename String?
+  urlOriginal   String    @default("")
   heroImage     Photo?    @relation("AudioFile_heroImage", fields: [heroImageId], references: [id])
   heroImageId   Int?      @map("heroImage")
   content       Json?
@@ -298,6 +300,7 @@ model Video {
   file_filesize       Int?
   file_mode           String?
   file_filename       String?
+  urlOriginal         String    @default("")
   content             Json?
   heroImage           Photo?    @relation("Video_heroImage", fields: [heroImageId], references: [id])
   heroImageId         Int?      @map("heroImage")

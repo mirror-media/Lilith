@@ -14,6 +14,19 @@ const listConfigurations = list({
     file: file({
       label: '檔案',
     }),
+    urlOriginal: text({
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+        listView: {
+          fieldMode: 'read',
+        },
+      },
+    }),
     content: customFields.richTextEditor({
       label: '敘述',
     }),
