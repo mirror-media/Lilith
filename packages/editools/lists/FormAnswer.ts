@@ -10,44 +10,39 @@ const listConfigurations = list({
       label: '標題',
       validation: { isRequired: true },
     }),
-    heroImage: customFields.relationship({
+    heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor),
+          update: allowRoles(admin, moderator),
+          create: allowRoles(admin, moderator),
+          delete: allowRoles(admin),
+        },
       },
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor),
-		  update: allowRoles(admin, moderator),
-		  create: allowRoles(admin, moderator),
-		  delete: allowRoles(admin),
-		},
-  	  },
     }),
     heroImageLink: text({
       label: '首圖網址',
     }),
-    mobileImage: customFields.relationship({
+    mobileImage: relationship({
       label: '手機首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor),
+          update: allowRoles(admin, moderator),
+          create: allowRoles(admin, moderator),
+          delete: allowRoles(admin),
+        },
       },
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor),
-		  update: allowRoles(admin, moderator),
-		  create: allowRoles(admin, moderator),
-		  delete: allowRoles(admin),
-		},
-  	  },
     }),
     mobileHeroImageLink: text({
       label: '手機首圖網址',
     }),
     content: customFields.richTextEditor({
       label: '結果內容',
+      disabledButtons: [],
     }),
     form: relationship({
       ref: 'Form.answers',

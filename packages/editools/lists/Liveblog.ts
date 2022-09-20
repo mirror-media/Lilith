@@ -1,4 +1,4 @@
-import { customFields, utils } from '@mirrormedia/lilith-core'
+import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { text, relationship, checkbox } from '@keystone-6/core/fields'
 import { saveLiveblogJSON, deleteLiveblogJSON } from './utils'
@@ -27,14 +27,11 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
-    heroImage: customFields.relationship({
+    heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
     }),
-    heroVideo: customFields.relationship({
+    heroVideo: relationship({
       label: '首屏影片',
       ref: 'Video',
     }),

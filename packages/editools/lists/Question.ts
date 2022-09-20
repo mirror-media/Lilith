@@ -6,6 +6,7 @@ import {
   text,
   select,
   relationship,
+  timestamp,
 } from '@keystone-6/core/fields'
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -31,27 +32,20 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
-    publishTime: customFields.timestamp({
+    publishTime: timestamp({
       label: '發布時間',
-      customConfig: {
-        hasNowButton: true,
-        hideTime: false,
-      },
     }),
-    heroImage: customFields.relationship({
+    heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor),
+          update: allowRoles(admin, moderator),
+          create: allowRoles(admin, moderator),
+          delete: allowRoles(admin),
+        },
       },
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor),
-		  update: allowRoles(admin, moderator),
-		  create: allowRoles(admin, moderator),
-		  delete: allowRoles(admin),
-		},
-  },
     }),
     imageLink: text(),
     author: text({
@@ -59,6 +53,7 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
+      disabledButtons: [],
     }),
     boost: checkbox({
       label: '置頂',
@@ -117,7 +112,9 @@ const listConfigurations = list({
     resolveInput: ({ resolvedData }) => {
       const { name } = resolvedData
       if (name) {
-        const apiData = customFields.draftConverter.convertToApiData(name).toJS()
+        const apiData = customFields.draftConverter
+          .convertToApiData(name)
+          .toJS()
         resolvedData.apiData = apiData
       }
       return resolvedData

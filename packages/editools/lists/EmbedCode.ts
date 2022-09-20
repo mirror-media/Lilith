@@ -1,5 +1,5 @@
 import embedCodeGen from '@readr-media/react-embed-code-generator'
-import { customFields, utils } from '@mirrormedia/lilith-core'
+import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import { text, relationship, virtual } from '@keystone-6/core/fields'
 

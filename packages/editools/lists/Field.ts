@@ -49,26 +49,24 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
-    heroImage: customFields.relationship({
+    heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor),
+          update: allowRoles(admin, moderator),
+          create: allowRoles(admin, moderator),
+          delete: allowRoles(admin),
+        },
       },
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor),
-		  update: allowRoles(admin, moderator),
-		  create: allowRoles(admin, moderator),
-		  delete: allowRoles(admin),
-		},
-  	  },
     }),
     heroImageLink: text({
       label: '首圖網址',
     }),
     content: customFields.richTextEditor({
       label: '內文',
+      disabledButtons: [],
     }),
     sortOrder: integer({
       label: '排序',

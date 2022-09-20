@@ -4,6 +4,7 @@ import {
   text,
   relationship,
   select,
+  timestamp,
   json,
   checkbox,
 } from '@keystone-6/core/fields'
@@ -29,21 +30,14 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
-    publishTime: customFields.timestamp({
+    publishTime: timestamp({
       label: '發布時間',
-      customConfig: {
-        hasNowButton: true,
-        hideTime: false,
-      },
     }),
-    heroImage: customFields.relationship({
+    heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
     }),
-    heroVideo: customFields.relationship({
+    heroVideo: relationship({
       label: '首屏影片',
       ref: 'Video',
     }),
@@ -53,7 +47,7 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
-    type: select({                                                                                                                                                                                                                 
+    type: select({
       options: [
         { label: '外連', value: 'external' },
         { label: '文章', value: 'article' },
@@ -73,10 +67,11 @@ const listConfigurations = list({
     }),
     name: customFields.richTextEditor({
       label: '內文',
+      disabledButtons: [],
     }),
     boost: checkbox({
       label: '置頂',
-      dfaultValue: false,
+      defaultValue: false,
     }),
     external: text({
       label: '外連連結',
