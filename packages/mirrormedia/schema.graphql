@@ -1071,6 +1071,7 @@ type Magazine {
   slug: String
   title: String
   pdfFile: FileFieldOutput
+  urlOriginal: String
   coverPhoto: Photo
   type: String
   state: String
@@ -1100,6 +1101,7 @@ input MagazineWhereInput {
   id: IDFilter
   slug: StringFilter
   title: StringFilter
+  urlOriginal: StringFilter
   coverPhoto: PhotoWhereInput
   type: StringNullableFilter
   state: StringNullableFilter
@@ -1114,6 +1116,7 @@ input MagazineOrderByInput {
   id: OrderDirection
   slug: OrderDirection
   title: OrderDirection
+  urlOriginal: OrderDirection
   type: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
@@ -1125,6 +1128,7 @@ input MagazineUpdateInput {
   slug: String
   title: String
   pdfFile: FileFieldInput
+  urlOriginal: String
   coverPhoto: PhotoRelateToOneForUpdateInput
   type: String
   state: String
@@ -1154,6 +1158,7 @@ input MagazineCreateInput {
   slug: String
   title: String
   pdfFile: FileFieldInput
+  urlOriginal: String
   coverPhoto: PhotoRelateToOneForCreateInput
   type: String
   state: String
@@ -1168,6 +1173,7 @@ type AudioFile {
   id: ID!
   name: String
   file: FileFieldOutput
+  urlOriginal: String
   heroImage: Photo
   content: JSON
   tags(
@@ -1194,6 +1200,7 @@ input AudioFileWhereInput {
   NOT: [AudioFileWhereInput!]
   id: IDFilter
   name: StringFilter
+  urlOriginal: StringFilter
   heroImage: PhotoWhereInput
   tags: TagManyRelationFilter
   createdAt: DateTimeNullableFilter
@@ -1205,6 +1212,7 @@ input AudioFileWhereInput {
 input AudioFileOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  urlOriginal: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1212,6 +1220,7 @@ input AudioFileOrderByInput {
 input AudioFileUpdateInput {
   name: String
   file: FileFieldInput
+  urlOriginal: String
   heroImage: PhotoRelateToOneForUpdateInput
   content: JSON
   tags: TagRelateToManyForUpdateInput
@@ -1230,6 +1239,7 @@ input AudioFileUpdateArgs {
 input AudioFileCreateInput {
   name: String
   file: FileFieldInput
+  urlOriginal: String
   heroImage: PhotoRelateToOneForCreateInput
   content: JSON
   tags: TagRelateToManyForCreateInput
@@ -1391,6 +1401,7 @@ type Video {
   id: ID!
   name: String
   file: FileFieldOutput
+  urlOriginal: String
   content: JSON
   heroImage: Photo
   isFeed: Boolean
@@ -1434,6 +1445,7 @@ input VideoWhereInput {
   NOT: [VideoWhereInput!]
   id: IDFilter
   name: StringFilter
+  urlOriginal: StringFilter
   heroImage: PhotoWhereInput
   isFeed: BooleanFilter
   state: StringNullableFilter
@@ -1448,6 +1460,7 @@ input VideoWhereInput {
 input VideoOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  urlOriginal: OrderDirection
   isFeed: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
@@ -1458,6 +1471,7 @@ input VideoOrderByInput {
 input VideoUpdateInput {
   name: String
   file: FileFieldInput
+  urlOriginal: String
   content: JSON
   heroImage: PhotoRelateToOneForUpdateInput
   isFeed: Boolean
@@ -1479,6 +1493,7 @@ input VideoUpdateArgs {
 input VideoCreateInput {
   name: String
   file: FileFieldInput
+  urlOriginal: String
   content: JSON
   heroImage: PhotoRelateToOneForCreateInput
   isFeed: Boolean

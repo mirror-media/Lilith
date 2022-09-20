@@ -24,6 +24,19 @@ const listConfigurations = list({
     pdfFile: file({
       label: '雜誌pdf'
     }),
+    urlOriginal: text({
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+        listView: {
+          fieldMode: 'read',
+        },
+      },
+    }),
     coverPhoto: relationship({
       label: '首圖',
       ref: 'Photo',
