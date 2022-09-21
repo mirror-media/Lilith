@@ -11,7 +11,14 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
-      disabledButtons: ['slideshow'],
+      disabledButtons: [
+        'slideshow',
+        'table',
+        'annotation',
+        'divider',
+        'info-box',
+        'link',
+      ],
     }),
   },
   access: {
