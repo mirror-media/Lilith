@@ -2434,6 +2434,144 @@ input KaraokeCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type QAList {
+  id: ID!
+  name: String
+  items(
+    where: QAItemWhereInput! = {}
+    orderBy: [QAItemOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [QAItem!]
+  itemsCount(where: QAItemWhereInput! = {}): Int
+  embedCode: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input QAListWhereUniqueInput {
+  id: ID
+}
+
+input QAListWhereInput {
+  AND: [QAListWhereInput!]
+  OR: [QAListWhereInput!]
+  NOT: [QAListWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  items: QAItemManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input QAItemManyRelationFilter {
+  every: QAItemWhereInput
+  some: QAItemWhereInput
+  none: QAItemWhereInput
+}
+
+input QAListOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input QAListUpdateInput {
+  name: String
+  items: QAItemRelateToManyForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input QAItemRelateToManyForUpdateInput {
+  disconnect: [QAItemWhereUniqueInput!]
+  set: [QAItemWhereUniqueInput!]
+  create: [QAItemCreateInput!]
+  connect: [QAItemWhereUniqueInput!]
+}
+
+input QAListUpdateArgs {
+  where: QAListWhereUniqueInput!
+  data: QAListUpdateInput!
+}
+
+input QAListCreateInput {
+  name: String
+  items: QAItemRelateToManyForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input QAItemRelateToManyForCreateInput {
+  create: [QAItemCreateInput!]
+  connect: [QAItemWhereUniqueInput!]
+}
+
+type QAItem {
+  id: ID!
+  title: String
+  content: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input QAItemWhereUniqueInput {
+  id: ID
+}
+
+input QAItemWhereInput {
+  AND: [QAItemWhereInput!]
+  OR: [QAItemWhereInput!]
+  NOT: [QAItemWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input QAItemOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input QAItemUpdateInput {
+  title: String
+  content: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input QAItemUpdateArgs {
+  where: QAItemWhereUniqueInput!
+  data: QAItemUpdateInput!
+}
+
+input QAItemCreateInput {
+  title: String
+  content: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2615,6 +2753,18 @@ type Mutation {
   updateKaraokes(data: [KaraokeUpdateArgs!]!): [Karaoke]
   deleteKaraoke(where: KaraokeWhereUniqueInput!): Karaoke
   deleteKaraokes(where: [KaraokeWhereUniqueInput!]!): [Karaoke]
+  createQAList(data: QAListCreateInput!): QAList
+  createQALists(data: [QAListCreateInput!]!): [QAList]
+  updateQAList(where: QAListWhereUniqueInput!, data: QAListUpdateInput!): QAList
+  updateQALists(data: [QAListUpdateArgs!]!): [QAList]
+  deleteQAList(where: QAListWhereUniqueInput!): QAList
+  deleteQALists(where: [QAListWhereUniqueInput!]!): [QAList]
+  createQAItem(data: QAItemCreateInput!): QAItem
+  createQAItems(data: [QAItemCreateInput!]!): [QAItem]
+  updateQAItem(where: QAItemWhereUniqueInput!, data: QAItemUpdateInput!): QAItem
+  updateQAItems(data: [QAItemUpdateArgs!]!): [QAItem]
+  deleteQAItem(where: QAItemWhereUniqueInput!): QAItem
+  deleteQAItems(where: [QAItemWhereUniqueInput!]!): [QAItem]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -2808,6 +2958,22 @@ type Query {
   ): [Karaoke!]
   karaoke(where: KaraokeWhereUniqueInput!): Karaoke
   karaokesCount(where: KaraokeWhereInput! = {}): Int
+  qALists(
+    where: QAListWhereInput! = {}
+    orderBy: [QAListOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [QAList!]
+  qAList(where: QAListWhereUniqueInput!): QAList
+  qAListsCount(where: QAListWhereInput! = {}): Int
+  qAItems(
+    where: QAItemWhereInput! = {}
+    orderBy: [QAItemOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [QAItem!]
+  qAItem(where: QAItemWhereUniqueInput!): QAItem
+  qAItemsCount(where: QAItemWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
