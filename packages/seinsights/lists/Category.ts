@@ -22,8 +22,8 @@ const listConfigurations = list({
       validation: {
         isRequired: true,
         match: {
-          regex: new RegExp('^[a-zA-Z0-9]*$'),
-          explanation: '限輸入英文或數字',
+          regex: new RegExp('^[a-zA-Z0-9-_]*$'),
+          explanation: '限輸入英文、數字或_-符號',
         },
       },
     }),
