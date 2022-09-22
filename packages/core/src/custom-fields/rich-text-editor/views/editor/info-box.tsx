@@ -9,10 +9,14 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js'
-import { BasicEditor } from './basic-editor'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { TextInput } from '@keystone-ui/fields'
 import draftConverter from '../../draft-to-api-data/draft-converter'
+
+type RenderBasicEditor = (propsOfBasicEditor: {
+  onChange: (es: EditorState) => void
+  editorState: EditorState
+}) => React.ReactElement
 
 type InfoBoxBlockProps = {
   block: ContentBlock
@@ -27,11 +31,12 @@ type InfoBoxBlockProps = {
     }) => void
   }
   contentState: ContentState
+  renderBasicEditor: RenderBasicEditor
 }
 
 export function InfoBoxBlock(props: InfoBoxBlockProps) {
   const [toShowInput, setToShowInput] = useState(false)
-  const { block, blockProps, contentState } = props
+  const { block, blockProps, contentState, renderBasicEditor } = props
   const { onEditStart, onEditFinish } = blockProps
   const entityKey = block.getEntityAt(0)
   const entity = contentState.getEntity(entityKey)
@@ -39,6 +44,9 @@ export function InfoBoxBlock(props: InfoBoxBlockProps) {
   const onChange = ({
     title: newTitle,
     rawContentState: newRawContentState,
+  }: {
+    title: string
+    rawContentState: RawDraftContentState
   }) => {
     // close `InfoBoxInput`
     setToShowInput(false)
@@ -56,6 +64,7 @@ export function InfoBoxBlock(props: InfoBoxBlockProps) {
   return (
     <React.Fragment>
       <InfoBoxInput
+        renderBasicEditor={renderBasicEditor}
         title={title}
         rawContentStateForInfoBoxEditor={rawContentState}
         onChange={onChange}
@@ -95,13 +104,23 @@ type InfoBoxInputType = {
   title?: string
   rawContentStateForInfoBoxEditor?: RawDraftContentState
   isOpen: boolean
-  onChange: ({ title: string, rawContentState: RawDraftContentState }) => void
+  onChange: (props: {
+    title: string
+    rawContentState: RawDraftContentState
+  }) => void
   onCancel: () => void
+  renderBasicEditor: RenderBasicEditor
 }
 
 function InfoBoxInput(props: InfoBoxInputType) {
-  const { isOpen, onChange, onCancel, title, rawContentStateForInfoBoxEditor } =
-    props
+  const {
+    isOpen,
+    onChange,
+    onCancel,
+    title,
+    rawContentStateForInfoBoxEditor,
+    renderBasicEditor,
+  } = props
   const rawContentState = rawContentStateForInfoBoxEditor || {
     blocks: [],
     entityMap: {},
@@ -114,6 +133,15 @@ function InfoBoxInput(props: InfoBoxInputType) {
       convertFromRaw(rawContentState),
       decorators
     ),
+  })
+  const basicEditorJsx = renderBasicEditor({
+    editorState: inputValue.editorStateOfBasicEditor,
+    onChange: (editorStateOfBasicEditor: EditorState) => {
+      setInputValue({
+        title: inputValue.title,
+        editorStateOfBasicEditor,
+      })
+    },
   })
 
   return (
@@ -151,15 +179,7 @@ function InfoBoxInput(props: InfoBoxInputType) {
           value={inputValue.title}
           style={{ marginTop: '30px', marginBottom: '10px' }}
         />
-        <BasicEditor
-          editorState={inputValue.editorStateOfBasicEditor}
-          onChange={(editorStateOfBasicEditor) => {
-            setInputValue({
-              title: inputValue.title,
-              editorStateOfBasicEditor,
-            })
-          }}
-        />
+        {basicEditorJsx}
       </Drawer>
     </DrawerController>
   )
@@ -168,14 +188,26 @@ function InfoBoxInput(props: InfoBoxInputType) {
 type InfoBoxButtonProps = {
   className: string
   editorState: EditorState
-  onChange: ({ editorState: EditorState }) => void
+  onChange: (editorState: EditorState) => void
+  renderBasicEditor: RenderBasicEditor
 }
 
 export function InfoBoxButton(props: InfoBoxButtonProps) {
   const [toShowInput, setToShowInput] = useState(false)
-  const { className, editorState, onChange: onEditorStateChange } = props
+  const {
+    className,
+    editorState,
+    onChange: onEditorStateChange,
+    renderBasicEditor,
+  } = props
 
-  const onChange = ({ title, rawContentState }) => {
+  const onChange = ({
+    title,
+    rawContentState,
+  }: {
+    title: string
+    rawContentState: RawDraftContentState
+  }) => {
     const contentState = editorState.getCurrentContent()
 
     // create an InfoBox entity
@@ -204,6 +236,7 @@ export function InfoBoxButton(props: InfoBoxButtonProps) {
   return (
     <React.Fragment>
       <InfoBoxInput
+        renderBasicEditor={renderBasicEditor}
         onChange={onChange}
         onCancel={() => {
           setToShowInput(false)

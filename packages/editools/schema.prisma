@@ -56,6 +56,10 @@ model User {
   from_IndexItem_updatedBy           IndexItem[]           @relation("IndexItem_updatedBy")
   from_Karaoke_createdBy             Karaoke[]             @relation("Karaoke_createdBy")
   from_Karaoke_updatedBy             Karaoke[]             @relation("Karaoke_updatedBy")
+  from_QAList_createdBy              QAList[]              @relation("QAList_createdBy")
+  from_QAList_updatedBy              QAList[]              @relation("QAList_updatedBy")
+  from_QAItem_createdBy              QAItem[]              @relation("QAItem_createdBy")
+  from_QAItem_updatedBy              QAItem[]              @relation("QAItem_updatedBy")
 }
 
 model LiveblogItem {
@@ -557,6 +561,37 @@ model Karaoke {
   createdById         Int?      @map("createdBy")
   updatedBy           User?     @relation("Karaoke_updatedBy", fields: [updatedById], references: [id])
   updatedById         Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model QAList {
+  id          Int       @id @default(autoincrement())
+  name        String    @default("")
+  items       QAItem[]  @relation("QAList_items")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("QAList_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("QAList_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model QAItem {
+  id                Int       @id @default(autoincrement())
+  title             String    @default("")
+  content           Json?
+  createdAt         DateTime?
+  updatedAt         DateTime?
+  createdBy         User?     @relation("QAItem_createdBy", fields: [createdById], references: [id])
+  createdById       Int?      @map("createdBy")
+  updatedBy         User?     @relation("QAItem_updatedBy", fields: [updatedById], references: [id])
+  updatedById       Int?      @map("updatedBy")
+  from_QAList_items QAList[]  @relation("QAList_items")
 
   @@index([createdById])
   @@index([updatedById])

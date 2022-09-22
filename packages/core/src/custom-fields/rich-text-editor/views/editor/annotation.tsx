@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { BasicEditor } from './basic-editor'
 import { EditorState, RichUtils, convertToRaw } from 'draft-js'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import decorators from './entity-decorator'
@@ -32,7 +31,7 @@ function escapeHTML(s) {
 
 export function AnnotationButton(props) {
   const toggleEntity = RichUtils.toggleLink
-  const { isActive, editorState, onChange } = props
+  const { isActive, editorState, onChange, renderBasicEditor } = props
   const [toShowInput, setToShowInput] = useState(false)
   const [inputValue, setInputValue] = useState({
     editorStateOfBasicEditor: EditorState.createEmpty(decorators),
@@ -87,6 +86,15 @@ export function AnnotationButton(props) {
     })
   }
 
+  const basicEditorJsx = renderBasicEditor({
+    editorState: inputValue.editorStateOfBasicEditor,
+    onChange: (editorStateOfBasicEditor: EditorState) => {
+      setInputValue({
+        editorStateOfBasicEditor,
+      })
+    },
+  })
+
   const urlInput = (
     <DrawerController isOpen={toShowInput}>
       <Drawer
@@ -102,14 +110,7 @@ export function AnnotationButton(props) {
           },
         }}
       >
-        <BasicEditor
-          editorState={inputValue.editorStateOfBasicEditor}
-          onChange={(editorStateOfBasicEditor) => {
-            setInputValue({
-              editorStateOfBasicEditor,
-            })
-          }}
-        />
+        {basicEditorJsx}
       </Drawer>
     </DrawerController>
   )
