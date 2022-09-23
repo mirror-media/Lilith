@@ -329,7 +329,7 @@ model Section {
   name                String     @default("")
   description         String     @default("")
   slug                String     @unique @default("")
-  order               Int?       @unique
+  order               Int?
   state               String
   isFeatured          Boolean    @default(false)
   heroImage           Photo?     @relation("Section_heroImage", fields: [heroImageId], references: [id])
@@ -354,7 +354,7 @@ model Category {
   id          Int       @id @default(autoincrement())
   name        String    @default("")
   slug        String    @unique @default("")
-  order       Int?      @unique
+  order       Int?
   state       String
   heroImage   Photo?    @relation("Category_heroImage", fields: [heroImageId], references: [id])
   heroImageId Int?      @map("heroImage")
