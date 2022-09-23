@@ -1986,6 +1986,7 @@ type Politic {
   election: Election
   desc: String
   source: String
+  contributer: String
   progress(
     where: PoliticProgressWhereInput! = {}
     orderBy: [PoliticProgressOrderByInput!]! = []
@@ -2012,6 +2013,7 @@ input PoliticWhereInput {
   election: ElectionWhereInput
   desc: StringFilter
   source: StringFilter
+  contributer: StringFilter
   progress: PoliticProgressManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2029,6 +2031,7 @@ input PoliticOrderByInput {
   id: OrderDirection
   desc: OrderDirection
   source: OrderDirection
+  contributer: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2038,6 +2041,7 @@ input PoliticUpdateInput {
   election: ElectionRelateToOneForUpdateInput
   desc: String
   source: String
+  contributer: String
   progress: PoliticProgressRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -2062,6 +2066,7 @@ input PoliticCreateInput {
   election: ElectionRelateToOneForCreateInput
   desc: String
   source: String
+  contributer: String
   progress: PoliticProgressRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -2079,6 +2084,7 @@ type PoliticProgress {
   politic: Politic
   progress: String
   source: String
+  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2097,6 +2103,7 @@ input PoliticProgressWhereInput {
   politic: PoliticWhereInput
   progress: StringFilter
   source: StringFilter
+  contributer: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2107,6 +2114,7 @@ input PoliticProgressOrderByInput {
   id: OrderDirection
   progress: OrderDirection
   source: OrderDirection
+  contributer: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2115,6 +2123,7 @@ input PoliticProgressUpdateInput {
   politic: PoliticRelateToOneForUpdateInput
   progress: String
   source: String
+  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2136,6 +2145,7 @@ input PoliticProgressCreateInput {
   politic: PoliticRelateToOneForCreateInput
   progress: String
   source: String
+  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2145,6 +2155,93 @@ input PoliticProgressCreateInput {
 input PoliticRelateToOneForCreateInput {
   create: PoliticCreateInput
   connect: PoliticWhereUniqueInput
+}
+
+type Lawsuit {
+  id: ID!
+  person: Person
+  crime_year: String
+  desc: String
+  source: String
+  contributer: String
+  judge_number: String
+  judge_desc: String
+  judge_content: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input LawsuitWhereUniqueInput {
+  id: ID
+}
+
+input LawsuitWhereInput {
+  AND: [LawsuitWhereInput!]
+  OR: [LawsuitWhereInput!]
+  NOT: [LawsuitWhereInput!]
+  id: IDFilter
+  person: PersonWhereInput
+  crime_year: StringFilter
+  desc: StringFilter
+  source: StringFilter
+  contributer: StringFilter
+  judge_number: StringFilter
+  judge_desc: StringFilter
+  judge_content: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input LawsuitOrderByInput {
+  id: OrderDirection
+  crime_year: OrderDirection
+  desc: OrderDirection
+  source: OrderDirection
+  contributer: OrderDirection
+  judge_number: OrderDirection
+  judge_desc: OrderDirection
+  judge_content: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input LawsuitUpdateInput {
+  person: PersonRelateToOneForUpdateInput
+  crime_year: String
+  desc: String
+  source: String
+  contributer: String
+  judge_number: String
+  judge_desc: String
+  judge_content: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input LawsuitUpdateArgs {
+  where: LawsuitWhereUniqueInput!
+  data: LawsuitUpdateInput!
+}
+
+input LawsuitCreateInput {
+  person: PersonRelateToOneForCreateInput
+  crime_year: String
+  desc: String
+  source: String
+  contributer: String
+  judge_number: String
+  judge_desc: String
+  judge_content: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
 }
 
 """
@@ -2383,6 +2480,15 @@ type Mutation {
   deletePoliticProgresses(
     where: [PoliticProgressWhereUniqueInput!]!
   ): [PoliticProgress]
+  createLawsuit(data: LawsuitCreateInput!): Lawsuit
+  createLawsuits(data: [LawsuitCreateInput!]!): [Lawsuit]
+  updateLawsuit(
+    where: LawsuitWhereUniqueInput!
+    data: LawsuitUpdateInput!
+  ): Lawsuit
+  updateLawsuits(data: [LawsuitUpdateArgs!]!): [Lawsuit]
+  deleteLawsuit(where: LawsuitWhereUniqueInput!): Lawsuit
+  deleteLawsuits(where: [LawsuitWhereUniqueInput!]!): [Lawsuit]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -2594,6 +2700,14 @@ type Query {
   ): [PoliticProgress!]
   politicProgress(where: PoliticProgressWhereUniqueInput!): PoliticProgress
   politicProgressesCount(where: PoliticProgressWhereInput! = {}): Int
+  lawsuits(
+    where: LawsuitWhereInput! = {}
+    orderBy: [LawsuitOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Lawsuit!]
+  lawsuit(where: LawsuitWhereUniqueInput!): Lawsuit
+  lawsuitsCount(where: LawsuitWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

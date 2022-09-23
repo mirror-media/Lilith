@@ -19,6 +19,7 @@ import PersonPublication from './PersonPublication'
 import PersonRelationship from './PersonRelationship'
 import Politic from './Politic'
 import PoliticProgress from './PoliticProgress'
+import Lawsuit from './Lawsuit'
 
 
 export const listDefinition = {
@@ -43,4 +44,5 @@ export const listDefinition = {
   PersonRelationship,
   Politic,
   PoliticProgress,
+  Lawsuit,
 }

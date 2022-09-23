@@ -58,6 +58,8 @@ model User {
   from_Politic_updatedBy                   Politic[]                   @relation("Politic_updatedBy")
   from_PoliticProgress_createdBy           PoliticProgress[]           @relation("PoliticProgress_createdBy")
   from_PoliticProgress_updatedBy           PoliticProgress[]           @relation("PoliticProgress_updatedBy")
+  from_Lawsuit_createdBy                   Lawsuit[]                   @relation("Lawsuit_createdBy")
+  from_Lawsuit_updatedBy                   Lawsuit[]                   @relation("Lawsuit_updatedBy")
 }
 
 model Post {
@@ -219,6 +221,7 @@ model Person {
   from_PersonRelationship_person_id         PersonRelationship[] @relation("PersonRelationship_person_id")
   from_PersonRelationship_related_person_id PersonRelationship[] @relation("PersonRelationship_related_person_id")
   from_Politic_person                       Politic[]            @relation("Politic_person")
+  from_Lawsuit_person                       Lawsuit[]            @relation("Lawsuit_person")
 
   @@index([createdById])
   @@index([updatedById])
@@ -534,6 +537,7 @@ model Politic {
   electionId                   Int?              @map("election")
   desc                         String            @default("")
   source                       String            @default("")
+  contributer                  String            @default("")
   progress                     PoliticProgress[] @relation("Politic_progress")
   createdAt                    DateTime?
   updatedAt                    DateTime?
@@ -555,6 +559,7 @@ model PoliticProgress {
   politicId             Int?      @map("politic")
   progress              String    @default("")
   source                String    @default("")
+  contributer           String    @default("")
   createdAt             DateTime?
   updatedAt             DateTime?
   createdBy             User?     @relation("PoliticProgress_createdBy", fields: [createdById], references: [id])
@@ -564,6 +569,29 @@ model PoliticProgress {
   from_Politic_progress Politic[] @relation("Politic_progress")
 
   @@index([politicId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Lawsuit {
+  id            Int       @id @default(autoincrement())
+  person        Person?   @relation("Lawsuit_person", fields: [personId], references: [id])
+  personId      Int?      @map("person")
+  crime_year    String    @default("")
+  desc          String    @default("")
+  source        String    @default("")
+  contributer   String    @default("")
+  judge_number  String    @default("")
+  judge_desc    String    @default("")
+  judge_content String    @default("")
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Lawsuit_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Lawsuit_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([personId])
   @@index([createdById])
   @@index([updatedById])
 }
