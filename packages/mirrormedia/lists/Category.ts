@@ -22,7 +22,6 @@ const listConfigurations = list({
     }),
     order: integer({ 
       label: '排序', 
-      isIndexed: 'unique',
       validation: {
         min: 1,
         max: 9999,

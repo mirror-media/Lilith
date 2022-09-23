@@ -1546,7 +1546,6 @@ type Section {
 input SectionWhereUniqueInput {
   id: ID
   slug: String
-  order: Int
 }
 
 input SectionWhereInput {
@@ -1645,7 +1644,6 @@ type Category {
 input CategoryWhereUniqueInput {
   id: ID
   slug: String
-  order: Int
 }
 
 input CategoryWhereInput {
