@@ -3,6 +3,7 @@ import User from './User'
 import Area from './Area'
 import Event from './Event'
 import Election from './Election'
+import ElectionArea from './ElectionArea'
 import Person from './Person'
 import Motion from './Motion'
 import Count from './Count'
@@ -28,6 +29,7 @@ export const listDefinition = {
   Area,
   Event,
   Election,
+  ElectionArea,
   Vote,
   Person,
   Motion,

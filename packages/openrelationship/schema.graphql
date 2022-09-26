@@ -527,7 +527,7 @@ input ElectionWhereInput {
   type: StringNullableFilter
   register_date: StringFilter
   location: StringFilter
-  status: StringFilter
+  status: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -619,6 +619,74 @@ input ElectionCreateInput {
   type: String
   register_date: String
   location: String
+  status: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type ElectionArea {
+  id: ID!
+  name: String
+  area_code: String
+  description: String
+  status: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ElectionAreaWhereUniqueInput {
+  id: ID
+}
+
+input ElectionAreaWhereInput {
+  AND: [ElectionAreaWhereInput!]
+  OR: [ElectionAreaWhereInput!]
+  NOT: [ElectionAreaWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  area_code: StringFilter
+  description: StringFilter
+  status: StringNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ElectionAreaOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  area_code: OrderDirection
+  description: OrderDirection
+  status: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ElectionAreaUpdateInput {
+  name: String
+  area_code: String
+  description: String
+  status: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ElectionAreaUpdateArgs {
+  where: ElectionAreaWhereUniqueInput!
+  data: ElectionAreaUpdateInput!
+}
+
+input ElectionAreaCreateInput {
+  name: String
+  area_code: String
+  description: String
   status: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1584,7 +1652,7 @@ type PersonElection {
   id: ID!
   person_id: Person
   election: Election
-  party: String
+  party: Organization
   legislatoratlarge_number: String
   number: String
   electoral_district: String
@@ -1610,7 +1678,7 @@ input PersonElectionWhereInput {
   id: IDFilter
   person_id: PersonWhereInput
   election: ElectionWhereInput
-  party: StringFilter
+  party: OrganizationWhereInput
   legislatoratlarge_number: StringFilter
   number: StringFilter
   electoral_district: StringFilter
@@ -1627,7 +1695,6 @@ input PersonElectionWhereInput {
 
 input PersonElectionOrderByInput {
   id: OrderDirection
-  party: OrderDirection
   legislatoratlarge_number: OrderDirection
   number: OrderDirection
   electoral_district: OrderDirection
@@ -1643,7 +1710,7 @@ input PersonElectionOrderByInput {
 input PersonElectionUpdateInput {
   person_id: PersonRelateToOneForUpdateInput
   election: ElectionRelateToOneForUpdateInput
-  party: String
+  party: OrganizationRelateToOneForUpdateInput
   legislatoratlarge_number: String
   number: String
   electoral_district: String
@@ -1672,7 +1739,7 @@ input PersonElectionUpdateArgs {
 input PersonElectionCreateInput {
   person_id: PersonRelateToOneForCreateInput
   election: ElectionRelateToOneForCreateInput
-  party: String
+  party: OrganizationRelateToOneForCreateInput
   legislatoratlarge_number: String
   number: String
   electoral_district: String
@@ -2286,6 +2353,15 @@ type Mutation {
   updateElections(data: [ElectionUpdateArgs!]!): [Election]
   deleteElection(where: ElectionWhereUniqueInput!): Election
   deleteElections(where: [ElectionWhereUniqueInput!]!): [Election]
+  createElectionArea(data: ElectionAreaCreateInput!): ElectionArea
+  createElectionAreas(data: [ElectionAreaCreateInput!]!): [ElectionArea]
+  updateElectionArea(
+    where: ElectionAreaWhereUniqueInput!
+    data: ElectionAreaUpdateInput!
+  ): ElectionArea
+  updateElectionAreas(data: [ElectionAreaUpdateArgs!]!): [ElectionArea]
+  deleteElectionArea(where: ElectionAreaWhereUniqueInput!): ElectionArea
+  deleteElectionAreas(where: [ElectionAreaWhereUniqueInput!]!): [ElectionArea]
   createVote(data: VoteCreateInput!): Vote
   createVotes(data: [VoteCreateInput!]!): [Vote]
   updateVote(where: VoteWhereUniqueInput!, data: VoteUpdateInput!): Vote
@@ -2560,6 +2636,14 @@ type Query {
   ): [Election!]
   election(where: ElectionWhereUniqueInput!): Election
   electionsCount(where: ElectionWhereInput! = {}): Int
+  electionAreas(
+    where: ElectionAreaWhereInput! = {}
+    orderBy: [ElectionAreaOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ElectionArea!]
+  electionArea(where: ElectionAreaWhereUniqueInput!): ElectionArea
+  electionAreasCount(where: ElectionAreaWhereInput! = {}): Int
   votes(
     where: VoteWhereInput! = {}
     orderBy: [VoteOrderByInput!]! = []
