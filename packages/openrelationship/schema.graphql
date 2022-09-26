@@ -755,9 +755,9 @@ input PersonWhereInput {
   NOT: [PersonWhereInput!]
   id: IDFilter
   name: StringFilter
-  alternative: StringFilter
-  other_names: StringFilter
-  email: StringFilter
+  alternative: StringNullableFilter
+  other_names: StringNullableFilter
+  email: StringNullableFilter
   gender: StringNullableFilter
   birth_date_year: IntNullableFilter
   birth_date_month: IntNullableFilter
@@ -765,13 +765,13 @@ input PersonWhereInput {
   death_date_year: IntNullableFilter
   death_date_month: IntNullableFilter
   death_date_day: IntNullableFilter
-  image: StringFilter
-  summary: StringFilter
-  biography: StringFilter
-  national_identity: StringFilter
-  contact_details: StringFilter
-  links: StringFilter
-  source: StringFilter
+  image: StringNullableFilter
+  summary: StringNullableFilter
+  biography: StringNullableFilter
+  national_identity: StringNullableFilter
+  contact_details: StringNullableFilter
+  links: StringNullableFilter
+  source: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -991,23 +991,23 @@ input OrganizationWhereInput {
   NOT: [OrganizationWhereInput!]
   id: IDFilter
   name: StringFilter
-  alternative: StringFilter
-  other_names: StringFilter
-  identifiers: StringFilter
+  alternative: StringNullableFilter
+  other_names: StringNullableFilter
+  identifiers: StringNullableFilter
   classification: StringNullableFilter
-  abstract: StringFilter
-  description: StringFilter
+  abstract: StringNullableFilter
+  description: StringNullableFilter
   founding_date_year: IntNullableFilter
   founding_date_month: IntNullableFilter
   founding_date_day: IntNullableFilter
   dissolution_date_year: IntNullableFilter
   dissolution_date_month: IntNullableFilter
   dissolution_date_day: IntNullableFilter
-  image: StringFilter
-  contact_details: StringFilter
-  links: StringFilter
-  address: StringFilter
-  source: StringFilter
+  image: StringNullableFilter
+  contact_details: StringNullableFilter
+  links: StringNullableFilter
+  address: StringNullableFilter
+  source: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1513,14 +1513,14 @@ input OrganizationsRelationshipWhereInput {
   id: IDFilter
   organization_id: OrganizationWhereInput
   related_organization_id: OrganizationWhereInput
-  relative: StringFilter
+  relative: StringNullableFilter
   start_date_year: IntNullableFilter
   start_date_month: IntNullableFilter
   start_date_day: IntNullableFilter
   end_date_year: IntNullableFilter
   end_date_month: IntNullableFilter
   end_date_day: IntNullableFilter
-  source: StringFilter
+  source: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1721,14 +1721,14 @@ input PersonOrganizationWhereInput {
   id: IDFilter
   person_id: PersonWhereInput
   organization_id: OrganizationWhereInput
-  role: StringFilter
+  role: StringNullableFilter
   start_date_year: IntNullableFilter
   start_date_month: IntNullableFilter
   start_date_day: IntNullableFilter
   end_date_year: IntNullableFilter
   end_date_month: IntNullableFilter
   end_date_day: IntNullableFilter
-  source: StringFilter
+  source: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput

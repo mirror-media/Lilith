@@ -190,9 +190,9 @@ model Vote {
 model Person {
   id                                        Int                  @id @default(autoincrement())
   name                                      String               @default("")
-  alternative                               String               @default("")
-  other_names                               String               @default("")
-  email                                     String               @default("")
+  alternative                               String?
+  other_names                               String?
+  email                                     String?
   gender                                    String?
   birth_date_year                           Int?
   birth_date_month                          Int?
@@ -200,13 +200,13 @@ model Person {
   death_date_year                           Int?
   death_date_month                          Int?
   death_date_day                            Int?
-  image                                     String               @default("")
-  summary                                   String               @default("")
-  biography                                 String               @default("")
-  national_identity                         String               @default("")
-  contact_details                           String               @default("")
-  links                                     String               @default("")
-  source                                    String               @default("")
+  image                                     String?
+  summary                                   String?
+  biography                                 String?
+  national_identity                         String?
+  contact_details                           String?
+  links                                     String?
+  source                                    String?
   createdAt                                 DateTime?
   updatedAt                                 DateTime?
   createdBy                                 User?                @relation("Person_createdBy", fields: [createdById], references: [id])
@@ -253,23 +253,23 @@ model Motion {
 model Organization {
   id                                                     Int                         @id @default(autoincrement())
   name                                                   String                      @default("")
-  alternative                                            String                      @default("")
-  other_names                                            String                      @default("")
-  identifiers                                            String                      @default("")
+  alternative                                            String?
+  other_names                                            String?
+  identifiers                                            String?
   classification                                         String?
-  abstract                                               String                      @default("")
-  description                                            String                      @default("")
+  abstract                                               String?
+  description                                            String?
   founding_date_year                                     Int?
   founding_date_month                                    Int?
   founding_date_day                                      Int?
   dissolution_date_year                                  Int?
   dissolution_date_month                                 Int?
   dissolution_date_day                                   Int?
-  image                                                  String                      @default("")
-  contact_details                                        String                      @default("")
-  links                                                  String                      @default("")
-  address                                                String                      @default("")
-  source                                                 String                      @default("")
+  image                                                  String?
+  contact_details                                        String?
+  links                                                  String?
+  address                                                String?
+  source                                                 String?
   createdAt                                              DateTime?
   updatedAt                                              DateTime?
   createdBy                                              User?                       @relation("Organization_createdBy", fields: [createdById], references: [id])
@@ -399,14 +399,14 @@ model OrganizationsRelationship {
   organization_idId         Int?          @map("organization_id")
   related_organization_id   Organization? @relation("OrganizationsRelationship_related_organization_id", fields: [related_organization_idId], references: [id])
   related_organization_idId Int?          @map("related_organization_id")
-  relative                  String        @default("")
+  relative                  String?
   start_date_year           Int?
   start_date_month          Int?
   start_date_day            Int?
   end_date_year             Int?
   end_date_month            Int?
   end_date_day              Int?
-  source                    String        @default("")
+  source                    String?
   createdAt                 DateTime?
   updatedAt                 DateTime?
   createdBy                 User?         @relation("OrganizationsRelationship_createdBy", fields: [createdById], references: [id])
@@ -454,14 +454,14 @@ model PersonOrganization {
   person_idId       Int?          @map("person_id")
   organization_id   Organization? @relation("PersonOrganization_organization_id", fields: [organization_idId], references: [id])
   organization_idId Int?          @map("organization_id")
-  role              String        @default("")
+  role              String?
   start_date_year   Int?
   start_date_month  Int?
   start_date_day    Int?
   end_date_year     Int?
   end_date_month    Int?
   end_date_day      Int?
-  source            String        @default("")
+  source            String?
   createdAt         DateTime?
   updatedAt         DateTime?
   createdBy         User?         @relation("PersonOrganization_createdBy", fields: [createdById], references: [id])
