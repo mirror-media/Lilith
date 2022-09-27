@@ -161,7 +161,6 @@ model Election {
   updatedBy                    User?            @relation("Election_updatedBy", fields: [updatedById], references: [id])
   updatedById                  Int?             @map("updatedBy")
   from_PersonElection_election PersonElection[] @relation("PersonElection_election")
-  from_Politic_election        Politic[]        @relation("Politic_election")
 
   @@index([createdById])
   @@index([updatedById])
@@ -170,9 +169,9 @@ model Election {
 model ElectionArea {
   id          Int       @id @default(autoincrement())
   name        String    @default("")
-  area_code   String    @default("")
+  type        String    @default("")
   description String    @default("")
-  status      String?
+  status      String?   @default("active")
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?     @relation("ElectionArea_createdBy", fields: [createdById], references: [id])
@@ -239,7 +238,6 @@ model Person {
   from_PersonPublication_person_id          PersonPublication[]  @relation("PersonPublication_person_id")
   from_PersonRelationship_person_id         PersonRelationship[] @relation("PersonRelationship_person_id")
   from_PersonRelationship_related_person_id PersonRelationship[] @relation("PersonRelationship_related_person_id")
-  from_Politic_person                       Politic[]            @relation("Politic_person")
   from_Lawsuit_person                       Lawsuit[]            @relation("Lawsuit_person")
 
   @@index([createdById])
@@ -462,6 +460,7 @@ model PersonElection {
   createdById               Int?          @map("createdBy")
   updatedBy                 User?         @relation("PersonElection_updatedBy", fields: [updatedById], references: [id])
   updatedById               Int?          @map("updatedBy")
+  from_Politic_person       Politic[]     @relation("Politic_person")
 
   @@index([person_idId])
   @@index([electionId])
@@ -553,10 +552,8 @@ model PersonRelationship {
 
 model Politic {
   id                           Int               @id @default(autoincrement())
-  person                       Person?           @relation("Politic_person", fields: [personId], references: [id])
+  person                       PersonElection?   @relation("Politic_person", fields: [personId], references: [id])
   personId                     Int?              @map("person")
-  election                     Election?         @relation("Politic_election", fields: [electionId], references: [id])
-  electionId                   Int?              @map("election")
   desc                         String            @default("")
   source                       String            @default("")
   contributer                  String            @default("")
@@ -570,7 +567,6 @@ model Politic {
   from_PoliticProgress_politic PoliticProgress[] @relation("PoliticProgress_politic")
 
   @@index([personId])
-  @@index([electionId])
   @@index([createdById])
   @@index([updatedById])
 }

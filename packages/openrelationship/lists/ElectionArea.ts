@@ -13,10 +13,10 @@ const {
 const listConfigurations = list ({
   fields: {
     name: text({ 
-	  label: '名稱',
+	  label: '選舉區',
 	  isRequired: true 
 	}),
-	area_code: text({ label: '選區代號（中選會）' }),
+	type: text({ label: '選舉類型' }),
     description: text({ label: '敘述' }),
     status: select({ 
 	  label: '狀態',
@@ -24,6 +24,7 @@ const listConfigurations = list ({
 		{ value: 'active', label: '有效' },
 		{ value: 'deactive', label: '失效' },
 	  ],
+	defaultValue: 'active',
 	}),
   },
   access: {

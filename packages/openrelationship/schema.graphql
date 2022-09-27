@@ -629,7 +629,7 @@ input ElectionCreateInput {
 type ElectionArea {
   id: ID!
   name: String
-  area_code: String
+  type: String
   description: String
   status: String
   createdAt: DateTime
@@ -648,7 +648,7 @@ input ElectionAreaWhereInput {
   NOT: [ElectionAreaWhereInput!]
   id: IDFilter
   name: StringFilter
-  area_code: StringFilter
+  type: StringFilter
   description: StringFilter
   status: StringNullableFilter
   createdAt: DateTimeNullableFilter
@@ -660,7 +660,7 @@ input ElectionAreaWhereInput {
 input ElectionAreaOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  area_code: OrderDirection
+  type: OrderDirection
   description: OrderDirection
   status: OrderDirection
   createdAt: OrderDirection
@@ -669,7 +669,7 @@ input ElectionAreaOrderByInput {
 
 input ElectionAreaUpdateInput {
   name: String
-  area_code: String
+  type: String
   description: String
   status: String
   createdAt: DateTime
@@ -685,7 +685,7 @@ input ElectionAreaUpdateArgs {
 
 input ElectionAreaCreateInput {
   name: String
-  area_code: String
+  type: String
   description: String
   status: String
   createdAt: DateTime
@@ -2049,8 +2049,7 @@ input PersonRelationshipCreateInput {
 
 type Politic {
   id: ID!
-  person: Person
-  election: Election
+  person: PersonElection
   desc: String
   source: String
   contributer: String
@@ -2076,8 +2075,7 @@ input PoliticWhereInput {
   OR: [PoliticWhereInput!]
   NOT: [PoliticWhereInput!]
   id: IDFilter
-  person: PersonWhereInput
-  election: ElectionWhereInput
+  person: PersonElectionWhereInput
   desc: StringFilter
   source: StringFilter
   contributer: StringFilter
@@ -2104,8 +2102,7 @@ input PoliticOrderByInput {
 }
 
 input PoliticUpdateInput {
-  person: PersonRelateToOneForUpdateInput
-  election: ElectionRelateToOneForUpdateInput
+  person: PersonElectionRelateToOneForUpdateInput
   desc: String
   source: String
   contributer: String
@@ -2114,6 +2111,12 @@ input PoliticUpdateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PersonElectionRelateToOneForUpdateInput {
+  create: PersonElectionCreateInput
+  connect: PersonElectionWhereUniqueInput
+  disconnect: Boolean
 }
 
 input PoliticProgressRelateToManyForUpdateInput {
@@ -2129,8 +2132,7 @@ input PoliticUpdateArgs {
 }
 
 input PoliticCreateInput {
-  person: PersonRelateToOneForCreateInput
-  election: ElectionRelateToOneForCreateInput
+  person: PersonElectionRelateToOneForCreateInput
   desc: String
   source: String
   contributer: String
@@ -2139,6 +2141,11 @@ input PoliticCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input PersonElectionRelateToOneForCreateInput {
+  create: PersonElectionCreateInput
+  connect: PersonElectionWhereUniqueInput
 }
 
 input PoliticProgressRelateToManyForCreateInput {

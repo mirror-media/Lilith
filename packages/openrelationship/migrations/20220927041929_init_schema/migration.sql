@@ -81,13 +81,28 @@ CREATE TABLE "Election" (
     "type" TEXT,
     "register_date" TEXT NOT NULL DEFAULT E'',
     "location" TEXT NOT NULL DEFAULT E'',
-    "status" TEXT NOT NULL DEFAULT E'',
+    "status" TEXT,
     "createdAt" TIMESTAMP(3),
     "updatedAt" TIMESTAMP(3),
     "createdBy" INTEGER,
     "updatedBy" INTEGER,
 
     CONSTRAINT "Election_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ElectionArea" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL DEFAULT E'',
+    "type" TEXT NOT NULL DEFAULT E'',
+    "description" TEXT NOT NULL DEFAULT E'',
+    "status" TEXT DEFAULT E'active',
+    "createdAt" TIMESTAMP(3),
+    "updatedAt" TIMESTAMP(3),
+    "createdBy" INTEGER,
+    "updatedBy" INTEGER,
+
+    CONSTRAINT "ElectionArea_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -297,7 +312,7 @@ CREATE TABLE "PersonElection" (
     "id" SERIAL NOT NULL,
     "person_id" INTEGER,
     "election" INTEGER,
-    "party" TEXT NOT NULL DEFAULT E'',
+    "party" INTEGER,
     "legislatoratlarge_number" TEXT NOT NULL DEFAULT E'',
     "number" TEXT NOT NULL DEFAULT E'',
     "electoral_district" TEXT NOT NULL DEFAULT E'',
@@ -381,7 +396,6 @@ CREATE TABLE "PersonRelationship" (
 CREATE TABLE "Politic" (
     "id" SERIAL NOT NULL,
     "person" INTEGER,
-    "election" INTEGER,
     "desc" TEXT NOT NULL DEFAULT E'',
     "source" TEXT NOT NULL DEFAULT E'',
     "contributer" TEXT NOT NULL DEFAULT E'',
@@ -482,6 +496,12 @@ CREATE INDEX "Election_createdBy_idx" ON "Election"("createdBy");
 CREATE INDEX "Election_updatedBy_idx" ON "Election"("updatedBy");
 
 -- CreateIndex
+CREATE INDEX "ElectionArea_createdBy_idx" ON "ElectionArea"("createdBy");
+
+-- CreateIndex
+CREATE INDEX "ElectionArea_updatedBy_idx" ON "ElectionArea"("updatedBy");
+
+-- CreateIndex
 CREATE INDEX "Vote_pair_idx" ON "Vote"("pair");
 
 -- CreateIndex
@@ -572,6 +592,9 @@ CREATE INDEX "PersonElection_person_id_idx" ON "PersonElection"("person_id");
 CREATE INDEX "PersonElection_election_idx" ON "PersonElection"("election");
 
 -- CreateIndex
+CREATE INDEX "PersonElection_party_idx" ON "PersonElection"("party");
+
+-- CreateIndex
 CREATE INDEX "PersonElection_createdBy_idx" ON "PersonElection"("createdBy");
 
 -- CreateIndex
@@ -615,9 +638,6 @@ CREATE INDEX "PersonRelationship_updatedBy_idx" ON "PersonRelationship"("updated
 
 -- CreateIndex
 CREATE INDEX "Politic_person_idx" ON "Politic"("person");
-
--- CreateIndex
-CREATE INDEX "Politic_election_idx" ON "Politic"("election");
 
 -- CreateIndex
 CREATE INDEX "Politic_createdBy_idx" ON "Politic"("createdBy");
@@ -693,6 +713,12 @@ ALTER TABLE "Election" ADD CONSTRAINT "Election_createdBy_fkey" FOREIGN KEY ("cr
 
 -- AddForeignKey
 ALTER TABLE "Election" ADD CONSTRAINT "Election_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ElectionArea" ADD CONSTRAINT "ElectionArea_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ElectionArea" ADD CONSTRAINT "ElectionArea_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Vote" ADD CONSTRAINT "Vote_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -791,6 +817,9 @@ ALTER TABLE "PersonElection" ADD CONSTRAINT "PersonElection_election_fkey" FOREI
 ALTER TABLE "PersonElection" ADD CONSTRAINT "PersonElection_person_id_fkey" FOREIGN KEY ("person_id") REFERENCES "Person"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "PersonElection" ADD CONSTRAINT "PersonElection_party_fkey" FOREIGN KEY ("party") REFERENCES "Organization"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "PersonOrganization" ADD CONSTRAINT "PersonOrganization_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -833,10 +862,7 @@ ALTER TABLE "Politic" ADD CONSTRAINT "Politic_createdBy_fkey" FOREIGN KEY ("crea
 ALTER TABLE "Politic" ADD CONSTRAINT "Politic_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Politic" ADD CONSTRAINT "Politic_election_fkey" FOREIGN KEY ("election") REFERENCES "Election"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Politic" ADD CONSTRAINT "Politic_person_fkey" FOREIGN KEY ("person") REFERENCES "Person"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Politic" ADD CONSTRAINT "Politic_person_fkey" FOREIGN KEY ("person") REFERENCES "PersonElection"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PoliticProgress" ADD CONSTRAINT "PoliticProgress_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -873,22 +899,3 @@ ALTER TABLE "_Politic_progress" ADD FOREIGN KEY ("A") REFERENCES "Politic"("id")
 
 -- AddForeignKey
 ALTER TABLE "_Politic_progress" ADD FOREIGN KEY ("B") REFERENCES "PoliticProgress"("id") ON DELETE CASCADE ON UPDATE CASCADE;
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 14.1
--- Dumped by pg_dump version 14.1
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
