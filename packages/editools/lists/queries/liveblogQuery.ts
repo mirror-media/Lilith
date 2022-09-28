@@ -41,5 +41,8 @@ export const liveblogQuery = `
     tags {
       name
     }
-}
+    type
+    external
+    externalCoverPhoto
+  }
 `

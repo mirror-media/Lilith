@@ -127,6 +127,7 @@ type LiveblogItem {
   name: JSON
   boost: Boolean
   external: String
+  externalCoverPhoto: String
   liveblog: Liveblog
   tags: Tag
   apiData: JSON
