@@ -34,6 +34,7 @@ const listConfigurations = list({
       ],
       validation: { isRequired: true },
       ui: { displayMode: 'segmented-control' },
+      defaultValue: 'active',
     }),
     heroImage: relationship({
       label: 'Banner圖片',

@@ -723,6 +723,7 @@ type External {
   id: ID!
   slug: String
   partner: Partner
+  title: String
   state: String
   publishedDate: DateTime
   extend_byline: String
@@ -748,6 +749,7 @@ input ExternalWhereInput {
   id: IDFilter
   slug: StringFilter
   partner: PartnerWhereInput
+  title: StringFilter
   state: StringNullableFilter
   publishedDate: DateTimeNullableFilter
   extend_byline: StringFilter
@@ -764,6 +766,7 @@ input ExternalWhereInput {
 input ExternalOrderByInput {
   id: OrderDirection
   slug: OrderDirection
+  title: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
   extend_byline: OrderDirection
@@ -778,6 +781,7 @@ input ExternalOrderByInput {
 input ExternalUpdateInput {
   slug: String
   partner: PartnerRelateToOneForUpdateInput
+  title: String
   state: String
   publishedDate: DateTime
   extend_byline: String
@@ -805,6 +809,7 @@ input ExternalUpdateArgs {
 input ExternalCreateInput {
   slug: String
   partner: PartnerRelateToOneForCreateInput
+  title: String
   state: String
   publishedDate: DateTime
   extend_byline: String

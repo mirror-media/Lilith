@@ -23,6 +23,10 @@ const listConfigurations = list({
             hideCreate: true,
          }
       }),
+      title: text({
+         label: '標題',
+         validation: { isRequired: true }
+       }),
       state: select({
          label: '狀態',
          options: [

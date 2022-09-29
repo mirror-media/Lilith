@@ -38,6 +38,7 @@ const listConfigurations = list({
       ],
       validation: { isRequired: true },
       ui: { displayMode: 'segmented-control' },
+      defaultValue: 'active',
     }),
     isFeatured: checkbox({
       label: '置頂',
