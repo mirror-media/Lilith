@@ -131,6 +131,7 @@ model External {
   slug          String    @unique @default("")
   partner       Partner?  @relation("External_partner", fields: [partnerId], references: [id])
   partnerId     Int?      @map("partner")
+  title         String    @default("")
   state         String?   @default("draft")
   publishedDate DateTime?
   extend_byline String    @default("")
@@ -330,7 +331,7 @@ model Section {
   description         String     @default("")
   slug                String     @unique @default("")
   order               Int?
-  state               String
+  state               String     @default("active")
   isFeatured          Boolean    @default(false)
   heroImage           Photo?     @relation("Section_heroImage", fields: [heroImageId], references: [id])
   heroImageId         Int?       @map("heroImage")
@@ -355,7 +356,7 @@ model Category {
   name        String    @default("")
   slug        String    @unique @default("")
   order       Int?
-  state       String
+  state       String    @default("active")
   heroImage   Photo?    @relation("Category_heroImage", fields: [heroImageId], references: [id])
   heroImageId Int?      @map("heroImage")
   sections    Section?  @relation("Category_sections", fields: [sectionsId], references: [id])
