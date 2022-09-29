@@ -29,7 +29,13 @@ const listConfigurations = list ({
 	}),
     register_date: text({ label: '登記日期' }),
     location: text({ label: '位置' }),
-    status: text({ label: '狀態' }),
+    status: select({ 
+	  label: '狀態',
+	  options: [
+		{ value: 'active', label: '有效' },
+		{ value: 'deactive', label: '失效' },
+	  ],
+	}),
   },
   access: {
 	operation: {

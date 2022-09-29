@@ -26,6 +26,8 @@ model User {
   from_Event_updatedBy                     Event[]                     @relation("Event_updatedBy")
   from_Election_createdBy                  Election[]                  @relation("Election_createdBy")
   from_Election_updatedBy                  Election[]                  @relation("Election_updatedBy")
+  from_ElectionArea_createdBy              ElectionArea[]              @relation("ElectionArea_createdBy")
+  from_ElectionArea_updatedBy              ElectionArea[]              @relation("ElectionArea_updatedBy")
   from_Vote_createdBy                      Vote[]                      @relation("Vote_createdBy")
   from_Vote_updatedBy                      Vote[]                      @relation("Vote_updatedBy")
   from_Person_createdBy                    Person[]                    @relation("Person_createdBy")
@@ -58,6 +60,8 @@ model User {
   from_Politic_updatedBy                   Politic[]                   @relation("Politic_updatedBy")
   from_PoliticProgress_createdBy           PoliticProgress[]           @relation("PoliticProgress_createdBy")
   from_PoliticProgress_updatedBy           PoliticProgress[]           @relation("PoliticProgress_updatedBy")
+  from_Lawsuit_createdBy                   Lawsuit[]                   @relation("Lawsuit_createdBy")
+  from_Lawsuit_updatedBy                   Lawsuit[]                   @relation("Lawsuit_updatedBy")
 }
 
 model Post {
@@ -149,7 +153,7 @@ model Election {
   type                         String?
   register_date                String           @default("")
   location                     String           @default("")
-  status                       String           @default("")
+  status                       String?
   createdAt                    DateTime?
   updatedAt                    DateTime?
   createdBy                    User?            @relation("Election_createdBy", fields: [createdById], references: [id])
@@ -157,7 +161,23 @@ model Election {
   updatedBy                    User?            @relation("Election_updatedBy", fields: [updatedById], references: [id])
   updatedById                  Int?             @map("updatedBy")
   from_PersonElection_election PersonElection[] @relation("PersonElection_election")
-  from_Politic_election        Politic[]        @relation("Politic_election")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model ElectionArea {
+  id          Int       @id @default(autoincrement())
+  name        String    @default("")
+  type        String    @default("")
+  description String    @default("")
+  status      String?   @default("active")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("ElectionArea_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("ElectionArea_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
@@ -188,9 +208,9 @@ model Vote {
 model Person {
   id                                        Int                  @id @default(autoincrement())
   name                                      String               @default("")
-  alternative                               String               @default("")
-  other_names                               String               @default("")
-  email                                     String               @default("")
+  alternative                               String?
+  other_names                               String?
+  email                                     String?
   gender                                    String?
   birth_date_year                           Int?
   birth_date_month                          Int?
@@ -198,13 +218,13 @@ model Person {
   death_date_year                           Int?
   death_date_month                          Int?
   death_date_day                            Int?
-  image                                     String               @default("")
-  summary                                   String               @default("")
-  biography                                 String               @default("")
-  national_identity                         String               @default("")
-  contact_details                           String               @default("")
-  links                                     String               @default("")
-  source                                    String               @default("")
+  image                                     String?
+  summary                                   String?
+  biography                                 String?
+  national_identity                         String?
+  contact_details                           String?
+  links                                     String?
+  source                                    String?
   createdAt                                 DateTime?
   updatedAt                                 DateTime?
   createdBy                                 User?                @relation("Person_createdBy", fields: [createdById], references: [id])
@@ -218,7 +238,7 @@ model Person {
   from_PersonPublication_person_id          PersonPublication[]  @relation("PersonPublication_person_id")
   from_PersonRelationship_person_id         PersonRelationship[] @relation("PersonRelationship_person_id")
   from_PersonRelationship_related_person_id PersonRelationship[] @relation("PersonRelationship_related_person_id")
-  from_Politic_person                       Politic[]            @relation("Politic_person")
+  from_Lawsuit_person                       Lawsuit[]            @relation("Lawsuit_person")
 
   @@index([createdById])
   @@index([updatedById])
@@ -250,23 +270,23 @@ model Motion {
 model Organization {
   id                                                     Int                         @id @default(autoincrement())
   name                                                   String                      @default("")
-  alternative                                            String                      @default("")
-  other_names                                            String                      @default("")
-  identifiers                                            String                      @default("")
+  alternative                                            String?
+  other_names                                            String?
+  identifiers                                            String?
   classification                                         String?
-  abstract                                               String                      @default("")
-  description                                            String                      @default("")
+  abstract                                               String?
+  description                                            String?
   founding_date_year                                     Int?
   founding_date_month                                    Int?
   founding_date_day                                      Int?
   dissolution_date_year                                  Int?
   dissolution_date_month                                 Int?
   dissolution_date_day                                   Int?
-  image                                                  String                      @default("")
-  contact_details                                        String                      @default("")
-  links                                                  String                      @default("")
-  address                                                String                      @default("")
-  source                                                 String                      @default("")
+  image                                                  String?
+  contact_details                                        String?
+  links                                                  String?
+  address                                                String?
+  source                                                 String?
   createdAt                                              DateTime?
   updatedAt                                              DateTime?
   createdBy                                              User?                       @relation("Organization_createdBy", fields: [createdById], references: [id])
@@ -279,6 +299,7 @@ model Organization {
   from_OrganizationsElection_organization_id             OrganizationsElection[]     @relation("OrganizationsElection_organization_id")
   from_OrganizationsRelationship_organization_id         OrganizationsRelationship[] @relation("OrganizationsRelationship_organization_id")
   from_OrganizationsRelationship_related_organization_id OrganizationsRelationship[] @relation("OrganizationsRelationship_related_organization_id")
+  from_PersonElection_party                              PersonElection[]            @relation("PersonElection_party")
   from_PersonOrganization_organization_id                PersonOrganization[]        @relation("PersonOrganization_organization_id")
   from_PersonPublication_organization_id                 PersonPublication[]         @relation("PersonPublication_organization_id")
 
@@ -396,14 +417,14 @@ model OrganizationsRelationship {
   organization_idId         Int?          @map("organization_id")
   related_organization_id   Organization? @relation("OrganizationsRelationship_related_organization_id", fields: [related_organization_idId], references: [id])
   related_organization_idId Int?          @map("related_organization_id")
-  relative                  String        @default("")
+  relative                  String?
   start_date_year           Int?
   start_date_month          Int?
   start_date_day            Int?
   end_date_year             Int?
   end_date_month            Int?
   end_date_day              Int?
-  source                    String        @default("")
+  source                    String?
   createdAt                 DateTime?
   updatedAt                 DateTime?
   createdBy                 User?         @relation("OrganizationsRelationship_createdBy", fields: [createdById], references: [id])
@@ -418,29 +439,32 @@ model OrganizationsRelationship {
 }
 
 model PersonElection {
-  id                        Int       @id @default(autoincrement())
-  person_id                 Person?   @relation("PersonElection_person_id", fields: [person_idId], references: [id])
-  person_idId               Int?      @map("person_id")
-  election                  Election? @relation("PersonElection_election", fields: [electionId], references: [id])
-  electionId                Int?      @map("election")
-  party                     String    @default("")
-  legislatoratlarge_number  String    @default("")
-  number                    String    @default("")
-  electoral_district        String    @default("")
-  votes_obtained_number     String    @default("")
-  votes_obtained_percentage String    @default("")
-  elected                   String    @default("")
-  incumbent                 String    @default("")
-  source                    String    @default("")
+  id                        Int           @id @default(autoincrement())
+  person_id                 Person?       @relation("PersonElection_person_id", fields: [person_idId], references: [id])
+  person_idId               Int?          @map("person_id")
+  election                  Election?     @relation("PersonElection_election", fields: [electionId], references: [id])
+  electionId                Int?          @map("election")
+  party                     Organization? @relation("PersonElection_party", fields: [partyId], references: [id])
+  partyId                   Int?          @map("party")
+  legislatoratlarge_number  String        @default("")
+  number                    String        @default("")
+  electoral_district        String        @default("")
+  votes_obtained_number     String        @default("")
+  votes_obtained_percentage String        @default("")
+  elected                   String        @default("")
+  incumbent                 String        @default("")
+  source                    String        @default("")
   createdAt                 DateTime?
   updatedAt                 DateTime?
-  createdBy                 User?     @relation("PersonElection_createdBy", fields: [createdById], references: [id])
-  createdById               Int?      @map("createdBy")
-  updatedBy                 User?     @relation("PersonElection_updatedBy", fields: [updatedById], references: [id])
-  updatedById               Int?      @map("updatedBy")
+  createdBy                 User?         @relation("PersonElection_createdBy", fields: [createdById], references: [id])
+  createdById               Int?          @map("createdBy")
+  updatedBy                 User?         @relation("PersonElection_updatedBy", fields: [updatedById], references: [id])
+  updatedById               Int?          @map("updatedBy")
+  from_Politic_person       Politic[]     @relation("Politic_person")
 
   @@index([person_idId])
   @@index([electionId])
+  @@index([partyId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -451,14 +475,14 @@ model PersonOrganization {
   person_idId       Int?          @map("person_id")
   organization_id   Organization? @relation("PersonOrganization_organization_id", fields: [organization_idId], references: [id])
   organization_idId Int?          @map("organization_id")
-  role              String        @default("")
+  role              String?
   start_date_year   Int?
   start_date_month  Int?
   start_date_day    Int?
   end_date_year     Int?
   end_date_month    Int?
   end_date_day      Int?
-  source            String        @default("")
+  source            String?
   createdAt         DateTime?
   updatedAt         DateTime?
   createdBy         User?         @relation("PersonOrganization_createdBy", fields: [createdById], references: [id])
@@ -528,12 +552,11 @@ model PersonRelationship {
 
 model Politic {
   id                           Int               @id @default(autoincrement())
-  person                       Person?           @relation("Politic_person", fields: [personId], references: [id])
+  person                       PersonElection?   @relation("Politic_person", fields: [personId], references: [id])
   personId                     Int?              @map("person")
-  election                     Election?         @relation("Politic_election", fields: [electionId], references: [id])
-  electionId                   Int?              @map("election")
   desc                         String            @default("")
   source                       String            @default("")
+  contributer                  String            @default("")
   progress                     PoliticProgress[] @relation("Politic_progress")
   createdAt                    DateTime?
   updatedAt                    DateTime?
@@ -544,7 +567,6 @@ model Politic {
   from_PoliticProgress_politic PoliticProgress[] @relation("PoliticProgress_politic")
 
   @@index([personId])
-  @@index([electionId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -555,6 +577,7 @@ model PoliticProgress {
   politicId             Int?      @map("politic")
   progress              String    @default("")
   source                String    @default("")
+  contributer           String    @default("")
   createdAt             DateTime?
   updatedAt             DateTime?
   createdBy             User?     @relation("PoliticProgress_createdBy", fields: [createdById], references: [id])
@@ -564,6 +587,29 @@ model PoliticProgress {
   from_Politic_progress Politic[] @relation("Politic_progress")
 
   @@index([politicId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Lawsuit {
+  id            Int       @id @default(autoincrement())
+  person        Person?   @relation("Lawsuit_person", fields: [personId], references: [id])
+  personId      Int?      @map("person")
+  crime_year    String    @default("")
+  desc          String    @default("")
+  source        String    @default("")
+  contributer   String    @default("")
+  judge_number  String    @default("")
+  judge_desc    String    @default("")
+  judge_content String    @default("")
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Lawsuit_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Lawsuit_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([personId])
   @@index([createdById])
   @@index([updatedById])
 }

@@ -40,14 +40,24 @@ const listConfigurations = list({
                 id
                 title
                 content
+                sortOrder
                 createdAt
                 updatedAt
               }
             `,
           })
+
+          const items = list?.items
+
+          items?.sort(
+            (i1: { sortOrder: number }, i2: { sortOrder: number }) => {
+              return i1?.sortOrder - i2?.sortOrder
+            }
+          )
+
           return embedCodeGen.buildEmbeddedCode(
             'react-qa-list',
-            { questions: list.items },
+            { questions: items },
             embedCodeWebpackAssets
           )
         },

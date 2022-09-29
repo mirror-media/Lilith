@@ -1,6 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { text } from '@keystone-6/core/fields'
+import { integer, text } from '@keystone-6/core/fields'
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
@@ -19,6 +19,9 @@ const listConfigurations = list({
         'info-box',
         'link',
       ],
+    }),
+    sortOrder: integer({
+      label: '優先順序',
     }),
   },
   access: {

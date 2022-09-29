@@ -127,6 +127,7 @@ type LiveblogItem {
   name: JSON
   boost: Boolean
   external: String
+  externalCoverPhoto: String
   liveblog: Liveblog
   tags: Tag
   apiData: JSON
@@ -2520,6 +2521,7 @@ type QAItem {
   id: ID!
   title: String
   content: JSON
+  sortOrder: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2536,6 +2538,7 @@ input QAItemWhereInput {
   NOT: [QAItemWhereInput!]
   id: IDFilter
   title: StringFilter
+  sortOrder: IntNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2545,6 +2548,7 @@ input QAItemWhereInput {
 input QAItemOrderByInput {
   id: OrderDirection
   title: OrderDirection
+  sortOrder: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2552,6 +2556,7 @@ input QAItemOrderByInput {
 input QAItemUpdateInput {
   title: String
   content: JSON
+  sortOrder: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2566,6 +2571,7 @@ input QAItemUpdateArgs {
 input QAItemCreateInput {
   title: String
   content: JSON
+  sortOrder: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
