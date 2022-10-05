@@ -18,6 +18,8 @@ import EmbedCode from './EmbedCode'
 import Karaoke from './Karaoke'
 import IndexItem from './IndexItem'
 import InlineIndex from './InlineIndex'
+import QAList from './QAList'
+import QAItem from './QAItem'
 
 export const listDefinition = {
   User,
@@ -40,4 +42,6 @@ export const listDefinition = {
   InlineIndex,
   IndexItem,
   Karaoke,
+  QAList,
+  QAItem,
 }

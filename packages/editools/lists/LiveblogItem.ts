@@ -6,8 +6,12 @@ import {
   select,
   json,
   checkbox,
+  virtual,
 } from '@keystone-6/core/fields'
 import { saveLiveblogJSON } from './utils'
+import { graphql } from '@graphql-ts/schema'
+import axios from 'axios'
+import cheerio from 'cheerio'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -53,7 +57,7 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
-    type: select({                                                                                                                                                                                                                 
+    type: select({
       options: [
         { label: '外連', value: 'external' },
         { label: '文章', value: 'article' },
@@ -80,6 +84,31 @@ const listConfigurations = list({
     }),
     external: text({
       label: '外連連結',
+    }),
+    externalCoverPhoto: virtual({
+      label: '外連連結首圖',
+      field: graphql.field({
+        type: graphql.String,
+        async resolve(item: Record<string, unknown>) {
+          const { external } = item || {}
+          if (external && typeof external === 'string') {
+            try {
+              const result = await axios.get(external)
+              if (result?.data) {
+                const $ = cheerio.load(result.data)
+                return $('meta[property="og:image"]').attr('content')
+              }
+            } catch (error) {
+              console.log(
+                JSON.stringify({ severity: 'ERROR', message: error.stack })
+              )
+              return ''
+            }
+          } else {
+            return ''
+          }
+        },
+      }),
     }),
     liveblog: relationship({
       ref: 'Liveblog.liveblog_items',

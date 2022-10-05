@@ -1,11 +1,9 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { GcsFileAdapter } from '../utils/GcsFileAdapter'
 import { list } from '@keystone-6/core'
-import { text } from '@keystone-6/core/fields'
+import { text, relationship, file, json } from '@keystone-6/core/fields'
 
 const { admin, allowRoles, moderator } = utils.accessControl
-
-const gcsFileAdapter = new GcsFileAdapter('video')
 
 const listConfigurations = list({
   fields: {
@@ -13,61 +11,39 @@ const listConfigurations = list({
       label: '標題',
       validation: { isRequired: true },
     }),
-    file: customFields.file({
+    file: file({
       label: '檔案',
-      customConfig: {
-        fileType: 'video',
-      },
     }),
-    description: text({
-      label: '描述',
+    urlOriginal: text({
       ui: {
-        displayMode: 'textarea',
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+        listView: {
+          fieldMode: 'read',
+        },
       },
     }),
-    // todo
-    tags: text({
+    heroImage: relationship({
+      ref: 'Photo',
+      label: '首圖',
+    }),
+    content: customFields.richTextEditor({
+      label: '敘述',
+    }),
+    tags: relationship({
       label: '標籤',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
-      },
+      ref: 'Tag',
+      many: true,
     }),
-    meta: text({
-      label: '中繼資料',
+    apiData: json({
+      label: '資料庫使用',
       ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
-      },
-    }),
-    url: text({
-      label: '檔案網址',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
-      },
-    }),
-    duration: text({
-      label: '長度（秒）',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
   },
@@ -80,17 +56,15 @@ const listConfigurations = list({
       delete: allowRoles(admin),
     },
   },
-
   hooks: {
-    resolveInput: async ({ inputData, item, resolvedData }) => {
-      gcsFileAdapter.startFileProcessingFlow(resolvedData, item, inputData)
-
-      return resolvedData
-    },
-    beforeOperation: async ({ operation, item }) => {
-      if (operation === 'delete' && item.file_filename) {
-        gcsFileAdapter.startDeleteProcess(`${item.file_filename}`)
+    resolveInput: async ({ resolvedData }) => {
+      const { content } = resolvedData
+      if (content) {
+        resolvedData.apiData = customFields.draftConverter
+          .convertToApiData(content)
+          .toJS()
       }
+      return resolvedData
     },
   },
 })

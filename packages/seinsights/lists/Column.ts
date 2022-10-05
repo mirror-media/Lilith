@@ -1,7 +1,7 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { text, relationship, select, json } from '@keystone-6/core/fields'
-const { allowRoles, admin, moderator, editor } = utils.accessControl
+const { allowRoles, admin, moderator } = utils.accessControl
 
 enum ColumnType {
   Trend = 'trend',
@@ -12,7 +12,11 @@ enum ColumnType {
 const listConfigurations = list({
   fields: {
     name: text({
-      label: '姓名',
+      label: '作家姓名',
+      validation: { isRequired: true },
+    }),
+    columnName: text({
+      label: '專欄姓名',
       validation: { isRequired: true },
     }),
     type: select({
@@ -29,7 +33,7 @@ const listConfigurations = list({
           fieldMode: 'read',
         },
       },
-      validation: { isRequired: true },
+      // validation: { isRequired: true },
     }),
     profile_photo: customFields.relationship({
       label: '作者頭貼',
@@ -86,7 +90,8 @@ const listConfigurations = list({
     operation: {
       query: () => true,
       // query: allowRoles(admin, moderator, editor),
-      update: allowRoles(admin, moderator),
+      update: () => true,
+      // update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
     },

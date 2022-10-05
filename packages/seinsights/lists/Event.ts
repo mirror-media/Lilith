@@ -95,14 +95,24 @@ const listConfigurations = list({
       // },
     }),
     section: relationship({
-      label: '關注領域',
+      label: '主分類',
       ref: 'Section.events',
       ui: {
         displayMode: 'select',
         hideCreate: true,
         labelField: 'name',
       },
-      many: false,
+      many: true,
+    }),
+    category: relationship({
+      label: '子分類',
+      ref: 'Category.events',
+      ui: {
+        displayMode: 'select',
+        hideCreate: true,
+        labelField: 'name',
+      },
+      many: true,
     }),
     heroImage: customFields.relationship({
       label: '活動首圖',
@@ -129,20 +139,6 @@ const listConfigurations = list({
     }),
     event_end: timestamp({
       label: '結束時間',
-    }),
-    isTop: checkbox({
-      label: '是否置頂（呈現於列表頁）',
-    }),
-    bannaerImage: customFields.relationship({
-      label: 'Banner圖（呈現於列表頁）',
-      ref: 'Photo',
-      ui: {
-        hideCreate: true,
-      },
-      customConfig: {
-        isImage: true,
-      },
-      many: false,
     }),
     tags: relationship({
       label: '標籤',

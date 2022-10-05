@@ -3,6 +3,7 @@ import User from './User'
 import Area from './Area'
 import Event from './Event'
 import Election from './Election'
+import ElectionArea from './ElectionArea'
 import Person from './Person'
 import Motion from './Motion'
 import Count from './Count'
@@ -19,6 +20,7 @@ import PersonPublication from './PersonPublication'
 import PersonRelationship from './PersonRelationship'
 import Politic from './Politic'
 import PoliticProgress from './PoliticProgress'
+import Lawsuit from './Lawsuit'
 
 
 export const listDefinition = {
@@ -27,6 +29,7 @@ export const listDefinition = {
   Area,
   Event,
   Election,
+  ElectionArea,
   Vote,
   Person,
   Motion,
@@ -43,4 +46,5 @@ export const listDefinition = {
   PersonRelationship,
   Politic,
   PoliticProgress,
+  Lawsuit,
 }

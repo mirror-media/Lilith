@@ -85,6 +85,9 @@ export default withAuth(
         // Proxy requests with `/story/id` url path to preview nuxt server
         app.get('/story/:id', authenticationMw, previewProxyMiddleware)
 
+        // Proxy requests with `/project/id` url path to preview nuxt server
+        app.get('/project/:id', authenticationMw, previewProxyMiddleware)
+
         // Proxy requests with `/event/:slug` url path to preview nuxt server
         app.get('/event/:slug', authenticationMw, previewProxyMiddleware)
 

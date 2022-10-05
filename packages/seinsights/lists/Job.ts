@@ -96,14 +96,24 @@ const listConfigurations = list({
       // },
     }),
     section: relationship({
-      label: '關注領域',
+      label: '主分類',
       ref: 'Section.jobs',
       ui: {
         displayMode: 'select',
         hideCreate: true,
         labelField: 'name',
       },
-      many: false,
+      many: true,
+    }),
+    category: relationship({
+      label: '子分類',
+      ref: 'Category.jobs',
+      ui: {
+        displayMode: 'select',
+        hideCreate: true,
+        labelField: 'name',
+      },
+      many: true,
     }),
     company: text({
       label: '公司',
@@ -169,6 +179,7 @@ const listConfigurations = list({
 
   access: {
     operation: {
+      query: () => true,
       update: () => true,
       // update: allowRoles(admin, moderator, editor),
       create: allowRoles(admin, moderator, editor),

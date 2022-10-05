@@ -488,7 +488,11 @@ export const TableBlock = (props: TableBlockProps) => {
   )
 }
 
-export function TableButton(props) {
+export function TableButton(props: {
+  editorState: EditorState
+  onChange: (editorState: EditorState) => void
+  className: string
+}) {
   const { editorState, onChange, className } = props
 
   const onClick = () => {

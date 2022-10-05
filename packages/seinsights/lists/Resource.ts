@@ -51,14 +51,24 @@ const listConfigurations = list({
       // },
     }),
     section: relationship({
-      label: '關注領域',
+      label: '主分類',
       ref: 'Section.resources',
       ui: {
         displayMode: 'select',
         hideCreate: true,
         labelField: 'name',
       },
-      many: false,
+      many: true,
+    }),
+    category: relationship({
+      label: '子分類',
+      ref: 'Category.resources',
+      ui: {
+        displayMode: 'select',
+        hideCreate: true,
+        labelField: 'name',
+      },
+      many: true,
     }),
     profile_photo: customFields.relationship({
       label: '企業頭貼',

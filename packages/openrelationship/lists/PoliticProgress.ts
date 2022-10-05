@@ -13,7 +13,7 @@ const {
 const listConfigurations = list ({
   fields: {
     politic: relationship({
-      label: '政見',
+      label: '候選人政見',
       many: false,
       ref: 'Politic',
     }),
