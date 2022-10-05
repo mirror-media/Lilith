@@ -1,6 +1,6 @@
 import Post from './Post'
 import Tag from './Tag'
-import PostCategory from './PostCategory'
+import Category from './Category'
 import Event from './Event'
 import Audio from './Audio'
 import Contact from './Contact'
@@ -17,18 +17,17 @@ import External from './External'
 export const listDefinition = {
   Post,
   EditorChoice,
-  Topic,
-  Magazine,
-  Photo: Image,
-  Contact,
-  Video,
-  Section,
-  AudioFile: Audio,
-  External,
-  Tag,
-  PostCategory,
   Event,
   External,
+  Tag,
+  Topic,
+  Magazine,
+  AudioFile: Audio,
+  Photo: Image,
+  Video,
+  Section,
+  Category,
   Partner,
+  Contact,
   User,
 }

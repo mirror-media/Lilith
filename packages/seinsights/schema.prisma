@@ -36,21 +36,26 @@ model Banner {
 }
 
 model Category {
-  id          Int                @id @default(autoincrement())
-  name        String             @default("")
-  order       Int?               @unique
-  status      CategoryStatusType
-  heroImage   Photo?             @relation("Category_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?               @map("heroImage")
-  section     Section?           @relation("Category_section", fields: [sectionId], references: [id])
-  sectionId   Int?               @map("section")
-  posts       Post[]             @relation("Post_category")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?              @relation("Category_createdBy", fields: [createdById], references: [id])
-  createdById Int?               @map("createdBy")
-  updatedBy   User?              @relation("Category_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?               @map("updatedBy")
+  id              Int                @id @default(autoincrement())
+  name            String             @default("")
+  slug            String             @unique @default("")
+  order           Int?               @unique
+  status          CategoryStatusType
+  heroImage       Photo?             @relation("Category_heroImage", fields: [heroImageId], references: [id])
+  heroImageId     Int?               @map("heroImage")
+  section         Section?           @relation("Category_section", fields: [sectionId], references: [id])
+  sectionId       Int?               @map("section")
+  posts           Post[]             @relation("Category_posts")
+  specialfeatures Specialfeature[]   @relation("Category_specialfeatures")
+  events          Event[]            @relation("Category_events")
+  jobs            Job[]              @relation("Category_jobs")
+  resources       Resource[]         @relation("Category_resources")
+  createdAt       DateTime?
+  updatedAt       DateTime?
+  createdBy       User?              @relation("Category_createdBy", fields: [createdById], references: [id])
+  createdById     Int?               @map("createdBy")
+  updatedBy       User?              @relation("Category_updatedBy", fields: [updatedById], references: [id])
+  updatedById     Int?               @map("updatedBy")
 
   @@index([heroImageId])
   @@index([sectionId])
@@ -61,7 +66,8 @@ model Category {
 model Column {
   id              Int              @id @default(autoincrement())
   name            String           @default("")
-  type            ColumnTypeType
+  columnName      String           @default("")
+  type            ColumnTypeType?
   profile_photo   Photo?           @relation("Column_profile_photo", fields: [profile_photoId], references: [id])
   profile_photoId Int?             @map("profile_photo")
   intro           Json?
@@ -101,8 +107,8 @@ model Event {
   status                   EventStatusType       @default(draft)
   type                     EventTypeType?
   region                   EventRegionType?
-  section                  Section?              @relation("Event_section", fields: [sectionId], references: [id])
-  sectionId                Int?                  @map("section")
+  section                  Section[]             @relation("Event_section")
+  category                 Category[]            @relation("Category_events")
   heroImage                Photo?                @relation("Event_heroImage", fields: [heroImageId], references: [id])
   heroImageId              Int?                  @map("heroImage")
   content                  Json?
@@ -110,9 +116,6 @@ model Event {
   organization             String                @default("")
   event_start              DateTime?
   event_end                DateTime?
-  isTop                    Boolean               @default(false)
-  bannaerImage             Photo?                @relation("Event_bannaerImage", fields: [bannaerImageId], references: [id])
-  bannaerImageId           Int?                  @map("bannaerImage")
   tags                     Tag[]                 @relation("Event_tags")
   relatedEvents            Event[]               @relation("Event_relatedEvents")
   apiData                  Json?
@@ -124,9 +127,7 @@ model Event {
   updatedById              Int?                  @map("updatedBy")
   from_Event_relatedEvents Event[]               @relation("Event_relatedEvents")
 
-  @@index([sectionId])
   @@index([heroImageId])
-  @@index([bannaerImageId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -138,8 +139,8 @@ model Job {
   status                  JobStatusType     @default(draft)
   type                    JobTypeType?
   region                  JobRegionType?
-  section                 Section?          @relation("Job_section", fields: [sectionId], references: [id])
-  sectionId               Int?              @map("section")
+  section                 Section[]         @relation("Job_section")
+  category                Category[]        @relation("Category_jobs")
   company                 String            @default("")
   location                String            @default("")
   official_website        String            @default("")
@@ -158,7 +159,6 @@ model Job {
   updatedById             Int?              @map("updatedBy")
   from_Job_relatedJobs    Job[]             @relation("Job_relatedJobs")
 
-  @@index([sectionId])
   @@index([profile_photoId])
   @@index([createdById])
   @@index([updatedById])
@@ -189,13 +189,16 @@ model Photo {
   from_Category_heroImage           Category[]           @relation("Category_heroImage")
   from_Column_profile_photo         Column[]             @relation("Column_profile_photo")
   from_Event_heroImage              Event[]              @relation("Event_heroImage")
-  from_Event_bannaerImage           Event[]              @relation("Event_bannaerImage")
   from_Job_profile_photo            Job[]                @relation("Job_profile_photo")
   from_Post_heroImage               Post[]               @relation("Post_heroImage")
   from_Resource_profile_photo       Resource[]           @relation("Resource_profile_photo")
   from_Section_heroImage            Section[]            @relation("Section_heroImage")
   from_Specialfeature_heroImage     Specialfeature[]     @relation("Specialfeature_heroImage")
   from_SpecialfeatureList_heroImage SpecialfeatureList[] @relation("SpecialfeatureList_heroImage")
+  from_EventBanner_heroImage        EventBanner[]        @relation("EventBanner_heroImage")
+  from_HomepageBanner_heroImage     HomepageBanner[]     @relation("HomepageBanner_heroImage")
+  from_JobBanner_heroImage          JobBanner[]          @relation("JobBanner_heroImage")
+  from_ResourceBanner_heroImage     ResourceBanner[]     @relation("ResourceBanner_heroImage")
 
   @@index([createdById])
   @@index([updatedById])
@@ -205,22 +208,20 @@ model Photo {
 model Post {
   id                               Int              @id @default(autoincrement())
   title                            String           @default("")
-  subtitle                         String           @default("")
   weight                           Int?             @default(85)
+  storyType                        String?
   status                           PostStatusType?  @default(draft)
   publishDate                      DateTime?
-  section                          Section?         @relation("Post_section", fields: [sectionId], references: [id])
-  sectionId                        Int?             @map("section")
-  category                         Category?        @relation("Post_category", fields: [categoryId], references: [id])
-  categoryId                       Int?             @map("category")
-  columns                          Column[]         @relation("Column_posts")
-  region                           String?
   heroImage                        Photo?           @relation("Post_heroImage", fields: [heroImageId], references: [id])
   heroImageId                      Int?             @map("heroImage")
   heroCaption                      String           @default("")
   heroCreditUrl                    String           @default("")
   brief                            Json?
   content                          Json?
+  columns                          Column[]         @relation("Column_posts")
+  section                          Section[]        @relation("Post_section")
+  category                         Category[]       @relation("Category_posts")
+  region                           String?
   relatedPosts                     Post[]           @relation("Post_relatedPosts")
   tags                             Tag[]            @relation("Post_tags")
   oldCategory                      String?
@@ -236,8 +237,6 @@ model Post {
   from_Post_relatedPosts           Post[]           @relation("Post_relatedPosts")
   from_Specialfeature_relatedPosts Specialfeature[] @relation("Specialfeature_relatedPosts")
 
-  @@index([sectionId])
-  @@index([categoryId])
   @@index([heroImageId])
   @@index([createdById])
   @@index([updatedById])
@@ -249,8 +248,8 @@ model Resource {
   slogan                         String              @default("")
   status                         ResourceStatusType  @default(draft)
   region                         ResourceRegionType?
-  section                        Section?            @relation("Resource_section", fields: [sectionId], references: [id])
-  sectionId                      Int?                @map("section")
+  section                        Section[]           @relation("Resource_section")
+  category                       Category[]          @relation("Category_resources")
   profile_photo                  Photo?              @relation("Resource_profile_photo", fields: [profile_photoId], references: [id])
   profile_photoId                Int?                @map("profile_photo")
   content                        Json?
@@ -268,31 +267,33 @@ model Resource {
   updatedById                    Int?                @map("updatedBy")
   from_Resource_relatedResources Resource[]          @relation("Resource_relatedResources")
 
-  @@index([sectionId])
   @@index([profile_photoId])
   @@index([createdById])
   @@index([updatedById])
 }
 
 model Section {
-  id          Int               @id @default(autoincrement())
-  name        String            @default("")
-  order       Int?              @unique
-  status      SectionStatusType
-  isPresent   Boolean           @default(true)
-  heroImage   Photo?            @relation("Section_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?              @map("heroImage")
-  category    Category[]        @relation("Category_section")
-  posts       Post[]            @relation("Post_section")
-  jobs        Job[]             @relation("Job_section")
-  events      Event[]           @relation("Event_section")
-  resources   Resource[]        @relation("Resource_section")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?             @relation("Section_createdBy", fields: [createdById], references: [id])
-  createdById Int?              @map("createdBy")
-  updatedBy   User?             @relation("Section_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?              @map("updatedBy")
+  id                  Int                  @id @default(autoincrement())
+  name                String               @default("")
+  slug                String               @unique @default("")
+  order               Int?                 @unique
+  status              SectionStatusType
+  isPresent           Boolean              @default(true)
+  heroImage           Photo?               @relation("Section_heroImage", fields: [heroImageId], references: [id])
+  heroImageId         Int?                 @map("heroImage")
+  category            Category[]           @relation("Category_section")
+  posts               Post[]               @relation("Post_section")
+  specialfeatures     Specialfeature[]     @relation("Section_specialfeatures")
+  events              Event[]              @relation("Event_section")
+  jobs                Job[]                @relation("Job_section")
+  resources           Resource[]           @relation("Resource_section")
+  specialfeatureLists SpecialfeatureList[] @relation("Section_specialfeatureLists")
+  createdAt           DateTime?
+  updatedAt           DateTime?
+  createdBy           User?                @relation("Section_createdBy", fields: [createdById], references: [id])
+  createdById         Int?                 @map("createdBy")
+  updatedBy           User?                @relation("Section_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?                 @map("updatedBy")
 
   @@index([heroImageId])
   @@index([createdById])
@@ -300,28 +301,34 @@ model Section {
 }
 
 model Specialfeature {
-  id                               Int                       @id @default(autoincrement())
-  title                            String                    @default("")
-  subtitle                         String                    @default("")
-  weight                           Int?                      @default(85)
-  status                           SpecialfeatureStatusType? @default(draft)
-  publishDate                      DateTime?
-  content                          Json?
-  columns                          Column[]                  @relation("Column_specialfeatures")
-  heroImage                        Photo?                    @relation("Specialfeature_heroImage", fields: [heroImageId], references: [id])
-  heroImageId                      Int?                      @map("heroImage")
-  heroCaption                      String                    @default("")
-  relatedPosts                     Post[]                    @relation("Specialfeature_relatedPosts")
-  specialfeatureLists              SpecialfeatureList[]      @relation("Specialfeature_specialfeatureLists")
-  tags                             Tag[]                     @relation("Specialfeature_tags")
-  apiData                          Json?
-  createdAt                        DateTime?
-  updatedAt                        DateTime?
-  createdBy                        User?                     @relation("Specialfeature_createdBy", fields: [createdById], references: [id])
-  createdById                      Int?                      @map("createdBy")
-  updatedBy                        User?                     @relation("Specialfeature_updatedBy", fields: [updatedById], references: [id])
-  updatedById                      Int?                      @map("updatedBy")
-  from_EditorChoice_specialfeature EditorChoice[]            @relation("EditorChoice_specialfeature")
+  id                                             Int                          @id @default(autoincrement())
+  title                                          String                       @default("")
+  subtitle                                       String                       @default("")
+  weight                                         Int?                         @default(85)
+  status                                         SpecialfeatureStatusType?    @default(draft)
+  publishDate                                    DateTime?
+  heroImage                                      Photo?                       @relation("Specialfeature_heroImage", fields: [heroImageId], references: [id])
+  heroImageId                                    Int?                         @map("heroImage")
+  heroCaption                                    String                       @default("")
+  heroCreditUrl                                  String                       @default("")
+  content                                        Json?
+  columns                                        Column[]                     @relation("Column_specialfeatures")
+  section                                        Section[]                    @relation("Section_specialfeatures")
+  category                                       Category[]                   @relation("Category_specialfeatures")
+  region                                         String?
+  relatedPosts                                   Post[]                       @relation("Specialfeature_relatedPosts")
+  specialfeatureLists                            SpecialfeatureList[]         @relation("Specialfeature_specialfeatureLists")
+  tags                                           Tag[]                        @relation("Specialfeature_tags")
+  apiData                                        Json?
+  createdAt                                      DateTime?
+  updatedAt                                      DateTime?
+  createdBy                                      User?                        @relation("Specialfeature_createdBy", fields: [createdById], references: [id])
+  createdById                                    Int?                         @map("createdBy")
+  updatedBy                                      User?                        @relation("Specialfeature_updatedBy", fields: [updatedById], references: [id])
+  updatedById                                    Int?                         @map("updatedBy")
+  from_EditorChoice_specialfeature               EditorChoice[]               @relation("EditorChoice_specialfeature")
+  from_SpecialfeatureList_topSpecialfeature      SpecialfeatureList[]         @relation("SpecialfeatureList_topSpecialfeature")
+  from_SpecialfeatureEditorChoice_specialfeature SpecialfeatureEditorChoice[] @relation("SpecialfeatureEditorChoice_specialfeature")
 
   @@index([heroImageId])
   @@index([createdById])
@@ -329,25 +336,29 @@ model Specialfeature {
 }
 
 model SpecialfeatureList {
-  id              Int                           @id @default(autoincrement())
-  title           String                        @default("")
-  weight          Int?                          @default(85)
-  status          SpecialfeatureListStatusType? @default(draft)
-  publishDate     DateTime?
-  heroImage       Photo?                        @relation("SpecialfeatureList_heroImage", fields: [heroImageId], references: [id])
-  heroImageId     Int?                          @map("heroImage")
-  content         Json?
-  specialfeatures Specialfeature[]              @relation("Specialfeature_specialfeatureLists")
-  url             String                        @default("")
-  apiData         Json?
-  createdAt       DateTime?
-  updatedAt       DateTime?
-  createdBy       User?                         @relation("SpecialfeatureList_createdBy", fields: [createdById], references: [id])
-  createdById     Int?                          @map("createdBy")
-  updatedBy       User?                         @relation("SpecialfeatureList_updatedBy", fields: [updatedById], references: [id])
-  updatedById     Int?                          @map("updatedBy")
+  id                  Int                           @id @default(autoincrement())
+  title               String                        @default("")
+  weight              Int?                          @default(85)
+  status              SpecialfeatureListStatusType? @default(draft)
+  publishDate         DateTime?
+  heroImage           Photo?                        @relation("SpecialfeatureList_heroImage", fields: [heroImageId], references: [id])
+  heroImageId         Int?                          @map("heroImage")
+  content             Json?
+  topSpecialfeature   Specialfeature?               @relation("SpecialfeatureList_topSpecialfeature", fields: [topSpecialfeatureId], references: [id])
+  topSpecialfeatureId Int?                          @map("topSpecialfeature")
+  specialfeatures     Specialfeature[]              @relation("Specialfeature_specialfeatureLists")
+  url                 String                        @default("")
+  section             Section[]                     @relation("Section_specialfeatureLists")
+  apiData             Json?
+  createdAt           DateTime?
+  updatedAt           DateTime?
+  createdBy           User?                         @relation("SpecialfeatureList_createdBy", fields: [createdById], references: [id])
+  createdById         Int?                          @map("createdBy")
+  updatedBy           User?                         @relation("SpecialfeatureList_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?                          @map("updatedBy")
 
   @@index([heroImageId])
+  @@index([topSpecialfeatureId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -371,35 +382,185 @@ model Tag {
 }
 
 model User {
-  id                                Int                  @id @default(autoincrement())
-  email                             String               @unique @default("")
-  password                          String
-  name                              String               @default("")
-  role                              String
-  from_Banner_createdBy             Banner[]             @relation("Banner_createdBy")
-  from_Banner_updatedBy             Banner[]             @relation("Banner_updatedBy")
-  from_Category_createdBy           Category[]           @relation("Category_createdBy")
-  from_Category_updatedBy           Category[]           @relation("Category_updatedBy")
-  from_EditorChoice_createdBy       EditorChoice[]       @relation("EditorChoice_createdBy")
-  from_EditorChoice_updatedBy       EditorChoice[]       @relation("EditorChoice_updatedBy")
-  from_Event_createdBy              Event[]              @relation("Event_createdBy")
-  from_Event_updatedBy              Event[]              @relation("Event_updatedBy")
-  from_Job_createdBy                Job[]                @relation("Job_createdBy")
-  from_Job_updatedBy                Job[]                @relation("Job_updatedBy")
-  from_Photo_createdBy              Photo[]              @relation("Photo_createdBy")
-  from_Photo_updatedBy              Photo[]              @relation("Photo_updatedBy")
-  from_Post_createdBy               Post[]               @relation("Post_createdBy")
-  from_Post_updatedBy               Post[]               @relation("Post_updatedBy")
-  from_Resource_createdBy           Resource[]           @relation("Resource_createdBy")
-  from_Resource_updatedBy           Resource[]           @relation("Resource_updatedBy")
-  from_Section_createdBy            Section[]            @relation("Section_createdBy")
-  from_Section_updatedBy            Section[]            @relation("Section_updatedBy")
-  from_Specialfeature_createdBy     Specialfeature[]     @relation("Specialfeature_createdBy")
-  from_Specialfeature_updatedBy     Specialfeature[]     @relation("Specialfeature_updatedBy")
-  from_SpecialfeatureList_createdBy SpecialfeatureList[] @relation("SpecialfeatureList_createdBy")
-  from_SpecialfeatureList_updatedBy SpecialfeatureList[] @relation("SpecialfeatureList_updatedBy")
-  from_Tag_createdBy                Tag[]                @relation("Tag_createdBy")
-  from_Tag_updatedBy                Tag[]                @relation("Tag_updatedBy")
+  id                                        Int                          @id @default(autoincrement())
+  email                                     String                       @unique @default("")
+  password                                  String
+  name                                      String                       @default("")
+  role                                      String
+  from_Banner_createdBy                     Banner[]                     @relation("Banner_createdBy")
+  from_Banner_updatedBy                     Banner[]                     @relation("Banner_updatedBy")
+  from_Category_createdBy                   Category[]                   @relation("Category_createdBy")
+  from_Category_updatedBy                   Category[]                   @relation("Category_updatedBy")
+  from_EditorChoice_createdBy               EditorChoice[]               @relation("EditorChoice_createdBy")
+  from_EditorChoice_updatedBy               EditorChoice[]               @relation("EditorChoice_updatedBy")
+  from_Event_createdBy                      Event[]                      @relation("Event_createdBy")
+  from_Event_updatedBy                      Event[]                      @relation("Event_updatedBy")
+  from_Job_createdBy                        Job[]                        @relation("Job_createdBy")
+  from_Job_updatedBy                        Job[]                        @relation("Job_updatedBy")
+  from_Photo_createdBy                      Photo[]                      @relation("Photo_createdBy")
+  from_Photo_updatedBy                      Photo[]                      @relation("Photo_updatedBy")
+  from_Post_createdBy                       Post[]                       @relation("Post_createdBy")
+  from_Post_updatedBy                       Post[]                       @relation("Post_updatedBy")
+  from_Resource_createdBy                   Resource[]                   @relation("Resource_createdBy")
+  from_Resource_updatedBy                   Resource[]                   @relation("Resource_updatedBy")
+  from_Section_createdBy                    Section[]                    @relation("Section_createdBy")
+  from_Section_updatedBy                    Section[]                    @relation("Section_updatedBy")
+  from_Specialfeature_createdBy             Specialfeature[]             @relation("Specialfeature_createdBy")
+  from_Specialfeature_updatedBy             Specialfeature[]             @relation("Specialfeature_updatedBy")
+  from_SpecialfeatureList_createdBy         SpecialfeatureList[]         @relation("SpecialfeatureList_createdBy")
+  from_SpecialfeatureList_updatedBy         SpecialfeatureList[]         @relation("SpecialfeatureList_updatedBy")
+  from_Tag_createdBy                        Tag[]                        @relation("Tag_createdBy")
+  from_Tag_updatedBy                        Tag[]                        @relation("Tag_updatedBy")
+  from_About_createdBy                      About[]                      @relation("About_createdBy")
+  from_About_updatedBy                      About[]                      @relation("About_updatedBy")
+  from_EventBanner_createdBy                EventBanner[]                @relation("EventBanner_createdBy")
+  from_EventBanner_updatedBy                EventBanner[]                @relation("EventBanner_updatedBy")
+  from_HomepageBanner_createdBy             HomepageBanner[]             @relation("HomepageBanner_createdBy")
+  from_HomepageBanner_updatedBy             HomepageBanner[]             @relation("HomepageBanner_updatedBy")
+  from_JobBanner_createdBy                  JobBanner[]                  @relation("JobBanner_createdBy")
+  from_JobBanner_updatedBy                  JobBanner[]                  @relation("JobBanner_updatedBy")
+  from_Menubar_createdBy                    Menubar[]                    @relation("Menubar_createdBy")
+  from_Menubar_updatedBy                    Menubar[]                    @relation("Menubar_updatedBy")
+  from_ResourceBanner_createdBy             ResourceBanner[]             @relation("ResourceBanner_createdBy")
+  from_ResourceBanner_updatedBy             ResourceBanner[]             @relation("ResourceBanner_updatedBy")
+  from_SpecialfeatureEditorChoice_createdBy SpecialfeatureEditorChoice[] @relation("SpecialfeatureEditorChoice_createdBy")
+  from_SpecialfeatureEditorChoice_updatedBy SpecialfeatureEditorChoice[] @relation("SpecialfeatureEditorChoice_updatedBy")
+}
+
+model About {
+  id          Int       @id @default(autoincrement())
+  aboutUs     Json?
+  apiData     Json?
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("About_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("About_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model EventBanner {
+  id          Int                    @id @default(autoincrement())
+  name        String                 @default("")
+  order       Int?                   @unique
+  heroImage   Photo?                 @relation("EventBanner_heroImage", fields: [heroImageId], references: [id])
+  heroImageId Int?                   @map("heroImage")
+  status      EventBannerStatusType? @default(draft)
+  publishDate DateTime?
+  url         String                 @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?                  @relation("EventBanner_createdBy", fields: [createdById], references: [id])
+  createdById Int?                   @map("createdBy")
+  updatedBy   User?                  @relation("EventBanner_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?                   @map("updatedBy")
+
+  @@index([heroImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model HomepageBanner {
+  id          Int                       @id @default(autoincrement())
+  name        String                    @default("")
+  order       Int?                      @unique
+  heroImage   Photo?                    @relation("HomepageBanner_heroImage", fields: [heroImageId], references: [id])
+  heroImageId Int?                      @map("heroImage")
+  status      HomepageBannerStatusType? @default(draft)
+  publishDate DateTime?
+  url         String                    @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?                     @relation("HomepageBanner_createdBy", fields: [createdById], references: [id])
+  createdById Int?                      @map("createdBy")
+  updatedBy   User?                     @relation("HomepageBanner_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?                      @map("updatedBy")
+
+  @@index([heroImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model JobBanner {
+  id          Int                  @id @default(autoincrement())
+  name        String               @default("")
+  order       Int?                 @unique
+  heroImage   Photo?               @relation("JobBanner_heroImage", fields: [heroImageId], references: [id])
+  heroImageId Int?                 @map("heroImage")
+  status      JobBannerStatusType? @default(draft)
+  publishDate DateTime?
+  url         String               @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?                @relation("JobBanner_createdBy", fields: [createdById], references: [id])
+  createdById Int?                 @map("createdBy")
+  updatedBy   User?                @relation("JobBanner_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?                 @map("updatedBy")
+
+  @@index([heroImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Menubar {
+  id          Int       @id @default(autoincrement())
+  name        String    @default("")
+  order       Int?      @unique
+  isActive    Boolean   @default(false)
+  publishDate DateTime?
+  url         String    @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("Menubar_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("Menubar_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model ResourceBanner {
+  id          Int                       @id @default(autoincrement())
+  name        String                    @default("")
+  order       Int?                      @unique
+  heroImage   Photo?                    @relation("ResourceBanner_heroImage", fields: [heroImageId], references: [id])
+  heroImageId Int?                      @map("heroImage")
+  status      ResourceBannerStatusType? @default(draft)
+  publishDate DateTime?
+  url         String                    @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?                     @relation("ResourceBanner_createdBy", fields: [createdById], references: [id])
+  createdById Int?                      @map("createdBy")
+  updatedBy   User?                     @relation("ResourceBanner_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?                      @map("updatedBy")
+
+  @@index([heroImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model SpecialfeatureEditorChoice {
+  id               Int                                   @id @default(autoincrement())
+  order            Int?                                  @unique
+  specialfeature   Specialfeature?                       @relation("SpecialfeatureEditorChoice_specialfeature", fields: [specialfeatureId], references: [id])
+  specialfeatureId Int?                                  @map("specialfeature")
+  status           SpecialfeatureEditorChoiceStatusType? @default(draft)
+  publishDate      DateTime?
+  createdAt        DateTime?
+  updatedAt        DateTime?
+  createdBy        User?                                 @relation("SpecialfeatureEditorChoice_createdBy", fields: [createdById], references: [id])
+  createdById      Int?                                  @map("createdBy")
+  updatedBy        User?                                 @relation("SpecialfeatureEditorChoice_updatedBy", fields: [updatedById], references: [id])
+  updatedById      Int?                                  @map("updatedBy")
+
+  @@index([specialfeatureId])
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 enum CategoryStatusType {
@@ -606,6 +767,41 @@ enum SpecialfeatureStatusType {
 }
 
 enum SpecialfeatureListStatusType {
+  published
+  draft
+  scheduled
+  archived
+}
+
+enum EventBannerStatusType {
+  published
+  draft
+  scheduled
+  archived
+}
+
+enum HomepageBannerStatusType {
+  published
+  draft
+  scheduled
+  archived
+}
+
+enum JobBannerStatusType {
+  published
+  draft
+  scheduled
+  archived
+}
+
+enum ResourceBannerStatusType {
+  published
+  draft
+  scheduled
+  archived
+}
+
+enum SpecialfeatureEditorChoiceStatusType {
   published
   draft
   scheduled

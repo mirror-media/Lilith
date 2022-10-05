@@ -13,7 +13,7 @@ const {
 const listConfigurations = list ({
   fields: {
     person_id: relationship({
-      label: '組織名稱',
+      label: '人物',
       many: false,
       ref: 'Person',
     }),
@@ -21,7 +21,11 @@ const listConfigurations = list ({
       label: '選舉',
       ref: 'Election',
     }),
-	party: text({ label: '推薦政黨' }),
+	party: relationship({ 
+	  label: '推薦政黨',
+	  many: false,
+	  ref: 'Organization',
+	 }),
     // election_name: { label: "選舉名稱", type: Text },
     legislatoratlarge_number: text({ label: '不分區立委排序' }),
     number: text({ label: '號次' }),

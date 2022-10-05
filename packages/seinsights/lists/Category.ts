@@ -16,6 +16,17 @@ const listConfigurations = list({
         isRequired: true,
       },
     }),
+    slug: text({
+      label: 'slug英文名稱',
+      isIndexed: 'unique',
+      validation: {
+        isRequired: true,
+        match: {
+          regex: new RegExp('^[a-zA-Z0-9-_]*$'),
+          explanation: '限輸入英文、數字或_-符號',
+        },
+      },
+    }),
     order: integer({
       label: '排序',
       isIndexed: 'unique',
@@ -67,12 +78,61 @@ const listConfigurations = list({
       },
       many: true,
     }),
+    specialfeatures: relationship({
+      ref: 'Specialfeature.category',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+      many: true,
+    }),
+    events: relationship({
+      ref: 'Event.category',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+      many: true,
+    }),
+    jobs: relationship({
+      ref: 'Job.category',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+      many: true,
+    }),
+    resources: relationship({
+      ref: 'Resource.category',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+      many: true,
+    }),
   },
   hooks: {},
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),
-      update: allowRoles(admin, moderator),
+      update: () => true,
+      // update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
     },

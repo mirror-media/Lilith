@@ -25,30 +25,109 @@ const listConfigurations = list ({
     name: text({ label: '組織名稱', 
 	  isRequired: true 
 	}),
-    alternative: text({ label: '組織別名' }),
-    other_names: text({ label: '組織舊名' }),
-    identifiers: text({ label: '統一編號' }),
+    alternative: text({ 
+	  label: '組織別名',
+	  db: {
+		isNullable: true,
+	  },
+	}),
+    other_names: text({ 
+	  label: '組織舊名',
+	  db: {
+		isNullable: true,
+	  },
+	}),
+    identifiers: text({ 
+	  label: '統一編號',
+	  db: {
+		isNullable: true,
+	  },
+	}),
     classification: select({
       label: '組織類型',
       options: classificationOptions,
     }),
-    abstract: text({ label: '一句話描述該組織' }),
-    description: text({ label: '組織詳細介紹', }),
-    founding_date_year: integer({ label: '組織成立年' }),
-    founding_date_month: integer({ label: '組織成立月' }),
-    founding_date_day: integer({ label: '組織成立日' }),
+    abstract: text({ 
+	  label: '一句話描述該組織',
+	  db: {
+		isNullable: true,
+	  },
+	}),
+    description: text({ 
+	  label: '組織詳細介紹',
+	  db: {
+		isNullable: true,
+	  },
+	}),
+    founding_date_year: integer({ 
+	  label: '組織成立年',
+	  db: {
+		isNullable: true,
+	  },
+	}),
+    founding_date_month: integer({ 
+	  label: '組織成立月',
+	  db: {
+		isNullable: true,
+	  },
+	}),
+    founding_date_day: integer({ 
+	  label: '組織成立日',
+	  db: {
+		isNullable: true,
+	  },
+	}),
 
-    dissolution_date_year: integer({ label: '組織解散年' }),
-    dissolution_date_month: integer({ label: '組織解散月' }),
-    dissolution_date_day: integer({ label: '組織解散日' }),
+    dissolution_date_year: integer({ 
+	  label: '組織解散年',
+	  db: {
+		isNullable: true,
+	  },
+	}),
+    dissolution_date_month: integer({ 
+	  label: '組織解散月',
+	  db: {
+		isNullable: true,
+	  },
+	}),
+    dissolution_date_day: integer({ 
+	  label: '組織解散日',
+	  db: {
+		isNullable: true,
+	  },
+	}),
 
-    image: text({ label: '圖像' }),
+    image: text({ 
+	  label: '圖像',
+	  db: {
+		isNullable: true,
+	  },
+	}),
     contact_details: text({ 
 	  label: '聯絡方式',
-	  isMultiline: true }),
-    links: text({ label: '網站' }),
-    address: text({ label: '組織稅籍登記地址' }),
-    source: text({ label: '來源' }),
+	  db: {
+		isNullable: true,
+	  },
+	  isMultiline: true 
+	}),
+    links: text({ 
+	  label: '網站',
+	  db: {
+		isNullable: true,
+	  },
+	}),
+    address: text({ 
+	  label: '組織稅籍登記地址',
+	  db: {
+		isNullable: true,
+	  },
+	}),
+    source: text({ 
+	  label: '來源',
+	  db: {
+		isNullable: true,
+	  },
+	}),
   },
   access: {
 	operation: {

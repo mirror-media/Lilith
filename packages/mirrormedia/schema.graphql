@@ -16,12 +16,12 @@ type Post {
   ): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
   categories(
-    where: PostCategoryWhereInput! = {}
-    orderBy: [PostCategoryOrderByInput!]! = []
+    where: CategoryWhereInput! = {}
+    orderBy: [CategoryOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [PostCategory!]
-  categoriesCount(where: PostCategoryWhereInput! = {}): Int
+  ): [Category!]
+  categoriesCount(where: CategoryWhereInput! = {}): Int
   writers(
     where: ContactWhereInput! = {}
     orderBy: [ContactOrderByInput!]! = []
@@ -70,16 +70,9 @@ type Post {
   heroCaption: String
   heroImageSize: String
   style: String
-  brief: String
+  brief: JSON
   content: JSON
   topics: Topic
-  tags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
-  tagsCount(where: TagWhereInput! = {}): Int
   titleColor: String
   relateds(
     where: PostWhereInput! = {}
@@ -88,6 +81,13 @@ type Post {
     skip: Int! = 0
   ): [Post!]
   relatedsCount(where: PostWhereInput! = {}): Int
+  tags(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
   og_title: String
   og_description: String
   og_image: Photo
@@ -97,12 +97,9 @@ type Post {
   isCampaign: Boolean
   isAdult: Boolean
   lockJS: Boolean
-  isAudioSiteOnly: Boolean
-  device: String
-  css: String
   adTrace: String
-  redirect: String
-  createTime: DateTime
+  css: String
+  apiDataBrief: JSON
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -129,7 +126,7 @@ input PostWhereInput {
   state: StringNullableFilter
   publishedDate: DateTimeNullableFilter
   sections: SectionManyRelationFilter
-  categories: PostCategoryManyRelationFilter
+  categories: CategoryManyRelationFilter
   writers: ContactManyRelationFilter
   photographers: ContactManyRelationFilter
   camera_man: ContactManyRelationFilter
@@ -142,11 +139,10 @@ input PostWhereInput {
   heroCaption: StringFilter
   heroImageSize: StringNullableFilter
   style: StringNullableFilter
-  brief: StringFilter
   topics: TopicWhereInput
-  tags: TagManyRelationFilter
   titleColor: StringNullableFilter
   relateds: PostManyRelationFilter
+  tags: TagManyRelationFilter
   og_title: StringFilter
   og_description: StringFilter
   og_image: PhotoWhereInput
@@ -156,12 +152,8 @@ input PostWhereInput {
   isCampaign: BooleanFilter
   isAdult: BooleanFilter
   lockJS: BooleanFilter
-  isAudioSiteOnly: BooleanFilter
-  device: StringNullableFilter
-  css: StringFilter
   adTrace: StringFilter
-  redirect: StringFilter
-  createTime: DateTimeNullableFilter
+  css: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -259,10 +251,10 @@ input SectionManyRelationFilter {
   none: SectionWhereInput
 }
 
-input PostCategoryManyRelationFilter {
-  every: PostCategoryWhereInput
-  some: PostCategoryWhereInput
-  none: PostCategoryWhereInput
+input CategoryManyRelationFilter {
+  every: CategoryWhereInput
+  some: CategoryWhereInput
+  none: CategoryWhereInput
 }
 
 input ContactManyRelationFilter {
@@ -271,16 +263,16 @@ input ContactManyRelationFilter {
   none: ContactWhereInput
 }
 
-input TagManyRelationFilter {
-  every: TagWhereInput
-  some: TagWhereInput
-  none: TagWhereInput
-}
-
 input PostManyRelationFilter {
   every: PostWhereInput
   some: PostWhereInput
   none: PostWhereInput
+}
+
+input TagManyRelationFilter {
+  every: TagWhereInput
+  some: TagWhereInput
+  none: TagWhereInput
 }
 
 input BooleanFilter {
@@ -299,7 +291,6 @@ input PostOrderByInput {
   heroCaption: OrderDirection
   heroImageSize: OrderDirection
   style: OrderDirection
-  brief: OrderDirection
   titleColor: OrderDirection
   og_title: OrderDirection
   og_description: OrderDirection
@@ -309,12 +300,8 @@ input PostOrderByInput {
   isCampaign: OrderDirection
   isAdult: OrderDirection
   lockJS: OrderDirection
-  isAudioSiteOnly: OrderDirection
-  device: OrderDirection
-  css: OrderDirection
   adTrace: OrderDirection
-  redirect: OrderDirection
-  createTime: OrderDirection
+  css: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -331,7 +318,7 @@ input PostUpdateInput {
   state: String
   publishedDate: DateTime
   sections: SectionRelateToManyForUpdateInput
-  categories: PostCategoryRelateToManyForUpdateInput
+  categories: CategoryRelateToManyForUpdateInput
   writers: ContactRelateToManyForUpdateInput
   photographers: ContactRelateToManyForUpdateInput
   camera_man: ContactRelateToManyForUpdateInput
@@ -344,12 +331,12 @@ input PostUpdateInput {
   heroCaption: String
   heroImageSize: String
   style: String
-  brief: String
+  brief: JSON
   content: JSON
   topics: TopicRelateToOneForUpdateInput
-  tags: TagRelateToManyForUpdateInput
   titleColor: String
   relateds: PostRelateToManyForUpdateInput
+  tags: TagRelateToManyForUpdateInput
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForUpdateInput
@@ -359,12 +346,9 @@ input PostUpdateInput {
   isCampaign: Boolean
   isAdult: Boolean
   lockJS: Boolean
-  isAudioSiteOnly: Boolean
-  device: String
-  css: String
   adTrace: String
-  redirect: String
-  createTime: DateTime
+  css: String
+  apiDataBrief: JSON
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -379,11 +363,11 @@ input SectionRelateToManyForUpdateInput {
   connect: [SectionWhereUniqueInput!]
 }
 
-input PostCategoryRelateToManyForUpdateInput {
-  disconnect: [PostCategoryWhereUniqueInput!]
-  set: [PostCategoryWhereUniqueInput!]
-  create: [PostCategoryCreateInput!]
-  connect: [PostCategoryWhereUniqueInput!]
+input CategoryRelateToManyForUpdateInput {
+  disconnect: [CategoryWhereUniqueInput!]
+  set: [CategoryWhereUniqueInput!]
+  create: [CategoryCreateInput!]
+  connect: [CategoryWhereUniqueInput!]
 }
 
 input ContactRelateToManyForUpdateInput {
@@ -411,18 +395,18 @@ input TopicRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input TagRelateToManyForUpdateInput {
-  disconnect: [TagWhereUniqueInput!]
-  set: [TagWhereUniqueInput!]
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
-}
-
 input PostRelateToManyForUpdateInput {
   disconnect: [PostWhereUniqueInput!]
   set: [PostWhereUniqueInput!]
   create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
+}
+
+input TagRelateToManyForUpdateInput {
+  disconnect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
 }
 
 input UserRelateToOneForUpdateInput {
@@ -443,7 +427,7 @@ input PostCreateInput {
   state: String
   publishedDate: DateTime
   sections: SectionRelateToManyForCreateInput
-  categories: PostCategoryRelateToManyForCreateInput
+  categories: CategoryRelateToManyForCreateInput
   writers: ContactRelateToManyForCreateInput
   photographers: ContactRelateToManyForCreateInput
   camera_man: ContactRelateToManyForCreateInput
@@ -456,12 +440,12 @@ input PostCreateInput {
   heroCaption: String
   heroImageSize: String
   style: String
-  brief: String
+  brief: JSON
   content: JSON
   topics: TopicRelateToOneForCreateInput
-  tags: TagRelateToManyForCreateInput
   titleColor: String
   relateds: PostRelateToManyForCreateInput
+  tags: TagRelateToManyForCreateInput
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForCreateInput
@@ -471,12 +455,9 @@ input PostCreateInput {
   isCampaign: Boolean
   isAdult: Boolean
   lockJS: Boolean
-  isAudioSiteOnly: Boolean
-  device: String
-  css: String
   adTrace: String
-  redirect: String
-  createTime: DateTime
+  css: String
+  apiDataBrief: JSON
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -489,9 +470,9 @@ input SectionRelateToManyForCreateInput {
   connect: [SectionWhereUniqueInput!]
 }
 
-input PostCategoryRelateToManyForCreateInput {
-  create: [PostCategoryCreateInput!]
-  connect: [PostCategoryWhereUniqueInput!]
+input CategoryRelateToManyForCreateInput {
+  create: [CategoryCreateInput!]
+  connect: [CategoryWhereUniqueInput!]
 }
 
 input ContactRelateToManyForCreateInput {
@@ -514,14 +495,14 @@ input TopicRelateToOneForCreateInput {
   connect: TopicWhereUniqueInput
 }
 
-input TagRelateToManyForCreateInput {
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
-}
-
 input PostRelateToManyForCreateInput {
   create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
+}
+
+input TagRelateToManyForCreateInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
 }
 
 input UserRelateToOneForCreateInput {
@@ -531,14 +512,10 @@ input UserRelateToOneForCreateInput {
 
 type EditorChoice {
   id: ID!
-  choices(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
-  choicesCount(where: PostWhereInput! = {}): Int
+  order: Int
+  choices: Post
   state: String
+  publishedDate: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -547,6 +524,7 @@ type EditorChoice {
 
 input EditorChoiceWhereUniqueInput {
   id: ID
+  order: Int
 }
 
 input EditorChoiceWhereInput {
@@ -554,28 +532,51 @@ input EditorChoiceWhereInput {
   OR: [EditorChoiceWhereInput!]
   NOT: [EditorChoiceWhereInput!]
   id: IDFilter
-  choices: PostManyRelationFilter
+  order: IntNullableFilter
+  choices: PostWhereInput
   state: StringNullableFilter
+  publishedDate: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
 }
 
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
 input EditorChoiceOrderByInput {
   id: OrderDirection
+  order: OrderDirection
   state: OrderDirection
+  publishedDate: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input EditorChoiceUpdateInput {
-  choices: PostRelateToManyForUpdateInput
+  order: Int
+  choices: PostRelateToOneForUpdateInput
   state: String
+  publishedDate: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PostRelateToOneForUpdateInput {
+  create: PostCreateInput
+  connect: PostWhereUniqueInput
+  disconnect: Boolean
 }
 
 input EditorChoiceUpdateArgs {
@@ -584,34 +585,367 @@ input EditorChoiceUpdateArgs {
 }
 
 input EditorChoiceCreateInput {
-  choices: PostRelateToManyForCreateInput
+  order: Int
+  choices: PostRelateToOneForCreateInput
   state: String
+  publishedDate: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
 }
 
+input PostRelateToOneForCreateInput {
+  create: PostCreateInput
+  connect: PostWhereUniqueInput
+}
+
+type Event {
+  id: ID!
+  name: String
+  slug: String
+  state: String
+  publishedDate: DateTime
+  sections(
+    where: SectionWhereInput! = {}
+    orderBy: [SectionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
+  eventType: String
+  startDate: DateTime
+  endDate: DateTime
+  heroImage: Photo
+  link: String
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input EventWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input EventWhereInput {
+  AND: [EventWhereInput!]
+  OR: [EventWhereInput!]
+  NOT: [EventWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  slug: StringFilter
+  state: StringNullableFilter
+  publishedDate: DateTimeNullableFilter
+  sections: SectionManyRelationFilter
+  eventType: StringNullableFilter
+  startDate: DateTimeFilter
+  endDate: DateTimeNullableFilter
+  heroImage: PhotoWhereInput
+  link: StringFilter
+  isFeatured: BooleanFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeFilter
+}
+
+input EventOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  slug: OrderDirection
+  state: OrderDirection
+  publishedDate: OrderDirection
+  eventType: OrderDirection
+  startDate: OrderDirection
+  endDate: OrderDirection
+  link: OrderDirection
+  isFeatured: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input EventUpdateInput {
+  name: String
+  slug: String
+  state: String
+  publishedDate: DateTime
+  sections: SectionRelateToManyForUpdateInput
+  eventType: String
+  startDate: DateTime
+  endDate: DateTime
+  heroImage: PhotoRelateToOneForUpdateInput
+  link: String
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input EventUpdateArgs {
+  where: EventWhereUniqueInput!
+  data: EventUpdateInput!
+}
+
+input EventCreateInput {
+  name: String
+  slug: String
+  state: String
+  publishedDate: DateTime
+  sections: SectionRelateToManyForCreateInput
+  eventType: String
+  startDate: DateTime
+  endDate: DateTime
+  heroImage: PhotoRelateToOneForCreateInput
+  link: String
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type External {
+  id: ID!
+  slug: String
+  partner: Partner
+  title: String
+  state: String
+  publishedDate: DateTime
+  extend_byline: String
+  thumb: String
+  brief: String
+  content: String
+  source: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ExternalWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input ExternalWhereInput {
+  AND: [ExternalWhereInput!]
+  OR: [ExternalWhereInput!]
+  NOT: [ExternalWhereInput!]
+  id: IDFilter
+  slug: StringFilter
+  partner: PartnerWhereInput
+  title: StringFilter
+  state: StringNullableFilter
+  publishedDate: DateTimeNullableFilter
+  extend_byline: StringFilter
+  thumb: StringFilter
+  brief: StringFilter
+  content: StringFilter
+  source: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ExternalOrderByInput {
+  id: OrderDirection
+  slug: OrderDirection
+  title: OrderDirection
+  state: OrderDirection
+  publishedDate: OrderDirection
+  extend_byline: OrderDirection
+  thumb: OrderDirection
+  brief: OrderDirection
+  content: OrderDirection
+  source: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ExternalUpdateInput {
+  slug: String
+  partner: PartnerRelateToOneForUpdateInput
+  title: String
+  state: String
+  publishedDate: DateTime
+  extend_byline: String
+  thumb: String
+  brief: String
+  content: String
+  source: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PartnerRelateToOneForUpdateInput {
+  create: PartnerCreateInput
+  connect: PartnerWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ExternalUpdateArgs {
+  where: ExternalWhereUniqueInput!
+  data: ExternalUpdateInput!
+}
+
+input ExternalCreateInput {
+  slug: String
+  partner: PartnerRelateToOneForCreateInput
+  title: String
+  state: String
+  publishedDate: DateTime
+  extend_byline: String
+  thumb: String
+  brief: String
+  content: String
+  source: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input PartnerRelateToOneForCreateInput {
+  create: PartnerCreateInput
+  connect: PartnerWhereUniqueInput
+}
+
+type Tag {
+  id: ID!
+  slug: String
+  name: String
+  posts(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Post!]
+  postsCount(where: PostWhereInput! = {}): Int
+  topics(
+    where: TopicWhereInput! = {}
+    orderBy: [TopicOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Topic!]
+  topicsCount(where: TopicWhereInput! = {}): Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input TagWhereUniqueInput {
+  id: ID
+  slug: String
+  name: String
+}
+
+input TagWhereInput {
+  AND: [TagWhereInput!]
+  OR: [TagWhereInput!]
+  NOT: [TagWhereInput!]
+  id: IDFilter
+  slug: StringFilter
+  name: StringFilter
+  posts: PostManyRelationFilter
+  topics: TopicManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input TopicManyRelationFilter {
+  every: TopicWhereInput
+  some: TopicWhereInput
+  none: TopicWhereInput
+}
+
+input TagOrderByInput {
+  id: OrderDirection
+  slug: OrderDirection
+  name: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input TagUpdateInput {
+  slug: String
+  name: String
+  posts: PostRelateToManyForUpdateInput
+  topics: TopicRelateToManyForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input TopicRelateToManyForUpdateInput {
+  disconnect: [TopicWhereUniqueInput!]
+  set: [TopicWhereUniqueInput!]
+  create: [TopicCreateInput!]
+  connect: [TopicWhereUniqueInput!]
+}
+
+input TagUpdateArgs {
+  where: TagWhereUniqueInput!
+  data: TagUpdateInput!
+}
+
+input TagCreateInput {
+  slug: String
+  name: String
+  posts: PostRelateToManyForCreateInput
+  topics: TopicRelateToManyForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input TopicRelateToManyForCreateInput {
+  create: [TopicCreateInput!]
+  connect: [TopicWhereUniqueInput!]
+}
+
 type Topic {
   id: ID!
   name: String
-  subtitle: String
+  sortOrder: Int
   state: String
-  brief: String
-  leading: String
-  heroVideo: Video
+  brief: JSON
   heroImage: Photo
+  leading: String
+  sections(
+    where: SectionWhereInput! = {}
+    orderBy: [SectionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
   heroImageSize: String
-  og_title: String
-  og_description: String
-  og_image: Photo
   isFeatured: Boolean
   title_style: String
   type: String
-  source: String
-  sort: String
   style: String
-  uuid: String
   tags(
     where: TagWhereInput! = {}
     orderBy: [TagOrderByInput!]! = []
@@ -645,23 +979,16 @@ input TopicWhereInput {
   NOT: [TopicWhereInput!]
   id: IDFilter
   name: StringFilter
-  subtitle: StringFilter
+  sortOrder: IntNullableFilter
   state: StringNullableFilter
-  brief: StringFilter
-  leading: StringNullableFilter
-  heroVideo: VideoWhereInput
   heroImage: PhotoWhereInput
+  leading: StringNullableFilter
+  sections: SectionManyRelationFilter
   heroImageSize: StringNullableFilter
-  og_title: StringFilter
-  og_description: StringFilter
-  og_image: PhotoWhereInput
   isFeatured: BooleanFilter
   title_style: StringNullableFilter
   type: StringNullableFilter
-  source: StringNullableFilter
-  sort: StringNullableFilter
   style: StringFilter
-  uuid: StringFilter
   tags: TagManyRelationFilter
   posts: PostManyRelationFilter
   javascript: StringFilter
@@ -676,20 +1003,14 @@ input TopicWhereInput {
 input TopicOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  subtitle: OrderDirection
+  sortOrder: OrderDirection
   state: OrderDirection
-  brief: OrderDirection
   leading: OrderDirection
   heroImageSize: OrderDirection
-  og_title: OrderDirection
-  og_description: OrderDirection
   isFeatured: OrderDirection
   title_style: OrderDirection
   type: OrderDirection
-  source: OrderDirection
-  sort: OrderDirection
   style: OrderDirection
-  uuid: OrderDirection
   javascript: OrderDirection
   dfp: OrderDirection
   mobile_dfp: OrderDirection
@@ -699,23 +1020,17 @@ input TopicOrderByInput {
 
 input TopicUpdateInput {
   name: String
-  subtitle: String
+  sortOrder: Int
   state: String
-  brief: String
-  leading: String
-  heroVideo: VideoRelateToOneForUpdateInput
+  brief: JSON
   heroImage: PhotoRelateToOneForUpdateInput
+  leading: String
+  sections: SectionRelateToManyForUpdateInput
   heroImageSize: String
-  og_title: String
-  og_description: String
-  og_image: PhotoRelateToOneForUpdateInput
   isFeatured: Boolean
   title_style: String
   type: String
-  source: String
-  sort: String
   style: String
-  uuid: String
   tags: TagRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
   javascript: String
@@ -734,23 +1049,17 @@ input TopicUpdateArgs {
 
 input TopicCreateInput {
   name: String
-  subtitle: String
+  sortOrder: Int
   state: String
-  brief: String
-  leading: String
-  heroVideo: VideoRelateToOneForCreateInput
+  brief: JSON
   heroImage: PhotoRelateToOneForCreateInput
+  leading: String
+  sections: SectionRelateToManyForCreateInput
   heroImageSize: String
-  og_title: String
-  og_description: String
-  og_image: PhotoRelateToOneForCreateInput
   isFeatured: Boolean
   title_style: String
   type: String
-  source: String
-  sort: String
   style: String
-  uuid: String
   tags: TagRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
   javascript: String
@@ -764,22 +1073,30 @@ input TopicCreateInput {
 
 type Magazine {
   id: ID!
+  slug: String
   title: String
-  issue: String
-  description: String
+  pdfFile: FileFieldOutput
+  urlOriginal: String
   coverPhoto: Photo
   type: String
-  publishedDate: DateTime
   state: String
-  createTime: DateTime
+  publishedDate: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
 }
 
+interface FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
 input MagazineWhereUniqueInput {
   id: ID
+  slug: String
 }
 
 input MagazineWhereInput {
@@ -787,14 +1104,13 @@ input MagazineWhereInput {
   OR: [MagazineWhereInput!]
   NOT: [MagazineWhereInput!]
   id: IDFilter
+  slug: StringFilter
   title: StringFilter
-  issue: StringFilter
-  description: StringFilter
+  urlOriginal: StringFilter
   coverPhoto: PhotoWhereInput
   type: StringNullableFilter
-  publishedDate: DateTimeNullableFilter
   state: StringNullableFilter
-  createTime: DateTimeNullableFilter
+  publishedDate: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -803,31 +1119,40 @@ input MagazineWhereInput {
 
 input MagazineOrderByInput {
   id: OrderDirection
+  slug: OrderDirection
   title: OrderDirection
-  issue: OrderDirection
-  description: OrderDirection
+  urlOriginal: OrderDirection
   type: OrderDirection
-  publishedDate: OrderDirection
   state: OrderDirection
-  createTime: OrderDirection
+  publishedDate: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input MagazineUpdateInput {
+  slug: String
   title: String
-  issue: String
-  description: String
+  pdfFile: FileFieldInput
+  urlOriginal: String
   coverPhoto: PhotoRelateToOneForUpdateInput
   type: String
-  publishedDate: DateTime
   state: String
-  createTime: DateTime
+  publishedDate: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
 }
+
+input FileFieldInput {
+  upload: Upload
+  ref: String
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
 
 input MagazineUpdateArgs {
   where: MagazineWhereUniqueInput!
@@ -835,14 +1160,95 @@ input MagazineUpdateArgs {
 }
 
 input MagazineCreateInput {
+  slug: String
   title: String
-  issue: String
-  description: String
+  pdfFile: FileFieldInput
+  urlOriginal: String
   coverPhoto: PhotoRelateToOneForCreateInput
   type: String
-  publishedDate: DateTime
   state: String
-  createTime: DateTime
+  publishedDate: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type AudioFile {
+  id: ID!
+  name: String
+  file: FileFieldOutput
+  urlOriginal: String
+  heroImage: Photo
+  content: JSON
+  tags(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input AudioFileWhereUniqueInput {
+  id: ID
+}
+
+input AudioFileWhereInput {
+  AND: [AudioFileWhereInput!]
+  OR: [AudioFileWhereInput!]
+  NOT: [AudioFileWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  urlOriginal: StringFilter
+  heroImage: PhotoWhereInput
+  tags: TagManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input AudioFileOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  urlOriginal: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input AudioFileUpdateInput {
+  name: String
+  file: FileFieldInput
+  urlOriginal: String
+  heroImage: PhotoRelateToOneForUpdateInput
+  content: JSON
+  tags: TagRelateToManyForUpdateInput
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input AudioFileUpdateArgs {
+  where: AudioFileWhereUniqueInput!
+  data: AudioFileUpdateInput!
+}
+
+input AudioFileCreateInput {
+  name: String
+  file: FileFieldInput
+  urlOriginal: String
+  heroImage: PhotoRelateToOneForCreateInput
+  content: JSON
+  tags: TagRelateToManyForCreateInput
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -856,6 +1262,7 @@ type Photo {
   resized: ResizedImages
   file: CustomFileFieldOutput
   urlOriginal: String
+  copyRight: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -919,6 +1326,20 @@ type CloudImageFieldOutput implements ImageFieldOutput {
   url: String!
 }
 
+type LocalCustomFileFieldOutput implements CustomFileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+type CloudCustomFileFieldOutput implements CustomFileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
 input PhotoWhereInput {
   AND: [PhotoWhereInput!]
   OR: [PhotoWhereInput!]
@@ -926,6 +1347,7 @@ input PhotoWhereInput {
   id: IDFilter
   name: StringFilter
   urlOriginal: StringFilter
+  copyRight: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -936,6 +1358,7 @@ input PhotoOrderByInput {
   id: OrderDirection
   name: OrderDirection
   urlOriginal: OrderDirection
+  copyRight: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -945,6 +1368,7 @@ input PhotoUpdateInput {
   imageFile: ImageFieldInput
   file: CustomFileFieldInput
   urlOriginal: String
+  copyRight: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -955,11 +1379,6 @@ input ImageFieldInput {
   upload: Upload
   ref: String
 }
-
-"""
-The `Upload` scalar type represents a file upload.
-"""
-scalar Upload
 
 input CustomFileFieldInput {
   upload: Upload
@@ -976,99 +1395,7 @@ input PhotoCreateInput {
   imageFile: ImageFieldInput
   file: CustomFileFieldInput
   urlOriginal: String
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForCreateInput
-  updatedBy: UserRelateToOneForCreateInput
-}
-
-type Contact {
-  id: ID!
-  name: String
-  email: String
-  image: Photo
-  homepage: String
-  facebook: String
-  twitter: String
-  instantgram: String
-  address: String
-  bio: String
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: User
-  updatedBy: User
-}
-
-input ContactWhereUniqueInput {
-  id: ID
-  email: String
-}
-
-input ContactWhereInput {
-  AND: [ContactWhereInput!]
-  OR: [ContactWhereInput!]
-  NOT: [ContactWhereInput!]
-  id: IDFilter
-  name: StringFilter
-  email: StringFilter
-  image: PhotoWhereInput
-  homepage: StringFilter
-  facebook: StringFilter
-  twitter: StringFilter
-  instantgram: StringFilter
-  address: StringFilter
-  bio: StringFilter
-  createdAt: DateTimeNullableFilter
-  updatedAt: DateTimeNullableFilter
-  createdBy: UserWhereInput
-  updatedBy: UserWhereInput
-}
-
-input ContactOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
-  homepage: OrderDirection
-  facebook: OrderDirection
-  twitter: OrderDirection
-  instantgram: OrderDirection
-  address: OrderDirection
-  bio: OrderDirection
-  createdAt: OrderDirection
-  updatedAt: OrderDirection
-}
-
-input ContactUpdateInput {
-  name: String
-  email: String
-  image: PhotoRelateToOneForUpdateInput
-  homepage: String
-  facebook: String
-  twitter: String
-  instantgram: String
-  address: String
-  bio: String
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForUpdateInput
-  updatedBy: UserRelateToOneForUpdateInput
-}
-
-input ContactUpdateArgs {
-  where: ContactWhereUniqueInput!
-  data: ContactUpdateInput!
-}
-
-input ContactCreateInput {
-  name: String
-  email: String
-  image: PhotoRelateToOneForCreateInput
-  homepage: String
-  facebook: String
-  twitter: String
-  instantgram: String
-  address: String
-  bio: String
+  copyRight: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1078,14 +1405,21 @@ input ContactCreateInput {
 type Video {
   id: ID!
   name: String
-  youtubeUrl: String
-  file: CustomFileFieldOutput
-  coverPhoto: Photo
-  description: String
-  tags: String
-  meta: String
-  url: String
-  duration: String
+  file: FileFieldOutput
+  urlOriginal: String
+  content: JSON
+  heroImage: Photo
+  isFeed: Boolean
+  state: String
+  publishedDate: DateTime
+  tags(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1096,19 +1430,32 @@ input VideoWhereUniqueInput {
   id: ID
 }
 
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+type CloudFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
 input VideoWhereInput {
   AND: [VideoWhereInput!]
   OR: [VideoWhereInput!]
   NOT: [VideoWhereInput!]
   id: IDFilter
   name: StringFilter
-  youtubeUrl: StringFilter
-  coverPhoto: PhotoWhereInput
-  description: StringFilter
-  tags: StringFilter
-  meta: StringFilter
-  url: StringFilter
-  duration: StringFilter
+  urlOriginal: StringFilter
+  heroImage: PhotoWhereInput
+  isFeed: BooleanFilter
+  state: StringNullableFilter
+  publishedDate: DateTimeNullableFilter
+  tags: TagManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1118,26 +1465,25 @@ input VideoWhereInput {
 input VideoOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  youtubeUrl: OrderDirection
-  description: OrderDirection
-  tags: OrderDirection
-  meta: OrderDirection
-  url: OrderDirection
-  duration: OrderDirection
+  urlOriginal: OrderDirection
+  isFeed: OrderDirection
+  state: OrderDirection
+  publishedDate: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input VideoUpdateInput {
   name: String
-  youtubeUrl: String
-  file: CustomFileFieldInput
-  coverPhoto: PhotoRelateToOneForUpdateInput
-  description: String
-  tags: String
-  meta: String
-  url: String
-  duration: String
+  file: FileFieldInput
+  urlOriginal: String
+  content: JSON
+  heroImage: PhotoRelateToOneForUpdateInput
+  isFeed: Boolean
+  state: String
+  publishedDate: DateTime
+  tags: TagRelateToManyForUpdateInput
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1151,14 +1497,15 @@ input VideoUpdateArgs {
 
 input VideoCreateInput {
   name: String
-  youtubeUrl: String
-  file: CustomFileFieldInput
-  coverPhoto: PhotoRelateToOneForCreateInput
-  description: String
-  tags: String
-  meta: String
-  url: String
-  duration: String
+  file: FileFieldInput
+  urlOriginal: String
+  content: JSON
+  heroImage: PhotoRelateToOneForCreateInput
+  isFeed: Boolean
+  state: String
+  publishedDate: DateTime
+  tags: TagRelateToManyForCreateInput
+  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1168,39 +1515,19 @@ input VideoCreateInput {
 type Section {
   id: ID!
   name: String
-  title: String
   description: String
-  categories(
-    where: PostCategoryWhereInput! = {}
-    orderBy: [PostCategoryOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [PostCategory!]
-  categoriesCount(where: PostCategoryWhereInput! = {}): Int
-  extend_cats(
-    where: PostCategoryWhereInput! = {}
-    orderBy: [PostCategoryOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [PostCategory!]
-  extend_catsCount(where: PostCategoryWhereInput! = {}): Int
-  heroImage: Photo
+  slug: String
+  order: Int
+  state: String
   isFeatured: Boolean
-  style: String
-  og_title: String
-  og_description: String
-  og_image: Photo
-  isMemberOnly: Boolean
-  timeline: String
-  topics(
-    where: TopicWhereInput! = {}
-    orderBy: [TopicOrderByInput!]! = []
+  heroImage: Photo
+  categories(
+    where: CategoryWhereInput! = {}
+    orderBy: [CategoryOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [Topic!]
-  topicsCount(where: TopicWhereInput! = {}): Int
-  css: String
-  javascript: String
+  ): [Category!]
+  categoriesCount(where: CategoryWhereInput! = {}): Int
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
@@ -1208,6 +1535,13 @@ type Section {
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  topics(
+    where: TopicWhereInput! = {}
+    orderBy: [TopicOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Topic!]
+  topicsCount(where: TopicWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1216,6 +1550,7 @@ type Section {
 
 input SectionWhereUniqueInput {
   id: ID
+  slug: String
 }
 
 input SectionWhereInput {
@@ -1224,80 +1559,48 @@ input SectionWhereInput {
   NOT: [SectionWhereInput!]
   id: IDFilter
   name: StringFilter
-  title: StringFilter
   description: StringFilter
-  categories: PostCategoryManyRelationFilter
-  extend_cats: PostCategoryManyRelationFilter
-  heroImage: PhotoWhereInput
+  slug: StringFilter
+  order: IntNullableFilter
+  state: StringFilter
   isFeatured: BooleanFilter
-  style: StringNullableFilter
-  og_title: StringFilter
-  og_description: StringFilter
-  og_image: PhotoWhereInput
-  isMemberOnly: BooleanFilter
-  timeline: StringFilter
-  topics: TopicManyRelationFilter
-  css: StringFilter
-  javascript: StringFilter
+  heroImage: PhotoWhereInput
+  categories: CategoryManyRelationFilter
   posts: PostManyRelationFilter
+  topics: TopicManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
 }
 
-input TopicManyRelationFilter {
-  every: TopicWhereInput
-  some: TopicWhereInput
-  none: TopicWhereInput
-}
-
 input SectionOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  title: OrderDirection
   description: OrderDirection
+  slug: OrderDirection
+  order: OrderDirection
+  state: OrderDirection
   isFeatured: OrderDirection
-  style: OrderDirection
-  og_title: OrderDirection
-  og_description: OrderDirection
-  isMemberOnly: OrderDirection
-  timeline: OrderDirection
-  css: OrderDirection
-  javascript: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input SectionUpdateInput {
   name: String
-  title: String
   description: String
-  categories: PostCategoryRelateToManyForUpdateInput
-  extend_cats: PostCategoryRelateToManyForUpdateInput
-  heroImage: PhotoRelateToOneForUpdateInput
+  slug: String
+  order: Int
+  state: String
   isFeatured: Boolean
-  style: String
-  og_title: String
-  og_description: String
-  og_image: PhotoRelateToOneForUpdateInput
-  isMemberOnly: Boolean
-  timeline: String
-  topics: TopicRelateToManyForUpdateInput
-  css: String
-  javascript: String
+  heroImage: PhotoRelateToOneForUpdateInput
+  categories: CategoryRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
+  topics: TopicRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
-}
-
-input TopicRelateToManyForUpdateInput {
-  disconnect: [TopicWhereUniqueInput!]
-  set: [TopicWhereUniqueInput!]
-  create: [TopicCreateInput!]
-  connect: [TopicWhereUniqueInput!]
 }
 
 input SectionUpdateArgs {
@@ -1307,261 +1610,29 @@ input SectionUpdateArgs {
 
 input SectionCreateInput {
   name: String
-  title: String
   description: String
-  categories: PostCategoryRelateToManyForCreateInput
-  extend_cats: PostCategoryRelateToManyForCreateInput
+  slug: String
+  order: Int
+  state: String
+  isFeatured: Boolean
   heroImage: PhotoRelateToOneForCreateInput
-  isFeatured: Boolean
-  style: String
-  og_title: String
-  og_description: String
-  og_image: PhotoRelateToOneForCreateInput
-  isMemberOnly: Boolean
-  timeline: String
-  topics: TopicRelateToManyForCreateInput
-  css: String
-  javascript: String
+  categories: CategoryRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
+  topics: TopicRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
 }
 
-input TopicRelateToManyForCreateInput {
-  create: [TopicCreateInput!]
-  connect: [TopicWhereUniqueInput!]
-}
-
-type AudioFile {
+type Category {
   id: ID!
   name: String
-  file: CustomFileFieldOutput
-  description: String
-  tags: String
-  meta: String
-  url: String
-  duration: String
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: User
-  updatedBy: User
-}
-
-input AudioFileWhereUniqueInput {
-  id: ID
-}
-
-type LocalCustomFileFieldOutput implements CustomFileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
-type CloudCustomFileFieldOutput implements CustomFileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
-input AudioFileWhereInput {
-  AND: [AudioFileWhereInput!]
-  OR: [AudioFileWhereInput!]
-  NOT: [AudioFileWhereInput!]
-  id: IDFilter
-  name: StringFilter
-  description: StringFilter
-  tags: StringFilter
-  meta: StringFilter
-  url: StringFilter
-  duration: StringFilter
-  createdAt: DateTimeNullableFilter
-  updatedAt: DateTimeNullableFilter
-  createdBy: UserWhereInput
-  updatedBy: UserWhereInput
-}
-
-input AudioFileOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  description: OrderDirection
-  tags: OrderDirection
-  meta: OrderDirection
-  url: OrderDirection
-  duration: OrderDirection
-  createdAt: OrderDirection
-  updatedAt: OrderDirection
-}
-
-input AudioFileUpdateInput {
-  name: String
-  file: CustomFileFieldInput
-  description: String
-  tags: String
-  meta: String
-  url: String
-  duration: String
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForUpdateInput
-  updatedBy: UserRelateToOneForUpdateInput
-}
-
-input AudioFileUpdateArgs {
-  where: AudioFileWhereUniqueInput!
-  data: AudioFileUpdateInput!
-}
-
-input AudioFileCreateInput {
-  name: String
-  file: CustomFileFieldInput
-  description: String
-  tags: String
-  meta: String
-  url: String
-  duration: String
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForCreateInput
-  updatedBy: UserRelateToOneForCreateInput
-}
-
-type External {
-  id: ID!
-  name: String
-  partner: Partner
-  title: String
-  subtitle: String
+  slug: String
+  order: Int
   state: String
-  publishedDate: DateTime
-  extend_byline: String
-  thumb: String
-  brief: String
-  content: String
-  source: String
-  createTime: DateTime
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: User
-  updatedBy: User
-}
-
-input ExternalWhereUniqueInput {
-  id: ID
-  name: String
-}
-
-input ExternalWhereInput {
-  AND: [ExternalWhereInput!]
-  OR: [ExternalWhereInput!]
-  NOT: [ExternalWhereInput!]
-  id: IDFilter
-  name: StringFilter
-  partner: PartnerWhereInput
-  title: StringFilter
-  subtitle: StringFilter
-  state: StringNullableFilter
-  publishedDate: DateTimeNullableFilter
-  extend_byline: StringFilter
-  thumb: StringFilter
-  brief: StringFilter
-  content: StringFilter
-  source: StringFilter
-  createTime: DateTimeNullableFilter
-  createdAt: DateTimeNullableFilter
-  updatedAt: DateTimeNullableFilter
-  createdBy: UserWhereInput
-  updatedBy: UserWhereInput
-}
-
-input ExternalOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  title: OrderDirection
-  subtitle: OrderDirection
-  state: OrderDirection
-  publishedDate: OrderDirection
-  extend_byline: OrderDirection
-  thumb: OrderDirection
-  brief: OrderDirection
-  content: OrderDirection
-  source: OrderDirection
-  createTime: OrderDirection
-  createdAt: OrderDirection
-  updatedAt: OrderDirection
-}
-
-input ExternalUpdateInput {
-  name: String
-  partner: PartnerRelateToOneForUpdateInput
-  title: String
-  subtitle: String
-  state: String
-  publishedDate: DateTime
-  extend_byline: String
-  thumb: String
-  brief: String
-  content: String
-  source: String
-  createTime: DateTime
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForUpdateInput
-  updatedBy: UserRelateToOneForUpdateInput
-}
-
-input PartnerRelateToOneForUpdateInput {
-  create: PartnerCreateInput
-  connect: PartnerWhereUniqueInput
-  disconnect: Boolean
-}
-
-input ExternalUpdateArgs {
-  where: ExternalWhereUniqueInput!
-  data: ExternalUpdateInput!
-}
-
-input ExternalCreateInput {
-  name: String
-  partner: PartnerRelateToOneForCreateInput
-  title: String
-  subtitle: String
-  state: String
-  publishedDate: DateTime
-  extend_byline: String
-  thumb: String
-  brief: String
-  content: String
-  source: String
-  createTime: DateTime
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForCreateInput
-  updatedBy: UserRelateToOneForCreateInput
-}
-
-input PartnerRelateToOneForCreateInput {
-  create: PartnerCreateInput
-  connect: PartnerWhereUniqueInput
-}
-
-type Tag {
-  id: ID!
-  name: String
-  brief: String
-  heroVideo: Video
   heroImage: Photo
-  heroImageSize: String
-  og_title: String
-  og_description: String
-  og_image: Photo
-  isFeatured: Boolean
-  css: String
-  uuid: String
-  javascript: String
+  sections: Section
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
@@ -1569,348 +1640,93 @@ type Tag {
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
-  topics(
-    where: TopicWhereInput! = {}
-    orderBy: [TopicOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Topic!]
-  topicsCount(where: TopicWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
 }
 
-input TagWhereUniqueInput {
+input CategoryWhereUniqueInput {
   id: ID
-  name: String
+  slug: String
 }
 
-input TagWhereInput {
-  AND: [TagWhereInput!]
-  OR: [TagWhereInput!]
-  NOT: [TagWhereInput!]
+input CategoryWhereInput {
+  AND: [CategoryWhereInput!]
+  OR: [CategoryWhereInput!]
+  NOT: [CategoryWhereInput!]
   id: IDFilter
   name: StringFilter
-  brief: StringFilter
-  heroVideo: VideoWhereInput
+  slug: StringFilter
+  order: IntNullableFilter
+  state: StringFilter
   heroImage: PhotoWhereInput
-  heroImageSize: StringNullableFilter
-  og_title: StringFilter
-  og_description: StringFilter
-  og_image: PhotoWhereInput
-  isFeatured: BooleanFilter
-  css: StringFilter
-  uuid: StringFilter
-  javascript: StringFilter
+  sections: SectionWhereInput
   posts: PostManyRelationFilter
-  topics: TopicManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
 }
 
-input TagOrderByInput {
+input CategoryOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  brief: OrderDirection
-  heroImageSize: OrderDirection
-  og_title: OrderDirection
-  og_description: OrderDirection
-  isFeatured: OrderDirection
-  css: OrderDirection
-  uuid: OrderDirection
-  javascript: OrderDirection
-  createdAt: OrderDirection
-  updatedAt: OrderDirection
-}
-
-input TagUpdateInput {
-  name: String
-  brief: String
-  heroVideo: VideoRelateToOneForUpdateInput
-  heroImage: PhotoRelateToOneForUpdateInput
-  heroImageSize: String
-  og_title: String
-  og_description: String
-  og_image: PhotoRelateToOneForUpdateInput
-  isFeatured: Boolean
-  css: String
-  uuid: String
-  javascript: String
-  posts: PostRelateToManyForUpdateInput
-  topics: TopicRelateToManyForUpdateInput
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForUpdateInput
-  updatedBy: UserRelateToOneForUpdateInput
-}
-
-input TagUpdateArgs {
-  where: TagWhereUniqueInput!
-  data: TagUpdateInput!
-}
-
-input TagCreateInput {
-  name: String
-  brief: String
-  heroVideo: VideoRelateToOneForCreateInput
-  heroImage: PhotoRelateToOneForCreateInput
-  heroImageSize: String
-  og_title: String
-  og_description: String
-  og_image: PhotoRelateToOneForCreateInput
-  isFeatured: Boolean
-  css: String
-  uuid: String
-  javascript: String
-  posts: PostRelateToManyForCreateInput
-  topics: TopicRelateToManyForCreateInput
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForCreateInput
-  updatedBy: UserRelateToOneForCreateInput
-}
-
-type PostCategory {
-  id: ID!
-  name: String
-  title: String
-  isFeatured: Boolean
-  style: String
-  heroImage: Photo
-  og_title: String
-  og_description: String
-  og_image: Photo
-  css: String
-  javascript: String
-  isCampaign: Boolean
-  isMemberOnly: Boolean
-  isAudioSiteOnly: Boolean
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: User
-  updatedBy: User
-}
-
-input PostCategoryWhereUniqueInput {
-  id: ID
-}
-
-input PostCategoryWhereInput {
-  AND: [PostCategoryWhereInput!]
-  OR: [PostCategoryWhereInput!]
-  NOT: [PostCategoryWhereInput!]
-  id: IDFilter
-  name: StringFilter
-  title: StringFilter
-  isFeatured: BooleanFilter
-  style: StringNullableFilter
-  heroImage: PhotoWhereInput
-  og_title: StringFilter
-  og_description: StringFilter
-  og_image: PhotoWhereInput
-  css: StringFilter
-  javascript: StringFilter
-  isCampaign: BooleanFilter
-  isMemberOnly: BooleanFilter
-  isAudioSiteOnly: BooleanFilter
-  createdAt: DateTimeNullableFilter
-  updatedAt: DateTimeNullableFilter
-  createdBy: UserWhereInput
-  updatedBy: UserWhereInput
-}
-
-input PostCategoryOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  title: OrderDirection
-  isFeatured: OrderDirection
-  style: OrderDirection
-  og_title: OrderDirection
-  og_description: OrderDirection
-  css: OrderDirection
-  javascript: OrderDirection
-  isCampaign: OrderDirection
-  isMemberOnly: OrderDirection
-  isAudioSiteOnly: OrderDirection
-  createdAt: OrderDirection
-  updatedAt: OrderDirection
-}
-
-input PostCategoryUpdateInput {
-  name: String
-  title: String
-  isFeatured: Boolean
-  style: String
-  heroImage: PhotoRelateToOneForUpdateInput
-  og_title: String
-  og_description: String
-  og_image: PhotoRelateToOneForUpdateInput
-  css: String
-  javascript: String
-  isCampaign: Boolean
-  isMemberOnly: Boolean
-  isAudioSiteOnly: Boolean
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForUpdateInput
-  updatedBy: UserRelateToOneForUpdateInput
-}
-
-input PostCategoryUpdateArgs {
-  where: PostCategoryWhereUniqueInput!
-  data: PostCategoryUpdateInput!
-}
-
-input PostCategoryCreateInput {
-  name: String
-  title: String
-  isFeatured: Boolean
-  style: String
-  heroImage: PhotoRelateToOneForCreateInput
-  og_title: String
-  og_description: String
-  og_image: PhotoRelateToOneForCreateInput
-  css: String
-  javascript: String
-  isCampaign: Boolean
-  isMemberOnly: Boolean
-  isAudioSiteOnly: Boolean
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForCreateInput
-  updatedBy: UserRelateToOneForCreateInput
-}
-
-type Event {
-  id: ID!
-  name: String
-  state: String
-  publishedDate: DateTime
-  sections(
-    where: SectionWhereInput! = {}
-    orderBy: [SectionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Section!]
-  sectionsCount(where: SectionWhereInput! = {}): Int
-  eventType: String
-  startDate: DateTime
-  endDate: DateTime
-  video: Video
-  embed: String
-  image: Photo
-  link: String
-  isFeatured: Boolean
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: User
-  updatedBy: User
-}
-
-input EventWhereUniqueInput {
-  id: ID
-}
-
-input EventWhereInput {
-  AND: [EventWhereInput!]
-  OR: [EventWhereInput!]
-  NOT: [EventWhereInput!]
-  id: IDFilter
-  name: StringFilter
-  state: StringNullableFilter
-  publishedDate: DateTimeNullableFilter
-  sections: SectionManyRelationFilter
-  eventType: StringNullableFilter
-  startDate: DateTimeFilter
-  endDate: DateTimeNullableFilter
-  video: VideoWhereInput
-  embed: StringFilter
-  image: PhotoWhereInput
-  link: StringFilter
-  isFeatured: BooleanFilter
-  createdAt: DateTimeNullableFilter
-  updatedAt: DateTimeNullableFilter
-  createdBy: UserWhereInput
-  updatedBy: UserWhereInput
-}
-
-input DateTimeFilter {
-  equals: DateTime
-  in: [DateTime!]
-  notIn: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  gt: DateTime
-  gte: DateTime
-  not: DateTimeFilter
-}
-
-input EventOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
+  slug: OrderDirection
+  order: OrderDirection
   state: OrderDirection
-  publishedDate: OrderDirection
-  eventType: OrderDirection
-  startDate: OrderDirection
-  endDate: OrderDirection
-  embed: OrderDirection
-  link: OrderDirection
-  isFeatured: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
-input EventUpdateInput {
+input CategoryUpdateInput {
   name: String
+  slug: String
+  order: Int
   state: String
-  publishedDate: DateTime
-  sections: SectionRelateToManyForUpdateInput
-  eventType: String
-  startDate: DateTime
-  endDate: DateTime
-  video: VideoRelateToOneForUpdateInput
-  embed: String
-  image: PhotoRelateToOneForUpdateInput
-  link: String
-  isFeatured: Boolean
+  heroImage: PhotoRelateToOneForUpdateInput
+  sections: SectionRelateToOneForUpdateInput
+  posts: PostRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input EventUpdateArgs {
-  where: EventWhereUniqueInput!
-  data: EventUpdateInput!
+input SectionRelateToOneForUpdateInput {
+  create: SectionCreateInput
+  connect: SectionWhereUniqueInput
+  disconnect: Boolean
 }
 
-input EventCreateInput {
+input CategoryUpdateArgs {
+  where: CategoryWhereUniqueInput!
+  data: CategoryUpdateInput!
+}
+
+input CategoryCreateInput {
   name: String
+  slug: String
+  order: Int
   state: String
-  publishedDate: DateTime
-  sections: SectionRelateToManyForCreateInput
-  eventType: String
-  startDate: DateTime
-  endDate: DateTime
-  video: VideoRelateToOneForCreateInput
-  embed: String
-  image: PhotoRelateToOneForCreateInput
-  link: String
-  isFeatured: Boolean
+  heroImage: PhotoRelateToOneForCreateInput
+  sections: SectionRelateToOneForCreateInput
+  posts: PostRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input SectionRelateToOneForCreateInput {
+  create: SectionCreateInput
+  connect: SectionWhereUniqueInput
 }
 
 type Partner {
   id: ID!
+  slug: String
   name: String
-  display: String
   website: String
   public: Boolean
   createdAt: DateTime
@@ -1921,6 +1737,7 @@ type Partner {
 
 input PartnerWhereUniqueInput {
   id: ID
+  slug: String
 }
 
 input PartnerWhereInput {
@@ -1928,8 +1745,8 @@ input PartnerWhereInput {
   OR: [PartnerWhereInput!]
   NOT: [PartnerWhereInput!]
   id: IDFilter
+  slug: StringFilter
   name: StringFilter
-  display: StringFilter
   website: StringFilter
   public: BooleanFilter
   createdAt: DateTimeNullableFilter
@@ -1940,8 +1757,8 @@ input PartnerWhereInput {
 
 input PartnerOrderByInput {
   id: OrderDirection
+  slug: OrderDirection
   name: OrderDirection
-  display: OrderDirection
   website: OrderDirection
   public: OrderDirection
   createdAt: OrderDirection
@@ -1949,8 +1766,8 @@ input PartnerOrderByInput {
 }
 
 input PartnerUpdateInput {
+  slug: String
   name: String
-  display: String
   website: String
   public: Boolean
   createdAt: DateTime
@@ -1965,10 +1782,68 @@ input PartnerUpdateArgs {
 }
 
 input PartnerCreateInput {
+  slug: String
   name: String
-  display: String
   website: String
   public: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Contact {
+  id: ID!
+  name: String
+  content: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ContactWhereUniqueInput {
+  id: ID
+}
+
+input ContactWhereInput {
+  AND: [ContactWhereInput!]
+  OR: [ContactWhereInput!]
+  NOT: [ContactWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  content: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ContactOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  content: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ContactUpdateInput {
+  name: String
+  content: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ContactUpdateArgs {
+  where: ContactWhereUniqueInput!
+  data: ContactUpdateInput!
+}
+
+input ContactCreateInput {
+  name: String
+  content: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2057,60 +1932,12 @@ type Mutation {
   updateEditorChoices(data: [EditorChoiceUpdateArgs!]!): [EditorChoice]
   deleteEditorChoice(where: EditorChoiceWhereUniqueInput!): EditorChoice
   deleteEditorChoices(where: [EditorChoiceWhereUniqueInput!]!): [EditorChoice]
-  createTopic(data: TopicCreateInput!): Topic
-  createTopics(data: [TopicCreateInput!]!): [Topic]
-  updateTopic(where: TopicWhereUniqueInput!, data: TopicUpdateInput!): Topic
-  updateTopics(data: [TopicUpdateArgs!]!): [Topic]
-  deleteTopic(where: TopicWhereUniqueInput!): Topic
-  deleteTopics(where: [TopicWhereUniqueInput!]!): [Topic]
-  createMagazine(data: MagazineCreateInput!): Magazine
-  createMagazines(data: [MagazineCreateInput!]!): [Magazine]
-  updateMagazine(
-    where: MagazineWhereUniqueInput!
-    data: MagazineUpdateInput!
-  ): Magazine
-  updateMagazines(data: [MagazineUpdateArgs!]!): [Magazine]
-  deleteMagazine(where: MagazineWhereUniqueInput!): Magazine
-  deleteMagazines(where: [MagazineWhereUniqueInput!]!): [Magazine]
-  createPhoto(data: PhotoCreateInput!): Photo
-  createPhotos(data: [PhotoCreateInput!]!): [Photo]
-  updatePhoto(where: PhotoWhereUniqueInput!, data: PhotoUpdateInput!): Photo
-  updatePhotos(data: [PhotoUpdateArgs!]!): [Photo]
-  deletePhoto(where: PhotoWhereUniqueInput!): Photo
-  deletePhotos(where: [PhotoWhereUniqueInput!]!): [Photo]
-  createContact(data: ContactCreateInput!): Contact
-  createContacts(data: [ContactCreateInput!]!): [Contact]
-  updateContact(
-    where: ContactWhereUniqueInput!
-    data: ContactUpdateInput!
-  ): Contact
-  updateContacts(data: [ContactUpdateArgs!]!): [Contact]
-  deleteContact(where: ContactWhereUniqueInput!): Contact
-  deleteContacts(where: [ContactWhereUniqueInput!]!): [Contact]
-  createVideo(data: VideoCreateInput!): Video
-  createVideos(data: [VideoCreateInput!]!): [Video]
-  updateVideo(where: VideoWhereUniqueInput!, data: VideoUpdateInput!): Video
-  updateVideos(data: [VideoUpdateArgs!]!): [Video]
-  deleteVideo(where: VideoWhereUniqueInput!): Video
-  deleteVideos(where: [VideoWhereUniqueInput!]!): [Video]
-  createSection(data: SectionCreateInput!): Section
-  createSections(data: [SectionCreateInput!]!): [Section]
-  updateSection(
-    where: SectionWhereUniqueInput!
-    data: SectionUpdateInput!
-  ): Section
-  updateSections(data: [SectionUpdateArgs!]!): [Section]
-  deleteSection(where: SectionWhereUniqueInput!): Section
-  deleteSections(where: [SectionWhereUniqueInput!]!): [Section]
-  createAudioFile(data: AudioFileCreateInput!): AudioFile
-  createAudioFiles(data: [AudioFileCreateInput!]!): [AudioFile]
-  updateAudioFile(
-    where: AudioFileWhereUniqueInput!
-    data: AudioFileUpdateInput!
-  ): AudioFile
-  updateAudioFiles(data: [AudioFileUpdateArgs!]!): [AudioFile]
-  deleteAudioFile(where: AudioFileWhereUniqueInput!): AudioFile
-  deleteAudioFiles(where: [AudioFileWhereUniqueInput!]!): [AudioFile]
+  createEvent(data: EventCreateInput!): Event
+  createEvents(data: [EventCreateInput!]!): [Event]
+  updateEvent(where: EventWhereUniqueInput!, data: EventUpdateInput!): Event
+  updateEvents(data: [EventUpdateArgs!]!): [Event]
+  deleteEvent(where: EventWhereUniqueInput!): Event
+  deleteEvents(where: [EventWhereUniqueInput!]!): [Event]
   createExternal(data: ExternalCreateInput!): External
   createExternals(data: [ExternalCreateInput!]!): [External]
   updateExternal(
@@ -2126,21 +1953,60 @@ type Mutation {
   updateTags(data: [TagUpdateArgs!]!): [Tag]
   deleteTag(where: TagWhereUniqueInput!): Tag
   deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
-  createPostCategory(data: PostCategoryCreateInput!): PostCategory
-  createPostCategories(data: [PostCategoryCreateInput!]!): [PostCategory]
-  updatePostCategory(
-    where: PostCategoryWhereUniqueInput!
-    data: PostCategoryUpdateInput!
-  ): PostCategory
-  updatePostCategories(data: [PostCategoryUpdateArgs!]!): [PostCategory]
-  deletePostCategory(where: PostCategoryWhereUniqueInput!): PostCategory
-  deletePostCategories(where: [PostCategoryWhereUniqueInput!]!): [PostCategory]
-  createEvent(data: EventCreateInput!): Event
-  createEvents(data: [EventCreateInput!]!): [Event]
-  updateEvent(where: EventWhereUniqueInput!, data: EventUpdateInput!): Event
-  updateEvents(data: [EventUpdateArgs!]!): [Event]
-  deleteEvent(where: EventWhereUniqueInput!): Event
-  deleteEvents(where: [EventWhereUniqueInput!]!): [Event]
+  createTopic(data: TopicCreateInput!): Topic
+  createTopics(data: [TopicCreateInput!]!): [Topic]
+  updateTopic(where: TopicWhereUniqueInput!, data: TopicUpdateInput!): Topic
+  updateTopics(data: [TopicUpdateArgs!]!): [Topic]
+  deleteTopic(where: TopicWhereUniqueInput!): Topic
+  deleteTopics(where: [TopicWhereUniqueInput!]!): [Topic]
+  createMagazine(data: MagazineCreateInput!): Magazine
+  createMagazines(data: [MagazineCreateInput!]!): [Magazine]
+  updateMagazine(
+    where: MagazineWhereUniqueInput!
+    data: MagazineUpdateInput!
+  ): Magazine
+  updateMagazines(data: [MagazineUpdateArgs!]!): [Magazine]
+  deleteMagazine(where: MagazineWhereUniqueInput!): Magazine
+  deleteMagazines(where: [MagazineWhereUniqueInput!]!): [Magazine]
+  createAudioFile(data: AudioFileCreateInput!): AudioFile
+  createAudioFiles(data: [AudioFileCreateInput!]!): [AudioFile]
+  updateAudioFile(
+    where: AudioFileWhereUniqueInput!
+    data: AudioFileUpdateInput!
+  ): AudioFile
+  updateAudioFiles(data: [AudioFileUpdateArgs!]!): [AudioFile]
+  deleteAudioFile(where: AudioFileWhereUniqueInput!): AudioFile
+  deleteAudioFiles(where: [AudioFileWhereUniqueInput!]!): [AudioFile]
+  createPhoto(data: PhotoCreateInput!): Photo
+  createPhotos(data: [PhotoCreateInput!]!): [Photo]
+  updatePhoto(where: PhotoWhereUniqueInput!, data: PhotoUpdateInput!): Photo
+  updatePhotos(data: [PhotoUpdateArgs!]!): [Photo]
+  deletePhoto(where: PhotoWhereUniqueInput!): Photo
+  deletePhotos(where: [PhotoWhereUniqueInput!]!): [Photo]
+  createVideo(data: VideoCreateInput!): Video
+  createVideos(data: [VideoCreateInput!]!): [Video]
+  updateVideo(where: VideoWhereUniqueInput!, data: VideoUpdateInput!): Video
+  updateVideos(data: [VideoUpdateArgs!]!): [Video]
+  deleteVideo(where: VideoWhereUniqueInput!): Video
+  deleteVideos(where: [VideoWhereUniqueInput!]!): [Video]
+  createSection(data: SectionCreateInput!): Section
+  createSections(data: [SectionCreateInput!]!): [Section]
+  updateSection(
+    where: SectionWhereUniqueInput!
+    data: SectionUpdateInput!
+  ): Section
+  updateSections(data: [SectionUpdateArgs!]!): [Section]
+  deleteSection(where: SectionWhereUniqueInput!): Section
+  deleteSections(where: [SectionWhereUniqueInput!]!): [Section]
+  createCategory(data: CategoryCreateInput!): Category
+  createCategories(data: [CategoryCreateInput!]!): [Category]
+  updateCategory(
+    where: CategoryWhereUniqueInput!
+    data: CategoryUpdateInput!
+  ): Category
+  updateCategories(data: [CategoryUpdateArgs!]!): [Category]
+  deleteCategory(where: CategoryWhereUniqueInput!): Category
+  deleteCategories(where: [CategoryWhereUniqueInput!]!): [Category]
   createPartner(data: PartnerCreateInput!): Partner
   createPartners(data: [PartnerCreateInput!]!): [Partner]
   updatePartner(
@@ -2150,6 +2016,15 @@ type Mutation {
   updatePartners(data: [PartnerUpdateArgs!]!): [Partner]
   deletePartner(where: PartnerWhereUniqueInput!): Partner
   deletePartners(where: [PartnerWhereUniqueInput!]!): [Partner]
+  createContact(data: ContactCreateInput!): Contact
+  createContacts(data: [ContactCreateInput!]!): [Contact]
+  updateContact(
+    where: ContactWhereUniqueInput!
+    data: ContactUpdateInput!
+  ): Contact
+  updateContacts(data: [ContactUpdateArgs!]!): [Contact]
+  deleteContact(where: ContactWhereUniqueInput!): Contact
+  deleteContacts(where: [ContactWhereUniqueInput!]!): [Contact]
   createUser(data: UserCreateInput!): User
   createUsers(data: [UserCreateInput!]!): [User]
   updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
@@ -2203,62 +2078,14 @@ type Query {
   ): [EditorChoice!]
   editorChoice(where: EditorChoiceWhereUniqueInput!): EditorChoice
   editorChoicesCount(where: EditorChoiceWhereInput! = {}): Int
-  topics(
-    where: TopicWhereInput! = {}
-    orderBy: [TopicOrderByInput!]! = []
+  events(
+    where: EventWhereInput! = {}
+    orderBy: [EventOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [Topic!]
-  topic(where: TopicWhereUniqueInput!): Topic
-  topicsCount(where: TopicWhereInput! = {}): Int
-  magazines(
-    where: MagazineWhereInput! = {}
-    orderBy: [MagazineOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Magazine!]
-  magazine(where: MagazineWhereUniqueInput!): Magazine
-  magazinesCount(where: MagazineWhereInput! = {}): Int
-  photos(
-    where: PhotoWhereInput! = {}
-    orderBy: [PhotoOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Photo!]
-  photo(where: PhotoWhereUniqueInput!): Photo
-  photosCount(where: PhotoWhereInput! = {}): Int
-  contacts(
-    where: ContactWhereInput! = {}
-    orderBy: [ContactOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Contact!]
-  contact(where: ContactWhereUniqueInput!): Contact
-  contactsCount(where: ContactWhereInput! = {}): Int
-  videos(
-    where: VideoWhereInput! = {}
-    orderBy: [VideoOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Video!]
-  video(where: VideoWhereUniqueInput!): Video
-  videosCount(where: VideoWhereInput! = {}): Int
-  sections(
-    where: SectionWhereInput! = {}
-    orderBy: [SectionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Section!]
-  section(where: SectionWhereUniqueInput!): Section
-  sectionsCount(where: SectionWhereInput! = {}): Int
-  audioFiles(
-    where: AudioFileWhereInput! = {}
-    orderBy: [AudioFileOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [AudioFile!]
-  audioFile(where: AudioFileWhereUniqueInput!): AudioFile
-  audioFilesCount(where: AudioFileWhereInput! = {}): Int
+  ): [Event!]
+  event(where: EventWhereUniqueInput!): Event
+  eventsCount(where: EventWhereInput! = {}): Int
   externals(
     where: ExternalWhereInput! = {}
     orderBy: [ExternalOrderByInput!]! = []
@@ -2275,22 +2102,62 @@ type Query {
   ): [Tag!]
   tag(where: TagWhereUniqueInput!): Tag
   tagsCount(where: TagWhereInput! = {}): Int
-  postCategories(
-    where: PostCategoryWhereInput! = {}
-    orderBy: [PostCategoryOrderByInput!]! = []
+  topics(
+    where: TopicWhereInput! = {}
+    orderBy: [TopicOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [PostCategory!]
-  postCategory(where: PostCategoryWhereUniqueInput!): PostCategory
-  postCategoriesCount(where: PostCategoryWhereInput! = {}): Int
-  events(
-    where: EventWhereInput! = {}
-    orderBy: [EventOrderByInput!]! = []
+  ): [Topic!]
+  topic(where: TopicWhereUniqueInput!): Topic
+  topicsCount(where: TopicWhereInput! = {}): Int
+  magazines(
+    where: MagazineWhereInput! = {}
+    orderBy: [MagazineOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [Event!]
-  event(where: EventWhereUniqueInput!): Event
-  eventsCount(where: EventWhereInput! = {}): Int
+  ): [Magazine!]
+  magazine(where: MagazineWhereUniqueInput!): Magazine
+  magazinesCount(where: MagazineWhereInput! = {}): Int
+  audioFiles(
+    where: AudioFileWhereInput! = {}
+    orderBy: [AudioFileOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [AudioFile!]
+  audioFile(where: AudioFileWhereUniqueInput!): AudioFile
+  audioFilesCount(where: AudioFileWhereInput! = {}): Int
+  photos(
+    where: PhotoWhereInput! = {}
+    orderBy: [PhotoOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Photo!]
+  photo(where: PhotoWhereUniqueInput!): Photo
+  photosCount(where: PhotoWhereInput! = {}): Int
+  videos(
+    where: VideoWhereInput! = {}
+    orderBy: [VideoOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Video!]
+  video(where: VideoWhereUniqueInput!): Video
+  videosCount(where: VideoWhereInput! = {}): Int
+  sections(
+    where: SectionWhereInput! = {}
+    orderBy: [SectionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Section!]
+  section(where: SectionWhereUniqueInput!): Section
+  sectionsCount(where: SectionWhereInput! = {}): Int
+  categories(
+    where: CategoryWhereInput! = {}
+    orderBy: [CategoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Category!]
+  category(where: CategoryWhereUniqueInput!): Category
+  categoriesCount(where: CategoryWhereInput! = {}): Int
   partners(
     where: PartnerWhereInput! = {}
     orderBy: [PartnerOrderByInput!]! = []
@@ -2299,6 +2166,14 @@ type Query {
   ): [Partner!]
   partner(where: PartnerWhereUniqueInput!): Partner
   partnersCount(where: PartnerWhereInput! = {}): Int
+  contacts(
+    where: ContactWhereInput! = {}
+    orderBy: [ContactOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Contact!]
+  contact(where: ContactWhereUniqueInput!): Contact
+  contactsCount(where: ContactWhereInput! = {}): Int
   users(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
