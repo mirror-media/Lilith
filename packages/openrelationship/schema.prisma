@@ -225,6 +225,7 @@ model Person {
   contact_details                           String?
   links                                     String?
   source                                    String?
+  status                                    String?
   createdAt                                 DateTime?
   updatedAt                                 DateTime?
   createdBy                                 User?                @relation("Person_createdBy", fields: [createdById], references: [id])
@@ -287,6 +288,7 @@ model Organization {
   links                                                  String?
   address                                                String?
   source                                                 String?
+  status                                                 String?
   createdAt                                              DateTime?
   updatedAt                                              DateTime?
   createdBy                                              User?                       @relation("Organization_createdBy", fields: [createdById], references: [id])
@@ -339,6 +341,7 @@ model Membership {
   start_date      DateTime?
   end_date        DateTime?
   links           String        @default("")
+  status          String?
   createdAt       DateTime?
   updatedAt       DateTime?
   createdBy       User?         @relation("Membership_createdBy", fields: [createdById], references: [id])
@@ -361,6 +364,7 @@ model ContactDetail {
   value       String    @default("")
   valid_from  DateTime?
   valid_until DateTime?
+  status      String?
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?     @relation("ContactDetail_createdBy", fields: [createdById], references: [id])
@@ -558,6 +562,7 @@ model Politic {
   source                       String            @default("")
   contributer                  String            @default("")
   progress                     PoliticProgress[] @relation("Politic_progress")
+  status                       String?
   createdAt                    DateTime?
   updatedAt                    DateTime?
   createdBy                    User?             @relation("Politic_createdBy", fields: [createdById], references: [id])
@@ -602,6 +607,7 @@ model Lawsuit {
   judge_number  String    @default("")
   judge_desc    String    @default("")
   judge_content String    @default("")
+  status        String?
   createdAt     DateTime?
   updatedAt     DateTime?
   createdBy     User?     @relation("Lawsuit_createdBy", fields: [createdById], references: [id])

@@ -64,6 +64,9 @@ const listConfigurations = list ({
 	  many: true,
 	}),
       //posts: relationship({ ref: 'Post.author', many: true }),
+    wallet: text({
+      label: '區塊鏈錢包',
+    }),
   },
   ui: {
     listView: {
