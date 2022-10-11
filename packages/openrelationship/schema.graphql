@@ -807,6 +807,8 @@ type Person {
   contact_details: String
   links: String
   source: String
+  status: String
+  thread_parent: Person
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -840,6 +842,8 @@ input PersonWhereInput {
   contact_details: StringNullableFilter
   links: StringNullableFilter
   source: StringNullableFilter
+  status: StringNullableFilter
+  thread_parent: PersonWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -866,6 +870,7 @@ input PersonOrderByInput {
   contact_details: OrderDirection
   links: OrderDirection
   source: OrderDirection
+  status: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -889,6 +894,8 @@ input PersonUpdateInput {
   contact_details: String
   links: String
   source: String
+  status: String
+  thread_parent: PersonRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -919,6 +926,8 @@ input PersonCreateInput {
   contact_details: String
   links: String
   source: String
+  status: String
+  thread_parent: PersonRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1043,6 +1052,7 @@ type Organization {
   links: String
   address: String
   source: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1076,6 +1086,7 @@ input OrganizationWhereInput {
   links: StringNullableFilter
   address: StringNullableFilter
   source: StringNullableFilter
+  status: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1102,6 +1113,7 @@ input OrganizationOrderByInput {
   links: OrderDirection
   address: OrderDirection
   source: OrderDirection
+  status: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1125,6 +1137,7 @@ input OrganizationUpdateInput {
   links: String
   address: String
   source: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1155,6 +1168,7 @@ input OrganizationCreateInput {
   links: String
   address: String
   source: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1236,6 +1250,7 @@ type Membership {
   start_date: DateTime
   end_date: DateTime
   links: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1261,6 +1276,7 @@ input MembershipWhereInput {
   start_date: DateTimeNullableFilter
   end_date: DateTimeNullableFilter
   links: StringFilter
+  status: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1275,6 +1291,7 @@ input MembershipOrderByInput {
   start_date: OrderDirection
   end_date: OrderDirection
   links: OrderDirection
+  status: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1290,6 +1307,7 @@ input MembershipUpdateInput {
   start_date: DateTime
   end_date: DateTime
   links: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1318,6 +1336,7 @@ input MembershipCreateInput {
   start_date: DateTime
   end_date: DateTime
   links: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1336,6 +1355,7 @@ type ContactDetail {
   value: String
   valid_from: DateTime
   valid_until: DateTime
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1356,6 +1376,7 @@ input ContactDetailWhereInput {
   value: StringFilter
   valid_from: DateTimeNullableFilter
   valid_until: DateTimeNullableFilter
+  status: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1369,6 +1390,7 @@ input ContactDetailOrderByInput {
   value: OrderDirection
   valid_from: OrderDirection
   valid_until: OrderDirection
+  status: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1379,6 +1401,7 @@ input ContactDetailUpdateInput {
   value: String
   valid_from: DateTime
   valid_until: DateTime
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1396,6 +1419,7 @@ input ContactDetailCreateInput {
   value: String
   valid_from: DateTime
   valid_until: DateTime
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2060,6 +2084,8 @@ type Politic {
     skip: Int! = 0
   ): [PoliticProgress!]
   progressCount(where: PoliticProgressWhereInput! = {}): Int
+  status: String
+  thread_parent: Politic
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2080,6 +2106,8 @@ input PoliticWhereInput {
   source: StringFilter
   contributer: StringFilter
   progress: PoliticProgressManyRelationFilter
+  status: StringNullableFilter
+  thread_parent: PoliticWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2097,6 +2125,7 @@ input PoliticOrderByInput {
   desc: OrderDirection
   source: OrderDirection
   contributer: OrderDirection
+  status: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2107,6 +2136,8 @@ input PoliticUpdateInput {
   source: String
   contributer: String
   progress: PoliticProgressRelateToManyForUpdateInput
+  status: String
+  thread_parent: PoliticRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2126,6 +2157,12 @@ input PoliticProgressRelateToManyForUpdateInput {
   connect: [PoliticProgressWhereUniqueInput!]
 }
 
+input PoliticRelateToOneForUpdateInput {
+  create: PoliticCreateInput
+  connect: PoliticWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PoliticUpdateArgs {
   where: PoliticWhereUniqueInput!
   data: PoliticUpdateInput!
@@ -2137,6 +2174,8 @@ input PoliticCreateInput {
   source: String
   contributer: String
   progress: PoliticProgressRelateToManyForCreateInput
+  status: String
+  thread_parent: PoliticRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2151,6 +2190,11 @@ input PersonElectionRelateToOneForCreateInput {
 input PoliticProgressRelateToManyForCreateInput {
   create: [PoliticProgressCreateInput!]
   connect: [PoliticProgressWhereUniqueInput!]
+}
+
+input PoliticRelateToOneForCreateInput {
+  create: PoliticCreateInput
+  connect: PoliticWhereUniqueInput
 }
 
 type PoliticProgress {
@@ -2204,12 +2248,6 @@ input PoliticProgressUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input PoliticRelateToOneForUpdateInput {
-  create: PoliticCreateInput
-  connect: PoliticWhereUniqueInput
-  disconnect: Boolean
-}
-
 input PoliticProgressUpdateArgs {
   where: PoliticProgressWhereUniqueInput!
   data: PoliticProgressUpdateInput!
@@ -2226,11 +2264,6 @@ input PoliticProgressCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
-input PoliticRelateToOneForCreateInput {
-  create: PoliticCreateInput
-  connect: PoliticWhereUniqueInput
-}
-
 type Lawsuit {
   id: ID!
   person: Person
@@ -2241,6 +2274,7 @@ type Lawsuit {
   judge_number: String
   judge_desc: String
   judge_content: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2264,6 +2298,7 @@ input LawsuitWhereInput {
   judge_number: StringFilter
   judge_desc: StringFilter
   judge_content: StringFilter
+  status: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2279,6 +2314,7 @@ input LawsuitOrderByInput {
   judge_number: OrderDirection
   judge_desc: OrderDirection
   judge_content: OrderDirection
+  status: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2292,6 +2328,7 @@ input LawsuitUpdateInput {
   judge_number: String
   judge_desc: String
   judge_content: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2312,6 +2349,7 @@ input LawsuitCreateInput {
   judge_number: String
   judge_desc: String
   judge_content: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

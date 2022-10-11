@@ -225,6 +225,9 @@ model Person {
   contact_details                           String?
   links                                     String?
   source                                    String?
+  status                                    String?              @default("notverified")
+  thread_parent                             Person?              @relation("Person_thread_parent", fields: [thread_parentId], references: [id])
+  thread_parentId                           Int?                 @map("thread_parent")
   createdAt                                 DateTime?
   updatedAt                                 DateTime?
   createdBy                                 User?                @relation("Person_createdBy", fields: [createdById], references: [id])
@@ -232,6 +235,7 @@ model Person {
   updatedBy                                 User?                @relation("Person_updatedBy", fields: [updatedById], references: [id])
   updatedById                               Int?                 @map("updatedBy")
   from_Vote_pair                            Vote[]               @relation("Vote_pair")
+  from_Person_thread_parent                 Person[]             @relation("Person_thread_parent")
   from_Membership_member                    Membership[]         @relation("Membership_member")
   from_PersonElection_person_id             PersonElection[]     @relation("PersonElection_person_id")
   from_PersonOrganization_person_id         PersonOrganization[] @relation("PersonOrganization_person_id")
@@ -240,6 +244,7 @@ model Person {
   from_PersonRelationship_related_person_id PersonRelationship[] @relation("PersonRelationship_related_person_id")
   from_Lawsuit_person                       Lawsuit[]            @relation("Lawsuit_person")
 
+  @@index([thread_parentId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -287,6 +292,7 @@ model Organization {
   links                                                  String?
   address                                                String?
   source                                                 String?
+  status                                                 String?
   createdAt                                              DateTime?
   updatedAt                                              DateTime?
   createdBy                                              User?                       @relation("Organization_createdBy", fields: [createdById], references: [id])
@@ -339,6 +345,7 @@ model Membership {
   start_date      DateTime?
   end_date        DateTime?
   links           String        @default("")
+  status          String?
   createdAt       DateTime?
   updatedAt       DateTime?
   createdBy       User?         @relation("Membership_createdBy", fields: [createdById], references: [id])
@@ -361,6 +368,7 @@ model ContactDetail {
   value       String    @default("")
   valid_from  DateTime?
   valid_until DateTime?
+  status      String?
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?     @relation("ContactDetail_createdBy", fields: [createdById], references: [id])
@@ -558,15 +566,20 @@ model Politic {
   source                       String            @default("")
   contributer                  String            @default("")
   progress                     PoliticProgress[] @relation("Politic_progress")
+  status                       String?           @default("notverified")
+  thread_parent                Politic?          @relation("Politic_thread_parent", fields: [thread_parentId], references: [id])
+  thread_parentId              Int?              @map("thread_parent")
   createdAt                    DateTime?
   updatedAt                    DateTime?
   createdBy                    User?             @relation("Politic_createdBy", fields: [createdById], references: [id])
   createdById                  Int?              @map("createdBy")
   updatedBy                    User?             @relation("Politic_updatedBy", fields: [updatedById], references: [id])
   updatedById                  Int?              @map("updatedBy")
+  from_Politic_thread_parent   Politic[]         @relation("Politic_thread_parent")
   from_PoliticProgress_politic PoliticProgress[] @relation("PoliticProgress_politic")
 
   @@index([personId])
+  @@index([thread_parentId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -602,6 +615,7 @@ model Lawsuit {
   judge_number  String    @default("")
   judge_desc    String    @default("")
   judge_content String    @default("")
+  status        String?
   createdAt     DateTime?
   updatedAt     DateTime?
   createdBy     User?     @relation("Lawsuit_createdBy", fields: [createdById], references: [id])
