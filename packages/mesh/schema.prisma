@@ -152,6 +152,7 @@ model Publisher {
   full_screen_ad    String?   @default("none")
   paywall           Boolean   @default(false)
   follower          Member[]  @relation("Member_follow_publisher")
+  wallet            String    @default("")
   createdAt         DateTime?
   updatedAt         DateTime?
   createdBy         User?     @relation("Publisher_createdBy", fields: [createdById], references: [id])

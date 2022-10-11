@@ -128,6 +128,13 @@ const listConfigurations = list ({
 		isNullable: true,
 	  },
 	}),
+	status: select({
+	  options: [
+	    { label: '已確認', value: 'verified' },
+	    { label: '未確認', value: 'notverified' },
+	  ],
+	  label: '狀態',
+	}),
   },
   access: {
 	operation: {

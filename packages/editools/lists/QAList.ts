@@ -57,7 +57,7 @@ const listConfigurations = list({
 
           return embedCodeGen.buildEmbeddedCode(
             'react-qa-list',
-            { questions: items },
+            { questions: items, title: list?.name },
             embedCodeWebpackAssets
           )
         },

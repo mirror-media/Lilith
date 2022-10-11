@@ -1,6 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
-import {timestamp, text } from '@keystone-6/core/fields';
+import { select, timestamp, text } from '@keystone-6/core/fields';
 	  
 const {
   allowRoles,
@@ -22,6 +22,13 @@ const listConfigurations = list ({
     value: text({ label: '值' }),
     valid_from: timestamp({ label: '有效起始時間' }),
     valid_until: timestamp({ label: '有效截止時間' }),
+	status: select({
+	  options: [
+	    { label: '已確認', value: 'verified' },
+	    { label: '未確認', value: 'notverified' },
+	  ],
+	  label: '狀態',
+	}),
   },
   access: {
 	operation: {
