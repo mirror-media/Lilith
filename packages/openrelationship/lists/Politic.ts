@@ -32,8 +32,14 @@ const listConfigurations = list ({
 	    { label: '已確認', value: 'verified' },
 	    { label: '未確認', value: 'notverified' },
 	  ],
+	  defaultValue: 'notverified',
 	  label: '狀態',
 	}),
+    thread_parent: relationship({
+      label: '補充',
+      many: false,
+      ref: 'Politic',
+    }),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
   },
   access: {
