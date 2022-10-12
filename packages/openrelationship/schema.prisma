@@ -131,7 +131,7 @@ model Event {
   organization   String    @default("")
   attendees      String    @default("")
   parent         String    @default("")
-  children       String    @default("")
+  sub            String    @default("")
   createdAt      DateTime?
   updatedAt      DateTime?
   createdBy      User?     @relation("Event_createdBy", fields: [createdById], references: [id])
@@ -150,6 +150,7 @@ model Election {
   election_year_year           Int?
   election_year_month          Int?
   election_year_day            Int?
+  level                        String?          @default("local")
   type                         String?
   register_date                String           @default("")
   location                     String           @default("")
@@ -167,17 +168,18 @@ model Election {
 }
 
 model ElectionArea {
-  id          Int       @id @default(autoincrement())
-  name        String    @default("")
-  type        String    @default("")
-  description String    @default("")
-  status      String?   @default("active")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("ElectionArea_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("ElectionArea_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
+  id                                     Int              @id @default(autoincrement())
+  name                                   String           @default("")
+  type                                   String           @default("")
+  description                            String           @default("")
+  status                                 String?          @default("active")
+  createdAt                              DateTime?
+  updatedAt                              DateTime?
+  createdBy                              User?            @relation("ElectionArea_createdBy", fields: [createdById], references: [id])
+  createdById                            Int?             @map("createdBy")
+  updatedBy                              User?            @relation("ElectionArea_updatedBy", fields: [updatedById], references: [id])
+  updatedById                            Int?             @map("updatedBy")
+  from_PersonElection_electoral_district PersonElection[] @relation("PersonElection_electoral_district")
 
   @@index([createdById])
   @@index([updatedById])
@@ -456,11 +458,12 @@ model PersonElection {
   partyId                   Int?          @map("party")
   legislatoratlarge_number  String        @default("")
   number                    String        @default("")
-  electoral_district        String        @default("")
+  electoral_district        ElectionArea? @relation("PersonElection_electoral_district", fields: [electoral_districtId], references: [id])
+  electoral_districtId      Int?          @map("electoral_district")
   votes_obtained_number     String        @default("")
   votes_obtained_percentage String        @default("")
-  elected                   String        @default("")
-  incumbent                 String        @default("")
+  elected                   Boolean       @default(false)
+  incumbent                 Boolean       @default(false)
   source                    String        @default("")
   createdAt                 DateTime?
   updatedAt                 DateTime?
@@ -473,6 +476,7 @@ model PersonElection {
   @@index([person_idId])
   @@index([electionId])
   @@index([partyId])
+  @@index([electoral_districtId])
   @@index([createdById])
   @@index([updatedById])
 }

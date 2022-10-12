@@ -394,7 +394,7 @@ type Event {
   organization: String
   attendees: String
   parent: String
-  children: String
+  sub: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -422,7 +422,7 @@ input EventWhereInput {
   organization: StringFilter
   attendees: StringFilter
   parent: StringFilter
-  children: StringFilter
+  sub: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -443,7 +443,7 @@ input EventOrderByInput {
   organization: OrderDirection
   attendees: OrderDirection
   parent: OrderDirection
-  children: OrderDirection
+  sub: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -461,7 +461,7 @@ input EventUpdateInput {
   organization: String
   attendees: String
   parent: String
-  children: String
+  sub: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -486,7 +486,7 @@ input EventCreateInput {
   organization: String
   attendees: String
   parent: String
-  children: String
+  sub: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -500,6 +500,7 @@ type Election {
   election_year_year: Int
   election_year_month: Int
   election_year_day: Int
+  level: String
   type: String
   register_date: String
   location: String
@@ -524,6 +525,7 @@ input ElectionWhereInput {
   election_year_year: IntNullableFilter
   election_year_month: IntNullableFilter
   election_year_day: IntNullableFilter
+  level: StringNullableFilter
   type: StringNullableFilter
   register_date: StringFilter
   location: StringFilter
@@ -581,6 +583,7 @@ input ElectionOrderByInput {
   election_year_year: OrderDirection
   election_year_month: OrderDirection
   election_year_day: OrderDirection
+  level: OrderDirection
   type: OrderDirection
   register_date: OrderDirection
   location: OrderDirection
@@ -595,6 +598,7 @@ input ElectionUpdateInput {
   election_year_year: Int
   election_year_month: Int
   election_year_day: Int
+  level: String
   type: String
   register_date: String
   location: String
@@ -616,6 +620,7 @@ input ElectionCreateInput {
   election_year_year: Int
   election_year_month: Int
   election_year_day: Int
+  level: String
   type: String
   register_date: String
   location: String
@@ -1679,11 +1684,11 @@ type PersonElection {
   party: Organization
   legislatoratlarge_number: String
   number: String
-  electoral_district: String
+  electoral_district: ElectionArea
   votes_obtained_number: String
   votes_obtained_percentage: String
-  elected: String
-  incumbent: String
+  elected: Boolean
+  incumbent: Boolean
   source: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1705,11 +1710,11 @@ input PersonElectionWhereInput {
   party: OrganizationWhereInput
   legislatoratlarge_number: StringFilter
   number: StringFilter
-  electoral_district: StringFilter
+  electoral_district: ElectionAreaWhereInput
   votes_obtained_number: StringFilter
   votes_obtained_percentage: StringFilter
-  elected: StringFilter
-  incumbent: StringFilter
+  elected: BooleanFilter
+  incumbent: BooleanFilter
   source: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1721,7 +1726,6 @@ input PersonElectionOrderByInput {
   id: OrderDirection
   legislatoratlarge_number: OrderDirection
   number: OrderDirection
-  electoral_district: OrderDirection
   votes_obtained_number: OrderDirection
   votes_obtained_percentage: OrderDirection
   elected: OrderDirection
@@ -1737,11 +1741,11 @@ input PersonElectionUpdateInput {
   party: OrganizationRelateToOneForUpdateInput
   legislatoratlarge_number: String
   number: String
-  electoral_district: String
+  electoral_district: ElectionAreaRelateToOneForUpdateInput
   votes_obtained_number: String
   votes_obtained_percentage: String
-  elected: String
-  incumbent: String
+  elected: Boolean
+  incumbent: Boolean
   source: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1752,6 +1756,12 @@ input PersonElectionUpdateInput {
 input ElectionRelateToOneForUpdateInput {
   create: ElectionCreateInput
   connect: ElectionWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ElectionAreaRelateToOneForUpdateInput {
+  create: ElectionAreaCreateInput
+  connect: ElectionAreaWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -1766,11 +1776,11 @@ input PersonElectionCreateInput {
   party: OrganizationRelateToOneForCreateInput
   legislatoratlarge_number: String
   number: String
-  electoral_district: String
+  electoral_district: ElectionAreaRelateToOneForCreateInput
   votes_obtained_number: String
   votes_obtained_percentage: String
-  elected: String
-  incumbent: String
+  elected: Boolean
+  incumbent: Boolean
   source: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1781,6 +1791,11 @@ input PersonElectionCreateInput {
 input ElectionRelateToOneForCreateInput {
   create: ElectionCreateInput
   connect: ElectionWhereUniqueInput
+}
+
+input ElectionAreaRelateToOneForCreateInput {
+  create: ElectionAreaCreateInput
+  connect: ElectionAreaWhereUniqueInput
 }
 
 type PersonOrganization {
