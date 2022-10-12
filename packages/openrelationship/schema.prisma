@@ -170,7 +170,8 @@ model Election {
 model ElectionArea {
   id                                     Int              @id @default(autoincrement())
   name                                   String           @default("")
-  type                                   String           @default("")
+  level                                  String?          @default("local")
+  type                                   String?
   description                            String           @default("")
   status                                 String?          @default("active")
   createdAt                              DateTime?

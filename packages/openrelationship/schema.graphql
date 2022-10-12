@@ -634,6 +634,7 @@ input ElectionCreateInput {
 type ElectionArea {
   id: ID!
   name: String
+  level: String
   type: String
   description: String
   status: String
@@ -653,7 +654,8 @@ input ElectionAreaWhereInput {
   NOT: [ElectionAreaWhereInput!]
   id: IDFilter
   name: StringFilter
-  type: StringFilter
+  level: StringNullableFilter
+  type: StringNullableFilter
   description: StringFilter
   status: StringNullableFilter
   createdAt: DateTimeNullableFilter
@@ -665,6 +667,7 @@ input ElectionAreaWhereInput {
 input ElectionAreaOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  level: OrderDirection
   type: OrderDirection
   description: OrderDirection
   status: OrderDirection
@@ -674,6 +677,7 @@ input ElectionAreaOrderByInput {
 
 input ElectionAreaUpdateInput {
   name: String
+  level: String
   type: String
   description: String
   status: String
@@ -690,6 +694,7 @@ input ElectionAreaUpdateArgs {
 
 input ElectionAreaCreateInput {
   name: String
+  level: String
   type: String
   description: String
   status: String
