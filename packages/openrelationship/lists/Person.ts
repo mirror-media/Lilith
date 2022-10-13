@@ -20,7 +20,7 @@ const listConfigurations = list ({
   fields: {
     name: text({ 
 	  label: '姓名', 
-	  isRequired: true 
+	  validation: { isRequired: true }
 	}),
     alternative: text({ 
 	  label: '別名',
@@ -43,7 +43,7 @@ const listConfigurations = list ({
     gender: select({
       label: '生理性別',
       options: genderOptions,
-      default: 'NA',
+      defaultValue: 'NA',
     }),
     birth_date_year: integer({ 
 	  label: '出生年',
@@ -98,6 +98,9 @@ const listConfigurations = list ({
 	  db: {
 		isNullable: true,
 	  },
+	  ui: {
+		displayMode: 'textarea',
+	  }
 	}),
     national_identity: text({ 
 	  label: '國籍',

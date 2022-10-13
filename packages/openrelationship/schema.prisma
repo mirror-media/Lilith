@@ -214,7 +214,7 @@ model Person {
   alternative                               String?
   other_names                               String?
   email                                     String?
-  gender                                    String?
+  gender                                    String?              @default("NA")
   birth_date_year                           Int?
   birth_date_month                          Int?
   birth_date_day                            Int?
