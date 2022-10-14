@@ -38,7 +38,13 @@ const listConfigurations = list({
 				{ value: 'provinceCouncilMember', label: '省議員' },
 				{ value: 'nationalAssembly', label: '國大代表' },
 				{ value: 'by-electionLegislator', label: '立委補選' },
-
+			],
+		}),
+		aboriginal: select({
+			label: '原住民選區類別',
+			options: [
+				{ value: 'plain', label: '平地原住民' },
+				{ value: 'mt', label: '山地原住民' },
 			],
 		}),
 		description: text({ label: '敘述' }),
