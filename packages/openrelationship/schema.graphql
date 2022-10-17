@@ -664,7 +664,7 @@ type ElectionArea {
   name: String
   level: String
   type: String
-  aboriginal: String
+  indigenous: String
   description: String
   status: String
   createdAt: DateTime
@@ -685,7 +685,7 @@ input ElectionAreaWhereInput {
   name: StringFilter
   level: StringNullableFilter
   type: StringNullableFilter
-  aboriginal: StringNullableFilter
+  indigenous: StringNullableFilter
   description: StringFilter
   status: StringNullableFilter
   createdAt: DateTimeNullableFilter
@@ -699,7 +699,7 @@ input ElectionAreaOrderByInput {
   name: OrderDirection
   level: OrderDirection
   type: OrderDirection
-  aboriginal: OrderDirection
+  indigenous: OrderDirection
   description: OrderDirection
   status: OrderDirection
   createdAt: OrderDirection
@@ -710,7 +710,7 @@ input ElectionAreaUpdateInput {
   name: String
   level: String
   type: String
-  aboriginal: String
+  indigenous: String
   description: String
   status: String
   createdAt: DateTime
@@ -728,7 +728,7 @@ input ElectionAreaCreateInput {
   name: String
   level: String
   type: String
-  aboriginal: String
+  indigenous: String
   description: String
   status: String
   createdAt: DateTime

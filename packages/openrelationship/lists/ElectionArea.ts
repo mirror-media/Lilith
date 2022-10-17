@@ -40,11 +40,13 @@ const listConfigurations = list({
 				{ value: '立委補選', label: '立委補選' },
 			],
 		}),
-		aboriginal: select({
-			label: '原住民選區類別',
+		indigenous: select({
+			label: '選區類別',
 			options: [
-				{ value: 'plain', label: '平地原住民' },
-				{ value: 'mt', label: '山地原住民' },
+				{ value: 'plainIndigenous', label: '平地原住民' },
+				{ value: 'mountainIndigenous', label: '山地原住民' },
+				{ value: 'normal', label: '一般選區' },
+
 			],
 		}),
 		description: text({ label: '敘述' }),
