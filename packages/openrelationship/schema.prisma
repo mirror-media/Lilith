@@ -156,6 +156,7 @@ model Election {
   type                         String?
   register_date                String           @default("")
   location                     String           @default("")
+  electionArea                 ElectionArea[]   @relation("ElectionArea_election")
   status                       String?
   tags                         Tag[]            @relation("Election_tags")
   createdAt                    DateTime?
@@ -173,8 +174,8 @@ model Election {
 model ElectionArea {
   id                                     Int              @id @default(autoincrement())
   name                                   String           @default("")
-  level                                  String?          @default("local")
-  type                                   String?
+  election                               Election?        @relation("ElectionArea_election", fields: [electionId], references: [id])
+  electionId                             Int?             @map("election")
   indigenous                             String?
   description                            String           @default("")
   status                                 String?          @default("active")
@@ -186,6 +187,7 @@ model ElectionArea {
   updatedById                            Int?             @map("updatedBy")
   from_PersonElection_electoral_district PersonElection[] @relation("PersonElection_electoral_district")
 
+  @@index([electionId])
   @@index([createdById])
   @@index([updatedById])
 }

@@ -45,6 +45,10 @@ const listConfigurations = list({
 		}),
 		register_date: text({ label: '登記日期' }),
 		location: text({ label: '位置' }),
+		electionArea: relationship({
+			ref: 'ElectionArea.election',
+			many: true,
+		}),
 		status: select({
 			label: '狀態',
 			options: [
