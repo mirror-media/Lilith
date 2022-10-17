@@ -39,6 +39,9 @@ const listConfigurations = list ({
 	  db: {
 		isNullable: true,
 	  },
+	  ui: {
+		displayMode: 'textarea',
+	  }
 	}),
     gender: select({
       label: '生理性別',
@@ -113,18 +116,27 @@ const listConfigurations = list ({
 	  db: {
 		isNullable: true,
 	  },
+	  ui: {
+		displayMode: 'textarea',
+	  }
 	}),
     links: text({ 
 	  label: '網站',
 	  db: {
 		isNullable: true,
 	  },
+	  ui: {
+		displayMode: 'textarea',
+	  }
 	}),
     source: text({ 
 	  label: '資料來源',
 	  db: {
 		isNullable: true,
 	  },
+	  ui: {
+		displayMode: 'textarea',
+	  }
 	}),
 	status: select({
 	  options: [

@@ -504,6 +504,13 @@ type Election {
   type: String
   register_date: String
   location: String
+  electionArea(
+    where: ElectionAreaWhereInput! = {}
+    orderBy: [ElectionAreaOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ElectionArea!]
+  electionAreaCount(where: ElectionAreaWhereInput! = {}): Int
   status: String
   tags(
     where: TagWhereInput! = {}
@@ -536,6 +543,7 @@ input ElectionWhereInput {
   type: StringNullableFilter
   register_date: StringFilter
   location: StringFilter
+  electionArea: ElectionAreaManyRelationFilter
   status: StringNullableFilter
   tags: TagManyRelationFilter
   createdAt: DateTimeNullableFilter
@@ -584,6 +592,12 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
+input ElectionAreaManyRelationFilter {
+  every: ElectionAreaWhereInput
+  some: ElectionAreaWhereInput
+  none: ElectionAreaWhereInput
+}
+
 input TagManyRelationFilter {
   every: TagWhereInput
   some: TagWhereInput
@@ -616,12 +630,20 @@ input ElectionUpdateInput {
   type: String
   register_date: String
   location: String
+  electionArea: ElectionAreaRelateToManyForUpdateInput
   status: String
   tags: TagRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ElectionAreaRelateToManyForUpdateInput {
+  disconnect: [ElectionAreaWhereUniqueInput!]
+  set: [ElectionAreaWhereUniqueInput!]
+  create: [ElectionAreaCreateInput!]
+  connect: [ElectionAreaWhereUniqueInput!]
 }
 
 input TagRelateToManyForUpdateInput {
@@ -646,12 +668,18 @@ input ElectionCreateInput {
   type: String
   register_date: String
   location: String
+  electionArea: ElectionAreaRelateToManyForCreateInput
   status: String
   tags: TagRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input ElectionAreaRelateToManyForCreateInput {
+  create: [ElectionAreaCreateInput!]
+  connect: [ElectionAreaWhereUniqueInput!]
 }
 
 input TagRelateToManyForCreateInput {
@@ -662,8 +690,7 @@ input TagRelateToManyForCreateInput {
 type ElectionArea {
   id: ID!
   name: String
-  level: String
-  type: String
+  election: Election
   indigenous: String
   description: String
   status: String
@@ -683,8 +710,7 @@ input ElectionAreaWhereInput {
   NOT: [ElectionAreaWhereInput!]
   id: IDFilter
   name: StringFilter
-  level: StringNullableFilter
-  type: StringNullableFilter
+  election: ElectionWhereInput
   indigenous: StringNullableFilter
   description: StringFilter
   status: StringNullableFilter
@@ -697,8 +723,6 @@ input ElectionAreaWhereInput {
 input ElectionAreaOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  level: OrderDirection
-  type: OrderDirection
   indigenous: OrderDirection
   description: OrderDirection
   status: OrderDirection
@@ -708,8 +732,7 @@ input ElectionAreaOrderByInput {
 
 input ElectionAreaUpdateInput {
   name: String
-  level: String
-  type: String
+  election: ElectionRelateToOneForUpdateInput
   indigenous: String
   description: String
   status: String
@@ -719,6 +742,12 @@ input ElectionAreaUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
+input ElectionRelateToOneForUpdateInput {
+  create: ElectionCreateInput
+  connect: ElectionWhereUniqueInput
+  disconnect: Boolean
+}
+
 input ElectionAreaUpdateArgs {
   where: ElectionAreaWhereUniqueInput!
   data: ElectionAreaUpdateInput!
@@ -726,8 +755,7 @@ input ElectionAreaUpdateArgs {
 
 input ElectionAreaCreateInput {
   name: String
-  level: String
-  type: String
+  election: ElectionRelateToOneForCreateInput
   indigenous: String
   description: String
   status: String
@@ -735,6 +763,11 @@ input ElectionAreaCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input ElectionRelateToOneForCreateInput {
+  create: ElectionCreateInput
+  connect: ElectionWhereUniqueInput
 }
 
 type Vote {
@@ -1811,12 +1844,6 @@ input PersonElectionUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input ElectionRelateToOneForUpdateInput {
-  create: ElectionCreateInput
-  connect: ElectionWhereUniqueInput
-  disconnect: Boolean
-}
-
 input ElectionAreaRelateToOneForUpdateInput {
   create: ElectionAreaCreateInput
   connect: ElectionAreaWhereUniqueInput
@@ -1844,11 +1871,6 @@ input PersonElectionCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input ElectionRelateToOneForCreateInput {
-  create: ElectionCreateInput
-  connect: ElectionWhereUniqueInput
 }
 
 input ElectionAreaRelateToOneForCreateInput {
