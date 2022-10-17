@@ -175,7 +175,7 @@ model ElectionArea {
   name                                   String           @default("")
   level                                  String?          @default("local")
   type                                   String?
-  aboriginal                             String?
+  indigenous                             String?
   description                            String           @default("")
   status                                 String?          @default("active")
   createdAt                              DateTime?
