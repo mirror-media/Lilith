@@ -62,6 +62,8 @@ model User {
   from_PoliticProgress_updatedBy           PoliticProgress[]           @relation("PoliticProgress_updatedBy")
   from_Lawsuit_createdBy                   Lawsuit[]                   @relation("Lawsuit_createdBy")
   from_Lawsuit_updatedBy                   Lawsuit[]                   @relation("Lawsuit_updatedBy")
+  from_Tag_createdBy                       Tag[]                       @relation("Tag_createdBy")
+  from_Tag_updatedBy                       Tag[]                       @relation("Tag_updatedBy")
 }
 
 model Post {
@@ -155,6 +157,7 @@ model Election {
   register_date                String           @default("")
   location                     String           @default("")
   status                       String?
+  tags                         Tag[]            @relation("Election_tags")
   createdAt                    DateTime?
   updatedAt                    DateTime?
   createdBy                    User?            @relation("Election_createdBy", fields: [createdById], references: [id])
@@ -232,6 +235,7 @@ model Person {
   status                                    String?              @default("notverified")
   thread_parent                             Person?              @relation("Person_thread_parent", fields: [thread_parentId], references: [id])
   thread_parentId                           Int?                 @map("thread_parent")
+  tags                                      Tag[]                @relation("Person_tags")
   createdAt                                 DateTime?
   updatedAt                                 DateTime?
   createdBy                                 User?                @relation("Person_createdBy", fields: [createdById], references: [id])
@@ -297,6 +301,7 @@ model Organization {
   address                                                String?
   source                                                 String?
   status                                                 String?
+  tags                                                   Tag[]                       @relation("Organization_tags")
   createdAt                                              DateTime?
   updatedAt                                              DateTime?
   createdBy                                              User?                       @relation("Organization_createdBy", fields: [createdById], references: [id])
@@ -630,6 +635,28 @@ model Lawsuit {
   updatedById   Int?      @map("updatedBy")
 
   @@index([personId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Tag {
+  id                     Int            @id @default(autoincrement())
+  name                   String         @unique @default("")
+  brief                  String         @default("")
+  state                  String?        @default("active")
+  ogTitle                String         @default("")
+  ogDescription          String         @default("")
+  isFeatured             Boolean        @default(false)
+  createdAt              DateTime?
+  updatedAt              DateTime?
+  createdBy              User?          @relation("Tag_createdBy", fields: [createdById], references: [id])
+  createdById            Int?           @map("createdBy")
+  updatedBy              User?          @relation("Tag_updatedBy", fields: [updatedById], references: [id])
+  updatedById            Int?           @map("updatedBy")
+  from_Election_tags     Election[]     @relation("Election_tags")
+  from_Person_tags       Person[]       @relation("Person_tags")
+  from_Organization_tags Organization[] @relation("Organization_tags")
+
   @@index([createdById])
   @@index([updatedById])
 }

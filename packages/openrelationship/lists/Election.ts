@@ -52,6 +52,11 @@ const listConfigurations = list({
 				{ value: 'deactive', label: '失效' },
 			],
 		}),
+        tags: relationship({
+          label: '標籤',
+          many: true,
+          ref: 'Tag',
+        }),
 	},
 	access: {
 		operation: {

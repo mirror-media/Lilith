@@ -139,6 +139,11 @@ const listConfigurations = list ({
       many: false,
       ref: 'Person',
     }),
+    tags: relationship({
+      label: '標籤',
+      many: true,
+      ref: 'Tag',
+    }),
   },
   access: {
 	operation: {
