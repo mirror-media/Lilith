@@ -694,6 +694,7 @@ type ElectionArea {
   indigenous: String
   description: String
   status: String
+  city: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -892,6 +893,7 @@ type Person {
     skip: Int! = 0
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -928,6 +930,7 @@ input PersonWhereInput {
   status: StringNullableFilter
   thread_parent: PersonWhereInput
   tags: TagManyRelationFilter
+  reviewed: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -955,6 +958,7 @@ input PersonOrderByInput {
   links: OrderDirection
   source: OrderDirection
   status: OrderDirection
+  reviewed: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -981,6 +985,7 @@ input PersonUpdateInput {
   status: String
   thread_parent: PersonRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1014,6 +1019,7 @@ input PersonCreateInput {
   status: String
   thread_parent: PersonRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1146,6 +1152,7 @@ type Organization {
     skip: Int! = 0
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1181,6 +1188,7 @@ input OrganizationWhereInput {
   source: StringNullableFilter
   status: StringNullableFilter
   tags: TagManyRelationFilter
+  reviewed: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1208,6 +1216,7 @@ input OrganizationOrderByInput {
   address: OrderDirection
   source: OrderDirection
   status: OrderDirection
+  reviewed: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1233,6 +1242,7 @@ input OrganizationUpdateInput {
   source: String
   status: String
   tags: TagRelateToManyForUpdateInput
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1265,6 +1275,7 @@ input OrganizationCreateInput {
   source: String
   status: String
   tags: TagRelateToManyForCreateInput
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2181,6 +2192,8 @@ type Politic {
   progressCount(where: PoliticProgressWhereInput! = {}): Int
   status: String
   thread_parent: Politic
+  tag: Tag
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2203,6 +2216,8 @@ input PoliticWhereInput {
   progress: PoliticProgressManyRelationFilter
   status: StringNullableFilter
   thread_parent: PoliticWhereInput
+  tag: TagWhereInput
+  reviewed: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2221,6 +2236,7 @@ input PoliticOrderByInput {
   source: OrderDirection
   contributer: OrderDirection
   status: OrderDirection
+  reviewed: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2233,6 +2249,8 @@ input PoliticUpdateInput {
   progress: PoliticProgressRelateToManyForUpdateInput
   status: String
   thread_parent: PoliticRelateToOneForUpdateInput
+  tag: TagRelateToOneForUpdateInput
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2258,6 +2276,12 @@ input PoliticRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input TagRelateToOneForUpdateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PoliticUpdateArgs {
   where: PoliticWhereUniqueInput!
   data: PoliticUpdateInput!
@@ -2271,6 +2295,8 @@ input PoliticCreateInput {
   progress: PoliticProgressRelateToManyForCreateInput
   status: String
   thread_parent: PoliticRelateToOneForCreateInput
+  tag: TagRelateToOneForCreateInput
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2290,6 +2316,11 @@ input PoliticProgressRelateToManyForCreateInput {
 input PoliticRelateToOneForCreateInput {
   create: PoliticCreateInput
   connect: PoliticWhereUniqueInput
+}
+
+input TagRelateToOneForCreateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
 }
 
 type PoliticProgress {

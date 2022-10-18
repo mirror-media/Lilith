@@ -1,6 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
-import { relationship, select, integer, text } from '@keystone-6/core/fields';
+import { checkbox, relationship, select, integer, text } from '@keystone-6/core/fields';
 	  
 const {
   allowRoles,
@@ -156,6 +156,10 @@ const listConfigurations = list ({
       many: true,
       ref: 'Tag',
     }),
+	reviewed: checkbox({
+	  defaultValue: false,
+	  label: '檢閱',
+	}),
   },
   access: {
 	operation: {
