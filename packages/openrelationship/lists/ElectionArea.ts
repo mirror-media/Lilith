@@ -24,8 +24,8 @@ const listConfigurations = list({
 			options: [
 				{ value: 'plainIndigenous', label: '平地原住民' },
 				{ value: 'mountainIndigenous', label: '山地原住民' },
+				{ value: 'indigenous', label: '原住民' },
 				{ value: 'normal', label: '一般選區' },
-
 			],
 		}),
 		description: text({ label: '敘述' }),
