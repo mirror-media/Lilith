@@ -394,7 +394,7 @@ type Event {
   organization: String
   attendees: String
   parent: String
-  children: String
+  sub: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -422,7 +422,7 @@ input EventWhereInput {
   organization: StringFilter
   attendees: StringFilter
   parent: StringFilter
-  children: StringFilter
+  sub: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -443,7 +443,7 @@ input EventOrderByInput {
   organization: OrderDirection
   attendees: OrderDirection
   parent: OrderDirection
-  children: OrderDirection
+  sub: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -461,7 +461,7 @@ input EventUpdateInput {
   organization: String
   attendees: String
   parent: String
-  children: String
+  sub: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -486,7 +486,7 @@ input EventCreateInput {
   organization: String
   attendees: String
   parent: String
-  children: String
+  sub: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -500,10 +500,25 @@ type Election {
   election_year_year: Int
   election_year_month: Int
   election_year_day: Int
+  level: String
   type: String
   register_date: String
   location: String
+  electionArea(
+    where: ElectionAreaWhereInput! = {}
+    orderBy: [ElectionAreaOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ElectionArea!]
+  electionAreaCount(where: ElectionAreaWhereInput! = {}): Int
   status: String
+  tags(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -524,10 +539,13 @@ input ElectionWhereInput {
   election_year_year: IntNullableFilter
   election_year_month: IntNullableFilter
   election_year_day: IntNullableFilter
+  level: StringNullableFilter
   type: StringNullableFilter
   register_date: StringFilter
   location: StringFilter
+  electionArea: ElectionAreaManyRelationFilter
   status: StringNullableFilter
+  tags: TagManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -574,6 +592,18 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
+input ElectionAreaManyRelationFilter {
+  every: ElectionAreaWhereInput
+  some: ElectionAreaWhereInput
+  none: ElectionAreaWhereInput
+}
+
+input TagManyRelationFilter {
+  every: TagWhereInput
+  some: TagWhereInput
+  none: TagWhereInput
+}
+
 input ElectionOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -581,6 +611,7 @@ input ElectionOrderByInput {
   election_year_year: OrderDirection
   election_year_month: OrderDirection
   election_year_day: OrderDirection
+  level: OrderDirection
   type: OrderDirection
   register_date: OrderDirection
   location: OrderDirection
@@ -595,14 +626,31 @@ input ElectionUpdateInput {
   election_year_year: Int
   election_year_month: Int
   election_year_day: Int
+  level: String
   type: String
   register_date: String
   location: String
+  electionArea: ElectionAreaRelateToManyForUpdateInput
   status: String
+  tags: TagRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ElectionAreaRelateToManyForUpdateInput {
+  disconnect: [ElectionAreaWhereUniqueInput!]
+  set: [ElectionAreaWhereUniqueInput!]
+  create: [ElectionAreaCreateInput!]
+  connect: [ElectionAreaWhereUniqueInput!]
+}
+
+input TagRelateToManyForUpdateInput {
+  disconnect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
 }
 
 input ElectionUpdateArgs {
@@ -616,22 +664,37 @@ input ElectionCreateInput {
   election_year_year: Int
   election_year_month: Int
   election_year_day: Int
+  level: String
   type: String
   register_date: String
   location: String
+  electionArea: ElectionAreaRelateToManyForCreateInput
   status: String
+  tags: TagRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
 }
 
+input ElectionAreaRelateToManyForCreateInput {
+  create: [ElectionAreaCreateInput!]
+  connect: [ElectionAreaWhereUniqueInput!]
+}
+
+input TagRelateToManyForCreateInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
+}
+
 type ElectionArea {
   id: ID!
   name: String
-  type: String
+  election: Election
+  indigenous: String
   description: String
   status: String
+  city: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -648,7 +711,8 @@ input ElectionAreaWhereInput {
   NOT: [ElectionAreaWhereInput!]
   id: IDFilter
   name: StringFilter
-  type: StringFilter
+  election: ElectionWhereInput
+  indigenous: StringNullableFilter
   description: StringFilter
   status: StringNullableFilter
   createdAt: DateTimeNullableFilter
@@ -660,7 +724,7 @@ input ElectionAreaWhereInput {
 input ElectionAreaOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  type: OrderDirection
+  indigenous: OrderDirection
   description: OrderDirection
   status: OrderDirection
   createdAt: OrderDirection
@@ -669,13 +733,20 @@ input ElectionAreaOrderByInput {
 
 input ElectionAreaUpdateInput {
   name: String
-  type: String
+  election: ElectionRelateToOneForUpdateInput
+  indigenous: String
   description: String
   status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ElectionRelateToOneForUpdateInput {
+  create: ElectionCreateInput
+  connect: ElectionWhereUniqueInput
+  disconnect: Boolean
 }
 
 input ElectionAreaUpdateArgs {
@@ -685,13 +756,19 @@ input ElectionAreaUpdateArgs {
 
 input ElectionAreaCreateInput {
   name: String
-  type: String
+  election: ElectionRelateToOneForCreateInput
+  indigenous: String
   description: String
   status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input ElectionRelateToOneForCreateInput {
+  create: ElectionCreateInput
+  connect: ElectionWhereUniqueInput
 }
 
 type Vote {
@@ -807,6 +884,16 @@ type Person {
   contact_details: String
   links: String
   source: String
+  status: String
+  thread_parent: Person
+  tags(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -840,6 +927,10 @@ input PersonWhereInput {
   contact_details: StringNullableFilter
   links: StringNullableFilter
   source: StringNullableFilter
+  status: StringNullableFilter
+  thread_parent: PersonWhereInput
+  tags: TagManyRelationFilter
+  reviewed: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -866,6 +957,8 @@ input PersonOrderByInput {
   contact_details: OrderDirection
   links: OrderDirection
   source: OrderDirection
+  status: OrderDirection
+  reviewed: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -889,6 +982,10 @@ input PersonUpdateInput {
   contact_details: String
   links: String
   source: String
+  status: String
+  thread_parent: PersonRelateToOneForUpdateInput
+  tags: TagRelateToManyForUpdateInput
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -919,6 +1016,10 @@ input PersonCreateInput {
   contact_details: String
   links: String
   source: String
+  status: String
+  thread_parent: PersonRelateToOneForCreateInput
+  tags: TagRelateToManyForCreateInput
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1043,6 +1144,15 @@ type Organization {
   links: String
   address: String
   source: String
+  status: String
+  tags(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1076,6 +1186,9 @@ input OrganizationWhereInput {
   links: StringNullableFilter
   address: StringNullableFilter
   source: StringNullableFilter
+  status: StringNullableFilter
+  tags: TagManyRelationFilter
+  reviewed: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1102,6 +1215,8 @@ input OrganizationOrderByInput {
   links: OrderDirection
   address: OrderDirection
   source: OrderDirection
+  status: OrderDirection
+  reviewed: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1125,6 +1240,9 @@ input OrganizationUpdateInput {
   links: String
   address: String
   source: String
+  status: String
+  tags: TagRelateToManyForUpdateInput
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1155,6 +1273,9 @@ input OrganizationCreateInput {
   links: String
   address: String
   source: String
+  status: String
+  tags: TagRelateToManyForCreateInput
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1236,6 +1357,7 @@ type Membership {
   start_date: DateTime
   end_date: DateTime
   links: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1261,6 +1383,7 @@ input MembershipWhereInput {
   start_date: DateTimeNullableFilter
   end_date: DateTimeNullableFilter
   links: StringFilter
+  status: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1275,6 +1398,7 @@ input MembershipOrderByInput {
   start_date: OrderDirection
   end_date: OrderDirection
   links: OrderDirection
+  status: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1290,6 +1414,7 @@ input MembershipUpdateInput {
   start_date: DateTime
   end_date: DateTime
   links: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1318,6 +1443,7 @@ input MembershipCreateInput {
   start_date: DateTime
   end_date: DateTime
   links: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1336,6 +1462,7 @@ type ContactDetail {
   value: String
   valid_from: DateTime
   valid_until: DateTime
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1356,6 +1483,7 @@ input ContactDetailWhereInput {
   value: StringFilter
   valid_from: DateTimeNullableFilter
   valid_until: DateTimeNullableFilter
+  status: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1369,6 +1497,7 @@ input ContactDetailOrderByInput {
   value: OrderDirection
   valid_from: OrderDirection
   valid_until: OrderDirection
+  status: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1379,6 +1508,7 @@ input ContactDetailUpdateInput {
   value: String
   valid_from: DateTime
   valid_until: DateTime
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1396,6 +1526,7 @@ input ContactDetailCreateInput {
   value: String
   valid_from: DateTime
   valid_until: DateTime
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1655,11 +1786,11 @@ type PersonElection {
   party: Organization
   legislatoratlarge_number: String
   number: String
-  electoral_district: String
+  electoral_district: ElectionArea
   votes_obtained_number: String
   votes_obtained_percentage: String
-  elected: String
-  incumbent: String
+  elected: Boolean
+  incumbent: Boolean
   source: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1681,11 +1812,11 @@ input PersonElectionWhereInput {
   party: OrganizationWhereInput
   legislatoratlarge_number: StringFilter
   number: StringFilter
-  electoral_district: StringFilter
+  electoral_district: ElectionAreaWhereInput
   votes_obtained_number: StringFilter
   votes_obtained_percentage: StringFilter
-  elected: StringFilter
-  incumbent: StringFilter
+  elected: BooleanFilter
+  incumbent: BooleanFilter
   source: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1697,7 +1828,6 @@ input PersonElectionOrderByInput {
   id: OrderDirection
   legislatoratlarge_number: OrderDirection
   number: OrderDirection
-  electoral_district: OrderDirection
   votes_obtained_number: OrderDirection
   votes_obtained_percentage: OrderDirection
   elected: OrderDirection
@@ -1713,11 +1843,11 @@ input PersonElectionUpdateInput {
   party: OrganizationRelateToOneForUpdateInput
   legislatoratlarge_number: String
   number: String
-  electoral_district: String
+  electoral_district: ElectionAreaRelateToOneForUpdateInput
   votes_obtained_number: String
   votes_obtained_percentage: String
-  elected: String
-  incumbent: String
+  elected: Boolean
+  incumbent: Boolean
   source: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1725,9 +1855,9 @@ input PersonElectionUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input ElectionRelateToOneForUpdateInput {
-  create: ElectionCreateInput
-  connect: ElectionWhereUniqueInput
+input ElectionAreaRelateToOneForUpdateInput {
+  create: ElectionAreaCreateInput
+  connect: ElectionAreaWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -1742,11 +1872,11 @@ input PersonElectionCreateInput {
   party: OrganizationRelateToOneForCreateInput
   legislatoratlarge_number: String
   number: String
-  electoral_district: String
+  electoral_district: ElectionAreaRelateToOneForCreateInput
   votes_obtained_number: String
   votes_obtained_percentage: String
-  elected: String
-  incumbent: String
+  elected: Boolean
+  incumbent: Boolean
   source: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1754,9 +1884,9 @@ input PersonElectionCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
-input ElectionRelateToOneForCreateInput {
-  create: ElectionCreateInput
-  connect: ElectionWhereUniqueInput
+input ElectionAreaRelateToOneForCreateInput {
+  create: ElectionAreaCreateInput
+  connect: ElectionAreaWhereUniqueInput
 }
 
 type PersonOrganization {
@@ -2060,6 +2190,10 @@ type Politic {
     skip: Int! = 0
   ): [PoliticProgress!]
   progressCount(where: PoliticProgressWhereInput! = {}): Int
+  status: String
+  thread_parent: Politic
+  tag: Tag
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2080,6 +2214,10 @@ input PoliticWhereInput {
   source: StringFilter
   contributer: StringFilter
   progress: PoliticProgressManyRelationFilter
+  status: StringNullableFilter
+  thread_parent: PoliticWhereInput
+  tag: TagWhereInput
+  reviewed: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2097,6 +2235,8 @@ input PoliticOrderByInput {
   desc: OrderDirection
   source: OrderDirection
   contributer: OrderDirection
+  status: OrderDirection
+  reviewed: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2107,6 +2247,10 @@ input PoliticUpdateInput {
   source: String
   contributer: String
   progress: PoliticProgressRelateToManyForUpdateInput
+  status: String
+  thread_parent: PoliticRelateToOneForUpdateInput
+  tag: TagRelateToOneForUpdateInput
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2126,6 +2270,18 @@ input PoliticProgressRelateToManyForUpdateInput {
   connect: [PoliticProgressWhereUniqueInput!]
 }
 
+input PoliticRelateToOneForUpdateInput {
+  create: PoliticCreateInput
+  connect: PoliticWhereUniqueInput
+  disconnect: Boolean
+}
+
+input TagRelateToOneForUpdateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PoliticUpdateArgs {
   where: PoliticWhereUniqueInput!
   data: PoliticUpdateInput!
@@ -2137,6 +2293,10 @@ input PoliticCreateInput {
   source: String
   contributer: String
   progress: PoliticProgressRelateToManyForCreateInput
+  status: String
+  thread_parent: PoliticRelateToOneForCreateInput
+  tag: TagRelateToOneForCreateInput
+  reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2151,6 +2311,16 @@ input PersonElectionRelateToOneForCreateInput {
 input PoliticProgressRelateToManyForCreateInput {
   create: [PoliticProgressCreateInput!]
   connect: [PoliticProgressWhereUniqueInput!]
+}
+
+input PoliticRelateToOneForCreateInput {
+  create: PoliticCreateInput
+  connect: PoliticWhereUniqueInput
+}
+
+input TagRelateToOneForCreateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
 }
 
 type PoliticProgress {
@@ -2204,12 +2374,6 @@ input PoliticProgressUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input PoliticRelateToOneForUpdateInput {
-  create: PoliticCreateInput
-  connect: PoliticWhereUniqueInput
-  disconnect: Boolean
-}
-
 input PoliticProgressUpdateArgs {
   where: PoliticProgressWhereUniqueInput!
   data: PoliticProgressUpdateInput!
@@ -2226,11 +2390,6 @@ input PoliticProgressCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
-input PoliticRelateToOneForCreateInput {
-  create: PoliticCreateInput
-  connect: PoliticWhereUniqueInput
-}
-
 type Lawsuit {
   id: ID!
   person: Person
@@ -2241,6 +2400,7 @@ type Lawsuit {
   judge_number: String
   judge_desc: String
   judge_content: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2264,6 +2424,7 @@ input LawsuitWhereInput {
   judge_number: StringFilter
   judge_desc: StringFilter
   judge_content: StringFilter
+  status: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2279,6 +2440,7 @@ input LawsuitOrderByInput {
   judge_number: OrderDirection
   judge_desc: OrderDirection
   judge_content: OrderDirection
+  status: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2292,6 +2454,7 @@ input LawsuitUpdateInput {
   judge_number: String
   judge_desc: String
   judge_content: String
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2312,6 +2475,86 @@ input LawsuitCreateInput {
   judge_number: String
   judge_desc: String
   judge_content: String
+  status: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Tag {
+  id: ID!
+  name: String
+  brief: String
+  state: String
+  ogTitle: String
+  ogDescription: String
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input TagWhereUniqueInput {
+  id: ID
+  name: String
+}
+
+input TagWhereInput {
+  AND: [TagWhereInput!]
+  OR: [TagWhereInput!]
+  NOT: [TagWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  brief: StringFilter
+  state: StringNullableFilter
+  ogTitle: StringFilter
+  ogDescription: StringFilter
+  isFeatured: BooleanFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input TagOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  brief: OrderDirection
+  state: OrderDirection
+  ogTitle: OrderDirection
+  ogDescription: OrderDirection
+  isFeatured: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input TagUpdateInput {
+  name: String
+  brief: String
+  state: String
+  ogTitle: String
+  ogDescription: String
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input TagUpdateArgs {
+  where: TagWhereUniqueInput!
+  data: TagUpdateInput!
+}
+
+input TagCreateInput {
+  name: String
+  brief: String
+  state: String
+  ogTitle: String
+  ogDescription: String
+  isFeatured: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2572,6 +2815,12 @@ type Mutation {
   updateLawsuits(data: [LawsuitUpdateArgs!]!): [Lawsuit]
   deleteLawsuit(where: LawsuitWhereUniqueInput!): Lawsuit
   deleteLawsuits(where: [LawsuitWhereUniqueInput!]!): [Lawsuit]
+  createTag(data: TagCreateInput!): Tag
+  createTags(data: [TagCreateInput!]!): [Tag]
+  updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag
+  updateTags(data: [TagUpdateArgs!]!): [Tag]
+  deleteTag(where: TagWhereUniqueInput!): Tag
+  deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -2799,6 +3048,14 @@ type Query {
   ): [Lawsuit!]
   lawsuit(where: LawsuitWhereUniqueInput!): Lawsuit
   lawsuitsCount(where: LawsuitWhereInput! = {}): Int
+  tags(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tag(where: TagWhereUniqueInput!): Tag
+  tagsCount(where: TagWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

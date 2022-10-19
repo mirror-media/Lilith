@@ -29,11 +29,16 @@ const listConfigurations = list ({
     // election_name: { label: "選舉名稱", type: Text },
     legislatoratlarge_number: text({ label: '不分區立委排序' }),
     number: text({ label: '號次' }),
-    electoral_district: text({ label: '選區' }),
+    electoral_district: relationship({ 
+      ref: 'ElectionArea',
+      label: '選區',
+     }),
     votes_obtained_number: text({ label: '得票數' }),
     votes_obtained_percentage: text({ label: '得票率' }),
-    elected: text({ label: '是否當選' }),
-    incumbent: text({ label: '是否現任' }),
+    elected: checkbox({ 
+      label: '是否當選'
+   }),
+    incumbent: checkbox({ label: '是否現任' }),
     source: text({ label: '資料來源' }),
 
   },

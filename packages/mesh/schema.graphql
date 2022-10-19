@@ -538,6 +538,7 @@ type Publisher {
     skip: Int! = 0
   ): [Member!]
   followerCount(where: MemberWhereInput! = {}): Int
+  wallet: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -565,6 +566,7 @@ input PublisherWhereInput {
   full_screen_ad: StringNullableFilter
   paywall: BooleanFilter
   follower: MemberManyRelationFilter
+  wallet: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -584,6 +586,7 @@ input PublisherOrderByInput {
   full_content: OrderDirection
   full_screen_ad: OrderDirection
   paywall: OrderDirection
+  wallet: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -601,6 +604,7 @@ input PublisherUpdateInput {
   full_screen_ad: String
   paywall: Boolean
   follower: MemberRelateToManyForUpdateInput
+  wallet: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -625,6 +629,7 @@ input PublisherCreateInput {
   full_screen_ad: String
   paywall: Boolean
   follower: MemberRelateToManyForCreateInput
+  wallet: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

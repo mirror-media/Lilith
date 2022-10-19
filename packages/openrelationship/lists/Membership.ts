@@ -1,6 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
-import {timestamp, integer, text, relationship} from '@keystone-6/core/fields';
+import { select, timestamp, integer, text, relationship} from '@keystone-6/core/fields';
 	  
 const {
   allowRoles,
@@ -40,6 +40,13 @@ const listConfigurations = list ({
     end_date: timestamp({ label: '結束日期' }),
     // contact_details: { label: "contact_details", type: Relationship, many: false, ref: 'Contact_detail' },
     links: text({ label: '相關連結' }),
+	status: select({
+	  options: [
+	    { label: '已確認', value: 'verified' },
+	    { label: '未確認', value: 'notverified' },
+	  ],
+	  label: '狀態',
+	}),
     // identifiers: { label: "identifiers", type: Relationship, many: false, ref: 'User',  isRequired: true},
   },
   access: {

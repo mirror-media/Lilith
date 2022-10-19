@@ -1,6 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
-import { relationship, select, integer, text } from '@keystone-6/core/fields';
+import { checkbox, relationship, select, integer, text } from '@keystone-6/core/fields';
 	  
 const {
   allowRoles,
@@ -20,7 +20,7 @@ const listConfigurations = list ({
   fields: {
     name: text({ 
 	  label: '姓名', 
-	  isRequired: true 
+	  validation: { isRequired: true }
 	}),
     alternative: text({ 
 	  label: '別名',
@@ -39,11 +39,14 @@ const listConfigurations = list ({
 	  db: {
 		isNullable: true,
 	  },
+	  ui: {
+		displayMode: 'textarea',
+	  }
 	}),
     gender: select({
       label: '生理性別',
       options: genderOptions,
-      default: 'NA',
+      defaultValue: 'NA',
     }),
     birth_date_year: integer({ 
 	  label: '出生年',
@@ -98,6 +101,9 @@ const listConfigurations = list ({
 	  db: {
 		isNullable: true,
 	  },
+	  ui: {
+		displayMode: 'textarea',
+	  }
 	}),
     national_identity: text({ 
 	  label: '國籍',
@@ -110,18 +116,49 @@ const listConfigurations = list ({
 	  db: {
 		isNullable: true,
 	  },
+	  ui: {
+		displayMode: 'textarea',
+	  }
 	}),
     links: text({ 
 	  label: '網站',
 	  db: {
 		isNullable: true,
 	  },
+	  ui: {
+		displayMode: 'textarea',
+	  }
 	}),
     source: text({ 
 	  label: '資料來源',
 	  db: {
 		isNullable: true,
 	  },
+	  ui: {
+		displayMode: 'textarea',
+	  }
+	}),
+	status: select({
+	  options: [
+	    { label: '已確認', value: 'verified' },
+	    { label: '未確認', value: 'notverified' },
+	  ],
+	  defaultValue: 'notverified',
+	  label: '狀態',
+	}),
+    thread_parent: relationship({
+      label: '補充資料',
+      many: false,
+      ref: 'Person',
+    }),
+    tags: relationship({
+      label: '標籤',
+      many: true,
+      ref: 'Tag',
+    }),
+	reviewed: checkbox({
+	  defaultValue: false,
+	  label: '檢閱',
 	}),
   },
   access: {
