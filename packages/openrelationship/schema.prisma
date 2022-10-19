@@ -62,6 +62,8 @@ model User {
   from_PoliticProgress_updatedBy           PoliticProgress[]           @relation("PoliticProgress_updatedBy")
   from_Lawsuit_createdBy                   Lawsuit[]                   @relation("Lawsuit_createdBy")
   from_Lawsuit_updatedBy                   Lawsuit[]                   @relation("Lawsuit_updatedBy")
+  from_Tag_createdBy                       Tag[]                       @relation("Tag_createdBy")
+  from_Tag_updatedBy                       Tag[]                       @relation("Tag_updatedBy")
 }
 
 model Post {
@@ -131,7 +133,7 @@ model Event {
   organization   String    @default("")
   attendees      String    @default("")
   parent         String    @default("")
-  children       String    @default("")
+  sub            String    @default("")
   createdAt      DateTime?
   updatedAt      DateTime?
   createdBy      User?     @relation("Event_createdBy", fields: [createdById], references: [id])
@@ -150,10 +152,13 @@ model Election {
   election_year_year           Int?
   election_year_month          Int?
   election_year_day            Int?
+  level                        String?          @default("local")
   type                         String?
   register_date                String           @default("")
   location                     String           @default("")
+  electionArea                 ElectionArea[]   @relation("ElectionArea_election")
   status                       String?
+  tags                         Tag[]            @relation("Election_tags")
   createdAt                    DateTime?
   updatedAt                    DateTime?
   createdBy                    User?            @relation("Election_createdBy", fields: [createdById], references: [id])
@@ -167,18 +172,22 @@ model Election {
 }
 
 model ElectionArea {
-  id          Int       @id @default(autoincrement())
-  name        String    @default("")
-  type        String    @default("")
-  description String    @default("")
-  status      String?   @default("active")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("ElectionArea_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("ElectionArea_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
+  id                                     Int              @id @default(autoincrement())
+  name                                   String           @default("")
+  election                               Election?        @relation("ElectionArea_election", fields: [electionId], references: [id])
+  electionId                             Int?             @map("election")
+  indigenous                             String?
+  description                            String           @default("")
+  status                                 String?          @default("active")
+  createdAt                              DateTime?
+  updatedAt                              DateTime?
+  createdBy                              User?            @relation("ElectionArea_createdBy", fields: [createdById], references: [id])
+  createdById                            Int?             @map("createdBy")
+  updatedBy                              User?            @relation("ElectionArea_updatedBy", fields: [updatedById], references: [id])
+  updatedById                            Int?             @map("updatedBy")
+  from_PersonElection_electoral_district PersonElection[] @relation("PersonElection_electoral_district")
 
+  @@index([electionId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -211,7 +220,7 @@ model Person {
   alternative                               String?
   other_names                               String?
   email                                     String?
-  gender                                    String?
+  gender                                    String?              @default("NA")
   birth_date_year                           Int?
   birth_date_month                          Int?
   birth_date_day                            Int?
@@ -225,7 +234,11 @@ model Person {
   contact_details                           String?
   links                                     String?
   source                                    String?
-  status                                    String?
+  status                                    String?              @default("notverified")
+  thread_parent                             Person?              @relation("Person_thread_parent", fields: [thread_parentId], references: [id])
+  thread_parentId                           Int?                 @map("thread_parent")
+  tags                                      Tag[]                @relation("Person_tags")
+  reviewed                                  Boolean              @default(false)
   createdAt                                 DateTime?
   updatedAt                                 DateTime?
   createdBy                                 User?                @relation("Person_createdBy", fields: [createdById], references: [id])
@@ -233,6 +246,7 @@ model Person {
   updatedBy                                 User?                @relation("Person_updatedBy", fields: [updatedById], references: [id])
   updatedById                               Int?                 @map("updatedBy")
   from_Vote_pair                            Vote[]               @relation("Vote_pair")
+  from_Person_thread_parent                 Person[]             @relation("Person_thread_parent")
   from_Membership_member                    Membership[]         @relation("Membership_member")
   from_PersonElection_person_id             PersonElection[]     @relation("PersonElection_person_id")
   from_PersonOrganization_person_id         PersonOrganization[] @relation("PersonOrganization_person_id")
@@ -241,6 +255,7 @@ model Person {
   from_PersonRelationship_related_person_id PersonRelationship[] @relation("PersonRelationship_related_person_id")
   from_Lawsuit_person                       Lawsuit[]            @relation("Lawsuit_person")
 
+  @@index([thread_parentId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -289,6 +304,8 @@ model Organization {
   address                                                String?
   source                                                 String?
   status                                                 String?
+  tags                                                   Tag[]                       @relation("Organization_tags")
+  reviewed                                               Boolean                     @default(false)
   createdAt                                              DateTime?
   updatedAt                                              DateTime?
   createdBy                                              User?                       @relation("Organization_createdBy", fields: [createdById], references: [id])
@@ -452,11 +469,12 @@ model PersonElection {
   partyId                   Int?          @map("party")
   legislatoratlarge_number  String        @default("")
   number                    String        @default("")
-  electoral_district        String        @default("")
+  electoral_district        ElectionArea? @relation("PersonElection_electoral_district", fields: [electoral_districtId], references: [id])
+  electoral_districtId      Int?          @map("electoral_district")
   votes_obtained_number     String        @default("")
   votes_obtained_percentage String        @default("")
-  elected                   String        @default("")
-  incumbent                 String        @default("")
+  elected                   Boolean       @default(false)
+  incumbent                 Boolean       @default(false)
   source                    String        @default("")
   createdAt                 DateTime?
   updatedAt                 DateTime?
@@ -469,6 +487,7 @@ model PersonElection {
   @@index([person_idId])
   @@index([electionId])
   @@index([partyId])
+  @@index([electoral_districtId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -562,16 +581,24 @@ model Politic {
   source                       String            @default("")
   contributer                  String            @default("")
   progress                     PoliticProgress[] @relation("Politic_progress")
-  status                       String?
+  status                       String?           @default("notverified")
+  thread_parent                Politic?          @relation("Politic_thread_parent", fields: [thread_parentId], references: [id])
+  thread_parentId              Int?              @map("thread_parent")
+  tag                          Tag?              @relation("Politic_tag", fields: [tagId], references: [id])
+  tagId                        Int?              @map("tag")
+  reviewed                     Boolean           @default(false)
   createdAt                    DateTime?
   updatedAt                    DateTime?
   createdBy                    User?             @relation("Politic_createdBy", fields: [createdById], references: [id])
   createdById                  Int?              @map("createdBy")
   updatedBy                    User?             @relation("Politic_updatedBy", fields: [updatedById], references: [id])
   updatedById                  Int?              @map("updatedBy")
+  from_Politic_thread_parent   Politic[]         @relation("Politic_thread_parent")
   from_PoliticProgress_politic PoliticProgress[] @relation("PoliticProgress_politic")
 
   @@index([personId])
+  @@index([thread_parentId])
+  @@index([tagId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -616,6 +643,29 @@ model Lawsuit {
   updatedById   Int?      @map("updatedBy")
 
   @@index([personId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Tag {
+  id                     Int            @id @default(autoincrement())
+  name                   String         @unique @default("")
+  brief                  String         @default("")
+  state                  String?        @default("active")
+  ogTitle                String         @default("")
+  ogDescription          String         @default("")
+  isFeatured             Boolean        @default(false)
+  createdAt              DateTime?
+  updatedAt              DateTime?
+  createdBy              User?          @relation("Tag_createdBy", fields: [createdById], references: [id])
+  createdById            Int?           @map("createdBy")
+  updatedBy              User?          @relation("Tag_updatedBy", fields: [updatedById], references: [id])
+  updatedById            Int?           @map("updatedBy")
+  from_Election_tags     Election[]     @relation("Election_tags")
+  from_Person_tags       Person[]       @relation("Person_tags")
+  from_Organization_tags Organization[] @relation("Organization_tags")
+  from_Politic_tag       Politic[]      @relation("Politic_tag")
+
   @@index([createdById])
   @@index([updatedById])
 }

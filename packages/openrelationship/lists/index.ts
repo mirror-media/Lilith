@@ -21,6 +21,7 @@ import PersonRelationship from './PersonRelationship'
 import Politic from './Politic'
 import PoliticProgress from './PoliticProgress'
 import Lawsuit from './Lawsuit'
+import Tag from './Tag'
 
 
 export const listDefinition = {
@@ -47,4 +48,5 @@ export const listDefinition = {
   Politic,
   PoliticProgress,
   Lawsuit,
+  Tag,
 }
