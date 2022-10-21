@@ -238,6 +238,7 @@ model Person {
   thread_parent                             Person?              @relation("Person_thread_parent", fields: [thread_parentId], references: [id])
   thread_parentId                           Int?                 @map("thread_parent")
   tags                                      Tag[]                @relation("Person_tags")
+  reviewed                                  Boolean              @default(false)
   createdAt                                 DateTime?
   updatedAt                                 DateTime?
   createdBy                                 User?                @relation("Person_createdBy", fields: [createdById], references: [id])
@@ -304,6 +305,7 @@ model Organization {
   source                                                 String?
   status                                                 String?
   tags                                                   Tag[]                       @relation("Organization_tags")
+  reviewed                                               Boolean                     @default(false)
   createdAt                                              DateTime?
   updatedAt                                              DateTime?
   createdBy                                              User?                       @relation("Organization_createdBy", fields: [createdById], references: [id])
@@ -582,6 +584,9 @@ model Politic {
   status                       String?           @default("notverified")
   thread_parent                Politic?          @relation("Politic_thread_parent", fields: [thread_parentId], references: [id])
   thread_parentId              Int?              @map("thread_parent")
+  tag                          Tag?              @relation("Politic_tag", fields: [tagId], references: [id])
+  tagId                        Int?              @map("tag")
+  reviewed                     Boolean           @default(false)
   createdAt                    DateTime?
   updatedAt                    DateTime?
   createdBy                    User?             @relation("Politic_createdBy", fields: [createdById], references: [id])
@@ -593,6 +598,7 @@ model Politic {
 
   @@index([personId])
   @@index([thread_parentId])
+  @@index([tagId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -658,6 +664,7 @@ model Tag {
   from_Election_tags     Election[]     @relation("Election_tags")
   from_Person_tags       Person[]       @relation("Person_tags")
   from_Organization_tags Organization[] @relation("Organization_tags")
+  from_Politic_tag       Politic[]      @relation("Politic_tag")
 
   @@index([createdById])
   @@index([updatedById])

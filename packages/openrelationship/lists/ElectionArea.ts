@@ -1,6 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core';
-import { relationship, integer, select, text } from '@keystone-6/core/fields';
+import { list, graphql } from '@keystone-6/core';
+import { virtual, relationship, integer, select, text } from '@keystone-6/core/fields';
 
 const {
 	allowRoles,
@@ -37,6 +37,20 @@ const listConfigurations = list({
 			],
 			defaultValue: 'active',
 		}),
+	    city: virtual({
+		  field: graphql.field({
+		    type: graphql.String,
+			async resolve(item) {
+			  const areaname = item.name;
+			  const matched = areaname.match(/(.+?(縣|市))/);
+			  if (matched) {
+			    return matched[0];
+			  } else {
+				return "";
+			  }
+			},
+		  }),
+	    }),
 	},
 	access: {
 		operation: {
