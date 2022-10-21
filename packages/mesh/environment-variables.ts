@@ -11,10 +11,14 @@ const {
   FILES_STORAGE_PATH,
   IMAGES_BASE_URL,
   IMAGES_STORAGE_PATH,
+  MEMORY_CACHE_TTL,
+  MEMORY_CACHE_SIZE,
 } = process.env
 
 enum DatabaseProvider {
   Sqlite = 'sqlite',
+  memoryCacheTtl: MEMORY_CACHE_TTL || 300_000,
+  memoryCacheSize: MEMORY_CACHE_SIZE || 500,
   Postgres = 'postgresql',
 }
 
