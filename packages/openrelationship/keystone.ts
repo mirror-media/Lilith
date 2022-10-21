@@ -57,9 +57,9 @@ export default withAuth(
 	  apolloConfig: {
 		cache: new InMemoryLRUCache({
 		  // ~100MiB
-		  maxSize: Math.pow(2, 20) * 100,
+		  maxSize: Math.pow(2, 20) * envVar.memoryCacheSize,
 		  // 5 minutes (in milliseconds)
-		  ttl: envVar.memoryCacheTtl || 300_000,
+		  ttl: envVar.memoryCacheTtl,
 		}),		
 	  }
 	},
