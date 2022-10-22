@@ -16,6 +16,10 @@ const listConfigurations = list ({
       label: '候選人-選舉',
       many: false,
       ref: 'PersonElection',
+	  ui: {
+		displayMode: 'cards',
+		inlineEdit: { fields: ['person_id', 'election'] },
+	  },
     }),
     desc: text({ 
 	  label: '政見', 
