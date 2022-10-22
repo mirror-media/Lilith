@@ -19,6 +19,9 @@ const listConfigurations = list ({
     }),
     desc: text({ 
 	  label: '政見', 
+	  ui: {
+		displayMode: 'textarea',
+	  },
 	}),
     source: text({ label: '資料來源' }),
     contributer: text({ label: '資料提供' }),
