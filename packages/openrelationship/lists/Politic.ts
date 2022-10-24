@@ -23,7 +23,12 @@ const listConfigurations = list ({
 		displayMode: 'textarea',
 	  },
 	}),
-    source: text({ label: '資料來源' }),
+    source: text({ 
+	  label: '資料來源',
+	  ui: {
+		display: 'textarea',
+	  },
+	}),
     contributer: text({ label: '資料提供' }),
     progress: relationship({
       label: '政見執行進度',
