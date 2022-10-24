@@ -26,10 +26,15 @@ const listConfigurations = list ({
     source: text({ 
 	  label: '資料來源',
 	  ui: {
-		display: 'textarea',
+		displayMode: 'textarea',
 	  },
 	}),
-    contributer: text({ label: '資料提供' }),
+    contributer: text({ 
+	  label: '資料提供',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+	}),
     progress: relationship({
       label: '政見執行進度',
       many: true,
