@@ -1792,6 +1792,13 @@ type PersonElection {
   elected: Boolean
   incumbent: Boolean
   source: String
+  politics(
+    where: PoliticWhereInput! = {}
+    orderBy: [PoliticOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Politic!]
+  politicsCount(where: PoliticWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1818,10 +1825,17 @@ input PersonElectionWhereInput {
   elected: BooleanFilter
   incumbent: BooleanFilter
   source: StringFilter
+  politics: PoliticManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input PoliticManyRelationFilter {
+  every: PoliticWhereInput
+  some: PoliticWhereInput
+  none: PoliticWhereInput
 }
 
 input PersonElectionOrderByInput {
@@ -1849,6 +1863,7 @@ input PersonElectionUpdateInput {
   elected: Boolean
   incumbent: Boolean
   source: String
+  politics: PoliticRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1859,6 +1874,13 @@ input ElectionAreaRelateToOneForUpdateInput {
   create: ElectionAreaCreateInput
   connect: ElectionAreaWhereUniqueInput
   disconnect: Boolean
+}
+
+input PoliticRelateToManyForUpdateInput {
+  disconnect: [PoliticWhereUniqueInput!]
+  set: [PoliticWhereUniqueInput!]
+  create: [PoliticCreateInput!]
+  connect: [PoliticWhereUniqueInput!]
 }
 
 input PersonElectionUpdateArgs {
@@ -1878,6 +1900,7 @@ input PersonElectionCreateInput {
   elected: Boolean
   incumbent: Boolean
   source: String
+  politics: PoliticRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1887,6 +1910,11 @@ input PersonElectionCreateInput {
 input ElectionAreaRelateToOneForCreateInput {
   create: ElectionAreaCreateInput
   connect: ElectionAreaWhereUniqueInput
+}
+
+input PoliticRelateToManyForCreateInput {
+  create: [PoliticCreateInput!]
+  connect: [PoliticWhereUniqueInput!]
 }
 
 type PersonOrganization {

@@ -40,6 +40,22 @@ const listConfigurations = list ({
    }),
     incumbent: checkbox({ label: '是否現任' }),
     source: text({ label: '資料來源' }),
+	politics: relationship({ 
+	  label: '政見',
+	  many: true,
+	  ref: 'Politic',
+	  ui: {
+		displayMode: 'cards',
+		cardFields: [ 'desc', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
+		inlineCreate: {
+		  fields: [ 'desc', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
+	    },
+		inlineEdit: {
+		  fields: [ 'desc', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
+	    },
+	    linkToItem: true,
+	  },
+	 }),
 
   },
   access: {

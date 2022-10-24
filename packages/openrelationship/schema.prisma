@@ -476,6 +476,7 @@ model PersonElection {
   elected                   Boolean       @default(false)
   incumbent                 Boolean       @default(false)
   source                    String        @default("")
+  politics                  Politic[]     @relation("PersonElection_politics")
   createdAt                 DateTime?
   updatedAt                 DateTime?
   createdBy                 User?         @relation("PersonElection_createdBy", fields: [createdById], references: [id])
@@ -593,6 +594,7 @@ model Politic {
   createdById                  Int?              @map("createdBy")
   updatedBy                    User?             @relation("Politic_updatedBy", fields: [updatedById], references: [id])
   updatedById                  Int?              @map("updatedBy")
+  from_PersonElection_politics PersonElection[]  @relation("PersonElection_politics")
   from_Politic_thread_parent   Politic[]         @relation("Politic_thread_parent")
   from_PoliticProgress_politic PoliticProgress[] @relation("PoliticProgress_politic")
 
