@@ -2209,6 +2209,7 @@ type Politic {
   id: ID!
   person: PersonElection
   desc: String
+  content: String
   source: String
   contributer: String
   progress(
@@ -2239,6 +2240,7 @@ input PoliticWhereInput {
   id: IDFilter
   person: PersonElectionWhereInput
   desc: StringFilter
+  content: StringFilter
   source: StringFilter
   contributer: StringFilter
   progress: PoliticProgressManyRelationFilter
@@ -2261,6 +2263,7 @@ input PoliticProgressManyRelationFilter {
 input PoliticOrderByInput {
   id: OrderDirection
   desc: OrderDirection
+  content: OrderDirection
   source: OrderDirection
   contributer: OrderDirection
   status: OrderDirection
@@ -2272,6 +2275,7 @@ input PoliticOrderByInput {
 input PoliticUpdateInput {
   person: PersonElectionRelateToOneForUpdateInput
   desc: String
+  content: String
   source: String
   contributer: String
   progress: PoliticProgressRelateToManyForUpdateInput
@@ -2318,6 +2322,7 @@ input PoliticUpdateArgs {
 input PoliticCreateInput {
   person: PersonElectionRelateToOneForCreateInput
   desc: String
+  content: String
   source: String
   contributer: String
   progress: PoliticProgressRelateToManyForCreateInput
