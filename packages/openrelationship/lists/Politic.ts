@@ -13,17 +13,30 @@ const {
 const listConfigurations = list ({
   fields: {
     person: relationship({
-      label: '候選人',
+      label: '候選人-選舉',
       many: false,
       ref: 'PersonElection',
     }),
     desc: text({ 
 	  label: '政見', 
+	  ui: {
+		displayMode: 'textarea',
+	  },
 	}),
-    source: text({ label: '資料來源' }),
-    contributer: text({ label: '資料提供' }),
+    source: text({ 
+	  label: '資料來源',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+	}),
+    contributer: text({ 
+	  label: '資料提供',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+	}),
     progress: relationship({
-      label: '選舉',
+      label: '政見執行進度',
       many: true,
       ref: 'PoliticProgress',
     }),
