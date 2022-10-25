@@ -23,6 +23,12 @@ const listConfigurations = list ({
 		displayMode: 'textarea',
 	  },
 	}),
+  content: text({ 
+	  label: '政見內容', 
+	  ui: {
+		displayMode: 'textarea',
+	  },
+	}),
     source: text({ 
 	  label: '資料來源',
 	  ui: {
