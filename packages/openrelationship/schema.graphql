@@ -2359,6 +2359,8 @@ input TagRelateToOneForCreateInput {
 type PoliticProgress {
   id: ID!
   politic: Politic
+  content: JSON
+  expert: JSON
   progress: String
   source: String
   contributer: String
@@ -2398,6 +2400,8 @@ input PoliticProgressOrderByInput {
 
 input PoliticProgressUpdateInput {
   politic: PoliticRelateToOneForUpdateInput
+  content: JSON
+  expert: JSON
   progress: String
   source: String
   contributer: String
@@ -2414,6 +2418,8 @@ input PoliticProgressUpdateArgs {
 
 input PoliticProgressCreateInput {
   politic: PoliticRelateToOneForCreateInput
+  content: JSON
+  expert: JSON
   progress: String
   source: String
   contributer: String
