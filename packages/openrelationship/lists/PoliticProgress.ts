@@ -19,9 +19,11 @@ const listConfigurations = list ({
     }),
     content: customFields.richTextEditor({
       label: '爭議事件',
+	  disabledButtons: ['image', 'slideshow', 'blockquote', 'code-block', 'annotation', 'embed', 'font-color', 'slideshow' ],
     }),
     expert: customFields.richTextEditor({
       label: '專家看點',
+	  disabledButtons: ['image', 'slideshow', 'blockquote', 'code-block', 'annotation', 'embed', 'font-color', 'slideshow' ],
     }),
     progress: text({ 
 	  label: '進度', 
