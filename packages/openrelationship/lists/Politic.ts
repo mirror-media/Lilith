@@ -86,6 +86,8 @@ const listConfigurations = list ({
 	}) => { /* ... */ 
 	  if (operation === 'create' && context.session?.data?.role === 'admin') {
 		resolvedData.status = 'verified'
+		resolvedData.reviewed = true
+
 	  }
 	},
   },
