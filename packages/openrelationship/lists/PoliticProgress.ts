@@ -26,7 +26,12 @@ const listConfigurations = list ({
     progress: text({ 
 	  label: '進度', 
 	}),
-    source: text({ label: '資料來源' }),
+    source: text({ 
+	  label: '資料來源',
+	  ui: {
+	    displayMode: 'textarea',
+	  },
+	}),
     contributer: text({ label: '資料提供' }),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
   },
