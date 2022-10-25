@@ -23,8 +23,8 @@ const listConfigurations = list ({
 		displayMode: 'textarea',
 	  },
 	}),
-  content: text({ 
-	  label: '政見內容', 
+    content: text({ 
+	  label: '政策補充說明', 
 	  ui: {
 		displayMode: 'textarea',
 	  },

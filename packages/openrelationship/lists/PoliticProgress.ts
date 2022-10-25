@@ -1,5 +1,5 @@
-import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
+import { customFields, utils } from '@mirrormedia/lilith-core'
 import { checkbox, relationship, json, timestamp, text } from '@keystone-6/core/fields';
 	  
 const {
@@ -17,10 +17,23 @@ const listConfigurations = list ({
       many: false,
       ref: 'Politic',
     }),
+    content: customFields.richTextEditor({
+      label: '爭議事件',
+	  disabledButtons: ['image', 'slideshow', 'blockquote', 'code-block', 'annotation', 'embed', 'font-color', 'slideshow' ],
+    }),
+    expert: customFields.richTextEditor({
+      label: '專家看點',
+	  disabledButtons: ['image', 'slideshow', 'blockquote', 'code-block', 'annotation', 'embed', 'font-color', 'slideshow' ],
+    }),
     progress: text({ 
 	  label: '進度', 
 	}),
-    source: text({ label: '資料來源' }),
+    source: text({ 
+	  label: '資料來源',
+	  ui: {
+	    displayMode: 'textarea',
+	  },
+	}),
     contributer: text({ label: '資料提供' }),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
   },

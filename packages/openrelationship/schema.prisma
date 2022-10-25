@@ -610,6 +610,8 @@ model PoliticProgress {
   id                    Int       @id @default(autoincrement())
   politic               Politic?  @relation("PoliticProgress_politic", fields: [politicId], references: [id])
   politicId             Int?      @map("politic")
+  content               Json?
+  expert                Json?
   progress              String    @default("")
   source                String    @default("")
   contributer           String    @default("")
