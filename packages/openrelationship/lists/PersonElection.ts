@@ -1,6 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core';
-import { checkbox, relationship, json, timestamp, text } from '@keystone-6/core/fields';
+import { list, graphql } from '@keystone-6/core';
+import { virtual, checkbox, relationship, json, timestamp, text } from '@keystone-6/core/fields';
 	  
 const {
   allowRoles,
@@ -20,6 +20,19 @@ const listConfigurations = list ({
     election: relationship({
       label: '選舉',
       ref: 'Election',
+    }),
+    name: virtual({
+	  field: graphql.field({
+		type: graphql.String,
+		async resolve(item, args, context) {
+          const { person_id, election } = await context.query.PersonElection.findOne({
+            where: { id: item.id.toString() },
+            query: 'person_id { name }, election {name}',
+          });
+          console.log(election.name);
+          return person_id.name + "-" + election.name;
+		},
+	  }),
     }),
 	party: relationship({ 
 	  label: '推薦政黨',
@@ -46,12 +59,12 @@ const listConfigurations = list ({
 	  ref: 'Politic',
 	  ui: {
 		displayMode: 'cards',
-		cardFields: [ 'desc', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
+		cardFields: [ 'desc', 'content', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
 		inlineCreate: {
-		  fields: [ 'desc', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
+		  fields: [ 'desc', 'content', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
 	    },
 		inlineEdit: {
-		  fields: [ 'desc', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
+		  fields: [ 'desc', 'content', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
 	    },
 	    linkToItem: true,
 	  },
