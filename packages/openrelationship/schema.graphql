@@ -1783,6 +1783,7 @@ type PersonElection {
   id: ID!
   person_id: Person
   election: Election
+  name: String
   party: Organization
   legislatoratlarge_number: String
   number: String
