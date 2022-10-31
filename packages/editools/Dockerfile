@@ -35,7 +35,7 @@ RUN SKIP_POSTINSTALL=1 yarn install
 COPY . $APP_DIR/
 
 ## Run yarn postinstall
-#RUN yarn run postinstall
+RUN yarn postinstall
 
 ## Build application bundles
 RUN yarn build
