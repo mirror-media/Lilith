@@ -30,10 +30,12 @@ WORKDIR $APP_DIR
 COPY package.json yarn.lock $APP_DIR/
 
 ## Install application dependencies
-RUN yarn install
-RUN yarn postinstall
+RUN SKIP_POSTINSTALL=1 yarn install
 
 COPY . $APP_DIR/
+
+## Run yarn postinstall
+RUN yarn postinstall
 
 ## Build application bundles
 RUN yarn build
