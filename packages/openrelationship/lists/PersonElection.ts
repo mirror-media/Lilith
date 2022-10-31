@@ -21,6 +21,7 @@ const listConfigurations = list ({
       label: '選舉',
       ref: 'Election',
     }),
+    /*
     name: virtual({
 	  field: graphql.field({
 		type: graphql.String,
@@ -34,6 +35,7 @@ const listConfigurations = list ({
 		},
 	  }),
     }),
+    */
 	party: relationship({ 
 	  label: '推薦政黨',
 	  many: false,
