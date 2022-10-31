@@ -1,6 +1,6 @@
 steps:
   # build docker image for target sub-pacakge
-  - name: 'gcr.io/kaniko-project/executor:latest'
+  - name: 'gcr.io/kaniko-project/executor:debug'
     id: Build Image
     entrypoint: 'sh'
     args:
