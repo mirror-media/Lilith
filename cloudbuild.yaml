@@ -1,6 +1,6 @@
 steps:
   # build docker image for target sub-pacakge
-  - name: gcr.io/cloud-builders/docker
+  - name: gcr.io/cloud-builders/gcloud
     id: Build Image
     entrypoint: 'bash'
     args:
@@ -8,7 +8,7 @@ steps:
       - |
         cp yarn.lock packages/$_TARGET_PACKAGE
         cd packages/$_TARGET_PACKAGE
-        docker build -t gcr.io/$PROJECT_ID/$_IMAGE_NAME:${BRANCH_NAME}_${SHORT_SHA} .
+        gcloud builds submit -t gcr.io/$PROJECT_ID/$_IMAGE_NAME:${BRANCH_NAME}_${SHORT_SHA} .
 
   # build docker image for target sub-pacakge
   - name: gcr.io/cloud-builders/docker
