@@ -7,7 +7,7 @@
     "start": "keystone start",
     "db-migrate": "keystone prisma migrate deploy",
     "build": "keystone build",
-    "postinstall": "patch-package && keystone postinstall --fix"
+    "postinstall": "test -n \"$SKIP_POSTINSTALL\" || (patch-package && keystone postinstall --fix)"
   },
   "repository": {
     "type": "git",
