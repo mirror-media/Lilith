@@ -57,7 +57,7 @@ const listConfigurations = list ({
     source: text({ 
 	  label: '資料來源', 
 		ui: {
-		  displayMode: 'textArea',
+		  displayMode: 'textarea',
 		}
 	}),
 	politics: relationship({ 
