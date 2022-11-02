@@ -9,7 +9,7 @@ steps:
       - |
         cp yarn.lock packages/$_TARGET_PACKAGE
         cd packages/$_TARGET_PACKAGE
-        /kaniko/executor --context="$(pwd)" --cache=true --cache-ttl=6h --destination=gcr.io/$PROJECT_ID/$_IMAGE_NAME:${BRANCH_NAME}_${SHORT_SHA}
+        /kaniko/executor --context="$(pwd)" --cache=true --cache-ttl=48h --destination=gcr.io/$PROJECT_ID/$_IMAGE_NAME:${BRANCH_NAME}_${SHORT_SHA}
 
   # Deploy container image to Cloud Runs
   - name: gcr.io/cloud-builders/gcloud
