@@ -54,7 +54,12 @@ const listConfigurations = list ({
       label: '是否當選'
    }),
     incumbent: checkbox({ label: '是否現任' }),
-    source: text({ label: '資料來源' }),
+    source: text({ 
+	  label: '資料來源', 
+		ui: {
+		  displayMode: 'textArea',
+		}
+	}),
 	politics: relationship({ 
 	  label: '政見',
 	  many: true,
