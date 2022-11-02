@@ -113,9 +113,11 @@ const listConfigurations = list({
     }),
     brief: customFields.richTextEditor({
       label: '前言',
+	  disabledButtons: ['header-four', 'code', 'code-block', 'annotation'],
     }),
     content: customFields.richTextEditor({
       label: '內文',
+	  disabledButtons: ['header-four', 'code', 'code-block', 'annotation'],
     }),
     columns: relationship({
       label: '專欄作者',

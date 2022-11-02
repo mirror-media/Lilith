@@ -1783,7 +1783,6 @@ type PersonElection {
   id: ID!
   person_id: Person
   election: Election
-  name: String
   party: Organization
   legislatoratlarge_number: String
   number: String
@@ -2209,6 +2208,7 @@ input PersonRelationshipCreateInput {
 type Politic {
   id: ID!
   person: PersonElection
+  thread_parent: Politic
   desc: String
   content: String
   source: String
@@ -2221,7 +2221,6 @@ type Politic {
   ): [PoliticProgress!]
   progressCount(where: PoliticProgressWhereInput! = {}): Int
   status: String
-  thread_parent: Politic
   tag: Tag
   reviewed: Boolean
   createdAt: DateTime
@@ -2240,13 +2239,13 @@ input PoliticWhereInput {
   NOT: [PoliticWhereInput!]
   id: IDFilter
   person: PersonElectionWhereInput
+  thread_parent: PoliticWhereInput
   desc: StringFilter
   content: StringFilter
   source: StringFilter
   contributer: StringFilter
   progress: PoliticProgressManyRelationFilter
   status: StringNullableFilter
-  thread_parent: PoliticWhereInput
   tag: TagWhereInput
   reviewed: BooleanFilter
   createdAt: DateTimeNullableFilter
@@ -2275,13 +2274,13 @@ input PoliticOrderByInput {
 
 input PoliticUpdateInput {
   person: PersonElectionRelateToOneForUpdateInput
+  thread_parent: PoliticRelateToOneForUpdateInput
   desc: String
   content: String
   source: String
   contributer: String
   progress: PoliticProgressRelateToManyForUpdateInput
   status: String
-  thread_parent: PoliticRelateToOneForUpdateInput
   tag: TagRelateToOneForUpdateInput
   reviewed: Boolean
   createdAt: DateTime
@@ -2296,17 +2295,17 @@ input PersonElectionRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input PoliticRelateToOneForUpdateInput {
+  create: PoliticCreateInput
+  connect: PoliticWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PoliticProgressRelateToManyForUpdateInput {
   disconnect: [PoliticProgressWhereUniqueInput!]
   set: [PoliticProgressWhereUniqueInput!]
   create: [PoliticProgressCreateInput!]
   connect: [PoliticProgressWhereUniqueInput!]
-}
-
-input PoliticRelateToOneForUpdateInput {
-  create: PoliticCreateInput
-  connect: PoliticWhereUniqueInput
-  disconnect: Boolean
 }
 
 input TagRelateToOneForUpdateInput {
@@ -2322,13 +2321,13 @@ input PoliticUpdateArgs {
 
 input PoliticCreateInput {
   person: PersonElectionRelateToOneForCreateInput
+  thread_parent: PoliticRelateToOneForCreateInput
   desc: String
   content: String
   source: String
   contributer: String
   progress: PoliticProgressRelateToManyForCreateInput
   status: String
-  thread_parent: PoliticRelateToOneForCreateInput
   tag: TagRelateToOneForCreateInput
   reviewed: Boolean
   createdAt: DateTime
@@ -2342,14 +2341,14 @@ input PersonElectionRelateToOneForCreateInput {
   connect: PersonElectionWhereUniqueInput
 }
 
-input PoliticProgressRelateToManyForCreateInput {
-  create: [PoliticProgressCreateInput!]
-  connect: [PoliticProgressWhereUniqueInput!]
-}
-
 input PoliticRelateToOneForCreateInput {
   create: PoliticCreateInput
   connect: PoliticWhereUniqueInput
+}
+
+input PoliticProgressRelateToManyForCreateInput {
+  create: [PoliticProgressCreateInput!]
+  connect: [PoliticProgressWhereUniqueInput!]
 }
 
 input TagRelateToOneForCreateInput {

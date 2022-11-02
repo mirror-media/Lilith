@@ -17,6 +17,11 @@ const listConfigurations = list ({
       many: false,
       ref: 'PersonElection',
     }),
+    thread_parent: relationship({
+      label: 'Thread',
+      many: false,
+      ref: 'Politic',
+    }),
     desc: text({ 
 	  label: '政見', 
 	  ui: {
@@ -54,11 +59,6 @@ const listConfigurations = list ({
 	  defaultValue: 'notverified',
 	  label: '狀態',
 	}),
-    thread_parent: relationship({
-      label: '補充',
-      many: false,
-      ref: 'Politic',
-    }),
     tag: relationship({
       label: '標籤',
       many: false,
