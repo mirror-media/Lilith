@@ -8,4 +8,4 @@
 CREATE TYPE "FormElementType" AS ENUM ('like', 'feedback', 'all');
 
 -- AlterTable
-ALTER TABLE "Form" ADD COLUMN     "element" "FormElementType" NOT NULL;
+ALTER TABLE "Form" ADD COLUMN     "element" "FormElementType";
