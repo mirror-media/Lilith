@@ -37,6 +37,9 @@ const listConfigurations = list ({
 	}),
     link: text({ 
 	  label: '連結',
+	  ui: {
+	    displayMode: 'textarea',
+	  },
 	}),
     contributer: text({ label: '資料提供' }),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
