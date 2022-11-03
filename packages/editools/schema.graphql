@@ -1700,7 +1700,7 @@ type FormResult {
   responseTime: DateTime
   form: Form
   field: Field
-  uti: String
+  uri: String
   hidden: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -1723,7 +1723,7 @@ input FormResultWhereInput {
   responseTime: DateTimeNullableFilter
   form: FormWhereInput
   field: FieldWhereInput
-  uti: StringFilter
+  uri: StringFilter
   hidden: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1737,7 +1737,7 @@ input FormResultOrderByInput {
   ip: OrderDirection
   result: OrderDirection
   responseTime: OrderDirection
-  uti: OrderDirection
+  uri: OrderDirection
   hidden: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1750,7 +1750,7 @@ input FormResultUpdateInput {
   responseTime: DateTime
   form: FormRelateToOneForUpdateInput
   field: FieldRelateToOneForUpdateInput
-  uti: String
+  uri: String
   hidden: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -1770,7 +1770,7 @@ input FormResultCreateInput {
   responseTime: DateTime
   form: FormRelateToOneForCreateInput
   field: FieldRelateToOneForCreateInput
-  uti: String
+  uri: String
   hidden: Boolean
   createdAt: DateTime
   updatedAt: DateTime

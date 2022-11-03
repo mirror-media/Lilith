@@ -44,7 +44,7 @@ const listConfigurations = list({
       },
       many: false,
     }),
-    uti: text({
+    uri: text({
       label: 'URI',
     }),
     hidden: checkbox({
