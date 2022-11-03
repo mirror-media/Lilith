@@ -394,6 +394,7 @@ model FormResult {
   formId       Int?      @map("form")
   field        Field?    @relation("FormResult_field", fields: [fieldId], references: [id])
   fieldId      Int?      @map("field")
+  uti          String    @default("")
   hidden       Boolean   @default(false)
   createdAt    DateTime?
   updatedAt    DateTime?

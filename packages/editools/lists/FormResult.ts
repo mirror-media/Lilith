@@ -44,6 +44,9 @@ const listConfigurations = list({
       },
       many: false,
     }),
+    uti: text({
+      label: 'URI',
+    }),
     hidden: checkbox({
       label: '隱藏該結果',
     }),
