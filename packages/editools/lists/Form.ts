@@ -46,25 +46,6 @@ const listConfigurations = list({
       ],
       validation: { isRequired: true },
     }),
-    element: select({
-      label: '使用元件',
-      type: 'enum',
-      options: [
-        {
-          label: 'like/dislike',
-          value: 'like',
-        },
-        {
-          label: '回饋',
-          value: 'feedback',
-        },
-        {
-          label: '讚+回饋',
-          value: 'all',
-        },
-      ],
-      validation: { isRequired: true },
-    }),
     content: customFields.richTextEditor({
       label: '描述',
     }),

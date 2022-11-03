@@ -262,7 +262,6 @@ model Form {
   name                String                @default("")
   slug                String                @unique @default("")
   type                FormTypeType
-  element             FormElementType
   content             Json?
   heroImage           Photo?                @relation("Form_heroImage", fields: [heroImageId], references: [id])
   heroImageId         Int?                  @map("heroImage")
@@ -605,12 +604,6 @@ enum FormTypeType {
   form
   questionniare
   quiz
-}
-
-enum FormElementType {
-  like
-  feedback
-  all
 }
 
 enum FieldTypeType {

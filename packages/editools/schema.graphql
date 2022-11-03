@@ -1022,7 +1022,6 @@ type Form {
   name: String
   slug: String
   type: FormTypeType
-  element: FormElementType
   content: JSON
   heroImage: Photo
   mobileImage: Photo
@@ -1091,12 +1090,6 @@ enum FormTypeType {
   quiz
 }
 
-enum FormElementType {
-  like
-  feedback
-  all
-}
-
 input FormWhereUniqueInput {
   id: ID
   slug: String
@@ -1110,7 +1103,6 @@ input FormWhereInput {
   name: StringFilter
   slug: StringFilter
   type: FormTypeTypeNullableFilter
-  element: FormElementTypeNullableFilter
   heroImage: PhotoWhereInput
   mobileImage: PhotoWhereInput
   heroImageLink: StringFilter
@@ -1139,13 +1131,6 @@ input FormTypeTypeNullableFilter {
   in: [FormTypeType!]
   notIn: [FormTypeType!]
   not: FormTypeTypeNullableFilter
-}
-
-input FormElementTypeNullableFilter {
-  equals: FormElementType
-  in: [FormElementType!]
-  notIn: [FormElementType!]
-  not: FormElementTypeNullableFilter
 }
 
 input FieldManyRelationFilter {
@@ -1183,7 +1168,6 @@ input FormOrderByInput {
   name: OrderDirection
   slug: OrderDirection
   type: OrderDirection
-  element: OrderDirection
   heroImageLink: OrderDirection
   mobileImageLink: OrderDirection
   heroVideoLink: OrderDirection
@@ -1199,7 +1183,6 @@ input FormUpdateInput {
   name: String
   slug: String
   type: FormTypeType
-  element: FormElementType
   content: JSON
   heroImage: PhotoRelateToOneForUpdateInput
   mobileImage: PhotoRelateToOneForUpdateInput
@@ -1269,7 +1252,6 @@ input FormCreateInput {
   name: String
   slug: String
   type: FormTypeType
-  element: FormElementType
   content: JSON
   heroImage: PhotoRelateToOneForCreateInput
   mobileImage: PhotoRelateToOneForCreateInput
