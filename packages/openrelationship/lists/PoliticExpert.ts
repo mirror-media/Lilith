@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core';
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { select, checkbox, relationship, json, timestamp, text } from '@keystone-6/core/fields';
+import { relationship, timestamp, text } from '@keystone-6/core/fields';
 	  
 const {
   allowRoles,
@@ -13,29 +13,30 @@ const {
 const listConfigurations = list ({
   fields: {
     politic: relationship({
-      label: '候選人政見',
+      label: '政見',
       many: false,
-      ref: 'Politic',
+      ref: 'Politic.expertPoint',
     }),
-    content: customFields.richTextEditor({
-      label: '爭議事件',
-	  disabledButtons: ['image', 'code', 'blockquote', 'code-block', 'annotation', 'font-color', 'slideshow' ],
-    }),
-    progress: select({
-      defaultValue: 'active', 
-      options: [ 
-        { label: '還沒開始', value: 'no-progress' }, 
-        { label: '進行中', value: 'in-progress' }, 
-        { label: '卡關中', value: 'in-trouble' },
-        { label: '已離職', value: 'quit' }
-      ], 
-      label: '狀態',
-    }),
-    source: text({ 
-	  label: '資料來源',
+    avatar: text({ 
+	  label: '頭像連結',
+	}),
+    title: text({ 
+	  label: '職稱',
 	  ui: {
 	    displayMode: 'textarea',
 	  },
+	}),
+    reviewDate: timestamp({
+      label: '日期',
+    }),
+    content: text({ 
+	  label: '意見內容',
+	  ui: {
+	    displayMode: 'textarea',
+	  },
+	}),
+    link: text({ 
+	  label: '連結',
 	}),
     contributer: text({ label: '資料提供' }),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },

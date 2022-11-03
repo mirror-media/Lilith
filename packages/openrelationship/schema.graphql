@@ -2235,6 +2235,20 @@ type Politic {
     skip: Int! = 0
   ): [PoliticProgress!]
   progressCount(where: PoliticProgressWhereInput! = {}): Int
+  timeline(
+    where: PoliticTimelineWhereInput! = {}
+    orderBy: [PoliticTimelineOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [PoliticTimeline!]
+  timelineCount(where: PoliticTimelineWhereInput! = {}): Int
+  expertPoint(
+    where: PoliticExpertWhereInput! = {}
+    orderBy: [PoliticExpertOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [PoliticExpert!]
+  expertPointCount(where: PoliticExpertWhereInput! = {}): Int
   status: String
   tag: Tag
   reviewed: Boolean
@@ -2260,6 +2274,8 @@ input PoliticWhereInput {
   source: StringFilter
   contributer: StringFilter
   progress: PoliticProgressManyRelationFilter
+  timeline: PoliticTimelineManyRelationFilter
+  expertPoint: PoliticExpertManyRelationFilter
   status: StringNullableFilter
   tag: TagWhereInput
   reviewed: BooleanFilter
@@ -2273,6 +2289,18 @@ input PoliticProgressManyRelationFilter {
   every: PoliticProgressWhereInput
   some: PoliticProgressWhereInput
   none: PoliticProgressWhereInput
+}
+
+input PoliticTimelineManyRelationFilter {
+  every: PoliticTimelineWhereInput
+  some: PoliticTimelineWhereInput
+  none: PoliticTimelineWhereInput
+}
+
+input PoliticExpertManyRelationFilter {
+  every: PoliticExpertWhereInput
+  some: PoliticExpertWhereInput
+  none: PoliticExpertWhereInput
 }
 
 input PoliticOrderByInput {
@@ -2295,6 +2323,8 @@ input PoliticUpdateInput {
   source: String
   contributer: String
   progress: PoliticProgressRelateToManyForUpdateInput
+  timeline: PoliticTimelineRelateToManyForUpdateInput
+  expertPoint: PoliticExpertRelateToManyForUpdateInput
   status: String
   tag: TagRelateToOneForUpdateInput
   reviewed: Boolean
@@ -2323,6 +2353,20 @@ input PoliticProgressRelateToManyForUpdateInput {
   connect: [PoliticProgressWhereUniqueInput!]
 }
 
+input PoliticTimelineRelateToManyForUpdateInput {
+  disconnect: [PoliticTimelineWhereUniqueInput!]
+  set: [PoliticTimelineWhereUniqueInput!]
+  create: [PoliticTimelineCreateInput!]
+  connect: [PoliticTimelineWhereUniqueInput!]
+}
+
+input PoliticExpertRelateToManyForUpdateInput {
+  disconnect: [PoliticExpertWhereUniqueInput!]
+  set: [PoliticExpertWhereUniqueInput!]
+  create: [PoliticExpertCreateInput!]
+  connect: [PoliticExpertWhereUniqueInput!]
+}
+
 input TagRelateToOneForUpdateInput {
   create: TagCreateInput
   connect: TagWhereUniqueInput
@@ -2342,6 +2386,8 @@ input PoliticCreateInput {
   source: String
   contributer: String
   progress: PoliticProgressRelateToManyForCreateInput
+  timeline: PoliticTimelineRelateToManyForCreateInput
+  expertPoint: PoliticExpertRelateToManyForCreateInput
   status: String
   tag: TagRelateToOneForCreateInput
   reviewed: Boolean
@@ -2366,6 +2412,16 @@ input PoliticProgressRelateToManyForCreateInput {
   connect: [PoliticProgressWhereUniqueInput!]
 }
 
+input PoliticTimelineRelateToManyForCreateInput {
+  create: [PoliticTimelineCreateInput!]
+  connect: [PoliticTimelineWhereUniqueInput!]
+}
+
+input PoliticExpertRelateToManyForCreateInput {
+  create: [PoliticExpertCreateInput!]
+  connect: [PoliticExpertWhereUniqueInput!]
+}
+
 input TagRelateToOneForCreateInput {
   create: TagCreateInput
   connect: TagWhereUniqueInput
@@ -2375,7 +2431,6 @@ type PoliticProgress {
   id: ID!
   politic: Politic
   content: JSON
-  expert: JSON
   progress: String
   source: String
   contributer: String
@@ -2395,7 +2450,7 @@ input PoliticProgressWhereInput {
   NOT: [PoliticProgressWhereInput!]
   id: IDFilter
   politic: PoliticWhereInput
-  progress: StringFilter
+  progress: StringNullableFilter
   source: StringFilter
   contributer: StringFilter
   createdAt: DateTimeNullableFilter
@@ -2416,7 +2471,6 @@ input PoliticProgressOrderByInput {
 input PoliticProgressUpdateInput {
   politic: PoliticRelateToOneForUpdateInput
   content: JSON
-  expert: JSON
   progress: String
   source: String
   contributer: String
@@ -2434,9 +2488,167 @@ input PoliticProgressUpdateArgs {
 input PoliticProgressCreateInput {
   politic: PoliticRelateToOneForCreateInput
   content: JSON
-  expert: JSON
   progress: String
   source: String
+  contributer: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type PoliticTimeline {
+  id: ID!
+  politic: Politic
+  eventDate: DateTime
+  sortOrder: Int
+  content: String
+  link: String
+  contributer: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input PoliticTimelineWhereUniqueInput {
+  id: ID
+}
+
+input PoliticTimelineWhereInput {
+  AND: [PoliticTimelineWhereInput!]
+  OR: [PoliticTimelineWhereInput!]
+  NOT: [PoliticTimelineWhereInput!]
+  id: IDFilter
+  politic: PoliticWhereInput
+  eventDate: DateTimeNullableFilter
+  sortOrder: IntNullableFilter
+  content: StringFilter
+  link: StringFilter
+  contributer: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PoliticTimelineOrderByInput {
+  id: OrderDirection
+  eventDate: OrderDirection
+  sortOrder: OrderDirection
+  content: OrderDirection
+  link: OrderDirection
+  contributer: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PoliticTimelineUpdateInput {
+  politic: PoliticRelateToOneForUpdateInput
+  eventDate: DateTime
+  sortOrder: Int
+  content: String
+  link: String
+  contributer: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PoliticTimelineUpdateArgs {
+  where: PoliticTimelineWhereUniqueInput!
+  data: PoliticTimelineUpdateInput!
+}
+
+input PoliticTimelineCreateInput {
+  politic: PoliticRelateToOneForCreateInput
+  eventDate: DateTime
+  sortOrder: Int
+  content: String
+  link: String
+  contributer: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type PoliticExpert {
+  id: ID!
+  politic: Politic
+  avatar: String
+  title: String
+  reviewDate: DateTime
+  content: String
+  link: String
+  contributer: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input PoliticExpertWhereUniqueInput {
+  id: ID
+}
+
+input PoliticExpertWhereInput {
+  AND: [PoliticExpertWhereInput!]
+  OR: [PoliticExpertWhereInput!]
+  NOT: [PoliticExpertWhereInput!]
+  id: IDFilter
+  politic: PoliticWhereInput
+  avatar: StringFilter
+  title: StringFilter
+  reviewDate: DateTimeNullableFilter
+  content: StringFilter
+  link: StringFilter
+  contributer: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PoliticExpertOrderByInput {
+  id: OrderDirection
+  avatar: OrderDirection
+  title: OrderDirection
+  reviewDate: OrderDirection
+  content: OrderDirection
+  link: OrderDirection
+  contributer: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PoliticExpertUpdateInput {
+  politic: PoliticRelateToOneForUpdateInput
+  avatar: String
+  title: String
+  reviewDate: DateTime
+  content: String
+  link: String
+  contributer: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PoliticExpertUpdateArgs {
+  where: PoliticExpertWhereUniqueInput!
+  data: PoliticExpertUpdateInput!
+}
+
+input PoliticExpertCreateInput {
+  politic: PoliticRelateToOneForCreateInput
+  avatar: String
+  title: String
+  reviewDate: DateTime
+  content: String
+  link: String
   contributer: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -2860,6 +3072,32 @@ type Mutation {
   deletePoliticProgresses(
     where: [PoliticProgressWhereUniqueInput!]!
   ): [PoliticProgress]
+  createPoliticTimeline(data: PoliticTimelineCreateInput!): PoliticTimeline
+  createPoliticTimelines(
+    data: [PoliticTimelineCreateInput!]!
+  ): [PoliticTimeline]
+  updatePoliticTimeline(
+    where: PoliticTimelineWhereUniqueInput!
+    data: PoliticTimelineUpdateInput!
+  ): PoliticTimeline
+  updatePoliticTimelines(data: [PoliticTimelineUpdateArgs!]!): [PoliticTimeline]
+  deletePoliticTimeline(
+    where: PoliticTimelineWhereUniqueInput!
+  ): PoliticTimeline
+  deletePoliticTimelines(
+    where: [PoliticTimelineWhereUniqueInput!]!
+  ): [PoliticTimeline]
+  createPoliticExpert(data: PoliticExpertCreateInput!): PoliticExpert
+  createPoliticExperts(data: [PoliticExpertCreateInput!]!): [PoliticExpert]
+  updatePoliticExpert(
+    where: PoliticExpertWhereUniqueInput!
+    data: PoliticExpertUpdateInput!
+  ): PoliticExpert
+  updatePoliticExperts(data: [PoliticExpertUpdateArgs!]!): [PoliticExpert]
+  deletePoliticExpert(where: PoliticExpertWhereUniqueInput!): PoliticExpert
+  deletePoliticExperts(
+    where: [PoliticExpertWhereUniqueInput!]!
+  ): [PoliticExpert]
   createLawsuit(data: LawsuitCreateInput!): Lawsuit
   createLawsuits(data: [LawsuitCreateInput!]!): [Lawsuit]
   updateLawsuit(
@@ -3094,6 +3332,22 @@ type Query {
   ): [PoliticProgress!]
   politicProgress(where: PoliticProgressWhereUniqueInput!): PoliticProgress
   politicProgressesCount(where: PoliticProgressWhereInput! = {}): Int
+  politicTimelines(
+    where: PoliticTimelineWhereInput! = {}
+    orderBy: [PoliticTimelineOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [PoliticTimeline!]
+  politicTimeline(where: PoliticTimelineWhereUniqueInput!): PoliticTimeline
+  politicTimelinesCount(where: PoliticTimelineWhereInput! = {}): Int
+  politicExperts(
+    where: PoliticExpertWhereInput! = {}
+    orderBy: [PoliticExpertOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [PoliticExpert!]
+  politicExpert(where: PoliticExpertWhereUniqueInput!): PoliticExpert
+  politicExpertsCount(where: PoliticExpertWhereInput! = {}): Int
   lawsuits(
     where: LawsuitWhereInput! = {}
     orderBy: [LawsuitOrderByInput!]! = []
