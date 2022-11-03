@@ -220,6 +220,9 @@ model Person {
   alternative                               String?
   other_names                               String?
   email                                     String?
+  facebook                                  String?
+  ig                                        String?
+  twitter                                   String?
   gender                                    String?              @default("NA")
   birth_date_year                           Int?
   birth_date_month                          Int?

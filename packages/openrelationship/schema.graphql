@@ -870,6 +870,9 @@ type Person {
   alternative: String
   other_names: String
   email: String
+  facebook: String
+  ig: String
+  twitter: String
   gender: String
   birth_date_year: Int
   birth_date_month: Int
@@ -913,6 +916,9 @@ input PersonWhereInput {
   alternative: StringNullableFilter
   other_names: StringNullableFilter
   email: StringNullableFilter
+  facebook: StringNullableFilter
+  ig: StringNullableFilter
+  twitter: StringNullableFilter
   gender: StringNullableFilter
   birth_date_year: IntNullableFilter
   birth_date_month: IntNullableFilter
@@ -943,6 +949,9 @@ input PersonOrderByInput {
   alternative: OrderDirection
   other_names: OrderDirection
   email: OrderDirection
+  facebook: OrderDirection
+  ig: OrderDirection
+  twitter: OrderDirection
   gender: OrderDirection
   birth_date_year: OrderDirection
   birth_date_month: OrderDirection
@@ -968,6 +977,9 @@ input PersonUpdateInput {
   alternative: String
   other_names: String
   email: String
+  facebook: String
+  ig: String
+  twitter: String
   gender: String
   birth_date_year: Int
   birth_date_month: Int
@@ -1002,6 +1014,9 @@ input PersonCreateInput {
   alternative: String
   other_names: String
   email: String
+  facebook: String
+  ig: String
+  twitter: String
   gender: String
   birth_date_year: Int
   birth_date_month: Int
