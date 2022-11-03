@@ -342,6 +342,7 @@ type Liveblog {
   liveblog_itemsCount(where: LiveblogItemWhereInput! = {}): Int
   tags: Tag
   publisher: Publisher
+  embedCode: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
