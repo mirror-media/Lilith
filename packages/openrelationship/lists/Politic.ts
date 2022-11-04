@@ -51,6 +51,16 @@ const listConfigurations = list ({
       many: true,
       ref: 'PoliticProgress',
     }),
+    timeline: relationship({
+      label: '時間軸',
+      many: true,
+      ref: 'PoliticTimeline.politic',
+    }),
+	expertPoint: relationship({
+	  label: '專家觀點',
+	  many: true,
+	  ref: 'PoliticExpert.politic',
+	}),
 	status: select({
 	  options: [
 	    { label: '已確認', value: 'verified' },

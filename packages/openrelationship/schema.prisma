@@ -60,6 +60,10 @@ model User {
   from_Politic_updatedBy                   Politic[]                   @relation("Politic_updatedBy")
   from_PoliticProgress_createdBy           PoliticProgress[]           @relation("PoliticProgress_createdBy")
   from_PoliticProgress_updatedBy           PoliticProgress[]           @relation("PoliticProgress_updatedBy")
+  from_PoliticTimeline_createdBy           PoliticTimeline[]           @relation("PoliticTimeline_createdBy")
+  from_PoliticTimeline_updatedBy           PoliticTimeline[]           @relation("PoliticTimeline_updatedBy")
+  from_PoliticExpert_createdBy             PoliticExpert[]             @relation("PoliticExpert_createdBy")
+  from_PoliticExpert_updatedBy             PoliticExpert[]             @relation("PoliticExpert_updatedBy")
   from_Lawsuit_createdBy                   Lawsuit[]                   @relation("Lawsuit_createdBy")
   from_Lawsuit_updatedBy                   Lawsuit[]                   @relation("Lawsuit_updatedBy")
   from_Tag_createdBy                       Tag[]                       @relation("Tag_createdBy")
@@ -220,6 +224,9 @@ model Person {
   alternative                               String?
   other_names                               String?
   email                                     String?
+  facebook                                  String?
+  ig                                        String?
+  twitter                                   String?
   gender                                    String?              @default("NA")
   birth_date_year                           Int?
   birth_date_month                          Int?
@@ -476,6 +483,7 @@ model PersonElection {
   elected                   Boolean       @default(false)
   incumbent                 Boolean       @default(false)
   source                    String        @default("")
+  politicSource             String        @default("")
   politics                  Politic[]     @relation("PersonElection_politics")
   createdAt                 DateTime?
   updatedAt                 DateTime?
@@ -585,6 +593,8 @@ model Politic {
   source                       String            @default("")
   contributer                  String            @default("")
   progress                     PoliticProgress[] @relation("Politic_progress")
+  timeline                     PoliticTimeline[] @relation("PoliticTimeline_politic")
+  expertPoint                  PoliticExpert[]   @relation("PoliticExpert_politic")
   status                       String?           @default("notverified")
   tag                          Tag?              @relation("Politic_tag", fields: [tagId], references: [id])
   tagId                        Int?              @map("tag")
@@ -611,8 +621,7 @@ model PoliticProgress {
   politic               Politic?  @relation("PoliticProgress_politic", fields: [politicId], references: [id])
   politicId             Int?      @map("politic")
   content               Json?
-  expert                Json?
-  progress              String    @default("")
+  progress              String?   @default("active")
   source                String    @default("")
   contributer           String    @default("")
   createdAt             DateTime?
@@ -622,6 +631,49 @@ model PoliticProgress {
   updatedBy             User?     @relation("PoliticProgress_updatedBy", fields: [updatedById], references: [id])
   updatedById           Int?      @map("updatedBy")
   from_Politic_progress Politic[] @relation("Politic_progress")
+
+  @@index([politicId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model PoliticTimeline {
+  id          Int       @id @default(autoincrement())
+  politic     Politic?  @relation("PoliticTimeline_politic", fields: [politicId], references: [id])
+  politicId   Int?      @map("politic")
+  eventDate   DateTime?
+  sortOrder   Int?
+  content     String    @default("")
+  link        String    @default("")
+  contributer String    @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("PoliticTimeline_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("PoliticTimeline_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([politicId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model PoliticExpert {
+  id          Int       @id @default(autoincrement())
+  politic     Politic?  @relation("PoliticExpert_politic", fields: [politicId], references: [id])
+  politicId   Int?      @map("politic")
+  avatar      String    @default("")
+  title       String    @default("")
+  reviewDate  DateTime?
+  content     String    @default("")
+  link        String    @default("")
+  contributer String    @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("PoliticExpert_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("PoliticExpert_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
 
   @@index([politicId])
   @@index([createdById])

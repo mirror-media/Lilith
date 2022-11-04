@@ -43,6 +43,21 @@ const listConfigurations = list ({
 		displayMode: 'textarea',
 	  }
 	}),
+    facebook: text({ 
+	  db: {
+		isNullable: true,
+	  },
+	}),
+    ig: text({ 
+	  db: {
+		isNullable: true,
+	  },
+	}),
+    twitter: text({ 
+	  db: {
+		isNullable: true,
+	  },
+	}),
     gender: select({
       label: '生理性別',
       options: genderOptions,
