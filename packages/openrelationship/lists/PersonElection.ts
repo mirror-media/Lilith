@@ -60,7 +60,7 @@ const listConfigurations = list ({
 		  displayMode: 'textarea',
 		}
 	}),
-    politicrSource: text({ 
+    politicSource: text({ 
 	  label: '政見資料來源', 
 		ui: {
 		  displayMode: 'textarea',
