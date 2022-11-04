@@ -1807,6 +1807,7 @@ type PersonElection {
   elected: Boolean
   incumbent: Boolean
   source: String
+  politicrSource: String
   politics(
     where: PoliticWhereInput! = {}
     orderBy: [PoliticOrderByInput!]! = []
@@ -1840,6 +1841,7 @@ input PersonElectionWhereInput {
   elected: BooleanFilter
   incumbent: BooleanFilter
   source: StringFilter
+  politicrSource: StringFilter
   politics: PoliticManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1862,6 +1864,7 @@ input PersonElectionOrderByInput {
   elected: OrderDirection
   incumbent: OrderDirection
   source: OrderDirection
+  politicrSource: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1878,6 +1881,7 @@ input PersonElectionUpdateInput {
   elected: Boolean
   incumbent: Boolean
   source: String
+  politicrSource: String
   politics: PoliticRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -1915,6 +1919,7 @@ input PersonElectionCreateInput {
   elected: Boolean
   incumbent: Boolean
   source: String
+  politicrSource: String
   politics: PoliticRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime

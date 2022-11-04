@@ -483,6 +483,7 @@ model PersonElection {
   elected                   Boolean       @default(false)
   incumbent                 Boolean       @default(false)
   source                    String        @default("")
+  politicrSource            String        @default("")
   politics                  Politic[]     @relation("PersonElection_politics")
   createdAt                 DateTime?
   updatedAt                 DateTime?
