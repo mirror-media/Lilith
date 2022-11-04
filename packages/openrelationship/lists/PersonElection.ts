@@ -60,6 +60,12 @@ const listConfigurations = list ({
 		  displayMode: 'textarea',
 		}
 	}),
+    politicrSource: text({ 
+	  label: '政見資料來源', 
+		ui: {
+		  displayMode: 'textarea',
+		}
+	}),
 	politics: relationship({ 
 	  label: '政見',
 	  many: true,
