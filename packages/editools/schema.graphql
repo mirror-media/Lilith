@@ -342,6 +342,7 @@ type Liveblog {
   liveblog_itemsCount(where: LiveblogItemWhereInput! = {}): Int
   tags: Tag
   publisher: Publisher
+  embedCode: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1699,6 +1700,7 @@ type FormResult {
   responseTime: DateTime
   form: Form
   field: Field
+  uri: String
   hidden: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -1721,6 +1723,7 @@ input FormResultWhereInput {
   responseTime: DateTimeNullableFilter
   form: FormWhereInput
   field: FieldWhereInput
+  uri: StringFilter
   hidden: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1734,6 +1737,7 @@ input FormResultOrderByInput {
   ip: OrderDirection
   result: OrderDirection
   responseTime: OrderDirection
+  uri: OrderDirection
   hidden: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1746,6 +1750,7 @@ input FormResultUpdateInput {
   responseTime: DateTime
   form: FormRelateToOneForUpdateInput
   field: FieldRelateToOneForUpdateInput
+  uri: String
   hidden: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -1765,6 +1770,7 @@ input FormResultCreateInput {
   responseTime: DateTime
   form: FormRelateToOneForCreateInput
   field: FieldRelateToOneForCreateInput
+  uri: String
   hidden: Boolean
   createdAt: DateTime
   updatedAt: DateTime
