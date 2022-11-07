@@ -17,17 +17,12 @@ const listConfigurations = list ({
       many: false,
       ref: 'Politic',
     }),
-    content: customFields.richTextEditor({
-      label: '爭議事件',
-	  disabledButtons: ['image', 'code', 'blockquote', 'code-block', 'annotation', 'font-color', 'slideshow' ],
-    }),
     progress: select({
       defaultValue: 'active', 
       options: [ 
         { label: '還沒開始', value: 'no-progress' }, 
         { label: '進行中', value: 'in-progress' }, 
         { label: '卡關中', value: 'in-trouble' },
-        { label: '已離職', value: 'quit' }
       ], 
       label: '狀態',
     }),
