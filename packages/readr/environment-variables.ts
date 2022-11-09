@@ -22,8 +22,12 @@ enum DatabaseProvider {
 
 export default {
   isUIDisabled: IS_UI_DISABLED === 'true',
-  memoryCacheTtl: MEMORY_CACHE_TTL || 300_000,
-  memoryCacheSize: MEMORY_CACHE_SIZE || 300,
+  memoryCacheTtl: Number.isNaN(Number(MEMORY_CACHE_TTL))
+    ? 300_000
+    : Number(MEMORY_CACHE_TTL),
+  memoryCacheSize: Number.isNaN(Number(MEMORY_CACHE_SIZE))
+    ? 300
+    : Number(MEMORY_CACHE_SIZE),
   accessControlStrategy: ACCESS_CONTROL_STRATEGY || 'cms', // the value could be one of 'cms', 'gql' or 'preview'
   previewServerOrigin: PREVIEW_SERVER_ORIGIN || 'http://localhost:3001',
   database: {
@@ -31,8 +35,7 @@ export default {
       DATABASE_PROVIDER === 'sqlite'
         ? DatabaseProvider.Sqlite
         : DatabaseProvider.Postgres,
-    url:
-      DATABASE_URL || 'postgres://user:password@localhost:5432/readr-cms',
+    url: DATABASE_URL || 'postgres://user:password@localhost:5432/readr-cms',
   },
   session: {
     secret:
