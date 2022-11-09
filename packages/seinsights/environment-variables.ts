@@ -28,7 +28,8 @@ export default {
         ? DatabaseProvider.Sqlite
         : DatabaseProvider.Postgres,
     url:
-      DATABASE_URL || 'postgres://account:passwd@localhost:5432/lilith-seinsights',
+      DATABASE_URL ||
+      'postgres://account:passwd@localhost:5432/lilith-seinsights',
   },
   session: {
     secret:
