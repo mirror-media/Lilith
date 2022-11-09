@@ -4,7 +4,7 @@ import appConfig from './config'
 import envVar from './environment-variables'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
-import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache';
+import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -51,16 +51,16 @@ export default withAuth(
         baseUrl: appConfig.images.baseUrl,
       },
     },
-	graphql: {
-	  apolloConfig: {
-		cache: new InMemoryLRUCache({
-		  // ~100MiB
-		  maxSize: Math.pow(2, 20) * envVar.memoryCacheSize,
-		  // 5 minutes (in milliseconds)
-		  ttl: envVar.memoryCacheTtl,
-		}),		
-	  }
-	},
+    graphql: {
+      apolloConfig: {
+        cache: new InMemoryLRUCache({
+          // ~100MiB
+          maxSize: Math.pow(2, 20) * envVar.memoryCacheSize,
+          // 5 minutes (in milliseconds)
+          ttl: envVar.memoryCacheTtl,
+        }),
+      },
+    },
     server: {
       extendExpressApp: (app, createContext) => {
         // eslint-disable-next-line
@@ -122,7 +122,11 @@ export default withAuth(
               `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div style="margin: 0 auto; max-width: 600px;">${
                 item?.embedCode
               }</div>${item.index
+                // TODO: should be fixed
+                // @ts-ignore: wait for type definition
                 ?.sort((a, b) => a.order - b.order)
+                // TODO: should be fixed
+                // @ts-ignore: wait for type definition
                 .map((index) => index.embedCode)}</html>`
             )
           }
