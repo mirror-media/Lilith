@@ -20,6 +20,7 @@ import IndexItem from './IndexItem'
 import InlineIndex from './InlineIndex'
 import QAList from './QAList'
 import QAItem from './QAItem'
+import FeedbackCounter from './FeedbackCounter'
 
 export const listDefinition = {
   User,
@@ -44,4 +45,5 @@ export const listDefinition = {
   Karaoke,
   QAList,
   QAItem,
+  FeedbackCounter,
 }
