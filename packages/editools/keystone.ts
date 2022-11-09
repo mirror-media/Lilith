@@ -97,6 +97,39 @@ export default withAuth(
         })
 
         app.get(
+          '/demo/feedback-counter/:id',
+          authenticationMw,
+          async (req, res) => {
+            const itemId = req.params.id
+
+            const context = await createContext(req, res)
+            const item = await context.query.FeedbackCounter.findOne({
+              where: { id: itemId },
+              query: 'embeddedCode',
+            })
+
+            if (!item) {
+              return res
+                .status(404)
+                .send(`FeedbackCounter ${itemId} is not found`)
+            }
+
+            res.send(
+              `<html>
+                <head>
+                  <meta name="viewport" content="width=device-width, initial-scale=1">
+                </head>
+                <body>
+                  <div style="width: 100vw; height: 100vh;">
+                    ${item?.embeddedCode}
+                  </div>
+                </body>
+              </html>`
+            )
+          }
+        )
+
+        app.get(
           '/demo/inline-indices/:id',
           authenticationMw,
           async (req, res) => {
