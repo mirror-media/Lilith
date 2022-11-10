@@ -23,6 +23,7 @@ const listConfigurations = list ({
         { label: '還沒開始', value: 'no-progress' }, 
         { label: '進行中', value: 'in-progress' }, 
         { label: '卡關中', value: 'in-trouble' },
+        { label: '已完成', value: 'complete' },
       ], 
       label: '狀態',
     }),
