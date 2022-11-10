@@ -2231,6 +2231,7 @@ type Politic {
   thread_parent: Politic
   desc: String
   content: String
+  dispute: String
   source: String
   contributer: String
   progress(
@@ -2276,6 +2277,7 @@ input PoliticWhereInput {
   thread_parent: PoliticWhereInput
   desc: StringFilter
   content: StringFilter
+  dispute: StringFilter
   source: StringFilter
   contributer: StringFilter
   progress: PoliticProgressManyRelationFilter
@@ -2312,6 +2314,7 @@ input PoliticOrderByInput {
   id: OrderDirection
   desc: OrderDirection
   content: OrderDirection
+  dispute: OrderDirection
   source: OrderDirection
   contributer: OrderDirection
   status: OrderDirection
@@ -2325,6 +2328,7 @@ input PoliticUpdateInput {
   thread_parent: PoliticRelateToOneForUpdateInput
   desc: String
   content: String
+  dispute: String
   source: String
   contributer: String
   progress: PoliticProgressRelateToManyForUpdateInput
@@ -2388,6 +2392,7 @@ input PoliticCreateInput {
   thread_parent: PoliticRelateToOneForCreateInput
   desc: String
   content: String
+  dispute: String
   source: String
   contributer: String
   progress: PoliticProgressRelateToManyForCreateInput
@@ -2435,7 +2440,6 @@ input TagRelateToOneForCreateInput {
 type PoliticProgress {
   id: ID!
   politic: Politic
-  content: JSON
   progress: String
   source: String
   contributer: String
@@ -2475,7 +2479,6 @@ input PoliticProgressOrderByInput {
 
 input PoliticProgressUpdateInput {
   politic: PoliticRelateToOneForUpdateInput
-  content: JSON
   progress: String
   source: String
   contributer: String
@@ -2492,7 +2495,6 @@ input PoliticProgressUpdateArgs {
 
 input PoliticProgressCreateInput {
   politic: PoliticRelateToOneForCreateInput
-  content: JSON
   progress: String
   source: String
   contributer: String

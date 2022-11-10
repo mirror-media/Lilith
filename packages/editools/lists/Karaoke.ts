@@ -1,7 +1,7 @@
 import config from '../config'
-// eslint-disable-next-line
-// @ts-ignore
+// @ts-ignore: no definition
 import embedCodeGen from '@readr-media/react-embed-code-generator'
+// @ts-ignore: no definition
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import { checkbox, text, image, file, virtual } from '@keystone-6/core/fields'

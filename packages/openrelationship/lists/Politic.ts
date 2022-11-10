@@ -34,6 +34,12 @@ const listConfigurations = list ({
 		displayMode: 'textarea',
 	  },
 	}),
+    dispute: text({
+      label: '爭議事件',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+    }),
     source: text({ 
 	  label: '資料來源',
 	  ui: {

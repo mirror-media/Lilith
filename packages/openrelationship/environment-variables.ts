@@ -31,8 +31,7 @@ export default {
       DATABASE_PROVIDER === 'sqlite'
         ? DatabaseProvider.Sqlite
         : DatabaseProvider.Postgres,
-    url:
-      DATABASE_URL || 'postgres://hcchien@localhost:5432/openrelationship',
+    url: DATABASE_URL || 'postgres://hcchien@localhost:5432/openrelationship',
   },
   session: {
     secret:

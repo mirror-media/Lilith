@@ -590,6 +590,7 @@ model Politic {
   thread_parentId              Int?              @map("thread_parent")
   desc                         String            @default("")
   content                      String            @default("")
+  dispute                      String            @default("")
   source                       String            @default("")
   contributer                  String            @default("")
   progress                     PoliticProgress[] @relation("Politic_progress")
@@ -620,7 +621,6 @@ model PoliticProgress {
   id                    Int       @id @default(autoincrement())
   politic               Politic?  @relation("PoliticProgress_politic", fields: [politicId], references: [id])
   politicId             Int?      @map("politic")
-  content               Json?
   progress              String?   @default("active")
   source                String    @default("")
   contributer           String    @default("")
