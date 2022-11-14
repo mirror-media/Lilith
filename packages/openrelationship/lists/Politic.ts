@@ -34,6 +34,16 @@ const listConfigurations = list ({
 		displayMode: 'textarea',
 	  },
 	}),
+    current_progress: select({
+      defaultValue: 'active', 
+      options: [ 
+        { label: '還沒開始', value: 'no-progress' }, 
+        { label: '進行中', value: 'in-progress' }, 
+        { label: '卡關中', value: 'in-trouble' },
+        { label: '已完成', value: 'complete' },
+      ], 
+      label: '狀態',
+    }),
     dispute: text({
       label: '爭議事件',
 	  ui: {
@@ -52,11 +62,6 @@ const listConfigurations = list ({
 		displayMode: 'textarea',
 	  },
 	}),
-    progress: relationship({
-      label: '政見執行進度',
-      many: true,
-      ref: 'PoliticProgress',
-    }),
     timeline: relationship({
       label: '時間軸',
       many: true,
