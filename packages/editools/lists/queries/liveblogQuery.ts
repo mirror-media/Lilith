@@ -1,31 +1,12 @@
-export const liveblogQuery = `  
-  id
-  name
-  slug
-  desc
-  heroImage {
-    name
-    imageFile {
-      ref
-      url
-    }
-  }
-  active
-  liveblog_itemsCount
-  tags {
-    name
-  }
-  publisher {
-    name
-    template
-  }
-  createdAt
-  updatedAt
-  liveblog_items(where: { status: { equals: "published" } }) {
+export const liveblogQuery = buildLiveBlogQuery()
+export const liveblogQueryWith5Items = buildLiveBlogQuery(5)
+
+export function buildLiveBlogQuery(take?: number) {
+  return `
     id
-    title
-    status
-    publishTime
+    name
+    slug
+    desc
     heroImage {
       name
       imageFile {
@@ -33,16 +14,42 @@ export const liveblogQuery = `
         url
       }
     }
-    author
-    name
-    boost
-    createdAt
-    updatedAt
+    active
+    liveblog_itemsCount
     tags {
       name
     }
-    type
-    external
-    externalCoverPhoto
-  }
-`
+    publisher {
+      name
+      template
+    }
+    createdAt
+    updatedAt
+    liveblog_items(where: { status: { equals: "published" }}${
+      take ? ', take:' + take : ''
+    } ) {
+      id
+      title
+      status
+      publishTime
+      heroImage {
+        name
+        imageFile {
+          ref
+          url
+        }
+      }
+      author
+      name
+      boost
+      createdAt
+      updatedAt
+      tags {
+        name
+      }
+      type
+      external
+      externalCoverPhoto
+    }
+  `
+}
