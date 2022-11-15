@@ -109,6 +109,7 @@ model Liveblog {
   heroVideo      Video?         @relation("Liveblog_heroVideo", fields: [heroVideoId], references: [id])
   heroVideoId    Int?           @map("heroVideo")
   active         Boolean        @default(true)
+  archive        Boolean        @default(false)
   credit         String         @default("")
   css            String         @default("")
   liveblog_items LiveblogItem[] @relation("LiveblogItem_liveblog")
