@@ -4,7 +4,7 @@ import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import { text, relationship, checkbox, virtual } from '@keystone-6/core/fields'
 import { saveLiveblogJSON, deleteLiveblogJSON } from './utils'
-import { liveblogQuery } from './queries/liveblogQuery'
+import { buildLiveBlogQuery } from './queries/liveblogQuery'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -43,6 +43,7 @@ const listConfigurations = list({
       ref: 'Video',
     }),
     active: checkbox({ label: '啟用', defaultValue: true }),
+    archive: checkbox({ label: '封存', defaultValue: false }),
     credit: text({
       label: 'credit',
       ui: {
@@ -106,18 +107,18 @@ const listConfigurations = list({
           args,
           context
         ): Promise<string> => {
-          const id = typeof item?.id === 'string' ? item.id : `${item.id}`
+          const take = 5
           const liveblog = await context.query.Liveblog.findOne({
-            where: { id },
-            query: liveblogQuery,
+            where: { id: `${item.id}` },
+            query: buildLiveBlogQuery(take),
           })
-
           return embedCodeGen.buildEmbeddedCode(
             'react-live-blog',
             {
               initialLiveblog: liveblog,
               fetchLiveblogUrl: `https://${config.googleCloudStorage.bucket}/files/liveblogs/${item?.slug}.json`,
               fetchImageBaseUrl: `https://${config.googleCloudStorage.bucket}`,
+              toLoadPeriodically: !item.archive,
             },
             embedCodeWebpackAssets
           )

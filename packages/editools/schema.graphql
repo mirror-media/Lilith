@@ -331,6 +331,7 @@ type Liveblog {
   heroImage: Photo
   heroVideo: Video
   active: Boolean
+  archive: Boolean
   credit: String
   css: String
   liveblog_items(
@@ -365,6 +366,7 @@ input LiveblogWhereInput {
   heroImage: PhotoWhereInput
   heroVideo: VideoWhereInput
   active: BooleanFilter
+  archive: BooleanFilter
   credit: StringFilter
   css: StringFilter
   liveblog_items: LiveblogItemManyRelationFilter
@@ -388,6 +390,7 @@ input LiveblogOrderByInput {
   slug: OrderDirection
   desc: OrderDirection
   active: OrderDirection
+  archive: OrderDirection
   credit: OrderDirection
   css: OrderDirection
   createdAt: OrderDirection
@@ -401,6 +404,7 @@ input LiveblogUpdateInput {
   heroImage: PhotoRelateToOneForUpdateInput
   heroVideo: VideoRelateToOneForUpdateInput
   active: Boolean
+  archive: Boolean
   credit: String
   css: String
   liveblog_items: LiveblogItemRelateToManyForUpdateInput
@@ -437,6 +441,7 @@ input LiveblogCreateInput {
   heroImage: PhotoRelateToOneForCreateInput
   heroVideo: VideoRelateToOneForCreateInput
   active: Boolean
+  archive: Boolean
   credit: String
   css: String
   liveblog_items: LiveblogItemRelateToManyForCreateInput

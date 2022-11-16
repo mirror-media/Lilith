@@ -2274,13 +2274,14 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@readr-media/react-embed-code-generator@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-1.3.0.tgz#658bde14c08821077fa07867c5942ef6afbf6ac0"
-  integrity sha512-hLKA9ksZQTo+ivQcBkfCqt4T+7XWYNRQIpYs8FBOGzeJlB0fkQZcCGMbr5JdzMpn74T2B9LO2wAXbs0p1OqONg==
+"@readr-media/react-embed-code-generator@1.2.0-beta.2":
+  version "1.2.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-1.2.0-beta.2.tgz#416e9e308669f719a3b47d8bdde3d6bffbb95279"
+  integrity sha512-X9FPNw8X++9dewsRcIDQSoTUGSLlVRpgaSe0T+Gm1KeLXltGpY63J2ahqvRsH9ZZWbYWZg6drkRWM879O4WZbg==
   dependencies:
-    "@readr-media/react-feedback" "^3.0.2"
+    "@readr-media/react-feedback" "^1.0.6"
     "@readr-media/react-karaoke" "^1.0.0"
+    "@readr-media/react-live-blog" "1.0.0-beta.4"
     "@readr-media/react-qa-list" "^1.0.5"
     "@readr-media/react-questionnaire" "^1.0.11"
     lodash "^4.17.21"
@@ -2288,10 +2289,10 @@
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
 
-"@readr-media/react-feedback@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-feedback/-/react-feedback-3.0.2.tgz#ee3de8f7e838336d5f0b95d825c7bfa40391d2d8"
-  integrity sha512-2vLJE6SNU40Yfhd+u7TDxXGW4u/ey+tEJXYs8FbP9NZsV4rO7xmV1cQb5Up7R+eFb7d7ERBvdRS8n6lD7Ns38A==
+"@readr-media/react-feedback@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-feedback/-/react-feedback-1.0.6.tgz#13f4e4c69073147168f62135ff4bc56539040b00"
+  integrity sha512-BUNLKpDKAUhSnqRgpcQ9Gi8xxiyQOz6vBItpY58HK63fKuXQfWyaJYhzOO0gbMyUxzo8DfYhgSV2tQsy6RquWQ==
   dependencies:
     axios "^0.27.2"
     lodash "^4.17.21"
@@ -2313,6 +2314,14 @@
     serialize-javascript "^6.0.0"
     styled-components "5.3.5"
     uuid "^8.3.2"
+
+"@readr-media/react-live-blog@1.0.0-beta.4":
+  version "1.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-live-blog/-/react-live-blog-1.0.0-beta.4.tgz#8eaa7756fdbc26140eb8e1a484cf013027334d16"
+  integrity sha512-lOnKroYLHK/oYZBHDlGyL19PmGxfmRbuOOh+NaKQYRQ8ToqLo5e8s9JqyLlt3ABNTaRV5HQsKufhAkCCYF8SIg==
+  dependencies:
+    axios "^0.27.2"
+    draft-js "^0.11.7"
 
 "@readr-media/react-qa-list@^1.0.5":
   version "1.0.5"
