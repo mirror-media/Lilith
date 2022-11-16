@@ -22,6 +22,11 @@ const listConfigurations = list ({
       many: false,
       ref: 'Organization',
     }),
+    election: relationship({
+      label: '選舉',
+      many: false,
+      ref: 'PersonElection.organization',
+    }),
     role: text({ 
 	  label: '職位名稱',
 	  db: {

@@ -66,6 +66,11 @@ const listConfigurations = list ({
 		  displayMode: 'textarea',
 		}
 	}),
+    organization: relationship({
+      label: '人物-組織',
+      many: false,
+      ref: 'PersonOrganization.election',
+    }),
 	politics: relationship({ 
 	  label: '政見',
 	  many: true,
