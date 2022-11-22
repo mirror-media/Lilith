@@ -17,6 +17,12 @@ const listConfigurations = list ({
       many: false,
       ref: 'Politic.expertPoint',
     }),
+    expert: text({ 
+	  label: '專家姓名',
+	  db: {
+	    isNullable: true,
+	  }
+	}),
     avatar: text({ 
 	  label: '頭像連結',
 	}),
