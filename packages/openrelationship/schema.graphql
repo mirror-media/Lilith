@@ -2513,6 +2513,7 @@ input PoliticTimelineCreateInput {
 type PoliticExpert {
   id: ID!
   politic: Politic
+  expert: String
   avatar: String
   title: String
   reviewDate: DateTime
@@ -2535,6 +2536,7 @@ input PoliticExpertWhereInput {
   NOT: [PoliticExpertWhereInput!]
   id: IDFilter
   politic: PoliticWhereInput
+  expert: StringNullableFilter
   avatar: StringFilter
   title: StringFilter
   reviewDate: DateTimeNullableFilter
@@ -2549,6 +2551,7 @@ input PoliticExpertWhereInput {
 
 input PoliticExpertOrderByInput {
   id: OrderDirection
+  expert: OrderDirection
   avatar: OrderDirection
   title: OrderDirection
   reviewDate: OrderDirection
@@ -2561,6 +2564,7 @@ input PoliticExpertOrderByInput {
 
 input PoliticExpertUpdateInput {
   politic: PoliticRelateToOneForUpdateInput
+  expert: String
   avatar: String
   title: String
   reviewDate: DateTime
@@ -2580,6 +2584,7 @@ input PoliticExpertUpdateArgs {
 
 input PoliticExpertCreateInput {
   politic: PoliticRelateToOneForCreateInput
+  expert: String
   avatar: String
   title: String
   reviewDate: DateTime
