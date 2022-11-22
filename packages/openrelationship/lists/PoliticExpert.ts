@@ -47,7 +47,12 @@ const listConfigurations = list ({
 	    displayMode: 'textarea',
 	  },
 	}),
-    contributer: text({ label: '資料提供' }),
+    contributer: text({ 
+	  label: '資料提供',
+	  ui: {
+	    displayMode: 'textarea'
+	  }
+	}),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
   },
   access: {
