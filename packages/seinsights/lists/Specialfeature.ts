@@ -1,3 +1,4 @@
+// @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import {
   list,
@@ -57,7 +58,7 @@ const listConfigurations = list({
     }),
     publishDate: timestamp({
       label: '發布日期',
-      defaultVaule: { kind: 'now' },
+      defaultValue: { kind: 'now' },
     }),
     heroImage: customFields.relationship({
       label: '首圖',
