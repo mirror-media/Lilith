@@ -9,6 +9,7 @@ import {
   select,
   json,
   timestamp,
+  checkbox,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -179,6 +180,10 @@ const listConfigurations = list({
         inlineCreate: { fields: ['name'] },
       },
       many: true,
+    }),
+    isPremium: checkbox({
+      label: '會員文章',
+      defaultValue: false,
     }),
     //
     // previewButton: virtual({

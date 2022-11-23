@@ -1365,6 +1365,7 @@ type Post {
     skip: Int! = 0
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  isPremium: Boolean
   oldCategory: String
   apiDataBrief: JSON
   apiData: JSON
@@ -1404,6 +1405,7 @@ input PostWhereInput {
   region: StringNullableFilter
   relatedPosts: PostManyRelationFilter
   tags: TagManyRelationFilter
+  isPremium: BooleanFilter
   oldCategory: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1434,6 +1436,7 @@ input PostOrderByInput {
   heroCaption: OrderDirection
   heroCreditUrl: OrderDirection
   region: OrderDirection
+  isPremium: OrderDirection
   oldCategory: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1456,6 +1459,7 @@ input PostUpdateInput {
   region: String
   relatedPosts: PostRelateToManyForUpdateInput
   tags: TagRelateToManyForUpdateInput
+  isPremium: Boolean
   oldCategory: String
   apiDataBrief: JSON
   apiData: JSON
@@ -1494,6 +1498,7 @@ input PostCreateInput {
   region: String
   relatedPosts: PostRelateToManyForCreateInput
   tags: TagRelateToManyForCreateInput
+  isPremium: Boolean
   oldCategory: String
   apiDataBrief: JSON
   apiData: JSON
