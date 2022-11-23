@@ -39,6 +39,13 @@ const listConfigurations = list({
         max: 9999,
       },
     }),
+    storyType: select({
+      label: '文體story-type',
+      options: [
+        { label: '趨勢', value: 'trend' },
+        { label: '案例', value: 'case' },
+      ],
+    }),
     status: select({
       label: '狀態',
       type: 'enum',
