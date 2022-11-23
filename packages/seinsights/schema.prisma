@@ -305,6 +305,7 @@ model Specialfeature {
   title                                          String                       @default("")
   subtitle                                       String                       @default("")
   weight                                         Int?                         @default(85)
+  storyType                                      String?
   status                                         SpecialfeatureStatusType?    @default(draft)
   publishDate                                    DateTime?                    @default(now())
   heroImage                                      Photo?                       @relation("Specialfeature_heroImage", fields: [heroImageId], references: [id])

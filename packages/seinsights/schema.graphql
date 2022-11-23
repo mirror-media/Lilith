@@ -1874,6 +1874,7 @@ type Specialfeature {
   title: String
   subtitle: String
   weight: Int
+  storyType: String
   status: SpecialfeatureStatusType
   publishDate: DateTime
   heroImage: Photo
@@ -1949,6 +1950,7 @@ input SpecialfeatureWhereInput {
   title: StringFilter
   subtitle: StringFilter
   weight: IntNullableFilter
+  storyType: StringNullableFilter
   status: SpecialfeatureStatusTypeNullableFilter
   publishDate: DateTimeNullableFilter
   heroImage: PhotoWhereInput
@@ -1979,6 +1981,7 @@ input SpecialfeatureOrderByInput {
   title: OrderDirection
   subtitle: OrderDirection
   weight: OrderDirection
+  storyType: OrderDirection
   status: OrderDirection
   publishDate: OrderDirection
   heroCaption: OrderDirection
@@ -1992,6 +1995,7 @@ input SpecialfeatureUpdateInput {
   title: String
   subtitle: String
   weight: Int
+  storyType: String
   status: SpecialfeatureStatusType
   publishDate: DateTime
   heroImage: PhotoRelateToOneForUpdateInput
@@ -2021,6 +2025,7 @@ input SpecialfeatureCreateInput {
   title: String
   subtitle: String
   weight: Int
+  storyType: String
   status: SpecialfeatureStatusType
   publishDate: DateTime
   heroImage: PhotoRelateToOneForCreateInput
