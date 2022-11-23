@@ -2318,6 +2318,100 @@ input UserCreateInput {
   role: String
 }
 
+type Member {
+  id: ID!
+  firebaseId: String
+  isActive: Boolean
+  email: String
+  beginDate: DateTime
+  endDate: DateTime
+  sections(
+    where: SectionWhereInput! = {}
+    orderBy: [SectionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
+  favoritePosts(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Post!]
+  favoritePostsCount(where: PostWhereInput! = {}): Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input MemberWhereUniqueInput {
+  id: ID
+  firebaseId: String
+}
+
+input MemberWhereInput {
+  AND: [MemberWhereInput!]
+  OR: [MemberWhereInput!]
+  NOT: [MemberWhereInput!]
+  id: IDFilter
+  firebaseId: StringFilter
+  isActive: BooleanFilter
+  email: StringFilter
+  beginDate: DateTimeNullableFilter
+  endDate: DateTimeNullableFilter
+  sections: SectionManyRelationFilter
+  favoritePosts: PostManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input MemberOrderByInput {
+  id: OrderDirection
+  firebaseId: OrderDirection
+  isActive: OrderDirection
+  email: OrderDirection
+  beginDate: OrderDirection
+  endDate: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input MemberUpdateInput {
+  firebaseId: String
+  isActive: Boolean
+  email: String
+  beginDate: DateTime
+  endDate: DateTime
+  sections: SectionRelateToManyForUpdateInput
+  favoritePosts: PostRelateToManyForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input MemberUpdateArgs {
+  where: MemberWhereUniqueInput!
+  data: MemberUpdateInput!
+}
+
+input MemberCreateInput {
+  firebaseId: String
+  isActive: Boolean
+  email: String
+  beginDate: DateTime
+  endDate: DateTime
+  sections: SectionRelateToManyForCreateInput
+  favoritePosts: PostRelateToManyForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 type About {
   id: ID!
   aboutUs: JSON
@@ -3019,6 +3113,12 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  createMember(data: MemberCreateInput!): Member
+  createMembers(data: [MemberCreateInput!]!): [Member]
+  updateMember(where: MemberWhereUniqueInput!, data: MemberUpdateInput!): Member
+  updateMembers(data: [MemberUpdateArgs!]!): [Member]
+  deleteMember(where: MemberWhereUniqueInput!): Member
+  deleteMembers(where: [MemberWhereUniqueInput!]!): [Member]
   createAbout(data: AboutCreateInput!): About
   createAbouts(data: [AboutCreateInput!]!): [About]
   updateAbout(where: AboutWhereUniqueInput!, data: AboutUpdateInput!): About
@@ -3238,6 +3338,14 @@ type Query {
   ): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
+  members(
+    where: MemberWhereInput! = {}
+    orderBy: [MemberOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Member!]
+  member(where: MemberWhereUniqueInput!): Member
+  membersCount(where: MemberWhereInput! = {}): Int
   abouts(
     where: AboutWhereInput! = {}
     orderBy: [AboutOrderByInput!]! = []

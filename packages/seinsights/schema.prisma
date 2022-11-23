@@ -237,6 +237,7 @@ model Post {
   from_EditorChoice_post           EditorChoice[]   @relation("EditorChoice_post")
   from_Post_relatedPosts           Post[]           @relation("Post_relatedPosts")
   from_Specialfeature_relatedPosts Specialfeature[] @relation("Specialfeature_relatedPosts")
+  from_Member_favoritePosts        Member[]         @relation("Member_favoritePosts")
 
   @@index([heroImageId])
   @@index([createdById])
@@ -274,27 +275,28 @@ model Resource {
 }
 
 model Section {
-  id                  Int                  @id @default(autoincrement())
-  name                String               @default("")
-  slug                String               @unique @default("")
-  order               Int?                 @unique
-  status              SectionStatusType
-  isPresent           Boolean              @default(true)
-  heroImage           Photo?               @relation("Section_heroImage", fields: [heroImageId], references: [id])
-  heroImageId         Int?                 @map("heroImage")
-  category            Category[]           @relation("Category_section")
-  posts               Post[]               @relation("Post_section")
-  specialfeatures     Specialfeature[]     @relation("Section_specialfeatures")
-  events              Event[]              @relation("Event_section")
-  jobs                Job[]                @relation("Job_section")
-  resources           Resource[]           @relation("Resource_section")
-  specialfeatureLists SpecialfeatureList[] @relation("Section_specialfeatureLists")
-  createdAt           DateTime?
-  updatedAt           DateTime?
-  createdBy           User?                @relation("Section_createdBy", fields: [createdById], references: [id])
-  createdById         Int?                 @map("createdBy")
-  updatedBy           User?                @relation("Section_updatedBy", fields: [updatedById], references: [id])
-  updatedById         Int?                 @map("updatedBy")
+  id                   Int                  @id @default(autoincrement())
+  name                 String               @default("")
+  slug                 String               @unique @default("")
+  order                Int?                 @unique
+  status               SectionStatusType
+  isPresent            Boolean              @default(true)
+  heroImage            Photo?               @relation("Section_heroImage", fields: [heroImageId], references: [id])
+  heroImageId          Int?                 @map("heroImage")
+  category             Category[]           @relation("Category_section")
+  posts                Post[]               @relation("Post_section")
+  specialfeatures      Specialfeature[]     @relation("Section_specialfeatures")
+  events               Event[]              @relation("Event_section")
+  jobs                 Job[]                @relation("Job_section")
+  resources            Resource[]           @relation("Resource_section")
+  specialfeatureLists  SpecialfeatureList[] @relation("Section_specialfeatureLists")
+  createdAt            DateTime?
+  updatedAt            DateTime?
+  createdBy            User?                @relation("Section_createdBy", fields: [createdById], references: [id])
+  createdById          Int?                 @map("createdBy")
+  updatedBy            User?                @relation("Section_updatedBy", fields: [updatedById], references: [id])
+  updatedById          Int?                 @map("updatedBy")
+  from_Member_sections Member[]             @relation("Member_sections")
 
   @@index([heroImageId])
   @@index([createdById])
@@ -413,6 +415,8 @@ model User {
   from_SpecialfeatureList_updatedBy         SpecialfeatureList[]         @relation("SpecialfeatureList_updatedBy")
   from_Tag_createdBy                        Tag[]                        @relation("Tag_createdBy")
   from_Tag_updatedBy                        Tag[]                        @relation("Tag_updatedBy")
+  from_Member_createdBy                     Member[]                     @relation("Member_createdBy")
+  from_Member_updatedBy                     Member[]                     @relation("Member_updatedBy")
   from_About_createdBy                      About[]                      @relation("About_createdBy")
   from_About_updatedBy                      About[]                      @relation("About_updatedBy")
   from_EventBanner_createdBy                EventBanner[]                @relation("EventBanner_createdBy")
@@ -427,6 +431,26 @@ model User {
   from_ResourceBanner_updatedBy             ResourceBanner[]             @relation("ResourceBanner_updatedBy")
   from_SpecialfeatureEditorChoice_createdBy SpecialfeatureEditorChoice[] @relation("SpecialfeatureEditorChoice_createdBy")
   from_SpecialfeatureEditorChoice_updatedBy SpecialfeatureEditorChoice[] @relation("SpecialfeatureEditorChoice_updatedBy")
+}
+
+model Member {
+  id            Int       @id @default(autoincrement())
+  firebaseId    String    @unique @default("")
+  isActive      Boolean   @default(false)
+  email         String    @default("")
+  beginDate     DateTime? @default(now())
+  endDate       DateTime?
+  sections      Section[] @relation("Member_sections")
+  favoritePosts Post[]    @relation("Member_favoritePosts")
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Member_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Member_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 model About {

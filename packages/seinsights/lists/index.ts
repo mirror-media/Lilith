@@ -12,6 +12,7 @@ import SpecialfeatureList from './SpecialfeatureList'
 import Section from './Section'
 import Tag from './Tag'
 import User from './User'
+import Member from './Member'
 import AboutUs from './AboutUs'
 import Menubar from './Menubar'
 import EventBanner from './EventBanner'
@@ -35,12 +36,12 @@ export const listDefinition = {
   SpecialfeatureList,
   Tag,
   User,
+  Member,
   About: AboutUs,
   EventBanner,
   HomepageBanner,
   JobBanner,
   Menubar,
   ResourceBanner,
-  SpecialfeatureEditorChoice
-
+  SpecialfeatureEditorChoice,
 }
