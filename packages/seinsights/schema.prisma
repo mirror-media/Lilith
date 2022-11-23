@@ -224,6 +224,7 @@ model Post {
   region                           String?
   relatedPosts                     Post[]           @relation("Post_relatedPosts")
   tags                             Tag[]            @relation("Post_tags")
+  isPremium                        Boolean          @default(false)
   oldCategory                      String?
   apiDataBrief                     Json?
   apiData                          Json?
