@@ -20,7 +20,7 @@
     "@keystone-6/core": "1.1.1",
     "@keystone-6/fields-document": "1.0.1",
     "@mirrormedia/lilith-core": "^1.1.0",
-    "@readr-media/react-embed-code-generator": "2.0.0-beta.1",
+    "@readr-media/react-embed-code-generator": "2.0.1",
     "cheerio": "^1.0.0-rc.12",
     "express": "^4.17.1",
     "http-proxy-middleware": "^2.0.3",
