@@ -2282,15 +2282,15 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.0.2.tgz#bb302c98ab7a31c207a1ab90ae4270be267c3fa5"
-  integrity sha512-i7cbgpJvPPScI6rxVEtAUKdHzAbj7jLxa/4+Cv+CSzYhXY2bzB3DIeJ7gK4lyP2J/i+WfewEPwfbz8vH+h0Nkg==
+"@readr-media/react-embed-code-generator@2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.0.3.tgz#88d4907c49e37e72b6c8be2bd3bf7c29176e98f8"
+  integrity sha512-0L9yz4JYFwLlY1ZQsQBLle/6JKuC8JIBIMYFUeRN3PCJWd+bboUAcsji2+4X9+Xuy7tP7QBUrhbOkm+Qs73gyw==
   dependencies:
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
     "@readr-media/react-karaoke" "2.0.0"
-    "@readr-media/react-live-blog" "1.1.0"
+    "@readr-media/react-live-blog" "1.1.1"
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
     lodash "^4.17.21"
@@ -2320,10 +2320,10 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
-"@readr-media/react-live-blog@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-live-blog/-/react-live-blog-1.1.0.tgz#725f6f205797c994aed1df5573070a5e050f2067"
-  integrity sha512-UJK1IaQi1ALq+M02cQO/oouAzYrJtq5SmNYQjPTs5Toc1T1y2ZMVNF0Q93BvLkyMImKvze8gNufj4ORwWiNp1w==
+"@readr-media/react-live-blog@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-live-blog/-/react-live-blog-1.1.1.tgz#4f28e6d4431b497f3ed64d6a7fd67b57051575a1"
+  integrity sha512-ChqgEIfDzy51YwmXjUkOCqqmL827Kb50jsacFwnQgjdzaLqfhF7NBi+G4H06AyoUP6flbf51QDAkyqM1div9/A==
   dependencies:
     axios "^0.27.2"
     draft-js "^0.11.7"
