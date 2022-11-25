@@ -1,4 +1,5 @@
-import envVar from '../environment-variables'
+// import envVar from '../environment-variables'
+// @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import {
@@ -8,16 +9,19 @@ import {
   select,
   json,
   timestamp,
+  checkbox,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
+/*
 enum UserRole {
   Admin = 'admin',
   Moderator = 'moderator',
   Editor = 'editor',
   Contributor = 'contributor',
 }
+*/
 
 enum Status {
   Published = 'published',
@@ -26,13 +30,16 @@ enum Status {
   Archived = 'archived',
 }
 
+/*
 type Session = {
   data: {
     id: string
     role: UserRole
   }
 }
+*/
 
+/*
 function filterPosts({ session }: { session: Session }) {
   switch (envVar.accessControlStrategy) {
     case 'gql': {
@@ -54,6 +61,7 @@ function filterPosts({ session }: { session: Session }) {
     }
   }
 }
+*/
 
 const listConfigurations = list({
   fields: {
@@ -72,7 +80,8 @@ const listConfigurations = list({
       label: '文體story-type',
       options: [
         { label: '趨勢', value: 'trend' },
-        {label: '案例', value:'case'}]
+        { label: '案例', value: 'case' },
+      ],
     }),
     status: select({
       label: '狀態',
@@ -93,7 +102,7 @@ const listConfigurations = list({
     }),
     publishDate: timestamp({
       label: '發布日期',
-      defaultVaule: { kind: 'now' },
+      defaultValue: { kind: 'now' },
     }),
     heroImage: customFields.relationship({
       label: '首圖',
@@ -113,11 +122,11 @@ const listConfigurations = list({
     }),
     brief: customFields.richTextEditor({
       label: '前言',
-	  disabledButtons: ['header-four', 'code', 'code-block', 'annotation'],
+      disabledButtons: ['header-four', 'code', 'code-block', 'annotation'],
     }),
     content: customFields.richTextEditor({
       label: '內文',
-	  disabledButtons: ['header-four', 'code', 'code-block', 'annotation'],
+      disabledButtons: ['header-four', 'code', 'code-block', 'annotation'],
     }),
     columns: relationship({
       label: '專欄作者',
@@ -171,6 +180,10 @@ const listConfigurations = list({
         inlineCreate: { fields: ['name'] },
       },
       many: true,
+    }),
+    isPremium: checkbox({
+      label: '會員文章',
+      defaultValue: false,
     }),
     //
     // previewButton: virtual({

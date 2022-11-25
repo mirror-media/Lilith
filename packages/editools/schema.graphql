@@ -129,7 +129,13 @@ type LiveblogItem {
   external: String
   externalCoverPhoto: String
   liveblog: Liveblog
-  tags: Tag
+  tags(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -160,7 +166,7 @@ input LiveblogItemWhereInput {
   boost: BooleanFilter
   external: StringFilter
   liveblog: LiveblogWhereInput
-  tags: TagWhereInput
+  tags: TagManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -207,6 +213,12 @@ input DateTimeNullableFilter {
   not: DateTimeNullableFilter
 }
 
+input TagManyRelationFilter {
+  every: TagWhereInput
+  some: TagWhereInput
+  none: TagWhereInput
+}
+
 input LiveblogItemOrderByInput {
   id: OrderDirection
   title: OrderDirection
@@ -234,7 +246,7 @@ input LiveblogItemUpdateInput {
   boost: Boolean
   external: String
   liveblog: LiveblogRelateToOneForUpdateInput
-  tags: TagRelateToOneForUpdateInput
+  tags: TagRelateToManyForUpdateInput
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -260,10 +272,11 @@ input LiveblogRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input TagRelateToOneForUpdateInput {
-  create: TagCreateInput
-  connect: TagWhereUniqueInput
-  disconnect: Boolean
+input TagRelateToManyForUpdateInput {
+  disconnect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
 }
 
 input UserRelateToOneForUpdateInput {
@@ -290,7 +303,7 @@ input LiveblogItemCreateInput {
   boost: Boolean
   external: String
   liveblog: LiveblogRelateToOneForCreateInput
-  tags: TagRelateToOneForCreateInput
+  tags: TagRelateToManyForCreateInput
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -313,9 +326,9 @@ input LiveblogRelateToOneForCreateInput {
   connect: LiveblogWhereUniqueInput
 }
 
-input TagRelateToOneForCreateInput {
-  create: TagCreateInput
-  connect: TagWhereUniqueInput
+input TagRelateToManyForCreateInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
 }
 
 input UserRelateToOneForCreateInput {
@@ -423,6 +436,12 @@ input LiveblogItemRelateToManyForUpdateInput {
   connect: [LiveblogItemWhereUniqueInput!]
 }
 
+input TagRelateToOneForUpdateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PublisherRelateToOneForUpdateInput {
   create: PublisherCreateInput
   connect: PublisherWhereUniqueInput
@@ -456,6 +475,11 @@ input LiveblogCreateInput {
 input LiveblogItemRelateToManyForCreateInput {
   create: [LiveblogItemCreateInput!]
   connect: [LiveblogItemWhereUniqueInput!]
+}
+
+input TagRelateToOneForCreateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
 }
 
 input PublisherRelateToOneForCreateInput {
@@ -1151,12 +1175,6 @@ input FormAnswerManyRelationFilter {
   none: FormAnswerWhereInput
 }
 
-input TagManyRelationFilter {
-  every: TagWhereInput
-  some: TagWhereInput
-  none: TagWhereInput
-}
-
 input ConditionCollectionManyRelationFilter {
   every: ConditionCollectionWhereInput
   some: ConditionCollectionWhereInput
@@ -1228,13 +1246,6 @@ input FormAnswerRelateToManyForUpdateInput {
   connect: [FormAnswerWhereUniqueInput!]
 }
 
-input TagRelateToManyForUpdateInput {
-  disconnect: [TagWhereUniqueInput!]
-  set: [TagWhereUniqueInput!]
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
-}
-
 input ConditionCollectionRelateToManyForUpdateInput {
   disconnect: [ConditionCollectionWhereUniqueInput!]
   set: [ConditionCollectionWhereUniqueInput!]
@@ -1291,11 +1302,6 @@ input FieldRelateToManyForCreateInput {
 input FormAnswerRelateToManyForCreateInput {
   create: [FormAnswerCreateInput!]
   connect: [FormAnswerWhereUniqueInput!]
-}
-
-input TagRelateToManyForCreateInput {
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
 }
 
 input ConditionCollectionRelateToManyForCreateInput {
