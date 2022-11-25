@@ -1,3 +1,4 @@
+// @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import {
   list,
@@ -38,6 +39,13 @@ const listConfigurations = list({
         max: 9999,
       },
     }),
+    storyType: select({
+      label: '文體story-type',
+      options: [
+        { label: '趨勢', value: 'trend' },
+        { label: '案例', value: 'case' },
+      ],
+    }),
     status: select({
       label: '狀態',
       type: 'enum',
@@ -57,7 +65,7 @@ const listConfigurations = list({
     }),
     publishDate: timestamp({
       label: '發布日期',
-      defaultVaule: { kind: 'now' },
+      defaultValue: { kind: 'now' },
     }),
     heroImage: customFields.relationship({
       label: '首圖',
