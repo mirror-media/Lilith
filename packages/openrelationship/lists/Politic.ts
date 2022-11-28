@@ -17,18 +17,39 @@ const listConfigurations = list ({
       many: false,
       ref: 'PersonElection',
     }),
+    thread_parent: relationship({
+      label: 'Thread',
+      many: false,
+      ref: 'Politic',
+    }),
     desc: text({ 
 	  label: '政見', 
 	  ui: {
 		displayMode: 'textarea',
 	  },
 	}),
-  content: text({ 
-	  label: '政見內容', 
+    content: text({ 
+	  label: '政策補充說明', 
 	  ui: {
 		displayMode: 'textarea',
 	  },
 	}),
+    current_progress: select({
+      defaultValue: 'no-progress', 
+      options: [ 
+        { label: '還沒開始', value: 'no-progress' }, 
+        { label: '進行中', value: 'in-progress' }, 
+        { label: '卡關中', value: 'in-trouble' },
+        { label: '已完成', value: 'complete' },
+      ], 
+      label: '政見進度',
+    }),
+    dispute: text({
+      label: '爭議事件',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+    }),
     source: text({ 
 	  label: '資料來源',
 	  ui: {
@@ -41,11 +62,16 @@ const listConfigurations = list ({
 		displayMode: 'textarea',
 	  },
 	}),
-    progress: relationship({
-      label: '政見執行進度',
+    timeline: relationship({
+      label: '時間軸',
       many: true,
-      ref: 'PoliticProgress',
+      ref: 'PoliticTimeline.politic',
     }),
+	expertPoint: relationship({
+	  label: '專家觀點',
+	  many: true,
+	  ref: 'PoliticExpert.politic',
+	}),
 	status: select({
 	  options: [
 	    { label: '已確認', value: 'verified' },
@@ -54,11 +80,6 @@ const listConfigurations = list ({
 	  defaultValue: 'notverified',
 	  label: '狀態',
 	}),
-    thread_parent: relationship({
-      label: '補充',
-      many: false,
-      ref: 'Politic',
-    }),
     tag: relationship({
       label: '標籤',
       many: false,
@@ -76,6 +97,19 @@ const listConfigurations = list ({
 	  update: allowRoles(admin, moderator),
 	  create: allowRoles(admin, moderator),
 	  delete: allowRoles(admin),
+	},
+  },
+  hooks: {
+	beforeOperation: async ({
+	  operation,
+	  resolvedData,
+	  context,
+	}) => { /* ... */ 
+	  if (operation === 'create' && context.session?.data?.role === 'admin') {
+		resolvedData.status = 'verified'
+		resolvedData.reviewed = true
+
+	  }
 	},
   },
 })

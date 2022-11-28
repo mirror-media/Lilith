@@ -129,7 +129,13 @@ type LiveblogItem {
   external: String
   externalCoverPhoto: String
   liveblog: Liveblog
-  tags: Tag
+  tags(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -160,7 +166,7 @@ input LiveblogItemWhereInput {
   boost: BooleanFilter
   external: StringFilter
   liveblog: LiveblogWhereInput
-  tags: TagWhereInput
+  tags: TagManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -207,6 +213,12 @@ input DateTimeNullableFilter {
   not: DateTimeNullableFilter
 }
 
+input TagManyRelationFilter {
+  every: TagWhereInput
+  some: TagWhereInput
+  none: TagWhereInput
+}
+
 input LiveblogItemOrderByInput {
   id: OrderDirection
   title: OrderDirection
@@ -234,7 +246,7 @@ input LiveblogItemUpdateInput {
   boost: Boolean
   external: String
   liveblog: LiveblogRelateToOneForUpdateInput
-  tags: TagRelateToOneForUpdateInput
+  tags: TagRelateToManyForUpdateInput
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -260,10 +272,11 @@ input LiveblogRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input TagRelateToOneForUpdateInput {
-  create: TagCreateInput
-  connect: TagWhereUniqueInput
-  disconnect: Boolean
+input TagRelateToManyForUpdateInput {
+  disconnect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
 }
 
 input UserRelateToOneForUpdateInput {
@@ -290,7 +303,7 @@ input LiveblogItemCreateInput {
   boost: Boolean
   external: String
   liveblog: LiveblogRelateToOneForCreateInput
-  tags: TagRelateToOneForCreateInput
+  tags: TagRelateToManyForCreateInput
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -313,9 +326,9 @@ input LiveblogRelateToOneForCreateInput {
   connect: LiveblogWhereUniqueInput
 }
 
-input TagRelateToOneForCreateInput {
-  create: TagCreateInput
-  connect: TagWhereUniqueInput
+input TagRelateToManyForCreateInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
 }
 
 input UserRelateToOneForCreateInput {
@@ -331,6 +344,7 @@ type Liveblog {
   heroImage: Photo
   heroVideo: Video
   active: Boolean
+  archive: Boolean
   credit: String
   css: String
   liveblog_items(
@@ -342,6 +356,7 @@ type Liveblog {
   liveblog_itemsCount(where: LiveblogItemWhereInput! = {}): Int
   tags: Tag
   publisher: Publisher
+  embedCode: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -364,6 +379,7 @@ input LiveblogWhereInput {
   heroImage: PhotoWhereInput
   heroVideo: VideoWhereInput
   active: BooleanFilter
+  archive: BooleanFilter
   credit: StringFilter
   css: StringFilter
   liveblog_items: LiveblogItemManyRelationFilter
@@ -387,6 +403,7 @@ input LiveblogOrderByInput {
   slug: OrderDirection
   desc: OrderDirection
   active: OrderDirection
+  archive: OrderDirection
   credit: OrderDirection
   css: OrderDirection
   createdAt: OrderDirection
@@ -400,6 +417,7 @@ input LiveblogUpdateInput {
   heroImage: PhotoRelateToOneForUpdateInput
   heroVideo: VideoRelateToOneForUpdateInput
   active: Boolean
+  archive: Boolean
   credit: String
   css: String
   liveblog_items: LiveblogItemRelateToManyForUpdateInput
@@ -416,6 +434,12 @@ input LiveblogItemRelateToManyForUpdateInput {
   set: [LiveblogItemWhereUniqueInput!]
   create: [LiveblogItemCreateInput!]
   connect: [LiveblogItemWhereUniqueInput!]
+}
+
+input TagRelateToOneForUpdateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
+  disconnect: Boolean
 }
 
 input PublisherRelateToOneForUpdateInput {
@@ -436,6 +460,7 @@ input LiveblogCreateInput {
   heroImage: PhotoRelateToOneForCreateInput
   heroVideo: VideoRelateToOneForCreateInput
   active: Boolean
+  archive: Boolean
   credit: String
   css: String
   liveblog_items: LiveblogItemRelateToManyForCreateInput
@@ -450,6 +475,11 @@ input LiveblogCreateInput {
 input LiveblogItemRelateToManyForCreateInput {
   create: [LiveblogItemCreateInput!]
   connect: [LiveblogItemWhereUniqueInput!]
+}
+
+input TagRelateToOneForCreateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
 }
 
 input PublisherRelateToOneForCreateInput {
@@ -1145,12 +1175,6 @@ input FormAnswerManyRelationFilter {
   none: FormAnswerWhereInput
 }
 
-input TagManyRelationFilter {
-  every: TagWhereInput
-  some: TagWhereInput
-  none: TagWhereInput
-}
-
 input ConditionCollectionManyRelationFilter {
   every: ConditionCollectionWhereInput
   some: ConditionCollectionWhereInput
@@ -1222,13 +1246,6 @@ input FormAnswerRelateToManyForUpdateInput {
   connect: [FormAnswerWhereUniqueInput!]
 }
 
-input TagRelateToManyForUpdateInput {
-  disconnect: [TagWhereUniqueInput!]
-  set: [TagWhereUniqueInput!]
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
-}
-
 input ConditionCollectionRelateToManyForUpdateInput {
   disconnect: [ConditionCollectionWhereUniqueInput!]
   set: [ConditionCollectionWhereUniqueInput!]
@@ -1285,11 +1302,6 @@ input FieldRelateToManyForCreateInput {
 input FormAnswerRelateToManyForCreateInput {
   create: [FormAnswerCreateInput!]
   connect: [FormAnswerWhereUniqueInput!]
-}
-
-input TagRelateToManyForCreateInput {
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
 }
 
 input ConditionCollectionRelateToManyForCreateInput {
@@ -1699,6 +1711,7 @@ type FormResult {
   responseTime: DateTime
   form: Form
   field: Field
+  uri: String
   hidden: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -1721,6 +1734,7 @@ input FormResultWhereInput {
   responseTime: DateTimeNullableFilter
   form: FormWhereInput
   field: FieldWhereInput
+  uri: StringFilter
   hidden: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1734,6 +1748,7 @@ input FormResultOrderByInput {
   ip: OrderDirection
   result: OrderDirection
   responseTime: OrderDirection
+  uri: OrderDirection
   hidden: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1746,6 +1761,7 @@ input FormResultUpdateInput {
   responseTime: DateTime
   form: FormRelateToOneForUpdateInput
   field: FieldRelateToOneForUpdateInput
+  uri: String
   hidden: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -1765,6 +1781,7 @@ input FormResultCreateInput {
   responseTime: DateTime
   form: FormRelateToOneForCreateInput
   field: FieldRelateToOneForCreateInput
+  uri: String
   hidden: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -2578,6 +2595,90 @@ input QAItemCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type FeedbackCounter {
+  id: ID!
+  form: Form
+  name: String
+  uri: String
+  theme: String
+  shouldUseRecaptcha: Boolean
+  thumbUpLabel: String
+  thumbDownLabel: String
+  embeddedCode: String
+  previewButton: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input FeedbackCounterWhereUniqueInput {
+  id: ID
+}
+
+input FeedbackCounterWhereInput {
+  AND: [FeedbackCounterWhereInput!]
+  OR: [FeedbackCounterWhereInput!]
+  NOT: [FeedbackCounterWhereInput!]
+  id: IDFilter
+  form: FormWhereInput
+  name: StringFilter
+  uri: StringFilter
+  theme: StringFilter
+  shouldUseRecaptcha: BooleanFilter
+  thumbUpLabel: StringFilter
+  thumbDownLabel: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input FeedbackCounterOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  uri: OrderDirection
+  theme: OrderDirection
+  shouldUseRecaptcha: OrderDirection
+  thumbUpLabel: OrderDirection
+  thumbDownLabel: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input FeedbackCounterUpdateInput {
+  form: FormRelateToOneForUpdateInput
+  name: String
+  uri: String
+  theme: String
+  shouldUseRecaptcha: Boolean
+  thumbUpLabel: String
+  thumbDownLabel: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input FeedbackCounterUpdateArgs {
+  where: FeedbackCounterWhereUniqueInput!
+  data: FeedbackCounterUpdateInput!
+}
+
+input FeedbackCounterCreateInput {
+  form: FormRelateToOneForCreateInput
+  name: String
+  uri: String
+  theme: String
+  shouldUseRecaptcha: Boolean
+  thumbUpLabel: String
+  thumbDownLabel: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2771,6 +2872,21 @@ type Mutation {
   updateQAItems(data: [QAItemUpdateArgs!]!): [QAItem]
   deleteQAItem(where: QAItemWhereUniqueInput!): QAItem
   deleteQAItems(where: [QAItemWhereUniqueInput!]!): [QAItem]
+  createFeedbackCounter(data: FeedbackCounterCreateInput!): FeedbackCounter
+  createFeedbackCounters(
+    data: [FeedbackCounterCreateInput!]!
+  ): [FeedbackCounter]
+  updateFeedbackCounter(
+    where: FeedbackCounterWhereUniqueInput!
+    data: FeedbackCounterUpdateInput!
+  ): FeedbackCounter
+  updateFeedbackCounters(data: [FeedbackCounterUpdateArgs!]!): [FeedbackCounter]
+  deleteFeedbackCounter(
+    where: FeedbackCounterWhereUniqueInput!
+  ): FeedbackCounter
+  deleteFeedbackCounters(
+    where: [FeedbackCounterWhereUniqueInput!]!
+  ): [FeedbackCounter]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -2980,6 +3096,14 @@ type Query {
   ): [QAItem!]
   qAItem(where: QAItemWhereUniqueInput!): QAItem
   qAItemsCount(where: QAItemWhereInput! = {}): Int
+  feedbackCounters(
+    where: FeedbackCounterWhereInput! = {}
+    orderBy: [FeedbackCounterOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [FeedbackCounter!]
+  feedbackCounter(where: FeedbackCounterWhereUniqueInput!): FeedbackCounter
+  feedbackCountersCount(where: FeedbackCounterWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

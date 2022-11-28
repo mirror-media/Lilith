@@ -1,6 +1,6 @@
-import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
-import { checkbox, relationship, json, timestamp, text } from '@keystone-6/core/fields';
+import { customFields, utils } from '@mirrormedia/lilith-core'
+import { select, checkbox, relationship, json, timestamp, text } from '@keystone-6/core/fields';
 	  
 const {
   allowRoles,
@@ -17,10 +17,22 @@ const listConfigurations = list ({
       many: false,
       ref: 'Politic',
     }),
-    progress: text({ 
-	  label: '進度', 
+    progress: select({
+      defaultValue: 'active', 
+      options: [ 
+        { label: '還沒開始', value: 'no-progress' }, 
+        { label: '進行中', value: 'in-progress' }, 
+        { label: '卡關中', value: 'in-trouble' },
+        { label: '已完成', value: 'complete' },
+      ], 
+      label: '狀態',
+    }),
+    source: text({ 
+	  label: '資料來源',
+	  ui: {
+	    displayMode: 'textarea',
+	  },
 	}),
-    source: text({ label: '資料來源' }),
     contributer: text({ label: '資料提供' }),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
   },

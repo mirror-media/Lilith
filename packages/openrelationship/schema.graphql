@@ -870,6 +870,9 @@ type Person {
   alternative: String
   other_names: String
   email: String
+  facebook: String
+  ig: String
+  twitter: String
   gender: String
   birth_date_year: Int
   birth_date_month: Int
@@ -913,6 +916,9 @@ input PersonWhereInput {
   alternative: StringNullableFilter
   other_names: StringNullableFilter
   email: StringNullableFilter
+  facebook: StringNullableFilter
+  ig: StringNullableFilter
+  twitter: StringNullableFilter
   gender: StringNullableFilter
   birth_date_year: IntNullableFilter
   birth_date_month: IntNullableFilter
@@ -943,6 +949,9 @@ input PersonOrderByInput {
   alternative: OrderDirection
   other_names: OrderDirection
   email: OrderDirection
+  facebook: OrderDirection
+  ig: OrderDirection
+  twitter: OrderDirection
   gender: OrderDirection
   birth_date_year: OrderDirection
   birth_date_month: OrderDirection
@@ -968,6 +977,9 @@ input PersonUpdateInput {
   alternative: String
   other_names: String
   email: String
+  facebook: String
+  ig: String
+  twitter: String
   gender: String
   birth_date_year: Int
   birth_date_month: Int
@@ -1002,6 +1014,9 @@ input PersonCreateInput {
   alternative: String
   other_names: String
   email: String
+  facebook: String
+  ig: String
+  twitter: String
   gender: String
   birth_date_year: Int
   birth_date_month: Int
@@ -1792,6 +1807,8 @@ type PersonElection {
   elected: Boolean
   incumbent: Boolean
   source: String
+  politicSource: String
+  organization: PersonOrganization
   politics(
     where: PoliticWhereInput! = {}
     orderBy: [PoliticOrderByInput!]! = []
@@ -1825,6 +1842,8 @@ input PersonElectionWhereInput {
   elected: BooleanFilter
   incumbent: BooleanFilter
   source: StringFilter
+  politicSource: StringFilter
+  organization: PersonOrganizationWhereInput
   politics: PoliticManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1847,6 +1866,7 @@ input PersonElectionOrderByInput {
   elected: OrderDirection
   incumbent: OrderDirection
   source: OrderDirection
+  politicSource: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1863,6 +1883,8 @@ input PersonElectionUpdateInput {
   elected: Boolean
   incumbent: Boolean
   source: String
+  politicSource: String
+  organization: PersonOrganizationRelateToOneForUpdateInput
   politics: PoliticRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -1873,6 +1895,12 @@ input PersonElectionUpdateInput {
 input ElectionAreaRelateToOneForUpdateInput {
   create: ElectionAreaCreateInput
   connect: ElectionAreaWhereUniqueInput
+  disconnect: Boolean
+}
+
+input PersonOrganizationRelateToOneForUpdateInput {
+  create: PersonOrganizationCreateInput
+  connect: PersonOrganizationWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -1900,6 +1928,8 @@ input PersonElectionCreateInput {
   elected: Boolean
   incumbent: Boolean
   source: String
+  politicSource: String
+  organization: PersonOrganizationRelateToOneForCreateInput
   politics: PoliticRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -1912,6 +1942,11 @@ input ElectionAreaRelateToOneForCreateInput {
   connect: ElectionAreaWhereUniqueInput
 }
 
+input PersonOrganizationRelateToOneForCreateInput {
+  create: PersonOrganizationCreateInput
+  connect: PersonOrganizationWhereUniqueInput
+}
+
 input PoliticRelateToManyForCreateInput {
   create: [PoliticCreateInput!]
   connect: [PoliticWhereUniqueInput!]
@@ -1921,6 +1956,7 @@ type PersonOrganization {
   id: ID!
   person_id: Person
   organization_id: Organization
+  election: PersonElection
   role: String
   start_date_year: Int
   start_date_month: Int
@@ -1946,6 +1982,7 @@ input PersonOrganizationWhereInput {
   id: IDFilter
   person_id: PersonWhereInput
   organization_id: OrganizationWhereInput
+  election: PersonElectionWhereInput
   role: StringNullableFilter
   start_date_year: IntNullableFilter
   start_date_month: IntNullableFilter
@@ -1977,6 +2014,7 @@ input PersonOrganizationOrderByInput {
 input PersonOrganizationUpdateInput {
   person_id: PersonRelateToOneForUpdateInput
   organization_id: OrganizationRelateToOneForUpdateInput
+  election: PersonElectionRelateToOneForUpdateInput
   role: String
   start_date_year: Int
   start_date_month: Int
@@ -1991,6 +2029,12 @@ input PersonOrganizationUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
+input PersonElectionRelateToOneForUpdateInput {
+  create: PersonElectionCreateInput
+  connect: PersonElectionWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PersonOrganizationUpdateArgs {
   where: PersonOrganizationWhereUniqueInput!
   data: PersonOrganizationUpdateInput!
@@ -1999,6 +2043,7 @@ input PersonOrganizationUpdateArgs {
 input PersonOrganizationCreateInput {
   person_id: PersonRelateToOneForCreateInput
   organization_id: OrganizationRelateToOneForCreateInput
+  election: PersonElectionRelateToOneForCreateInput
   role: String
   start_date_year: Int
   start_date_month: Int
@@ -2011,6 +2056,11 @@ input PersonOrganizationCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input PersonElectionRelateToOneForCreateInput {
+  create: PersonElectionCreateInput
+  connect: PersonElectionWhereUniqueInput
 }
 
 type PersonPublication {
@@ -2208,19 +2258,28 @@ input PersonRelationshipCreateInput {
 type Politic {
   id: ID!
   person: PersonElection
+  thread_parent: Politic
   desc: String
   content: String
+  current_progress: String
+  dispute: String
   source: String
   contributer: String
-  progress(
-    where: PoliticProgressWhereInput! = {}
-    orderBy: [PoliticProgressOrderByInput!]! = []
+  timeline(
+    where: PoliticTimelineWhereInput! = {}
+    orderBy: [PoliticTimelineOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [PoliticProgress!]
-  progressCount(where: PoliticProgressWhereInput! = {}): Int
+  ): [PoliticTimeline!]
+  timelineCount(where: PoliticTimelineWhereInput! = {}): Int
+  expertPoint(
+    where: PoliticExpertWhereInput! = {}
+    orderBy: [PoliticExpertOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [PoliticExpert!]
+  expertPointCount(where: PoliticExpertWhereInput! = {}): Int
   status: String
-  thread_parent: Politic
   tag: Tag
   reviewed: Boolean
   createdAt: DateTime
@@ -2239,13 +2298,16 @@ input PoliticWhereInput {
   NOT: [PoliticWhereInput!]
   id: IDFilter
   person: PersonElectionWhereInput
+  thread_parent: PoliticWhereInput
   desc: StringFilter
   content: StringFilter
+  current_progress: StringNullableFilter
+  dispute: StringFilter
   source: StringFilter
   contributer: StringFilter
-  progress: PoliticProgressManyRelationFilter
+  timeline: PoliticTimelineManyRelationFilter
+  expertPoint: PoliticExpertManyRelationFilter
   status: StringNullableFilter
-  thread_parent: PoliticWhereInput
   tag: TagWhereInput
   reviewed: BooleanFilter
   createdAt: DateTimeNullableFilter
@@ -2254,16 +2316,24 @@ input PoliticWhereInput {
   updatedBy: UserWhereInput
 }
 
-input PoliticProgressManyRelationFilter {
-  every: PoliticProgressWhereInput
-  some: PoliticProgressWhereInput
-  none: PoliticProgressWhereInput
+input PoliticTimelineManyRelationFilter {
+  every: PoliticTimelineWhereInput
+  some: PoliticTimelineWhereInput
+  none: PoliticTimelineWhereInput
+}
+
+input PoliticExpertManyRelationFilter {
+  every: PoliticExpertWhereInput
+  some: PoliticExpertWhereInput
+  none: PoliticExpertWhereInput
 }
 
 input PoliticOrderByInput {
   id: OrderDirection
   desc: OrderDirection
   content: OrderDirection
+  current_progress: OrderDirection
+  dispute: OrderDirection
   source: OrderDirection
   contributer: OrderDirection
   status: OrderDirection
@@ -2274,13 +2344,16 @@ input PoliticOrderByInput {
 
 input PoliticUpdateInput {
   person: PersonElectionRelateToOneForUpdateInput
+  thread_parent: PoliticRelateToOneForUpdateInput
   desc: String
   content: String
+  current_progress: String
+  dispute: String
   source: String
   contributer: String
-  progress: PoliticProgressRelateToManyForUpdateInput
+  timeline: PoliticTimelineRelateToManyForUpdateInput
+  expertPoint: PoliticExpertRelateToManyForUpdateInput
   status: String
-  thread_parent: PoliticRelateToOneForUpdateInput
   tag: TagRelateToOneForUpdateInput
   reviewed: Boolean
   createdAt: DateTime
@@ -2289,23 +2362,24 @@ input PoliticUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input PersonElectionRelateToOneForUpdateInput {
-  create: PersonElectionCreateInput
-  connect: PersonElectionWhereUniqueInput
-  disconnect: Boolean
-}
-
-input PoliticProgressRelateToManyForUpdateInput {
-  disconnect: [PoliticProgressWhereUniqueInput!]
-  set: [PoliticProgressWhereUniqueInput!]
-  create: [PoliticProgressCreateInput!]
-  connect: [PoliticProgressWhereUniqueInput!]
-}
-
 input PoliticRelateToOneForUpdateInput {
   create: PoliticCreateInput
   connect: PoliticWhereUniqueInput
   disconnect: Boolean
+}
+
+input PoliticTimelineRelateToManyForUpdateInput {
+  disconnect: [PoliticTimelineWhereUniqueInput!]
+  set: [PoliticTimelineWhereUniqueInput!]
+  create: [PoliticTimelineCreateInput!]
+  connect: [PoliticTimelineWhereUniqueInput!]
+}
+
+input PoliticExpertRelateToManyForUpdateInput {
+  disconnect: [PoliticExpertWhereUniqueInput!]
+  set: [PoliticExpertWhereUniqueInput!]
+  create: [PoliticExpertCreateInput!]
+  connect: [PoliticExpertWhereUniqueInput!]
 }
 
 input TagRelateToOneForUpdateInput {
@@ -2321,13 +2395,16 @@ input PoliticUpdateArgs {
 
 input PoliticCreateInput {
   person: PersonElectionRelateToOneForCreateInput
+  thread_parent: PoliticRelateToOneForCreateInput
   desc: String
   content: String
+  current_progress: String
+  dispute: String
   source: String
   contributer: String
-  progress: PoliticProgressRelateToManyForCreateInput
+  timeline: PoliticTimelineRelateToManyForCreateInput
+  expertPoint: PoliticExpertRelateToManyForCreateInput
   status: String
-  thread_parent: PoliticRelateToOneForCreateInput
   tag: TagRelateToOneForCreateInput
   reviewed: Boolean
   createdAt: DateTime
@@ -2336,19 +2413,19 @@ input PoliticCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
-input PersonElectionRelateToOneForCreateInput {
-  create: PersonElectionCreateInput
-  connect: PersonElectionWhereUniqueInput
-}
-
-input PoliticProgressRelateToManyForCreateInput {
-  create: [PoliticProgressCreateInput!]
-  connect: [PoliticProgressWhereUniqueInput!]
-}
-
 input PoliticRelateToOneForCreateInput {
   create: PoliticCreateInput
   connect: PoliticWhereUniqueInput
+}
+
+input PoliticTimelineRelateToManyForCreateInput {
+  create: [PoliticTimelineCreateInput!]
+  connect: [PoliticTimelineWhereUniqueInput!]
+}
+
+input PoliticExpertRelateToManyForCreateInput {
+  create: [PoliticExpertCreateInput!]
+  connect: [PoliticExpertWhereUniqueInput!]
 }
 
 input TagRelateToOneForCreateInput {
@@ -2356,11 +2433,13 @@ input TagRelateToOneForCreateInput {
   connect: TagWhereUniqueInput
 }
 
-type PoliticProgress {
+type PoliticTimeline {
   id: ID!
   politic: Politic
-  progress: String
-  source: String
+  eventDate: DateTime
+  sortOrder: Int
+  content: String
+  link: String
   contributer: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -2368,18 +2447,20 @@ type PoliticProgress {
   updatedBy: User
 }
 
-input PoliticProgressWhereUniqueInput {
+input PoliticTimelineWhereUniqueInput {
   id: ID
 }
 
-input PoliticProgressWhereInput {
-  AND: [PoliticProgressWhereInput!]
-  OR: [PoliticProgressWhereInput!]
-  NOT: [PoliticProgressWhereInput!]
+input PoliticTimelineWhereInput {
+  AND: [PoliticTimelineWhereInput!]
+  OR: [PoliticTimelineWhereInput!]
+  NOT: [PoliticTimelineWhereInput!]
   id: IDFilter
   politic: PoliticWhereInput
-  progress: StringFilter
-  source: StringFilter
+  eventDate: DateTimeNullableFilter
+  sortOrder: IntNullableFilter
+  content: StringFilter
+  link: StringFilter
   contributer: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2387,19 +2468,23 @@ input PoliticProgressWhereInput {
   updatedBy: UserWhereInput
 }
 
-input PoliticProgressOrderByInput {
+input PoliticTimelineOrderByInput {
   id: OrderDirection
-  progress: OrderDirection
-  source: OrderDirection
+  eventDate: OrderDirection
+  sortOrder: OrderDirection
+  content: OrderDirection
+  link: OrderDirection
   contributer: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
-input PoliticProgressUpdateInput {
+input PoliticTimelineUpdateInput {
   politic: PoliticRelateToOneForUpdateInput
-  progress: String
-  source: String
+  eventDate: DateTime
+  sortOrder: Int
+  content: String
+  link: String
   contributer: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -2407,15 +2492,104 @@ input PoliticProgressUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input PoliticProgressUpdateArgs {
-  where: PoliticProgressWhereUniqueInput!
-  data: PoliticProgressUpdateInput!
+input PoliticTimelineUpdateArgs {
+  where: PoliticTimelineWhereUniqueInput!
+  data: PoliticTimelineUpdateInput!
 }
 
-input PoliticProgressCreateInput {
+input PoliticTimelineCreateInput {
   politic: PoliticRelateToOneForCreateInput
-  progress: String
-  source: String
+  eventDate: DateTime
+  sortOrder: Int
+  content: String
+  link: String
+  contributer: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type PoliticExpert {
+  id: ID!
+  politic: Politic
+  expert: String
+  avatar: String
+  title: String
+  reviewDate: DateTime
+  content: String
+  link: String
+  contributer: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input PoliticExpertWhereUniqueInput {
+  id: ID
+}
+
+input PoliticExpertWhereInput {
+  AND: [PoliticExpertWhereInput!]
+  OR: [PoliticExpertWhereInput!]
+  NOT: [PoliticExpertWhereInput!]
+  id: IDFilter
+  politic: PoliticWhereInput
+  expert: StringNullableFilter
+  avatar: StringFilter
+  title: StringFilter
+  reviewDate: DateTimeNullableFilter
+  content: StringFilter
+  link: StringFilter
+  contributer: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PoliticExpertOrderByInput {
+  id: OrderDirection
+  expert: OrderDirection
+  avatar: OrderDirection
+  title: OrderDirection
+  reviewDate: OrderDirection
+  content: OrderDirection
+  link: OrderDirection
+  contributer: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PoliticExpertUpdateInput {
+  politic: PoliticRelateToOneForUpdateInput
+  expert: String
+  avatar: String
+  title: String
+  reviewDate: DateTime
+  content: String
+  link: String
+  contributer: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PoliticExpertUpdateArgs {
+  where: PoliticExpertWhereUniqueInput!
+  data: PoliticExpertUpdateInput!
+}
+
+input PoliticExpertCreateInput {
+  politic: PoliticRelateToOneForCreateInput
+  expert: String
+  avatar: String
+  title: String
+  reviewDate: DateTime
+  content: String
+  link: String
   contributer: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -2822,23 +2996,32 @@ type Mutation {
   updatePolitics(data: [PoliticUpdateArgs!]!): [Politic]
   deletePolitic(where: PoliticWhereUniqueInput!): Politic
   deletePolitics(where: [PoliticWhereUniqueInput!]!): [Politic]
-  createPoliticProgress(data: PoliticProgressCreateInput!): PoliticProgress
-  createPoliticProgresses(
-    data: [PoliticProgressCreateInput!]!
-  ): [PoliticProgress]
-  updatePoliticProgress(
-    where: PoliticProgressWhereUniqueInput!
-    data: PoliticProgressUpdateInput!
-  ): PoliticProgress
-  updatePoliticProgresses(
-    data: [PoliticProgressUpdateArgs!]!
-  ): [PoliticProgress]
-  deletePoliticProgress(
-    where: PoliticProgressWhereUniqueInput!
-  ): PoliticProgress
-  deletePoliticProgresses(
-    where: [PoliticProgressWhereUniqueInput!]!
-  ): [PoliticProgress]
+  createPoliticTimeline(data: PoliticTimelineCreateInput!): PoliticTimeline
+  createPoliticTimelines(
+    data: [PoliticTimelineCreateInput!]!
+  ): [PoliticTimeline]
+  updatePoliticTimeline(
+    where: PoliticTimelineWhereUniqueInput!
+    data: PoliticTimelineUpdateInput!
+  ): PoliticTimeline
+  updatePoliticTimelines(data: [PoliticTimelineUpdateArgs!]!): [PoliticTimeline]
+  deletePoliticTimeline(
+    where: PoliticTimelineWhereUniqueInput!
+  ): PoliticTimeline
+  deletePoliticTimelines(
+    where: [PoliticTimelineWhereUniqueInput!]!
+  ): [PoliticTimeline]
+  createPoliticExpert(data: PoliticExpertCreateInput!): PoliticExpert
+  createPoliticExperts(data: [PoliticExpertCreateInput!]!): [PoliticExpert]
+  updatePoliticExpert(
+    where: PoliticExpertWhereUniqueInput!
+    data: PoliticExpertUpdateInput!
+  ): PoliticExpert
+  updatePoliticExperts(data: [PoliticExpertUpdateArgs!]!): [PoliticExpert]
+  deletePoliticExpert(where: PoliticExpertWhereUniqueInput!): PoliticExpert
+  deletePoliticExperts(
+    where: [PoliticExpertWhereUniqueInput!]!
+  ): [PoliticExpert]
   createLawsuit(data: LawsuitCreateInput!): Lawsuit
   createLawsuits(data: [LawsuitCreateInput!]!): [Lawsuit]
   updateLawsuit(
@@ -3065,14 +3248,22 @@ type Query {
   ): [Politic!]
   politic(where: PoliticWhereUniqueInput!): Politic
   politicsCount(where: PoliticWhereInput! = {}): Int
-  politicProgresses(
-    where: PoliticProgressWhereInput! = {}
-    orderBy: [PoliticProgressOrderByInput!]! = []
+  politicTimelines(
+    where: PoliticTimelineWhereInput! = {}
+    orderBy: [PoliticTimelineOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [PoliticProgress!]
-  politicProgress(where: PoliticProgressWhereUniqueInput!): PoliticProgress
-  politicProgressesCount(where: PoliticProgressWhereInput! = {}): Int
+  ): [PoliticTimeline!]
+  politicTimeline(where: PoliticTimelineWhereUniqueInput!): PoliticTimeline
+  politicTimelinesCount(where: PoliticTimelineWhereInput! = {}): Int
+  politicExperts(
+    where: PoliticExpertWhereInput! = {}
+    orderBy: [PoliticExpertOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [PoliticExpert!]
+  politicExpert(where: PoliticExpertWhereUniqueInput!): PoliticExpert
+  politicExpertsCount(where: PoliticExpertWhereInput! = {}): Int
   lawsuits(
     where: LawsuitWhereInput! = {}
     orderBy: [LawsuitOrderByInput!]! = []

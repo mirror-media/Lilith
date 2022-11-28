@@ -2274,38 +2274,44 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@readr-media/react-embed-code-generator@1.1.3":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-1.1.3.tgz#9a37eb7e03f6802ae7a5b45b5086de52efcd0127"
-  integrity sha512-qeVpjeYBaQaspLQ/tf3nROe/38J+qOQ7PJs3BxUHldXTbMgE3o4liHVmHROgzMCiUBAZe4zXjvIJ2AADNorq9A==
+"@readr-media/react-election-widgets@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-election-widgets/-/react-election-widgets-1.0.2.tgz#47683c89b32f1f03cc52b4a0bb38ca99ca513bcb"
+  integrity sha512-ZbGi8VqXTGQC+eS+2VCdIU4r9hoAo510ikc5bsZw4l6iC0LEPdGQ5K8gGgP/wqKPAJk9tiXsHj/oc+W5TNiy8Q==
   dependencies:
-    "@readr-media/react-feedback" "^1.0.6"
-    "@readr-media/react-karaoke" "^1.0.0"
-    "@readr-media/react-qa-list" "^1.0.5"
-    "@readr-media/react-questionnaire" "^1.0.11"
+    "@twreporter/errors" "^1.1.1"
+    axios "^0.27.2"
+
+"@readr-media/react-embed-code-generator@2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.0.4.tgz#c9cea37831e3a04668ed522027fb97a873aa0dc3"
+  integrity sha512-eHKoDtN6gE05aJwMxtW6EIwHAQw0hcCE0LHamSt/0oGcMicr30tNfRvXigypmozj4WFHyIqWUz8w+8DtJC83ow==
+  dependencies:
+    "@readr-media/react-election-widgets" "1.0.2"
+    "@readr-media/react-feedback" "^3.0.2"
+    "@readr-media/react-karaoke" "2.0.0"
+    "@readr-media/react-live-blog" "1.1.2"
+    "@readr-media/react-qa-list" "2.0.1"
+    "@readr-media/react-questionnaire" "2.0.0"
     lodash "^4.17.21"
-    regenerator-runtime "^0.13.9"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
 
-"@readr-media/react-feedback@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-feedback/-/react-feedback-1.0.6.tgz#13f4e4c69073147168f62135ff4bc56539040b00"
-  integrity sha512-BUNLKpDKAUhSnqRgpcQ9Gi8xxiyQOz6vBItpY58HK63fKuXQfWyaJYhzOO0gbMyUxzo8DfYhgSV2tQsy6RquWQ==
+"@readr-media/react-feedback@^3.0.2":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-feedback/-/react-feedback-3.3.0.tgz#2a94325ec4160597f3d5c695fc1d1c2fb1fc1a6f"
+  integrity sha512-aLl3OGcYcEnC0Kmiz/G/AgXIbaTIgOIako04B0jXOT2DE3P7kZfOqFX9mhXCP9ZT35Hm4IQFJJ8yfac4OMWhRA==
   dependencies:
     axios "^0.27.2"
     lodash "^4.17.21"
-    react "18.1.0"
-    react-dom "^18.1.0"
     regenerator-runtime "^0.13.9"
     serialize-javascript "^6.0.0"
-    styled-components "5.3.5"
     uuid "^8.3.2"
 
-"@readr-media/react-karaoke@^1.0.0":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-karaoke/-/react-karaoke-1.0.1.tgz#9456afb97413a98e7c77e54766b5e6f0be1c9782"
-  integrity sha512-JnzhVLQtYI0QAyykbAfqN7au8XU4x7S3eQTBv5rJBhFb8ZQ3zbqQ17QmCLL6nu6pEBwxryaQSRclZfLjdDCaJg==
+"@readr-media/react-karaoke@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-karaoke/-/react-karaoke-2.0.0.tgz#1b05e302b52ab3e4e29612fb4028ce277890d44b"
+  integrity sha512-5I/LuE2afARzkK1SwUcYMZQC6nubrRCC/42jLWY4OBxTge79VbHsLJQe+yEn+TKGmVHz2D1OjX1z0Udq05Xv1A==
   dependencies:
     react "18.1.0"
     react-dom "^18.1.0"
@@ -2314,10 +2320,18 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
-"@readr-media/react-qa-list@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-qa-list/-/react-qa-list-1.0.5.tgz#d76c65feb96ba6f183be2689e0ba69fc701cec3e"
-  integrity sha512-oclZ0dZrxGkoqC4+txx0dsvuKEVfbQabrog8IvnmhNSqeyRA7WxgJOXA28StmHcihXwd1cSn4TJlgnfKWrGA5w==
+"@readr-media/react-live-blog@1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-live-blog/-/react-live-blog-1.1.2.tgz#5fc02072efadc316bd1d0cee5a0ae2993024b96d"
+  integrity sha512-F/X/ZiuwUr/OK5xN3qu3vytnZK8jfpe6yXJ0XLfl57FnX8pNGL/iQ3BJ6xZNNIqkLcsYCAswAUi4HxxYDFZVog==
+  dependencies:
+    axios "^0.27.2"
+    draft-js "^0.11.7"
+
+"@readr-media/react-qa-list@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-qa-list/-/react-qa-list-2.0.1.tgz#571c8b76d3504b625093be05005bee1a7b4a9aa9"
+  integrity sha512-cKjY20E1fOuaCXEv1qqjHjA9UoCL8pOeevTrDYnDZ+oQz9BXCXUcRttaujmCGp/eCdRrIKvh40tJok9YbyW//w==
   dependencies:
     draft-js "^0.11.7"
     lodash "^4.17.21"
@@ -2327,10 +2341,10 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
-"@readr-media/react-questionnaire@^1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-questionnaire/-/react-questionnaire-1.0.11.tgz#882b0580996240aa8813ae400dfeff55a8dee4d5"
-  integrity sha512-l7E418I0IH7S2pjV02fqGQY/yMrNtgeNB3hFpHVtNJaI37SdAyKmtRdTKBBbndIkjiKj9SFSyMazIFgIrANKUw==
+"@readr-media/react-questionnaire@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-questionnaire/-/react-questionnaire-2.0.0.tgz#3295eda3b58f4722a8fb4a7f4bfa8c6b7d6f34a9"
+  integrity sha512-GqFuSAWB6n9+NZwIQ9avuSXoLg9OWfkiFG4Y80eeWf/9+dR4t/serZwtNL3nr8sTTw74LodKi2RU0ST5CQazHw==
   dependencies:
     draft-js "^0.11.7"
     lodash "^4.17.21"

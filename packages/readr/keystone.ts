@@ -3,10 +3,10 @@ import { listDefinition as lists } from './lists'
 import appConfig from './config'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import envVar from './environment-variables'
-import express from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
-import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache';
+import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -53,16 +53,16 @@ export default withAuth(
         baseUrl: appConfig.images.baseUrl,
       },
     },
-	graphql: {
-	  apolloConfig: {
-		cache: new InMemoryLRUCache({
-		  // ~100MiB
-		  maxSize: Math.pow(2, 20) * envVar.memoryCacheSize,
-		  // 5 minutes (in milliseconds)
-		  ttl: envVar.memoryCacheTtl,
-		}),		
-	  }
-	},
+    graphql: {
+      apolloConfig: {
+        cache: new InMemoryLRUCache({
+          // ~100MiB
+          maxSize: Math.pow(2, 20) * envVar.memoryCacheSize,
+          // 5 minutes (in milliseconds)
+          ttl: envVar.memoryCacheTtl,
+        }),
+      },
+    },
     server: {
       extendExpressApp: (app, createContext) => {
         // This middleware is available in Express v4.16.0 onwards
@@ -71,7 +71,11 @@ export default withAuth(
         app.use(jsonBodyParser)
 
         // Check if the request is sent by an authenticated user
-        const authenticationMw = async (req, res, next) => {
+        const authenticationMw = async (
+          req: Request,
+          res: Response,
+          next: NextFunction
+        ) => {
           const context = await createContext(req, res)
           // User has been logged in
           if (context?.session?.data?.role) {
