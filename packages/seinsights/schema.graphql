@@ -5,8 +5,7 @@ type Banner {
   id: ID!
   name: String
   order: Int
-  mobileImage: Photo
-  desktopImage: Photo
+  bannerImage: Photo
   isActive: Boolean
   publishDate: DateTime
   url: String
@@ -31,8 +30,7 @@ input BannerWhereInput {
   id: IDFilter
   name: StringFilter
   order: IntNullableFilter
-  mobileImage: PhotoWhereInput
-  desktopImage: PhotoWhereInput
+  bannerImage: PhotoWhereInput
   isActive: BooleanFilter
   publishDate: DateTimeNullableFilter
   url: StringFilter
@@ -133,8 +131,7 @@ enum OrderDirection {
 input BannerUpdateInput {
   name: String
   order: Int
-  mobileImage: PhotoRelateToOneForUpdateInput
-  desktopImage: PhotoRelateToOneForUpdateInput
+  bannerImage: PhotoRelateToOneForUpdateInput
   isActive: Boolean
   publishDate: DateTime
   url: String
@@ -164,8 +161,7 @@ input BannerUpdateArgs {
 input BannerCreateInput {
   name: String
   order: Int
-  mobileImage: PhotoRelateToOneForCreateInput
-  desktopImage: PhotoRelateToOneForCreateInput
+  bannerImage: PhotoRelateToOneForCreateInput
   isActive: Boolean
   publishDate: DateTime
   url: String
