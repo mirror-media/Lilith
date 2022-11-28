@@ -12,25 +12,22 @@ generator client {
 }
 
 model Banner {
-  id             Int       @id @default(autoincrement())
-  name           String    @default("")
-  order          Int?      @unique
-  mobileImage    Photo?    @relation("Banner_mobileImage", fields: [mobileImageId], references: [id])
-  mobileImageId  Int?      @map("mobileImage")
-  desktopImage   Photo?    @relation("Banner_desktopImage", fields: [desktopImageId], references: [id])
-  desktopImageId Int?      @map("desktopImage")
-  isActive       Boolean   @default(false)
-  publishDate    DateTime?
-  url            String    @default("")
-  createdAt      DateTime?
-  updatedAt      DateTime?
-  createdBy      User?     @relation("Banner_createdBy", fields: [createdById], references: [id])
-  createdById    Int?      @map("createdBy")
-  updatedBy      User?     @relation("Banner_updatedBy", fields: [updatedById], references: [id])
-  updatedById    Int?      @map("updatedBy")
+  id            Int       @id @default(autoincrement())
+  name          String    @default("")
+  order         Int?      @unique
+  bannerImage   Photo?    @relation("Banner_bannerImage", fields: [bannerImageId], references: [id])
+  bannerImageId Int?      @map("bannerImage")
+  isActive      Boolean   @default(false)
+  publishDate   DateTime? @default(now())
+  url           String    @default("")
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Banner_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Banner_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
 
-  @@index([mobileImageId])
-  @@index([desktopImageId])
+  @@index([bannerImageId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -184,8 +181,7 @@ model Photo {
   createdById                       Int?                 @map("createdBy")
   updatedBy                         User?                @relation("Photo_updatedBy", fields: [updatedById], references: [id])
   updatedById                       Int?                 @map("updatedBy")
-  from_Banner_mobileImage           Banner[]             @relation("Banner_mobileImage")
-  from_Banner_desktopImage          Banner[]             @relation("Banner_desktopImage")
+  from_Banner_bannerImage           Banner[]             @relation("Banner_bannerImage")
   from_Category_heroImage           Category[]           @relation("Category_heroImage")
   from_Column_profile_photo         Column[]             @relation("Column_profile_photo")
   from_Event_heroImage              Event[]              @relation("Event_heroImage")

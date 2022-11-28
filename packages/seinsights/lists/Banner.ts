@@ -1,6 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { text, timestamp, integer, checkbox } from '@keystone-6/core/fields'
+import { text, timestamp, integer, checkbox, relationship } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -22,27 +22,12 @@ const listConfigurations = list({
         max: 9999,
       },
     }),
-    mobileImage: customFields.relationship({
-      label: '手機用圖片',
+    bannerImage: relationship({
+      label: '圖片',
       ref: 'Photo',
       ui: {
         hideCreate: true,
       },
-      customConfig: {
-        isImage: true,
-      },
-      many: false,
-    }),
-    desktopImage: customFields.relationship({
-      label: '桌機用圖片',
-      ref: 'Photo',
-      ui: {
-        hideCreate: true,
-      },
-      customConfig: {
-        isImage: true,
-      },
-      validation: { isRequired: true },
       many: false,
     }),
     isActive: checkbox({
@@ -50,7 +35,7 @@ const listConfigurations = list({
     }),
     publishDate: timestamp({
       label: '發布日期',
-      defaultVaule: { kind: 'now' },
+      defaultValue: {kind: 'now'},
     }),
     url: text({
       label: '網站連結',
@@ -60,14 +45,14 @@ const listConfigurations = list({
   hooks: {
     validateInput: async ({ operation, inputData, addValidationError }) => {
       if (operation == 'create') {
-        if (!('desktopImage' in inputData)) {
+        if (!('bannerImage' in inputData)) {
           addValidationError('圖片不能空白')
         }
       }
       if (operation == 'update') {
-        if ('desktopImage' in inputData && 
-        'disconnect' in inputData['desktopImage'] &&
-          inputData['desktopImage']['disconnect'] == true
+        if ('bannerImage' in inputData && 
+        'disconnect' in inputData['bannerImage'] &&
+          inputData['bannerImage']['disconnect'] == true
         ) {
           addValidationError('圖片不能空白')
         }
