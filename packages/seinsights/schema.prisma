@@ -102,6 +102,7 @@ model Event {
   name                     String                @default("")
   eventStatus              EventEventStatusType?
   status                   EventStatusType       @default(draft)
+  publishDate              DateTime?             @default(now())
   type                     EventTypeType?
   region                   EventRegionType?
   section                  Section[]             @relation("Event_section")
@@ -134,6 +135,7 @@ model Job {
   name                    String            @default("")
   jobStatus               JobJobStatusType?
   status                  JobStatusType     @default(draft)
+  publishDate             DateTime?         @default(now())
   type                    JobTypeType?
   region                  JobRegionType?
   section                 Section[]         @relation("Job_section")
@@ -245,6 +247,7 @@ model Resource {
   name                           String              @default("")
   slogan                         String              @default("")
   status                         ResourceStatusType  @default(draft)
+  publishDate                    DateTime?           @default(now())
   region                         ResourceRegionType?
   section                        Section[]           @relation("Resource_section")
   category                       Category[]          @relation("Category_resources")

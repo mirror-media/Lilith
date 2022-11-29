@@ -5,6 +5,7 @@ import {
   relationship,
   select,
   json,
+  timestamp
   // virtual,
 } from '@keystone-6/core/fields'
 
@@ -70,6 +71,10 @@ const listConfigurations = list({
       validation: {
         isRequired: true,
       },
+    }),
+    publishDate: timestamp({
+      label: '發布日期',
+      defaultValue: { kind: 'now' },
     }),
     type: select({
       label: '類別',
@@ -196,34 +201,36 @@ const listConfigurations = list({
       }
       return resolvedData
     },
-    // validateInput: async ({ operation, item, context, resolvedData, addValidationError }) => {
-
-    //   // publishDate is must while status is not `draft`
-    //   if (operation == 'create') {
-    //     const { status } = resolvedData
-    //     if (status && status != 'draft') {
-    //       const { publishDate } = resolvedData
-    //       if (!publishDate) {
-    //         addValidationError('需要填入發布時間')
-    //       }
-    //     }
-    //   }
-    //   if (operation == 'update') {
-    //     if (resolvedData.status && resolvedData.status != 'draft') {
-    //       let publishDate = resolvedData.publishDate || item.publishDate
-    //       if (!publishDate) {
-    //         addValidationError('需要填入發布時間')
-    //       }
-    //     }
-    //     else if (resolvedData.publishDate === null) {
-    //       let status = resolvedData.status || item.status
-    //       if (status !=  'draft') {
-    //         addValidationError('需要填入發布時間')
-    //       }
-    //     }
-    //   }
-
-    // },
+    validateInput: async ({
+      operation,
+      item,
+      resolvedData,
+      addValidationError,
+    }) => {
+      // publishDate is must while status is not `draft`
+      if (operation == 'create') {
+        const { status } = resolvedData
+        if (status && status != 'draft') {
+          const { publishDate } = resolvedData
+          if (!publishDate) {
+            addValidationError('需要填入發布時間')
+          }
+        }
+      }
+      if (operation == 'update') {
+        if (resolvedData.status && resolvedData.status != 'draft') {
+          const publishDate = resolvedData.publishDate || item.publishDate
+          if (!publishDate) {
+            addValidationError('需要填入發布時間')
+          }
+        } else if (resolvedData.publishDate === null) {
+          const status = resolvedData.status || item.status
+          if (status != 'draft') {
+            addValidationError('需要填入發布時間')
+          }
+        }
+      }
+    },
   },
 })
 
