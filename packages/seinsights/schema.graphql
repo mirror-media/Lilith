@@ -2348,6 +2348,7 @@ type Member {
 input MemberWhereUniqueInput {
   id: ID
   firebaseId: String
+  email: String
 }
 
 input MemberWhereInput {
@@ -2355,7 +2356,7 @@ input MemberWhereInput {
   OR: [MemberWhereInput!]
   NOT: [MemberWhereInput!]
   id: IDFilter
-  firebaseId: StringFilter
+  firebaseId: StringNullableFilter
   isActive: BooleanFilter
   email: StringFilter
   beginDate: DateTimeNullableFilter
