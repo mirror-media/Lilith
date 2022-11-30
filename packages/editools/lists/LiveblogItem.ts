@@ -124,16 +124,14 @@ const listConfigurations = list({
     tags: relationship({
       ref: 'Tag.liveblog_items',
       ui: {
-        displayMode: 'display',
         cardFields: ['name'],
         inlineCreate: { fields: ['name'] },
         inlineEdit: { fields: ['name'] },
         hideCreate: true,
         linkToItem: true,
         inlineConnect: true,
-        inlineCreate: { fields: ['name'] },
       },
-      many: false,
+      many: true,
     }),
     apiData: json({
       label: '資料庫使用',

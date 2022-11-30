@@ -5,8 +5,7 @@ type Banner {
   id: ID!
   name: String
   order: Int
-  mobileImage: Photo
-  desktopImage: Photo
+  bannerImage: Photo
   isActive: Boolean
   publishDate: DateTime
   url: String
@@ -31,8 +30,7 @@ input BannerWhereInput {
   id: IDFilter
   name: StringFilter
   order: IntNullableFilter
-  mobileImage: PhotoWhereInput
-  desktopImage: PhotoWhereInput
+  bannerImage: PhotoWhereInput
   isActive: BooleanFilter
   publishDate: DateTimeNullableFilter
   url: StringFilter
@@ -133,8 +131,7 @@ enum OrderDirection {
 input BannerUpdateInput {
   name: String
   order: Int
-  mobileImage: PhotoRelateToOneForUpdateInput
-  desktopImage: PhotoRelateToOneForUpdateInput
+  bannerImage: PhotoRelateToOneForUpdateInput
   isActive: Boolean
   publishDate: DateTime
   url: String
@@ -164,8 +161,7 @@ input BannerUpdateArgs {
 input BannerCreateInput {
   name: String
   order: Int
-  mobileImage: PhotoRelateToOneForCreateInput
-  desktopImage: PhotoRelateToOneForCreateInput
+  bannerImage: PhotoRelateToOneForCreateInput
   isActive: Boolean
   publishDate: DateTime
   url: String
@@ -627,6 +623,7 @@ type Event {
   name: String
   eventStatus: EventEventStatusType
   status: EventStatusType
+  publishDate: DateTime
   type: EventTypeType
   region: EventRegionType
   section(
@@ -740,6 +737,7 @@ input EventWhereInput {
   name: StringFilter
   eventStatus: EventEventStatusTypeNullableFilter
   status: EventStatusTypeNullableFilter
+  publishDate: DateTimeNullableFilter
   type: EventTypeTypeNullableFilter
   region: EventRegionTypeNullableFilter
   section: SectionManyRelationFilter
@@ -808,6 +806,7 @@ input EventOrderByInput {
   name: OrderDirection
   eventStatus: OrderDirection
   status: OrderDirection
+  publishDate: OrderDirection
   type: OrderDirection
   region: OrderDirection
   location: OrderDirection
@@ -822,6 +821,7 @@ input EventUpdateInput {
   name: String
   eventStatus: EventEventStatusType
   status: EventStatusType
+  publishDate: DateTime
   type: EventTypeType
   region: EventRegionType
   section: SectionRelateToManyForUpdateInput
@@ -871,6 +871,7 @@ input EventCreateInput {
   name: String
   eventStatus: EventEventStatusType
   status: EventStatusType
+  publishDate: DateTime
   type: EventTypeType
   region: EventRegionType
   section: SectionRelateToManyForCreateInput
@@ -910,6 +911,7 @@ type Job {
   name: String
   jobStatus: JobJobStatusType
   status: JobStatusType
+  publishDate: DateTime
   type: JobTypeType
   region: JobRegionType
   section(
@@ -1025,6 +1027,7 @@ input JobWhereInput {
   name: StringFilter
   jobStatus: JobJobStatusTypeNullableFilter
   status: JobStatusTypeNullableFilter
+  publishDate: DateTimeNullableFilter
   type: JobTypeTypeNullableFilter
   region: JobRegionTypeNullableFilter
   section: SectionManyRelationFilter
@@ -1075,6 +1078,7 @@ input JobOrderByInput {
   name: OrderDirection
   jobStatus: OrderDirection
   status: OrderDirection
+  publishDate: OrderDirection
   type: OrderDirection
   region: OrderDirection
   company: OrderDirection
@@ -1089,6 +1093,7 @@ input JobUpdateInput {
   name: String
   jobStatus: JobJobStatusType
   status: JobStatusType
+  publishDate: DateTime
   type: JobTypeType
   region: JobRegionType
   section: SectionRelateToManyForUpdateInput
@@ -1117,6 +1122,7 @@ input JobCreateInput {
   name: String
   jobStatus: JobJobStatusType
   status: JobStatusType
+  publishDate: DateTime
   type: JobTypeType
   region: JobRegionType
   section: SectionRelateToManyForCreateInput
@@ -1518,6 +1524,7 @@ type Resource {
   name: String
   slogan: String
   status: ResourceStatusType
+  publishDate: DateTime
   region: ResourceRegionType
   section(
     where: SectionWhereInput! = {}
@@ -1613,6 +1620,7 @@ input ResourceWhereInput {
   name: StringFilter
   slogan: StringFilter
   status: ResourceStatusTypeNullableFilter
+  publishDate: DateTimeNullableFilter
   region: ResourceRegionTypeNullableFilter
   section: SectionManyRelationFilter
   category: CategoryManyRelationFilter
@@ -1643,6 +1651,7 @@ input ResourceOrderByInput {
   name: OrderDirection
   slogan: OrderDirection
   status: OrderDirection
+  publishDate: OrderDirection
   region: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1652,6 +1661,7 @@ input ResourceUpdateInput {
   name: String
   slogan: String
   status: ResourceStatusType
+  publishDate: DateTime
   region: ResourceRegionType
   section: SectionRelateToManyForUpdateInput
   category: CategoryRelateToManyForUpdateInput
@@ -1678,6 +1688,7 @@ input ResourceCreateInput {
   name: String
   slogan: String
   status: ResourceStatusType
+  publishDate: DateTime
   region: ResourceRegionType
   section: SectionRelateToManyForCreateInput
   category: CategoryRelateToManyForCreateInput

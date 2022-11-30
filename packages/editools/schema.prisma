@@ -81,8 +81,7 @@ model LiveblogItem {
   external     String    @default("")
   liveblog     Liveblog? @relation("LiveblogItem_liveblog", fields: [liveblogId], references: [id])
   liveblogId   Int?      @map("liveblog")
-  tags         Tag?      @relation("LiveblogItem_tags", fields: [tagsId], references: [id])
-  tagsId       Int?      @map("tags")
+  tags         Tag[]     @relation("LiveblogItem_tags")
   apiData      Json?
   createdAt    DateTime?
   updatedAt    DateTime?
@@ -94,7 +93,6 @@ model LiveblogItem {
   @@index([heroImageId])
   @@index([heroVideoId])
   @@index([liveblogId])
-  @@index([tagsId])
   @@index([createdById])
   @@index([updatedById])
 }
