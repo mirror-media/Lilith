@@ -15,8 +15,8 @@ const listConfigurations = list({
     firebaseId: text({
       label: 'Firebase ID',
       isIndexed: 'unique',
-      validation: {
-        isRequired: true,
+      db: {
+        isNullable: true,
       },
     }),
     isActive: checkbox({
@@ -25,6 +25,7 @@ const listConfigurations = list({
     }),
     email: text({
       label: 'E-mail',
+      isIndexed: 'unique',
       validation: {
         isRequired: true,
       },
