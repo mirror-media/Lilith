@@ -14,7 +14,6 @@ export function buildLiveBlogQuery(take?: number) {
         url
       }
     }
-    imageCaption
     active
     liveblog_itemsCount
     tags {
@@ -38,8 +37,11 @@ export function buildLiveBlogQuery(take?: number) {
         imageFile {
           ref
           url
+          width
+          height
         }
       }
+      imageCaption
       author
       name
       boost
