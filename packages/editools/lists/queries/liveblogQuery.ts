@@ -14,6 +14,7 @@ export function buildLiveBlogQuery(take?: number) {
         url
       }
     }
+    imageCaption
     active
     liveblog_itemsCount
     tags {
