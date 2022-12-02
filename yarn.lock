@@ -2282,10 +2282,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.0.4.tgz#c9cea37831e3a04668ed522027fb97a873aa0dc3"
-  integrity sha512-eHKoDtN6gE05aJwMxtW6EIwHAQw0hcCE0LHamSt/0oGcMicr30tNfRvXigypmozj4WFHyIqWUz8w+8DtJC83ow==
+"@readr-media/react-embed-code-generator@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.0.5.tgz#cd0b4d09552fa85d3f91b8b2cac5f9a2736d2f78"
+  integrity sha512-59Xu6VzUpjrWT6UFccXAXf/2ijixtHtY5fYPUnHFzErJTNyzXR1N89FZbgdMS/xXIGosGi0ZQJiamlVuj8cFVQ==
   dependencies:
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
