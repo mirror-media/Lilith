@@ -2336,13 +2336,13 @@ type Member {
   email: String
   beginDate: DateTime
   endDate: DateTime
-  sections(
-    where: SectionWhereInput! = {}
-    orderBy: [SectionOrderByInput!]! = []
+  categories(
+    where: CategoryWhereInput! = {}
+    orderBy: [CategoryOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [Section!]
-  sectionsCount(where: SectionWhereInput! = {}): Int
+  ): [Category!]
+  categoriesCount(where: CategoryWhereInput! = {}): Int
   favoritePosts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
@@ -2372,7 +2372,7 @@ input MemberWhereInput {
   email: StringFilter
   beginDate: DateTimeNullableFilter
   endDate: DateTimeNullableFilter
-  sections: SectionManyRelationFilter
+  categories: CategoryManyRelationFilter
   favoritePosts: PostManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2397,7 +2397,7 @@ input MemberUpdateInput {
   email: String
   beginDate: DateTime
   endDate: DateTime
-  sections: SectionRelateToManyForUpdateInput
+  categories: CategoryRelateToManyForUpdateInput
   favoritePosts: PostRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -2416,7 +2416,7 @@ input MemberCreateInput {
   email: String
   beginDate: DateTime
   endDate: DateTime
-  sections: SectionRelateToManyForCreateInput
+  categories: CategoryRelateToManyForCreateInput
   favoritePosts: PostRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime

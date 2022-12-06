@@ -37,9 +37,9 @@ const listConfigurations = list({
     endDate: timestamp({
       label: '結束贊助日期',
     }),
-    sections: relationship({
+    categories: relationship({
       label: '追蹤主題',
-      ref: 'Section',
+      ref: 'Category',
       many: true,
       ui: {
         labelField: 'name',
