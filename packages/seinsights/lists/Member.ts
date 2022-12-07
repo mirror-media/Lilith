@@ -30,6 +30,9 @@ const listConfigurations = list({
         isRequired: true,
       },
     }),
+    donationType: text({
+      label: '贊助方案',
+    }),
     beginDate: timestamp({
       label: '開始贊助日期',
       defaultValue: { kind: 'now' },
