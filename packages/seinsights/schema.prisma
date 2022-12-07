@@ -437,6 +437,7 @@ model Member {
   firebaseId    String?    @unique
   isActive      Boolean    @default(false)
   email         String     @unique @default("")
+  donationType  String     @default("")
   beginDate     DateTime?  @default(now())
   endDate       DateTime?
   categories    Category[] @relation("Member_categories")
