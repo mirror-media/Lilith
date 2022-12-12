@@ -526,7 +526,6 @@ type EditorChoice {
 enum EditorChoiceStatusType {
   published
   draft
-  scheduled
   archived
 }
 
@@ -963,7 +962,6 @@ enum JobJobStatusType {
 enum JobStatusType {
   published
   draft
-  scheduled
   archived
 }
 
@@ -1384,7 +1382,6 @@ type Post {
 enum PostStatusType {
   published
   draft
-  scheduled
   archived
 }
 
@@ -1563,7 +1560,6 @@ type Resource {
 enum ResourceStatusType {
   published
   draft
-  scheduled
   archived
 }
 
@@ -1950,7 +1946,6 @@ type Specialfeature {
 enum SpecialfeatureStatusType {
   published
   draft
-  scheduled
   archived
 }
 
@@ -2096,7 +2091,6 @@ type SpecialfeatureList {
 enum SpecialfeatureListStatusType {
   published
   draft
-  scheduled
   archived
 }
 
@@ -2500,7 +2494,6 @@ type EventBanner {
 enum EventBannerStatusType {
   published
   draft
-  scheduled
   archived
 }
 
@@ -2592,7 +2585,6 @@ type HomepageBanner {
 enum HomepageBannerStatusType {
   published
   draft
-  scheduled
   archived
 }
 
@@ -2684,7 +2676,6 @@ type JobBanner {
 enum JobBannerStatusType {
   published
   draft
-  scheduled
   archived
 }
 
@@ -2850,7 +2841,6 @@ type ResourceBanner {
 enum ResourceBannerStatusType {
   published
   draft
-  scheduled
   archived
 }
 
@@ -2940,7 +2930,6 @@ type SpecialfeatureEditorChoice {
 enum SpecialfeatureEditorChoiceStatusType {
   published
   draft
-  scheduled
   archived
 }
 
