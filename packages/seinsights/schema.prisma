@@ -343,7 +343,7 @@ model SpecialfeatureList {
   title               String                        @default("")
   weight              Int?                          @default(85)
   status              SpecialfeatureListStatusType? @default(draft)
-  publishDate         DateTime?
+  publishDate         DateTime?                     @default(now())
   heroImage           Photo?                        @relation("SpecialfeatureList_heroImage", fields: [heroImageId], references: [id])
   heroImageId         Int?                          @map("heroImage")
   content             Json?
@@ -474,7 +474,7 @@ model EventBanner {
   heroImage   Photo?                 @relation("EventBanner_heroImage", fields: [heroImageId], references: [id])
   heroImageId Int?                   @map("heroImage")
   status      EventBannerStatusType? @default(draft)
-  publishDate DateTime?
+  publishDate DateTime?              @default(now())
   url         String                 @default("")
   createdAt   DateTime?
   updatedAt   DateTime?
@@ -495,7 +495,7 @@ model HomepageBanner {
   heroImage   Photo?                    @relation("HomepageBanner_heroImage", fields: [heroImageId], references: [id])
   heroImageId Int?                      @map("heroImage")
   status      HomepageBannerStatusType? @default(draft)
-  publishDate DateTime?
+  publishDate DateTime?                 @default(now())
   url         String                    @default("")
   createdAt   DateTime?
   updatedAt   DateTime?
@@ -516,7 +516,7 @@ model JobBanner {
   heroImage   Photo?               @relation("JobBanner_heroImage", fields: [heroImageId], references: [id])
   heroImageId Int?                 @map("heroImage")
   status      JobBannerStatusType? @default(draft)
-  publishDate DateTime?
+  publishDate DateTime?            @default(now())
   url         String               @default("")
   createdAt   DateTime?
   updatedAt   DateTime?
@@ -555,7 +555,7 @@ model ResourceBanner {
   heroImage   Photo?                    @relation("ResourceBanner_heroImage", fields: [heroImageId], references: [id])
   heroImageId Int?                      @map("heroImage")
   status      ResourceBannerStatusType? @default(draft)
-  publishDate DateTime?
+  publishDate DateTime?                 @default(now())
   url         String                    @default("")
   createdAt   DateTime?
   updatedAt   DateTime?
@@ -575,7 +575,7 @@ model SpecialfeatureEditorChoice {
   specialfeature   Specialfeature?                       @relation("SpecialfeatureEditorChoice_specialfeature", fields: [specialfeatureId], references: [id])
   specialfeatureId Int?                                  @map("specialfeature")
   status           SpecialfeatureEditorChoiceStatusType? @default(draft)
-  publishDate      DateTime?
+  publishDate      DateTime?                             @default(now())
   createdAt        DateTime?
   updatedAt        DateTime?
   createdBy        User?                                 @relation("SpecialfeatureEditorChoice_createdBy", fields: [createdById], references: [id])
@@ -602,7 +602,6 @@ enum ColumnTypeType {
 enum EditorChoiceStatusType {
   published
   draft
-  scheduled
   archived
 }
 
@@ -672,7 +671,6 @@ enum JobJobStatusType {
 enum JobStatusType {
   published
   draft
-  scheduled
   archived
 }
 
@@ -727,14 +725,12 @@ enum JobRegionType {
 enum PostStatusType {
   published
   draft
-  scheduled
   archived
 }
 
 enum ResourceStatusType {
   published
   draft
-  scheduled
   archived
 }
 
@@ -787,48 +783,41 @@ enum SectionStatusType {
 enum SpecialfeatureStatusType {
   published
   draft
-  scheduled
   archived
 }
 
 enum SpecialfeatureListStatusType {
   published
   draft
-  scheduled
   archived
 }
 
 enum EventBannerStatusType {
   published
   draft
-  scheduled
   archived
 }
 
 enum HomepageBannerStatusType {
   published
   draft
-  scheduled
   archived
 }
 
 enum JobBannerStatusType {
   published
   draft
-  scheduled
   archived
 }
 
 enum ResourceBannerStatusType {
   published
   draft
-  scheduled
   archived
 }
 
 enum SpecialfeatureEditorChoiceStatusType {
   published
   draft
-  scheduled
   archived
 }
