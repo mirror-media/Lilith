@@ -36,8 +36,8 @@ type InfoBoxBlockProps = {
 
 export function InfoBoxBlock(props: InfoBoxBlockProps) {
   const [toShowInput, setToShowInput] = useState(false)
-  const { block, blockProps, contentState, renderBasicEditor } = props
-  const { onEditStart, onEditFinish } = blockProps
+  const { block, blockProps, contentState } = props
+  const { onEditStart, onEditFinish, renderBasicEditor } = blockProps
   const entityKey = block.getEntityAt(0)
   const entity = contentState.getEntity(entityKey)
   const { title, body, rawContentState } = entity.getData()
