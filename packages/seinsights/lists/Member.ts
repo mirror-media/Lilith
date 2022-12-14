@@ -23,6 +23,10 @@ const listConfigurations = list({
       label: '是否啟用',
       defaultValue: false,
     }),
+    hasSetCategories: checkbox({
+      label: '初次追蹤主題設定',
+      defaultValue: false,
+    }),
     email: text({
       label: 'E-mail',
       isIndexed: 'unique',

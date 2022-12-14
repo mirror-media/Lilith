@@ -433,21 +433,22 @@ model User {
 }
 
 model Member {
-  id            Int        @id @default(autoincrement())
-  firebaseId    String?    @unique
-  isActive      Boolean    @default(false)
-  email         String     @unique @default("")
-  donationType  String     @default("")
-  beginDate     DateTime?  @default(now())
-  endDate       DateTime?
-  categories    Category[] @relation("Member_categories")
-  favoritePosts Post[]     @relation("Member_favoritePosts")
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?      @relation("Member_createdBy", fields: [createdById], references: [id])
-  createdById   Int?       @map("createdBy")
-  updatedBy     User?      @relation("Member_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?       @map("updatedBy")
+  id               Int        @id @default(autoincrement())
+  firebaseId       String?    @unique
+  isActive         Boolean    @default(false)
+  hasSetCategories Boolean    @default(false)
+  email            String     @unique @default("")
+  donationType     String     @default("")
+  beginDate        DateTime?  @default(now())
+  endDate          DateTime?
+  categories       Category[] @relation("Member_categories")
+  favoritePosts    Post[]     @relation("Member_favoritePosts")
+  createdAt        DateTime?
+  updatedAt        DateTime?
+  createdBy        User?      @relation("Member_createdBy", fields: [createdById], references: [id])
+  createdById      Int?       @map("createdBy")
+  updatedBy        User?      @relation("Member_updatedBy", fields: [updatedById], references: [id])
+  updatedById      Int?       @map("updatedBy")
 
   @@index([createdById])
   @@index([updatedById])

@@ -2327,6 +2327,7 @@ type Member {
   id: ID!
   firebaseId: String
   isActive: Boolean
+  hasSetCategories: Boolean
   email: String
   donationType: String
   beginDate: DateTime
@@ -2364,6 +2365,7 @@ input MemberWhereInput {
   id: IDFilter
   firebaseId: StringNullableFilter
   isActive: BooleanFilter
+  hasSetCategories: BooleanFilter
   email: StringFilter
   donationType: StringFilter
   beginDate: DateTimeNullableFilter
@@ -2380,6 +2382,7 @@ input MemberOrderByInput {
   id: OrderDirection
   firebaseId: OrderDirection
   isActive: OrderDirection
+  hasSetCategories: OrderDirection
   email: OrderDirection
   donationType: OrderDirection
   beginDate: OrderDirection
@@ -2391,6 +2394,7 @@ input MemberOrderByInput {
 input MemberUpdateInput {
   firebaseId: String
   isActive: Boolean
+  hasSetCategories: Boolean
   email: String
   donationType: String
   beginDate: DateTime
@@ -2411,6 +2415,7 @@ input MemberUpdateArgs {
 input MemberCreateInput {
   firebaseId: String
   isActive: Boolean
+  hasSetCategories: Boolean
   email: String
   donationType: String
   beginDate: DateTime
