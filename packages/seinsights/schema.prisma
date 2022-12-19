@@ -615,7 +615,6 @@ enum EventEventStatusType {
 enum EventStatusType {
   published
   draft
-  scheduled
   archived
 }
 
