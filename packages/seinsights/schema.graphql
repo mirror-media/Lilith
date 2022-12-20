@@ -620,7 +620,7 @@ input SpecialfeatureRelateToOneForCreateInput {
 type Event {
   id: ID!
   name: String
-  eventStatus: EventEventStatusType
+  eventStatus: String
   status: EventStatusType
   publishDate: DateTime
   type: EventTypeType
@@ -664,11 +664,6 @@ type Event {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
-}
-
-enum EventEventStatusType {
-  opening
-  closed
 }
 
 enum EventStatusType {
@@ -733,7 +728,6 @@ input EventWhereInput {
   NOT: [EventWhereInput!]
   id: IDFilter
   name: StringFilter
-  eventStatus: EventEventStatusTypeNullableFilter
   status: EventStatusTypeNullableFilter
   publishDate: DateTimeNullableFilter
   type: EventTypeTypeNullableFilter
@@ -751,13 +745,6 @@ input EventWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input EventEventStatusTypeNullableFilter {
-  equals: EventEventStatusType
-  in: [EventEventStatusType!]
-  notIn: [EventEventStatusType!]
-  not: EventEventStatusTypeNullableFilter
 }
 
 input EventStatusTypeNullableFilter {
@@ -802,7 +789,6 @@ input TagManyRelationFilter {
 input EventOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  eventStatus: OrderDirection
   status: OrderDirection
   publishDate: OrderDirection
   type: OrderDirection
@@ -817,7 +803,6 @@ input EventOrderByInput {
 
 input EventUpdateInput {
   name: String
-  eventStatus: EventEventStatusType
   status: EventStatusType
   publishDate: DateTime
   type: EventTypeType
@@ -867,7 +852,6 @@ input EventUpdateArgs {
 
 input EventCreateInput {
   name: String
-  eventStatus: EventEventStatusType
   status: EventStatusType
   publishDate: DateTime
   type: EventTypeType
