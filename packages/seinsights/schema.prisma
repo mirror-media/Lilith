@@ -98,32 +98,31 @@ model EditorChoice {
 }
 
 model Event {
-  id                       Int                   @id @default(autoincrement())
-  name                     String                @default("")
-  eventStatus              EventEventStatusType?
-  status                   EventStatusType       @default(draft)
-  publishDate              DateTime?             @default(now())
+  id                       Int              @id @default(autoincrement())
+  name                     String           @default("")
+  status                   EventStatusType  @default(draft)
+  publishDate              DateTime?        @default(now())
   type                     EventTypeType?
   region                   EventRegionType?
-  section                  Section[]             @relation("Event_section")
-  category                 Category[]            @relation("Category_events")
-  heroImage                Photo?                @relation("Event_heroImage", fields: [heroImageId], references: [id])
-  heroImageId              Int?                  @map("heroImage")
+  section                  Section[]        @relation("Event_section")
+  category                 Category[]       @relation("Category_events")
+  heroImage                Photo?           @relation("Event_heroImage", fields: [heroImageId], references: [id])
+  heroImageId              Int?             @map("heroImage")
   content                  Json?
-  location                 String                @default("")
-  organization             String                @default("")
+  location                 String           @default("")
+  organization             String           @default("")
   event_start              DateTime?
   event_end                DateTime?
-  tags                     Tag[]                 @relation("Event_tags")
-  relatedEvents            Event[]               @relation("Event_relatedEvents")
+  tags                     Tag[]            @relation("Event_tags")
+  relatedEvents            Event[]          @relation("Event_relatedEvents")
   apiData                  Json?
   createdAt                DateTime?
   updatedAt                DateTime?
-  createdBy                User?                 @relation("Event_createdBy", fields: [createdById], references: [id])
-  createdById              Int?                  @map("createdBy")
-  updatedBy                User?                 @relation("Event_updatedBy", fields: [updatedById], references: [id])
-  updatedById              Int?                  @map("updatedBy")
-  from_Event_relatedEvents Event[]               @relation("Event_relatedEvents")
+  createdBy                User?            @relation("Event_createdBy", fields: [createdById], references: [id])
+  createdById              Int?             @map("createdBy")
+  updatedBy                User?            @relation("Event_updatedBy", fields: [updatedById], references: [id])
+  updatedById              Int?             @map("updatedBy")
+  from_Event_relatedEvents Event[]          @relation("Event_relatedEvents")
 
   @@index([heroImageId])
   @@index([createdById])
@@ -603,11 +602,6 @@ enum EditorChoiceStatusType {
   published
   draft
   archived
-}
-
-enum EventEventStatusType {
-  opening
-  closed
 }
 
 enum EventStatusType {

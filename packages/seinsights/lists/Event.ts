@@ -1,5 +1,5 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core'
+import { list, graphql } from '@keystone-6/core'
 import {
   text,
   relationship,
@@ -7,6 +7,7 @@ import {
   timestamp,
   checkbox,
   json,
+  virtual,
 } from '@keystone-6/core/fields'
 
 import config from '../config'
@@ -17,11 +18,6 @@ enum Status {
   Published = 'published',
   Draft = 'draft',
   Archived = 'archived',
-}
-
-enum EventStatus {
-  Opening = 'opening',
-  Closed = 'closed',
 }
 
 enum Type {
@@ -37,19 +33,21 @@ const listConfigurations = list({
         isRequired: true,
       },
     }),
-    eventStatus: select({
-      label: '活動狀態',
-      type: 'enum',
-      options: [
-        { label: '即將舉辦（舉辦中）', value: EventStatus.Opening },
-        { label: '過往活動', value: EventStatus.Closed },
-      ],
-      // validation: {
-      //   isRequired: true,
-      // },
-      ui: {
-        displayMode: 'segmented-control',
-      },
+    eventStatus: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>) {
+          const dateTime = new Date()
+          const endTime = item?.event_end;
+          if (endTime) {
+            if (endTime >= dateTime) {
+              return 'opening';
+            }
+            else return 'closed';
+          }
+          else return '';
+        }
+      }),
     }),
     status: select({
       label: '狀態',
