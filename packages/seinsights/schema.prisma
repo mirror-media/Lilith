@@ -372,6 +372,7 @@ model Tag {
   specialfeatures Specialfeature[] @relation("Specialfeature_tags")
   jobs            Job[]            @relation("Job_tags")
   events          Event[]          @relation("Event_tags")
+  isMemberOnly    Boolean          @default(false)
   createdAt       DateTime?
   updatedAt       DateTime?
   createdBy       User?            @relation("Tag_createdBy", fields: [createdById], references: [id])
