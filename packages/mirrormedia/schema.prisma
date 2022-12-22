@@ -100,7 +100,7 @@ model Event {
   id            Int       @id @default(autoincrement())
   name          String    @default("")
   slug          String    @unique @default("")
-  state         String?   @default("now")
+  state         String?   @default("draft")
   publishedDate DateTime?
   sections      Section[] @relation("Event_sections")
   eventType     String?

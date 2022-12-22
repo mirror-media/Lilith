@@ -16,7 +16,6 @@ const { allowRoles, admin, moderator, editor } = utils.accessControl
 enum Status {
   Published = 'published',
   Draft = 'draft',
-  Scheduled = 'scheduled',
   Archived = 'archived',
 }
 
@@ -58,7 +57,6 @@ const listConfigurations = list({
       options: [
         { label: '出版', value: Status.Published },
         { label: '草稿', value: Status.Draft },
-        { label: '排程', value: Status.Scheduled },
         { label: '下架', value: Status.Archived },
       ],
       defaultValue: 'draft',

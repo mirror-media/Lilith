@@ -23,11 +23,11 @@ const listConfigurations = list({
     }),
     state: select({
       options: [
-        { label: '過往活動', value: 'now' },
-        { label: '即將舉辦（舉辦中）', value: 'past' },
+        { label: '過往活動', value: 'draft' },
+        { label: '即將舉辦（舉辦中）', value: 'published' },
       ],
       label: '狀態',
-      defaultValue: 'now',
+      defaultValue: 'draft',
       isIndexed: true
     }),
     publishedDate: timestamp({
