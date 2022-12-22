@@ -2072,6 +2072,7 @@ type SpecialfeatureList {
     skip: Int! = 0
   ): [Specialfeature!]
   specialfeaturesCount(where: SpecialfeatureWhereInput! = {}): Int
+  manualOrderOfSpecialFeatures: JSON
   url: String
   section(
     where: SectionWhereInput! = {}
@@ -2144,6 +2145,7 @@ input SpecialfeatureListUpdateInput {
   content: JSON
   topSpecialfeature: SpecialfeatureRelateToOneForUpdateInput
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
+  manualOrderOfSpecialFeatures: JSON
   url: String
   section: SectionRelateToManyForUpdateInput
   apiData: JSON
@@ -2167,6 +2169,7 @@ input SpecialfeatureListCreateInput {
   content: JSON
   topSpecialfeature: SpecialfeatureRelateToOneForCreateInput
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
+  manualOrderOfSpecialFeatures: JSON
   url: String
   section: SectionRelateToManyForCreateInput
   apiData: JSON

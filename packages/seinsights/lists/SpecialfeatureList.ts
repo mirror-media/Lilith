@@ -80,6 +80,14 @@ const listConfigurations = list({
         labelField: 'title',
       },
     }),
+    manualOrderOfSpecialFeatures: json({
+      label: 'SpecialFeature 手動排序結果',
+      ui: {
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
+    }),
     url: text({
       label: '外連網址',
     }),
@@ -116,12 +124,73 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    resolveInput: async ({ resolvedData }) => {
+    resolveInput: async ({ resolvedData, item, context }) => {
       const { content } = resolvedData
       if (content) {
         resolvedData.apiData = customFields.draftConverter
           .convertToApiData(content)
           .toJS()
+      }
+
+      // For `relationship` field, KeystoneJS won't take user input order into account.
+      // Therefore, after the operation is done, the order of `specialfeatures` items maybe not be the same
+      // order as the user input order.
+      // The following logics records the user input order in `manualOrderOfSpecialFeatures` field.
+      //
+      // if create/update operation modifies the `specialfeatures` field
+      if (resolvedData?.specialfeatures) {
+        let currentOrder: { id: string; title: string }[] = []
+
+        // update operation due to `item` not being `undefiend`
+        if (item) {
+          const previousOrder: { id: string; title: string }[] = Array.isArray(
+            item.manualOrderOfSpecialFeatures
+          )
+            ? item.manualOrderOfSpecialFeatures
+            : []
+
+          // user disconnects/removes some `Specialfeature` items.
+          const disconnectIds =
+            resolvedData.specialfeatures?.disconnect?.map(
+              (obj: { id: number }) => obj.id.toString()
+            ) || []
+
+          // filtered out to-be-disconnected `Specialfeature` items
+          currentOrder = previousOrder.filter(({ id }: { id: string }) => {
+            return disconnectIds.indexOf(id) === -1
+          })
+        }
+
+        // user connects/adds some `Specialfeature` item.
+        const connectedIds =
+          resolvedData.specialfeatures?.connect?.map((obj: { id: number }) =>
+            obj.id.toString()
+          ) || []
+
+        if (connectedIds.length > 0) {
+          // Query `Specialfetaure` items from the database.
+          // Therefore, we can have other fields such as `title`, etc.
+          const sfToConnect = await context.db.Specialfeature.findMany({
+            where: { id: { in: connectedIds } },
+          })
+
+          // Database query results are not sorted.
+          // We need to sort them by ourselves.
+          for (let i = 0; i < connectedIds.length; i++) {
+            const sf = sfToConnect.find((obj) => {
+              return `${obj.id}` === connectedIds[i]
+            })
+            if (sf) {
+              currentOrder.push({
+                id: sf.id.toString(),
+                title: typeof sf.title === 'string' ? sf.title : '',
+              })
+            }
+          }
+        }
+
+        // records the order of `specialfeatures`
+        resolvedData.manualOrderOfSpecialFeatures = currentOrder
       }
 
       return resolvedData
