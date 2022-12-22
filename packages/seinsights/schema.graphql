@@ -2191,6 +2191,7 @@ type Tag {
     skip: Int! = 0
   ): [Event!]
   eventsCount(where: EventWhereInput! = {}): Int
+  isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2211,6 +2212,7 @@ input TagWhereInput {
   specialfeatures: SpecialfeatureManyRelationFilter
   jobs: JobManyRelationFilter
   events: EventManyRelationFilter
+  isMemberOnly: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2220,6 +2222,7 @@ input TagWhereInput {
 input TagOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  isMemberOnly: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2230,6 +2233,7 @@ input TagUpdateInput {
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
   jobs: JobRelateToManyForUpdateInput
   events: EventRelateToManyForUpdateInput
+  isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2247,6 +2251,7 @@ input TagCreateInput {
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
   jobs: JobRelateToManyForCreateInput
   events: EventRelateToManyForCreateInput
+  isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
