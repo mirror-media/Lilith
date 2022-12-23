@@ -26,5 +26,9 @@
   },
   "devDependencies": {
     "typescript": "^4.7.4"
+  },
+  "resolutions": {
+    "react": "18.1.0",
+    "react-dom": "18.1.0"
   }
 }
