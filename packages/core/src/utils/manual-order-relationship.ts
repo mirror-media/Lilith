@@ -41,11 +41,11 @@ type ManualOrderFieldConfig = {
  *    {
  *      fieldName: 'manualOrderOfAuthors',
  *      fieldLabel: 'authors 手動排序結果',
- *      targetFieldName: 'authors',
- *      targetListName: 'User',
+ *      targetFieldName: 'authors', // the target field to record the user input order
+ *      targetListName: 'User', // relationship list name
  *      targetListLabelField: 'name', // refer to `User.fields.name`
  *    }
- *  ])(post)
+ *  ])(Post)
  *  ```
  *
  *  `addManualOrderRelationshipFields` will create another field `manualOrderOfAuthors`
