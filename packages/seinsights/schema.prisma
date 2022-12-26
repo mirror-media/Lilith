@@ -329,7 +329,6 @@ model Specialfeature {
   updatedBy                                      User?                        @relation("Specialfeature_updatedBy", fields: [updatedById], references: [id])
   updatedById                                    Int?                         @map("updatedBy")
   from_EditorChoice_specialfeature               EditorChoice[]               @relation("EditorChoice_specialfeature")
-  from_SpecialfeatureList_topSpecialfeature      SpecialfeatureList[]         @relation("SpecialfeatureList_topSpecialfeature")
   from_SpecialfeatureEditorChoice_specialfeature SpecialfeatureEditorChoice[] @relation("SpecialfeatureEditorChoice_specialfeature")
 
   @@index([heroImageId])
@@ -346,8 +345,6 @@ model SpecialfeatureList {
   heroImage                    Photo?                        @relation("SpecialfeatureList_heroImage", fields: [heroImageId], references: [id])
   heroImageId                  Int?                          @map("heroImage")
   content                      Json?
-  topSpecialfeature            Specialfeature?               @relation("SpecialfeatureList_topSpecialfeature", fields: [topSpecialfeatureId], references: [id])
-  topSpecialfeatureId          Int?                          @map("topSpecialfeature")
   specialfeatures              Specialfeature[]              @relation("Specialfeature_specialfeatureLists")
   manualOrderOfSpecialFeatures Json?
   url                          String                        @default("")
@@ -361,7 +358,6 @@ model SpecialfeatureList {
   updatedById                  Int?                          @map("updatedBy")
 
   @@index([heroImageId])
-  @@index([topSpecialfeatureId])
   @@index([createdById])
   @@index([updatedById])
 }

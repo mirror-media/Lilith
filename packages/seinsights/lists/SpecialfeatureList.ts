@@ -64,16 +64,8 @@ const listConfigurations = list({
     content: customFields.richTextEditor({
       label: '內文',
     }),
-    topSpecialfeature: relationship({
-      label: '導讀文章（置頂文章）',
-      ref: 'Specialfeature',
-      many: false,
-      ui: {
-        labelField: 'title',
-      },
-    }),
     specialfeatures: relationship({
-      label: 'SpecialFeature',
+      label: 'SpecialFeature（如僅更改順序，須在「敘述」後增改文字後方能儲存）',
       ref: 'Specialfeature.specialfeatureLists',
       many: true,
       ui: {

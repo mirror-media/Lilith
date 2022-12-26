@@ -2048,7 +2048,6 @@ type SpecialfeatureList {
   publishDate: DateTime
   heroImage: Photo
   content: JSON
-  topSpecialfeature: Specialfeature
   specialfeatures(
     where: SpecialfeatureWhereInput! = {}
     orderBy: [SpecialfeatureOrderByInput!]! = []
@@ -2092,7 +2091,6 @@ input SpecialfeatureListWhereInput {
   status: SpecialfeatureListStatusTypeNullableFilter
   publishDate: DateTimeNullableFilter
   heroImage: PhotoWhereInput
-  topSpecialfeature: SpecialfeatureWhereInput
   specialfeatures: SpecialfeatureManyRelationFilter
   url: StringFilter
   section: SectionManyRelationFilter
@@ -2127,7 +2125,6 @@ input SpecialfeatureListUpdateInput {
   publishDate: DateTime
   heroImage: PhotoRelateToOneForUpdateInput
   content: JSON
-  topSpecialfeature: SpecialfeatureRelateToOneForUpdateInput
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
   manualOrderOfSpecialFeatures: JSON
   url: String
@@ -2151,7 +2148,6 @@ input SpecialfeatureListCreateInput {
   publishDate: DateTime
   heroImage: PhotoRelateToOneForCreateInput
   content: JSON
-  topSpecialfeature: SpecialfeatureRelateToOneForCreateInput
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
   manualOrderOfSpecialFeatures: JSON
   url: String
