@@ -80,6 +80,14 @@ const listConfigurations = list({
         labelField: 'title',
       },
     }),
+    manualOrderOfSpecialFeatures: json({
+      label: 'SpecialFeature 手動排序結果',
+      ui: {
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
+    }),
     url: text({
       label: '外連網址',
     }),
@@ -123,7 +131,6 @@ const listConfigurations = list({
           .convertToApiData(content)
           .toJS()
       }
-
       return resolvedData
     },
     validateInput: async ({
@@ -159,4 +166,14 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfSpecialFeatures',
+      targetFieldName: 'specialfeatures',
+      targetListName: 'Specialfeature',
+      targetListLabelField: 'title',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)

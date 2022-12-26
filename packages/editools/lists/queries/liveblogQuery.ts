@@ -37,8 +37,11 @@ export function buildLiveBlogQuery(take?: number) {
         imageFile {
           ref
           url
+          width
+          height
         }
       }
+      imageCaption
       author
       name
       boost

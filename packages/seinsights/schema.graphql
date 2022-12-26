@@ -2056,6 +2056,7 @@ type SpecialfeatureList {
     skip: Int! = 0
   ): [Specialfeature!]
   specialfeaturesCount(where: SpecialfeatureWhereInput! = {}): Int
+  manualOrderOfSpecialFeatures: JSON
   url: String
   section(
     where: SectionWhereInput! = {}
@@ -2128,6 +2129,7 @@ input SpecialfeatureListUpdateInput {
   content: JSON
   topSpecialfeature: SpecialfeatureRelateToOneForUpdateInput
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
+  manualOrderOfSpecialFeatures: JSON
   url: String
   section: SectionRelateToManyForUpdateInput
   apiData: JSON
@@ -2151,6 +2153,7 @@ input SpecialfeatureListCreateInput {
   content: JSON
   topSpecialfeature: SpecialfeatureRelateToOneForCreateInput
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
+  manualOrderOfSpecialFeatures: JSON
   url: String
   section: SectionRelateToManyForCreateInput
   apiData: JSON
@@ -2315,16 +2318,18 @@ type Member {
   id: ID!
   firebaseId: String
   isActive: Boolean
+  hasSetCategories: Boolean
   email: String
+  donationType: String
   beginDate: DateTime
   endDate: DateTime
-  sections(
-    where: SectionWhereInput! = {}
-    orderBy: [SectionOrderByInput!]! = []
+  categories(
+    where: CategoryWhereInput! = {}
+    orderBy: [CategoryOrderByInput!]! = []
     take: Int
     skip: Int! = 0
-  ): [Section!]
-  sectionsCount(where: SectionWhereInput! = {}): Int
+  ): [Category!]
+  categoriesCount(where: CategoryWhereInput! = {}): Int
   favoritePosts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
@@ -2341,6 +2346,7 @@ type Member {
 input MemberWhereUniqueInput {
   id: ID
   firebaseId: String
+  email: String
 }
 
 input MemberWhereInput {
@@ -2348,12 +2354,14 @@ input MemberWhereInput {
   OR: [MemberWhereInput!]
   NOT: [MemberWhereInput!]
   id: IDFilter
-  firebaseId: StringFilter
+  firebaseId: StringNullableFilter
   isActive: BooleanFilter
+  hasSetCategories: BooleanFilter
   email: StringFilter
+  donationType: StringFilter
   beginDate: DateTimeNullableFilter
   endDate: DateTimeNullableFilter
-  sections: SectionManyRelationFilter
+  categories: CategoryManyRelationFilter
   favoritePosts: PostManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2365,7 +2373,9 @@ input MemberOrderByInput {
   id: OrderDirection
   firebaseId: OrderDirection
   isActive: OrderDirection
+  hasSetCategories: OrderDirection
   email: OrderDirection
+  donationType: OrderDirection
   beginDate: OrderDirection
   endDate: OrderDirection
   createdAt: OrderDirection
@@ -2375,10 +2385,12 @@ input MemberOrderByInput {
 input MemberUpdateInput {
   firebaseId: String
   isActive: Boolean
+  hasSetCategories: Boolean
   email: String
+  donationType: String
   beginDate: DateTime
   endDate: DateTime
-  sections: SectionRelateToManyForUpdateInput
+  categories: CategoryRelateToManyForUpdateInput
   favoritePosts: PostRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -2394,10 +2406,12 @@ input MemberUpdateArgs {
 input MemberCreateInput {
   firebaseId: String
   isActive: Boolean
+  hasSetCategories: Boolean
   email: String
+  donationType: String
   beginDate: DateTime
   endDate: DateTime
-  sections: SectionRelateToManyForCreateInput
+  categories: CategoryRelateToManyForCreateInput
   favoritePosts: PostRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
