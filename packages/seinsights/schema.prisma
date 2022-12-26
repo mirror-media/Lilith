@@ -338,26 +338,27 @@ model Specialfeature {
 }
 
 model SpecialfeatureList {
-  id                  Int                           @id @default(autoincrement())
-  title               String                        @default("")
-  weight              Int?                          @default(85)
-  status              SpecialfeatureListStatusType? @default(draft)
-  publishDate         DateTime?                     @default(now())
-  heroImage           Photo?                        @relation("SpecialfeatureList_heroImage", fields: [heroImageId], references: [id])
-  heroImageId         Int?                          @map("heroImage")
-  content             Json?
-  topSpecialfeature   Specialfeature?               @relation("SpecialfeatureList_topSpecialfeature", fields: [topSpecialfeatureId], references: [id])
-  topSpecialfeatureId Int?                          @map("topSpecialfeature")
-  specialfeatures     Specialfeature[]              @relation("Specialfeature_specialfeatureLists")
-  url                 String                        @default("")
-  section             Section[]                     @relation("Section_specialfeatureLists")
-  apiData             Json?
-  createdAt           DateTime?
-  updatedAt           DateTime?
-  createdBy           User?                         @relation("SpecialfeatureList_createdBy", fields: [createdById], references: [id])
-  createdById         Int?                          @map("createdBy")
-  updatedBy           User?                         @relation("SpecialfeatureList_updatedBy", fields: [updatedById], references: [id])
-  updatedById         Int?                          @map("updatedBy")
+  id                           Int                           @id @default(autoincrement())
+  title                        String                        @default("")
+  weight                       Int?                          @default(85)
+  status                       SpecialfeatureListStatusType? @default(draft)
+  publishDate                  DateTime?                     @default(now())
+  heroImage                    Photo?                        @relation("SpecialfeatureList_heroImage", fields: [heroImageId], references: [id])
+  heroImageId                  Int?                          @map("heroImage")
+  content                      Json?
+  topSpecialfeature            Specialfeature?               @relation("SpecialfeatureList_topSpecialfeature", fields: [topSpecialfeatureId], references: [id])
+  topSpecialfeatureId          Int?                          @map("topSpecialfeature")
+  specialfeatures              Specialfeature[]              @relation("Specialfeature_specialfeatureLists")
+  manualOrderOfSpecialFeatures Json?
+  url                          String                        @default("")
+  section                      Section[]                     @relation("Section_specialfeatureLists")
+  apiData                      Json?
+  createdAt                    DateTime?
+  updatedAt                    DateTime?
+  createdBy                    User?                         @relation("SpecialfeatureList_createdBy", fields: [createdById], references: [id])
+  createdById                  Int?                          @map("createdBy")
+  updatedBy                    User?                         @relation("SpecialfeatureList_updatedBy", fields: [updatedById], references: [id])
+  updatedById                  Int?                          @map("updatedBy")
 
   @@index([heroImageId])
   @@index([topSpecialfeatureId])
