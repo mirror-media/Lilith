@@ -64,20 +64,20 @@ const listConfigurations = list({
     content: customFields.richTextEditor({
       label: '內文',
     }),
-    topSpecialfeature: relationship({
-      label: '導讀文章（置頂文章）',
-      ref: 'Specialfeature',
-      many: false,
-      ui: {
-        labelField: 'title',
-      },
-    }),
     specialfeatures: relationship({
-      label: 'SpecialFeature',
+      label: 'SpecialFeature（如僅更改順序，須在「敘述」後增改文字後方能儲存）',
       ref: 'Specialfeature.specialfeatureLists',
       many: true,
       ui: {
         labelField: 'title',
+      },
+    }),
+    manualOrderOfSpecialFeatures: json({
+      label: 'SpecialFeature 手動排序結果',
+      ui: {
+        itemView: {
+          fieldMode: 'read',
+        },
       },
     }),
     url: text({
@@ -123,7 +123,6 @@ const listConfigurations = list({
           .convertToApiData(content)
           .toJS()
       }
-
       return resolvedData
     },
     validateInput: async ({
@@ -159,4 +158,14 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfSpecialFeatures',
+      targetFieldName: 'specialfeatures',
+      targetListName: 'Specialfeature',
+      targetListLabelField: 'title',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)
