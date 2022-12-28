@@ -53,7 +53,7 @@ export default {
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
   jwt: {
-    secert: JWT_SECRET || 'jwt-secert',
+    secret: JWT_SECRET || 'jwt-secert',
   },
   gcp: {
     projectId: GCP_PROJECT_ID || 'mirrormedia-1470651750304',
