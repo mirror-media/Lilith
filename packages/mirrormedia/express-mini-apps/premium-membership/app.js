@@ -40,11 +40,10 @@ export function createApp({
   // create express mini app
   const router = express.Router()
 
-  router.use(middlewareCreator.createLoggerMw(gcpProjectId))
-
   // api route for granting access token
   router.post(
     '/access-token',
+    middlewareCreator.createLoggerMw(gcpProjectId),
     middlewareCreator.verifyIdTokenByFirebaseAdmin({ firebaseProjectId }),
     middlewareCreator.queryMemberInfoFromIsrafel({ apiUrl: memberApiUrl }),
     middlewareCreator.signAccessToken({ jwtSecret: envVars.jwt.secret }),
@@ -107,6 +106,7 @@ export function createApp({
 
   router.post(
     '/api/graphql',
+    middlewareCreator.createLoggerMw(gcpProjectId),
     (req, res, next) => {
       if (req.header('Authorization')) {
         // get to next middleware
