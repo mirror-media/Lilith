@@ -107,13 +107,21 @@ export function createApp({
   router.post(
     '/api/graphql',
     middlewareCreator.createLoggerMw(gcpProjectId),
+    /**
+     *  @param {express.Request} req
+     *  @param {express.Response} res
+     *  @param {express.NextFunction} next
+     */
     (req, res, next) => {
       if (req.header('Authorization')) {
         // get to next middleware
         next()
         return
       }
-      // bypass remaining middlewares
+      // If the request does not contain Authorization header,
+      // we skip the following access token verfication by
+      // bypassing remaining middlewares.
+      //
       next('route')
     },
     middlewareCreator.verfiyAccessToken({
