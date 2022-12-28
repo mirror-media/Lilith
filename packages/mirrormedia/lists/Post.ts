@@ -164,9 +164,11 @@ const listConfigurations = list({
     }),
     brief: customFields.richTextEditor({
       label: '前言',
+      disabledButtons: [],
     }),
     content: customFields.richTextEditor({
       label: '內文',
+      disabledButtons: [],
     }),
     topics: relationship({
       label: '專題',
