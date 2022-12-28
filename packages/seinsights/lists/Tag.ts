@@ -55,6 +55,18 @@ const listConfigurations = list({
       },
       many: true,
     }),
+    resources: relationship({
+      ref: 'Resource.tags',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+      many: true,
+    }),
     isMemberOnly: checkbox({
       label: '會員專屬',
       defaultValue: false,
