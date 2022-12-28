@@ -1522,6 +1522,13 @@ type Resource {
   categoryCount(where: CategoryWhereInput! = {}): Int
   profile_photo: Photo
   content: JSON
+  tags(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
   contact: JSON
   link: JSON
   relatedResources(
@@ -1604,6 +1611,7 @@ input ResourceWhereInput {
   section: SectionManyRelationFilter
   category: CategoryManyRelationFilter
   profile_photo: PhotoWhereInput
+  tags: TagManyRelationFilter
   relatedResources: ResourceManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1646,6 +1654,7 @@ input ResourceUpdateInput {
   category: CategoryRelateToManyForUpdateInput
   profile_photo: PhotoRelateToOneForUpdateInput
   content: JSON
+  tags: TagRelateToManyForUpdateInput
   contact: JSON
   link: JSON
   relatedResources: ResourceRelateToManyForUpdateInput
@@ -1673,6 +1682,7 @@ input ResourceCreateInput {
   category: CategoryRelateToManyForCreateInput
   profile_photo: PhotoRelateToOneForCreateInput
   content: JSON
+  tags: TagRelateToManyForCreateInput
   contact: JSON
   link: JSON
   relatedResources: ResourceRelateToManyForCreateInput
@@ -2190,6 +2200,13 @@ type Tag {
     skip: Int! = 0
   ): [Event!]
   eventsCount(where: EventWhereInput! = {}): Int
+  resources(
+    where: ResourceWhereInput! = {}
+    orderBy: [ResourceOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Resource!]
+  resourcesCount(where: ResourceWhereInput! = {}): Int
   isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -2211,6 +2228,7 @@ input TagWhereInput {
   specialfeatures: SpecialfeatureManyRelationFilter
   jobs: JobManyRelationFilter
   events: EventManyRelationFilter
+  resources: ResourceManyRelationFilter
   isMemberOnly: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2232,6 +2250,7 @@ input TagUpdateInput {
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
   jobs: JobRelateToManyForUpdateInput
   events: EventRelateToManyForUpdateInput
+  resources: ResourceRelateToManyForUpdateInput
   isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -2250,6 +2269,7 @@ input TagCreateInput {
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
   jobs: JobRelateToManyForCreateInput
   events: EventRelateToManyForCreateInput
+  resources: ResourceRelateToManyForCreateInput
   isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
