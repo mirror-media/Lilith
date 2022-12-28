@@ -85,6 +85,18 @@ const listConfigurations = list({
     content: customFields.richTextEditor({
       label: '敘述',
     }),
+    tags: relationship({
+      label: '標籤',
+      ref: 'Tag.resources',
+      ui: {
+        inlineEdit: { fields: ['name'] },
+        hideCreate: true,
+        linkToItem: true,
+        inlineConnect: true,
+        inlineCreate: { fields: ['name'] },
+      },
+      many: true,
+    }),
     contact: customFields.richTextEditor({
       label: '聯絡方式',
     }),
