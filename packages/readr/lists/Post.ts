@@ -1,181 +1,189 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core';
-import { checkbox, integer, relationship, timestamp, text, select, json } from '@keystone-6/core/fields';
-	  
-const {
-  allowRoles,
-  admin,
-  moderator,
-  editor,
-  owner,
-} = utils.accessControl
+import { list } from '@keystone-6/core'
+import {
+  checkbox,
+  integer,
+  relationship,
+  timestamp,
+  text,
+  select,
+  json,
+} from '@keystone-6/core/fields'
 
-const listConfigurations = list ({
+const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+const listConfigurations = list({
   fields: {
-	slug: text({
-      validation: { isRequired: true}, 
-      label: '網址名稱（英文）', 
-      isIndexed: 'unique', 
-	  db: {
-		isNullable: true,
-	  }
+    slug: text({
+      validation: { isRequired: true },
+      label: '網址名稱（英文）',
+      isIndexed: 'unique',
+      db: {
+        isNullable: true,
+      },
     }),
-	sortOrder: integer({
-	  label: '排列順序',
-	}),
+    sortOrder: integer({
+      label: '排列順序',
+    }),
     name: text({
-      label: '標題', 
-      validation: { isRequired: true} 
+      label: '標題',
+      validation: { isRequired: true },
     }),
     subtitle: text({
-      label: '副標', 
-      validation: { isRequired: false},
-	  db: {
-		isNullable: true,
-	  }
+      label: '副標',
+      validation: { isRequired: false },
+      db: {
+        isNullable: true,
+      },
     }),
     state: select({
-      label: '狀態', 
-      options: [ 
-        { label: 'draft', value: 'draft' },        { label: 'published', value: 'published' }, 
-        { label: 'scheduled', value: 'scheduled' }, 
-        { label: 'archived', value: 'archived' }, 
-        { label: 'invisible', value: 'invisible' }
-      ], 
-      defaultValue: 'draft', 
-      isIndexed: true 
+      label: '狀態',
+      options: [
+        { label: 'draft', value: 'draft' },
+        { label: 'published', value: 'published' },
+        { label: 'scheduled', value: 'scheduled' },
+        { label: 'archived', value: 'archived' },
+        { label: 'invisible', value: 'invisible' },
+      ],
+      defaultValue: 'draft',
+      isIndexed: true,
     }),
     publishTime: timestamp({
-      isIndexed: true, 
-      label: '發佈日期',  
+      isIndexed: true,
+      label: '發佈日期',
     }),
     categories: relationship({
-      ref: 'Category', 
-      label: '分類', 
-      many: true 
+      ref: 'Category',
+      label: '分類',
+      many: true,
     }),
     writers: relationship({
-      ref: 'Author.posts', 
-      many: true, 
-      label: '作者' 
+      ref: 'Author.posts',
+      many: true,
+      label: '作者',
     }),
     photographers: relationship({
-      many: true, 
-      label: '攝影', 
-      ref: 'Author' 
+      many: true,
+      label: '攝影',
+      ref: 'Author',
     }),
     cameraOperators: relationship({
-      label: '影音', 
-      many: true, 
-      ref: 'Author' 
+      label: '影音',
+      many: true,
+      ref: 'Author',
     }),
     designers: relationship({
-      label: '設計', 
-      many: true, 
-      ref: 'Author' 
+      label: '設計',
+      many: true,
+      ref: 'Author',
     }),
     engineers: relationship({
-      many: true, 
-      label: '工程', 
-      ref: 'Author' 
+      many: true,
+      label: '工程',
+      ref: 'Author',
     }),
     dataAnalysts: relationship({
-      many: true, 
-      label: '資料分析', 
-      ref: 'Author' 
+      many: true,
+      label: '資料分析',
+      ref: 'Author',
     }),
     otherByline: text({
-      validation: { isRequired: false}, 
-      label: '作者（其他）', 
-	  db: {
-		isNullable: true,
-	  }
+      validation: { isRequired: false },
+      label: '作者（其他）',
+      db: {
+        isNullable: true,
+      },
     }),
     heroVideo: relationship({
       label: 'Leading Video',
       ref: 'Video',
     }),
     heroImage: relationship({
-       label: '首圖',  
-       ref: 'Photo',
+      label: '首圖',
+      ref: 'Photo',
     }),
     heroCaption: text({
-      label: '首圖圖說', 
-      validation: { isRequired: false},
-	  db: {
-		isNullable: true,
-	  }
+      label: '首圖圖說',
+      validation: { isRequired: false },
+      db: {
+        isNullable: true,
+      },
     }),
     heroImageSize: select({
-      label: '首圖尺寸', 
-      options: [ 
-        { label: 'extend', value: 'extend' }, 
-        { label: 'normal', value: 'normal' }, 
-        { label: 'small', value: 'small' }
-      ], 
-      defaultValue: 'normal' 
+      label: '首圖尺寸',
+      options: [
+        { label: 'extend', value: 'extend' },
+        { label: 'normal', value: 'normal' },
+        { label: 'small', value: 'small' },
+      ],
+      defaultValue: 'normal',
     }),
     style: select({
-      isIndexed: true, 
-      defaultValue: 'news', 
-      options: [ 
-        { label: 'review', value: 'review' }, 
-        { label: 'news', value: 'news' }, 
-        { label: 'report', value: 'report' }, 
-        { label: 'memo', value: 'memo' }, 
-        { label: 'dummy', value: 'dummy' }, 
-        { label: 'card', value: 'card' }, 
+      isIndexed: true,
+      defaultValue: 'news',
+      options: [
+        { label: 'review', value: 'review' },
+        { label: 'news', value: 'news' },
+        { label: 'report', value: 'report' },
+        { label: 'memo', value: 'memo' },
+        { label: 'dummy', value: 'dummy' },
+        { label: 'card', value: 'card' },
         { label: 'qa', value: 'qa' },
         { label: 'project3', value: 'project3' },
         { label: 'embedded', value: 'embedded' },
         { label: 'scrollablevideo', value: 'scrollablevideo' },
         { label: 'frame', value: 'frame' },
         { label: 'blank', value: 'blank' },
-      ], 
-      label: '文章樣式',  
+      ],
+      label: '文章樣式',
     }),
     summary: customFields.richTextEditor({
-       label: '重點摘要',  
+      label: '重點摘要',
+      disabledButtons: [],
     }),
     brief: customFields.richTextEditor({
-       label: '前言',  
+      label: '前言',
+      disabledButtons: [],
     }),
     content: customFields.richTextEditor({
-       label: '內文', 
+      label: '內文',
+      disabledButtons: [],
     }),
     actionList: customFields.richTextEditor({
-       label: '延伸議題', 
+      label: '延伸議題',
+      disabledButtons: [],
     }),
     citation: customFields.richTextEditor({
-       label: '引用數據', 
+      label: '引用數據',
+      disabledButtons: [],
     }),
-	readringTime: integer({
-	  label: '閱讀時間',
-	}),
+    readringTime: integer({
+      label: '閱讀時間',
+    }),
     projects: relationship({
-      label: '專題',  
+      label: '專題',
       ref: 'Project.posts',
     }),
     tags: relationship({
-      ref: 'Tag.posts', 
-      many: true, 
-      label: '標籤' 
+      ref: 'Tag.posts',
+      many: true,
+      label: '標籤',
     }),
-	wordCount: integer({
-	  label: '字數',
-	}),
-	readingTime: integer({
-	  label: '閱讀時間',
-	}),
+    wordCount: integer({
+      label: '字數',
+    }),
+    readingTime: integer({
+      label: '閱讀時間',
+    }),
     collabration: relationship({
-      ref: 'Collaboration.posts', 
-      many: true, 
-      label: '作者' 
+      ref: 'Collaboration.posts',
+      many: true,
+      label: '作者',
     }),
     relatedPosts: relationship({
-      ref: 'Post', 
-      many: true, 
-      label: '相關文章',  
+      ref: 'Post',
+      many: true,
+      label: '相關文章',
     }),
     data: relationship({
       ref: 'DataSet.relatedPosts',
@@ -183,26 +191,26 @@ const listConfigurations = list ({
       label: '相關資料',
     }),
     ogTitle: text({
-      validation: { isRequired: false}, 
-      label: 'FB分享標題', 
-	  db: {
-		isNullable: true,
-	  }
+      validation: { isRequired: false },
+      label: 'FB分享標題',
+      db: {
+        isNullable: true,
+      },
     }),
     ogDescription: text({
-      label: 'FB分享說明', 
-      validation: { isRequired: false}, 
-	  db: {
-		isNullable: true,
-	  }
+      label: 'FB分享說明',
+      validation: { isRequired: false },
+      db: {
+        isNullable: true,
+      },
     }),
     ogImage: relationship({
-      label: 'FB分享縮圖',  
+      label: 'FB分享縮圖',
       ref: 'Photo',
     }),
     isFeatured: checkbox({
-      label: '置頂', 
-      isIndexed: true 
+      label: '置頂',
+      isIndexed: true,
     }),
     note: relationship({
       label: '專題筆記',
@@ -210,31 +218,15 @@ const listConfigurations = list ({
       many: true,
       ui: {
         displayMode: 'cards',
-		linkToItem: true,
-        cardFields: [
-          'title',
-          'writers',
-          'publishTime',
-          'content',
-        ],
+        linkToItem: true,
+        cardFields: ['title', 'writers', 'publishTime', 'content'],
         inlineCreate: {
-          fields: [
-            'title',
-            'writers',
-            'publishTime',
-            'content',
-          ],
+          fields: ['title', 'writers', 'publishTime', 'content'],
         },
         inlineCreate: {
-          fields: [
-            'title',
-            'writers',
-            'publishTime',
-            'content',
-          ],
+          fields: ['title', 'writers', 'publishTime', 'content'],
         },
       },
-
     }),
     project: relationship({
       label: 'checklist',
@@ -242,7 +234,7 @@ const listConfigurations = list ({
       many: false,
       ui: {
         displayMode: 'cards',
-		linkToItem: true,
+        linkToItem: true,
         cardFields: [
           'asanaCheck',
           'uiCheck',
@@ -260,44 +252,43 @@ const listConfigurations = list ({
         ],
         inlineCreate: {
           fields: [
-			  'asanaCheck',
-			  'uiCheck',
-			  'performanceCheck',
-			  'ga',
-			  'gtm',
-			  'og',
-			  'module',
-			  'document',
-			  'asana',
-			  'tracking',
-			  'sourceCode',
-			  'gaLink',
-			  'retro',
+            'asanaCheck',
+            'uiCheck',
+            'performanceCheck',
+            'ga',
+            'gtm',
+            'og',
+            'module',
+            'document',
+            'asana',
+            'tracking',
+            'sourceCode',
+            'gaLink',
+            'retro',
           ],
         },
         inlineCreate: {
           fields: [
-			  'asanaCheck',
-			  'uiCheck',
-			  'performanceCheck',
-			  'ga',
-			  'gtm',
-			  'og',
-			  'module',
-			  'document',
-			  'asana',
-			  'tracking',
-			  'sourceCode',
-			  'gaLink',
-			  'retro',
+            'asanaCheck',
+            'uiCheck',
+            'performanceCheck',
+            'ga',
+            'gtm',
+            'og',
+            'module',
+            'document',
+            'asana',
+            'tracking',
+            'sourceCode',
+            'gaLink',
+            'retro',
           ],
         },
       },
-
     }),
     css: text({
-      ui: { displayMode: 'textarea' }, 
-      label: 'CSS' 
+      ui: { displayMode: 'textarea' },
+      label: 'CSS',
     }),
     summaryApiData: json({
       label: '資料庫使用',
@@ -344,16 +335,16 @@ const listConfigurations = list ({
     },
   },
   access: {
-	operation: {
-	  query: allowRoles(admin, moderator, editor),
-	  update: allowRoles(admin, moderator),
-	  create: allowRoles(admin, moderator),
-	  delete: allowRoles(admin),
-	},
+    operation: {
+      query: allowRoles(admin, moderator, editor),
+      update: allowRoles(admin, moderator),
+      create: allowRoles(admin, moderator),
+      delete: allowRoles(admin),
+    },
   },
   hooks: {
-	resolveInput: async ({ resolvedData, context }) => {
-      const { summary, brief, content, actionList, citation } = resolvedData                                                                                                                             
+    resolveInput: async ({ resolvedData }) => {
+      const { summary, brief, content, actionList, citation } = resolvedData
       if (content) {
         resolvedData.apiData = customFields.draftConverter
           .convertToApiData(content)
@@ -380,7 +371,7 @@ const listConfigurations = list ({
           .toJS()
       }
       return resolvedData
-	},
-  }
+    },
+  },
 })
 export default utils.addTrackingFields(listConfigurations)
