@@ -619,20 +619,6 @@ enum EventTypeType {
 
 enum EventRegionType {
   global
-  NAME
-  UK
-  EURO
-  NZAU
-  AFR
-  ME
-  LAME
-  JP
-  KR
-  HKMO
-  CH
-  SEA
-  SA
-  others
   TW
   KLU
   TPH
@@ -656,6 +642,20 @@ enum EventRegionType {
   PEH
   KMN
   LNN
+  NAME
+  UK
+  EURO
+  NZAU
+  AFR
+  ME
+  LAME
+  JP
+  KR
+  HKMO
+  CH
+  SEA
+  SA
+  others
 }
 
 enum JobJobStatusType {
@@ -678,20 +678,6 @@ enum JobTypeType {
 
 enum JobRegionType {
   global
-  NAME
-  UK
-  EURO
-  NZAU
-  AFR
-  ME
-  LAME
-  JP
-  KR
-  HKMO
-  CH
-  SEA
-  SA
-  others
   TW
   KLU
   TPH
@@ -715,6 +701,20 @@ enum JobRegionType {
   PEH
   KMN
   LNN
+  NAME
+  UK
+  EURO
+  NZAU
+  AFR
+  ME
+  LAME
+  JP
+  KR
+  HKMO
+  CH
+  SEA
+  SA
+  others
 }
 
 enum PostStatusType {
@@ -731,20 +731,6 @@ enum ResourceStatusType {
 
 enum ResourceRegionType {
   global
-  NAME
-  UK
-  EURO
-  NZAU
-  AFR
-  ME
-  LAME
-  JP
-  KR
-  HKMO
-  CH
-  SEA
-  SA
-  others
   TW
   KLU
   TPH
@@ -768,6 +754,20 @@ enum ResourceRegionType {
   PEH
   KMN
   LNN
+  NAME
+  UK
+  EURO
+  NZAU
+  AFR
+  ME
+  LAME
+  JP
+  KR
+  HKMO
+  CH
+  SEA
+  SA
+  others
 }
 
 enum SectionStatusType {
