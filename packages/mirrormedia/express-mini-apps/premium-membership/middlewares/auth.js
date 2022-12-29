@@ -122,8 +122,12 @@ export function signAccessToken({ jwtSecret }) {
   return (req, res, next) => {
     const nowTs = Math.round(new Date().getTime() / 1000) // timestamp
     const expiresIn = nowTs + 3600 // one hour later
-    const { id: memberId, firebaseId, type: memberType } =
-      res.locals.memberInfo || {}
+    const {
+      id: memberId,
+      firebaseId,
+      type: memberType,
+      subscription: subscriptions,
+    } = res.locals.memberInfo || {}
     let roles = ['']
     let scope = ''
 
@@ -133,12 +137,18 @@ export function signAccessToken({ jwtSecret }) {
       case 'subscribe_yearly':
       case 'subscribe_monthly': {
         roles = ['premium-member']
-        scope = `read:posts read:member-posts read:member-info:${firebaseId} write:member-info:${firebaseId}`
+        scope = `read:posts read:member-posts:all read:member-info:${firebaseId} write:member-info:${firebaseId}`
         break
       }
       case 'subscribe_one_time': {
         roles = ['one-time-member']
-        scope = `read:posts read:member-posts:optional read:member-info:${firebaseId} write:member-info:${firebaseId}`
+        scope = `read:posts read:member-info:${firebaseId} write:member-info:${firebaseId}`
+        if (Array.isArray(subscriptions)) {
+          const postIdArr = subscriptions
+            .filter((s) => s?.postId)
+            .map((s) => s.postId)
+          scope += `read:member-posts:${postIdArr.join(',')}`
+        }
         break
       }
       case 'none': {

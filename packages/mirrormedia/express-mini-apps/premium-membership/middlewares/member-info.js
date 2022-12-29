@@ -24,6 +24,9 @@ export function queryMemberInfoFromIsrafel(opts) {
       firebaseId
       type
       email
+      subscription(where: { isActive: true }){
+        postId
+      }
     }
   }
 `
