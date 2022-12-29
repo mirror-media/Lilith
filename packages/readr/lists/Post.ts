@@ -62,30 +62,48 @@ const listConfigurations = list({
       many: true,
       label: '作者',
     }),
+    manualOrderOfWriters: json({
+      label: '作者手動排序結果',
+    }),
     photographers: relationship({
       many: true,
       label: '攝影',
       ref: 'Author',
+    }),
+    manualOrderOfPhotographers: json({
+      label: '攝影手動排序結果',
     }),
     cameraOperators: relationship({
       label: '影音',
       many: true,
       ref: 'Author',
     }),
+    manualOrderOfCameraOperators: json({
+      label: '影音手動排序結果',
+    }),
     designers: relationship({
       label: '設計',
       many: true,
       ref: 'Author',
+    }),
+    manualOrderOfDesigners: json({
+      label: '設計手動排序結果',
     }),
     engineers: relationship({
       many: true,
       label: '工程',
       ref: 'Author',
     }),
+    manualOrderOfEngineers: json({
+      label: '工程手動排序結果',
+    }),
     dataAnalysts: relationship({
       many: true,
       label: '資料分析',
       ref: 'Author',
+    }),
+    manualOrderOfDataAnalysts: json({
+      label: '資料分析手動排序結果',
     }),
     otherByline: text({
       validation: { isRequired: false },
@@ -184,6 +202,9 @@ const listConfigurations = list({
       ref: 'Post',
       many: true,
       label: '相關文章',
+    }),
+    manualOrderOfRelatedPosts: json({
+      label: '相關文章手動排序結果',
     }),
     data: relationship({
       ref: 'DataSet.relatedPosts',
@@ -374,4 +395,50 @@ const listConfigurations = list({
     },
   },
 })
-export default utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfWriters',
+      targetFieldName: 'writers',
+      targetListName: 'Author',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfPhotographers',
+      targetFieldName: 'photographers',
+      targetListName: 'Author',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfCameraOperators',
+      targetFieldName: 'cameraOperators',
+      targetListName: 'Author',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfDesigners',
+      targetFieldName: 'designers',
+      targetListName: 'Author',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfEngineers',
+      targetFieldName: 'engineers',
+      targetListName: 'Author',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfDataAnalysts',
+      targetFieldName: 'dataAnalysts',
+      targetListName: 'Author',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfRelatedPosts',
+      targetFieldName: 'relatedPosts',
+      targetListName: 'Post',
+      targetListLabelField: 'name',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)
