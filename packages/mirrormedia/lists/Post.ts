@@ -38,7 +38,7 @@ function filterPosts(roles: string[]) {
     switch (envVar.accessControlStrategy) {
       case 'gql': {
         // Only expose `published` posts
-        return { status: { equals: PostStatus.Published } }
+        return { state: { equals: PostStatus.Published } }
       }
       case 'preview': {
         // Expose all posts, including `published`, `draft` and `archived` posts
@@ -169,6 +169,39 @@ const listConfigurations = list({
     content: customFields.richTextEditor({
       label: '內文',
       disabledButtons: [],
+      access: {
+        read: ({ context, item }) => {
+          if (envVar.accessControlStrategy === 'gql') {
+            const payload = context.req?.decodedAccessToken
+            const scope = payload?.scope || ''
+
+            // get acl from scope
+            const acl = scope.match(/read:member-posts:([^\s]*)/i)?.[1]
+
+            if (typeof acl !== 'string') {
+              return false
+            } else if (acl === 'all') {
+              // scope contains 'read:memeber-posts:all'
+              // the request has the permission to read this field
+              return true
+            } else {
+              // scope contains 'read:member-posts:${postId1},${postId2},...,${postIdN}'
+              const postIdArr = acl.split(',')
+
+              // check the request has the permission to read this field
+              if (postIdArr.indexOf(item.id.toString()) > -1) {
+                return true
+              }
+            }
+
+            // the request does not have permission to read this field
+            return false
+          }
+
+          // the request has permission to read this field
+          return true
+        },
+      },
     }),
     topics: relationship({
       label: '專題',

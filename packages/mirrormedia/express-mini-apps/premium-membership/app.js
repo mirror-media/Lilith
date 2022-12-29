@@ -128,6 +128,28 @@ export function createApp({
       jwtSecret,
     }),
     /**
+     *  This is a workaround middleware.
+     *  In our current `@keystone-6/core` version (@1.1.1),
+     *  Field level access control can not get `res` from `context` object.
+     *  `contenxt`, which is a `KeystoneContext` type, only has `req` property.
+     *  See @1.1.1 docs here:
+     *  https://github.com/keystonejs/keystone/blob/2022-05-12/docs/pages/docs/apis/context.mdx#context-api
+     *
+     *  However, field level access control needs `res.locals.accessTokenPayload`.
+     *  To workaround this situation, we set `accessTokenPayload` into `req` object.
+     *
+     *  In field level access control function, it could get `accessTokenPayload` from
+     *  `context.req.accessTokenPayload` instead.
+     *
+     *  @param {express.Request} req
+     *  @param {express.Response} res
+     *  @param {express.NextFunction} next
+     */
+    (req, res, next) => {
+      req.accessTokenPayload = res.locals?.accessTokenPayload
+      next()
+    },
+    /**
      *  @param {Error} err
      *  @param {express.Request} req
      *  @param {express.Response} res
