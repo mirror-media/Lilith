@@ -371,6 +371,7 @@ model Tag {
   jobs            Job[]            @relation("Job_tags")
   events          Event[]          @relation("Event_tags")
   resources       Resource[]       @relation("Resource_tags")
+  isPopular       Boolean          @default(false)
   isMemberOnly    Boolean          @default(false)
   createdAt       DateTime?
   updatedAt       DateTime?

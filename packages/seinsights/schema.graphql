@@ -2207,6 +2207,7 @@ type Tag {
     skip: Int! = 0
   ): [Resource!]
   resourcesCount(where: ResourceWhereInput! = {}): Int
+  isPopular: Boolean
   isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -2229,6 +2230,7 @@ input TagWhereInput {
   jobs: JobManyRelationFilter
   events: EventManyRelationFilter
   resources: ResourceManyRelationFilter
+  isPopular: BooleanFilter
   isMemberOnly: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2239,6 +2241,7 @@ input TagWhereInput {
 input TagOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  isPopular: OrderDirection
   isMemberOnly: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -2251,6 +2254,7 @@ input TagUpdateInput {
   jobs: JobRelateToManyForUpdateInput
   events: EventRelateToManyForUpdateInput
   resources: ResourceRelateToManyForUpdateInput
+  isPopular: Boolean
   isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -2270,6 +2274,7 @@ input TagCreateInput {
   jobs: JobRelateToManyForCreateInput
   events: EventRelateToManyForCreateInput
   resources: ResourceRelateToManyForCreateInput
+  isPopular: Boolean
   isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime

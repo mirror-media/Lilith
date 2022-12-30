@@ -67,6 +67,10 @@ const listConfigurations = list({
       },
       many: true,
     }),
+    isPopular: checkbox({
+      label: '熱門標籤',
+      defaultValue: false,
+    }),
     isMemberOnly: checkbox({
       label: '會員專屬',
       defaultValue: false,
