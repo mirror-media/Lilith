@@ -1353,6 +1353,7 @@ type Post {
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   isPremium: Boolean
+  previewButton: String
   oldCategory: String
   apiDataBrief: JSON
   apiData: JSON
