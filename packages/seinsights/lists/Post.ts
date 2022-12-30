@@ -188,7 +188,7 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve(item: Record<string, unknown>): string {
-          return `/article/${item?.id}`
+          return `/preview/article/${item?.id}`
         },
       }),
       ui: {

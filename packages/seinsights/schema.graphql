@@ -1930,6 +1930,7 @@ type Specialfeature {
     skip: Int! = 0
   ): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  previewButton: String
   apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
