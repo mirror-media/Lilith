@@ -109,7 +109,7 @@ export default withAuth(
           (req, res, next) => {
             const referer = req.header('referer') || ''
             // The requests are from preview article page
-            if (referer.match(/\/preview\/\/(article|specialfeature)\/[^\/]*$/)) { // eslint-disable-line
+            if (referer.match(/\/preview\/(article|specialfeature)\/[^\/]*$/)) { // eslint-disable-line
               // go to next middleware to proxy requests to preview server
               return next()
             }
