@@ -74,6 +74,10 @@ export default withAuth(
         const previewProxyMiddleware = createProxyMiddleware({
           target: envVar.previewServerOrigin,
           changeOrigin: true,
+          pathRewrite: {
+            '/preview/article': '/article',
+            '/preview/specialfeature': '/specialfeature',
+          },
           onProxyRes: (proxyRes) => {
             // The response from preview nuxt server might be with Cache-Control header.
             // However, we don't want to get cached responses for `draft` posts.
@@ -82,18 +86,38 @@ export default withAuth(
           },
         })
 
-        // Proxy requests with `/story/id` url path to preview nuxt server
-        app.get('/story/:id', authenticationMw, previewProxyMiddleware)
+        // Proxy requests with `/preview/article/id` url path to preview nuxt server
+        app.get(
+          '/preview/article/:id',
+          authenticationMw,
+          previewProxyMiddleware
+        )
 
-        // Proxy requests with `/event/:slug` url path to preview nuxt server
-        app.get('/event/:slug', authenticationMw, previewProxyMiddleware)
+        // Proxy requests with `/preview/specialfeature/id` url path to preview nuxt server
+        app.get(
+          '/preview/specialfeature/:id',
+          authenticationMw,
+          previewProxyMiddleware
+        )
 
-        // Proxy requests with `/news/:id` url path to preview nuxt server
-        app.get('/news/:id', authenticationMw, previewProxyMiddleware)
+        // Proxy requests with `/_next/*` url path to preview nuxt server
+        // if the request's Referer header matches `/article/:id` route.
+        // That means the requests are from preview article page,
+        // and we have to proxy them to preview server.
+        app.get(
+          '/_next/*',
+          (req, res, next) => {
+            const referer = req.header('referer') || ''
+            // The requests are from preview article page
+            if (referer.match(/\/preview\/\/(article|specialfeature)\/[^\/]*$/)) { // eslint-disable-line
+              // go to next middleware to proxy requests to preview server
+              return next()
+            }
 
-        // Proxy requests with `/_nuxt/*` url path to preview nuxt server
-        app.use(
-          '/_nuxt/*',
+            // The requests are from CMS pages, so skip going to next middleware.
+            // These requests should go to CMS's own '/_next/' routes instead.
+            next('route')
+          },
           createProxyMiddleware({
             target: envVar.previewServerOrigin,
             changeOrigin: true,
