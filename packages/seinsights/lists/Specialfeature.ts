@@ -1,9 +1,6 @@
 // @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import {
-  list,
-  // graphql
-} from '@keystone-6/core'
+import { list, graphql } from '@keystone-6/core'
 import {
   text,
   integer,
@@ -11,7 +8,7 @@ import {
   select,
   json,
   timestamp,
-  // virtual
+  virtual,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -141,17 +138,17 @@ const listConfigurations = list({
       },
       many: true,
     }),
-    // previewButton: virtual({
-    //   field: graphql.field({
-    //     type: graphql.String,
-    //     resolve(item: Record<string, unknown>): string {
-    //       return `/story/${item?.id}`
-    //     },
-    //   }),
-    //   ui: {
-    //     views: require.resolve('./preview-button'),
-    //   },
-    // }),
+    previewButton: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>): string {
+          return `/preview/specialfeature/${item?.id}`
+        },
+      }),
+      ui: {
+        views: require.resolve('./preview-button'),
+      },
+    }),
     apiData: json({
       label: '資料庫使用',
       ui: {
