@@ -63,6 +63,7 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
+      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     specialfeatures: relationship({
       label: 'SpecialFeature（如僅更改順序，須在「敘述」後增改文字後方能儲存）',

@@ -83,6 +83,7 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
+      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     columns: relationship({
       label: '作者',
