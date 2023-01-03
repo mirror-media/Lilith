@@ -166,7 +166,6 @@ model Job {
 model Photo {
   id                                Int                  @id @default(autoincrement())
   name                              String               @default("")
-  copyright                         String?
   imageFile_filesize                Int?
   imageFile_extension               String?
   imageFile_width                   Int?
