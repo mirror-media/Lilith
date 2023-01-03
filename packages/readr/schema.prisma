@@ -264,66 +264,73 @@ model User {
 }
 
 model Post {
-  id                        Int               @id @default(autoincrement())
-  slug                      String?           @unique
-  sortOrder                 Int?
-  name                      String            @default("")
-  subtitle                  String?
-  state                     String?           @default("draft")
-  publishTime               DateTime?
-  categories                Category[]        @relation("Post_categories")
-  writers                   Author[]          @relation("Author_posts")
-  photographers             Author[]          @relation("Post_photographers")
-  cameraOperators           Author[]          @relation("Post_cameraOperators")
-  designers                 Author[]          @relation("Post_designers")
-  engineers                 Author[]          @relation("Post_engineers")
-  dataAnalysts              Author[]          @relation("Post_dataAnalysts")
-  otherByline               String?
-  heroVideo                 Video?            @relation("Post_heroVideo", fields: [heroVideoId], references: [id])
-  heroVideoId               Int?              @map("heroVideo")
-  heroImage                 Photo?            @relation("Post_heroImage", fields: [heroImageId], references: [id])
-  heroImageId               Int?              @map("heroImage")
-  heroCaption               String?
-  heroImageSize             String?           @default("normal")
-  style                     String?           @default("news")
-  summary                   Json?
-  brief                     Json?
-  content                   Json?
-  actionList                Json?
-  citation                  Json?
-  readringTime              Int?
-  projects                  Project?          @relation("Post_projects", fields: [projectsId], references: [id])
-  projectsId                Int?              @map("projects")
-  tags                      Tag[]             @relation("Post_tags")
-  wordCount                 Int?
-  readingTime               Int?
-  collabration              Collaboration[]   @relation("Collaboration_posts")
-  relatedPosts              Post[]            @relation("Post_relatedPosts")
-  data                      DataSet[]         @relation("DataSet_relatedPosts")
-  ogTitle                   String?
-  ogDescription             String?
-  ogImage                   Photo?            @relation("Post_ogImage", fields: [ogImageId], references: [id])
-  ogImageId                 Int?              @map("ogImage")
-  isFeatured                Boolean           @default(false)
-  note                      ProjectNote[]     @relation("Post_note")
-  project                   ProjectChecklist? @relation("Post_project", fields: [projectId], references: [id])
-  projectId                 Int?              @unique @map("project")
-  css                       String            @default("")
-  summaryApiData            Json?
-  briefApiData              Json?
-  apiData                   Json?
-  actionlistApiData         Json?
-  citationApiData           Json?
-  createdAt                 DateTime?
-  updatedAt                 DateTime?
-  createdBy                 User?             @relation("Post_createdBy", fields: [createdById], references: [id])
-  createdById               Int?              @map("createdBy")
-  updatedBy                 User?             @relation("Post_updatedBy", fields: [updatedById], references: [id])
-  updatedById               Int?              @map("updatedBy")
-  from_EditorChoice_choices EditorChoice[]    @relation("EditorChoice_choices")
-  from_Category_relatedPost Category[]        @relation("Category_relatedPost")
-  from_Post_relatedPosts    Post[]            @relation("Post_relatedPosts")
-  from_Feature_featurePost  Feature[]         @relation("Feature_featurePost")
+  id                           Int               @id @default(autoincrement())
+  slug                         String?           @unique
+  sortOrder                    Int?
+  name                         String            @default("")
+  subtitle                     String?
+  state                        String?           @default("draft")
+  publishTime                  DateTime?
+  categories                   Category[]        @relation("Post_categories")
+  writers                      Author[]          @relation("Author_posts")
+  manualOrderOfWriters         Json?
+  photographers                Author[]          @relation("Post_photographers")
+  manualOrderOfPhotographers   Json?
+  cameraOperators              Author[]          @relation("Post_cameraOperators")
+  manualOrderOfCameraOperators Json?
+  designers                    Author[]          @relation("Post_designers")
+  manualOrderOfDesigners       Json?
+  engineers                    Author[]          @relation("Post_engineers")
+  manualOrderOfEngineers       Json?
+  dataAnalysts                 Author[]          @relation("Post_dataAnalysts")
+  manualOrderOfDataAnalysts    Json?
+  otherByline                  String?
+  heroVideo                    Video?            @relation("Post_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId                  Int?              @map("heroVideo")
+  heroImage                    Photo?            @relation("Post_heroImage", fields: [heroImageId], references: [id])
+  heroImageId                  Int?              @map("heroImage")
+  heroCaption                  String?
+  heroImageSize                String?           @default("normal")
+  style                        String?           @default("news")
+  summary                      Json?
+  brief                        Json?
+  content                      Json?
+  actionList                   Json?
+  citation                     Json?
+  readringTime                 Int?
+  projects                     Project?          @relation("Post_projects", fields: [projectsId], references: [id])
+  projectsId                   Int?              @map("projects")
+  tags                         Tag[]             @relation("Post_tags")
+  wordCount                    Int?
+  readingTime                  Int?
+  collabration                 Collaboration[]   @relation("Collaboration_posts")
+  relatedPosts                 Post[]            @relation("Post_relatedPosts")
+  manualOrderOfRelatedPosts    Json?
+  data                         DataSet[]         @relation("DataSet_relatedPosts")
+  ogTitle                      String?
+  ogDescription                String?
+  ogImage                      Photo?            @relation("Post_ogImage", fields: [ogImageId], references: [id])
+  ogImageId                    Int?              @map("ogImage")
+  isFeatured                   Boolean           @default(false)
+  note                         ProjectNote[]     @relation("Post_note")
+  project                      ProjectChecklist? @relation("Post_project", fields: [projectId], references: [id])
+  projectId                    Int?              @unique @map("project")
+  css                          String            @default("")
+  summaryApiData               Json?
+  briefApiData                 Json?
+  apiData                      Json?
+  actionlistApiData            Json?
+  citationApiData              Json?
+  createdAt                    DateTime?
+  updatedAt                    DateTime?
+  createdBy                    User?             @relation("Post_createdBy", fields: [createdById], references: [id])
+  createdById                  Int?              @map("createdBy")
+  updatedBy                    User?             @relation("Post_updatedBy", fields: [updatedById], references: [id])
+  updatedById                  Int?              @map("updatedBy")
+  from_EditorChoice_choices    EditorChoice[]    @relation("EditorChoice_choices")
+  from_Category_relatedPost    Category[]        @relation("Category_relatedPost")
+  from_Post_relatedPosts       Post[]            @relation("Post_relatedPosts")
+  from_Feature_featurePost     Feature[]         @relation("Feature_featurePost")
 
   @@index([state])
   @@index([publishTime])
