@@ -1126,7 +1126,6 @@ input JobCreateInput {
 type Photo {
   id: ID!
   name: String
-  copyright: String
   imageFile: ImageFieldOutput
   resized: ResizedImages
   file: CustomFileFieldOutput
@@ -1214,7 +1213,6 @@ input PhotoWhereInput {
   NOT: [PhotoWhereInput!]
   id: IDFilter
   name: StringFilter
-  copyright: StringNullableFilter
   urlOriginal: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1222,39 +1220,9 @@ input PhotoWhereInput {
   updatedBy: UserWhereInput
 }
 
-input StringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  mode: QueryMode
-  not: NestedStringNullableFilter
-}
-
-input NestedStringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
-}
-
 input PhotoOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  copyright: OrderDirection
   urlOriginal: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1262,7 +1230,6 @@ input PhotoOrderByInput {
 
 input PhotoUpdateInput {
   name: String
-  copyright: String
   imageFile: ImageFieldInput
   file: CustomFileFieldInput
   urlOriginal: String
@@ -1294,7 +1261,6 @@ input PhotoUpdateArgs {
 
 input PhotoCreateInput {
   name: String
-  copyright: String
   imageFile: ImageFieldInput
   file: CustomFileFieldInput
   urlOriginal: String
@@ -1398,6 +1364,35 @@ input PostWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
 }
 
 input PostStatusTypeNullableFilter {

@@ -9,6 +9,7 @@ const listConfigurations = list({
   fields: {
     aboutUs: customFields.richTextEditor({
       label: 'about us',
+      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     
     apiData: json({

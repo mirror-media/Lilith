@@ -47,6 +47,7 @@ const listConfigurations = list({
     }),
     intro: customFields.richTextEditor({
       label: '敘述',
+      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     posts: relationship({
       label: '作者文章post',
