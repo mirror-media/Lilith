@@ -126,7 +126,8 @@ export function signAccessToken({ jwtSecret }) {
       res.locals.memberInfo || {}
     const firebaseId =
       res.locals.memberInfo?.firebaseId || res.locals.auth?.decodedIdToken?.uid
-    let roles = ['']
+    // @TODO: add roles claim in JWT if needed
+    // let roles = ['']
     let scope = ''
 
     switch (memberType) {
@@ -134,12 +135,12 @@ export function signAccessToken({ jwtSecret }) {
       case 'subscribe_group':
       case 'subscribe_yearly':
       case 'subscribe_monthly': {
-        roles = ['premium-member']
+        // roles = ['premium-member']
         scope = `read:posts read:member-posts:all read:member-info:${firebaseId} write:member-info:${firebaseId}`
         break
       }
       case 'subscribe_one_time': {
-        roles = ['one-time-member']
+        // roles = ['one-time-member']
         scope = `read:posts read:member-info:${firebaseId} write:member-info:${firebaseId}`
         if (Array.isArray(subscriptions)) {
           const postIdArr = subscriptions
@@ -151,7 +152,7 @@ export function signAccessToken({ jwtSecret }) {
       }
       case 'none':
       default: {
-        roles = ['member']
+        // roles = ['member']
         scope =
           'read:posts read:member-info:${firebaseId} write:member-info:${firebaseId}'
         break
@@ -172,7 +173,7 @@ export function signAccessToken({ jwtSecret }) {
       ],
       exp: expiresIn, // one hour later
       iat: nowTs,
-      roles,
+      // roles,
       scope,
     }
 
