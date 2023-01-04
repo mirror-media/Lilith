@@ -1,4 +1,5 @@
 import express from 'express' // eslint-disable-line
+// @ts-ignore `@twreporter/errors` does not provide typescript definition file.
 import errors from '@twreporter/errors'
 import jwt from 'jsonwebtoken'
 import { AppOptions, initializeApp, App } from 'firebase-admin/app' // eslint-disable-line
@@ -58,7 +59,7 @@ export function verifyIdTokenByFirebaseAdmin(opts = {}) {
 
 /**
  *  This function creates an Express middleware.
- *  The created middleware could verfiy the request authorization.
+ *  The created middleware could verify the request authorization.
  *
  *  The middleware also set decoded token object into `res.locals.auth.decodedAccessToken`.
  *
@@ -66,7 +67,7 @@ export function verifyIdTokenByFirebaseAdmin(opts = {}) {
  *  @param {string} [opts.jwtSecret='']
  *  @return {express.RequestHandler} express middleware
  */
-export function verfiyAccessToken(opts = {}) {
+export function verifyAccessToken(opts = {}) {
   const jwtSecret = opts.jwtSecret || ''
 
   if (!jwtSecret) {
@@ -80,7 +81,7 @@ export function verfiyAccessToken(opts = {}) {
     // TODO: throw Error to stop server
   }
 
-  return async (req, res, next) => {
+  return (req, res, next) => {
     try {
       // Get the JWT in the "Authorization" header.
       const bearer = req.header('Authorization') || ''
@@ -100,7 +101,7 @@ export function verfiyAccessToken(opts = {}) {
       const annotatingError = errors.helpers.wrap(
         err,
         'AuthError',
-        'Authentication fails in `verfiyAccessToken` middleware: ' + err.message
+        'Authentication fails in `verifyAccessToken` middleware: ' + err.message
       )
       next(annotatingError)
       return

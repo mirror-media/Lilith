@@ -1,15 +1,15 @@
 import { createLoggerMw } from './logger'
-import { queryMemberInfoFromIsrafel } from './member-info'
+import { queryMemberInfo } from './member-info'
 import {
-  verfiyAccessToken,
+  verifyAccessToken,
   verifyIdTokenByFirebaseAdmin,
   signAccessToken,
 } from './auth'
 
 export default {
   createLoggerMw,
-  queryMemberInfoFromIsrafel,
-  verfiyAccessToken,
+  queryMemberInfo,
+  verifyAccessToken,
   verifyIdTokenByFirebaseAdmin,
   signAccessToken,
 }

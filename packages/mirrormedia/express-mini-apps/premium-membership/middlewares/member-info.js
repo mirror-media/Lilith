@@ -13,7 +13,7 @@ import express from 'express' // eslint-disable-line
  *  @param {string} opts.apiUrl
  *  @return {express.RequestHandler} express middleware
  */
-export function queryMemberInfoFromIsrafel(opts) {
+export function queryMemberInfo(opts) {
   return async (req, res, next) => {
     const firebaseId = res.locals.auth?.decodedIdToken?.uid
 

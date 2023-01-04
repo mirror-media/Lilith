@@ -45,7 +45,7 @@ export function createApp({
     '/access-token',
     middlewareCreator.createLoggerMw(gcpProjectId),
     middlewareCreator.verifyIdTokenByFirebaseAdmin({ firebaseProjectId }),
-    middlewareCreator.queryMemberInfoFromIsrafel({ apiUrl: memberApiUrl }),
+    middlewareCreator.queryMemberInfo({ apiUrl: memberApiUrl }),
     middlewareCreator.signAccessToken({ jwtSecret: envVars.jwt.secret }),
     /**
      *  @param {express.Request} req
