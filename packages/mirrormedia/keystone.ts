@@ -75,7 +75,7 @@ export default withAuth(
               gcpProjectId: envVar.gcp.projectId,
               firebaseProjectId: envVar.firebase.projectId,
               memberApiUrl: envVar.memberApiUrl,
-              jwtSecret: envVar.jwt.secert,
+              jwtSecret: envVar.jwt.secret,
             })
           )
         }
