@@ -20,8 +20,11 @@
     "@keystone-6/core": "1.1.1",
     "@keystone-6/fields-document": "1.0.1",
     "@mirrormedia/lilith-core": "1.1.1",
+    "@twreporter/errors": "^1.1.2",
     "express": "^4.17.1",
+    "firebase-admin": "^11.4.1",
     "http-proxy-middleware": "^2.0.3",
+    "jsonwebtoken": "^9.0.0",
     "patch-package": "^6.4.7"
   },
   "resolutions": {
