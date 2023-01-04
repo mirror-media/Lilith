@@ -122,12 +122,10 @@ export function signAccessToken({ jwtSecret }) {
   return (req, res, next) => {
     const nowTs = Math.round(new Date().getTime() / 1000) // timestamp
     const expiresIn = nowTs + 3600 // one hour later
-    const {
-      id: memberId,
-      firebaseId,
-      type: memberType,
-      subscription: subscriptions,
-    } = res.locals.memberInfo || {}
+    const { id: memberId, type: memberType, subscription: subscriptions } =
+      res.locals.memberInfo || {}
+    const firebaseId =
+      res.locals.memberInfo?.firebaseId || res.locals.auth?.decodedIdToken?.uid
     let roles = ['']
     let scope = ''
 
@@ -151,14 +149,11 @@ export function signAccessToken({ jwtSecret }) {
         }
         break
       }
-      case 'none': {
-        roles = ['member']
-        scope = 'read:posts'
-        break
-      }
+      case 'none':
       default: {
-        roles = ['anyomous']
-        scope = 'read:posts'
+        roles = ['member']
+        scope =
+          'read:posts read:member-info:${firebaseId} write:member-info:${firebaseId}'
         break
       }
     }
