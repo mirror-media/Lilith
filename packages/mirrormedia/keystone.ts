@@ -76,6 +76,7 @@ export default withAuth(
               firebaseProjectId: envVar.firebase.projectId,
               memberApiUrl: envVar.memberApiUrl,
               jwtSecret: envVar.jwt.secret,
+              corsAllowOrigin: envVar.cors.allowOrigins,
             })
           )
         }
