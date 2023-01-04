@@ -124,7 +124,7 @@ export function createApp({
       //
       next('route')
     },
-    middlewareCreator.verfiyAccessToken({
+    middlewareCreator.verifyAccessToken({
       jwtSecret,
     }),
     /**
