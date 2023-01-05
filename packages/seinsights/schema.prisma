@@ -11,6 +11,21 @@ generator client {
   output   = "node_modules/.prisma/client"
 }
 
+model About {
+  id          Int       @id @default(autoincrement())
+  aboutUs     Json?
+  apiData     Json?
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("About_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("About_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model Banner {
   id            Int       @id @default(autoincrement())
   name          String    @default("")
@@ -130,6 +145,48 @@ model Event {
   @@index([updatedById])
 }
 
+model EventBanner {
+  id          Int                    @id @default(autoincrement())
+  name        String                 @default("")
+  order       Int?                   @unique
+  heroImage   Photo?                 @relation("EventBanner_heroImage", fields: [heroImageId], references: [id])
+  heroImageId Int?                   @map("heroImage")
+  status      EventBannerStatusType? @default(draft)
+  publishDate DateTime?              @default(now())
+  url         String                 @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?                  @relation("EventBanner_createdBy", fields: [createdById], references: [id])
+  createdById Int?                   @map("createdBy")
+  updatedBy   User?                  @relation("EventBanner_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?                   @map("updatedBy")
+
+  @@index([heroImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model HomepageBanner {
+  id          Int                       @id @default(autoincrement())
+  name        String                    @default("")
+  order       Int?                      @unique
+  heroImage   Photo?                    @relation("HomepageBanner_heroImage", fields: [heroImageId], references: [id])
+  heroImageId Int?                      @map("heroImage")
+  status      HomepageBannerStatusType? @default(draft)
+  publishDate DateTime?                 @default(now())
+  url         String                    @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?                     @relation("HomepageBanner_createdBy", fields: [createdById], references: [id])
+  createdById Int?                      @map("createdBy")
+  updatedBy   User?                     @relation("HomepageBanner_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?                      @map("updatedBy")
+
+  @@index([heroImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model Job {
   id                      Int               @id @default(autoincrement())
   name                    String            @default("")
@@ -163,6 +220,67 @@ model Job {
   @@index([updatedById])
 }
 
+model JobBanner {
+  id          Int                  @id @default(autoincrement())
+  name        String               @default("")
+  order       Int?                 @unique
+  heroImage   Photo?               @relation("JobBanner_heroImage", fields: [heroImageId], references: [id])
+  heroImageId Int?                 @map("heroImage")
+  status      JobBannerStatusType? @default(draft)
+  publishDate DateTime?            @default(now())
+  url         String               @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?                @relation("JobBanner_createdBy", fields: [createdById], references: [id])
+  createdById Int?                 @map("createdBy")
+  updatedBy   User?                @relation("JobBanner_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?                 @map("updatedBy")
+
+  @@index([heroImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Member {
+  id               Int        @id @default(autoincrement())
+  firebaseId       String?    @unique
+  isActive         Boolean    @default(false)
+  hasSetCategories Boolean    @default(false)
+  email            String     @unique @default("")
+  donationType     String     @default("")
+  beginDate        DateTime?  @default(now())
+  endDate          DateTime?
+  categories       Category[] @relation("Member_categories")
+  favoritePosts    Post[]     @relation("Member_favoritePosts")
+  createdAt        DateTime?
+  updatedAt        DateTime?
+  createdBy        User?      @relation("Member_createdBy", fields: [createdById], references: [id])
+  createdById      Int?       @map("createdBy")
+  updatedBy        User?      @relation("Member_updatedBy", fields: [updatedById], references: [id])
+  updatedById      Int?       @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Menubar {
+  id          Int       @id @default(autoincrement())
+  name        String    @default("")
+  order       Int?      @unique
+  isActive    Boolean   @default(false)
+  publishDate DateTime?
+  url         String    @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("Menubar_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("Menubar_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model Photo {
   id                                Int                  @id @default(autoincrement())
   name                              String               @default("")
@@ -186,16 +304,16 @@ model Photo {
   from_Category_heroImage           Category[]           @relation("Category_heroImage")
   from_Column_profile_photo         Column[]             @relation("Column_profile_photo")
   from_Event_heroImage              Event[]              @relation("Event_heroImage")
+  from_EventBanner_heroImage        EventBanner[]        @relation("EventBanner_heroImage")
+  from_HomepageBanner_heroImage     HomepageBanner[]     @relation("HomepageBanner_heroImage")
   from_Job_profile_photo            Job[]                @relation("Job_profile_photo")
+  from_JobBanner_heroImage          JobBanner[]          @relation("JobBanner_heroImage")
   from_Post_heroImage               Post[]               @relation("Post_heroImage")
   from_Resource_profile_photo       Resource[]           @relation("Resource_profile_photo")
+  from_ResourceBanner_heroImage     ResourceBanner[]     @relation("ResourceBanner_heroImage")
   from_Section_heroImage            Section[]            @relation("Section_heroImage")
   from_Specialfeature_heroImage     Specialfeature[]     @relation("Specialfeature_heroImage")
   from_SpecialfeatureList_heroImage SpecialfeatureList[] @relation("SpecialfeatureList_heroImage")
-  from_EventBanner_heroImage        EventBanner[]        @relation("EventBanner_heroImage")
-  from_HomepageBanner_heroImage     HomepageBanner[]     @relation("HomepageBanner_heroImage")
-  from_JobBanner_heroImage          JobBanner[]          @relation("JobBanner_heroImage")
-  from_ResourceBanner_heroImage     ResourceBanner[]     @relation("ResourceBanner_heroImage")
 
   @@index([createdById])
   @@index([updatedById])
@@ -232,9 +350,9 @@ model Post {
   updatedBy                        User?            @relation("Post_updatedBy", fields: [updatedById], references: [id])
   updatedById                      Int?             @map("updatedBy")
   from_EditorChoice_post           EditorChoice[]   @relation("EditorChoice_post")
+  from_Member_favoritePosts        Member[]         @relation("Member_favoritePosts")
   from_Post_relatedPosts           Post[]           @relation("Post_relatedPosts")
   from_Specialfeature_relatedPosts Specialfeature[] @relation("Specialfeature_relatedPosts")
-  from_Member_favoritePosts        Member[]         @relation("Member_favoritePosts")
 
   @@index([heroImageId])
   @@index([createdById])
@@ -269,6 +387,27 @@ model Resource {
   from_Resource_relatedResources Resource[]          @relation("Resource_relatedResources")
 
   @@index([profile_photoId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model ResourceBanner {
+  id          Int                       @id @default(autoincrement())
+  name        String                    @default("")
+  order       Int?                      @unique
+  heroImage   Photo?                    @relation("ResourceBanner_heroImage", fields: [heroImageId], references: [id])
+  heroImageId Int?                      @map("heroImage")
+  status      ResourceBannerStatusType? @default(draft)
+  publishDate DateTime?                 @default(now())
+  url         String                    @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?                     @relation("ResourceBanner_createdBy", fields: [createdById], references: [id])
+  createdById Int?                      @map("createdBy")
+  updatedBy   User?                     @relation("ResourceBanner_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?                      @map("updatedBy")
+
+  @@index([heroImageId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -336,6 +475,25 @@ model Specialfeature {
   @@index([updatedById])
 }
 
+model SpecialfeatureEditorChoice {
+  id               Int                                   @id @default(autoincrement())
+  order            Int?                                  @unique
+  specialfeature   Specialfeature?                       @relation("SpecialfeatureEditorChoice_specialfeature", fields: [specialfeatureId], references: [id])
+  specialfeatureId Int?                                  @map("specialfeature")
+  status           SpecialfeatureEditorChoiceStatusType? @default(draft)
+  publishDate      DateTime?                             @default(now())
+  createdAt        DateTime?
+  updatedAt        DateTime?
+  createdBy        User?                                 @relation("SpecialfeatureEditorChoice_createdBy", fields: [createdById], references: [id])
+  createdById      Int?                                  @map("createdBy")
+  updatedBy        User?                                 @relation("SpecialfeatureEditorChoice_updatedBy", fields: [updatedById], references: [id])
+  updatedById      Int?                                  @map("updatedBy")
+
+  @@index([specialfeatureId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model SpecialfeatureList {
   id                           Int                           @id @default(autoincrement())
   title                        String                        @default("")
@@ -389,6 +547,8 @@ model User {
   password                                  String
   name                                      String                       @default("")
   role                                      String
+  from_About_createdBy                      About[]                      @relation("About_createdBy")
+  from_About_updatedBy                      About[]                      @relation("About_updatedBy")
   from_Banner_createdBy                     Banner[]                     @relation("Banner_createdBy")
   from_Banner_updatedBy                     Banner[]                     @relation("Banner_updatedBy")
   from_Category_createdBy                   Category[]                   @relation("Category_createdBy")
@@ -397,196 +557,36 @@ model User {
   from_EditorChoice_updatedBy               EditorChoice[]               @relation("EditorChoice_updatedBy")
   from_Event_createdBy                      Event[]                      @relation("Event_createdBy")
   from_Event_updatedBy                      Event[]                      @relation("Event_updatedBy")
+  from_EventBanner_createdBy                EventBanner[]                @relation("EventBanner_createdBy")
+  from_EventBanner_updatedBy                EventBanner[]                @relation("EventBanner_updatedBy")
+  from_HomepageBanner_createdBy             HomepageBanner[]             @relation("HomepageBanner_createdBy")
+  from_HomepageBanner_updatedBy             HomepageBanner[]             @relation("HomepageBanner_updatedBy")
   from_Job_createdBy                        Job[]                        @relation("Job_createdBy")
   from_Job_updatedBy                        Job[]                        @relation("Job_updatedBy")
+  from_JobBanner_createdBy                  JobBanner[]                  @relation("JobBanner_createdBy")
+  from_JobBanner_updatedBy                  JobBanner[]                  @relation("JobBanner_updatedBy")
+  from_Member_createdBy                     Member[]                     @relation("Member_createdBy")
+  from_Member_updatedBy                     Member[]                     @relation("Member_updatedBy")
+  from_Menubar_createdBy                    Menubar[]                    @relation("Menubar_createdBy")
+  from_Menubar_updatedBy                    Menubar[]                    @relation("Menubar_updatedBy")
   from_Photo_createdBy                      Photo[]                      @relation("Photo_createdBy")
   from_Photo_updatedBy                      Photo[]                      @relation("Photo_updatedBy")
   from_Post_createdBy                       Post[]                       @relation("Post_createdBy")
   from_Post_updatedBy                       Post[]                       @relation("Post_updatedBy")
   from_Resource_createdBy                   Resource[]                   @relation("Resource_createdBy")
   from_Resource_updatedBy                   Resource[]                   @relation("Resource_updatedBy")
+  from_ResourceBanner_createdBy             ResourceBanner[]             @relation("ResourceBanner_createdBy")
+  from_ResourceBanner_updatedBy             ResourceBanner[]             @relation("ResourceBanner_updatedBy")
   from_Section_createdBy                    Section[]                    @relation("Section_createdBy")
   from_Section_updatedBy                    Section[]                    @relation("Section_updatedBy")
   from_Specialfeature_createdBy             Specialfeature[]             @relation("Specialfeature_createdBy")
   from_Specialfeature_updatedBy             Specialfeature[]             @relation("Specialfeature_updatedBy")
+  from_SpecialfeatureEditorChoice_createdBy SpecialfeatureEditorChoice[] @relation("SpecialfeatureEditorChoice_createdBy")
+  from_SpecialfeatureEditorChoice_updatedBy SpecialfeatureEditorChoice[] @relation("SpecialfeatureEditorChoice_updatedBy")
   from_SpecialfeatureList_createdBy         SpecialfeatureList[]         @relation("SpecialfeatureList_createdBy")
   from_SpecialfeatureList_updatedBy         SpecialfeatureList[]         @relation("SpecialfeatureList_updatedBy")
   from_Tag_createdBy                        Tag[]                        @relation("Tag_createdBy")
   from_Tag_updatedBy                        Tag[]                        @relation("Tag_updatedBy")
-  from_Member_createdBy                     Member[]                     @relation("Member_createdBy")
-  from_Member_updatedBy                     Member[]                     @relation("Member_updatedBy")
-  from_About_createdBy                      About[]                      @relation("About_createdBy")
-  from_About_updatedBy                      About[]                      @relation("About_updatedBy")
-  from_EventBanner_createdBy                EventBanner[]                @relation("EventBanner_createdBy")
-  from_EventBanner_updatedBy                EventBanner[]                @relation("EventBanner_updatedBy")
-  from_HomepageBanner_createdBy             HomepageBanner[]             @relation("HomepageBanner_createdBy")
-  from_HomepageBanner_updatedBy             HomepageBanner[]             @relation("HomepageBanner_updatedBy")
-  from_JobBanner_createdBy                  JobBanner[]                  @relation("JobBanner_createdBy")
-  from_JobBanner_updatedBy                  JobBanner[]                  @relation("JobBanner_updatedBy")
-  from_Menubar_createdBy                    Menubar[]                    @relation("Menubar_createdBy")
-  from_Menubar_updatedBy                    Menubar[]                    @relation("Menubar_updatedBy")
-  from_ResourceBanner_createdBy             ResourceBanner[]             @relation("ResourceBanner_createdBy")
-  from_ResourceBanner_updatedBy             ResourceBanner[]             @relation("ResourceBanner_updatedBy")
-  from_SpecialfeatureEditorChoice_createdBy SpecialfeatureEditorChoice[] @relation("SpecialfeatureEditorChoice_createdBy")
-  from_SpecialfeatureEditorChoice_updatedBy SpecialfeatureEditorChoice[] @relation("SpecialfeatureEditorChoice_updatedBy")
-}
-
-model Member {
-  id               Int        @id @default(autoincrement())
-  firebaseId       String?    @unique
-  isActive         Boolean    @default(false)
-  hasSetCategories Boolean    @default(false)
-  email            String     @unique @default("")
-  donationType     String     @default("")
-  beginDate        DateTime?  @default(now())
-  endDate          DateTime?
-  categories       Category[] @relation("Member_categories")
-  favoritePosts    Post[]     @relation("Member_favoritePosts")
-  createdAt        DateTime?
-  updatedAt        DateTime?
-  createdBy        User?      @relation("Member_createdBy", fields: [createdById], references: [id])
-  createdById      Int?       @map("createdBy")
-  updatedBy        User?      @relation("Member_updatedBy", fields: [updatedById], references: [id])
-  updatedById      Int?       @map("updatedBy")
-
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model About {
-  id          Int       @id @default(autoincrement())
-  aboutUs     Json?
-  apiData     Json?
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("About_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("About_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
-
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model EventBanner {
-  id          Int                    @id @default(autoincrement())
-  name        String                 @default("")
-  order       Int?                   @unique
-  heroImage   Photo?                 @relation("EventBanner_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?                   @map("heroImage")
-  status      EventBannerStatusType? @default(draft)
-  publishDate DateTime?              @default(now())
-  url         String                 @default("")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?                  @relation("EventBanner_createdBy", fields: [createdById], references: [id])
-  createdById Int?                   @map("createdBy")
-  updatedBy   User?                  @relation("EventBanner_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?                   @map("updatedBy")
-
-  @@index([heroImageId])
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model HomepageBanner {
-  id          Int                       @id @default(autoincrement())
-  name        String                    @default("")
-  order       Int?                      @unique
-  heroImage   Photo?                    @relation("HomepageBanner_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?                      @map("heroImage")
-  status      HomepageBannerStatusType? @default(draft)
-  publishDate DateTime?                 @default(now())
-  url         String                    @default("")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?                     @relation("HomepageBanner_createdBy", fields: [createdById], references: [id])
-  createdById Int?                      @map("createdBy")
-  updatedBy   User?                     @relation("HomepageBanner_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?                      @map("updatedBy")
-
-  @@index([heroImageId])
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model JobBanner {
-  id          Int                  @id @default(autoincrement())
-  name        String               @default("")
-  order       Int?                 @unique
-  heroImage   Photo?               @relation("JobBanner_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?                 @map("heroImage")
-  status      JobBannerStatusType? @default(draft)
-  publishDate DateTime?            @default(now())
-  url         String               @default("")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?                @relation("JobBanner_createdBy", fields: [createdById], references: [id])
-  createdById Int?                 @map("createdBy")
-  updatedBy   User?                @relation("JobBanner_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?                 @map("updatedBy")
-
-  @@index([heroImageId])
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model Menubar {
-  id          Int       @id @default(autoincrement())
-  name        String    @default("")
-  order       Int?      @unique
-  isActive    Boolean   @default(false)
-  publishDate DateTime?
-  url         String    @default("")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("Menubar_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("Menubar_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
-
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model ResourceBanner {
-  id          Int                       @id @default(autoincrement())
-  name        String                    @default("")
-  order       Int?                      @unique
-  heroImage   Photo?                    @relation("ResourceBanner_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?                      @map("heroImage")
-  status      ResourceBannerStatusType? @default(draft)
-  publishDate DateTime?                 @default(now())
-  url         String                    @default("")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?                     @relation("ResourceBanner_createdBy", fields: [createdById], references: [id])
-  createdById Int?                      @map("createdBy")
-  updatedBy   User?                     @relation("ResourceBanner_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?                      @map("updatedBy")
-
-  @@index([heroImageId])
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model SpecialfeatureEditorChoice {
-  id               Int                                   @id @default(autoincrement())
-  order            Int?                                  @unique
-  specialfeature   Specialfeature?                       @relation("SpecialfeatureEditorChoice_specialfeature", fields: [specialfeatureId], references: [id])
-  specialfeatureId Int?                                  @map("specialfeature")
-  status           SpecialfeatureEditorChoiceStatusType? @default(draft)
-  publishDate      DateTime?                             @default(now())
-  createdAt        DateTime?
-  updatedAt        DateTime?
-  createdBy        User?                                 @relation("SpecialfeatureEditorChoice_createdBy", fields: [createdById], references: [id])
-  createdById      Int?                                  @map("createdBy")
-  updatedBy        User?                                 @relation("SpecialfeatureEditorChoice_updatedBy", fields: [updatedById], references: [id])
-  updatedById      Int?                                  @map("updatedBy")
-
-  @@index([specialfeatureId])
-  @@index([createdById])
-  @@index([updatedById])
 }
 
 enum CategoryStatusType {
@@ -658,6 +658,18 @@ enum EventRegionType {
   others
 }
 
+enum EventBannerStatusType {
+  published
+  draft
+  archived
+}
+
+enum HomepageBannerStatusType {
+  published
+  draft
+  archived
+}
+
 enum JobJobStatusType {
   opening
   closed
@@ -717,6 +729,12 @@ enum JobRegionType {
   others
 }
 
+enum JobBannerStatusType {
+  published
+  draft
+  archived
+}
+
 enum PostStatusType {
   published
   draft
@@ -770,6 +788,12 @@ enum ResourceRegionType {
   others
 }
 
+enum ResourceBannerStatusType {
+  published
+  draft
+  archived
+}
+
 enum SectionStatusType {
   active
   inactive
@@ -781,37 +805,13 @@ enum SpecialfeatureStatusType {
   archived
 }
 
-enum SpecialfeatureListStatusType {
-  published
-  draft
-  archived
-}
-
-enum EventBannerStatusType {
-  published
-  draft
-  archived
-}
-
-enum HomepageBannerStatusType {
-  published
-  draft
-  archived
-}
-
-enum JobBannerStatusType {
-  published
-  draft
-  archived
-}
-
-enum ResourceBannerStatusType {
-  published
-  draft
-  archived
-}
-
 enum SpecialfeatureEditorChoiceStatusType {
+  published
+  draft
+  archived
+}
+
+enum SpecialfeatureListStatusType {
   published
   draft
   archived
