@@ -66,7 +66,7 @@ const listConfigurations = list({
       disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     specialfeatures: relationship({
-      label: '調整專題文章排序（1. 依序選擇此專題收錄的文章2. 如在開設專題頁面後、需再次調整文章順序，須先於此欄位刪去最後一篇文章，按下儲存3. 更改文章順序後，便能成功儲存修改。）',
+      label: '調整專題文章排序（1. 依序選擇此專題收錄的文章 2. 如在開設專題頁面後、需再次調整文章順序，須先於此欄位至少刪去一篇文章並按下儲存，接著調整更新的文章順序，便能成功儲存修改。',
       ref: 'Specialfeature.specialfeatureLists',
       many: true,
       ui: {
