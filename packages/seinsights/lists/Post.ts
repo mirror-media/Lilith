@@ -127,10 +127,9 @@ const listConfigurations = list({
       disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     columns: relationship({
-      label: '專欄作者',
+      label: '專欄名稱',
       ref: 'Column.posts',
       ui: {
-        createView: { fieldMode: 'hidden' },
         hideCreate: true,
       },
       many: true,
