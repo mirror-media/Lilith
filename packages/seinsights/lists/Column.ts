@@ -86,6 +86,7 @@ const listConfigurations = list({
     listView: {
       initialColumns: ['name', 'id', 'type'],
     },
+    labelField: 'columnName'
   },
   access: {
     operation: {
