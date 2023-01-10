@@ -497,6 +497,10 @@ type Column {
   ): [Specialfeature!]
   specialfeaturesCount(where: SpecialfeatureWhereInput! = {}): Int
   apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
 }
 
 enum ColumnTypeType {
@@ -520,6 +524,10 @@ input ColumnWhereInput {
   profile_photo: PhotoWhereInput
   posts: PostManyRelationFilter
   specialfeatures: SpecialfeatureManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
 }
 
 input ColumnTypeTypeNullableFilter {
@@ -534,6 +542,8 @@ input ColumnOrderByInput {
   name: OrderDirection
   columnName: OrderDirection
   type: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
 }
 
 input ColumnUpdateInput {
@@ -545,6 +555,10 @@ input ColumnUpdateInput {
   posts: PostRelateToManyForUpdateInput
   specialfeatures: SpecialfeatureRelateToManyForUpdateInput
   apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
 }
 
 input ColumnUpdateArgs {
@@ -561,6 +575,10 @@ input ColumnCreateInput {
   posts: PostRelateToManyForCreateInput
   specialfeatures: SpecialfeatureRelateToManyForCreateInput
   apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
 }
 
 type EditorChoice {

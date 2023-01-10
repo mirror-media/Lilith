@@ -86,8 +86,16 @@ model Column {
   posts           Post[]           @relation("Column_posts")
   specialfeatures Specialfeature[] @relation("Column_specialfeatures")
   apiData         Json?
+  createdAt       DateTime?
+  updatedAt       DateTime?
+  createdBy       User?            @relation("Column_createdBy", fields: [createdById], references: [id])
+  createdById     Int?             @map("createdBy")
+  updatedBy       User?            @relation("Column_updatedBy", fields: [updatedById], references: [id])
+  updatedById     Int?             @map("updatedBy")
 
   @@index([profile_photoId])
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 model EditorChoice {
@@ -552,6 +560,8 @@ model User {
   from_Banner_updatedBy                     Banner[]                     @relation("Banner_updatedBy")
   from_Category_createdBy                   Category[]                   @relation("Category_createdBy")
   from_Category_updatedBy                   Category[]                   @relation("Category_updatedBy")
+  from_Column_createdBy                     Column[]                     @relation("Column_createdBy")
+  from_Column_updatedBy                     Column[]                     @relation("Column_updatedBy")
   from_EditorChoice_createdBy               EditorChoice[]               @relation("EditorChoice_createdBy")
   from_EditorChoice_updatedBy               EditorChoice[]               @relation("EditorChoice_updatedBy")
   from_Event_createdBy                      Event[]                      @relation("Event_createdBy")
