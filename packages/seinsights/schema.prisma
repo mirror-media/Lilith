@@ -13,8 +13,7 @@ generator client {
 
 model About {
   id          Int       @id @default(autoincrement())
-  aboutUs     Json?
-  apiData     Json?
+  aboutUs     String    @default("")
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?     @relation("About_createdBy", fields: [createdById], references: [id])

@@ -3,8 +3,7 @@
 
 type About {
   id: ID!
-  aboutUs: JSON
-  apiData: JSON
+  aboutUs: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -23,6 +22,7 @@ input AboutWhereInput {
   OR: [AboutWhereInput!]
   NOT: [AboutWhereInput!]
   id: IDFilter
+  aboutUs: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -40,6 +40,40 @@ input IDFilter {
   not: IDFilter
 }
 
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
 input DateTimeNullableFilter {
   equals: DateTime
   in: [DateTime!]
@@ -53,6 +87,7 @@ input DateTimeNullableFilter {
 
 input AboutOrderByInput {
   id: OrderDirection
+  aboutUs: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -63,8 +98,7 @@ enum OrderDirection {
 }
 
 input AboutUpdateInput {
-  aboutUs: JSON
-  apiData: JSON
+  aboutUs: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -83,8 +117,7 @@ input AboutUpdateArgs {
 }
 
 input AboutCreateInput {
-  aboutUs: JSON
-  apiData: JSON
+  aboutUs: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -130,40 +163,6 @@ input BannerWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input StringFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  mode: QueryMode
-  not: NestedStringFilter
-}
-
-enum QueryMode {
-  default
-  insensitive
-}
-
-input NestedStringFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringFilter
 }
 
 input IntNullableFilter {
