@@ -5,7 +5,7 @@ import EditorChoice from './EditorChoice'
 import Event from './Event'
 import Image from './Image'
 import Job from './Job'
-import Article from './Post'
+import Post from './Post'
 import Resource from './Resource'
 import Specialfeature from './Specialfeature'
 import SpecialfeatureList from './SpecialfeatureList'
@@ -35,7 +35,7 @@ export const listDefinition = {
   Member,
   Menubar,
   Photo: Image,
-  Post: Article,
+  Post,
   Resource,
   ResourceBanner,
   Section,
