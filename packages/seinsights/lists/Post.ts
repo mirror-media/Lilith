@@ -223,6 +223,7 @@ const listConfigurations = list({
   },
   ui: {
     labelField: 'title',
+	label: "Article",
     listView: {
       initialColumns: ['title', 'publishDate', 'status'],
       initialSort: { field: 'publishDate', direction: 'DESC' },
