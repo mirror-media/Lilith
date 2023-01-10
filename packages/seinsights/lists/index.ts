@@ -35,7 +35,7 @@ export const listDefinition = {
   Member,
   Menubar,
   Photo: Image,
-  Post,
+  Post: Article,
   Resource,
   ResourceBanner,
   Section,
