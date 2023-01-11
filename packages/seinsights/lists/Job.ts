@@ -142,6 +142,7 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '敘述',
+      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     tags: relationship({
       label: '標籤',

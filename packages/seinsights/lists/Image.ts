@@ -14,19 +14,6 @@ const listConfigurations = list({
       label: '標題',
       validation: { isRequired: true },
     }),
-    copyright: select({
-      label: '版權',
-      options: [
-        { label: '禁止轉載', value: 'reserved' },
-        { label: '部分允許轉載', value: 'partial' },
-      ],
-          ui: {
-        displayMode: 'segmented-control',
-        listView: {
-          fieldMode: 'read',
-        },
-      },
-    }),
     imageFile: image(),
     resized: virtual({
       field: graphql.field({
