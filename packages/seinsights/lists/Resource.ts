@@ -84,6 +84,7 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '敘述',
+      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     tags: relationship({
       label: '標籤',
@@ -99,9 +100,11 @@ const listConfigurations = list({
     }),
     contact: customFields.richTextEditor({
       label: '聯絡方式',
+      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     link: customFields.richTextEditor({
       label: '相關連結',
+      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     relatedResources: relationship({
       label: '相關社會企業檔案',

@@ -121,17 +121,16 @@ const listConfigurations = list({
     }),
     brief: customFields.richTextEditor({
       label: '前言',
-      disabledButtons: ['header-four', 'code', 'code-block', 'annotation'],
+      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     content: customFields.richTextEditor({
       label: '內文',
-      disabledButtons: ['header-four', 'code', 'code-block', 'annotation'],
+      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     columns: relationship({
-      label: '專欄作者',
+      label: '專欄名稱',
       ref: 'Column.posts',
       ui: {
-        createView: { fieldMode: 'hidden' },
         hideCreate: true,
       },
       many: true,
@@ -224,6 +223,7 @@ const listConfigurations = list({
   },
   ui: {
     labelField: 'title',
+	label: "Article",
     listView: {
       initialColumns: ['title', 'publishDate', 'status'],
       initialSort: { field: 'publishDate', direction: 'DESC' },

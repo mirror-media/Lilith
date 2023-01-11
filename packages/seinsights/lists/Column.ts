@@ -47,6 +47,13 @@ const listConfigurations = list({
     }),
     intro: customFields.richTextEditor({
       label: '敘述',
+      disabledButtons: [
+        'header-four',
+        'code',
+        'code-block',
+        'annotation',
+        'info-box',
+      ],
     }),
     posts: relationship({
       label: '作者文章post',
@@ -85,6 +92,7 @@ const listConfigurations = list({
     listView: {
       initialColumns: ['name', 'id', 'type'],
     },
+    labelField: 'columnName',
   },
   access: {
     operation: {
@@ -109,4 +117,4 @@ const listConfigurations = list({
   },
 })
 
-export default listConfigurations
+export default utils.addTrackingFields(listConfigurations)

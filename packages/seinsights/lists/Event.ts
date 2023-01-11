@@ -127,6 +127,7 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '敘述',
+      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     location: text({
       label: '地點',

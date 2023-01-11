@@ -8,6 +8,8 @@
     "noEmit": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "checkJs": true,
+    "allowJs": true
   }
 }

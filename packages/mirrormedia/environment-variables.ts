@@ -11,6 +11,10 @@ const {
   FILES_STORAGE_PATH,
   IMAGES_BASE_URL,
   IMAGES_STORAGE_PATH,
+  JWT_SECRET,
+  GCP_PROJECT_ID,
+  FIREBASE_PROJECT_ID,
+  MEMBER_API_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -48,4 +52,15 @@ export default {
     baseUrl: IMAGES_BASE_URL || '/images',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
+  jwt: {
+    secret: JWT_SECRET || 'jwt-secret',
+  },
+  gcp: {
+    projectId: GCP_PROJECT_ID || 'mirrormedia-1470651750304',
+  },
+  firebase: {
+    projectId: FIREBASE_PROJECT_ID || 'mirror-weekly',
+  },
+  memberApiUrl:
+    MEMBER_API_URL || 'https://israfel-gql.mirrormedia.mg/api/graphql',
 }
