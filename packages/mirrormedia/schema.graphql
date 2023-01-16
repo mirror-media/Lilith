@@ -71,6 +71,7 @@ type Post {
   heroImageSize: String
   style: String
   brief: JSON
+  trimmedContet: JSON
   content: JSON
   topics: Topic
   titleColor: String

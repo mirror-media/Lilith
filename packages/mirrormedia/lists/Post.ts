@@ -1,5 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core'
+import { graphql, list } from '@keystone-6/core'
+import { JSONValue } from '@keystone-6/core/types'
 import {
   checkbox,
   relationship,
@@ -7,8 +8,10 @@ import {
   text,
   select,
   json,
+  virtual,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
+import { RawContentState } from 'draft-js'
 
 const { allowRoles, admin, moderator } = utils.accessControl
 
@@ -165,6 +168,52 @@ const listConfigurations = list({
     brief: customFields.richTextEditor({
       label: '前言',
       disabledButtons: [],
+    }),
+    trimmedContet: virtual({
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+      field: graphql.field({
+        type: graphql.JSON,
+        resolve: async (
+          item: Record<string, unknown>
+        ): Promise<JSONValue | undefined> => {
+          const content: RawContentState = item?.content
+          const blocks = content?.blocks || []
+          const entityMap = content?.entityMap || {}
+
+          const rtn: RawContentState = {
+            blocks: [],
+            entityMap: {},
+          }
+
+          let numberOfMeaningfulBlocks = 0
+          const blocksLimit = 4
+          for (let i = 0; i < blocks.length; i++) {
+            if (numberOfMeaningfulBlocks > blocksLimit) {
+              break
+            }
+
+            const block = blocks[i]
+
+            // empty block: new line
+            if (block?.text === '' && block?.type === 'unstyled') {
+              rtn.blocks.push(block)
+              continue
+            }
+
+            block?.entityRanges?.forEach((entityObj: { key: number }) => {
+              const entityKey = entityObj?.key
+              rtn.entityMap[entityKey] = entityMap[entityKey]
+            })
+            rtn.blocks.push(block)
+            numberOfMeaningfulBlocks += 1
+          }
+
+          return rtn
+        },
+      }),
     }),
     content: customFields.richTextEditor({
       label: '內文',
