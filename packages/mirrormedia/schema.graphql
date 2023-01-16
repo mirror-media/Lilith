@@ -1641,6 +1641,7 @@ type Category {
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1664,6 +1665,7 @@ input CategoryWhereInput {
   heroImage: PhotoWhereInput
   sections: SectionWhereInput
   posts: PostManyRelationFilter
+  isMemberOnly: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1676,6 +1678,7 @@ input CategoryOrderByInput {
   slug: OrderDirection
   order: OrderDirection
   state: OrderDirection
+  isMemberOnly: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1688,6 +1691,7 @@ input CategoryUpdateInput {
   heroImage: PhotoRelateToOneForUpdateInput
   sections: SectionRelateToOneForUpdateInput
   posts: PostRelateToManyForUpdateInput
+  isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1713,6 +1717,7 @@ input CategoryCreateInput {
   heroImage: PhotoRelateToOneForCreateInput
   sections: SectionRelateToOneForCreateInput
   posts: PostRelateToManyForCreateInput
+  isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

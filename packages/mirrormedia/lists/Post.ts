@@ -1,6 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { graphql, list } from '@keystone-6/core'
-import { JSONValue } from '@keystone-6/core/types'
+import { KeystoneContext, JSONValue } from '@keystone-6/core/types'
 import {
   checkbox,
   relationship,
@@ -219,7 +219,13 @@ const listConfigurations = list({
       label: '內文',
       disabledButtons: [],
       access: {
-        read: ({ context, item }) => {
+        read: async ({
+          context,
+          item,
+        }: {
+          context: KeystoneContext
+          item: Record<string, unknown>
+        }) => {
           if (envVar.accessControlStrategy === 'gql') {
             const scope = context.req?.headers?.['x-access-token-scope']
 
@@ -240,13 +246,32 @@ const listConfigurations = list({
               const postIdArr = acl.split(',')
 
               // check the request has the permission to read this field
-              if (postIdArr.indexOf(item.id.toString()) > -1) {
+              if (postIdArr.indexOf(`${item.id}`) > -1) {
                 return true
               }
             }
 
-            // the request does not have permission to read this field
-            return false
+            let post
+            try {
+              // Due to many-to-many relationship,
+              // `item` won't contain `categories` value.
+              // Therefore, we have to query `categories`
+              // object by ourselves.
+              post = await context.query.Post.findOne({
+                where: { id: `${item.id}` },
+                query: 'categories { isMemberOnly }',
+              })
+            } catch (err) {
+              // TODO: print error log well
+            }
+            const memberCategory = post?.categories?.find(
+              (c: { isMemberOnly: boolean }) => {
+                return c.isMemberOnly
+              }
+            )
+
+            // the request does not have permission to read this field if the post is premiun post
+            return memberCategory ? false : true
           }
 
           // the request has permission to read this field

@@ -1,6 +1,12 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { relationship, select, text, integer } from '@keystone-6/core/fields'
+import {
+  relationship,
+  checkbox,
+  select,
+  text,
+  integer,
+} from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -46,6 +52,10 @@ const listConfigurations = list({
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
       },
+    }),
+    isMemberOnly: checkbox({
+      label: '會員文章',
+      defaultValue: false,
     }),
   },
   access: {
