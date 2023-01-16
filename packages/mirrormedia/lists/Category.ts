@@ -1,27 +1,22 @@
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core';
-import { relationship, checkbox, select, text, integer } from '@keystone-6/core/fields';
+import { list } from '@keystone-6/core'
+import { relationship, select, text, integer } from '@keystone-6/core/fields'
 
-const {
-  allowRoles,
-  admin,
-  moderator,
-  editor,
-  owner,
-} = utils.accessControl
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
     name: text({
-      label: '名稱', validation: { isRequired: true }
+      label: '名稱',
+      validation: { isRequired: true },
     }),
     slug: text({
       label: 'slug',
       isIndexed: 'unique',
-      validation: { isRequired: true }
+      validation: { isRequired: true },
     }),
-    order: integer({ 
-      label: '排序', 
+    order: integer({
+      label: '排序',
       validation: {
         min: 1,
         max: 9999,
@@ -41,18 +36,17 @@ const listConfigurations = list({
       ref: 'Photo',
     }),
     sections: relationship({
-      ref: "Section.categories",
+      ref: 'Section.categories',
       many: false,
     }),
     posts: relationship({
-      ref: "Post.categories",
+      ref: 'Post.categories',
       many: true,
       ui: {
-        createView: { fieldMode: 'hidden'},
+        createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
-      }
+      },
     }),
-
   },
   access: {
     operation: {
