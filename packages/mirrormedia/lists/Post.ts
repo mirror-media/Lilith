@@ -1,5 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core'
+import { graphql, list } from '@keystone-6/core'
+import { KeystoneContext, JSONValue } from '@keystone-6/core/types'
 import {
   checkbox,
   relationship,
@@ -7,8 +8,14 @@ import {
   text,
   select,
   json,
+  virtual,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
+// @ts-ignore @twreporter/errors does not have typescript definition
+import errors from '@twreporter/errors'
+// @ts-ignore draft-js does not have typescript definition
+import { RawContentState } from 'draft-js'
+import logUtils from '../utils/gcp-logging'
 
 const { allowRoles, admin, moderator } = utils.accessControl
 
@@ -166,11 +173,64 @@ const listConfigurations = list({
       label: '前言',
       disabledButtons: [],
     }),
+    trimmedContent: virtual({
+      label: '擷取前5段的內文（不包括換行）',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+      field: graphql.field({
+        type: graphql.JSON,
+        resolve: async (
+          item: Record<string, unknown>
+        ): Promise<JSONValue | undefined> => {
+          const content: RawContentState = item?.content
+          const blocks = content?.blocks || []
+          const entityMap = content?.entityMap || {}
+
+          const rtn: RawContentState = {
+            blocks: [],
+            entityMap: {},
+          }
+
+          let numberOfMeaningfulBlocks = 0
+          const blocksLimit = 4
+          for (let i = 0; i < blocks.length; i++) {
+            if (numberOfMeaningfulBlocks > blocksLimit) {
+              break
+            }
+
+            const block = blocks[i]
+
+            // empty block: new line
+            if (block?.text === '' && block?.type === 'unstyled') {
+              rtn.blocks.push(block)
+              continue
+            }
+
+            block?.entityRanges?.forEach((entityObj: { key: number }) => {
+              const entityKey = entityObj?.key
+              rtn.entityMap[entityKey] = entityMap[entityKey]
+            })
+            rtn.blocks.push(block)
+            numberOfMeaningfulBlocks += 1
+          }
+
+          return rtn
+        },
+      }),
+    }),
     content: customFields.richTextEditor({
       label: '內文',
       disabledButtons: [],
       access: {
-        read: ({ context, item }) => {
+        read: async ({
+          context,
+          item,
+        }: {
+          context: KeystoneContext
+          item: Record<string, unknown>
+        }) => {
           if (envVar.accessControlStrategy === 'gql') {
             const scope = context.req?.headers?.['x-access-token-scope']
 
@@ -191,13 +251,59 @@ const listConfigurations = list({
               const postIdArr = acl.split(',')
 
               // check the request has the permission to read this field
-              if (postIdArr.indexOf(item.id.toString()) > -1) {
+              if (postIdArr.indexOf(`${item.id}`) > -1) {
                 return true
               }
             }
 
-            // the request does not have permission to read this field
-            return false
+            let post
+            const queryArgs = {
+              where: { id: `${item.id}` },
+              query: 'categories { isMemberOnly }',
+            }
+            try {
+              // Due to many-to-many relationship,
+              // `item` won't contain `categories` value.
+              // Therefore, we have to query `categories`
+              // object by ourselves.
+              post = await context.query.Post.findOne(queryArgs)
+            } catch (err) {
+              const wrappedErr = errors.helpers.wrap(
+                err,
+                'QueryAPIError',
+                'Error to query post item by Keystone Query API',
+                queryArgs
+              )
+              console.log(
+                JSON.stringify({
+                  severity: 'Error',
+                  message: errors.helpers.printAll(
+                    wrappedErr,
+                    {
+                      withStack: true,
+                      withPayload: true,
+                    },
+                    0,
+                    0
+                  ),
+                  ...logUtils.getGlobalLogFields(
+                    context.req,
+                    envVar.gcp.projectId
+                  ),
+                })
+              )
+              // access denial due to unexpected error
+              return false
+            }
+
+            const memberCategory = post?.categories?.find(
+              (c: { isMemberOnly: boolean }) => {
+                return c.isMemberOnly
+              }
+            )
+
+            // the request does not have permission to read this field if the post is premiun post
+            return memberCategory ? false : true
           }
 
           // the request has permission to read this field
