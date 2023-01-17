@@ -169,7 +169,8 @@ const listConfigurations = list({
       label: '前言',
       disabledButtons: [],
     }),
-    trimmedContet: virtual({
+    trimmedContent: virtual({
+      label: '擷取前5段的內文（不包括換行）',
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
