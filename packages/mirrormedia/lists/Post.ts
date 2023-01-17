@@ -11,7 +11,11 @@ import {
   virtual,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
+// @ts-ignore @twreporter/errors does not have typescript definition
+import errors from '@twreporter/errors'
+// @ts-ignore draft-js does not have typescript definition
 import { RawContentState } from 'draft-js'
+import logUtils from '../utils/gcp-logging'
 
 const { allowRoles, admin, moderator } = utils.accessControl
 
@@ -253,18 +257,45 @@ const listConfigurations = list({
             }
 
             let post
+            const queryArgs = {
+              where: { id: `${item.id}` },
+              query: 'categories { isMemberOnly }',
+            }
             try {
               // Due to many-to-many relationship,
               // `item` won't contain `categories` value.
               // Therefore, we have to query `categories`
               // object by ourselves.
-              post = await context.query.Post.findOne({
-                where: { id: `${item.id}` },
-                query: 'categories { isMemberOnly }',
-              })
+              post = await context.query.Post.findOne(queryArgs)
             } catch (err) {
-              // TODO: print error log well
+              const wrappedErr = errors.helpers.wrap(
+                err,
+                'QueryAPIError',
+                'Error to query post item by Keystone Query API',
+                queryArgs
+              )
+              console.log(
+                JSON.stringify({
+                  severity: 'Error',
+                  message: errors.helpers.printAll(
+                    wrappedErr,
+                    {
+                      withStack: true,
+                      withPayload: true,
+                    },
+                    0,
+                    0
+                  ),
+                  ...logUtils.getGlobalLogFields(
+                    context.req,
+                    envVar.gcp.projectId
+                  ),
+                })
+              )
+              // access denial due to unexpected error
+              return false
             }
+
             const memberCategory = post?.categories?.find(
               (c: { isMemberOnly: boolean }) => {
                 return c.isMemberOnly
