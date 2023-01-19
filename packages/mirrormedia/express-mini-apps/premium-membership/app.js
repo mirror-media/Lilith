@@ -1,3 +1,5 @@
+import cors from 'cors'
+// @ts-ignore `@twreporter/errors` does not have tyepscript definition file yet
 import errors from '@twreporter/errors'
 import express from 'express'
 import middlewareCreator from './middlewares'
@@ -29,6 +31,7 @@ const statusCodes = {
  *  @param {string} opts.firebaseProjectId
  *  @param {string} opts.memberApiUrl
  *  @param {string} opts.jwtSecret
+ *  @param {string[]} [opts.corsAllowOrigin=[]]
  *  @return {express.Router}
  */
 export function createApp({
@@ -36,14 +39,27 @@ export function createApp({
   firebaseProjectId,
   memberApiUrl,
   jwtSecret,
+  corsAllowOrigin = [],
 }) {
   // create express mini app
   const router = express.Router()
+
+  const corsOpts = {
+    origin: corsAllowOrigin,
+  }
+
+  // enable cors pre-flight request
+  router.options(
+    '/access-token',
+    middlewareCreator.createLoggerMw(gcpProjectId),
+    cors(corsOpts)
+  )
 
   // api route for granting access token
   router.post(
     '/access-token',
     middlewareCreator.createLoggerMw(gcpProjectId),
+    cors(corsOpts),
     middlewareCreator.verifyIdTokenByFirebaseAdmin({ firebaseProjectId }),
     middlewareCreator.queryMemberInfo({ apiUrl: memberApiUrl }),
     middlewareCreator.signAccessToken({ jwtSecret: envVars.jwt.secret }),
@@ -104,9 +120,17 @@ export function createApp({
     }
   )
 
+  // enable cors pre-flight request
+  router.options(
+    '/api/graphql',
+    middlewareCreator.createLoggerMw(gcpProjectId),
+    cors(corsOpts)
+  )
+
   router.post(
     '/api/graphql',
     middlewareCreator.createLoggerMw(gcpProjectId),
+    cors(corsOpts),
     /**
      *  @param {express.Request} req
      *  @param {express.Response} res
@@ -146,6 +170,8 @@ export function createApp({
      *  @param {express.NextFunction} next
      */
     (req, res, next) => {
+      // @ts-ignore This is a workaround since keystone context object does not contain
+      // `res` object at the version @1.1.1 we use.
       req.accessTokenPayload = res.locals?.accessTokenPayload
       next()
     },

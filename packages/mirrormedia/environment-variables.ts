@@ -15,6 +15,7 @@ const {
   GCP_PROJECT_ID,
   FIREBASE_PROJECT_ID,
   MEMBER_API_URL,
+  CORS_ALLOW_ORIGINS,
 } = process.env
 
 enum DatabaseProvider {
@@ -63,4 +64,10 @@ export default {
   },
   memberApiUrl:
     MEMBER_API_URL || 'https://israfel-gql.mirrormedia.mg/api/graphql',
+  cors: {
+    allowOrigins:
+      typeof CORS_ALLOW_ORIGINS === 'string'
+        ? CORS_ALLOW_ORIGINS.split(',')
+        : ['https://www.mirrormedia.mg', 'https://mirrormedia.mg'],
+  },
 }
