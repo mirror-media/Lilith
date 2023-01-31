@@ -1,4 +1,5 @@
 import Banner from './Banner'
+import FooterBanner from './FooterBanner'
 import Category from './Category'
 import Column from './Column'
 import EditorChoice from './EditorChoice'
@@ -29,6 +30,7 @@ export const listDefinition = {
   EditorChoice,
   Event,
   EventBanner,
+  FooterBanner,
   HomepageBanner,
   Job,
   JobBanner,
