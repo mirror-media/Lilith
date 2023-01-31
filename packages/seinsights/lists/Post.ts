@@ -1,7 +1,7 @@
 // import envVar from '../environment-variables'
 // @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core'
+import { list, graphql } from '@keystone-6/core'
 import {
   text,
   integer,
@@ -10,6 +10,7 @@ import {
   json,
   timestamp,
   checkbox,
+  virtual,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -182,18 +183,17 @@ const listConfigurations = list({
       label: '會員文章',
       defaultValue: false,
     }),
-    //
-    // previewButton: virtual({
-    //   field: graphql.field({
-    //     type: graphql.String,
-    //     resolve(item: Record<string, unknown>): string {
-    //       return `/story/${item?.id}`
-    //     },
-    //   }),
-    //   ui: {
-    //     views: require.resolve('./preview-button'),
-    //   },
-    // }),
+    previewButton: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>): string {
+          return `/preview/article/${item?.id}`
+        },
+      }),
+      ui: {
+        views: require.resolve('./preview-button'),
+      },
+    }),
     oldCategory: select({
       label: '舊內容分類（工程用）',
       options: [
@@ -223,6 +223,7 @@ const listConfigurations = list({
   },
   ui: {
     labelField: 'title',
+	label: "Article",
     listView: {
       initialColumns: ['title', 'publishDate', 'status'],
       initialSort: { field: 'publishDate', direction: 'DESC' },

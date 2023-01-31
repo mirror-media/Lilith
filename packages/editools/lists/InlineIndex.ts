@@ -71,6 +71,7 @@ const listConfigurations = list({
             height: 72px; 
           } 
           .item__color { 
+            flex: 0;
             width: 129px; 
             height: 72px;
             display: flex;
