@@ -1,4 +1,4 @@
-// import envVar from '../environment-variables'
+import envVar from '../environment-variables'
 // @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
@@ -15,14 +15,12 @@ import {
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
-/*
 enum UserRole {
   Admin = 'admin',
   Moderator = 'moderator',
   Editor = 'editor',
   Contributor = 'contributor',
 }
-*/
 
 enum Status {
   Published = 'published',
@@ -30,16 +28,16 @@ enum Status {
   Archived = 'archived',
 }
 
-/*
+
 type Session = {
   data: {
     id: string
     role: UserRole
   }
 }
-*/
 
-/*
+
+
 function filterPosts({ session }: { session: Session }) {
   switch (envVar.accessControlStrategy) {
     case 'gql': {
@@ -61,7 +59,7 @@ function filterPosts({ session }: { session: Session }) {
     }
   }
 }
-*/
+
 
 const listConfigurations = list({
   fields: {
@@ -237,9 +235,9 @@ const listConfigurations = list({
       create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin),
     },
-    // filter: {
-    //   query: filterPosts,
-    // },
+    filter: {
+      query: filterPosts,
+    },
   },
   hooks: {
     resolveInput: async ({ resolvedData }) => {
