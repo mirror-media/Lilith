@@ -1966,6 +1966,7 @@ type Post {
 enum PostStatusType {
   published
   draft
+  scheduled
   archived
 }
 

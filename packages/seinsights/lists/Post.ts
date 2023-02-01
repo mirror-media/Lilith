@@ -25,9 +25,9 @@ enum UserRole {
 enum Status {
   Published = 'published',
   Draft = 'draft',
+  Scheduled = 'scheduled',
   Archived = 'archived',
 }
-
 
 type Session = {
   data: {
@@ -35,8 +35,6 @@ type Session = {
     role: UserRole
   }
 }
-
-
 
 function filterPosts({ session }: { session: Session }) {
   switch (envVar.accessControlStrategy) {
@@ -59,7 +57,6 @@ function filterPosts({ session }: { session: Session }) {
     }
   }
 }
-
 
 const listConfigurations = list({
   fields: {
@@ -87,6 +84,7 @@ const listConfigurations = list({
       options: [
         { label: '出版', value: Status.Published },
         { label: '草稿', value: Status.Draft },
+        { label: '排程', value: Status.Scheduled },
         { label: '下架', value: Status.Archived },
       ],
       defaultValue: 'draft',
@@ -119,11 +117,23 @@ const listConfigurations = list({
     }),
     brief: customFields.richTextEditor({
       label: '前言',
-      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
+      disabledButtons: [
+        'header-four',
+        'code',
+        'code-block',
+        'annotation',
+        'info-box',
+      ],
     }),
     content: customFields.richTextEditor({
       label: '內文',
-      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
+      disabledButtons: [
+        'header-four',
+        'code',
+        'code-block',
+        'annotation',
+        'info-box',
+      ],
     }),
     columns: relationship({
       label: '專欄名稱',
@@ -221,7 +231,7 @@ const listConfigurations = list({
   },
   ui: {
     labelField: 'title',
-	label: "Article",
+    label: 'Article',
     listView: {
       initialColumns: ['title', 'publishDate', 'status'],
       initialSort: { field: 'publishDate', direction: 'DESC' },

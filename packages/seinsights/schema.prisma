@@ -775,6 +775,7 @@ enum JobBannerStatusType {
 enum PostStatusType {
   published
   draft
+  scheduled
   archived
 }
 
