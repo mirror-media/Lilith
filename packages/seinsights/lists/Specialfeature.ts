@@ -83,7 +83,7 @@ const listConfigurations = list({
       disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     columns: relationship({
-      label: '作者',
+      label: '專欄姓名',
       ref: 'Column.specialfeatures',
       many: true,
     }),
