@@ -250,6 +250,27 @@ const listConfigurations = list({
     },
   },
   hooks: {
+    afterOperation: async ({ operation, item, context }) => {
+      if (operation == 'update' || operation == 'create') {
+        const currentTime = new Date();
+        const columns = JSON.stringify(await context.query.Column.findMany({
+          where: { posts: { some: { id: { equals: item.id } } } },
+          query: `id`
+        })
+        )
+        const columnsID = JSON.parse(columns)
+        for (const col of columnsID) {
+          await context.query.Column.updateMany({
+            data: [
+              {
+                where: { id: col.id },
+                data: { updatedAt: currentTime }
+              }
+            ]
+          })
+        }
+      }
+    },
     resolveInput: async ({ resolvedData }) => {
       const { content, brief } = resolvedData
       if (content) {
