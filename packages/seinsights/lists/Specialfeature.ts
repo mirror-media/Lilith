@@ -83,7 +83,7 @@ const listConfigurations = list({
       disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
     }),
     columns: relationship({
-      label: '作者',
+      label: '專欄姓名',
       ref: 'Column.specialfeatures',
       many: true,
     }),
@@ -176,6 +176,29 @@ const listConfigurations = list({
     },
   },
   hooks: {
+    afterOperation: async ({ operation, item, context }) => {
+      if (operation == 'update' || operation == 'create') {
+        console.log(item);
+
+        const currentTime = new Date();
+        const columns = JSON.stringify(await context.query.Column.findMany({
+          where: { specialfeatures: { some: { id: { equals: item.id } } } },
+          query: `id`
+        })
+        )
+        const columnsID = JSON.parse(columns)
+        for (const col of columnsID) {
+          await context.query.Column.updateMany({
+            data: [
+              {
+                where: { id: col.id },
+                data: { updatedAt: currentTime }
+              }
+            ]
+          })
+        }
+      }
+    },
     resolveInput: async ({ resolvedData }) => {
       const { content } = resolvedData
       if (content) {

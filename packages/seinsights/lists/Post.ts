@@ -1,4 +1,4 @@
-// import envVar from '../environment-variables'
+import envVar from '../environment-variables'
 // @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
@@ -15,31 +15,27 @@ import {
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
-/*
 enum UserRole {
   Admin = 'admin',
   Moderator = 'moderator',
   Editor = 'editor',
   Contributor = 'contributor',
 }
-*/
 
 enum Status {
   Published = 'published',
   Draft = 'draft',
+  Scheduled = 'scheduled',
   Archived = 'archived',
 }
 
-/*
 type Session = {
   data: {
     id: string
     role: UserRole
   }
 }
-*/
 
-/*
 function filterPosts({ session }: { session: Session }) {
   switch (envVar.accessControlStrategy) {
     case 'gql': {
@@ -61,7 +57,6 @@ function filterPosts({ session }: { session: Session }) {
     }
   }
 }
-*/
 
 const listConfigurations = list({
   fields: {
@@ -89,6 +84,7 @@ const listConfigurations = list({
       options: [
         { label: '出版', value: Status.Published },
         { label: '草稿', value: Status.Draft },
+        { label: '排程', value: Status.Scheduled },
         { label: '下架', value: Status.Archived },
       ],
       defaultValue: 'draft',
@@ -121,11 +117,23 @@ const listConfigurations = list({
     }),
     brief: customFields.richTextEditor({
       label: '前言',
-      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
+      disabledButtons: [
+        'header-four',
+        'code',
+        'code-block',
+        'annotation',
+        'info-box',
+      ],
     }),
     content: customFields.richTextEditor({
       label: '內文',
-      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
+      disabledButtons: [
+        'header-four',
+        'code',
+        'code-block',
+        'annotation',
+        'info-box',
+      ],
     }),
     columns: relationship({
       label: '專欄名稱',
@@ -223,7 +231,7 @@ const listConfigurations = list({
   },
   ui: {
     labelField: 'title',
-	label: "Article",
+    label: 'Article',
     listView: {
       initialColumns: ['title', 'publishDate', 'status'],
       initialSort: { field: 'publishDate', direction: 'DESC' },
@@ -237,11 +245,32 @@ const listConfigurations = list({
       create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin),
     },
-    // filter: {
-    //   query: filterPosts,
-    // },
+    filter: {
+      query: filterPosts,
+    },
   },
   hooks: {
+    afterOperation: async ({ operation, item, context }) => {
+      if (operation == 'update' || operation == 'create') {
+        const currentTime = new Date();
+        const columns = JSON.stringify(await context.query.Column.findMany({
+          where: { posts: { some: { id: { equals: item.id } } } },
+          query: `id`
+        })
+        )
+        const columnsID = JSON.parse(columns)
+        for (const col of columnsID) {
+          await context.query.Column.updateMany({
+            data: [
+              {
+                where: { id: col.id },
+                data: { updatedAt: currentTime }
+              }
+            ]
+          })
+        }
+      }
+    },
     resolveInput: async ({ resolvedData }) => {
       const { content, brief } = resolvedData
       if (content) {
