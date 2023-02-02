@@ -173,6 +173,30 @@ model EventBanner {
   @@index([updatedById])
 }
 
+model FooterBanner {
+  id            Int       @id @default(autoincrement())
+  name          String    @default("")
+  order         Int?      @unique
+  bannerImage   Photo?    @relation("FooterBanner_bannerImage", fields: [bannerImageId], references: [id])
+  bannerImageId Int?      @map("bannerImage")
+  mobileImage   Photo?    @relation("FooterBanner_mobileImage", fields: [mobileImageId], references: [id])
+  mobileImageId Int?      @map("mobileImage")
+  isActive      Boolean   @default(false)
+  publishDate   DateTime? @default(now())
+  url           String    @default("")
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("FooterBanner_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("FooterBanner_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([bannerImageId])
+  @@index([mobileImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model HomepageBanner {
   id          Int                       @id @default(autoincrement())
   name        String                    @default("")
@@ -312,6 +336,8 @@ model Photo {
   from_Column_profile_photo         Column[]             @relation("Column_profile_photo")
   from_Event_heroImage              Event[]              @relation("Event_heroImage")
   from_EventBanner_heroImage        EventBanner[]        @relation("EventBanner_heroImage")
+  from_FooterBanner_bannerImage     FooterBanner[]       @relation("FooterBanner_bannerImage")
+  from_FooterBanner_mobileImage     FooterBanner[]       @relation("FooterBanner_mobileImage")
   from_HomepageBanner_heroImage     HomepageBanner[]     @relation("HomepageBanner_heroImage")
   from_Job_profile_photo            Job[]                @relation("Job_profile_photo")
   from_JobBanner_heroImage          JobBanner[]          @relation("JobBanner_heroImage")
@@ -568,6 +594,8 @@ model User {
   from_Event_updatedBy                      Event[]                      @relation("Event_updatedBy")
   from_EventBanner_createdBy                EventBanner[]                @relation("EventBanner_createdBy")
   from_EventBanner_updatedBy                EventBanner[]                @relation("EventBanner_updatedBy")
+  from_FooterBanner_createdBy               FooterBanner[]               @relation("FooterBanner_createdBy")
+  from_FooterBanner_updatedBy               FooterBanner[]               @relation("FooterBanner_updatedBy")
   from_HomepageBanner_createdBy             HomepageBanner[]             @relation("HomepageBanner_createdBy")
   from_HomepageBanner_updatedBy             HomepageBanner[]             @relation("HomepageBanner_updatedBy")
   from_Job_createdBy                        Job[]                        @relation("Job_createdBy")
@@ -747,6 +775,7 @@ enum JobBannerStatusType {
 enum PostStatusType {
   published
   draft
+  scheduled
   archived
 }
 

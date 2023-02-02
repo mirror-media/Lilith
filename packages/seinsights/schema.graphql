@@ -1050,6 +1050,88 @@ input EventBannerCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type FooterBanner {
+  id: ID!
+  name: String
+  order: Int
+  bannerImage: Photo
+  mobileImage: Photo
+  isActive: Boolean
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input FooterBannerWhereUniqueInput {
+  id: ID
+  order: Int
+}
+
+input FooterBannerWhereInput {
+  AND: [FooterBannerWhereInput!]
+  OR: [FooterBannerWhereInput!]
+  NOT: [FooterBannerWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  order: IntNullableFilter
+  bannerImage: PhotoWhereInput
+  mobileImage: PhotoWhereInput
+  isActive: BooleanFilter
+  publishDate: DateTimeNullableFilter
+  url: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input FooterBannerOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  order: OrderDirection
+  isActive: OrderDirection
+  publishDate: OrderDirection
+  url: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input FooterBannerUpdateInput {
+  name: String
+  order: Int
+  bannerImage: PhotoRelateToOneForUpdateInput
+  mobileImage: PhotoRelateToOneForUpdateInput
+  isActive: Boolean
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input FooterBannerUpdateArgs {
+  where: FooterBannerWhereUniqueInput!
+  data: FooterBannerUpdateInput!
+}
+
+input FooterBannerCreateInput {
+  name: String
+  order: Int
+  bannerImage: PhotoRelateToOneForCreateInput
+  mobileImage: PhotoRelateToOneForCreateInput
+  isActive: Boolean
+  publishDate: DateTime
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 type HomepageBanner {
   id: ID!
   name: String
@@ -1884,6 +1966,7 @@ type Post {
 enum PostStatusType {
   published
   draft
+  scheduled
   archived
 }
 
@@ -3087,6 +3170,15 @@ type Mutation {
   updateEventBanners(data: [EventBannerUpdateArgs!]!): [EventBanner]
   deleteEventBanner(where: EventBannerWhereUniqueInput!): EventBanner
   deleteEventBanners(where: [EventBannerWhereUniqueInput!]!): [EventBanner]
+  createFooterBanner(data: FooterBannerCreateInput!): FooterBanner
+  createFooterBanners(data: [FooterBannerCreateInput!]!): [FooterBanner]
+  updateFooterBanner(
+    where: FooterBannerWhereUniqueInput!
+    data: FooterBannerUpdateInput!
+  ): FooterBanner
+  updateFooterBanners(data: [FooterBannerUpdateArgs!]!): [FooterBanner]
+  deleteFooterBanner(where: FooterBannerWhereUniqueInput!): FooterBanner
+  deleteFooterBanners(where: [FooterBannerWhereUniqueInput!]!): [FooterBanner]
   createHomepageBanner(data: HomepageBannerCreateInput!): HomepageBanner
   createHomepageBanners(data: [HomepageBannerCreateInput!]!): [HomepageBanner]
   updateHomepageBanner(
@@ -3317,6 +3409,14 @@ type Query {
   ): [EventBanner!]
   eventBanner(where: EventBannerWhereUniqueInput!): EventBanner
   eventBannersCount(where: EventBannerWhereInput! = {}): Int
+  footerBanners(
+    where: FooterBannerWhereInput! = {}
+    orderBy: [FooterBannerOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [FooterBanner!]
+  footerBanner(where: FooterBannerWhereUniqueInput!): FooterBanner
+  footerBannersCount(where: FooterBannerWhereInput! = {}): Int
   homepageBanners(
     where: HomepageBannerWhereInput! = {}
     orderBy: [HomepageBannerOrderByInput!]! = []
