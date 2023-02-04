@@ -1,6 +1,7 @@
 // @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
+import { KeystoneContext } from '@keystone-6/core/types'
 import {
   text,
   integer,
@@ -80,7 +81,13 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
-      disabledButtons: ['header-four', 'code', 'code-block', 'annotation', 'info-box'],
+      disabledButtons: [
+        'header-four',
+        'code',
+        'code-block',
+        'annotation',
+        'info-box',
+      ],
     }),
     columns: relationship({
       label: '專欄姓名',
@@ -142,8 +149,16 @@ const listConfigurations = list({
     previewButton: virtual({
       field: graphql.field({
         type: graphql.String,
-        resolve(item: Record<string, unknown>): string {
-          return `/preview/specialfeature/${item?.id}`
+        resolve: async (
+          item: Record<string, unknown>,
+          arg,
+          context: KeystoneContext
+        ): Promise<string> => {
+          const sf = await context.query.Specialfeature.findOne({
+            where: { id: `${item?.id}` },
+            query: 'specialfeatureLists { id }',
+          })
+          return `/preview/specialfeature/${sf?.specialfeatureLists?.[0]?.id}#${item?.id}`
         },
       }),
       ui: {
