@@ -35,6 +35,10 @@ const listConfigurations = list({
         min: 1,
         max: 9999,
       },
+      ui: {
+        itemView: {fieldMode: 'hidden',},
+        createView: {fieldMode: 'hidden',}
+      }
     }),
     storyType: select({
       label: '文體story-type',
