@@ -1,45 +1,46 @@
 import React, { useState } from 'react'
-import { ImageSelector, ImageEntityWithDesc } from './image'
+import { ImageSelector, ImageEntityWithMeta } from './shared/image-selector'
 import { AtomicBlockUtils, DraftEntityInstance, EditorState } from 'draft-js'
+import styled from 'styled-components'
 
-const styles = {
-  image: {
-    width: '100%',
-  },
-  slideshow: {
-    moreBt: {
-      position: 'absolute' as const,
-      top: '50%',
-      left: '50%',
-      borderRadius: '100%',
-      border: 'black 1px solid',
-      transform: 'translate(-50%, -50%)',
-      padding: '10px',
-      backgroundColor: 'white',
-    },
-  },
-  buttons: {
-    marginBottom: 10,
-    display: 'flex',
-  },
-  button: {
-    marginTop: '10px',
-    marginRight: '10px',
-    cursor: 'pointer',
-  },
-}
+const Image = styled.img`
+  width: 100%;
+`
 
+const SlideshowCount = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 100%;
+  border: black 1px solid;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  aspect-ratio: 1;
+  min-height: 66px;
+  padding: 10px;
+`
+
+const Figure = styled.figure`
+  position: relative;
+  margin-block: unset;
+  margin-inline: unset;
+  margin: 0 10px;
+`
+// support old version of slideshow without delay propertiy
 export function SlideshowBlock(entity: DraftEntityInstance) {
   const images = entity.getData()
   return (
-    <figure style={{ position: 'relative' }}>
-      <img
+    <Figure>
+      <Image
         src={images?.[0]?.resized?.original}
-        style={styles.image}
         onError={(e) => (e.currentTarget.src = images?.[0]?.imageFile?.url)}
       />
-      <div style={styles.slideshow.moreBt}>+{images.length}</div>
-    </figure>
+      <SlideshowCount>+{images.length}</SlideshowCount>
+    </Figure>
   )
 }
 
@@ -56,13 +57,15 @@ export function SlideshowButton(props: {
     setToShowImageSelector(true)
   }
 
-  const onImageSelectorChange = (selected: ImageEntityWithDesc[]) => {
+  const onImageSelectorChange = (selected: ImageEntityWithMeta[]) => {
     if (selected.length === 0) {
       setToShowImageSelector(false)
       return
     }
 
     const contentState = editorState.getCurrentContent()
+
+    // since 202206, only slideshow-v2 will be created
     const contentStateWithEntity = contentState.createEntity(
       'slideshow',
       'IMMUTABLE',
@@ -86,11 +89,14 @@ export function SlideshowButton(props: {
 
   return (
     <React.Fragment>
-      <ImageSelector
-        isOpen={toShowImageSelector}
-        onChange={onImageSelectorChange}
-        enableMultipleSelect={true}
-      />
+      {toShowImageSelector && (
+        <ImageSelector
+          onChange={onImageSelectorChange}
+          enableCaption={true}
+          enableDelay={false}
+          enableMultiSelect={true}
+        />
+      )}
       <div className={className} onClick={promptForImageSelector}>
         <i className="far fa-images"></i>
         <span> Slideshow</span>
