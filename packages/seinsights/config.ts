@@ -81,7 +81,7 @@ const region_options = [
 { label: '基隆市', value: Region.Keelung },
 { label: '台北市', value: Region.NewTaipei},
 { label: '新北市', value: Region.Taipei },
-{ label: '桃園縣', value: Region.Taoyuan },
+{ label: '桃園市', value: Region.Taoyuan },
 { label: '新竹市', value: Region.HsinchuCounty },
 { label: '新竹縣', value: Region.HsinchuCity},
 { label: '苗栗縣', value: Region.Miaoli },
