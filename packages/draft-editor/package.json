@@ -1,0 +1,39 @@
+{
+  "name": "@mirrormedia/lilith-draft-editor",
+  "version": "1.0.0-beta",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "make dev",
+    "build": "make build",
+    "clean": "make clean",
+    "build-lib": "make build-lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/readr-media/react.git",
+    "directory": "packages/draft-editor"
+  },
+  "keywords": [
+    "react",
+    "readr",
+    "draft.js"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "draft-js": "^0.11.7"
+  },
+  "peerDependencies": {
+    "react": "18.1.0",
+    "react-dom": "^18.1.0",
+    "styled-components": "5.3.5",
+    "@keystone-6/core": "1.1.1",
+    "@keystone-ui/button": "^6.0.0",
+    "@keystone-ui/fields": "^6.0.0",
+    "@keystone-ui/modals": "^5.0.0"
+  },
+  "files": [
+    "lib"
+  ]
+}
