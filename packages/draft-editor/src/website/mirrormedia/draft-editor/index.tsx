@@ -9,7 +9,7 @@ import {
   getDefaultKeyBinding,
 } from 'draft-js'
 
-import { atomicBlockRenderer } from './block-redender-fn'
+import { atomicBlockRenderer } from './block-renderer-fn'
 import decorators from './entity-decorator'
 import { AnnotationButton } from '../../../draft-js/buttons/annotation'
 import { EmbeddedCodeButton } from '../../../draft-js/buttons/embedded-code'

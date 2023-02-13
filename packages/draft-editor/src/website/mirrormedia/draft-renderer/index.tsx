@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { Editor } from 'draft-js'
+import { Editor, EditorState, convertFromRaw } from 'draft-js'
 
-import { atomicBlockRenderer } from './block-redender-fn'
+import { atomicBlockRenderer } from './block-renderer-fn'
 import decorators from './entity-decorator'
 
 import { CUSTOM_STYLE_PREFIX_FONT_COLOR } from '../../../draft-js/buttons/font-color'
@@ -119,7 +119,10 @@ const blockRendererFn = (block) => {
   return atomicBlockObj
 }
 
-function RichTextEditor({ editorState }) {
+function RichTextEditor({ rawContentBlock }) {
+  const contentState = convertFromRaw(rawContentBlock)
+  const editorState = EditorState.createWithContent(contentState, decorators)
+
   return (
     <DraftEditorWrapper>
       <Editor
