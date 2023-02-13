@@ -38,7 +38,7 @@ export function RelatedPostBlock(entity: DraftEntityInstance) {
                 (e.currentTarget.src = post.heroImage?.imageFile?.url)
               }
             />
-            <RelatedPostTitle>{post.name}</RelatedPostTitle>
+            <RelatedPostTitle>{post.title}</RelatedPostTitle>
           </RelatedPostItem>
         ))}
       </RelatedPostRenderWrapper>

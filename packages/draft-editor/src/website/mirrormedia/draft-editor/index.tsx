@@ -230,10 +230,10 @@ const DraftEditorWrapper = styled.div`
   /* code-block */
   .public-DraftStyleDefault-pre {
   }
-  .alignCenter {
+  .alignCenter * {
     text-align: center;
   }
-  .alignLeft {
+  .alignLeft * {
     text-align: left;
   }
 `
@@ -285,7 +285,7 @@ const TextEditorWrapper = styled.div`
   }
 `
 
-const DraftEditor = styled.div<{ isEnlarged: boolean }>`
+const DraftEditorContainer = styled.div<{ isEnlarged: boolean }>`
   position: relative;
   margin-top: 4px;
   ${(props) =>
@@ -363,11 +363,7 @@ type State = {
   readOnly?: boolean
 }
 
-export { decorators }
-export class RichTextEditor extends React.Component<
-  RichTextEditorProps,
-  State
-> {
+class RichTextEditor extends React.Component<RichTextEditorProps, State> {
   customStyleMap: {
     CODE: {
       backgroundColor: string
@@ -599,10 +595,25 @@ export class RichTextEditor extends React.Component<
     const entityType = this.getEntityType(editorState)
     const customStyle = this.getCustomStyle(editorState.getCurrentInlineStyle())
     return (
-      <DraftEditor isEnlarged={isEnlarged}>
+      <DraftEditorContainer isEnlarged={isEnlarged}>
         <DraftEditorWrapper>
           <link
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            rel="stylesheet"
+            type="text/css"
+          />
+          <link
+            href="https://storage.googleapis.com/static-readr-tw-dev/cdn/draft-js/rich-editor.css"
+            rel="stylesheet"
+            type="text/css"
+          />
+          <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/draft-js/0.11.7/Draft.css"
+            rel="stylesheet"
+            type="text/css"
+          />
+          <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
             rel="stylesheet"
             type="text/css"
           />
@@ -797,7 +808,7 @@ export class RichTextEditor extends React.Component<
             />
           </TextEditorWrapper>
         </DraftEditorWrapper>
-      </DraftEditor>
+      </DraftEditorContainer>
     )
   }
 }
@@ -890,3 +901,9 @@ const InlineStyleControls = (props) => {
     </React.Fragment>
   )
 }
+
+const DraftEditor = {
+  RichTextEditor,
+  decorators,
+}
+export default DraftEditor

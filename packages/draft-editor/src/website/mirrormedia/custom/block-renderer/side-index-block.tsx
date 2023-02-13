@@ -37,6 +37,31 @@ type SideIndexBlockProps = {
 }
 
 export function SideIndexBlock(props: SideIndexBlockProps) {
+  const { block, contentState } = props
+  const entityKey = block.getEntityAt(0)
+  const entity = contentState.getEntity(entityKey)
+  const { h2Text, sideIndexText, sideIndexUrl } = entity.getData()
+
+  let sideIndexBlock
+  if (sideIndexUrl) {
+    sideIndexBlock = (
+      <a href={sideIndexUrl}>
+        <SideIndex>側欄： {sideIndexText ? sideIndexText : h2Text}</SideIndex>
+      </a>
+    )
+  } else {
+    sideIndexBlock = (
+      <h2>
+        {h2Text}
+        <SideIndex>側欄： {sideIndexText ? sideIndexText : h2Text}</SideIndex>
+      </h2>
+    )
+  }
+
+  return <SideIndexBlockWrapper>{sideIndexBlock}</SideIndexBlockWrapper>
+}
+
+export function SideIndexEditorBlock(props: SideIndexBlockProps) {
   const [toShowInput, setToShowInput] = useState(false)
   const { block, blockProps, contentState } = props
   const { onEditStart, onEditFinish } = blockProps
@@ -67,22 +92,6 @@ export function SideIndexBlock(props: SideIndexBlockProps) {
     })
   }
 
-  let sideIndexBlock
-  if (sideIndexUrl) {
-    sideIndexBlock = (
-      <a href={sideIndexUrl}>
-        <SideIndex>側欄： {sideIndexText ? sideIndexText : h2Text}</SideIndex>
-      </a>
-    )
-  } else {
-    sideIndexBlock = (
-      <h2>
-        {h2Text}
-        <SideIndex>側欄： {sideIndexText ? sideIndexText : h2Text}</SideIndex>
-      </h2>
-    )
-  }
-
   return (
     <React.Fragment>
       <SideIndexInput
@@ -97,8 +106,8 @@ export function SideIndexBlock(props: SideIndexBlockProps) {
         }}
         isOpen={toShowInput}
       />
-      <SideIndexBlockWrapper>
-        {sideIndexBlock}
+      <div>
+        <SideIndexBlock {...props} />
         <SideIndexBlockButton
           onClick={() => {
             // call `onEditStart` prop as we are trying to update the SideIndex entity
@@ -110,7 +119,7 @@ export function SideIndexBlock(props: SideIndexBlockProps) {
           <i className="fa-solid fa-pen"></i>
           <span>Modify</span>
         </SideIndexBlockButton>
-      </SideIndexBlockWrapper>
+      </div>
     </React.Fragment>
   )
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { ContentBlock, ContentState } from 'draft-js'
 import draftConverter from '../../../../draft-js/editor/draft-converter'
-// import { BGImageInput } from '../../../../draft-js/buttons/background-image'
+import { BGImageInput } from '../../../../draft-js/buttons/background-image'
 
 const BGImageRenderWrapper = styled.div`
   padding: 30px;

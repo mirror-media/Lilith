@@ -31,12 +31,25 @@ type ColorBoxBlockProps = {
 }
 
 export function ColorBoxBlock(props: ColorBoxBlockProps) {
+  const { block, contentState } = props
+  const entityKey = block.getEntityAt(0)
+  const entity = contentState.getEntity(entityKey)
+  const { color, body } = entity.getData()
+
+  return (
+    <ColorBoxRenderWrapper color={color}>
+      <div dangerouslySetInnerHTML={{ __html: body }} />
+    </ColorBoxRenderWrapper>
+  )
+}
+
+export function ColorBoxEditorBlock(props: ColorBoxBlockProps) {
   const [toShowInput, setToShowInput] = useState(false)
   const { block, blockProps, contentState } = props
   const { onEditStart, onEditFinish } = blockProps
   const entityKey = block.getEntityAt(0)
   const entity = contentState.getEntity(entityKey)
-  const { color, body, rawContentState } = entity.getData()
+  const { color, rawContentState } = entity.getData()
   const onChange = ({
     color: newColor,
     rawContentState: newRawContentState,
@@ -66,8 +79,8 @@ export function ColorBoxBlock(props: ColorBoxBlockProps) {
         }}
         isOpen={toShowInput}
       />
-      <ColorBoxRenderWrapper color={color}>
-        <div dangerouslySetInnerHTML={{ __html: body }} />
+      <div>
+        <ColorBoxBlock {...props} />
         <ColorBoxRenderButton
           onClick={() => {
             // call `onEditStart` prop as we are trying to update the ColorBox entity
@@ -79,7 +92,7 @@ export function ColorBoxBlock(props: ColorBoxBlockProps) {
           <i className="fa-solid fa-pen"></i>
           <span>Modify</span>
         </ColorBoxRenderButton>
-      </ColorBoxRenderWrapper>
+      </div>
     </React.Fragment>
   )
 }
