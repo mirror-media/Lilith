@@ -1,50 +1,56 @@
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core';
-import {relationship,text} from '@keystone-6/core/fields';
-	  
-const {
-  allowRoles,
-  admin,
-  moderator,
-  editor,
-  owner,
-} = utils.accessControl
+import { list } from '@keystone-6/core'
+import { relationship, text, integer } from '@keystone-6/core/fields'
 
-const listConfigurations = list ({
+const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+const listConfigurations = list({
   fields: {
-	name: text({
-      isIndexed: true, 
-      label: '作者姓名', 
-      validation: { isRequired: true} 
+    name: text({
+      isIndexed: true,
+      label: '作者姓名',
+      validation: { isRequired: true },
+    }),
+    name_en: text({
+      label: '英文姓名',
+    }),
+    title: text({
+      label: '中文職稱',
+    }),
+    title_en: text({
+      label: '英文職稱',
     }),
     email: text({
       isIndexed: 'unique',
-	  db: {
-		isNullable: true,
-	  }
+      db: {
+        isNullable: true,
+      },
     }),
     image: relationship({
-      label: '照片',  
+      label: '照片',
       ref: 'Photo',
     }),
     homepage: text({
-      label: '個人首頁', 
-      isIndexed: false 
+      label: '個人首頁',
+      isIndexed: false,
+    }),
+    sort: integer({
+      label: '排序',
     }),
     facebook: text({
-       isIndexed: false,  
+      isIndexed: false,
     }),
     twitter: text({
-      isIndexed: false 
+      isIndexed: false,
     }),
     instagram: text({
-      isIndexed: true,  
+      isIndexed: true,
     }),
     address: text({
-      collapse: 'true',  
+      collapse: 'true',
     }),
     bio: text({
-      label: '簡介',  
+      label: '簡介',
     }),
     posts: relationship({
       ref: 'Post.writers',
@@ -71,15 +77,14 @@ const listConfigurations = list ({
       many: true,
       label: '專題',
     }),
-
   },
   access: {
-	operation: {
-	  query: allowRoles(admin, moderator, editor),
-	  update: allowRoles(admin, moderator),
-	  create: allowRoles(admin, moderator),
-	  delete: allowRoles(admin),
-	},
+    operation: {
+      query: allowRoles(admin, moderator, editor),
+      update: allowRoles(admin, moderator),
+      create: allowRoles(admin, moderator),
+      delete: allowRoles(admin),
+    },
   },
 })
 export default utils.addTrackingFields(listConfigurations)

@@ -76,10 +76,14 @@ model Photo {
 model Author {
   id                        Int           @id @default(autoincrement())
   name                      String        @default("")
+  name_en                   String        @default("")
+  title                     String        @default("")
+  title_en                  String        @default("")
   email                     String?       @unique
   image                     Photo?        @relation("Author_image", fields: [imageId], references: [id])
   imageId                   Int?          @map("image")
   homepage                  String        @default("")
+  sort                      Int?
   facebook                  String        @default("")
   twitter                   String        @default("")
   instagram                 String        @default("")
@@ -105,6 +109,45 @@ model Author {
   @@index([name])
   @@index([imageId])
   @@index([instagram])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model PageVariable {
+  id          Int       @id @default(autoincrement())
+  name        String    @default("")
+  value       Json?
+  page        String?   @default("about")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("PageVariable_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("PageVariable_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([page])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Award {
+  id          Int       @id @default(autoincrement())
+  name        String    @default("")
+  name_en     String    @default("")
+  report      String    @default("")
+  report_en   String    @default("")
+  url         String    @default("")
+  desc        String    @default("")
+  desc_en     String    @default("")
+  awardTime   DateTime?
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("Award_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("Award_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([awardTime])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -233,6 +276,10 @@ model User {
   from_Photo_updatedBy            Photo[]            @relation("Photo_updatedBy")
   from_Author_createdBy           Author[]           @relation("Author_createdBy")
   from_Author_updatedBy           Author[]           @relation("Author_updatedBy")
+  from_PageVariable_createdBy     PageVariable[]     @relation("PageVariable_createdBy")
+  from_PageVariable_updatedBy     PageVariable[]     @relation("PageVariable_updatedBy")
+  from_Award_createdBy            Award[]            @relation("Award_createdBy")
+  from_Award_updatedBy            Award[]            @relation("Award_updatedBy")
   from_Video_createdBy            Video[]            @relation("Video_createdBy")
   from_Video_updatedBy            Video[]            @relation("Video_updatedBy")
   from_AudioFile_createdBy        AudioFile[]        @relation("AudioFile_createdBy")
