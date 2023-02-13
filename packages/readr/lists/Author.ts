@@ -1,6 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { relationship, text, integer } from '@keystone-6/core/fields'
+import { checkbox, relationship, text, integer } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -36,6 +36,10 @@ const listConfigurations = list({
     }),
     sort: integer({
       label: '排序',
+    }),
+    isMember: checkbox({
+      label: 'i團隊成員',
+      isIndexed: true,
     }),
     facebook: text({
       isIndexed: false,

@@ -408,6 +408,7 @@ type Author {
   image: Photo
   homepage: String
   sort: Int
+  isMember: Boolean
   facebook: String
   twitter: String
   instagram: String
@@ -472,6 +473,7 @@ input AuthorWhereInput {
   image: PhotoWhereInput
   homepage: StringFilter
   sort: IntNullableFilter
+  isMember: BooleanFilter
   facebook: StringFilter
   twitter: StringFilter
   instagram: StringFilter
@@ -486,6 +488,11 @@ input AuthorWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
 }
 
 input ProjectNoteManyRelationFilter {
@@ -521,6 +528,7 @@ input AuthorOrderByInput {
   email: OrderDirection
   homepage: OrderDirection
   sort: OrderDirection
+  isMember: OrderDirection
   facebook: OrderDirection
   twitter: OrderDirection
   instagram: OrderDirection
@@ -539,6 +547,7 @@ input AuthorUpdateInput {
   image: PhotoRelateToOneForUpdateInput
   homepage: String
   sort: Int
+  isMember: Boolean
   facebook: String
   twitter: String
   instagram: String
@@ -597,6 +606,7 @@ input AuthorCreateInput {
   image: PhotoRelateToOneForCreateInput
   homepage: String
   sort: Int
+  isMember: Boolean
   facebook: String
   twitter: String
   instagram: String
@@ -1029,11 +1039,6 @@ input TagWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
 }
 
 input PhotoManyRelationFilter {

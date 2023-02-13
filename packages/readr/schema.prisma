@@ -84,6 +84,7 @@ model Author {
   imageId                   Int?          @map("image")
   homepage                  String        @default("")
   sort                      Int?
+  isMember                  Boolean       @default(false)
   facebook                  String        @default("")
   twitter                   String        @default("")
   instagram                 String        @default("")
