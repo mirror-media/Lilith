@@ -13,11 +13,13 @@ export type JsonFieldConfig<
   defaultValue?: JSONValue
   db?: { map?: string }
   disabledButtons: string[]
+  website: 'mirrormedia' | 'readr' | 'editools' | 'mesh'
 }
 
 export const richTextEditor = <ListTypeInfo extends BaseListTypeInfo>({
   defaultValue = null,
   disabledButtons = [],
+  website,
   ...config
 }: JsonFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> => (
   meta
@@ -45,7 +47,7 @@ export const richTextEditor = <ListTypeInfo extends BaseListTypeInfo>({
         update: { arg: graphql.arg({ type: graphql.JSON }), resolve },
       },
       output: graphql.field({ type: graphql.JSON }),
-      views: require.resolve('./views'),
+      views: require.resolve(`./views/${website}`),
       getAdminMeta: () => ({ defaultValue, disabledButtons }),
     },
     {
