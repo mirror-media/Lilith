@@ -369,6 +369,9 @@ const listConfigurations = list({
       label: '鎖定右鍵',
       defaultValue: false,
     }),
+    redirect: text({
+      label: '廣編文轉址 slug'
+    }),
     adTrace: text({
       label: '追蹤代碼',
       ui: { displayMode: 'textarea' },

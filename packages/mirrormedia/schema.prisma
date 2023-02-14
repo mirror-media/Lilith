@@ -51,6 +51,7 @@ model Post {
   isCampaign                Boolean        @default(false)
   isAdult                   Boolean        @default(false)
   lockJS                    Boolean        @default(false)
+  redirect                  String         @default("")
   adTrace                   String         @default("")
   css                       String         @default("")
   apiDataBrief              Json?
