@@ -401,9 +401,14 @@ input TagRelateToManyForCreateInput {
 type Author {
   id: ID!
   name: String
+  name_en: String
+  title: String
+  title_en: String
   email: String
   image: Photo
   homepage: String
+  sort: Int
+  isMember: Boolean
   facebook: String
   twitter: String
   instagram: String
@@ -461,9 +466,14 @@ input AuthorWhereInput {
   NOT: [AuthorWhereInput!]
   id: IDFilter
   name: StringFilter
+  name_en: StringFilter
+  title: StringFilter
+  title_en: StringFilter
   email: StringNullableFilter
   image: PhotoWhereInput
   homepage: StringFilter
+  sort: IntNullableFilter
+  isMember: BooleanFilter
   facebook: StringFilter
   twitter: StringFilter
   instagram: StringFilter
@@ -478,6 +488,11 @@ input AuthorWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
 }
 
 input ProjectNoteManyRelationFilter {
@@ -507,8 +522,13 @@ input ProjectManyRelationFilter {
 input AuthorOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  name_en: OrderDirection
+  title: OrderDirection
+  title_en: OrderDirection
   email: OrderDirection
   homepage: OrderDirection
+  sort: OrderDirection
+  isMember: OrderDirection
   facebook: OrderDirection
   twitter: OrderDirection
   instagram: OrderDirection
@@ -520,9 +540,14 @@ input AuthorOrderByInput {
 
 input AuthorUpdateInput {
   name: String
+  name_en: String
+  title: String
+  title_en: String
   email: String
   image: PhotoRelateToOneForUpdateInput
   homepage: String
+  sort: Int
+  isMember: Boolean
   facebook: String
   twitter: String
   instagram: String
@@ -574,9 +599,14 @@ input AuthorUpdateArgs {
 
 input AuthorCreateInput {
   name: String
+  name_en: String
+  title: String
+  title_en: String
   email: String
   image: PhotoRelateToOneForCreateInput
   homepage: String
+  sort: Int
+  isMember: Boolean
   facebook: String
   twitter: String
   instagram: String
@@ -611,6 +641,155 @@ input GalleryRelateToManyForCreateInput {
 input ProjectRelateToManyForCreateInput {
   create: [ProjectCreateInput!]
   connect: [ProjectWhereUniqueInput!]
+}
+
+type PageVariable {
+  id: ID!
+  name: String
+  value: JSON
+  page: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input PageVariableWhereUniqueInput {
+  id: ID
+}
+
+input PageVariableWhereInput {
+  AND: [PageVariableWhereInput!]
+  OR: [PageVariableWhereInput!]
+  NOT: [PageVariableWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  page: StringNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PageVariableOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  page: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PageVariableUpdateInput {
+  name: String
+  value: JSON
+  page: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PageVariableUpdateArgs {
+  where: PageVariableWhereUniqueInput!
+  data: PageVariableUpdateInput!
+}
+
+input PageVariableCreateInput {
+  name: String
+  value: JSON
+  page: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Award {
+  id: ID!
+  name: String
+  name_en: String
+  report: String
+  report_en: String
+  url: String
+  desc: String
+  desc_en: String
+  awardTime: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input AwardWhereUniqueInput {
+  id: ID
+}
+
+input AwardWhereInput {
+  AND: [AwardWhereInput!]
+  OR: [AwardWhereInput!]
+  NOT: [AwardWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  name_en: StringFilter
+  report: StringFilter
+  report_en: StringFilter
+  url: StringFilter
+  desc: StringFilter
+  desc_en: StringFilter
+  awardTime: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input AwardOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  name_en: OrderDirection
+  report: OrderDirection
+  report_en: OrderDirection
+  url: OrderDirection
+  desc: OrderDirection
+  desc_en: OrderDirection
+  awardTime: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input AwardUpdateInput {
+  name: String
+  name_en: String
+  report: String
+  report_en: String
+  url: String
+  desc: String
+  desc_en: String
+  awardTime: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input AwardUpdateArgs {
+  where: AwardWhereUniqueInput!
+  data: AwardUpdateInput!
+}
+
+input AwardCreateInput {
+  name: String
+  name_en: String
+  report: String
+  report_en: String
+  url: String
+  desc: String
+  desc_en: String
+  awardTime: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
 }
 
 type Video {
@@ -860,11 +1039,6 @@ input TagWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
 }
 
 input PhotoManyRelationFilter {
@@ -2526,6 +2700,21 @@ type Mutation {
   updateAuthors(data: [AuthorUpdateArgs!]!): [Author]
   deleteAuthor(where: AuthorWhereUniqueInput!): Author
   deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author]
+  createPageVariable(data: PageVariableCreateInput!): PageVariable
+  createPageVariables(data: [PageVariableCreateInput!]!): [PageVariable]
+  updatePageVariable(
+    where: PageVariableWhereUniqueInput!
+    data: PageVariableUpdateInput!
+  ): PageVariable
+  updatePageVariables(data: [PageVariableUpdateArgs!]!): [PageVariable]
+  deletePageVariable(where: PageVariableWhereUniqueInput!): PageVariable
+  deletePageVariables(where: [PageVariableWhereUniqueInput!]!): [PageVariable]
+  createAward(data: AwardCreateInput!): Award
+  createAwards(data: [AwardCreateInput!]!): [Award]
+  updateAward(where: AwardWhereUniqueInput!, data: AwardUpdateInput!): Award
+  updateAwards(data: [AwardUpdateArgs!]!): [Award]
+  deleteAward(where: AwardWhereUniqueInput!): Award
+  deleteAwards(where: [AwardWhereUniqueInput!]!): [Award]
   createVideo(data: VideoCreateInput!): Video
   createVideos(data: [VideoCreateInput!]!): [Video]
   updateVideo(where: VideoWhereUniqueInput!, data: VideoUpdateInput!): Video
@@ -2711,6 +2900,22 @@ type Query {
   ): [Author!]
   author(where: AuthorWhereUniqueInput!): Author
   authorsCount(where: AuthorWhereInput! = {}): Int
+  pageVariables(
+    where: PageVariableWhereInput! = {}
+    orderBy: [PageVariableOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [PageVariable!]
+  pageVariable(where: PageVariableWhereUniqueInput!): PageVariable
+  pageVariablesCount(where: PageVariableWhereInput! = {}): Int
+  awards(
+    where: AwardWhereInput! = {}
+    orderBy: [AwardOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Award!]
+  award(where: AwardWhereUniqueInput!): Award
+  awardsCount(where: AwardWhereInput! = {}): Int
   videos(
     where: VideoWhereInput! = {}
     orderBy: [VideoOrderByInput!]! = []

@@ -16,11 +16,15 @@ import Image from './Image'
 import ProjectChecklist from './ProjectChecklist'
 import ProjectNote from './ProjectNote'
 import NoteCategory from './NoteCategory'
+import Award from './Award'
+import PageVariable from './PageVariable'
 
 export const listDefinition = {
   EditorChoice,
   Photo: Image,
   Author,
+  PageVariable,
+  Award,
   Video,
   AudioFile: Audio,
   Tag,
@@ -35,5 +39,5 @@ export const listDefinition = {
   ProjectChecklist,
   ProjectNote,
   NoteCategory,
-  Quote
+  Quote,
 }
