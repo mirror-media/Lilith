@@ -98,6 +98,7 @@ type Post {
   isCampaign: Boolean
   isAdult: Boolean
   lockJS: Boolean
+  redirect: String
   adTrace: String
   css: String
   apiDataBrief: JSON
@@ -153,6 +154,7 @@ input PostWhereInput {
   isCampaign: BooleanFilter
   isAdult: BooleanFilter
   lockJS: BooleanFilter
+  redirect: StringFilter
   adTrace: StringFilter
   css: StringFilter
   createdAt: DateTimeNullableFilter
@@ -301,6 +303,7 @@ input PostOrderByInput {
   isCampaign: OrderDirection
   isAdult: OrderDirection
   lockJS: OrderDirection
+  redirect: OrderDirection
   adTrace: OrderDirection
   css: OrderDirection
   createdAt: OrderDirection
@@ -347,6 +350,7 @@ input PostUpdateInput {
   isCampaign: Boolean
   isAdult: Boolean
   lockJS: Boolean
+  redirect: String
   adTrace: String
   css: String
   apiDataBrief: JSON
@@ -456,6 +460,7 @@ input PostCreateInput {
   isCampaign: Boolean
   isAdult: Boolean
   lockJS: Boolean
+  redirect: String
   adTrace: String
   css: String
   apiDataBrief: JSON
