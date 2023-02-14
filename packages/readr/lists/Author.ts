@@ -38,7 +38,7 @@ const listConfigurations = list({
       label: '排序',
     }),
     isMember: checkbox({
-      label: 'i團隊成員',
+      label: '團隊成員',
       isIndexed: true,
     }),
     facebook: text({
