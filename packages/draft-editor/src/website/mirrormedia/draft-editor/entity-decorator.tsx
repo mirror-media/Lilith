@@ -1,6 +1,7 @@
 import { CompositeDecorator } from 'draft-js'
-import { annotationDecorator } from '../custom/entity-decorator/annotation-decorator'
-import { linkDecorator } from '../custom/entity-decorator/link-decorator'
+import { MirrorMedia } from '@mirrormedia/lilith-draft-renderer'
+
+const { annotationDecorator, linkDecorator } = MirrorMedia.entityDecorator
 
 const decorators = new CompositeDecorator([annotationDecorator, linkDecorator])
 

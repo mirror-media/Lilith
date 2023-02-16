@@ -3,12 +3,9 @@ import { ContentBlock, ContentState } from 'draft-js'
 import styled from 'styled-components'
 import draftConverter from '../../../../draft-js/editor/draft-converter'
 import { InfoBoxInput } from '../../../../draft-js/buttons/info-box'
+import { MirrorMedia } from '@mirrormedia/lilith-draft-renderer'
 
-const InfoBoxRenderWrapper = styled.div`
-  background-color: #f5f4f3;
-  padding: 30px;
-  position: relative;
-`
+const { InfoBoxBlock } = MirrorMedia.blockRenderer
 
 const InfoBoxRenderButton = styled.div`
   cursor: pointer;
@@ -27,20 +24,6 @@ type InfoBoxBlockProps = {
     }) => void
   }
   contentState: ContentState
-}
-
-export function InfoBoxBlock(props: InfoBoxBlockProps) {
-  const { block, contentState } = props
-  const entityKey = block.getEntityAt(0)
-  const entity = contentState.getEntity(entityKey)
-  const { title, body } = entity.getData()
-
-  return (
-    <InfoBoxRenderWrapper>
-      <h2>{title}</h2>
-      <div dangerouslySetInnerHTML={{ __html: body }} />
-    </InfoBoxRenderWrapper>
-  )
 }
 
 export function InfoBoxEditorBlock(props: InfoBoxBlockProps) {

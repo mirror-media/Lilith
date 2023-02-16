@@ -1,18 +1,20 @@
-import { EmbeddedCodeBlock } from '../custom/block-renderer/embedded-code-block'
-import { MediaBlock } from '../custom/block-renderer/media-block'
-import { ImageBlock } from '../custom/block-renderer/image-block'
 import { InfoBoxEditorBlock as InfoBoxBlock } from '../custom/block-renderer/info-box-block'
-import {
-  SlideshowBlock,
-  SlideshowBlockV2,
-} from '../custom/block-renderer/slideshow-block'
-import { DividerBlock } from '../custom/block-renderer/divider-block'
 import { TableEditorBlock as TableBlock } from '../custom/block-renderer/table-block'
 import { ColorBoxEditorBlock as ColorBoxBlock } from '../custom/block-renderer/color-box-block'
 import { BGImageEditorBlock as BGImageBlock } from '../custom/block-renderer/background-image-block'
 import { BGVideoEditorBlock as BGVideoBlock } from '../custom/block-renderer/background-video-block'
-import { RelatedPostBlock } from '../custom/block-renderer/related-post-block'
 import { SideIndexEditorBlock as SideIndexBlock } from '../custom/block-renderer/side-index-block'
+import { MirrorMedia } from '@mirrormedia/lilith-draft-renderer'
+
+const {
+  EmbeddedCodeBlock,
+  MediaBlock,
+  ImageBlock,
+  SlideshowBlock,
+  SlideshowBlockV2,
+  DividerBlock,
+  RelatedPostBlock,
+} = MirrorMedia.blockRenderer
 
 const AtomicBlock = (props) => {
   const entity = props.contentState.getEntity(props.block.getEntityAt(0))

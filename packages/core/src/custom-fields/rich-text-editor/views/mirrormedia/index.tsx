@@ -14,7 +14,7 @@ import { EditorState, convertFromRaw, convertToRaw } from 'draft-js'
 // import { RichTextEditor, decorators } from '@mirrormedia/lilith-draft-editor'
 import { MirrorMedia } from '@mirrormedia/lilith-draft-editor'
 
-const { RichTextEditor, decorators } = MirrorMedia.DraftRenderer
+const { RichTextEditor, decorators } = MirrorMedia.DraftEditor
 export const Field = ({
   field,
   value,

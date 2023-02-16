@@ -3,13 +3,9 @@ import styled from 'styled-components'
 import { ContentBlock, ContentState } from 'draft-js'
 import draftConverter from '../../../../draft-js/editor/draft-converter'
 import { ColorBoxInput } from '../../../../draft-js/buttons/color-box'
+import { MirrorMedia } from '@mirrormedia/lilith-draft-renderer'
 
-const ColorBoxRenderWrapper = styled.div`
-  background-color: ${(props) => (props.color ? props.color : '#F5F4F3')};
-  padding: 30px;
-  position: relative;
-  color: white;
-`
+const { ColorBoxBlock } = MirrorMedia.blockRenderer
 
 const ColorBoxRenderButton = styled.div`
   cursor: pointer;
@@ -28,19 +24,6 @@ type ColorBoxBlockProps = {
     }) => void
   }
   contentState: ContentState
-}
-
-export function ColorBoxBlock(props: ColorBoxBlockProps) {
-  const { block, contentState } = props
-  const entityKey = block.getEntityAt(0)
-  const entity = contentState.getEntity(entityKey)
-  const { color, body } = entity.getData()
-
-  return (
-    <ColorBoxRenderWrapper color={color}>
-      <div dangerouslySetInnerHTML={{ __html: body }} />
-    </ColorBoxRenderWrapper>
-  )
 }
 
 export function ColorBoxEditorBlock(props: ColorBoxBlockProps) {

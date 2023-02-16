@@ -3,37 +3,9 @@ import styled from 'styled-components'
 import { ContentBlock, ContentState } from 'draft-js'
 import draftConverter from '../../../../draft-js/editor/draft-converter'
 import { BGVideoInput } from '../../../../draft-js/buttons/background-video'
+import { MirrorMedia } from '@mirrormedia/lilith-draft-renderer'
 
-const BGVideoRenderWrapper = styled.div`
-  position: relative;
-  padding: 30px;
-  width: 100%;
-  ${({ textBlockAlign }) => {
-    if (textBlockAlign === 'left') {
-      return `padding-right: 50%;`
-    } else if (textBlockAlign === 'right') {
-      return `padding-left: 50%;`
-    } else if (textBlockAlign === 'bottom') {
-      return `padding-top: 50%;`
-    }
-  }}
-`
-
-const BGVideoRednerVideo = styled.video`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  background-color: black;
-`
-
-const BGVideoRenderBody = styled.div`
-  background: rgba(0, 0, 0, 0.5);
-  padding: 4px 20px;
-  margin-bottom: 10px;
-`
+const { BGVideoBlock } = MirrorMedia.blockRenderer
 
 const BGVideoRenderButton = styled.span`
   cursor: pointer;
@@ -55,25 +27,6 @@ type BGVideoBlockProps = {
     }) => void
   }
   contentState: ContentState
-}
-
-export function BGVideoBlock(props: BGVideoBlockProps) {
-  const { block, contentState } = props
-  const entityKey = block.getEntityAt(0)
-  const entity = contentState.getEntity(entityKey)
-  const { textBlockAlign, video, body } = entity.getData()
-
-  return (
-    <React.Fragment>
-      <BGVideoRenderWrapper textBlockAlign={textBlockAlign}>
-        <BGVideoRednerVideo muted autoPlay loop>
-          <source src={video?.urlOriginal} />
-          <source src={video?.file?.url} />
-        </BGVideoRednerVideo>
-        <BGVideoRenderBody dangerouslySetInnerHTML={{ __html: body }} />
-      </BGVideoRenderWrapper>
-    </React.Fragment>
-  )
 }
 
 export function BGVideoEditorBlock(props: BGVideoBlockProps) {

@@ -8,15 +8,15 @@ import { Pagination } from './pagination'
 
 const postsQuery = gql`
   query Posts($searchText: String!, $take: Int, $skip: Int) {
-    postsCount(where: { title: { contains: $searchText } })
+    postsCount(where: { name: { contains: $searchText } })
     posts(
-      where: { title: { contains: $searchText } }
+      where: { name: { contains: $searchText } }
       take: $take
       skip: $skip
     ) {
       id
       slug
-      title
+      name
       subtitle
       heroImage {
         id
@@ -28,7 +28,7 @@ const postsQuery = gql`
           original
         }
       }
-      og_image {
+      ogImage {
         id
         name
         imageFile {
@@ -114,10 +114,10 @@ type ID = string
 
 export type PostEntity = {
   id: ID
-  title: string
+  name: string
   slug: string
   heroImage: ImageEntity
-  og_image: ImageEntity
+  ogImage: ImageEntity
 }
 
 export type PostEntityWithMeta = {
@@ -167,7 +167,7 @@ function PostGrid(props: {
             (e.currentTarget.src = post.heroImage?.imageFile?.url)
           }
         />
-        <PostTitle>{post.title}</PostTitle>
+        <PostTitle>{post.name}</PostTitle>
       </Post>
     </PostGridWrapper>
   )

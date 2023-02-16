@@ -16,13 +16,13 @@ const videosQuery = gql`
     ) {
       id
       name
-      urlOriginal
+      url
       file {
         filename
         filesize
         url
       }
-      heroImage {
+      coverPhoto {
         id
         name
         imageFile {
@@ -97,14 +97,14 @@ type ID = string
 export type VideoEntity = {
   id: ID
   name?: string
-  urlOriginal: string
+  url: string
   youtubeUrl?: string
   file: {
     filename?: string
     filesize: number
     url: string
   }
-  heroImage: ImageEntity
+  coverPhoto: ImageEntity
 }
 
 export type VideoEntityWithMeta = {
@@ -148,7 +148,7 @@ function VideoGrid(props: {
         {isSelected ? <i className="fas fa-check-circle"></i> : null}
       </VideoSelected>
       <Video muted loop>
-        <source src={video?.urlOriginal} />
+        <source src={video?.url} />
         <source src={video?.file?.url} />
       </Video>
     </VideoGridWrapper>
@@ -175,7 +175,7 @@ function VideoMetaGrid(props: {
   return (
     <VideoMetaGridWrapper>
       <Video muted autoPlay loop>
-        <source src={video?.urlOriginal} />
+        <source src={video?.url} />
         <source src={video?.file?.url} />
       </Video>
     </VideoMetaGridWrapper>

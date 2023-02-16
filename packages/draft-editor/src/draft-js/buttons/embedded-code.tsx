@@ -1,27 +1,7 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
 import { AtomicBlockUtils, EditorState } from 'draft-js'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { TextInput, TextArea } from '@keystone-ui/fields'
-
-export const Block = styled.div`
-  position: relative;
-  /* styles for image link */
-  img.img-responsive {
-    margin: 0 auto;
-    max-width: 100%;
-    height: auto;
-    display: block;
-  }
-`
-
-export const Caption = styled.div`
-  line-height: 1.43;
-  letter-spacing: 0.4px;
-  font-size: 14px;
-  color: #808080;
-  padding: 15px 15px 0 15px;
-`
 
 export function EmbeddedCodeButton(props) {
   const { editorState, onChange, className } = props
