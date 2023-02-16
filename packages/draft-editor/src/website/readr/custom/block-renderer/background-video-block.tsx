@@ -67,7 +67,7 @@ export function BGVideoBlock(props: BGVideoBlockProps) {
     <React.Fragment>
       <BGVideoRenderWrapper textBlockAlign={textBlockAlign}>
         <BGVideoRednerVideo muted autoPlay loop>
-          <source src={video?.url} />
+          <source src={video?.urlOriginal} />
           <source src={video?.file?.url} />
         </BGVideoRednerVideo>
         <BGVideoRenderBody dangerouslySetInnerHTML={{ __html: body }} />
