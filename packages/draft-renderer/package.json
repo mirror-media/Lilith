@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/readr-media/react.git",
+    "url": "https://github.com/mirror-media/Lilith.git",
     "directory": "packages/draft-editor"
   },
   "keywords": [
@@ -26,7 +26,7 @@
   },
   "peerDependencies": {
     "react": "18.1.0",
-    "react-dom": "^18.1.0",
+    "react-dom": "18.1.0",
     "styled-components": "5.3.5"
   },
   "files": [
