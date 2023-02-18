@@ -74,6 +74,23 @@ export const buttonNames = {
   sideIndex: 'side-index',
 }
 
+const disabledButtonsOnBasicEditor = [
+  buttonNames.annotation,
+  buttonNames.divider,
+  buttonNames.embed,
+  buttonNames.image,
+  buttonNames.infoBox,
+  buttonNames.slideshow,
+  buttonNames.table,
+  buttonNames.textAlign,
+  buttonNames.colorBox,
+  buttonNames.backgroundColor,
+  buttonNames.backgroundImage,
+  buttonNames.backgroundVideo,
+  buttonNames.relatedPost,
+  buttonNames.sideIndex,
+]
+
 type ButtonStyleProps = {
   isActive: boolean
   isDisabled: boolean
@@ -408,6 +425,9 @@ type RichTextEditorProps = {
   editorState: EditorState
   disabledButtons: string[]
 }
+
+type BasicEditorProps = RichTextEditorProps
+
 type State = {
   isEnlarged?: boolean
   readOnly: boolean
@@ -629,6 +649,14 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
         onEditStart,
         onEditFinish,
         getMainEditorReadOnly: () => this.state.readOnly,
+        renderBasicEditor: (propsOfBasicEditor: BasicEditorProps) => {
+          return (
+            <RichTextEditor
+              {...propsOfBasicEditor}
+              disabledButtons={disabledButtonsOnBasicEditor}
+            />
+          )
+        },
       }
     }
     return atomicBlockObj
@@ -645,6 +673,16 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
 
     const entityType = this.getEntityType(editorState)
     const customStyle = this.getCustomStyle(editorState.getCurrentInlineStyle())
+
+    const renderBasicEditor = (propsOfBasicEditor: BasicEditorProps) => {
+      return (
+        <RichTextEditor
+          {...propsOfBasicEditor}
+          disabledButtons={disabledButtonsOnBasicEditor}
+        />
+      )
+    }
+
     return (
       <DraftEditorContainer isEnlarged={isEnlarged}>
         <DraftEditorWrapper>
@@ -729,6 +767,7 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                   editorState={editorState}
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
+                  renderBasicEditor={renderBasicEditor}
                 />
               </ButtonGroup>
               <ButtonGroup>
@@ -755,6 +794,7 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                   editorState={editorState}
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
+                  renderBasicEditor={renderBasicEditor}
                 />
               </ButtonGroup>
               <ButtonGroup>
@@ -803,6 +843,7 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                   editorState={editorState}
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
+                  renderBasicEditor={renderBasicEditor}
                 />
               </ButtonGroup>
               <ButtonGroup>
@@ -828,6 +869,7 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
                   ImageSelector={ImageSelector}
+                  renderBasicEditor={renderBasicEditor}
                 />
               </ButtonGroup>
               <ButtonGroup>
@@ -839,6 +881,7 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
                   VideoSelector={VideoSelector}
+                  renderBasicEditor={renderBasicEditor}
                 />
               </ButtonGroup>
               <ButtonGroup>

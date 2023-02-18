@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
-import { ContentBlock, ContentState } from 'draft-js'
+import { ContentBlock, ContentState, RawDraftContentState } from 'draft-js'
 import styled from 'styled-components'
 import draftConverter from '../../../../draft-js/editor/draft-converter'
-import { InfoBoxInput } from '../../../../draft-js/buttons/info-box'
+import {
+  InfoBoxInput,
+  RenderBasicEditor,
+} from '../../../../draft-js/buttons/info-box'
 import { MirrorMedia } from '@mirrormedia/lilith-draft-renderer'
 
 const { InfoBoxBlock } = MirrorMedia.blockRenderer
@@ -22,6 +25,7 @@ type InfoBoxBlockProps = {
       entityKey?: string
       entityData?: Record<string, unknown>
     }) => void
+    renderBasicEditor: RenderBasicEditor
   }
   contentState: ContentState
 }
@@ -29,13 +33,16 @@ type InfoBoxBlockProps = {
 export function InfoBoxEditorBlock(props: InfoBoxBlockProps) {
   const [toShowInput, setToShowInput] = useState(false)
   const { block, blockProps, contentState } = props
-  const { onEditStart, onEditFinish } = blockProps
+  const { onEditStart, onEditFinish, renderBasicEditor } = blockProps
   const entityKey = block.getEntityAt(0)
   const entity = contentState.getEntity(entityKey)
   const { title, rawContentState } = entity.getData()
   const onChange = ({
     title: newTitle,
     rawContentState: newRawContentState,
+  }: {
+    title: string
+    rawContentState: RawDraftContentState
   }) => {
     // close `InfoBoxInput`
     setToShowInput(false)
@@ -53,6 +60,7 @@ export function InfoBoxEditorBlock(props: InfoBoxBlockProps) {
   return (
     <React.Fragment>
       <InfoBoxInput
+        renderBasicEditor={renderBasicEditor}
         title={title}
         rawContentStateForInfoBoxEditor={rawContentState}
         onChange={onChange}

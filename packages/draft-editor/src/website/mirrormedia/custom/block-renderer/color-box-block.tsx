@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { ContentBlock, ContentState } from 'draft-js'
+import { ContentBlock, ContentState, RawDraftContentState } from 'draft-js'
 import draftConverter from '../../../../draft-js/editor/draft-converter'
-import { ColorBoxInput } from '../../../../draft-js/buttons/color-box'
+import {
+  ColorBoxInput,
+  RenderBasicEditor,
+} from '../../../../draft-js/buttons/color-box'
 import { MirrorMedia } from '@mirrormedia/lilith-draft-renderer'
 
 const { ColorBoxBlock } = MirrorMedia.blockRenderer
@@ -22,6 +25,7 @@ type ColorBoxBlockProps = {
       entityKey?: string
       entityData?: Record<string, unknown>
     }) => void
+    renderBasicEditor: RenderBasicEditor
   }
   contentState: ContentState
 }
@@ -29,13 +33,16 @@ type ColorBoxBlockProps = {
 export function ColorBoxEditorBlock(props: ColorBoxBlockProps) {
   const [toShowInput, setToShowInput] = useState(false)
   const { block, blockProps, contentState } = props
-  const { onEditStart, onEditFinish } = blockProps
+  const { onEditStart, onEditFinish, renderBasicEditor } = blockProps
   const entityKey = block.getEntityAt(0)
   const entity = contentState.getEntity(entityKey)
   const { color, rawContentState } = entity.getData()
   const onChange = ({
     color: newColor,
     rawContentState: newRawContentState,
+  }: {
+    color: string
+    rawContentState: RawDraftContentState
   }) => {
     // close `ColorBoxInput`
     setToShowInput(false)
@@ -53,6 +60,7 @@ export function ColorBoxEditorBlock(props: ColorBoxBlockProps) {
   return (
     <React.Fragment>
       <ColorBoxInput
+        renderBasicEditor={renderBasicEditor}
         color={color}
         rawContentStateForColorBoxEditor={rawContentState}
         onChange={onChange}

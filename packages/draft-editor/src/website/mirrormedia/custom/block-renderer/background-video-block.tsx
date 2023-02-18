@@ -2,7 +2,10 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { ContentBlock, ContentState } from 'draft-js'
 import draftConverter from '../../../../draft-js/editor/draft-converter'
-import { BGVideoInput } from '../../../../draft-js/buttons/background-video'
+import {
+  BGVideoInput,
+  RenderBasicEditor,
+} from '../../../../draft-js/buttons/background-video'
 import { MirrorMedia } from '@mirrormedia/lilith-draft-renderer'
 
 const { BGVideoBlock } = MirrorMedia.blockRenderer
@@ -25,6 +28,7 @@ type BGVideoBlockProps = {
       entityKey?: string
       entityData?: Record<string, unknown>
     }) => void
+    renderBasicEditor: RenderBasicEditor
   }
   contentState: ContentState
 }
@@ -32,7 +36,7 @@ type BGVideoBlockProps = {
 export function BGVideoEditorBlock(props: BGVideoBlockProps) {
   const [toShowInput, setToShowInput] = useState(false)
   const { block, blockProps, contentState } = props
-  const { onEditStart, onEditFinish } = blockProps
+  const { onEditStart, onEditFinish, renderBasicEditor } = blockProps
   const entityKey = block.getEntityAt(0)
   const entity = contentState.getEntity(entityKey)
   const { textBlockAlign, video, rawContentState } = entity.getData()
@@ -57,6 +61,7 @@ export function BGVideoEditorBlock(props: BGVideoBlockProps) {
   return (
     <React.Fragment>
       <BGVideoInput
+        renderBasicEditor={renderBasicEditor}
         textBlockAlign={textBlockAlign}
         video={video}
         rawContentStateForBGVideoEditor={rawContentState}

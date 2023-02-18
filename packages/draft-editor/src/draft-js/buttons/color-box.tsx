@@ -7,7 +7,6 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js'
-import { BasicEditor } from '../editor/basic-editor'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { TextInput } from '@keystone-ui/fields'
 import draftConverter from '../editor/draft-converter'
@@ -23,6 +22,11 @@ const ColorHexInput = styled(TextInput)`
   margin-bottom: 10px;
 `
 
+export type RenderBasicEditor = (propsOfBasicEditor: {
+  onChange: (es: EditorState) => void
+  editorState: EditorState
+}) => React.ReactElement
+
 type ColorBoxInputType = {
   color?: string
   rawContentStateForColorBoxEditor?: RawDraftContentState
@@ -35,6 +39,7 @@ type ColorBoxInputType = {
     rawContentState: RawDraftContentState
   }) => void
   onCancel: () => void
+  renderBasicEditor: RenderBasicEditor
 }
 
 export function ColorBoxInput(props: ColorBoxInputType) {
@@ -44,6 +49,7 @@ export function ColorBoxInput(props: ColorBoxInputType) {
     onCancel,
     color,
     rawContentStateForColorBoxEditor,
+    renderBasicEditor,
   } = props
   const rawContentState = rawContentStateForColorBoxEditor || {
     blocks: [],
@@ -78,6 +84,16 @@ export function ColorBoxInput(props: ColorBoxInputType) {
       setInputValue(initialInputValue)
     }
   }, [isOpen])
+
+  const basicEditorJsx = renderBasicEditor({
+    editorState: inputValue.editorStateOfBasicEditor,
+    onChange: (editorStateOfBasicEditor: EditorState) => {
+      setInputValue({
+        color: inputValue.color,
+        editorStateOfBasicEditor,
+      })
+    },
+  })
 
   return (
     <DrawerController isOpen={isOpen}>
@@ -119,15 +135,7 @@ export function ColorBoxInput(props: ColorBoxInputType) {
           value={inputValue.color}
         />
         <Label>內文</Label>
-        <BasicEditor
-          editorState={inputValue.editorStateOfBasicEditor}
-          onChange={(editorStateOfBasicEditor) => {
-            setInputValue({
-              color: inputValue.color,
-              editorStateOfBasicEditor,
-            })
-          }}
-        />
+        {basicEditorJsx}
       </Drawer>
     </DrawerController>
   )
@@ -137,13 +145,25 @@ type ColorBoxButtonProps = {
   className: string
   editorState: EditorState
   onChange: ({ editorState }: { editorState: EditorState }) => void
+  renderBasicEditor: RenderBasicEditor
 }
 
 export function ColorBoxButton(props: ColorBoxButtonProps) {
   const [toShowInput, setToShowInput] = useState(false)
-  const { className, editorState, onChange: onEditorStateChange } = props
+  const {
+    className,
+    editorState,
+    onChange: onEditorStateChange,
+    renderBasicEditor,
+  } = props
 
-  const onChange = ({ color, rawContentState }) => {
+  const onChange = ({
+    color,
+    rawContentState,
+  }: {
+    color: string
+    rawContentState: RawDraftContentState
+  }) => {
     const contentState = editorState.getCurrentContent()
 
     // create an ColorBox entity
@@ -172,6 +192,7 @@ export function ColorBoxButton(props: ColorBoxButtonProps) {
   return (
     <React.Fragment>
       <ColorBoxInput
+        renderBasicEditor={renderBasicEditor}
         onChange={onChange}
         onCancel={() => {
           setToShowInput(false)

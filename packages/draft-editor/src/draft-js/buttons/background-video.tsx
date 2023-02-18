@@ -7,7 +7,6 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js'
-import { BasicEditor } from '../editor/basic-editor'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { Button } from '@keystone-ui/button'
 import draftConverter from '../editor/draft-converter'
@@ -30,6 +29,11 @@ const VideoInputText = styled.span`
   margin-right: 10px;
 `
 
+export type RenderBasicEditor = (propsOfBasicEditor: {
+  onChange: (es: EditorState) => void
+  editorState: EditorState
+}) => React.ReactElement
+
 type BGVideoInputOnChange = ({
   textBlockAlign,
   video,
@@ -48,6 +52,7 @@ type BGVideoInputType = {
   onChange: BGVideoInputOnChange
   onCancel: () => void
   VideoSelector: typeof DefaultVideoSelector
+  renderBasicEditor: RenderBasicEditor
 }
 
 export function BGVideoInput(props: BGVideoInputType) {
@@ -59,6 +64,7 @@ export function BGVideoInput(props: BGVideoInputType) {
     video,
     rawContentStateForBGVideoEditor,
     VideoSelector = DefaultVideoSelector,
+    renderBasicEditor,
   } = props
   const rawContentState = rawContentStateForBGVideoEditor || {
     blocks: [],
@@ -115,6 +121,16 @@ export function BGVideoInput(props: BGVideoInputType) {
     }))
     setToShowVideoSelector(false)
   }
+
+  const basicEditorJsx = renderBasicEditor({
+    editorState: inputValue.editorStateOfBasicEditor,
+    onChange: (editorStateOfBasicEditor: EditorState) => {
+      setInputValue((oldInputValue) => ({
+        ...oldInputValue,
+        editorStateOfBasicEditor,
+      }))
+    },
+  })
 
   useEffect(() => {
     if (isOpen) {
@@ -178,15 +194,7 @@ export function BGVideoInput(props: BGVideoInputType) {
             }}
           />
           <Label>內文</Label>
-          <BasicEditor
-            editorState={inputValue.editorStateOfBasicEditor}
-            onChange={(editorStateOfBasicEditor) => {
-              setInputValue((oldInputValue) => ({
-                ...oldInputValue,
-                editorStateOfBasicEditor,
-              }))
-            }}
-          />
+          {basicEditorJsx}
         </Drawer>
       </DrawerController>
     </>
@@ -198,6 +206,7 @@ type BGVideoButtonProps = {
   editorState: EditorState
   onChange: ({ editorState }: { editorState: EditorState }) => void
   VideoSelector: typeof DefaultVideoSelector
+  renderBasicEditor: RenderBasicEditor
 }
 
 export function BGVideoButton(props: BGVideoButtonProps) {
@@ -207,6 +216,7 @@ export function BGVideoButton(props: BGVideoButtonProps) {
     editorState,
     onChange: onEditorStateChange,
     VideoSelector,
+    renderBasicEditor,
   } = props
 
   const onChange: BGVideoInputOnChange = ({
@@ -243,6 +253,7 @@ export function BGVideoButton(props: BGVideoButtonProps) {
   return (
     <React.Fragment>
       <BGVideoInput
+        renderBasicEditor={renderBasicEditor}
         onChange={onChange}
         onCancel={() => {
           setToShowInput(false)

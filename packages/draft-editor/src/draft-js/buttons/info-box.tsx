@@ -7,7 +7,6 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js'
-import { BasicEditor } from '../editor/basic-editor'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { TextInput } from '@keystone-ui/fields'
 import draftConverter from '../editor/draft-converter'
@@ -17,6 +16,11 @@ const TitleInput = styled(TextInput)`
   margin-top: 30px;
   margin-bottom: 10px;
 `
+
+export type RenderBasicEditor = (propsOfBasicEditor: {
+  onChange: (es: EditorState) => void
+  editorState: EditorState
+}) => React.ReactElement
 
 type InfoBoxInputType = {
   title?: string
@@ -30,6 +34,7 @@ type InfoBoxInputType = {
     rawContentState: RawDraftContentState
   }) => void
   onCancel: () => void
+  renderBasicEditor: RenderBasicEditor
 }
 
 export function InfoBoxInput(props: InfoBoxInputType) {
@@ -39,6 +44,7 @@ export function InfoBoxInput(props: InfoBoxInputType) {
     onCancel,
     title,
     rawContentStateForInfoBoxEditor,
+    renderBasicEditor,
   } = props
   const rawContentState = rawContentStateForInfoBoxEditor || {
     blocks: [],
@@ -58,6 +64,16 @@ export function InfoBoxInput(props: InfoBoxInputType) {
   const clearInputValue = () => {
     setInputValue(initialInputValue)
   }
+
+  const basicEditorJsx = renderBasicEditor({
+    editorState: inputValue.editorStateOfBasicEditor,
+    onChange: (editorStateOfBasicEditor: EditorState) => {
+      setInputValue({
+        title: inputValue.title,
+        editorStateOfBasicEditor,
+      })
+    },
+  })
 
   return (
     <DrawerController isOpen={isOpen}>
@@ -97,15 +113,7 @@ export function InfoBoxInput(props: InfoBoxInputType) {
           placeholder="Title"
           value={inputValue.title}
         />
-        <BasicEditor
-          editorState={inputValue.editorStateOfBasicEditor}
-          onChange={(editorStateOfBasicEditor) => {
-            setInputValue({
-              title: inputValue.title,
-              editorStateOfBasicEditor,
-            })
-          }}
-        />
+        {basicEditorJsx}
       </Drawer>
     </DrawerController>
   )
@@ -115,13 +123,25 @@ type InfoBoxButtonProps = {
   className: string
   editorState: EditorState
   onChange: ({ editorState }: { editorState: EditorState }) => void
+  renderBasicEditor: RenderBasicEditor
 }
 
 export function InfoBoxButton(props: InfoBoxButtonProps) {
   const [toShowInput, setToShowInput] = useState(false)
-  const { className, editorState, onChange: onEditorStateChange } = props
+  const {
+    className,
+    editorState,
+    onChange: onEditorStateChange,
+    renderBasicEditor,
+  } = props
 
-  const onChange = ({ title, rawContentState }) => {
+  const onChange = ({
+    title,
+    rawContentState,
+  }: {
+    title: string
+    rawContentState: RawDraftContentState
+  }) => {
     const contentState = editorState.getCurrentContent()
 
     // create an InfoBox entity
@@ -150,6 +170,7 @@ export function InfoBoxButton(props: InfoBoxButtonProps) {
   return (
     <React.Fragment>
       <InfoBoxInput
+        renderBasicEditor={renderBasicEditor}
         onChange={onChange}
         onCancel={() => {
           setToShowInput(false)

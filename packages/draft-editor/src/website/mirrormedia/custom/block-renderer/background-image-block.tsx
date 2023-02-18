@@ -2,7 +2,10 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { ContentBlock, ContentState } from 'draft-js'
 import draftConverter from '../../../../draft-js/editor/draft-converter'
-import { BGImageInput } from '../../../../draft-js/buttons/background-image'
+import {
+  BGImageInput,
+  RenderBasicEditor,
+} from '../../../../draft-js/buttons/background-image'
 import { MirrorMedia } from '@mirrormedia/lilith-draft-renderer'
 
 const { BGImageBlock } = MirrorMedia.blockRenderer
@@ -25,6 +28,7 @@ type BGImageBlockProps = {
       entityKey?: string
       entityData?: Record<string, unknown>
     }) => void
+    renderBasicEditor: RenderBasicEditor
   }
   contentState: ContentState
 }
@@ -32,7 +36,7 @@ type BGImageBlockProps = {
 export function BGImageEditorBlock(props: BGImageBlockProps) {
   const [toShowInput, setToShowInput] = useState(false)
   const { block, blockProps, contentState } = props
-  const { onEditStart, onEditFinish } = blockProps
+  const { onEditStart, onEditFinish, renderBasicEditor } = blockProps
   const entityKey = block.getEntityAt(0)
   const entity = contentState.getEntity(entityKey)
   const { textBlockAlign, image, rawContentState } = entity.getData()
@@ -57,6 +61,7 @@ export function BGImageEditorBlock(props: BGImageBlockProps) {
   return (
     <React.Fragment>
       <BGImageInput
+        renderBasicEditor={renderBasicEditor}
         textBlockAlign={textBlockAlign}
         image={image}
         rawContentStateForBGImageEditor={rawContentState}
