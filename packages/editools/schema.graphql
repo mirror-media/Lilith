@@ -2362,20 +2362,6 @@ input KaraokeWhereUniqueInput {
   id: ID
 }
 
-type LocalFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
-type CloudFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
 type LocalImageFieldOutput implements ImageFieldOutput {
   id: ID!
   filesize: Int!
@@ -2445,6 +2431,95 @@ input KaraokeCreateInput {
   audio: FileFieldInput
   imageFile: ImageFieldInput
   imageLink: String
+  muteHint: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type VideoPicker {
+  id: ID!
+  name: String
+  video1920: FileFieldOutput
+  video1440: FileFieldOutput
+  video1280: FileFieldOutput
+  video920: FileFieldOutput
+  video720: FileFieldOutput
+  muteHint: Boolean
+  embedCode: String
+  previewButton: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input VideoPickerWhereUniqueInput {
+  id: ID
+}
+
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+type CloudFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+input VideoPickerWhereInput {
+  AND: [VideoPickerWhereInput!]
+  OR: [VideoPickerWhereInput!]
+  NOT: [VideoPickerWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  muteHint: BooleanFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input VideoPickerOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  muteHint: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input VideoPickerUpdateInput {
+  name: String
+  video1920: FileFieldInput
+  video1440: FileFieldInput
+  video1280: FileFieldInput
+  video920: FileFieldInput
+  video720: FileFieldInput
+  muteHint: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input VideoPickerUpdateArgs {
+  where: VideoPickerWhereUniqueInput!
+  data: VideoPickerUpdateInput!
+}
+
+input VideoPickerCreateInput {
+  name: String
+  video1920: FileFieldInput
+  video1440: FileFieldInput
+  video1280: FileFieldInput
+  video920: FileFieldInput
+  video720: FileFieldInput
   muteHint: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -2860,6 +2935,15 @@ type Mutation {
   updateKaraokes(data: [KaraokeUpdateArgs!]!): [Karaoke]
   deleteKaraoke(where: KaraokeWhereUniqueInput!): Karaoke
   deleteKaraokes(where: [KaraokeWhereUniqueInput!]!): [Karaoke]
+  createVideoPicker(data: VideoPickerCreateInput!): VideoPicker
+  createVideoPickers(data: [VideoPickerCreateInput!]!): [VideoPicker]
+  updateVideoPicker(
+    where: VideoPickerWhereUniqueInput!
+    data: VideoPickerUpdateInput!
+  ): VideoPicker
+  updateVideoPickers(data: [VideoPickerUpdateArgs!]!): [VideoPicker]
+  deleteVideoPicker(where: VideoPickerWhereUniqueInput!): VideoPicker
+  deleteVideoPickers(where: [VideoPickerWhereUniqueInput!]!): [VideoPicker]
   createQAList(data: QAListCreateInput!): QAList
   createQALists(data: [QAListCreateInput!]!): [QAList]
   updateQAList(where: QAListWhereUniqueInput!, data: QAListUpdateInput!): QAList
@@ -3080,6 +3164,14 @@ type Query {
   ): [Karaoke!]
   karaoke(where: KaraokeWhereUniqueInput!): Karaoke
   karaokesCount(where: KaraokeWhereInput! = {}): Int
+  videoPickers(
+    where: VideoPickerWhereInput! = {}
+    orderBy: [VideoPickerOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [VideoPicker!]
+  videoPicker(where: VideoPickerWhereUniqueInput!): VideoPicker
+  videoPickersCount(where: VideoPickerWhereInput! = {}): Int
   qALists(
     where: QAListWhereInput! = {}
     orderBy: [QAListOrderByInput!]! = []

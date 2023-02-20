@@ -56,6 +56,8 @@ model User {
   from_IndexItem_updatedBy           IndexItem[]           @relation("IndexItem_updatedBy")
   from_Karaoke_createdBy             Karaoke[]             @relation("Karaoke_createdBy")
   from_Karaoke_updatedBy             Karaoke[]             @relation("Karaoke_updatedBy")
+  from_VideoPicker_createdBy         VideoPicker[]         @relation("VideoPicker_createdBy")
+  from_VideoPicker_updatedBy         VideoPicker[]         @relation("VideoPicker_updatedBy")
   from_QAList_createdBy              QAList[]              @relation("QAList_createdBy")
   from_QAList_updatedBy              QAList[]              @relation("QAList_updatedBy")
   from_QAItem_createdBy              QAItem[]              @relation("QAItem_createdBy")
@@ -564,6 +566,36 @@ model Karaoke {
   createdById         Int?      @map("createdBy")
   updatedBy           User?     @relation("Karaoke_updatedBy", fields: [updatedById], references: [id])
   updatedById         Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model VideoPicker {
+  id                 Int       @id @default(autoincrement())
+  name               String    @default("")
+  video1920_filesize Int?
+  video1920_mode     String?
+  video1920_filename String?
+  video1440_filesize Int?
+  video1440_mode     String?
+  video1440_filename String?
+  video1280_filesize Int?
+  video1280_mode     String?
+  video1280_filename String?
+  video920_filesize  Int?
+  video920_mode      String?
+  video920_filename  String?
+  video720_filesize  Int?
+  video720_mode      String?
+  video720_filename  String?
+  muteHint           Boolean   @default(false)
+  createdAt          DateTime?
+  updatedAt          DateTime?
+  createdBy          User?     @relation("VideoPicker_createdBy", fields: [createdById], references: [id])
+  createdById        Int?      @map("createdBy")
+  updatedBy          User?     @relation("VideoPicker_updatedBy", fields: [updatedById], references: [id])
+  updatedById        Int?      @map("updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
