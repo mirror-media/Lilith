@@ -467,8 +467,8 @@ input AuthorWhereInput {
   id: IDFilter
   name: StringFilter
   name_en: StringFilter
-  title: StringFilter
-  title_en: StringFilter
+  title: StringNullableFilter
+  title_en: StringNullableFilter
   email: StringNullableFilter
   image: PhotoWhereInput
   homepage: StringFilter
@@ -646,8 +646,10 @@ input ProjectRelateToManyForCreateInput {
 type PageVariable {
   id: ID!
   name: String
+  relatedImage: Photo
   value: JSON
   page: String
+  url: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -664,7 +666,9 @@ input PageVariableWhereInput {
   NOT: [PageVariableWhereInput!]
   id: IDFilter
   name: StringFilter
+  relatedImage: PhotoWhereInput
   page: StringNullableFilter
+  url: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -675,14 +679,17 @@ input PageVariableOrderByInput {
   id: OrderDirection
   name: OrderDirection
   page: OrderDirection
+  url: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input PageVariableUpdateInput {
   name: String
+  relatedImage: PhotoRelateToOneForUpdateInput
   value: JSON
   page: String
+  url: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -696,8 +703,10 @@ input PageVariableUpdateArgs {
 
 input PageVariableCreateInput {
   name: String
+  relatedImage: PhotoRelateToOneForCreateInput
   value: JSON
   page: String
+  url: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
