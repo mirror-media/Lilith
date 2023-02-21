@@ -158,22 +158,27 @@ const listConfigurations = list({
     summary: customFields.richTextEditor({
       label: '重點摘要',
       disabledButtons: [],
+      website: 'readr',
     }),
     brief: customFields.richTextEditor({
       label: '前言',
       disabledButtons: [],
+      website: 'readr',
     }),
     content: customFields.richTextEditor({
       label: '內文',
       disabledButtons: [],
+      website: 'readr',
     }),
     actionList: customFields.richTextEditor({
       label: '延伸議題',
       disabledButtons: [],
+      website: 'readr',
     }),
     citation: customFields.richTextEditor({
       label: '引用數據',
       disabledButtons: [],
+      website: 'readr',
     }),
     readringTime: integer({
       label: '閱讀時間',
