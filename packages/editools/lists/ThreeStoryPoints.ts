@@ -29,24 +29,30 @@ const listConfigurations = list({
     }),
     camerHelper: virtual({
       field: graphql.field({
-        type: graphql.String,
-        resolve(item: Record<string, unknown>): string {
-          return `/files/${item.model_filename}`
+        type: graphql.JSON,
+        resolve(item: Record<string, unknown>): Record<string, string> {
+          return {
+            href: `/three/camera-helper/index.html?three-story-point-id=${item.id}`,
+            label: '建立鏡頭移動軌跡（Camera Helper）',
+          }
         },
       }),
       ui: {
-        views: require.resolve('./three-camera-helper'),
+        views: require.resolve('./views/link-button'),
       },
     }),
     preview: virtual({
       field: graphql.field({
-        type: graphql.String,
-        resolve(item: Record<string, unknown>): string {
-          return `${item.id}`
+        type: graphql.JSON,
+        resolve(item: Record<string, unknown>): Record<string, string> {
+          return {
+            href: `/three/story-points/preview.html?id=${item.id}`,
+            label: 'Preview',
+          }
         },
       }),
       ui: {
-        views: require.resolve('./three-story-points'),
+        views: require.resolve('./views/link-button'),
       },
     }),
   },

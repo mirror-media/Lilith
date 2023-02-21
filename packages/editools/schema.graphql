@@ -2160,7 +2160,7 @@ type InlineIndex {
   ): [IndexItem!]
   indexCount(where: IndexItemWhereInput! = {}): Int
   embedCode: String
-  previewButton: String
+  previewButton: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2351,7 +2351,7 @@ type Karaoke {
   imageLink: String
   muteHint: Boolean
   embedCode: String
-  previewButton: String
+  previewButton: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2680,7 +2680,7 @@ type FeedbackCounter {
   thumbUpLabel: String
   thumbDownLabel: String
   embeddedCode: String
-  previewButton: String
+  previewButton: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2760,8 +2760,8 @@ type ThreeStoryPoint {
   model: FileFieldOutput
   captions: JSON
   cameraRig: JSON
-  camerHelper: String
-  preview: String
+  camerHelper: JSON
+  preview: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User

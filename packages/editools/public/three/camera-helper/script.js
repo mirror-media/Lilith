@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { CameraRig, FreeMovementControls, CameraHelper } from 'three-story-controls'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
-
+import { loadGltfModel, loadThreeStoryPointItem } from 'utils'
 
 // Parent Node
 const canvasParent = document.querySelector('.canvas-parent')
@@ -15,35 +15,20 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
-/**
- * Load model
- */
-const dracoLoader = new DRACOLoader()
-dracoLoader.setDecoderPath('https://cdn.skypack.dev/three@0.149.0/examples/js/libs/draco/')
-const gltfLoader = new GLTFLoader()
-gltfLoader.setDRACOLoader(dracoLoader)
-
 const queryString = window.location.search
 const params = new URLSearchParams(queryString)
-const modelUrl = decodeURIComponent(params.get('model_url'))
+const itemId = decodeURIComponent(params.get('three-story-point-id'))
 
-gltfLoader.load(
-  // resource URL
-  modelUrl,
-  // called when the resource is loaded
-  function (gltf) {
-  //  gltf.scene.scale.set(0.025, 0.025,0.025)
-    scene.add(gltf.scene)
-  },
-  // called while loading is progressing
-  function (xhr) {
-    console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-  },
-  // called when loading has errors
-  function (err) {
-    console.error('Error to load 3D model', err)
-  }
-)
+loadThreeStoryPointItem(itemId)
+  .then((item) => {
+    return loadGltfModel(item?.model?.url)
+  })
+  .then(model => {
+    scene.add(model.scene)
+  })
+  .catch(err => {
+    console.error(err)
+  })
 
 /**
  * Lights
