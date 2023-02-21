@@ -1,6 +1,6 @@
 {
   "name": "@mirrormedia/lilith-draft-editor",
-  "version": "1.0.0-beta4",
+  "version": "1.0.1",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -23,7 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "draft-js": "^0.11.7",
-    "@mirrormedia/lilith-draft-renderer": "1.0.0-beta4"
+    "@mirrormedia/lilith-draft-renderer": "1.0.0"
   },
   "peerDependencies": {
     "react": "18.1.0",
