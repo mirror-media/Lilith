@@ -3,15 +3,14 @@ import { AlertDialog } from '@keystone-ui/modals'
 import { EditorState } from 'draft-js'
 import { TextInput } from '@keystone-ui/fields'
 import styled from 'styled-components'
-import { Modifier } from '../editor/modifier'
+import { Modifier } from '../modifier'
+import { CUSTOM_STYLE_PREFIX_FONT_COLOR } from '../const'
 
 const ColorHexInput = styled(TextInput)`
   font-family: Georgia, serif;
   margin-right: 10px;
   padding: 10px;
 `
-
-export const CUSTOM_STYLE_PREFIX_FONT_COLOR = 'FONT_COLOR_'
 
 export function FontColorButton(props) {
   const { isActive, editorState, onChange } = props

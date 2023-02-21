@@ -12,7 +12,7 @@ import {
 import { CellContainer, CellLink } from '@keystone-6/core/admin-ui/components'
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js'
 // import { RichTextEditor, decorators } from '@mirrormedia/lilith-draft-editor'
-import { Readr } from '@mirrormedia/lilith-draft-editor'
+import Readr from '@mirrormedia/lilith-draft-editor/lib/website/readr'
 
 const { RichTextEditor, decorators } = Readr.DraftEditor
 export const Field = ({

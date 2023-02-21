@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
-import decorators from '../editor/entity-decorator'
 import {
   AtomicBlockUtils,
   EditorState,
   RawDraftContentState,
   convertToRaw,
   convertFromRaw,
+  CompositeDecorator,
 } from 'draft-js'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { TextInput } from '@keystone-ui/fields'
-import draftConverter from '../editor/draft-converter'
+import draftConverter from '../draft-converter'
 import styled from 'styled-components'
 
 const TitleInput = styled(TextInput)`
@@ -35,6 +35,7 @@ type InfoBoxInputType = {
   }) => void
   onCancel: () => void
   renderBasicEditor: RenderBasicEditor
+  decorators: CompositeDecorator
 }
 
 export function InfoBoxInput(props: InfoBoxInputType) {
@@ -45,6 +46,7 @@ export function InfoBoxInput(props: InfoBoxInputType) {
     title,
     rawContentStateForInfoBoxEditor,
     renderBasicEditor,
+    decorators,
   } = props
   const rawContentState = rawContentStateForInfoBoxEditor || {
     blocks: [],

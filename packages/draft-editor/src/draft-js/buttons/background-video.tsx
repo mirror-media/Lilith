@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import decorators from '../editor/entity-decorator'
 import {
   AtomicBlockUtils,
   EditorState,
   RawDraftContentState,
   convertToRaw,
   convertFromRaw,
+  CompositeDecorator,
 } from 'draft-js'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { Button } from '@keystone-ui/button'
-import draftConverter from '../editor/draft-converter'
+import draftConverter from '../draft-converter'
 import styled from 'styled-components'
 import {
   VideoSelector as DefaultVideoSelector,
@@ -53,6 +53,7 @@ type BGVideoInputType = {
   onCancel: () => void
   VideoSelector: typeof DefaultVideoSelector
   renderBasicEditor: RenderBasicEditor
+  decorators: CompositeDecorator
 }
 
 export function BGVideoInput(props: BGVideoInputType) {
@@ -65,6 +66,7 @@ export function BGVideoInput(props: BGVideoInputType) {
     rawContentStateForBGVideoEditor,
     VideoSelector = DefaultVideoSelector,
     renderBasicEditor,
+    decorators,
   } = props
   const rawContentState = rawContentStateForBGVideoEditor || {
     blocks: [],

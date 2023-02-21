@@ -1,6 +1,6 @@
 import React from 'react'
 import { EditorState } from 'draft-js'
-import { Modifier } from '../editor/modifier'
+import { Modifier } from '../modifier'
 
 const toggleSelectionTextAlign = (editorState, textAlign) => {
   return setSelectionBlockData(editorState, {

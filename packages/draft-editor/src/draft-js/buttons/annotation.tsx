@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { EditorState, RichUtils, convertToRaw } from 'draft-js'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
-import decorators from '../editor/entity-decorator'
-import draftConverter from '../editor/draft-converter'
+import draftConverter from '../draft-converter'
 
 function escapeHTML(s) {
   return s
@@ -15,7 +14,13 @@ function escapeHTML(s) {
 
 export function AnnotationButton(props) {
   const toggleEntity = RichUtils.toggleLink
-  const { isActive, editorState, onChange, renderBasicEditor } = props
+  const {
+    isActive,
+    editorState,
+    onChange,
+    renderBasicEditor,
+    decorators,
+  } = props
   const [toShowInput, setToShowInput] = useState(false)
   const [inputValue, setInputValue] = useState({
     editorStateOfBasicEditor: EditorState.createEmpty(decorators),
