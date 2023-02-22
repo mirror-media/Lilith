@@ -20,6 +20,7 @@ const listConfigurations = list({
     value: customFields.richTextEditor({
       label: '內容',
       disabledButtons: [],
+      website: 'readr',
     }),
     page: select({
       label: '所屬頁面',

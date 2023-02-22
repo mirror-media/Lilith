@@ -55,20 +55,22 @@ const listConfigurations = list({
       customConfig: {
         isImage: true,
       },
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor),
-		  update: allowRoles(admin, moderator),
-		  create: allowRoles(admin, moderator),
-		  delete: allowRoles(admin),
-		},
-  	  },
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor),
+          update: allowRoles(admin, moderator),
+          create: allowRoles(admin, moderator),
+          delete: allowRoles(admin),
+        },
+      },
     }),
     heroImageLink: text({
       label: '首圖網址',
     }),
     content: customFields.richTextEditor({
       label: '內文',
+      disabledButtons: [],
+      website: 'readr',
     }),
     sortOrder: integer({
       label: '排序',
