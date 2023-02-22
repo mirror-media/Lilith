@@ -64,6 +64,8 @@ model User {
   from_QAItem_updatedBy              QAItem[]              @relation("QAItem_updatedBy")
   from_FeedbackCounter_createdBy     FeedbackCounter[]     @relation("FeedbackCounter_createdBy")
   from_FeedbackCounter_updatedBy     FeedbackCounter[]     @relation("FeedbackCounter_updatedBy")
+  from_ThreeStoryPoint_createdBy     ThreeStoryPoint[]     @relation("ThreeStoryPoint_createdBy")
+  from_ThreeStoryPoint_updatedBy     ThreeStoryPoint[]     @relation("ThreeStoryPoint_updatedBy")
 }
 
 model LiveblogItem {
@@ -651,6 +653,25 @@ model FeedbackCounter {
   updatedById        Int?      @map("updatedBy")
 
   @@index([formId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model ThreeStoryPoint {
+  id             Int       @id @default(autoincrement())
+  name           String    @default("")
+  model_filesize Int?
+  model_mode     String?
+  model_filename String?
+  captions       Json?     @default("[]")
+  cameraRig      Json?     @default("[]")
+  createdAt      DateTime?
+  updatedAt      DateTime?
+  createdBy      User?     @relation("ThreeStoryPoint_createdBy", fields: [createdById], references: [id])
+  createdById    Int?      @map("createdBy")
+  updatedBy      User?     @relation("ThreeStoryPoint_updatedBy", fields: [updatedById], references: [id])
+  updatedById    Int?      @map("updatedBy")
+
   @@index([createdById])
   @@index([updatedById])
 }

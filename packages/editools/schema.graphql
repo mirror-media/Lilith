@@ -2160,7 +2160,7 @@ type InlineIndex {
   ): [IndexItem!]
   indexCount(where: IndexItemWhereInput! = {}): Int
   embedCode: String
-  previewButton: String
+  previewButton: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2351,7 +2351,7 @@ type Karaoke {
   imageLink: String
   muteHint: Boolean
   embedCode: String
-  previewButton: String
+  previewButton: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2680,7 +2680,7 @@ type FeedbackCounter {
   thumbUpLabel: String
   thumbDownLabel: String
   embeddedCode: String
-  previewButton: String
+  previewButton: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2748,6 +2748,84 @@ input FeedbackCounterCreateInput {
   shouldUseRecaptcha: Boolean
   thumbUpLabel: String
   thumbDownLabel: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type ThreeStoryPoint {
+  id: ID!
+  name: String
+  model: FileFieldOutput
+  captions: JSON
+  cameraRig: JSON
+  camerHelper: JSON
+  preview: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ThreeStoryPointWhereUniqueInput {
+  id: ID
+}
+
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+type CloudFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+input ThreeStoryPointWhereInput {
+  AND: [ThreeStoryPointWhereInput!]
+  OR: [ThreeStoryPointWhereInput!]
+  NOT: [ThreeStoryPointWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ThreeStoryPointOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ThreeStoryPointUpdateInput {
+  name: String
+  model: FileFieldInput
+  captions: JSON
+  cameraRig: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ThreeStoryPointUpdateArgs {
+  where: ThreeStoryPointWhereUniqueInput!
+  data: ThreeStoryPointUpdateInput!
+}
+
+input ThreeStoryPointCreateInput {
+  name: String
+  model: FileFieldInput
+  captions: JSON
+  cameraRig: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2971,6 +3049,21 @@ type Mutation {
   deleteFeedbackCounters(
     where: [FeedbackCounterWhereUniqueInput!]!
   ): [FeedbackCounter]
+  createThreeStoryPoint(data: ThreeStoryPointCreateInput!): ThreeStoryPoint
+  createThreeStoryPoints(
+    data: [ThreeStoryPointCreateInput!]!
+  ): [ThreeStoryPoint]
+  updateThreeStoryPoint(
+    where: ThreeStoryPointWhereUniqueInput!
+    data: ThreeStoryPointUpdateInput!
+  ): ThreeStoryPoint
+  updateThreeStoryPoints(data: [ThreeStoryPointUpdateArgs!]!): [ThreeStoryPoint]
+  deleteThreeStoryPoint(
+    where: ThreeStoryPointWhereUniqueInput!
+  ): ThreeStoryPoint
+  deleteThreeStoryPoints(
+    where: [ThreeStoryPointWhereUniqueInput!]!
+  ): [ThreeStoryPoint]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -3196,6 +3289,14 @@ type Query {
   ): [FeedbackCounter!]
   feedbackCounter(where: FeedbackCounterWhereUniqueInput!): FeedbackCounter
   feedbackCountersCount(where: FeedbackCounterWhereInput! = {}): Int
+  threeStoryPoints(
+    where: ThreeStoryPointWhereInput! = {}
+    orderBy: [ThreeStoryPointOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ThreeStoryPoint!]
+  threeStoryPoint(where: ThreeStoryPointWhereUniqueInput!): ThreeStoryPoint
+  threeStoryPointsCount(where: ThreeStoryPointWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

@@ -22,6 +22,7 @@ import QAList from './QAList'
 import QAItem from './QAItem'
 import FeedbackCounter from './FeedbackCounter'
 import VideoPicker from './VideoPicker'
+import ThreeStoryPoints from './ThreeStoryPoints'
 
 export const listDefinition = {
   User,
@@ -48,4 +49,5 @@ export const listDefinition = {
   QAList,
   QAItem,
   FeedbackCounter,
+  ThreeStoryPoint: ThreeStoryPoints,
 }
