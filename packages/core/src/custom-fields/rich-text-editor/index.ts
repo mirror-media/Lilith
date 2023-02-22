@@ -24,6 +24,11 @@ export const richTextEditor = <ListTypeInfo extends BaseListTypeInfo>({
 }: JsonFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> => (
   meta
 ) => {
+  if (!website) {
+    throw Error(
+      'required property `website` was not provided in calling richTextEditor'
+    )
+  }
   if ((config as any).isIndexed === 'unique') {
     throw Error(
       "isIndexed: 'unique' is not a supported option for field type textEditor"
