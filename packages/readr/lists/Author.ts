@@ -1,6 +1,12 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { checkbox, relationship, text, integer } from '@keystone-6/core/fields'
+import {
+  checkbox,
+  select,
+  relationship,
+  text,
+  integer,
+} from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -14,11 +20,35 @@ const listConfigurations = list({
     name_en: text({
       label: '英文姓名',
     }),
-    title: text({
+    title: select({
       label: '中文職稱',
+      options: [
+        { label: '總編輯', value: 'editor in chief' },
+        { label: '產品經理', value: 'product manager' },
+        { label: '設計師', value: 'designer' },
+        { label: '記者', value: 'journalist' },
+        { label: '社群', value: 'social' },
+        { label: '前端工程師', value: 'front-end engineer' },
+        { label: '後端工程師', value: 'back-end engineer' },
+        { label: '全端工程師', value: 'full-stack engineer' },
+        { label: 'App工程師', value: 'App engineer' },
+      ],
+      defaultValue: 'journalist',
     }),
-    title_en: text({
+    title_en: select({
       label: '英文職稱',
+      options: [
+        { label: '總編輯', value: 'editor in chief' },
+        { label: '產品經理', value: 'product manager' },
+        { label: '設計師', value: 'designer' },
+        { label: '記者', value: 'journalist' },
+        { label: '社群', value: 'social' },
+        { label: '前端工程師', value: 'front-end engineer' },
+        { label: '後端工程師', value: 'back-end engineer' },
+        { label: '全端工程師', value: 'full-stack engineer' },
+        { label: 'App工程師', value: 'App engineer' },
+      ],
+      defaultValue: 'journalist',
     }),
     email: text({
       isIndexed: 'unique',

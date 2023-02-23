@@ -13,15 +13,22 @@ export type JsonFieldConfig<
   defaultValue?: JSONValue
   db?: { map?: string }
   disabledButtons: string[]
+  website: 'mirrormedia' | 'readr' | 'editools' | 'mesh'
 }
 
 export const richTextEditor = <ListTypeInfo extends BaseListTypeInfo>({
   defaultValue = null,
   disabledButtons = [],
+  website,
   ...config
 }: JsonFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> => (
   meta
 ) => {
+  if (!website) {
+    throw Error(
+      'required property `website` was not provided in calling richTextEditor'
+    )
+  }
   if ((config as any).isIndexed === 'unique') {
     throw Error(
       "isIndexed: 'unique' is not a supported option for field type textEditor"
@@ -45,7 +52,7 @@ export const richTextEditor = <ListTypeInfo extends BaseListTypeInfo>({
         update: { arg: graphql.arg({ type: graphql.JSON }), resolve },
       },
       output: graphql.field({ type: graphql.JSON }),
-      views: require.resolve('./views'),
+      views: require.resolve(`./views/${website}`),
       getAdminMeta: () => ({ defaultValue, disabledButtons }),
     },
     {

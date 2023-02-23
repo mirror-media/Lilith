@@ -81,13 +81,16 @@ const listConfigurations = list({
     }),
     previewButton: virtual({
       field: graphql.field({
-        type: graphql.String,
-        resolve(item: Record<string, unknown>): string {
-          return `/demo/karaokes/${item?.id}`
+        type: graphql.JSON,
+        resolve(item: Record<string, unknown>): Record<string, string> {
+          return {
+            href: `/demo/karaokes/${item?.id}`,
+            label: 'Preview',
+          }
         },
       }),
       ui: {
-        views: require.resolve('./preview-button'),
+        views: require.resolve('./views/link-button'),
       },
     }),
   },

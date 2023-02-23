@@ -1,9 +1,16 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { text, file, relationship, select, checkbox, timestamp, json } from '@keystone-6/core/fields'
+import {
+  text,
+  file,
+  relationship,
+  select,
+  checkbox,
+  timestamp,
+  json,
+} from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator } = utils.accessControl
-
 
 const listConfigurations = list({
   fields: {
@@ -29,6 +36,7 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '敘述',
+      website: 'mirrormedia',
     }),
     heroImage: relationship({
       label: '首圖',
@@ -48,7 +56,7 @@ const listConfigurations = list({
         { label: '預約發佈', value: 'scheduled' },
       ],
       defaultValue: 'draft',
-      isIndexed: true
+      isIndexed: true,
     }),
     publishedDate: timestamp({
       isIndexed: true,

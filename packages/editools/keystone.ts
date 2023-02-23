@@ -2,6 +2,8 @@ import { config } from '@keystone-6/core'
 import { listDefinition as lists } from './lists'
 import appConfig from './config'
 import envVar from './environment-variables'
+import express from 'express'
+import path from 'path'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache'
@@ -163,6 +165,17 @@ export default withAuth(
                 .map((index) => index.embedCode)}</html>`
             )
           }
+        )
+
+        // ThreeJS router
+        app.use(
+          '/three',
+          // Serve static files, including js, css and html
+          // BTW, the reason we use `process.cwd()` rather than `__dirname`
+          // is because `__dirname` won't return the correct absolute path;
+          // it return a wrong relative path `../..`.
+          // I think it is a bug for `@keystone/core`.
+          express.static(path.resolve(process.cwd(), './public/three'))
         )
       },
     },

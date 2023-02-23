@@ -19,6 +19,7 @@ const listConfigurations = list({
         'info-box',
         'link',
       ],
+      website: 'readr',
     }),
     sortOrder: integer({
       label: '優先順序',

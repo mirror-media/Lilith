@@ -172,6 +172,7 @@ const listConfigurations = list({
     brief: customFields.richTextEditor({
       label: '前言',
       disabledButtons: [],
+      website: 'mirrormedia',
     }),
     trimmedContent: virtual({
       label: '擷取前5段的內文（不包括換行）',
@@ -223,6 +224,7 @@ const listConfigurations = list({
     content: customFields.richTextEditor({
       label: '內文',
       disabledButtons: [],
+      website: 'mirrormedia',
       access: {
         read: async ({
           context,
