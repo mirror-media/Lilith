@@ -45,6 +45,7 @@ model Post {
   og_description            String         @default("")
   og_image                  Photo?         @relation("Post_og_image", fields: [og_imageId], references: [id])
   og_imageId                Int?           @map("og_image")
+  isMember                  Boolean        @default(false)
   isFeatured                Boolean        @default(false)
   isAdvertised              Boolean        @default(false)
   hiddenAdvertised          Boolean        @default(false)
