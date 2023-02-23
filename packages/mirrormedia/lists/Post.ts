@@ -347,6 +347,10 @@ const listConfigurations = list({
       label: 'FB分享縮圖',
       ref: 'Photo',
     }),
+    isMember: checkbox({
+      label: '會員文章',
+      defaultValue: false,
+    }),
     isFeatured: checkbox({
       label: '置頂',
       defaultValue: false,

@@ -92,6 +92,7 @@ type Post {
   og_title: String
   og_description: String
   og_image: Photo
+  isMember: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
@@ -148,6 +149,7 @@ input PostWhereInput {
   og_title: StringFilter
   og_description: StringFilter
   og_image: PhotoWhereInput
+  isMember: BooleanFilter
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
   hiddenAdvertised: BooleanFilter
@@ -297,6 +299,7 @@ input PostOrderByInput {
   titleColor: OrderDirection
   og_title: OrderDirection
   og_description: OrderDirection
+  isMember: OrderDirection
   isFeatured: OrderDirection
   isAdvertised: OrderDirection
   hiddenAdvertised: OrderDirection
@@ -344,6 +347,7 @@ input PostUpdateInput {
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForUpdateInput
+  isMember: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
@@ -454,6 +458,7 @@ input PostCreateInput {
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForCreateInput
+  isMember: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
