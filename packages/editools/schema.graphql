@@ -2448,7 +2448,7 @@ type VideoPicker {
   video720: FileFieldOutput
   muteHint: Boolean
   embedCode: String
-  previewButton: String
+  previewButton: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2457,20 +2457,6 @@ type VideoPicker {
 
 input VideoPickerWhereUniqueInput {
   id: ID
-}
-
-type LocalFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
-type CloudFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
 }
 
 input VideoPickerWhereInput {
