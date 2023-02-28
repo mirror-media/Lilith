@@ -1,3 +1,4 @@
+// @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { relationship, json, timestamp, text } from '@keystone-6/core/fields'
@@ -31,6 +32,7 @@ const listConfigurations = list({
     content: customFields.richTextEditor({
       label: '內文',
       website: 'readr',
+      disabledButtons: [],
     }),
     apiData: json({
       label: '資料庫使用',
