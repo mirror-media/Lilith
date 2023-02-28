@@ -1,4 +1,5 @@
 import { list } from '@keystone-6/core'
+// @ts-ignore: no definition
 import { utils } from '@mirrormedia/lilith-core'
 
 import { text, password, select, checkbox } from '@keystone-6/core/fields'
