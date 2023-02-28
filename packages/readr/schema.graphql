@@ -6,13 +6,7 @@ type EditorChoice {
   sortOrder: Int
   name: String
   description: String
-  choices(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
-  choicesCount(where: PostWhereInput! = {}): Int
+  choices: Post
   link: String
   heroImage: Photo
   state: String
@@ -38,7 +32,7 @@ input EditorChoiceWhereInput {
   sortOrder: IntNullableFilter
   name: StringFilter
   description: StringFilter
-  choices: PostManyRelationFilter
+  choices: PostWhereInput
   link: StringFilter
   heroImage: PhotoWhereInput
   state: StringNullableFilter
@@ -105,12 +99,6 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
-input PostManyRelationFilter {
-  every: PostWhereInput
-  some: PostWhereInput
-  none: PostWhereInput
-}
-
 input StringNullableFilter {
   equals: String
   in: [String!]
@@ -172,7 +160,7 @@ input EditorChoiceUpdateInput {
   sortOrder: Int
   name: String
   description: String
-  choices: PostRelateToManyForUpdateInput
+  choices: PostRelateToOneForUpdateInput
   link: String
   heroImage: PhotoRelateToOneForUpdateInput
   state: String
@@ -183,11 +171,10 @@ input EditorChoiceUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input PostRelateToManyForUpdateInput {
-  disconnect: [PostWhereUniqueInput!]
-  set: [PostWhereUniqueInput!]
-  create: [PostCreateInput!]
-  connect: [PostWhereUniqueInput!]
+input PostRelateToOneForUpdateInput {
+  create: PostCreateInput
+  connect: PostWhereUniqueInput
+  disconnect: Boolean
 }
 
 input PhotoRelateToOneForUpdateInput {
@@ -211,7 +198,7 @@ input EditorChoiceCreateInput {
   sortOrder: Int
   name: String
   description: String
-  choices: PostRelateToManyForCreateInput
+  choices: PostRelateToOneForCreateInput
   link: String
   heroImage: PhotoRelateToOneForCreateInput
   state: String
@@ -222,9 +209,9 @@ input EditorChoiceCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
-input PostRelateToManyForCreateInput {
-  create: [PostCreateInput!]
-  connect: [PostWhereUniqueInput!]
+input PostRelateToOneForCreateInput {
+  create: PostCreateInput
+  connect: PostWhereUniqueInput
 }
 
 input PhotoRelateToOneForCreateInput {
@@ -495,6 +482,12 @@ input BooleanFilter {
   not: BooleanFilter
 }
 
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
+}
+
 input ProjectNoteManyRelationFilter {
   every: ProjectNoteWhereInput
   some: ProjectNoteWhereInput
@@ -564,6 +557,13 @@ input AuthorUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
+input PostRelateToManyForUpdateInput {
+  disconnect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
+}
+
 input ProjectNoteRelateToManyForUpdateInput {
   disconnect: [ProjectNoteWhereUniqueInput!]
   set: [ProjectNoteWhereUniqueInput!]
@@ -621,6 +621,11 @@ input AuthorCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input PostRelateToManyForCreateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 input ProjectNoteRelateToManyForCreateInput {
@@ -1160,6 +1165,7 @@ type Category {
 
 input CategoryWhereUniqueInput {
   id: ID
+  slug: String
 }
 
 input CategoryWhereInput {
@@ -2370,12 +2376,6 @@ input ProjectChecklistUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input PostRelateToOneForUpdateInput {
-  create: PostCreateInput
-  connect: PostWhereUniqueInput
-  disconnect: Boolean
-}
-
 input ProjectChecklistUpdateArgs {
   where: ProjectChecklistWhereUniqueInput!
   data: ProjectChecklistUpdateInput!
@@ -2400,11 +2400,6 @@ input ProjectChecklistCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input PostRelateToOneForCreateInput {
-  create: PostCreateInput
-  connect: PostWhereUniqueInput
 }
 
 type ProjectNote {
@@ -2540,6 +2535,7 @@ type NoteCategory {
 
 input NoteCategoryWhereUniqueInput {
   id: ID
+  slug: String
 }
 
 input NoteCategoryWhereInput {
