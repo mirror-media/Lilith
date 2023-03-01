@@ -1,3 +1,4 @@
+// @ts-ignore: no definition
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import {
@@ -62,27 +63,24 @@ const listConfigurations = list({
     }),
     homepage: text({
       label: '個人首頁',
-      isIndexed: false,
+      isIndexed: undefined,
     }),
     sort: integer({
       label: '排序',
     }),
     isMember: checkbox({
       label: '團隊成員',
-      isIndexed: true,
     }),
     facebook: text({
-      isIndexed: false,
+      isIndexed: undefined,
     }),
     twitter: text({
-      isIndexed: false,
+      isIndexed: undefined,
     }),
     instagram: text({
       isIndexed: true,
     }),
-    address: text({
-      collapse: 'true',
-    }),
+    address: text({}),
     bio: text({
       label: '簡介',
     }),

@@ -1,3 +1,4 @@
+// @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import {
@@ -236,7 +237,6 @@ const listConfigurations = list({
     }),
     isFeatured: checkbox({
       label: '置頂',
-      isIndexed: true,
     }),
     note: relationship({
       label: '專題筆記',
@@ -246,9 +246,6 @@ const listConfigurations = list({
         displayMode: 'cards',
         linkToItem: true,
         cardFields: ['title', 'writers', 'publishTime', 'content'],
-        inlineCreate: {
-          fields: ['title', 'writers', 'publishTime', 'content'],
-        },
         inlineCreate: {
           fields: ['title', 'writers', 'publishTime', 'content'],
         },
@@ -276,23 +273,6 @@ const listConfigurations = list({
           'gaLink',
           'retro',
         ],
-        inlineCreate: {
-          fields: [
-            'asanaCheck',
-            'uiCheck',
-            'performanceCheck',
-            'ga',
-            'gtm',
-            'og',
-            'module',
-            'document',
-            'asana',
-            'tracking',
-            'sourceCode',
-            'gaLink',
-            'retro',
-          ],
-        },
         inlineCreate: {
           fields: [
             'asanaCheck',
@@ -355,8 +335,8 @@ const listConfigurations = list({
   ui: {
     labelField: 'slug',
     listView: {
-      initialColumns: ['id', 'slug', 'status'],
-      initialSort: { field: 'publishedDate', direction: 'DESC' },
+      initialColumns: ['id', 'slug', 'state'],
+      initialSort: { field: 'publishTime', direction: 'DESC' },
       pageSize: 50,
     },
   },

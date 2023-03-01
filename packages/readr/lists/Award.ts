@@ -1,3 +1,4 @@
+// @ts-ignore: no definition
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { text, timestamp } from '@keystone-6/core/fields'
