@@ -455,22 +455,24 @@ model DataSet {
 }
 
 model Feature {
-  id          Int       @id @default(autoincrement())
-  name        String    @default("")
-  subtitle    String    @default("")
-  sortOrder   Int?
-  state       String?   @default("draft")
-  description String    @default("")
-  featurePost Post[]    @relation("Feature_featurePost")
-  publishTime DateTime?
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("Feature_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("Feature_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
+  id            Int       @id @default(autoincrement())
+  name          String    @default("")
+  subtitle      String    @default("")
+  sortOrder     Int?
+  state         String?   @default("draft")
+  description   String    @default("")
+  featurePost   Post?     @relation("Feature_featurePost", fields: [featurePostId], references: [id])
+  featurePostId Int?      @map("featurePost")
+  publishTime   DateTime?
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Feature_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Feature_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
 
   @@index([state])
+  @@index([featurePostId])
   @@index([createdById])
   @@index([updatedById])
 }

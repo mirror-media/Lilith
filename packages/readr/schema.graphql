@@ -1952,13 +1952,7 @@ type Feature {
   sortOrder: Int
   state: String
   description: String
-  featurePost(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
-  featurePostCount(where: PostWhereInput! = {}): Int
+  featurePost: Post
   publishTime: DateTime
   createdAt: DateTime
   updatedAt: DateTime
@@ -1980,7 +1974,7 @@ input FeatureWhereInput {
   sortOrder: IntNullableFilter
   state: StringNullableFilter
   description: StringFilter
-  featurePost: PostManyRelationFilter
+  featurePost: PostWhereInput
   publishTime: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2006,7 +2000,7 @@ input FeatureUpdateInput {
   sortOrder: Int
   state: String
   description: String
-  featurePost: PostRelateToManyForUpdateInput
+  featurePost: PostRelateToOneForUpdateInput
   publishTime: DateTime
   createdAt: DateTime
   updatedAt: DateTime
@@ -2025,7 +2019,7 @@ input FeatureCreateInput {
   sortOrder: Int
   state: String
   description: String
-  featurePost: PostRelateToManyForCreateInput
+  featurePost: PostRelateToOneForCreateInput
   publishTime: DateTime
   createdAt: DateTime
   updatedAt: DateTime

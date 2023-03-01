@@ -41,7 +41,7 @@ const listConfigurations = list({
       ui: { displayMode: 'textarea' },
     }),
     featurePost: relationship({
-      many: true,
+      many: false,
       label: '特色專題',
       ref: 'Post',
     }),
