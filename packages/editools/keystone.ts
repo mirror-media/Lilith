@@ -167,6 +167,8 @@ export default withAuth(
           }
         )
 
+        console.log('process.cwd():', process.cwd())
+
         // ThreeJS router
         app.use(
           '/three',
