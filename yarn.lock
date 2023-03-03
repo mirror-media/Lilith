@@ -2111,15 +2111,16 @@
     styled-components "5.3.5"
     zlib "^1.0.5"
 
-"@mirrormedia/lilith-core@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-1.2.1.tgz#b50c2ef109ce2759a867211c4f89e59029844c8f"
-  integrity sha512-jS6pHyH0flPwQaIRlVfaBGQxUHK9GGGMMe9yxrFvhfuCNRQWljOwWQNCnyttjswaO6KBnjUp9JGDZMz7HyEtLg==
+"@mirrormedia/lilith-core@1.2.5":
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-1.2.5.tgz#4ddb1893ede140044222ab222ce1976bc11de0e7"
+  integrity sha512-15n0WtPnrLMX1ofGf5kci3/c7FWC9WdzM7p+ZuYL6joS7sl6jEEeGlCSnOhJcGMJTp1qXTdBGDkhu2jgwCIFaA==
   dependencies:
     "@google-cloud/storage" "^5.18.0"
     "@keystone-ui/button" "^6.0.0"
     "@keystone-ui/fields" "^6.0.0"
     "@keystone-ui/modals" "^5.0.0"
+    "@mirrormedia/lilith-draft-editor" "1.0.1"
     "@twreporter/errors" "^1.1.1"
     axios "^0.26.0"
     draft-convert "^2.1.12"
@@ -2465,10 +2466,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.0.5.tgz#cd0b4d09552fa85d3f91b8b2cac5f9a2736d2f78"
-  integrity sha512-59Xu6VzUpjrWT6UFccXAXf/2ijixtHtY5fYPUnHFzErJTNyzXR1N89FZbgdMS/xXIGosGi0ZQJiamlVuj8cFVQ==
+"@readr-media/react-embed-code-generator@2.1.0-alpha.1":
+  version "2.1.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.0-alpha.1.tgz#f1753a06283548958a19d9c7fb91914980221337"
+  integrity sha512-asVy1CCDUvUxRpSWD4blEr73VrKCOI4y/N+FfF4E1OYGxab43vGcBocChuxABh0jjkb3I2iNPEKHdrYFTcbd9Q==
   dependencies:
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
@@ -2476,6 +2477,7 @@
     "@readr-media/react-live-blog" "1.1.2"
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
+    "@readr-media/react-three-story-points" "1.0.0-beta.1"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -2537,6 +2539,16 @@
     serialize-javascript "^6.0.0"
     styled-components "5.3.5"
     uuid "^8.3.2"
+
+"@readr-media/react-three-story-points@1.0.0-beta.1":
+  version "1.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.0-beta.1.tgz#e206d3cd31e008e6865bedcf9850a67f8de0f8a4"
+  integrity sha512-IFSVYbNJyzlw8RqvvqK5HCvGObagW5bqOxQt10jRPcXL5NTWFBk/oV9C2iJbWKMitdOWnnW00FtjkDQz4doq8Q==
+  dependencies:
+    gsap "^3.11.4"
+    lodash "^4.17.21"
+    three "^0.150.1"
+    three-story-controls "^1.0.6"
 
 "@sindresorhus/slugify@1.1.2", "@sindresorhus/slugify@^1.1.2":
   version "1.1.2"
@@ -5491,6 +5503,11 @@ graphql@^15.3.0, graphql@^15.7.2, graphql@^15.8.0:
   version "15.8.0"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.8.0.tgz#33410e96b012fa3bdb1091cc99a94769db212b38"
   integrity sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==
+
+gsap@^3.11.4:
+  version "3.11.4"
+  resolved "https://registry.yarnpkg.com/gsap/-/gsap-3.11.4.tgz#e6d972d3509a7431b86d81d6fc3bbeb6862e5ff1"
+  integrity sha512-McHhEguHyExMMnjqKA8G+7TvxmlKQGMbjgwAilnFe1e4id7V/tFveRQ2YMZhTYu0oxHGWvbPltdVYQOu3z1SCA==
 
 gtoken@^5.0.4:
   version "5.3.2"
@@ -8787,6 +8804,16 @@ text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==
+
+three-story-controls@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/three-story-controls/-/three-story-controls-1.0.6.tgz#93759096568bf5c0ad9821884725496ac317d0fe"
+  integrity sha512-weiuPkUCU/llfOTWOhEMXs7sEmYyQES+3+dYQ9Q4dTx6gc2uVVZy4L5bGbRCwlQL1bJaJH4jtJRHwOVQOO/5Ug==
+
+three@^0.150.1:
+  version "0.150.1"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.150.1.tgz#870d324a4d2daf1c7d55be97f3f73d83783e28be"
+  integrity sha512-5C1MqKUWaHYo13BX0Q64qcdwImgnnjSOFgBscOzAo8MYCzEtqfQqorEKMcajnA3FHy1yVlIe9AmaMQ0OQracNA==
 
 through@^2.3.8:
   version "2.3.8"
