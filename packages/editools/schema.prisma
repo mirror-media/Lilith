@@ -592,6 +592,8 @@ model VideoPicker {
   video720_mode      String?
   video720_filename  String?
   muteHint           Boolean   @default(false)
+  voiceHint          String    @default("")
+  voiceButton        String    @default("")
   createdAt          DateTime?
   updatedAt          DateTime?
   createdBy          User?     @relation("VideoPicker_createdBy", fields: [createdById], references: [id])

@@ -2447,6 +2447,8 @@ type VideoPicker {
   video920: FileFieldOutput
   video720: FileFieldOutput
   muteHint: Boolean
+  voiceHint: String
+  voiceButton: String
   embedCode: String
   previewButton: JSON
   createdAt: DateTime
@@ -2466,6 +2468,8 @@ input VideoPickerWhereInput {
   id: IDFilter
   name: StringFilter
   muteHint: BooleanFilter
+  voiceHint: StringFilter
+  voiceButton: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2476,6 +2480,8 @@ input VideoPickerOrderByInput {
   id: OrderDirection
   name: OrderDirection
   muteHint: OrderDirection
+  voiceHint: OrderDirection
+  voiceButton: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2488,6 +2494,8 @@ input VideoPickerUpdateInput {
   video920: FileFieldInput
   video720: FileFieldInput
   muteHint: Boolean
+  voiceHint: String
+  voiceButton: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2507,6 +2515,8 @@ input VideoPickerCreateInput {
   video920: FileFieldInput
   video720: FileFieldInput
   muteHint: Boolean
+  voiceHint: String
+  voiceButton: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

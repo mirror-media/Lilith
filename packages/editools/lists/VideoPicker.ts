@@ -27,6 +27,12 @@ const listConfigurations = list({
       label: '是否顯示聲音播放提醒',
       defaultValue: false,
     }),
+    voiceHint: text({
+      label: '開啟聲音提示文字',
+    }),
+    voiceButton: text({
+      label: '開啟聲音按鍵文字',
+    }),
     embedCode: virtual({
       label: 'embed code',
       field: graphql.field({
