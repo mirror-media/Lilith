@@ -1,7 +1,11 @@
+import config from '../config'
+// @ts-ignore: no definition
+import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import { text, file, json, virtual } from '@keystone-6/core/fields'
 
+const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const {
   allowRoles,
   admin,
@@ -9,6 +13,15 @@ const {
   editor,
   contributor,
 } = utils.accessControl
+
+type CameraRigData = {
+  pois?: {
+    position: number[]
+    quaternion: number[]
+    ease: string
+    duration: number
+  }
+}
 
 const listConfigurations = list({
   fields: {
@@ -41,12 +54,36 @@ const listConfigurations = list({
         views: require.resolve('./views/link-button'),
       },
     }),
+    embedCode: virtual({
+      label: 'embed code',
+      field: graphql.field({
+        type: graphql.String,
+        resolve: async (item: Record<string, unknown>): Promise<string> => {
+          const cameraRig: CameraRigData = item?.cameraRig as CameraRigData
+          const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
+          const modelSrc = `${urlPrefix}/files/${item?.model_filename}`
+
+          return embedCodeGen.buildEmbeddedCode(
+            'react-three-story-points',
+            {
+              model: {
+                url: modelSrc,
+                fileFormat: 'glb',
+              },
+              pois: cameraRig?.pois || [],
+              captions: item?.captions,
+            },
+            embedCodeWebpackAssets
+          )
+        },
+      }),
+    }),
     preview: virtual({
       field: graphql.field({
         type: graphql.JSON,
         resolve(item: Record<string, unknown>): Record<string, string> {
           return {
-            href: `/three/story-points/preview.html?id=${item.id}`,
+            href: `/demo/three-story-points/${item.id}`,
             label: 'Preview',
           }
         },
