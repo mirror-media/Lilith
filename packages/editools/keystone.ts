@@ -167,7 +167,29 @@ export default withAuth(
           }
         )
 
-        console.log('process.cwd():', process.cwd())
+        app.get(
+          '/demo/three-story-points/:id',
+          authenticationMw,
+          async (req, res) => {
+            const itemId = req.params.id
+
+            const context = await createContext(req, res)
+            const item = await context.query.ThreeStoryPoint.findOne({
+              where: { id: itemId },
+              query: 'embedCode',
+            })
+
+            if (!item) {
+              return res
+                .status(404)
+                .send(`ThreeStoryPoint ${itemId} is not found`)
+            }
+
+            res.send(
+              `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>${item?.embedCode}</body></html>`
+            )
+          }
+        )
 
         // ThreeJS router
         app.use(

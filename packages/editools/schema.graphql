@@ -2757,6 +2757,7 @@ type ThreeStoryPoint {
   captions: JSON
   cameraRig: JSON
   camerHelper: JSON
+  embedCode: String
   preview: JSON
   createdAt: DateTime
   updatedAt: DateTime
