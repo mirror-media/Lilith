@@ -2466,10 +2466,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.1.0-alpha.1":
-  version "2.1.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.0-alpha.1.tgz#f1753a06283548958a19d9c7fb91914980221337"
-  integrity sha512-asVy1CCDUvUxRpSWD4blEr73VrKCOI4y/N+FfF4E1OYGxab43vGcBocChuxABh0jjkb3I2iNPEKHdrYFTcbd9Q==
+"@readr-media/react-embed-code-generator@2.1.0-beta.4":
+  version "2.1.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.0-beta.4.tgz#4277207efb7d59e1741dd807748f1598b9670b83"
+  integrity sha512-rMMQoP9r9n+DW9OV0vNRqiCKbVOF/ifFdbbKrnFLjJpP2i+34553ggje0mi8XCq2rvVZQjxYsz1qPp00zvwY/A==
   dependencies:
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
@@ -2477,7 +2477,7 @@
     "@readr-media/react-live-blog" "1.1.2"
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
-    "@readr-media/react-three-story-points" "1.0.0-beta.1"
+    "@readr-media/react-three-story-points" "1.0.0-beta.2"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -2540,10 +2540,10 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
-"@readr-media/react-three-story-points@1.0.0-beta.1":
-  version "1.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.0-beta.1.tgz#e206d3cd31e008e6865bedcf9850a67f8de0f8a4"
-  integrity sha512-IFSVYbNJyzlw8RqvvqK5HCvGObagW5bqOxQt10jRPcXL5NTWFBk/oV9C2iJbWKMitdOWnnW00FtjkDQz4doq8Q==
+"@readr-media/react-three-story-points@1.0.0-beta.2":
+  version "1.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.0-beta.2.tgz#8bcff33784a5d732ba6777e21cb3b3967dbf2cfb"
+  integrity sha512-FZOwxwCu5WdTXsHm1rVyUXx/6wyhc0C31XNk+C9wvwGLVkZiv7N4DVQjayzynnMF2Brp6/ALByKwgk2zsMF/mA==
   dependencies:
     gsap "^3.11.4"
     lodash "^4.17.21"
