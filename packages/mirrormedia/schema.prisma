@@ -361,8 +361,7 @@ model Category {
   state        String    @default("active")
   heroImage    Photo?    @relation("Category_heroImage", fields: [heroImageId], references: [id])
   heroImageId  Int?      @map("heroImage")
-  sections     Section?  @relation("Category_sections", fields: [sectionsId], references: [id])
-  sectionsId   Int?      @map("sections")
+  sections     Section[] @relation("Category_sections")
   posts        Post[]    @relation("Category_posts")
   isMemberOnly Boolean   @default(false)
   createdAt    DateTime?
@@ -373,7 +372,6 @@ model Category {
   updatedById  Int?      @map("updatedBy")
 
   @@index([heroImageId])
-  @@index([sectionsId])
   @@index([createdById])
   @@index([updatedById])
 }

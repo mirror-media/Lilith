@@ -1643,7 +1643,13 @@ type Category {
   order: Int
   state: String
   heroImage: Photo
-  sections: Section
+  sections(
+    where: SectionWhereInput! = {}
+    orderBy: [SectionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
@@ -1673,7 +1679,7 @@ input CategoryWhereInput {
   order: IntNullableFilter
   state: StringFilter
   heroImage: PhotoWhereInput
-  sections: SectionWhereInput
+  sections: SectionManyRelationFilter
   posts: PostManyRelationFilter
   isMemberOnly: BooleanFilter
   createdAt: DateTimeNullableFilter
@@ -1699,19 +1705,13 @@ input CategoryUpdateInput {
   order: Int
   state: String
   heroImage: PhotoRelateToOneForUpdateInput
-  sections: SectionRelateToOneForUpdateInput
+  sections: SectionRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
   isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
-}
-
-input SectionRelateToOneForUpdateInput {
-  create: SectionCreateInput
-  connect: SectionWhereUniqueInput
-  disconnect: Boolean
 }
 
 input CategoryUpdateArgs {
@@ -1725,18 +1725,13 @@ input CategoryCreateInput {
   order: Int
   state: String
   heroImage: PhotoRelateToOneForCreateInput
-  sections: SectionRelateToOneForCreateInput
+  sections: SectionRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
   isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input SectionRelateToOneForCreateInput {
-  create: SectionCreateInput
-  connect: SectionWhereUniqueInput
 }
 
 type Partner {
