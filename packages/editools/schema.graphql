@@ -2447,8 +2447,10 @@ type VideoPicker {
   video920: FileFieldOutput
   video720: FileFieldOutput
   muteHint: Boolean
+  voiceHint: String
+  voiceButton: String
   embedCode: String
-  previewButton: String
+  previewButton: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2459,20 +2461,6 @@ input VideoPickerWhereUniqueInput {
   id: ID
 }
 
-type LocalFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
-type CloudFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
 input VideoPickerWhereInput {
   AND: [VideoPickerWhereInput!]
   OR: [VideoPickerWhereInput!]
@@ -2480,6 +2468,8 @@ input VideoPickerWhereInput {
   id: IDFilter
   name: StringFilter
   muteHint: BooleanFilter
+  voiceHint: StringFilter
+  voiceButton: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2490,6 +2480,8 @@ input VideoPickerOrderByInput {
   id: OrderDirection
   name: OrderDirection
   muteHint: OrderDirection
+  voiceHint: OrderDirection
+  voiceButton: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2502,6 +2494,8 @@ input VideoPickerUpdateInput {
   video920: FileFieldInput
   video720: FileFieldInput
   muteHint: Boolean
+  voiceHint: String
+  voiceButton: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2521,6 +2515,8 @@ input VideoPickerCreateInput {
   video920: FileFieldInput
   video720: FileFieldInput
   muteHint: Boolean
+  voiceHint: String
+  voiceButton: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2761,6 +2757,7 @@ type ThreeStoryPoint {
   captions: JSON
   cameraRig: JSON
   camerHelper: JSON
+  embedCode: String
   preview: JSON
   createdAt: DateTime
   updatedAt: DateTime

@@ -16,7 +16,8 @@ model EditorChoice {
   sortOrder   Int?
   name        String    @default("")
   description String    @default("")
-  choices     Post[]    @relation("EditorChoice_choices")
+  choices     Post?     @relation("EditorChoice_choices", fields: [choicesId], references: [id])
+  choicesId   Int?      @map("choices")
   link        String    @default("")
   heroImage   Photo?    @relation("EditorChoice_heroImage", fields: [heroImageId], references: [id])
   heroImageId Int?      @map("heroImage")
@@ -29,6 +30,7 @@ model EditorChoice {
   updatedBy   User?     @relation("EditorChoice_updatedBy", fields: [updatedById], references: [id])
   updatedById Int?      @map("updatedBy")
 
+  @@index([choicesId])
   @@index([heroImageId])
   @@index([state])
   @@index([createdById])
@@ -240,7 +242,7 @@ model Tag {
 
 model Category {
   id                      Int       @id @default(autoincrement())
-  slug                    String    @default("")
+  slug                    String    @unique @default("")
   title                   String    @default("")
   isFeatured              Boolean   @default(false)
   state                   String?
@@ -453,22 +455,24 @@ model DataSet {
 }
 
 model Feature {
-  id          Int       @id @default(autoincrement())
-  name        String    @default("")
-  subtitle    String    @default("")
-  sortOrder   Int?
-  state       String?   @default("draft")
-  description String    @default("")
-  featurePost Post[]    @relation("Feature_featurePost")
-  publishTime DateTime?
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("Feature_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("Feature_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
+  id            Int       @id @default(autoincrement())
+  name          String    @default("")
+  subtitle      String    @default("")
+  sortOrder     Int?
+  state         String?   @default("draft")
+  description   String    @default("")
+  featurePost   Post?     @relation("Feature_featurePost", fields: [featurePostId], references: [id])
+  featurePostId Int?      @map("featurePost")
+  publishTime   DateTime?
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Feature_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Feature_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
 
   @@index([state])
+  @@index([featurePostId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -587,7 +591,7 @@ model ProjectNote {
 
 model NoteCategory {
   id          Int           @id @default(autoincrement())
-  slug        String        @default("")
+  slug        String        @unique @default("")
   title       String        @default("")
   isFeatured  Boolean       @default(false)
   state       String?

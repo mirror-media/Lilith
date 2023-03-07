@@ -1,3 +1,4 @@
+// @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
@@ -97,6 +98,7 @@ const listConfigurations = list({
 
   hooks: {
     resolveInput: async ({ inputData, item, resolvedData }) => {
+      // @ts-ignore: item might be undefined, should be handle properly
       gcsFileAdapter.startFileProcessingFlow(resolvedData, item, inputData)
 
       return resolvedData

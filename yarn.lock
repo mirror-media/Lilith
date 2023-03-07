@@ -2111,15 +2111,16 @@
     styled-components "5.3.5"
     zlib "^1.0.5"
 
-"@mirrormedia/lilith-core@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-1.2.1.tgz#b50c2ef109ce2759a867211c4f89e59029844c8f"
-  integrity sha512-jS6pHyH0flPwQaIRlVfaBGQxUHK9GGGMMe9yxrFvhfuCNRQWljOwWQNCnyttjswaO6KBnjUp9JGDZMz7HyEtLg==
+"@mirrormedia/lilith-core@1.2.5":
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-1.2.5.tgz#4ddb1893ede140044222ab222ce1976bc11de0e7"
+  integrity sha512-15n0WtPnrLMX1ofGf5kci3/c7FWC9WdzM7p+ZuYL6joS7sl6jEEeGlCSnOhJcGMJTp1qXTdBGDkhu2jgwCIFaA==
   dependencies:
     "@google-cloud/storage" "^5.18.0"
     "@keystone-ui/button" "^6.0.0"
     "@keystone-ui/fields" "^6.0.0"
     "@keystone-ui/modals" "^5.0.0"
+    "@mirrormedia/lilith-draft-editor" "1.0.1"
     "@twreporter/errors" "^1.1.1"
     axios "^0.26.0"
     draft-convert "^2.1.12"
@@ -2465,10 +2466,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.0.5.tgz#cd0b4d09552fa85d3f91b8b2cac5f9a2736d2f78"
-  integrity sha512-59Xu6VzUpjrWT6UFccXAXf/2ijixtHtY5fYPUnHFzErJTNyzXR1N89FZbgdMS/xXIGosGi0ZQJiamlVuj8cFVQ==
+"@readr-media/react-embed-code-generator@2.1.0-beta.4":
+  version "2.1.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.0-beta.4.tgz#4277207efb7d59e1741dd807748f1598b9670b83"
+  integrity sha512-rMMQoP9r9n+DW9OV0vNRqiCKbVOF/ifFdbbKrnFLjJpP2i+34553ggje0mi8XCq2rvVZQjxYsz1qPp00zvwY/A==
   dependencies:
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
@@ -2476,6 +2477,7 @@
     "@readr-media/react-live-blog" "1.1.2"
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
+    "@readr-media/react-three-story-points" "1.0.0-beta.2"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -2537,6 +2539,16 @@
     serialize-javascript "^6.0.0"
     styled-components "5.3.5"
     uuid "^8.3.2"
+
+"@readr-media/react-three-story-points@1.0.0-beta.2":
+  version "1.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.0-beta.2.tgz#8bcff33784a5d732ba6777e21cb3b3967dbf2cfb"
+  integrity sha512-FZOwxwCu5WdTXsHm1rVyUXx/6wyhc0C31XNk+C9wvwGLVkZiv7N4DVQjayzynnMF2Brp6/ALByKwgk2zsMF/mA==
+  dependencies:
+    gsap "^3.11.4"
+    lodash "^4.17.21"
+    three "^0.150.1"
+    three-story-controls "^1.0.6"
 
 "@sindresorhus/slugify@1.1.2", "@sindresorhus/slugify@^1.1.2":
   version "1.1.2"
@@ -5007,7 +5019,7 @@ fill-range@^7.0.1:
   dependencies:
     to-regex-range "^5.0.1"
 
-finalhandler@1.2.0:
+finalhandler@1.2.0, finalhandler@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/finalhandler/-/finalhandler-1.2.0.tgz#7d23fe5731b207b4640e4fcd00aec1f9207a7b32"
   integrity sha512-5uXcUVftlQMFnWC9qu/svkWv3GTd2PfUhK/3PLkYNAe7FbqJMt3515HaxE6eRL74GdsriiwujiawdaB1BpEISg==
@@ -5492,6 +5504,11 @@ graphql@^15.3.0, graphql@^15.7.2, graphql@^15.8.0:
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.8.0.tgz#33410e96b012fa3bdb1091cc99a94769db212b38"
   integrity sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==
 
+gsap@^3.11.4:
+  version "3.11.4"
+  resolved "https://registry.yarnpkg.com/gsap/-/gsap-3.11.4.tgz#e6d972d3509a7431b86d81d6fc3bbeb6862e5ff1"
+  integrity sha512-McHhEguHyExMMnjqKA8G+7TvxmlKQGMbjgwAilnFe1e4id7V/tFveRQ2YMZhTYu0oxHGWvbPltdVYQOu3z1SCA==
+
 gtoken@^5.0.4:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/gtoken/-/gtoken-5.3.2.tgz#deb7dc876abe002178e0515e383382ea9446d58f"
@@ -5684,6 +5701,11 @@ http-proxy@^1.18.1:
     eventemitter3 "^4.0.0"
     follow-redirects "^1.0.0"
     requires-port "^1.0.0"
+
+http2-proxy@^5.0.53:
+  version "5.0.53"
+  resolved "https://registry.yarnpkg.com/http2-proxy/-/http2-proxy-5.0.53.tgz#fc6cb07d2bb977a388ebeec4449557f2011e5a1f"
+  integrity sha512-k9OUKrPWau/YeViJGv5peEFgSGPE2n8CDyk/G3f+JfaaJzbFMPAK5PJTd99QYSUvgUwVBGNbZJCY/BEb+kUZNQ==
 
 https-proxy-agent@5.0.0:
   version "5.0.0"
@@ -8787,6 +8809,16 @@ text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==
+
+three-story-controls@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/three-story-controls/-/three-story-controls-1.0.6.tgz#93759096568bf5c0ad9821884725496ac317d0fe"
+  integrity sha512-weiuPkUCU/llfOTWOhEMXs7sEmYyQES+3+dYQ9Q4dTx6gc2uVVZy4L5bGbRCwlQL1bJaJH4jtJRHwOVQOO/5Ug==
+
+three@^0.150.1:
+  version "0.150.1"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.150.1.tgz#870d324a4d2daf1c7d55be97f3f73d83783e28be"
+  integrity sha512-5C1MqKUWaHYo13BX0Q64qcdwImgnnjSOFgBscOzAo8MYCzEtqfQqorEKMcajnA3FHy1yVlIe9AmaMQ0OQracNA==
 
 through@^2.3.8:
   version "2.3.8"

@@ -1,4 +1,5 @@
 import config from '../config'
+// @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import { image, text, relationship, virtual } from '@keystone-6/core/fields'
@@ -53,7 +54,7 @@ const listConfigurations = list({
             })
           }
 
-          const rtn : Record<string, string> = {}
+          const rtn: Record<string, string> = {}
           const filename = item?.imageFile_id
 
           if (!filename) {
@@ -63,8 +64,12 @@ const listConfigurations = list({
           const extension = item?.imageFile_extension
             ? '.' + item.imageFile_extension
             : ''
-          const width = typeof item?.imageFile_width === 'number' ? item.imageFile_width : 0
-          const height = typeof item?.imageFile_height === 'number' ? item.imageFile_height : 0
+          const width =
+            typeof item?.imageFile_width === 'number' ? item.imageFile_width : 0
+          const height =
+            typeof item?.imageFile_height === 'number'
+              ? item.imageFile_height
+              : 0
 
           const resizedTargets =
             width >= height
@@ -126,7 +131,11 @@ const listConfigurations = list({
   ui: {
     listView: {
       initialColumns: ['name', 'imageFile'],
-      initialSort: { field: 'updatedAt', direction: 'ASC' },
+      initialSort: {
+        // @ts-ignore: `updatedAt` field does exist
+        field: 'updatedAt',
+        direction: 'ASC',
+      },
       pageSize: 50,
     },
   },

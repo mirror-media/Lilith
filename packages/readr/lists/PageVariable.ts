@@ -1,4 +1,5 @@
 import { list } from '@keystone-6/core'
+// @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { text, select, relationship } from '@keystone-6/core/fields'
 
