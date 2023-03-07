@@ -43,7 +43,7 @@ const listConfigurations = list({
     }),
     sections: relationship({
       ref: 'Section.categories',
-      many: false,
+      many: true,
     }),
     posts: relationship({
       ref: 'Post.categories',
