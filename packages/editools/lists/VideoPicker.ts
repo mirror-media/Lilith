@@ -41,7 +41,6 @@ const listConfigurations = list({
         resolve: async (item: Record<string, unknown>): Promise<string> => {
           const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
           const videoUrls = []
-          console.log(item)
           if (item?.video720_filename) {
             videoUrls.push({
               size: 720,
