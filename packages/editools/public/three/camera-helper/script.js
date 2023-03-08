@@ -2,8 +2,6 @@
 
 import * as THREE from 'three'
 import { CameraRig, FreeMovementControls, CameraHelper } from 'three-story-controls'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import { loadGltfModel, loadThreeStoryPointItem } from 'utils'
 
 // Parent Node
