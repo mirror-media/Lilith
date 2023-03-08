@@ -89,7 +89,7 @@ const listConfigurations = list({
         type: graphql.JSON,
         resolve(item: Record<string, unknown>): Record<string, string> {
           return {
-            href: `/demo/videos-picker/${item?.id}`,
+            href: `/demo/video-picker/${item?.id}`,
             label: 'Preview',
           }
         },
