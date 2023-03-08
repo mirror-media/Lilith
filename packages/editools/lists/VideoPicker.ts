@@ -2,6 +2,7 @@ import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import { checkbox, text, file, virtual } from '@keystone-6/core/fields'
+import config from '../config'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const {
@@ -38,8 +39,49 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
+          const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
+          const videoUrls = []
           console.log(item)
-          embedCodeWebpackAssets
+          if (item?.video720_filename) {
+            videoUrls.push({
+              size: 720,
+              videoUrl: `${urlPrefix}/files/${item?.video720_filename}`,
+            })
+          }
+          if (item?.video920_filename) {
+            videoUrls.push({
+              size: 920,
+              videoUrl: `${urlPrefix}/files/${item?.video920_filename}`,
+            })
+          }
+          if (item?.video1280_filename) {
+            videoUrls.push({
+              size: 1280,
+              videoUrl: `${urlPrefix}/files/${item?.video1280_filename}`,
+            })
+          }
+          if (item?.video1440_filename) {
+            videoUrls.push({
+              size: 1440,
+              videoUrl: `${urlPrefix}/files/${item?.video1440_filename}`,
+            })
+          }
+          if (item?.video1920_filename) {
+            videoUrls.push({
+              size: 1920,
+              videoUrl: `${urlPrefix}/files/${item?.video1920_filename}`,
+            })
+          }
+
+          return embedCodeGen.buildEmbeddedCode(
+            'react-full-screen-video',
+            {
+              videoUrls,
+              muteHint: item?.muteHint,
+              isDarkMode: false,
+            },
+            embedCodeWebpackAssets
+          )
         },
       }),
     }),
@@ -48,7 +90,7 @@ const listConfigurations = list({
         type: graphql.JSON,
         resolve(item: Record<string, unknown>): Record<string, string> {
           return {
-            href: `/demo/karaokes/${item?.id}`,
+            href: `/demo/videos-picker/${item?.id}`,
             label: 'Preview',
           }
         },
