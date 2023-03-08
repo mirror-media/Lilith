@@ -32,6 +32,9 @@ const listConfigurations = list({
     model: file({
       label: 'glb 檔案',
     }),
+    desktopModel: file({
+      label: 'glb 桌機版檔案',
+    }),
     captions: json({
       label: '鏡頭移動分鏡說明',
       defaultValue: [],
@@ -61,15 +64,24 @@ const listConfigurations = list({
         resolve: async (item: Record<string, unknown>): Promise<string> => {
           const cameraRig: CameraRigData = item?.cameraRig as CameraRigData
           const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
-          const modelSrc = `${urlPrefix}/files/${item?.model_filename}`
+          const mobileModel = {
+            url: `${urlPrefix}/files/${item?.model_filename}`,
+            fileFormat: 'glb',
+          }
+
+          let desktopModel
+          if (item?.desktopModel_filename) {
+            desktopModel = {
+              url: `${urlPrefix}/files/${item?.desktopModel_filename}`,
+              fileFormat: 'glb',
+            }
+          }
 
           return embedCodeGen.buildEmbeddedCode(
             'react-three-story-points',
             {
-              model: {
-                url: modelSrc,
-                fileFormat: 'glb',
-              },
+              model: mobileModel,
+              desktopModel,
               pois: cameraRig?.pois || [],
               captions: item?.captions,
             },

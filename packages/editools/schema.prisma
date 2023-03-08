@@ -658,19 +658,22 @@ model FeedbackCounter {
 }
 
 model ThreeStoryPoint {
-  id             Int       @id @default(autoincrement())
-  name           String    @default("")
-  model_filesize Int?
-  model_mode     String?
-  model_filename String?
-  captions       Json?     @default("[]")
-  cameraRig      Json?     @default("[]")
-  createdAt      DateTime?
-  updatedAt      DateTime?
-  createdBy      User?     @relation("ThreeStoryPoint_createdBy", fields: [createdById], references: [id])
-  createdById    Int?      @map("createdBy")
-  updatedBy      User?     @relation("ThreeStoryPoint_updatedBy", fields: [updatedById], references: [id])
-  updatedById    Int?      @map("updatedBy")
+  id                    Int       @id @default(autoincrement())
+  name                  String    @default("")
+  model_filesize        Int?
+  model_mode            String?
+  model_filename        String?
+  desktopModel_filesize Int?
+  desktopModel_mode     String?
+  desktopModel_filename String?
+  captions              Json?     @default("[]")
+  cameraRig             Json?     @default("[]")
+  createdAt             DateTime?
+  updatedAt             DateTime?
+  createdBy             User?     @relation("ThreeStoryPoint_createdBy", fields: [createdById], references: [id])
+  createdById           Int?      @map("createdBy")
+  updatedBy             User?     @relation("ThreeStoryPoint_updatedBy", fields: [updatedById], references: [id])
+  updatedById           Int?      @map("updatedBy")
 
   @@index([createdById])
   @@index([updatedById])

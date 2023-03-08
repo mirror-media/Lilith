@@ -2744,6 +2744,7 @@ type ThreeStoryPoint {
   id: ID!
   name: String
   model: FileFieldOutput
+  desktopModel: FileFieldOutput
   captions: JSON
   cameraRig: JSON
   camerHelper: JSON
@@ -2795,6 +2796,7 @@ input ThreeStoryPointOrderByInput {
 input ThreeStoryPointUpdateInput {
   name: String
   model: FileFieldInput
+  desktopModel: FileFieldInput
   captions: JSON
   cameraRig: JSON
   createdAt: DateTime
@@ -2811,6 +2813,7 @@ input ThreeStoryPointUpdateArgs {
 input ThreeStoryPointCreateInput {
   name: String
   model: FileFieldInput
+  desktopModel: FileFieldInput
   captions: JSON
   cameraRig: JSON
   createdAt: DateTime

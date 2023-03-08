@@ -2466,10 +2466,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.1.0-beta.4":
-  version "2.1.0-beta.4"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.0-beta.4.tgz#4277207efb7d59e1741dd807748f1598b9670b83"
-  integrity sha512-rMMQoP9r9n+DW9OV0vNRqiCKbVOF/ifFdbbKrnFLjJpP2i+34553ggje0mi8XCq2rvVZQjxYsz1qPp00zvwY/A==
+"@readr-media/react-embed-code-generator@2.1.0-beta.5":
+  version "2.1.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.0-beta.5.tgz#a70cd9980ac646da9c7745a9bc641f996b805f1c"
+  integrity sha512-+A0EgqZBX+4EFrg/YrlKe2C1HlVFaBimNaM39gNvUn/x7Lc4jtA9WuxUQjGUni2YAlPLpGFl8iAdtgflNGr4Nw==
   dependencies:
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
@@ -2477,7 +2477,7 @@
     "@readr-media/react-live-blog" "1.1.2"
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
-    "@readr-media/react-three-story-points" "1.0.0-beta.2"
+    "@readr-media/react-three-story-points" "1.0.0-beta.3"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -2540,10 +2540,10 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
-"@readr-media/react-three-story-points@1.0.0-beta.2":
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.0-beta.2.tgz#8bcff33784a5d732ba6777e21cb3b3967dbf2cfb"
-  integrity sha512-FZOwxwCu5WdTXsHm1rVyUXx/6wyhc0C31XNk+C9wvwGLVkZiv7N4DVQjayzynnMF2Brp6/ALByKwgk2zsMF/mA==
+"@readr-media/react-three-story-points@1.0.0-beta.3":
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.0-beta.3.tgz#cb800e2ac6e439e2527c6b7043d853ace961b201"
+  integrity sha512-j4/idxEKnXedhWLHegBHIQxt77+3y/nFX6nI6GpOCSLIhpjHilME9p1S/s9JbHh796JnkZ2FTypQbMd3LUsxYw==
   dependencies:
     gsap "^3.11.4"
     lodash "^4.17.21"
