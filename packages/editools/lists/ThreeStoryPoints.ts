@@ -41,7 +41,7 @@ const listConfigurations = list({
     }),
     cameraRig: json({
       label: '鏡頭移動軌跡',
-      defaultValue: [],
+      defaultValue: { pois: [] },
     }),
     camerHelper: virtual({
       field: graphql.field({
