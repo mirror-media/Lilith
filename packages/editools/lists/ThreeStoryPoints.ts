@@ -39,6 +39,15 @@ const listConfigurations = list({
       label: '鏡頭移動分鏡說明',
       defaultValue: [],
     }),
+    audios: json({
+      label: '鏡頭分鏡搭配的聲音導覽',
+      defaultValue: [
+        {
+          urls: [],
+          preload: 'auto',
+        },
+      ],
+    }),
     cameraRig: json({
       label: '鏡頭移動軌跡',
       defaultValue: { pois: [] },
@@ -83,6 +92,7 @@ const listConfigurations = list({
               model: mobileModel,
               desktopModel,
               pois: cameraRig?.pois || [],
+              audios: item?.audios,
               captions: item?.captions,
             },
             embedCodeWebpackAssets
