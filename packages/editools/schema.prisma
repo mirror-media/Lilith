@@ -669,7 +669,8 @@ model ThreeStoryPoint {
   desktopModel_mode     String?
   desktopModel_filename String?
   captions              Json?     @default("[]")
-  cameraRig             Json?     @default("[]")
+  audios                Json?     @default("[{\"urls\":[],\"preload\":\"auto\"}]")
+  cameraRig             Json?     @default("{\"pois\":[]}")
   createdAt             DateTime?
   updatedAt             DateTime?
   createdBy             User?     @relation("ThreeStoryPoint_createdBy", fields: [createdById], references: [id])
