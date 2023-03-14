@@ -2755,6 +2755,7 @@ type ThreeStoryPoint {
   name: String
   model: FileFieldOutput
   desktopModel: FileFieldOutput
+  lightModel: FileFieldOutput
   captions: JSON
   audios: JSON
   cameraRig: JSON
@@ -2808,6 +2809,7 @@ input ThreeStoryPointUpdateInput {
   name: String
   model: FileFieldInput
   desktopModel: FileFieldInput
+  lightModel: FileFieldInput
   captions: JSON
   audios: JSON
   cameraRig: JSON
@@ -2826,6 +2828,7 @@ input ThreeStoryPointCreateInput {
   name: String
   model: FileFieldInput
   desktopModel: FileFieldInput
+  lightModel: FileFieldInput
   captions: JSON
   audios: JSON
   cameraRig: JSON

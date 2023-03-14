@@ -30,10 +30,13 @@ const listConfigurations = list({
       validation: { isRequired: true },
     }),
     model: file({
-      label: 'glb 檔案',
+      label: '上傳 model glb 檔案',
     }),
     desktopModel: file({
-      label: 'glb 桌機版檔案',
+      label: '上傳 model 桌機版 glb 檔案',
+    }),
+    lightModel: file({
+      label: '上傳 light（燈光）glb 檔案',
     }),
     captions: json({
       label: '鏡頭移動分鏡說明',
@@ -86,11 +89,19 @@ const listConfigurations = list({
             }
           }
 
+          let lightModel
+          if (item?.lightModel_filename) {
+            lightModel = {
+              url: `${urlPrefix}/files/${item?.lightModel_filename}`,
+              fileFormat: 'glb',
+            }
+          }
+
           return embedCodeGen.buildEmbeddedCode(
             'react-three-story-points',
             {
-              model: mobileModel,
-              desktopModel,
+              models: [mobileModel, lightModel],
+              desktopModels: [desktopModel, lightModel],
               pois: cameraRig?.pois || [],
               audios: item?.audios,
               captions: item?.captions,
