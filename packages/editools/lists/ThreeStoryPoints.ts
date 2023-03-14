@@ -3,7 +3,7 @@ import config from '../config'
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, file, json, virtual } from '@keystone-6/core/fields'
+import { checkbox, text, file, json, virtual } from '@keystone-6/core/fields'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const {
@@ -55,6 +55,10 @@ const listConfigurations = list({
       label: '鏡頭移動軌跡',
       defaultValue: { pois: [] },
     }),
+    debugMode: checkbox({
+      label: 'debug 模式',
+      defaultValue: false,
+    }),
     camerHelper: virtual({
       field: graphql.field({
         type: graphql.JSON,
@@ -100,11 +104,14 @@ const listConfigurations = list({
           return embedCodeGen.buildEmbeddedCode(
             'react-three-story-points',
             {
-              models: [mobileModel, lightModel],
-              desktopModels: [desktopModel, lightModel],
+              models: lightModel ? [mobileModel, lightModel] : [mobileModel],
+              desktopModels: lightModel
+                ? [desktopModel, lightModel]
+                : [desktopModel],
               pois: cameraRig?.pois || [],
               audios: item?.audios,
               captions: item?.captions,
+              debugMode: item?.debugMode,
             },
             embedCodeWebpackAssets
           )
