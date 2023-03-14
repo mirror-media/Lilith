@@ -73,7 +73,7 @@ scene.add(grid)
 const rig = new CameraRig(camera, scene)
 const controls = new FreeMovementControls(rig, {
   domElement: canvasParent,
-  keyboardScaleFactor: 0.1,
+  keyboardScaleFactor: 0.05,
   wheelScaleFactor: 0.01,
 })
 controls.enable()
