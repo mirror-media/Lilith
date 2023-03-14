@@ -2759,6 +2759,7 @@ type ThreeStoryPoint {
   captions: JSON
   audios: JSON
   cameraRig: JSON
+  debugMode: Boolean
   camerHelper: JSON
   embedCode: String
   preview: JSON
@@ -2792,6 +2793,7 @@ input ThreeStoryPointWhereInput {
   NOT: [ThreeStoryPointWhereInput!]
   id: IDFilter
   name: StringFilter
+  debugMode: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2801,6 +2803,7 @@ input ThreeStoryPointWhereInput {
 input ThreeStoryPointOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  debugMode: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2813,6 +2816,7 @@ input ThreeStoryPointUpdateInput {
   captions: JSON
   audios: JSON
   cameraRig: JSON
+  debugMode: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2832,6 +2836,7 @@ input ThreeStoryPointCreateInput {
   captions: JSON
   audios: JSON
   cameraRig: JSON
+  debugMode: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
