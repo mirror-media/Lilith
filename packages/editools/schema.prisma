@@ -668,6 +668,9 @@ model ThreeStoryPoint {
   desktopModel_filesize Int?
   desktopModel_mode     String?
   desktopModel_filename String?
+  lightModel_filesize   Int?
+  lightModel_mode       String?
+  lightModel_filename   String?
   captions              Json?     @default("[]")
   audios                Json?     @default("[{\"urls\":[],\"preload\":\"auto\"}]")
   cameraRig             Json?     @default("{\"pois\":[]}")
