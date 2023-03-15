@@ -78,6 +78,10 @@ const listConfigurations = list({
               videoUrls,
               muteHint: item?.muteHint,
               isDarkMode: false,
+              voiceHint:
+                item?.voiceHint ||
+                '為確保最佳閱讀體驗，建議您開啟聲音、將載具橫放、於網路良好的環境，以最新版本瀏覽器（Chrome 108.0 / Safari 15.5 / Edge 108.0 以上）觀看本專題',
+              voiceButton: item?.voiceButton || '確認',
             },
             embedCodeWebpackAssets
           )
