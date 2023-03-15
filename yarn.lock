@@ -2466,10 +2466,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.1.4-beta.nick.1":
-  version "2.1.4-beta.nick.1"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.4-beta.nick.1.tgz#64feef75917d0757ef07f9e7d6f1978b60e0031c"
-  integrity sha512-KKQ+tf9RBfXi6gU7T1HgE5gXSLGNoSjyPdrd4UR0we7CVOB6J5TWRoj+XhRJ8pEXD33GmIndU8am2TPtgUmMxQ==
+"@readr-media/react-embed-code-generator@2.1.4":
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.4.tgz#537d5ee0d3cfc2d21f90dfd4580e345b45b489c9"
+  integrity sha512-xtVuTTEGoTBkmSGz2Q6+Oag3700DC4zyDZdiD2g6Ly8zUht+JN4raTXA05acgb+8v0ZqYXYJMfGwVJZMdLLSDg==
   dependencies:
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
@@ -2478,7 +2478,7 @@
     "@readr-media/react-live-blog" "1.1.2"
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
-    "@readr-media/react-three-story-points" "1.0.0-beta.5"
+    "@readr-media/react-three-story-points" "1.0.0"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -2553,10 +2553,10 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
-"@readr-media/react-three-story-points@1.0.0-beta.5":
-  version "1.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.0-beta.5.tgz#7c53c47ed1585fb33a844ad6d1fd05cea5e3dd44"
-  integrity sha512-hx+fL6kgyHWWbgYa/l4iDn9xyYPFLVtuRivh+LEM4X2embKdFbLlEOa45Q3WsefMByy/8PgjPjKlzLhZSjo/KA==
+"@readr-media/react-three-story-points@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.0.tgz#1d95998cd316322ad9782d0f0074d565b2a742e6"
+  integrity sha512-dYTweJdslIaRMu9jigXCaaC+7bS16+uyKF/TwfMF3cb7kcHI/uwndS1AmLc0Fts8vp2oiN1bDebdBEzAuzIwVQ==
   dependencies:
     gsap "^3.11.4"
     lodash "^4.17.21"
