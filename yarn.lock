@@ -2466,10 +2466,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.1.4":
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.4.tgz#537d5ee0d3cfc2d21f90dfd4580e345b45b489c9"
-  integrity sha512-xtVuTTEGoTBkmSGz2Q6+Oag3700DC4zyDZdiD2g6Ly8zUht+JN4raTXA05acgb+8v0ZqYXYJMfGwVJZMdLLSDg==
+"@readr-media/react-embed-code-generator@2.1.5-beta.0":
+  version "2.1.5-beta.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.5-beta.0.tgz#fc75b81a82221a519a0ab6e93ec522ab42b9e022"
+  integrity sha512-ggmUP6PXSDPdtypsNtIPW+kGDAIvVsgCm9WvObCYoH9CEzNgDXeJNIGB6Ow67kMLWNgzZnnvbXPsWUOwrJQpOQ==
   dependencies:
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
@@ -2478,7 +2478,7 @@
     "@readr-media/react-live-blog" "1.1.2"
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
-    "@readr-media/react-three-story-points" "1.0.0"
+    "@readr-media/react-three-story-points" "1.0.1-beta.0"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -2553,10 +2553,10 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
-"@readr-media/react-three-story-points@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.0.tgz#1d95998cd316322ad9782d0f0074d565b2a742e6"
-  integrity sha512-dYTweJdslIaRMu9jigXCaaC+7bS16+uyKF/TwfMF3cb7kcHI/uwndS1AmLc0Fts8vp2oiN1bDebdBEzAuzIwVQ==
+"@readr-media/react-three-story-points@1.0.1-beta.0":
+  version "1.0.1-beta.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.1-beta.0.tgz#00dfbfe281de9d0e91f7f626bfa49e4988214205"
+  integrity sha512-xLr7u2JJFzlAzQac0B+fR3A758DuBCXOYmvEVHb/iMOPtDte51tnsAhY15VjJ6NbvcaGlgSKCEMtaFiQn5s8fg==
   dependencies:
     gsap "^3.11.4"
     lodash "^4.17.21"
