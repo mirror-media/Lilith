@@ -2466,10 +2466,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.1.5-beta.2":
-  version "2.1.5-beta.2"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.5-beta.2.tgz#8d8a8cb91cc8c7f8dc7f10ce7dcb9ec7a3bf31c6"
-  integrity sha512-dGQvFVQCY8nC/V/dfelRhuMB2IW/o/707BEouZ9QKuL5XUlXKm7FfqN8krTlFrpwDADXJICmtCKXCpM+nBVXog==
+"@readr-media/react-embed-code-generator@2.1.5-alpha.nick.0":
+  version "2.1.5-alpha.nick.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.5-alpha.nick.0.tgz#2b62abe5d45cc99f689edc71d7b307e9f6f2677b"
+  integrity sha512-hC91noXjIQG/fLqF7Pc3xzcYNM9IdtnNQAt5eLMZJw7w27VOYDp1EkcL47CWkwhK9sCTXNpz/ezkv+IToM5Mfw==
   dependencies:
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
@@ -2495,9 +2495,9 @@
     uuid "^8.3.2"
 
 "@readr-media/react-full-screen-video@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-full-screen-video/-/react-full-screen-video-1.0.1.tgz#a70119b6ffdb0d83aa8ae89ca232dd4f2ae2bb0f"
-  integrity sha512-whY8UcSifJIXZ++fne5Q64yMdG8OUn/cWPYsh8vdgMXnJuhmiwN64ChE8SYLaRpkvL+28Q7089VA0nNrYGlR/w==
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-full-screen-video/-/react-full-screen-video-1.0.2.tgz#d94f2f329ee81a534d7f5305e83f4842bde817b5"
+  integrity sha512-8azDrGwqF87EMYxTqUBxJvG3S2ShPtljLf2heyOCjtOWL8XiRaIPeNw75dhCq4zomJotqtnd6+Vr1IGK0m/HSA==
   dependencies:
     react "18.1.0"
     react-dom "^18.1.0"
