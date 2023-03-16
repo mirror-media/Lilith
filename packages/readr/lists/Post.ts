@@ -161,11 +161,11 @@ const listConfigurations = list({
       disabledButtons: [],
       website: 'readr',
     }),
-    brief: customFields.richTextEditor({
-      label: '前言',
-      disabledButtons: [],
-      website: 'readr',
-    }),
+    // brief: customFields.richTextEditor({
+    //   label: '前言',
+    //   disabledButtons: [],
+    //   website: 'readr',
+    // }),
     content: customFields.richTextEditor({
       label: '內文',
       disabledButtons: [],
@@ -303,13 +303,13 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
-    briefApiData: json({
-      label: '資料庫使用',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-      },
-    }),
+    // briefApiData: json({
+    //   label: '資料庫使用',
+    //   ui: {
+    //     createView: { fieldMode: 'hidden' },
+    //     itemView: { fieldMode: 'hidden' },
+    //   },
+    // }),
     apiData: json({
       label: '資料庫使用',
       ui: {
@@ -350,7 +350,7 @@ const listConfigurations = list({
   },
   hooks: {
     resolveInput: async ({ resolvedData }) => {
-      const { summary, brief, content, actionList, citation } = resolvedData
+      const { summary, content, actionList, citation } = resolvedData
       if (content) {
         resolvedData.apiData = customFields.draftConverter
           .convertToApiData(content)
@@ -361,11 +361,11 @@ const listConfigurations = list({
           .convertToApiData(summary)
           .toJS()
       }
-      if (brief) {
-        resolvedData.briefApiData = customFields.draftConverter
-          .convertToApiData(brief)
-          .toJS()
-      }
+      // if (brief) {
+      //   resolvedData.briefApiData = customFields.draftConverter
+      //     .convertToApiData(brief)
+      //     .toJS()
+      // }
       if (actionList) {
         resolvedData.actionlistApiData = customFields.draftConverter
           .convertToApiData(actionList)

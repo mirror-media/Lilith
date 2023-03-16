@@ -348,7 +348,6 @@ model Post {
   heroImageSize                String?           @default("normal")
   style                        String?           @default("news")
   summary                      Json?
-  brief                        Json?
   content                      Json?
   actionList                   Json?
   citation                     Json?
@@ -372,7 +371,6 @@ model Post {
   projectId                    Int?              @unique @map("project")
   css                          String            @default("")
   summaryApiData               Json?
-  briefApiData                 Json?
   apiData                      Json?
   actionlistApiData            Json?
   citationApiData              Json?

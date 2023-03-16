@@ -1377,7 +1377,6 @@ type Post {
   heroImageSize: String
   style: String
   summary: JSON
-  brief: JSON
   content: JSON
   actionList: JSON
   citation: JSON
@@ -1428,7 +1427,6 @@ type Post {
   project: ProjectChecklist
   css: String
   summaryApiData: JSON
-  briefApiData: JSON
   apiData: JSON
   actionlistApiData: JSON
   citationApiData: JSON
@@ -1562,7 +1560,6 @@ input PostUpdateInput {
   heroImageSize: String
   style: String
   summary: JSON
-  brief: JSON
   content: JSON
   actionList: JSON
   citation: JSON
@@ -1583,7 +1580,6 @@ input PostUpdateInput {
   project: ProjectChecklistRelateToOneForUpdateInput
   css: String
   summaryApiData: JSON
-  briefApiData: JSON
   apiData: JSON
   actionlistApiData: JSON
   citationApiData: JSON
@@ -1665,7 +1661,6 @@ input PostCreateInput {
   heroImageSize: String
   style: String
   summary: JSON
-  brief: JSON
   content: JSON
   actionList: JSON
   citation: JSON
@@ -1686,7 +1681,6 @@ input PostCreateInput {
   project: ProjectChecklistRelateToOneForCreateInput
   css: String
   summaryApiData: JSON
-  briefApiData: JSON
   apiData: JSON
   actionlistApiData: JSON
   citationApiData: JSON
