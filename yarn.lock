@@ -2466,14 +2466,14 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.1.5-alpha.nick.3":
-  version "2.1.5-alpha.nick.3"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.5-alpha.nick.3.tgz#19ee463953b5fdb453c7f419eb32d1bc074e5b26"
-  integrity sha512-x5gldaxL8doD01BcIMijiq1wD2fNeAbwERTskI/ZYxCNWZhBXkzJhG+PFsHPYcQkL2KwHT3bjR6oEjg9EEr9YQ==
+"@readr-media/react-embed-code-generator@2.1.5-beta.nick.0":
+  version "2.1.5-beta.nick.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.5-beta.nick.0.tgz#667437ffe79ec6c68f6209d20a98a7efb12f5cd2"
+  integrity sha512-3hdcIXzA37H8YWzh7BCmGOQqq8Pl7yYrElUg3ZGqFndGhWLQ97GcP0nCKQuKj6EJ+ti84Qr91h6gfNknSVfiJw==
   dependencies:
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
-    "@readr-media/react-full-screen-video" "1.0.4"
+    "@readr-media/react-full-screen-video" "1.0.5-beta.0"
     "@readr-media/react-karaoke" "2.0.0"
     "@readr-media/react-live-blog" "1.1.2"
     "@readr-media/react-qa-list" "2.0.1"
@@ -2494,10 +2494,10 @@
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
 
-"@readr-media/react-full-screen-video@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-full-screen-video/-/react-full-screen-video-1.0.4.tgz#109abedafd20b597029c25ee799b797c226f2506"
-  integrity sha512-iuDH590XJVz+qVW3PyFIjJyE9zrycdpD00zYZmD1hGuhjAl4Su9eNJyJxNETUTwXH8aFfSe5fwAv8HOIhT5TKA==
+"@readr-media/react-full-screen-video@1.0.5-beta.0":
+  version "1.0.5-beta.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-full-screen-video/-/react-full-screen-video-1.0.5-beta.0.tgz#c0c63c669f9fc480d90974307b0be39709bf1a57"
+  integrity sha512-3cd6fm7BY5YCfulk3Y800/AUfRirN7x0Yow9ju+ZzhQfy4oIAWYDcAduIbYkX43ub2QP5DdO+B3djOMv7trtfg==
   dependencies:
     react "18.1.0"
     react-dom "^18.1.0"
