@@ -585,15 +585,16 @@ model VideoPicker {
   video1280_filesize Int?
   video1280_mode     String?
   video1280_filename String?
-  video920_filesize  Int?
-  video920_mode      String?
-  video920_filename  String?
+  video960_filesize  Int?
+  video960_mode      String?
+  video960_filename  String?
   video720_filesize  Int?
   video720_mode      String?
   video720_filename  String?
   muteHint           Boolean   @default(false)
   voiceHint          String    @default("")
   voiceButton        String    @default("")
+  hintMode           String?   @default("light")
   createdAt          DateTime?
   updatedAt          DateTime?
   createdBy          User?     @relation("VideoPicker_createdBy", fields: [createdById], references: [id])
@@ -660,19 +661,27 @@ model FeedbackCounter {
 }
 
 model ThreeStoryPoint {
-  id             Int       @id @default(autoincrement())
-  name           String    @default("")
-  model_filesize Int?
-  model_mode     String?
-  model_filename String?
-  captions       Json?     @default("[]")
-  cameraRig      Json?     @default("[]")
-  createdAt      DateTime?
-  updatedAt      DateTime?
-  createdBy      User?     @relation("ThreeStoryPoint_createdBy", fields: [createdById], references: [id])
-  createdById    Int?      @map("createdBy")
-  updatedBy      User?     @relation("ThreeStoryPoint_updatedBy", fields: [updatedById], references: [id])
-  updatedById    Int?      @map("updatedBy")
+  id                    Int       @id @default(autoincrement())
+  name                  String    @default("")
+  model_filesize        Int?
+  model_mode            String?
+  model_filename        String?
+  desktopModel_filesize Int?
+  desktopModel_mode     String?
+  desktopModel_filename String?
+  lightModel_filesize   Int?
+  lightModel_mode       String?
+  lightModel_filename   String?
+  captions              Json?     @default("[]")
+  audios                Json?     @default("[{\"urls\":[],\"preload\":\"auto\"}]")
+  cameraRig             Json?     @default("{\"pois\":[]}")
+  debugMode             Boolean   @default(false)
+  createdAt             DateTime?
+  updatedAt             DateTime?
+  createdBy             User?     @relation("ThreeStoryPoint_createdBy", fields: [createdById], references: [id])
+  createdById           Int?      @map("createdBy")
+  updatedBy             User?     @relation("ThreeStoryPoint_updatedBy", fields: [updatedById], references: [id])
+  updatedById           Int?      @map("updatedBy")
 
   @@index([createdById])
   @@index([updatedById])

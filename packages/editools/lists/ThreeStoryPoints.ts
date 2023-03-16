@@ -3,7 +3,7 @@ import config from '../config'
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, file, json, virtual } from '@keystone-6/core/fields'
+import { checkbox, text, file, json, virtual } from '@keystone-6/core/fields'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const {
@@ -30,15 +30,34 @@ const listConfigurations = list({
       validation: { isRequired: true },
     }),
     model: file({
-      label: 'glb 檔案',
+      label: '上傳 model glb 檔案',
+    }),
+    desktopModel: file({
+      label: '上傳 model 桌機版 glb 檔案',
+    }),
+    lightModel: file({
+      label: '上傳 light（燈光）glb 檔案',
     }),
     captions: json({
       label: '鏡頭移動分鏡說明',
       defaultValue: [],
     }),
+    audios: json({
+      label: '鏡頭分鏡搭配的聲音導覽',
+      defaultValue: [
+        {
+          urls: [],
+          preload: 'auto',
+        },
+      ],
+    }),
     cameraRig: json({
       label: '鏡頭移動軌跡',
-      defaultValue: [],
+      defaultValue: { pois: [] },
+    }),
+    debugMode: checkbox({
+      label: 'debug 模式',
+      defaultValue: false,
     }),
     camerHelper: virtual({
       field: graphql.field({
@@ -61,17 +80,38 @@ const listConfigurations = list({
         resolve: async (item: Record<string, unknown>): Promise<string> => {
           const cameraRig: CameraRigData = item?.cameraRig as CameraRigData
           const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
-          const modelSrc = `${urlPrefix}/files/${item?.model_filename}`
+          const mobileModel = {
+            url: `${urlPrefix}/files/${item?.model_filename}`,
+            fileFormat: 'glb',
+          }
+
+          let desktopModel
+          if (item?.desktopModel_filename) {
+            desktopModel = {
+              url: `${urlPrefix}/files/${item?.desktopModel_filename}`,
+              fileFormat: 'glb',
+            }
+          }
+
+          let lightModel
+          if (item?.lightModel_filename) {
+            lightModel = {
+              url: `${urlPrefix}/files/${item?.lightModel_filename}`,
+              fileFormat: 'glb',
+            }
+          }
 
           return embedCodeGen.buildEmbeddedCode(
             'react-three-story-points',
             {
-              model: {
-                url: modelSrc,
-                fileFormat: 'glb',
-              },
+              models: lightModel ? [mobileModel, lightModel] : [mobileModel],
+              desktopModels: lightModel
+                ? [desktopModel, lightModel]
+                : [desktopModel],
               pois: cameraRig?.pois || [],
+              audios: item?.audios,
               captions: item?.captions,
+              debugMode: item?.debugMode,
             },
             embedCodeWebpackAssets
           )

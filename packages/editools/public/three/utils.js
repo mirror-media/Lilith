@@ -7,7 +7,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
  * Load model
  */
 const dracoLoader = new DRACOLoader()
-dracoLoader.setDecoderPath('https://cdn.skypack.dev/three@0.149.0/examples/js/libs/draco/')
+dracoLoader.setDecoderPath('https://unpkg.com/three@0.150.1/examples/jsm/libs/draco/gltf/')
 const gltfLoader = new GLTFLoader()
 gltfLoader.setDRACOLoader(dracoLoader)
 

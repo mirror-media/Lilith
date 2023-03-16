@@ -2466,18 +2466,19 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.1.0-beta.4":
-  version "2.1.0-beta.4"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.0-beta.4.tgz#4277207efb7d59e1741dd807748f1598b9670b83"
-  integrity sha512-rMMQoP9r9n+DW9OV0vNRqiCKbVOF/ifFdbbKrnFLjJpP2i+34553ggje0mi8XCq2rvVZQjxYsz1qPp00zvwY/A==
+"@readr-media/react-embed-code-generator@2.1.5-alpha.nick.2":
+  version "2.1.5-alpha.nick.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.5-alpha.nick.2.tgz#e52960287b3c50653cebc29c0b280da09bb6c5f7"
+  integrity sha512-I6gQNS3Zju/cQa6ZIdvODmbOSqHILbO6KL5SsCnLl82gMazCTpmm8WtD97SkCFoembiIVy564EiCbdpt7sE0lQ==
   dependencies:
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
+    "@readr-media/react-full-screen-video" "^1.0.1"
     "@readr-media/react-karaoke" "2.0.0"
     "@readr-media/react-live-blog" "1.1.2"
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
-    "@readr-media/react-three-story-points" "1.0.0-beta.2"
+    "@readr-media/react-three-story-points" "1.0.1-beta.4"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -2491,6 +2492,18 @@
     lodash "^4.17.21"
     regenerator-runtime "^0.13.9"
     serialize-javascript "^6.0.0"
+    uuid "^8.3.2"
+
+"@readr-media/react-full-screen-video@^1.0.1":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-full-screen-video/-/react-full-screen-video-1.0.2.tgz#d94f2f329ee81a534d7f5305e83f4842bde817b5"
+  integrity sha512-8azDrGwqF87EMYxTqUBxJvG3S2ShPtljLf2heyOCjtOWL8XiRaIPeNw75dhCq4zomJotqtnd6+Vr1IGK0m/HSA==
+  dependencies:
+    react "18.1.0"
+    react-dom "^18.1.0"
+    react-intersection-observer "^9.3.5"
+    serialize-javascript "^6.0.0"
+    styled-components "5.3.5"
     uuid "^8.3.2"
 
 "@readr-media/react-karaoke@2.0.0":
@@ -2540,13 +2553,14 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
-"@readr-media/react-three-story-points@1.0.0-beta.2":
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.0-beta.2.tgz#8bcff33784a5d732ba6777e21cb3b3967dbf2cfb"
-  integrity sha512-FZOwxwCu5WdTXsHm1rVyUXx/6wyhc0C31XNk+C9wvwGLVkZiv7N4DVQjayzynnMF2Brp6/ALByKwgk2zsMF/mA==
+"@readr-media/react-three-story-points@1.0.1-beta.4":
+  version "1.0.1-beta.4"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.1-beta.4.tgz#3c6c92178bb974c5d9dfaf263a37bb108da83219"
+  integrity sha512-EHaPC9dh5RrRORG3SQ4nmtMD2eyHC+GSCI98qipvJO6lqOOod0yuAHakxAzCNfP6/fEyuCLI9+oDjRUQZ5H34Q==
   dependencies:
     gsap "^3.11.4"
     lodash "^4.17.21"
+    react-intersection-observer "^9.3.5"
     three "^0.150.1"
     three-story-controls "^1.0.6"
 

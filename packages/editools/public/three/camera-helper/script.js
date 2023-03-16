@@ -2,8 +2,6 @@
 
 import * as THREE from 'three'
 import { CameraRig, FreeMovementControls, CameraHelper } from 'three-story-controls'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import { loadGltfModel, loadThreeStoryPointItem } from 'utils'
 
 // Parent Node
@@ -49,7 +47,6 @@ const sizes = {
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(2, 2, 2)
 scene.add(camera)
 
 /**
@@ -76,6 +73,8 @@ scene.add(grid)
 const rig = new CameraRig(camera, scene)
 const controls = new FreeMovementControls(rig, {
   domElement: canvasParent,
+  keyboardScaleFactor: 0.05,
+  wheelScaleFactor: 0.01,
 })
 controls.enable()
 

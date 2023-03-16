@@ -1,7 +1,8 @@
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { checkbox, text, file, virtual } from '@keystone-6/core/fields'
+import { checkbox, text, file, virtual, select } from '@keystone-6/core/fields'
+import config from '../config'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const {
@@ -21,7 +22,7 @@ const listConfigurations = list({
     video1920: file(),
     video1440: file(),
     video1280: file(),
-    video920: file(),
+    video960: file(),
     video720: file(),
     muteHint: checkbox({
       label: '是否顯示聲音播放提醒',
@@ -33,13 +34,72 @@ const listConfigurations = list({
     voiceButton: text({
       label: '開啟聲音按鍵文字',
     }),
+    hintMode: select({
+      label: '提示區塊模式',
+      type: 'string',
+      options: [
+        {
+          label: '明亮模式',
+          value: 'light',
+        },
+        {
+          label: '黑暗模式',
+          value: 'dark',
+        },
+      ],
+      defaultValue: 'light',
+    }),
     embedCode: virtual({
       label: 'embed code',
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
-          console.log(item)
-          embedCodeWebpackAssets
+          const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
+          const videoUrls = []
+          if (item?.video720_filename) {
+            videoUrls.push({
+              size: 720,
+              videoUrl: `${urlPrefix}/files/${item?.video720_filename}`,
+            })
+          }
+          if (item?.video960_filename) {
+            videoUrls.push({
+              size: 960,
+              videoUrl: `${urlPrefix}/files/${item?.video960_filename}`,
+            })
+          }
+          if (item?.video1280_filename) {
+            videoUrls.push({
+              size: 1280,
+              videoUrl: `${urlPrefix}/files/${item?.video1280_filename}`,
+            })
+          }
+          if (item?.video1440_filename) {
+            videoUrls.push({
+              size: 1440,
+              videoUrl: `${urlPrefix}/files/${item?.video1440_filename}`,
+            })
+          }
+          if (item?.video1920_filename) {
+            videoUrls.push({
+              size: 1920,
+              videoUrl: `${urlPrefix}/files/${item?.video1920_filename}`,
+            })
+          }
+
+          return `${embedCodeGen.buildEmbeddedCode(
+            'react-full-screen-video',
+            {
+              videoUrls,
+              muteHint: item?.muteHint,
+              isDarkMode: item?.hintMode === 'dark',
+              voiceHint:
+                item?.voiceHint ||
+                '為確保最佳閱讀體驗，建議您開啟聲音、將載具橫放、於網路良好的環境，以最新版本瀏覽器（Chrome 108.0 / Safari 15.5 / Edge 108.0 以上）觀看本專題',
+              voiceButton: item?.voiceButton || '確認',
+            },
+            embedCodeWebpackAssets
+          )}`
         },
       }),
     }),
@@ -48,7 +108,7 @@ const listConfigurations = list({
         type: graphql.JSON,
         resolve(item: Record<string, unknown>): Record<string, string> {
           return {
-            href: `/demo/karaokes/${item?.id}`,
+            href: `/demo/video-picker/${item?.id}`,
             label: 'Preview',
           }
         },

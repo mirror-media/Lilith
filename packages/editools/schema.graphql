@@ -2444,11 +2444,12 @@ type VideoPicker {
   video1920: FileFieldOutput
   video1440: FileFieldOutput
   video1280: FileFieldOutput
-  video920: FileFieldOutput
+  video960: FileFieldOutput
   video720: FileFieldOutput
   muteHint: Boolean
   voiceHint: String
   voiceButton: String
+  hintMode: String
   embedCode: String
   previewButton: JSON
   createdAt: DateTime
@@ -2470,6 +2471,7 @@ input VideoPickerWhereInput {
   muteHint: BooleanFilter
   voiceHint: StringFilter
   voiceButton: StringFilter
+  hintMode: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2482,6 +2484,7 @@ input VideoPickerOrderByInput {
   muteHint: OrderDirection
   voiceHint: OrderDirection
   voiceButton: OrderDirection
+  hintMode: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2491,11 +2494,12 @@ input VideoPickerUpdateInput {
   video1920: FileFieldInput
   video1440: FileFieldInput
   video1280: FileFieldInput
-  video920: FileFieldInput
+  video960: FileFieldInput
   video720: FileFieldInput
   muteHint: Boolean
   voiceHint: String
   voiceButton: String
+  hintMode: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2512,11 +2516,12 @@ input VideoPickerCreateInput {
   video1920: FileFieldInput
   video1440: FileFieldInput
   video1280: FileFieldInput
-  video920: FileFieldInput
+  video960: FileFieldInput
   video720: FileFieldInput
   muteHint: Boolean
   voiceHint: String
   voiceButton: String
+  hintMode: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2754,8 +2759,12 @@ type ThreeStoryPoint {
   id: ID!
   name: String
   model: FileFieldOutput
+  desktopModel: FileFieldOutput
+  lightModel: FileFieldOutput
   captions: JSON
+  audios: JSON
   cameraRig: JSON
+  debugMode: Boolean
   camerHelper: JSON
   embedCode: String
   preview: JSON
@@ -2789,6 +2798,7 @@ input ThreeStoryPointWhereInput {
   NOT: [ThreeStoryPointWhereInput!]
   id: IDFilter
   name: StringFilter
+  debugMode: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2798,6 +2808,7 @@ input ThreeStoryPointWhereInput {
 input ThreeStoryPointOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  debugMode: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2805,8 +2816,12 @@ input ThreeStoryPointOrderByInput {
 input ThreeStoryPointUpdateInput {
   name: String
   model: FileFieldInput
+  desktopModel: FileFieldInput
+  lightModel: FileFieldInput
   captions: JSON
+  audios: JSON
   cameraRig: JSON
+  debugMode: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2821,8 +2836,12 @@ input ThreeStoryPointUpdateArgs {
 input ThreeStoryPointCreateInput {
   name: String
   model: FileFieldInput
+  desktopModel: FileFieldInput
+  lightModel: FileFieldInput
   captions: JSON
+  audios: JSON
   cameraRig: JSON
+  debugMode: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
