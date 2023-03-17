@@ -1,7 +1,8 @@
+// @ts-ignore ecg does not provide definition files
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { checkbox, text, file, virtual } from '@keystone-6/core/fields'
+import { checkbox, text, file, virtual, select } from '@keystone-6/core/fields'
 import config from '../config'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
@@ -22,7 +23,7 @@ const listConfigurations = list({
     video1920: file(),
     video1440: file(),
     video1280: file(),
-    video920: file(),
+    video960: file(),
     video720: file(),
     muteHint: checkbox({
       label: '是否顯示聲音播放提醒',
@@ -33,6 +34,21 @@ const listConfigurations = list({
     }),
     voiceButton: text({
       label: '開啟聲音按鍵文字',
+    }),
+    hintMode: select({
+      label: '提示區塊模式',
+      type: 'string',
+      options: [
+        {
+          label: '明亮模式',
+          value: 'light',
+        },
+        {
+          label: '黑暗模式',
+          value: 'dark',
+        },
+      ],
+      defaultValue: 'light',
     }),
     embedCode: virtual({
       label: 'embed code',
@@ -47,10 +63,10 @@ const listConfigurations = list({
               videoUrl: `${urlPrefix}/files/${item?.video720_filename}`,
             })
           }
-          if (item?.video920_filename) {
+          if (item?.video960_filename) {
             videoUrls.push({
-              size: 920,
-              videoUrl: `${urlPrefix}/files/${item?.video920_filename}`,
+              size: 960,
+              videoUrl: `${urlPrefix}/files/${item?.video960_filename}`,
             })
           }
           if (item?.video1280_filename) {
@@ -72,18 +88,53 @@ const listConfigurations = list({
             })
           }
 
-          return embedCodeGen.buildEmbeddedCode(
+          const style = `
+            <style>
+              .embedded-code-container-top {
+                margin-top: -60px;
+                margin-left: -20px;
+                z-index: 100;
+              }
+              .embedded-code-container {
+                margin-top: -32px;
+                margin-left: -20px;
+                z-index: 100;
+                position: relative;
+              }
+
+              @media (min-width:768px) {
+                .embedded-code-container-top, .embedded-code-container {
+                  margin-left: calc((100vw - 568px)/2 * -1);
+                }
+              }
+              @media (min-width:1200px) {
+                .embedded-code-container-top, .embedded-code-container {
+                  margin-left: calc((100vw - 600px)/2 * -1);
+                }
+              }
+            </style>
+          `
+
+          const code = embedCodeGen.buildEmbeddedCode(
             'react-full-screen-video',
             {
               videoUrls,
               muteHint: item?.muteHint,
-              isDarkMode: false,
+              isDarkMode: item?.hintMode === 'dark',
               voiceHint:
                 item?.voiceHint ||
                 '為確保最佳閱讀體驗，建議您開啟聲音、將載具橫放、於網路良好的環境，以最新版本瀏覽器（Chrome 108.0 / Safari 15.5 / Edge 108.0 以上）觀看本專題',
               voiceButton: item?.voiceButton || '確認',
             },
             embedCodeWebpackAssets
+          )
+
+          const className = item?.muteHint
+            ? 'embedded-code-container-top'
+            : 'embedded-code-container'
+          return code.replace(
+            /(<div id=.*><\/div>)/,
+            `${style}<div class='${className}'>$1</div>`
           )
         },
       }),
@@ -106,7 +157,7 @@ const listConfigurations = list({
   ui: {
     listView: {
       initialSort: { field: 'id', direction: 'DESC' },
-      initialColumns: ['name', 'video-1920'],
+      initialColumns: ['name', 'video1920'],
       pageSize: 50,
     },
     labelField: 'name',

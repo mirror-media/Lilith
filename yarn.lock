@@ -2466,19 +2466,19 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.1.5-alpha.fsv.0":
-  version "2.1.5-alpha.fsv.0"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.5-alpha.fsv.0.tgz#f5b75a5e828d931f0557c0a26cdeeb6451327b53"
-  integrity sha512-KG/cioEVtC71CtDWBaQwVUrmRA/xVYF8Iln/DchzhIXGS0IyS/5F6ynWNPBc3EyxLLhnYNR6Cmqo9Xweegm25A==
+"@readr-media/react-embed-code-generator@2.1.5-beta.nick.0":
+  version "2.1.5-beta.nick.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.5-beta.nick.0.tgz#667437ffe79ec6c68f6209d20a98a7efb12f5cd2"
+  integrity sha512-3hdcIXzA37H8YWzh7BCmGOQqq8Pl7yYrElUg3ZGqFndGhWLQ97GcP0nCKQuKj6EJ+ti84Qr91h6gfNknSVfiJw==
   dependencies:
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
-    "@readr-media/react-full-screen-video" "1.0.2-alpha.nick.0"
+    "@readr-media/react-full-screen-video" "1.0.5-beta.0"
     "@readr-media/react-karaoke" "2.0.0"
     "@readr-media/react-live-blog" "1.1.2"
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
-    "@readr-media/react-three-story-points" "1.0.1-beta.2"
+    "@readr-media/react-three-story-points" "1.0.1-beta.5"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -2494,10 +2494,10 @@
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
 
-"@readr-media/react-full-screen-video@1.0.2-alpha.nick.0":
-  version "1.0.2-alpha.nick.0"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-full-screen-video/-/react-full-screen-video-1.0.2-alpha.nick.0.tgz#1bc8ce3c45f32a5fcdc9a02b06f4d41bb12b1c5b"
-  integrity sha512-kUHefkBAys3lW2bZ6QE7vQ1rCHwmzYj0iEC7mCll1DY7yy8K5jP2Qemsb8YmqaHXjZNFM7n6aMUd/VJ41F5EJw==
+"@readr-media/react-full-screen-video@1.0.5-beta.0":
+  version "1.0.5-beta.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-full-screen-video/-/react-full-screen-video-1.0.5-beta.0.tgz#c0c63c669f9fc480d90974307b0be39709bf1a57"
+  integrity sha512-3cd6fm7BY5YCfulk3Y800/AUfRirN7x0Yow9ju+ZzhQfy4oIAWYDcAduIbYkX43ub2QP5DdO+B3djOMv7trtfg==
   dependencies:
     react "18.1.0"
     react-dom "^18.1.0"
@@ -2553,13 +2553,14 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
-"@readr-media/react-three-story-points@1.0.1-beta.2":
-  version "1.0.1-beta.2"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.1-beta.2.tgz#24ae386dc6d31f47b147eb94bb2e2bce2abbb6d8"
-  integrity sha512-6+ZpsmoE9URjfeXVPo5dM7O+uRaBRn8eN04ZiM4Ifpi+hNKRyoTF/LOlPICquISezxn55/iLUaHp+KQ8It0rmw==
+"@readr-media/react-three-story-points@1.0.1-beta.5":
+  version "1.0.1-beta.5"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.1-beta.5.tgz#e9137815a83856910ebef00de3eb9a0352ad14ed"
+  integrity sha512-f5xgv72Da2pphkgn+FDTjPDWP4AIdHqQLkJ4T7462+C0OqMQ60aNC25j9LyWEVzCnpAU2GyXO4Dn4evyVONnaA==
   dependencies:
     gsap "^3.11.4"
     lodash "^4.17.21"
+    react-intersection-observer "^9.3.5"
     three "^0.150.1"
     three-story-controls "^1.0.6"
 

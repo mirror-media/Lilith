@@ -101,7 +101,7 @@ const listConfigurations = list({
             }
           }
 
-          return embedCodeGen.buildEmbeddedCode(
+          const code = embedCodeGen.buildEmbeddedCode(
             'react-three-story-points',
             {
               models: lightModel ? [mobileModel, lightModel] : [mobileModel],
@@ -114,6 +114,32 @@ const listConfigurations = list({
               debugMode: item?.debugMode,
             },
             embedCodeWebpackAssets
+          )
+
+          const style = `
+            <style>
+              .embedded-code-container {
+                margin-top: -32px;
+                margin-left: -20px;
+                z-index: 100;
+                position: relative;
+              }
+              @media (min-width:768px) {
+                .embedded-code-container {
+                  margin-left: calc((100vw - 568px)/2 * -1);
+                }
+              }
+              @media (min-width:1200px) {
+                .embedded-code-container {
+                  margin-left: calc((100vw - 600px)/2 * -1);
+                }
+              }
+            </style>
+          `
+
+          return code.replace(
+            /(<div id=.*><\/div>)/,
+            `${style}<div class='embedded-code-container'>$1</div>`
           )
         },
       }),

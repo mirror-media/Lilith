@@ -585,15 +585,16 @@ model VideoPicker {
   video1280_filesize Int?
   video1280_mode     String?
   video1280_filename String?
-  video920_filesize  Int?
-  video920_mode      String?
-  video920_filename  String?
+  video960_filesize  Int?
+  video960_mode      String?
+  video960_filename  String?
   video720_filesize  Int?
   video720_mode      String?
   video720_filename  String?
   muteHint           Boolean   @default(false)
   voiceHint          String    @default("")
   voiceButton        String    @default("")
+  hintMode           String?   @default("light")
   createdAt          DateTime?
   updatedAt          DateTime?
   createdBy          User?     @relation("VideoPicker_createdBy", fields: [createdById], references: [id])
