@@ -2466,10 +2466,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.1.5-beta.nick.0":
-  version "2.1.5-beta.nick.0"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.5-beta.nick.0.tgz#667437ffe79ec6c68f6209d20a98a7efb12f5cd2"
-  integrity sha512-3hdcIXzA37H8YWzh7BCmGOQqq8Pl7yYrElUg3ZGqFndGhWLQ97GcP0nCKQuKj6EJ+ti84Qr91h6gfNknSVfiJw==
+"@readr-media/react-embed-code-generator@2.1.5-beta.nick.2":
+  version "2.1.5-beta.nick.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.5-beta.nick.2.tgz#dc608c4b51e46c35b52780358977ce98e6af3434"
+  integrity sha512-qX6BxZaE1GbdEKoJaSd3SleGwQFnaieTL+bUMqMW1cPvu6wukyO9fTA2SVTHyWSJA/Pgs6ompsRab/KPyxFNwQ==
   dependencies:
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
@@ -2478,7 +2478,7 @@
     "@readr-media/react-live-blog" "1.1.2"
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
-    "@readr-media/react-three-story-points" "1.0.1-beta.5"
+    "@readr-media/react-three-story-points" "1.0.1-beta.6"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -2553,10 +2553,10 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
-"@readr-media/react-three-story-points@1.0.1-beta.5":
-  version "1.0.1-beta.5"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.1-beta.5.tgz#e9137815a83856910ebef00de3eb9a0352ad14ed"
-  integrity sha512-f5xgv72Da2pphkgn+FDTjPDWP4AIdHqQLkJ4T7462+C0OqMQ60aNC25j9LyWEVzCnpAU2GyXO4Dn4evyVONnaA==
+"@readr-media/react-three-story-points@1.0.1-beta.6":
+  version "1.0.1-beta.6"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.1-beta.6.tgz#005f5c75394d9cb8b86eebbd725774b4598e4233"
+  integrity sha512-n70l6NjkEg5jRaYxhaSyMCaRGYDJ6mOA0YCozGAvsUIXAGIAJ4OcGj3CnXSh7JIF975ke9ZRNBBc6NlG+JGJUQ==
   dependencies:
     gsap "^3.11.4"
     lodash "^4.17.21"
