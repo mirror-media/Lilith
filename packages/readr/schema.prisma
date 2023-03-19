@@ -96,7 +96,7 @@ model Author {
   posts                     Post[]        @relation("Author_posts")
   notes                     ProjectNote[] @relation("Author_notes")
   quote                     Quote[]       @relation("Quote_writer")
-  gallery                   Gallery[]     @relation("Gallery_writer")
+  gallery                   Gallery[]     @relation("Author_gallery")
   projects                  Project[]     @relation("Author_projects")
   createdAt                 DateTime?
   updatedAt                 DateTime?
@@ -481,8 +481,7 @@ model Gallery {
   link        String    @default("")
   heroImage   Photo?    @relation("Gallery_heroImage", fields: [heroImageId], references: [id])
   heroImageId Int?      @map("heroImage")
-  writer      Author?   @relation("Gallery_writer", fields: [writerId], references: [id])
-  writerId    Int?      @map("writer")
+  writer      Author[]  @relation("Author_gallery")
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?     @relation("Gallery_createdBy", fields: [createdById], references: [id])
@@ -491,7 +490,6 @@ model Gallery {
   updatedById Int?      @map("updatedBy")
 
   @@index([heroImageId])
-  @@index([writerId])
   @@index([createdById])
   @@index([updatedById])
 }
