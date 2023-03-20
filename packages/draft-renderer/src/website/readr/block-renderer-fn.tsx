@@ -15,7 +15,7 @@ const {
   SideIndexBlock,
 } = blockRenderers
 
-const AtomicBlock = (props) => {
+const AtomicBlock = (props: any) => {
   const entity = props.contentState.getEntity(props.block.getEntityAt(0))
 
   const entityType = entity.getType()
@@ -66,7 +66,7 @@ const AtomicBlock = (props) => {
   return null
 }
 
-export function atomicBlockRenderer(block) {
+export function atomicBlockRenderer(block: any) {
   if (block.getType() === 'atomic') {
     return {
       component: AtomicBlock,

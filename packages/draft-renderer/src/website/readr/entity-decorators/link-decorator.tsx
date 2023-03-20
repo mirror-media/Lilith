@@ -2,8 +2,16 @@ import React from 'react'
 import styled from 'styled-components'
 
 const LinkWrapper = styled.a`
-  color: #3b5998;
-  text-decoration: underline;
+  display: inline;
+  border-bottom: 2px solid #ebf02c;
+  letter-spacing: 0.01em;
+  text-align: justify;
+  color: rgba(0, 9, 40, 0.87);
+  padding-bottom: 2px;
+
+  &:hover {
+    border-bottom: 2px solid #04295e;
+  }
 `
 
 function findLinkEntities(contentBlock, callback, contentState) {
@@ -23,5 +31,9 @@ export const linkDecorator = {
 
 function Link(props) {
   const { url } = props.contentState.getEntity(props.entityKey).getData()
-  return <LinkWrapper href={url}>{props.children}</LinkWrapper>
+  return (
+    <LinkWrapper href={url} target="_blank">
+      {props.children}
+    </LinkWrapper>
+  )
 }

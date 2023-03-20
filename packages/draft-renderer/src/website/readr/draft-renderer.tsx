@@ -1,23 +1,20 @@
+import { convertFromRaw, Editor, EditorState } from 'draft-js'
 import React from 'react'
-import styled from 'styled-components'
-
-import { Editor, EditorState, convertFromRaw } from 'draft-js'
-
-import { atomicBlockRenderer } from './block-renderer-fn'
-import decorators from './entity-decorator'
+import styled, { ThemeProvider } from 'styled-components'
 
 import {
-  CUSTOM_STYLE_PREFIX_FONT_COLOR,
   CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR,
+  CUSTOM_STYLE_PREFIX_FONT_COLOR,
 } from '../../draft-js/const'
+import { atomicBlockRenderer } from './block-renderer-fn'
+import decorators from './entity-decorator'
+import theme from './theme'
 
 const DraftEditorWrapper = styled.div`
   /* Rich-editor default setting (.RichEditor-root)*/
   background: #fff;
-  border: 1px solid #ddd;
   font-family: 'Georgia', serif;
   font-size: 14px;
-  padding: 15px;
 
   /* Custom setting */
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
@@ -26,28 +23,107 @@ const DraftEditorWrapper = styled.div`
   width: 100%;
   height: 100%;
   background: rgb(255, 255, 255);
-  border-radius: 6px;
-  padding: 0 1rem 1rem;
+
+  .DraftEditor-root {
+    font-size: 18px;
+    line-height: 2;
+    letter-spacing: 0.01em;
+    color: rgba(0, 9, 40, 0.87);
+  }
+
+  div[data-block='true'] + * {
+    margin: 32px 0 0;
+  }
 
   /* Draft built-in buttons' style */
   .public-DraftStyleDefault-header-two {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: 0.032em;
+    color: #000928;
+    margin: 32px 0 0;
+
+    & + * {
+      margin: 16px 0 0;
+    }
+
+    ${({ theme }) => theme.breakpoint.md} {
+      font-size: 28px;
+    }
   }
-  .public-DraftStyleDefault-header-three {
-  }
-  .public-DraftStyleDefault-header-four {
-  }
+
   .public-DraftStyleDefault-blockquote {
+    width: 100%;
+    padding: 0 12px;
+    text-align: right;
+    margin: 40px auto 64px;
+
+    span {
+      display: block;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1.5;
+      text-align: justify;
+      color: rgba(0, 9, 40, 0.87);
+      margin: 16px 0;
+    }
+
+    &::before {
+      display: flex;
+      content: '，︁，︁';
+      font-size: 60px;
+      color: rgba(0, 9, 40, 0.1);
+      letter-spacing: -0.75em;
+      line-height: 18px;
+      height: 25px;
+      padding-left: 40%;
+    }
+
+    ${({ theme }) => theme.breakpoint.md} {
+      padding: 0;
+      width: 480px;
+
+      span {
+        font-size: 24px;
+      }
+    }
   }
   .public-DraftStyleDefault-ul {
+    list-style-type: disc;
+    margin-top: 0;
+    padding-left: 1.2rem;
+
+    & + * {
+      margin: 32px 0 0;
+    }
   }
   .public-DraftStyleDefault-unorderedListItem {
+    font-size: 18px;
+    line-height: 2;
+    letter-spacing: 0.01em;
+    text-align: justify;
+    color: rgba(0, 9, 40, 0.87);
   }
   .public-DraftStyleDefault-ol {
+    list-style-type: decimal;
+    margin-top: 0;
+    padding-left: 1.2rem;
+
+    & + * {
+      margin: 32px 0 0;
+    }
   }
   .public-DraftStyleDefault-orderedListItem {
+    font-size: 18px;
+    line-height: 2;
+    letter-spacing: 0.01em;
+    text-align: justify;
+    color: rgba(0, 9, 40, 0.87);
   }
   /* code-block */
   .public-DraftStyleDefault-pre {
+    color: red;
   }
   .alignCenter * {
     text-align: center;
@@ -66,8 +142,8 @@ const customStyleMap = {
   },
 }
 
-const customStyleFn = (style) => {
-  return style.reduce((styles, styleName) => {
+const customStyleFn = (style: any) => {
+  return style.reduce((styles: any, styleName: string) => {
     if (styleName?.startsWith(CUSTOM_STYLE_PREFIX_FONT_COLOR)) {
       styles['color'] = styleName.split(CUSTOM_STYLE_PREFIX_FONT_COLOR)[1]
     }
@@ -80,7 +156,7 @@ const customStyleFn = (style) => {
   }, {})
 }
 
-const blockStyleFn = (editorState, block) => {
+const blockStyleFn = (editorState: any, block: any) => {
   const entityKey = block.getEntityAt(0)
   const entity = entityKey
     ? editorState.getCurrentContent().getEntity(entityKey)
@@ -116,25 +192,30 @@ const blockStyleFn = (editorState, block) => {
   return result
 }
 
-const blockRendererFn = (block) => {
+const blockRendererFn = (block: any) => {
   const atomicBlockObj = atomicBlockRenderer(block)
   return atomicBlockObj
 }
 
+/* @ts-ignore */
 export default function DraftRenderer({ rawContentBlock }) {
   const contentState = convertFromRaw(rawContentBlock)
   const editorState = EditorState.createWithContent(contentState, decorators)
 
   return (
-    <DraftEditorWrapper>
-      <Editor
-        editorState={editorState}
-        customStyleMap={customStyleMap}
-        blockStyleFn={blockStyleFn.bind(null, editorState)}
-        blockRendererFn={blockRendererFn}
-        customStyleFn={customStyleFn}
-        readOnly
-      />
-    </DraftEditorWrapper>
+    /* @ts-ignore */
+    <ThemeProvider theme={theme}>
+      <DraftEditorWrapper>
+        <Editor
+          editorState={editorState}
+          customStyleMap={customStyleMap}
+          blockStyleFn={blockStyleFn.bind(null, editorState)}
+          blockRendererFn={blockRendererFn}
+          customStyleFn={customStyleFn}
+          readOnly
+          onChange={() => {}}
+        />
+      </DraftEditorWrapper>
+    </ThemeProvider>
   )
 }
