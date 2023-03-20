@@ -99,6 +99,12 @@ const listConfigurations = list({
           )
         },
       }),
+      ui: {
+        views: require.resolve('./views/embed-code'),
+        createView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     previewButton: virtual({
       field: graphql.field({
