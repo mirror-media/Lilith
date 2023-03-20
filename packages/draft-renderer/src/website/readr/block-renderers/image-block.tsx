@@ -1,6 +1,6 @@
+import { EntityInstance } from 'draft-js'
 import React from 'react'
 import styled from 'styled-components'
-import { DraftEntityInstance } from 'draft-js'
 
 const Figure = styled.figure`
   width: calc(100% + 40px);
@@ -29,7 +29,7 @@ const Anchor = styled.a`
   text-decoration: none;
 `
 
-export function ImageBlock(entity: DraftEntityInstance) {
+export function ImageBlock(entity: EntityInstance) {
   const { desc, imageFile, resized, url } = entity.getData()
 
   let imgBlock = (
