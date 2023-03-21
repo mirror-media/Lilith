@@ -84,7 +84,7 @@ const ContentTable = styled.div<LightboxProps>`
   }
 `
 
-const Image = styled.div<LightboxProps>`
+const SlideImage = styled.div<LightboxProps>`
   width: 100%;
   aspect-ratio: 1/1;
   margin-bottom: 12px;
@@ -187,7 +187,7 @@ export default function SlideshowLightBox({
         <div className="slides">
           {images.map((image, index: number) => {
             return (
-              <Image
+              <SlideImage
                 key={image.id}
                 focus={focusNumber === index}
                 onClick={() => {
@@ -208,7 +208,7 @@ export default function SlideshowLightBox({
                   /* @ts-ignore */
                   onError={(e) => (e.currentTarget.src = image.imageFile?.url)}
                 />
-              </Image>
+              </SlideImage>
             )
           })}
         </div>
