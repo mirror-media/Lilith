@@ -69,6 +69,12 @@ const listConfigurations = list({
           }
         },
       }),
+      ui: {
+        views: require.resolve('./views/link-button'),
+        createView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     embedCode: virtual({
       label: 'embed code',
