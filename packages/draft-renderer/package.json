@@ -33,6 +33,7 @@
     "lib"
   ],
   "devDependencies": {
+    "babel-plugin-file-loader": "^2.0.0",
     "babel-plugin-inline-react-svg": "^2.0.1"
   }
 }
