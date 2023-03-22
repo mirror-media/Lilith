@@ -1,52 +1,48 @@
+// @ts-ignore: no definition
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core';
-import {relationship,checkbox,select,text} from '@keystone-6/core/fields';
-	  
-const {
-  allowRoles,
-  admin,
-  moderator,
-  editor,
-  owner,
-} = utils.accessControl
+import { list } from '@keystone-6/core'
+import { relationship, checkbox, select, text } from '@keystone-6/core/fields'
 
-const listConfigurations = list ({
+const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+const listConfigurations = list({
   fields: {
-	name: text({
-      isIndexed: 'unique', 
-      label: '標籤名稱', 
-      validation: { isRequired: true} 
+    name: text({
+      isIndexed: 'unique',
+      label: '標籤名稱',
+      validation: { isRequired: true },
     }),
     brief: text({
-      label: '前言',  
-      ui: { displayMode: 'textarea' } 
+      label: '前言',
+      ui: { displayMode: 'textarea' },
     }),
     heroVideo: relationship({
-      ref: 'Video', label: 'Leading Video' 
+      ref: 'Video',
+      label: 'Leading Video',
     }),
     state: select({
-      defaultValue: 'active', 
-      options: [ 
-        { label: 'inactive', value: 'inactive' }, 
-        { label: 'active', value: 'active' }, 
-        { label: 'archived', value: 'archived' }
-      ], 
+      defaultValue: 'active',
+      options: [
+        { label: 'inactive', value: 'inactive' },
+        { label: 'active', value: 'active' },
+        { label: 'archived', value: 'archived' },
+      ],
       label: '狀態',
     }),
     ogTitle: text({
-      validation: { isRequired: false}, 
-      label: 'FB分享標題' 
+      validation: { isRequired: false },
+      label: 'FB分享標題',
     }),
     ogDescription: text({
-      validation: { isRequired: false}, 
-      label: 'FB分享說明',  
+      validation: { isRequired: false },
+      label: 'FB分享說明',
     }),
     ogImage: relationship({
       ref: 'Photo',
-      label: 'FB分享縮圖' 
+      label: 'FB分享縮圖',
     }),
     isFeatured: checkbox({
-      label: '置頂', isIndexed: true 
+      label: '置頂',
     }),
     posts: relationship({
       ref: 'Post.tags',
@@ -65,12 +61,12 @@ const listConfigurations = list ({
     }),
   },
   access: {
-	operation: {
-	  query: allowRoles(admin, moderator, editor),
-	  update: allowRoles(admin, moderator),
-	  create: allowRoles(admin, moderator),
-	  delete: allowRoles(admin),
-	},
+    operation: {
+      query: allowRoles(admin, moderator, editor),
+      update: allowRoles(admin, moderator),
+      create: allowRoles(admin, moderator),
+      delete: allowRoles(admin),
+    },
   },
 })
 export default utils.addTrackingFields(listConfigurations)

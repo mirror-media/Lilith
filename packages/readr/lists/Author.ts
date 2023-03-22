@@ -1,50 +1,88 @@
+// @ts-ignore: no definition
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core';
-import {relationship,text} from '@keystone-6/core/fields';
-	  
-const {
-  allowRoles,
-  admin,
-  moderator,
-  editor,
-  owner,
-} = utils.accessControl
+import { list } from '@keystone-6/core'
+import {
+  checkbox,
+  select,
+  relationship,
+  text,
+  integer,
+} from '@keystone-6/core/fields'
 
-const listConfigurations = list ({
+const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+const listConfigurations = list({
   fields: {
-	name: text({
-      isIndexed: true, 
-      label: '作者姓名', 
-      validation: { isRequired: true} 
+    name: text({
+      isIndexed: true,
+      label: '作者姓名',
+      validation: { isRequired: true },
+    }),
+    name_en: text({
+      label: '英文姓名',
+    }),
+    title: select({
+      label: '中文職稱',
+      options: [
+        { label: '總編輯', value: 'editor in chief' },
+        { label: '產品經理', value: 'product manager' },
+        { label: '設計師', value: 'designer' },
+        { label: '記者', value: 'journalist' },
+        { label: '社群', value: 'social' },
+        { label: '前端工程師', value: 'front-end engineer' },
+        { label: '後端工程師', value: 'back-end engineer' },
+        { label: '全端工程師', value: 'full-stack engineer' },
+        { label: 'App工程師', value: 'App engineer' },
+      ],
+      defaultValue: 'journalist',
+    }),
+    title_en: select({
+      label: '英文職稱',
+      options: [
+        { label: '總編輯', value: 'editor in chief' },
+        { label: '產品經理', value: 'product manager' },
+        { label: '設計師', value: 'designer' },
+        { label: '記者', value: 'journalist' },
+        { label: '社群', value: 'social' },
+        { label: '前端工程師', value: 'front-end engineer' },
+        { label: '後端工程師', value: 'back-end engineer' },
+        { label: '全端工程師', value: 'full-stack engineer' },
+        { label: 'App工程師', value: 'App engineer' },
+      ],
+      defaultValue: 'journalist',
     }),
     email: text({
       isIndexed: 'unique',
-	  db: {
-		isNullable: true,
-	  }
+      db: {
+        isNullable: true,
+      },
     }),
     image: relationship({
-      label: '照片',  
+      label: '照片',
       ref: 'Photo',
     }),
     homepage: text({
-      label: '個人首頁', 
-      isIndexed: false 
+      label: '個人首頁',
+      isIndexed: undefined,
+    }),
+    sort: integer({
+      label: '排序',
+    }),
+    isMember: checkbox({
+      label: '團隊成員',
     }),
     facebook: text({
-       isIndexed: false,  
+      isIndexed: undefined,
     }),
     twitter: text({
-      isIndexed: false 
+      isIndexed: undefined,
     }),
     instagram: text({
-      isIndexed: true,  
+      isIndexed: true,
     }),
-    address: text({
-      collapse: 'true',  
-    }),
+    address: text({}),
     bio: text({
-      label: '簡介',  
+      label: '簡介',
     }),
     posts: relationship({
       ref: 'Post.writers',
@@ -71,15 +109,14 @@ const listConfigurations = list ({
       many: true,
       label: '專題',
     }),
-
   },
   access: {
-	operation: {
-	  query: allowRoles(admin, moderator, editor),
-	  update: allowRoles(admin, moderator),
-	  create: allowRoles(admin, moderator),
-	  delete: allowRoles(admin),
-	},
+    operation: {
+      query: allowRoles(admin, moderator, editor),
+      update: allowRoles(admin, moderator),
+      create: allowRoles(admin, moderator),
+      delete: allowRoles(admin),
+    },
   },
 })
 export default utils.addTrackingFields(listConfigurations)

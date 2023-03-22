@@ -45,12 +45,14 @@ model Post {
   og_description            String         @default("")
   og_image                  Photo?         @relation("Post_og_image", fields: [og_imageId], references: [id])
   og_imageId                Int?           @map("og_image")
+  isMember                  Boolean        @default(false)
   isFeatured                Boolean        @default(false)
   isAdvertised              Boolean        @default(false)
   hiddenAdvertised          Boolean        @default(false)
   isCampaign                Boolean        @default(false)
   isAdult                   Boolean        @default(false)
   lockJS                    Boolean        @default(false)
+  redirect                  String         @default("")
   adTrace                   String         @default("")
   css                       String         @default("")
   apiDataBrief              Json?
@@ -359,8 +361,7 @@ model Category {
   state        String    @default("active")
   heroImage    Photo?    @relation("Category_heroImage", fields: [heroImageId], references: [id])
   heroImageId  Int?      @map("heroImage")
-  sections     Section?  @relation("Category_sections", fields: [sectionsId], references: [id])
-  sectionsId   Int?      @map("sections")
+  sections     Section[] @relation("Category_sections")
   posts        Post[]    @relation("Category_posts")
   isMemberOnly Boolean   @default(false)
   createdAt    DateTime?
@@ -371,7 +372,6 @@ model Category {
   updatedById  Int?      @map("updatedBy")
 
   @@index([heroImageId])
-  @@index([sectionsId])
   @@index([createdById])
   @@index([updatedById])
 }

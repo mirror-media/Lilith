@@ -2160,7 +2160,7 @@ type InlineIndex {
   ): [IndexItem!]
   indexCount(where: IndexItemWhereInput! = {}): Int
   embedCode: String
-  previewButton: String
+  previewButton: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2351,7 +2351,7 @@ type Karaoke {
   imageLink: String
   muteHint: Boolean
   embedCode: String
-  previewButton: String
+  previewButton: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2360,20 +2360,6 @@ type Karaoke {
 
 input KaraokeWhereUniqueInput {
   id: ID
-}
-
-type LocalFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
-type CloudFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
 }
 
 type LocalImageFieldOutput implements ImageFieldOutput {
@@ -2446,6 +2432,96 @@ input KaraokeCreateInput {
   imageFile: ImageFieldInput
   imageLink: String
   muteHint: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type VideoPicker {
+  id: ID!
+  name: String
+  video1920: FileFieldOutput
+  video1440: FileFieldOutput
+  video1280: FileFieldOutput
+  video960: FileFieldOutput
+  video720: FileFieldOutput
+  muteHint: Boolean
+  voiceHint: String
+  voiceButton: String
+  hintMode: String
+  embedCode: String
+  previewButton: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input VideoPickerWhereUniqueInput {
+  id: ID
+}
+
+input VideoPickerWhereInput {
+  AND: [VideoPickerWhereInput!]
+  OR: [VideoPickerWhereInput!]
+  NOT: [VideoPickerWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  muteHint: BooleanFilter
+  voiceHint: StringFilter
+  voiceButton: StringFilter
+  hintMode: StringNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input VideoPickerOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  muteHint: OrderDirection
+  voiceHint: OrderDirection
+  voiceButton: OrderDirection
+  hintMode: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input VideoPickerUpdateInput {
+  name: String
+  video1920: FileFieldInput
+  video1440: FileFieldInput
+  video1280: FileFieldInput
+  video960: FileFieldInput
+  video720: FileFieldInput
+  muteHint: Boolean
+  voiceHint: String
+  voiceButton: String
+  hintMode: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input VideoPickerUpdateArgs {
+  where: VideoPickerWhereUniqueInput!
+  data: VideoPickerUpdateInput!
+}
+
+input VideoPickerCreateInput {
+  name: String
+  video1920: FileFieldInput
+  video1440: FileFieldInput
+  video1280: FileFieldInput
+  video960: FileFieldInput
+  video720: FileFieldInput
+  muteHint: Boolean
+  voiceHint: String
+  voiceButton: String
+  hintMode: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2605,7 +2681,7 @@ type FeedbackCounter {
   thumbUpLabel: String
   thumbDownLabel: String
   embeddedCode: String
-  previewButton: String
+  previewButton: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2673,6 +2749,99 @@ input FeedbackCounterCreateInput {
   shouldUseRecaptcha: Boolean
   thumbUpLabel: String
   thumbDownLabel: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type ThreeStoryPoint {
+  id: ID!
+  name: String
+  model: FileFieldOutput
+  desktopModel: FileFieldOutput
+  lightModel: FileFieldOutput
+  captions: JSON
+  audios: JSON
+  cameraRig: JSON
+  debugMode: Boolean
+  camerHelper: JSON
+  embedCode: String
+  preview: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ThreeStoryPointWhereUniqueInput {
+  id: ID
+}
+
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+type CloudFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+input ThreeStoryPointWhereInput {
+  AND: [ThreeStoryPointWhereInput!]
+  OR: [ThreeStoryPointWhereInput!]
+  NOT: [ThreeStoryPointWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  debugMode: BooleanFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ThreeStoryPointOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  debugMode: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ThreeStoryPointUpdateInput {
+  name: String
+  model: FileFieldInput
+  desktopModel: FileFieldInput
+  lightModel: FileFieldInput
+  captions: JSON
+  audios: JSON
+  cameraRig: JSON
+  debugMode: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ThreeStoryPointUpdateArgs {
+  where: ThreeStoryPointWhereUniqueInput!
+  data: ThreeStoryPointUpdateInput!
+}
+
+input ThreeStoryPointCreateInput {
+  name: String
+  model: FileFieldInput
+  desktopModel: FileFieldInput
+  lightModel: FileFieldInput
+  captions: JSON
+  audios: JSON
+  cameraRig: JSON
+  debugMode: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2860,6 +3029,15 @@ type Mutation {
   updateKaraokes(data: [KaraokeUpdateArgs!]!): [Karaoke]
   deleteKaraoke(where: KaraokeWhereUniqueInput!): Karaoke
   deleteKaraokes(where: [KaraokeWhereUniqueInput!]!): [Karaoke]
+  createVideoPicker(data: VideoPickerCreateInput!): VideoPicker
+  createVideoPickers(data: [VideoPickerCreateInput!]!): [VideoPicker]
+  updateVideoPicker(
+    where: VideoPickerWhereUniqueInput!
+    data: VideoPickerUpdateInput!
+  ): VideoPicker
+  updateVideoPickers(data: [VideoPickerUpdateArgs!]!): [VideoPicker]
+  deleteVideoPicker(where: VideoPickerWhereUniqueInput!): VideoPicker
+  deleteVideoPickers(where: [VideoPickerWhereUniqueInput!]!): [VideoPicker]
   createQAList(data: QAListCreateInput!): QAList
   createQALists(data: [QAListCreateInput!]!): [QAList]
   updateQAList(where: QAListWhereUniqueInput!, data: QAListUpdateInput!): QAList
@@ -2887,6 +3065,21 @@ type Mutation {
   deleteFeedbackCounters(
     where: [FeedbackCounterWhereUniqueInput!]!
   ): [FeedbackCounter]
+  createThreeStoryPoint(data: ThreeStoryPointCreateInput!): ThreeStoryPoint
+  createThreeStoryPoints(
+    data: [ThreeStoryPointCreateInput!]!
+  ): [ThreeStoryPoint]
+  updateThreeStoryPoint(
+    where: ThreeStoryPointWhereUniqueInput!
+    data: ThreeStoryPointUpdateInput!
+  ): ThreeStoryPoint
+  updateThreeStoryPoints(data: [ThreeStoryPointUpdateArgs!]!): [ThreeStoryPoint]
+  deleteThreeStoryPoint(
+    where: ThreeStoryPointWhereUniqueInput!
+  ): ThreeStoryPoint
+  deleteThreeStoryPoints(
+    where: [ThreeStoryPointWhereUniqueInput!]!
+  ): [ThreeStoryPoint]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -3080,6 +3273,14 @@ type Query {
   ): [Karaoke!]
   karaoke(where: KaraokeWhereUniqueInput!): Karaoke
   karaokesCount(where: KaraokeWhereInput! = {}): Int
+  videoPickers(
+    where: VideoPickerWhereInput! = {}
+    orderBy: [VideoPickerOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [VideoPicker!]
+  videoPicker(where: VideoPickerWhereUniqueInput!): VideoPicker
+  videoPickersCount(where: VideoPickerWhereInput! = {}): Int
   qALists(
     where: QAListWhereInput! = {}
     orderBy: [QAListOrderByInput!]! = []
@@ -3104,6 +3305,14 @@ type Query {
   ): [FeedbackCounter!]
   feedbackCounter(where: FeedbackCounterWhereUniqueInput!): FeedbackCounter
   feedbackCountersCount(where: FeedbackCounterWhereInput! = {}): Int
+  threeStoryPoints(
+    where: ThreeStoryPointWhereInput! = {}
+    orderBy: [ThreeStoryPointOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ThreeStoryPoint!]
+  threeStoryPoint(where: ThreeStoryPointWhereUniqueInput!): ThreeStoryPoint
+  threeStoryPointsCount(where: ThreeStoryPointWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

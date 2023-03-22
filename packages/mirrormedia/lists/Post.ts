@@ -172,6 +172,7 @@ const listConfigurations = list({
     brief: customFields.richTextEditor({
       label: '前言',
       disabledButtons: [],
+      website: 'mirrormedia',
     }),
     trimmedContent: virtual({
       label: '擷取前5段的內文（不包括換行）',
@@ -223,6 +224,7 @@ const listConfigurations = list({
     content: customFields.richTextEditor({
       label: '內文',
       disabledButtons: [],
+      website: 'mirrormedia',
       access: {
         read: async ({
           context,
@@ -345,6 +347,10 @@ const listConfigurations = list({
       label: 'FB分享縮圖',
       ref: 'Photo',
     }),
+    isMember: checkbox({
+      label: '會員文章',
+      defaultValue: false,
+    }),
     isFeatured: checkbox({
       label: '置頂',
       defaultValue: false,
@@ -368,6 +374,9 @@ const listConfigurations = list({
     lockJS: checkbox({
       label: '鎖定右鍵',
       defaultValue: false,
+    }),
+    redirect: text({
+      label: '廣編文轉址 slug'
     }),
     adTrace: text({
       label: '追蹤代碼',

@@ -1,71 +1,70 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core';
-import { relationship, checkbox, text, select, integer } from '@keystone-6/core/fields';
+import { list } from '@keystone-6/core'
+import {
+  relationship,
+  checkbox,
+  text,
+  select,
+  integer,
+} from '@keystone-6/core/fields'
 
-const {
-  allowRoles,
-  admin,
-  moderator,
-  editor,
-  owner,
-} = utils.accessControl
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
     name: text({
       validation: { isRequired: true },
-      label: '標題'
+      label: '標題',
     }),
     sortOrder: integer(),
     state: select({
       label: '狀態',
       options: [
-        { label: '草稿', value: 'draft' }, 
+        { label: '草稿', value: 'draft' },
         { label: '已發布', value: 'published' },
       ],
       defaultValue: 'draft',
-      isIndexed: true
+      isIndexed: true,
     }),
     brief: customFields.richTextEditor({
       label: '前言',
+      website: 'mirrormedia',
     }),
     heroImage: relationship({
       ref: 'Photo',
-      label: '首圖'
+      label: '首圖',
     }),
     leading: select({
       label: '標頭樣式',
       options: [
         { label: 'video', value: 'video' },
         { label: 'slideshow', value: 'slideshow' },
-        { label: 'image', value: 'image' }
+        { label: 'image', value: 'image' },
       ],
-      isIndexed: true
+      isIndexed: true,
     }),
     sections: relationship({
       label: '分區',
       ref: 'Section.topics',
-      many: true,  
+      many: true,
     }),
     heroImageSize: select({
       label: '首圖尺寸',
       options: [
         { label: 'Normal', value: 'normal' },
         { label: 'Wide', value: 'wide' },
-        { label: 'Small', value: 'small' }
+        { label: 'Small', value: 'small' },
       ],
-      defaultValue: 'normal'
+      defaultValue: 'normal',
     }),
     isFeatured: checkbox({
-      label: '置頂'
+      label: '置頂',
     }),
     title_style: select({
       label: '專題樣式',
-      options: [
-        { label: 'Feature', value: 'feature' }
-      ],
+      options: [{ label: 'Feature', value: 'feature' }],
       isIndexed: true,
-      defaultValue: 'feature'
+      defaultValue: 'feature',
     }),
     type: select({
       label: '型態',
@@ -75,12 +74,12 @@ const listConfigurations = list({
         { label: 'List', value: 'list' },
         { label: 'Timeline', value: 'timeline' },
         { label: 'Group', value: 'group' },
-        { label: 'Portrait Wall', value: 'portraitwall' }
-      ]
+        { label: 'Portrait Wall', value: 'portraitwall' },
+      ],
     }),
     style: text({
       label: 'CSS',
-      ui: { displayMode: 'textarea' }
+      ui: { displayMode: 'textarea' },
     }),
     tags: relationship({
       ref: 'Tag.topics',
@@ -88,17 +87,17 @@ const listConfigurations = list({
       many: true,
     }),
     posts: relationship({
-      ref: 'Post.topics', 
-      label: '文章', 
+      ref: 'Post.topics',
+      label: '文章',
       many: true,
     }),
     javascript: text({
       label: 'javascript',
-      ui: { displayMode: 'textarea' }
+      ui: { displayMode: 'textarea' },
     }),
     dfp: text({
       validation: { isRequired: false },
-      label: 'DFP code'
+      label: 'DFP code',
     }),
     mobile_dfp: text({
       validation: { isRequired: false },

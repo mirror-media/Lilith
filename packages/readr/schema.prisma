@@ -16,7 +16,8 @@ model EditorChoice {
   sortOrder   Int?
   name        String    @default("")
   description String    @default("")
-  choices     Post[]    @relation("EditorChoice_choices")
+  choices     Post?     @relation("EditorChoice_choices", fields: [choicesId], references: [id])
+  choicesId   Int?      @map("choices")
   link        String    @default("")
   heroImage   Photo?    @relation("EditorChoice_heroImage", fields: [heroImageId], references: [id])
   heroImageId Int?      @map("heroImage")
@@ -29,6 +30,7 @@ model EditorChoice {
   updatedBy   User?     @relation("EditorChoice_updatedBy", fields: [updatedById], references: [id])
   updatedById Int?      @map("updatedBy")
 
+  @@index([choicesId])
   @@index([heroImageId])
   @@index([state])
   @@index([createdById])
@@ -36,37 +38,38 @@ model EditorChoice {
 }
 
 model Photo {
-  id                           Int             @id @default(autoincrement())
-  name                         String          @default("")
-  imageFile_filesize           Int?
-  imageFile_extension          String?
-  imageFile_width              Int?
-  imageFile_height             Int?
-  imageFile_mode               String?
-  imageFile_id                 String?
-  file_filesize                Int?
-  file_mode                    String?
-  file_filename                String?
-  tags                         Tag[]           @relation("Photo_tags")
-  urlOriginal                  String          @default("")
-  createdAt                    DateTime?
-  updatedAt                    DateTime?
-  createdBy                    User?           @relation("Photo_createdBy", fields: [createdById], references: [id])
-  createdById                  Int?            @map("createdBy")
-  updatedBy                    User?           @relation("Photo_updatedBy", fields: [updatedById], references: [id])
-  updatedById                  Int?            @map("updatedBy")
-  from_EditorChoice_heroImage  EditorChoice[]  @relation("EditorChoice_heroImage")
-  from_Author_image            Author[]        @relation("Author_image")
-  from_Video_coverPhoto        Video[]         @relation("Video_coverPhoto")
-  from_Tag_ogImage             Tag[]           @relation("Tag_ogImage")
-  from_Category_heroImage      Category[]      @relation("Category_heroImage")
-  from_Category_ogImage        Category[]      @relation("Category_ogImage")
-  from_Post_heroImage          Post[]          @relation("Post_heroImage")
-  from_Post_ogImage            Post[]          @relation("Post_ogImage")
-  from_Collaboration_heroImage Collaboration[] @relation("Collaboration_heroImage")
-  from_Gallery_heroImage       Gallery[]       @relation("Gallery_heroImage")
-  from_Project_heroImage       Project[]       @relation("Project_heroImage")
-  from_Project_ogImage         Project[]       @relation("Project_ogImage")
+  id                             Int             @id @default(autoincrement())
+  name                           String          @default("")
+  imageFile_filesize             Int?
+  imageFile_extension            String?
+  imageFile_width                Int?
+  imageFile_height               Int?
+  imageFile_mode                 String?
+  imageFile_id                   String?
+  file_filesize                  Int?
+  file_mode                      String?
+  file_filename                  String?
+  tags                           Tag[]           @relation("Photo_tags")
+  urlOriginal                    String          @default("")
+  createdAt                      DateTime?
+  updatedAt                      DateTime?
+  createdBy                      User?           @relation("Photo_createdBy", fields: [createdById], references: [id])
+  createdById                    Int?            @map("createdBy")
+  updatedBy                      User?           @relation("Photo_updatedBy", fields: [updatedById], references: [id])
+  updatedById                    Int?            @map("updatedBy")
+  from_EditorChoice_heroImage    EditorChoice[]  @relation("EditorChoice_heroImage")
+  from_Author_image              Author[]        @relation("Author_image")
+  from_PageVariable_relatedImage PageVariable[]  @relation("PageVariable_relatedImage")
+  from_Video_coverPhoto          Video[]         @relation("Video_coverPhoto")
+  from_Tag_ogImage               Tag[]           @relation("Tag_ogImage")
+  from_Category_heroImage        Category[]      @relation("Category_heroImage")
+  from_Category_ogImage          Category[]      @relation("Category_ogImage")
+  from_Post_heroImage            Post[]          @relation("Post_heroImage")
+  from_Post_ogImage              Post[]          @relation("Post_ogImage")
+  from_Collaboration_heroImage   Collaboration[] @relation("Collaboration_heroImage")
+  from_Gallery_heroImage         Gallery[]       @relation("Gallery_heroImage")
+  from_Project_heroImage         Project[]       @relation("Project_heroImage")
+  from_Project_ogImage           Project[]       @relation("Project_ogImage")
 
   @@index([createdById])
   @@index([updatedById])
@@ -76,10 +79,15 @@ model Photo {
 model Author {
   id                        Int           @id @default(autoincrement())
   name                      String        @default("")
+  name_en                   String        @default("")
+  title                     String?       @default("journalist")
+  title_en                  String?       @default("journalist")
   email                     String?       @unique
   image                     Photo?        @relation("Author_image", fields: [imageId], references: [id])
   imageId                   Int?          @map("image")
   homepage                  String        @default("")
+  sort                      Int?
+  isMember                  Boolean       @default(false)
   facebook                  String        @default("")
   twitter                   String        @default("")
   instagram                 String        @default("")
@@ -88,7 +96,7 @@ model Author {
   posts                     Post[]        @relation("Author_posts")
   notes                     ProjectNote[] @relation("Author_notes")
   quote                     Quote[]       @relation("Quote_writer")
-  gallery                   Gallery[]     @relation("Gallery_writer")
+  gallery                   Gallery[]     @relation("Author_gallery")
   projects                  Project[]     @relation("Author_projects")
   createdAt                 DateTime?
   updatedAt                 DateTime?
@@ -105,6 +113,49 @@ model Author {
   @@index([name])
   @@index([imageId])
   @@index([instagram])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model PageVariable {
+  id             Int       @id @default(autoincrement())
+  name           String    @default("")
+  relatedImage   Photo?    @relation("PageVariable_relatedImage", fields: [relatedImageId], references: [id])
+  relatedImageId Int?      @map("relatedImage")
+  value          Json?
+  page           String?   @default("about")
+  url            String    @default("")
+  createdAt      DateTime?
+  updatedAt      DateTime?
+  createdBy      User?     @relation("PageVariable_createdBy", fields: [createdById], references: [id])
+  createdById    Int?      @map("createdBy")
+  updatedBy      User?     @relation("PageVariable_updatedBy", fields: [updatedById], references: [id])
+  updatedById    Int?      @map("updatedBy")
+
+  @@index([relatedImageId])
+  @@index([page])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Award {
+  id          Int       @id @default(autoincrement())
+  name        String    @default("")
+  name_en     String    @default("")
+  report      String    @default("")
+  report_en   String    @default("")
+  url         String    @default("")
+  desc        String    @default("")
+  desc_en     String    @default("")
+  awardTime   DateTime?
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("Award_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("Award_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([awardTime])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -191,7 +242,7 @@ model Tag {
 
 model Category {
   id                      Int       @id @default(autoincrement())
-  slug                    String    @default("")
+  slug                    String    @unique @default("")
   title                   String    @default("")
   isFeatured              Boolean   @default(false)
   state                   String?
@@ -233,6 +284,10 @@ model User {
   from_Photo_updatedBy            Photo[]            @relation("Photo_updatedBy")
   from_Author_createdBy           Author[]           @relation("Author_createdBy")
   from_Author_updatedBy           Author[]           @relation("Author_updatedBy")
+  from_PageVariable_createdBy     PageVariable[]     @relation("PageVariable_createdBy")
+  from_PageVariable_updatedBy     PageVariable[]     @relation("PageVariable_updatedBy")
+  from_Award_createdBy            Award[]            @relation("Award_createdBy")
+  from_Award_updatedBy            Award[]            @relation("Award_updatedBy")
   from_Video_createdBy            Video[]            @relation("Video_createdBy")
   from_Video_updatedBy            Video[]            @relation("Video_updatedBy")
   from_AudioFile_createdBy        AudioFile[]        @relation("AudioFile_createdBy")
@@ -293,7 +348,6 @@ model Post {
   heroImageSize                String?           @default("normal")
   style                        String?           @default("news")
   summary                      Json?
-  brief                        Json?
   content                      Json?
   actionList                   Json?
   citation                     Json?
@@ -317,7 +371,6 @@ model Post {
   projectId                    Int?              @unique @map("project")
   css                          String            @default("")
   summaryApiData               Json?
-  briefApiData                 Json?
   apiData                      Json?
   actionlistApiData            Json?
   citationApiData              Json?
@@ -400,22 +453,24 @@ model DataSet {
 }
 
 model Feature {
-  id          Int       @id @default(autoincrement())
-  name        String    @default("")
-  subtitle    String    @default("")
-  sortOrder   Int?
-  state       String?   @default("draft")
-  description String    @default("")
-  featurePost Post[]    @relation("Feature_featurePost")
-  publishTime DateTime?
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("Feature_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("Feature_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
+  id            Int       @id @default(autoincrement())
+  name          String    @default("")
+  subtitle      String    @default("")
+  sortOrder     Int?
+  state         String?   @default("draft")
+  description   String    @default("")
+  featurePost   Post?     @relation("Feature_featurePost", fields: [featurePostId], references: [id])
+  featurePostId Int?      @map("featurePost")
+  publishTime   DateTime?
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Feature_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Feature_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
 
   @@index([state])
+  @@index([featurePostId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -426,8 +481,7 @@ model Gallery {
   link        String    @default("")
   heroImage   Photo?    @relation("Gallery_heroImage", fields: [heroImageId], references: [id])
   heroImageId Int?      @map("heroImage")
-  writer      Author?   @relation("Gallery_writer", fields: [writerId], references: [id])
-  writerId    Int?      @map("writer")
+  writer      Author[]  @relation("Author_gallery")
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?     @relation("Gallery_createdBy", fields: [createdById], references: [id])
@@ -436,7 +490,6 @@ model Gallery {
   updatedById Int?      @map("updatedBy")
 
   @@index([heroImageId])
-  @@index([writerId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -534,7 +587,7 @@ model ProjectNote {
 
 model NoteCategory {
   id          Int           @id @default(autoincrement())
-  slug        String        @default("")
+  slug        String        @unique @default("")
   title       String        @default("")
   isFeatured  Boolean       @default(false)
   state       String?

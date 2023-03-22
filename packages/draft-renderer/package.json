@@ -1,0 +1,38 @@
+{
+  "name": "@mirrormedia/lilith-draft-renderer",
+  "version": "1.1.0-alpha.2",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "make dev",
+    "build": "make build",
+    "clean": "make clean",
+    "build-lib": "make build-lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mirror-media/Lilith.git",
+    "directory": "packages/draft-editor"
+  },
+  "keywords": [
+    "react",
+    "readr",
+    "draft.js"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "draft-js": "^0.11.7"
+  },
+  "peerDependencies": {
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
+    "styled-components": "5.3.5"
+  },
+  "files": [
+    "lib"
+  ],
+  "devDependencies": {
+    "babel-plugin-inline-react-svg": "^2.0.1"
+  }
+}

@@ -77,6 +77,8 @@ const listConfigurations = list({
     }),
     name: customFields.richTextEditor({
       label: '內文',
+      disabledButtons: [],
+      website: 'readr',
     }),
     boost: checkbox({
       label: '置頂',

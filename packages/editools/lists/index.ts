@@ -21,6 +21,8 @@ import InlineIndex from './InlineIndex'
 import QAList from './QAList'
 import QAItem from './QAItem'
 import FeedbackCounter from './FeedbackCounter'
+import VideoPicker from './VideoPicker'
+import ThreeStoryPoints from './ThreeStoryPoints'
 
 export const listDefinition = {
   User,
@@ -43,7 +45,9 @@ export const listDefinition = {
   InlineIndex,
   IndexItem,
   Karaoke,
+  VideoPicker,
   QAList,
   QAItem,
   FeedbackCounter,
+  ThreeStoryPoint: ThreeStoryPoints,
 }
