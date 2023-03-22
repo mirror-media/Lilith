@@ -69,9 +69,6 @@ const listConfigurations = list({
           }
         },
       }),
-      ui: {
-        views: require.resolve('./views/embed-code'),
-      },
     }),
     embedCode: virtual({
       label: 'embed code',
