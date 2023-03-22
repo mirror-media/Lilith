@@ -70,7 +70,7 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/link-button'),
+        views: require.resolve('./views/embed-code'),
       },
     }),
     embedCode: virtual({
@@ -101,7 +101,7 @@ const listConfigurations = list({
             }
           }
 
-          return embedCodeGen.buildEmbeddedCode(
+          const code = embedCodeGen.buildEmbeddedCode(
             'react-three-story-points',
             {
               models: lightModel ? [mobileModel, lightModel] : [mobileModel],
@@ -115,8 +115,40 @@ const listConfigurations = list({
             },
             embedCodeWebpackAssets
           )
+
+          const style = `
+            <style>
+              .embedded-code-container {
+                margin-top: -32px;
+                margin-left: -20px;
+                z-index: 100;
+                position: relative;
+              }
+              @media (min-width:768px) {
+                .embedded-code-container {
+                  margin-left: calc((100vw - 568px)/2 * -1);
+                }
+              }
+              @media (min-width:1200px) {
+                .embedded-code-container {
+                  margin-left: calc((100vw - 600px)/2 * -1);
+                }
+              }
+            </style>
+          `
+
+          return code.replace(
+            /(<div id=.*><\/div>)/,
+            `${style}<div class='embedded-code-container'>$1</div>`
+          )
         },
       }),
+      ui: {
+        views: require.resolve('./views/embed-code'),
+        createView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     preview: virtual({
       field: graphql.field({
@@ -130,6 +162,9 @@ const listConfigurations = list({
       }),
       ui: {
         views: require.resolve('./views/link-button'),
+        createView: {
+          fieldMode: 'hidden',
+        },
       },
     }),
   },

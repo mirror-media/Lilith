@@ -1,5 +1,6 @@
+// @ts-ignore ecg does not provide definition file
 import embedCodeGen from '@readr-media/react-embed-code-generator'
-import { customFields, utils } from '@mirrormedia/lilith-core'
+import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import { text, relationship, virtual } from '@keystone-6/core/fields'
 
@@ -149,6 +150,12 @@ const listConfigurations = list({
           }
         },
       }),
+      ui: {
+        views: require.resolve('./views/embed-code'),
+        createView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
   },
   ui: {

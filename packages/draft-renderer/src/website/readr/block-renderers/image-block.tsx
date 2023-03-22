@@ -1,22 +1,35 @@
+import { EntityInstance } from 'draft-js'
 import React from 'react'
 import styled from 'styled-components'
-import { DraftEntityInstance } from 'draft-js'
+
+const Figure = styled.figure`
+  width: calc(100% + 40px);
+  transform: translateX(-20px);
+`
 
 const Image = styled.img`
   width: 100%;
 `
 
-const Figure = styled.figure`
-  margin-block: unset;
-  margin-inline: unset;
-  margin: 0 10px;
-`
+const FigureCaption = styled.figcaption`
+  width: 100%;
+  font-size: 14px;
+  line-height: 21px;
+  text-align: justify;
+  color: rgba(0, 9, 40, 0.5);
+  padding: 0 20px;
+  margin: 8px 0 0;
 
+  ${({ theme }) => theme.breakpoint.xl} {
+    font-size: 16px;
+    line-height: 24px;
+  }
+`
 const Anchor = styled.a`
   text-decoration: none;
 `
 
-export function ImageBlock(entity: DraftEntityInstance) {
+export function ImageBlock(entity: EntityInstance) {
   const { desc, imageFile, resized, url } = entity.getData()
 
   let imgBlock = (
@@ -25,7 +38,7 @@ export function ImageBlock(entity: DraftEntityInstance) {
         src={resized?.original}
         onError={(e) => (e.currentTarget.src = imageFile?.url)}
       />
-      <figcaption>{desc}</figcaption>
+      <FigureCaption>{desc}</FigureCaption>
     </Figure>
   )
 
