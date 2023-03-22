@@ -48,6 +48,8 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '描述',
+      disabledButtons: [],
+      website: 'readr',
     }),
     heroImage: customFields.relationship({
       label: '首圖',

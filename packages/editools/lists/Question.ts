@@ -44,14 +44,14 @@ const listConfigurations = list({
       customConfig: {
         isImage: true,
       },
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor),
-		  update: allowRoles(admin, moderator),
-		  create: allowRoles(admin, moderator),
-		  delete: allowRoles(admin),
-		},
-  },
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor),
+          update: allowRoles(admin, moderator),
+          create: allowRoles(admin, moderator),
+          delete: allowRoles(admin),
+        },
+      },
     }),
     imageLink: text(),
     author: text({
@@ -59,6 +59,8 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
+      disabledButtons: [],
+      website: 'readr',
     }),
     boost: checkbox({
       label: '置頂',
@@ -117,7 +119,9 @@ const listConfigurations = list({
     resolveInput: ({ resolvedData }) => {
       const { name } = resolvedData
       if (name) {
-        const apiData = customFields.draftConverter.convertToApiData(name).toJS()
+        const apiData = customFields.draftConverter
+          .convertToApiData(name)
+          .toJS()
         resolvedData.apiData = apiData
       }
       return resolvedData

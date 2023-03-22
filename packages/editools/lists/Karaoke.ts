@@ -78,16 +78,28 @@ const listConfigurations = list({
           )
         },
       }),
+      ui: {
+        views: require.resolve('./views/embed-code'),
+        createView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     previewButton: virtual({
       field: graphql.field({
-        type: graphql.String,
-        resolve(item: Record<string, unknown>): string {
-          return `/demo/karaokes/${item?.id}`
+        type: graphql.JSON,
+        resolve(item: Record<string, unknown>): Record<string, string> {
+          return {
+            href: `/demo/karaokes/${item?.id}`,
+            label: 'Preview',
+          }
         },
       }),
       ui: {
-        views: require.resolve('./preview-button'),
+        views: require.resolve('./views/link-button'),
+        createView: {
+          fieldMode: 'hidden',
+        },
       },
     }),
   },

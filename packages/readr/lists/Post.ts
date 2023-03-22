@@ -1,3 +1,4 @@
+// @ts-ignore: no definition
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import {
@@ -158,22 +159,27 @@ const listConfigurations = list({
     summary: customFields.richTextEditor({
       label: '重點摘要',
       disabledButtons: [],
+      website: 'readr',
     }),
-    brief: customFields.richTextEditor({
-      label: '前言',
-      disabledButtons: [],
-    }),
+    // brief: customFields.richTextEditor({
+    //   label: '前言',
+    //   disabledButtons: [],
+    //   website: 'readr',
+    // }),
     content: customFields.richTextEditor({
       label: '內文',
       disabledButtons: [],
+      website: 'readr',
     }),
     actionList: customFields.richTextEditor({
       label: '延伸議題',
       disabledButtons: [],
+      website: 'readr',
     }),
     citation: customFields.richTextEditor({
       label: '引用數據',
       disabledButtons: [],
+      website: 'readr',
     }),
     readringTime: integer({
       label: '閱讀時間',
@@ -231,7 +237,6 @@ const listConfigurations = list({
     }),
     isFeatured: checkbox({
       label: '置頂',
-      isIndexed: true,
     }),
     note: relationship({
       label: '專題筆記',
@@ -241,9 +246,6 @@ const listConfigurations = list({
         displayMode: 'cards',
         linkToItem: true,
         cardFields: ['title', 'writers', 'publishTime', 'content'],
-        inlineCreate: {
-          fields: ['title', 'writers', 'publishTime', 'content'],
-        },
         inlineCreate: {
           fields: ['title', 'writers', 'publishTime', 'content'],
         },
@@ -288,23 +290,6 @@ const listConfigurations = list({
             'retro',
           ],
         },
-        inlineCreate: {
-          fields: [
-            'asanaCheck',
-            'uiCheck',
-            'performanceCheck',
-            'ga',
-            'gtm',
-            'og',
-            'module',
-            'document',
-            'asana',
-            'tracking',
-            'sourceCode',
-            'gaLink',
-            'retro',
-          ],
-        },
       },
     }),
     css: text({
@@ -318,13 +303,13 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
-    briefApiData: json({
-      label: '資料庫使用',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-      },
-    }),
+    // briefApiData: json({
+    //   label: '資料庫使用',
+    //   ui: {
+    //     createView: { fieldMode: 'hidden' },
+    //     itemView: { fieldMode: 'hidden' },
+    //   },
+    // }),
     apiData: json({
       label: '資料庫使用',
       ui: {
@@ -350,8 +335,8 @@ const listConfigurations = list({
   ui: {
     labelField: 'slug',
     listView: {
-      initialColumns: ['id', 'slug', 'status'],
-      initialSort: { field: 'publishedDate', direction: 'DESC' },
+      initialColumns: ['id', 'slug', 'state'],
+      initialSort: { field: 'publishTime', direction: 'DESC' },
       pageSize: 50,
     },
   },
@@ -365,7 +350,7 @@ const listConfigurations = list({
   },
   hooks: {
     resolveInput: async ({ resolvedData }) => {
-      const { summary, brief, content, actionList, citation } = resolvedData
+      const { summary, content, actionList, citation } = resolvedData
       if (content) {
         resolvedData.apiData = customFields.draftConverter
           .convertToApiData(content)
@@ -376,11 +361,11 @@ const listConfigurations = list({
           .convertToApiData(summary)
           .toJS()
       }
-      if (brief) {
-        resolvedData.briefApiData = customFields.draftConverter
-          .convertToApiData(brief)
-          .toJS()
-      }
+      // if (brief) {
+      //   resolvedData.briefApiData = customFields.draftConverter
+      //     .convertToApiData(brief)
+      //     .toJS()
+      // }
       if (actionList) {
         resolvedData.actionlistApiData = customFields.draftConverter
           .convertToApiData(actionList)

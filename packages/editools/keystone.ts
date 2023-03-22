@@ -2,6 +2,8 @@ import { config } from '@keystone-6/core'
 import { listDefinition as lists } from './lists'
 import appConfig from './config'
 import envVar from './environment-variables'
+import express from 'express'
+import path from 'path'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache'
@@ -163,6 +165,65 @@ export default withAuth(
                 .map((index) => index.embedCode)}</html>`
             )
           }
+        )
+
+        app.get(
+          '/demo/video-picker/:id',
+          authenticationMw,
+          async (req, res) => {
+            const itemId = req.params.id
+
+            const context = await createContext(req, res)
+            const item = await context.query.VideoPicker.findOne({
+              where: { id: itemId },
+              query: 'embedCode',
+            })
+
+            if (!item) {
+              return res
+                .status(404)
+                .send(`ThreeStoryPoint ${itemId} is not found`)
+            }
+
+            res.send(
+              `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>${item?.embedCode}</body></html>`
+            )
+          }
+        )
+
+        app.get(
+          '/demo/three-story-points/:id',
+          authenticationMw,
+          async (req, res) => {
+            const itemId = req.params.id
+
+            const context = await createContext(req, res)
+            const item = await context.query.ThreeStoryPoint.findOne({
+              where: { id: itemId },
+              query: 'embedCode',
+            })
+
+            if (!item) {
+              return res
+                .status(404)
+                .send(`ThreeStoryPoint ${itemId} is not found`)
+            }
+
+            res.send(
+              `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>${item?.embedCode}</body></html>`
+            )
+          }
+        )
+
+        // ThreeJS router
+        app.use(
+          '/three',
+          // Serve static files, including js, css and html
+          // BTW, the reason we use `process.cwd()` rather than `__dirname`
+          // is because `__dirname` won't return the correct absolute path;
+          // it return a wrong relative path `../..`.
+          // I think it is a bug for `@keystone/core`.
+          express.static(path.resolve(process.cwd(), './public/three'))
         )
       },
     },

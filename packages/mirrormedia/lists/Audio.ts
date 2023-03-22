@@ -1,5 +1,4 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { GcsFileAdapter } from '../utils/GcsFileAdapter'
 import { list } from '@keystone-6/core'
 import { text, relationship, file, json } from '@keystone-6/core/fields'
 
@@ -33,6 +32,7 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '敘述',
+      website: 'mirrormedia',
     }),
     tags: relationship({
       label: '標籤',

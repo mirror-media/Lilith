@@ -92,12 +92,14 @@ type Post {
   og_title: String
   og_description: String
   og_image: Photo
+  isMember: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
   isCampaign: Boolean
   isAdult: Boolean
   lockJS: Boolean
+  redirect: String
   adTrace: String
   css: String
   apiDataBrief: JSON
@@ -147,12 +149,14 @@ input PostWhereInput {
   og_title: StringFilter
   og_description: StringFilter
   og_image: PhotoWhereInput
+  isMember: BooleanFilter
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
   hiddenAdvertised: BooleanFilter
   isCampaign: BooleanFilter
   isAdult: BooleanFilter
   lockJS: BooleanFilter
+  redirect: StringFilter
   adTrace: StringFilter
   css: StringFilter
   createdAt: DateTimeNullableFilter
@@ -295,12 +299,14 @@ input PostOrderByInput {
   titleColor: OrderDirection
   og_title: OrderDirection
   og_description: OrderDirection
+  isMember: OrderDirection
   isFeatured: OrderDirection
   isAdvertised: OrderDirection
   hiddenAdvertised: OrderDirection
   isCampaign: OrderDirection
   isAdult: OrderDirection
   lockJS: OrderDirection
+  redirect: OrderDirection
   adTrace: OrderDirection
   css: OrderDirection
   createdAt: OrderDirection
@@ -341,12 +347,14 @@ input PostUpdateInput {
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForUpdateInput
+  isMember: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
   isCampaign: Boolean
   isAdult: Boolean
   lockJS: Boolean
+  redirect: String
   adTrace: String
   css: String
   apiDataBrief: JSON
@@ -450,12 +458,14 @@ input PostCreateInput {
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForCreateInput
+  isMember: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
   isCampaign: Boolean
   isAdult: Boolean
   lockJS: Boolean
+  redirect: String
   adTrace: String
   css: String
   apiDataBrief: JSON
@@ -1633,7 +1643,13 @@ type Category {
   order: Int
   state: String
   heroImage: Photo
-  sections: Section
+  sections(
+    where: SectionWhereInput! = {}
+    orderBy: [SectionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
   posts(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
@@ -1663,7 +1679,7 @@ input CategoryWhereInput {
   order: IntNullableFilter
   state: StringFilter
   heroImage: PhotoWhereInput
-  sections: SectionWhereInput
+  sections: SectionManyRelationFilter
   posts: PostManyRelationFilter
   isMemberOnly: BooleanFilter
   createdAt: DateTimeNullableFilter
@@ -1689,19 +1705,13 @@ input CategoryUpdateInput {
   order: Int
   state: String
   heroImage: PhotoRelateToOneForUpdateInput
-  sections: SectionRelateToOneForUpdateInput
+  sections: SectionRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
   isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
-}
-
-input SectionRelateToOneForUpdateInput {
-  create: SectionCreateInput
-  connect: SectionWhereUniqueInput
-  disconnect: Boolean
 }
 
 input CategoryUpdateArgs {
@@ -1715,18 +1725,13 @@ input CategoryCreateInput {
   order: Int
   state: String
   heroImage: PhotoRelateToOneForCreateInput
-  sections: SectionRelateToOneForCreateInput
+  sections: SectionRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
   isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input SectionRelateToOneForCreateInput {
-  create: SectionCreateInput
-  connect: SectionWhereUniqueInput
 }
 
 type Partner {
