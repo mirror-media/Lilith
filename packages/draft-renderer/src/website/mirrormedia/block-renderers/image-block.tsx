@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
-
+import img from '../assets/default-og-img.png'
 const Image = styled.img`
   width: 100%;
 `
@@ -21,6 +21,7 @@ export function ImageBlock(entity: DraftEntityInstance) {
 
   let imgBlock = (
     <Figure>
+      <img src={img}></img>
       <Image
         src={resized?.original}
         onError={(e) => (e.currentTarget.src = imageFile?.url)}
