@@ -175,8 +175,8 @@ const listConfigurations = list({
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor, contributor),
-      update: allowRoles(admin, moderator, contributor),
-      create: allowRoles(admin, moderator, contributor),
+      update: allowRoles(admin, moderator),
+      create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
     },
   },

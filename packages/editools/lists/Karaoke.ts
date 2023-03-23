@@ -40,7 +40,13 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
-    audio: file(),
+    audio: file({
+      //external users can't upload files to our GCS. They can only use the image from their sources.
+      ui: {
+        createView: { fieldMode: imageFileACL },
+        itemView: { fieldMode: imageFileACL },
+      },
+    }),
     //external users can't upload files to our GCS. They can only use the image from their sources.
     imageFile: image({
       ui: {
@@ -48,6 +54,7 @@ const listConfigurations = list({
         itemView: { fieldMode: imageFileACL },
       },
     }),
+    audioLink: text(),
     imageLink: text(),
     muteHint: checkbox({
       label: '是否顯示聲音播放提醒',
@@ -59,7 +66,9 @@ const listConfigurations = list({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
           const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
-          const audioSrc = `${urlPrefix}/files/${item?.audio_filename}`
+          const audioSrc =
+            (item?.audioLink && `${item.audioLink}`) ||
+            (item?.audio_id && `${urlPrefix}/files/${item?.audio_filename}`)
           const imgSrc =
             (item?.imageLink && `${item.imageLink}`) ||
             (item?.imageFile_id &&
