@@ -202,7 +202,7 @@ const listConfigurations = list({
     collabration: relationship({
       ref: 'Collaboration.posts',
       many: true,
-      label: '作者',
+      label: '相關協作',
     }),
     relatedPosts: relationship({
       ref: 'Post',
@@ -333,7 +333,7 @@ const listConfigurations = list({
     }),
   },
   ui: {
-    labelField: 'slug',
+    labelField: 'name',
     listView: {
       initialColumns: ['id', 'slug', 'state'],
       initialSort: { field: 'publishTime', direction: 'DESC' },

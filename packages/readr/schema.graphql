@@ -10,7 +10,6 @@ type EditorChoice {
   link: String
   heroImage: Photo
   state: String
-  publishTime: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -36,7 +35,6 @@ input EditorChoiceWhereInput {
   link: StringFilter
   heroImage: PhotoWhereInput
   state: StringNullableFilter
-  publishTime: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -146,7 +144,6 @@ input EditorChoiceOrderByInput {
   description: OrderDirection
   link: OrderDirection
   state: OrderDirection
-  publishTime: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -164,7 +161,6 @@ input EditorChoiceUpdateInput {
   link: String
   heroImage: PhotoRelateToOneForUpdateInput
   state: String
-  publishTime: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -202,7 +198,6 @@ input EditorChoiceCreateInput {
   link: String
   heroImage: PhotoRelateToOneForCreateInput
   state: String
-  publishTime: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

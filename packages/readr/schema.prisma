@@ -22,7 +22,6 @@ model EditorChoice {
   heroImage   Photo?    @relation("EditorChoice_heroImage", fields: [heroImageId], references: [id])
   heroImageId Int?      @map("heroImage")
   state       String?   @default("draft")
-  publishTime DateTime?
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?     @relation("EditorChoice_createdBy", fields: [createdById], references: [id])

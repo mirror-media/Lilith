@@ -113,6 +113,10 @@ const listConfigurations = list({
       ref: 'Tag.images',
       many: true,
       label: '相關標籤',
+      ui: {
+        itemView: { fieldMode: 'hidden'},
+        createView: { fieldMode: 'hidden'}
+      }
     }),
     urlOriginal: text({
       ui: {
