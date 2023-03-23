@@ -87,6 +87,9 @@ model Author {
   homepage                  String        @default("")
   sort                      Int?
   isMember                  Boolean       @default(false)
+  special_number            String        @default("")
+  number_desc               String        @default("")
+  number_desc_en            String        @default("")
   facebook                  String        @default("")
   twitter                   String        @default("")
   instagram                 String        @default("")
