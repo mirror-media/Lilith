@@ -46,9 +46,6 @@ const listConfigurations = list({
       isIndexed: true,
       label: '狀態',
     }),
-    publishTime: timestamp({
-      label: '發布時間',
-    }),
   },
   access: {
     operation: {
