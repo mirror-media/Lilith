@@ -4,14 +4,14 @@ import { ColorBoxEditorBlock as ColorBoxBlock } from './block-renderer/color-box
 import { BGImageEditorBlock as BGImageBlock } from './block-renderer/background-image-block'
 import { BGVideoEditorBlock as BGVideoBlock } from './block-renderer/background-video-block'
 import { SideIndexEditorBlock as SideIndexBlock } from './block-renderer/side-index-block'
+import { EmbeddedCodeEditorBlock as EmbeddedCodeBlock } from './block-renderer/embedded-code-block'
+import { SlideshowEditBlock as SlideshowBlock } from './block-renderer/slideshow-block'
+import { SlideshowEditBlockV2 as SlideshowBlockV2 } from './block-renderer/slideshow-block'
 import MirrorMedia from '@mirrormedia/lilith-draft-renderer/lib/website/mirrormedia'
 
 const {
-  EmbeddedCodeBlock,
   MediaBlock,
   ImageBlock,
-  SlideshowBlock,
-  SlideshowBlockV2,
   DividerBlock,
   RelatedPostBlock,
 } = MirrorMedia.blockRenderers
