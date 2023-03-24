@@ -11,6 +11,12 @@ export const Block = styled.div`
     height: auto;
     display: block;
   }
+  //some embedded code won't set itself in the middle
+  iframe {
+    max-width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+  }
 `
 
 export const Caption = styled.div`
@@ -67,16 +73,6 @@ export const EmbeddedCodeBlock = (entity: DraftEntityInstance) => {
 
   return (
     <div>
-      {
-        // WORKAROUND:
-        // The following `<input>` is to solve [issue 153](https://github.com/mirror-media/openwarehouse-k6/issues/153).
-        // If the emebed code generates `<input>` or `<textarea>` and appends them onto DOM,
-        // and then the generated `<input>` or `<textarea>` will hijack the users' cursors.
-        // It will cause that users could not edit the DraftJS Editor anymore.
-        // The following phony `<input>` is used to prevent the generated `<input>` or `<textare>` from
-        // hijacking the users' cursors.
-      }
-      <input hidden disabled />
       <Block ref={embedded} />
       {caption ? <Caption>{caption}</Caption> : null}
     </div>
