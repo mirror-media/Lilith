@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { ThemeProvider } from 'styled-components'
 
 import { Editor, EditorState, convertFromRaw } from 'draft-js'
 
@@ -9,6 +9,7 @@ import {
   CUSTOM_STYLE_PREFIX_FONT_COLOR,
   CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR,
 } from '../../draft-js/const'
+import theme from './theme'
 
 const DraftEditorWrapper = styled.div`
   /* Rich-editor default setting (.RichEditor-root)*/
@@ -125,15 +126,17 @@ export default function DraftRenderer({ rawContentBlock }) {
   const editorState = EditorState.createWithContent(contentState, decorators)
 
   return (
-    <DraftEditorWrapper>
-      <Editor
-        editorState={editorState}
-        customStyleMap={customStyleMap}
-        blockStyleFn={blockStyleFn.bind(null, editorState)}
-        blockRendererFn={blockRendererFn}
-        customStyleFn={customStyleFn}
-        readOnly
-      />
-    </DraftEditorWrapper>
+    <ThemeProvider theme={theme}>
+      <DraftEditorWrapper>
+        <Editor
+          editorState={editorState}
+          customStyleMap={customStyleMap}
+          blockStyleFn={blockStyleFn.bind(null, editorState)}
+          blockRendererFn={blockRendererFn}
+          customStyleFn={customStyleFn}
+          readOnly
+        />
+      </DraftEditorWrapper>
+    </ThemeProvider>
   )
 }
