@@ -2470,6 +2470,15 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
+"@readr-media/react-dual-slides@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-dual-slides/-/react-dual-slides-0.0.3.tgz#43a3d51891d4cae4cd841444bdb4597ccb65e753"
+  integrity sha512-QOGr0TW0FGmVllnBilW0ke5ncUdCIMsCftsZOI+sYDU7gni+1ow+WcNP4ASERfex8gAkBcUVN+jl8RyCkhyjRA==
+  dependencies:
+    default-import "^1.1.5"
+    react-intersection-observer "^9.3.5"
+    react-transition-group "^4.4.5"
+
 "@readr-media/react-election-widgets@1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@readr-media/react-election-widgets/-/react-election-widgets-1.0.2.tgz#47683c89b32f1f03cc52b4a0bb38ca99ca513bcb"
@@ -2478,11 +2487,12 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.1.6":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.1.6.tgz#5249130c14f2dab41f8025b815fc9e96dfa406d1"
-  integrity sha512-HS5HUSLzxFqQ+ta0PtPQfLzl4WRjcGjdPdF9aCC6FMkrMY6Rnc4jAqS+DXhUaxdXcvesKqhJ2f3FjVVz9/k7sw==
+"@readr-media/react-embed-code-generator@2.2.0-beta.2":
+  version "2.2.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.2.0-beta.2.tgz#4b9afa0de2887d05c96d9b99b2f9129ba45ee9c9"
+  integrity sha512-U38+XmHNDBnd+3lGRbvfhFHAI26RmDrAiVOMNkzxpf6NG3aoLf/Sc45wvZO76EVpNPsDfzdGqzTKhWWxKQD5Yw==
   dependencies:
+    "@readr-media/react-dual-slides" "0.0.3"
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
     "@readr-media/react-full-screen-video" "1.0.5-beta.0"
@@ -4316,6 +4326,11 @@ deep-is@^0.1.3, deep-is@~0.1.3:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/deep-is/-/deep-is-0.1.4.tgz#a6f2dce612fadd2ef1f519b73551f17e85199831"
   integrity sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==
+
+default-import@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/default-import/-/default-import-1.1.5.tgz#6ba81645f79fa2e122bbac09651f30b55a8d9d5d"
+  integrity sha512-aaJ6uzZlmaEcN1U8yvtiyV7MG3/zZQf1XtGSW5dTfAVvfk0VZuriJelXxVL9a0ni42vMkhjWcztFfpIhwFcfOQ==
 
 define-lazy-prop@^2.0.0:
   version "2.0.0"
@@ -7949,7 +7964,7 @@ react-style-singleton@^2.2.1:
     invariant "^2.2.4"
     tslib "^2.0.0"
 
-react-transition-group@^4.3.0, react-transition-group@^4.4.2:
+react-transition-group@^4.3.0, react-transition-group@^4.4.2, react-transition-group@^4.4.5:
   version "4.4.5"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.5.tgz#e53d4e3f3344da8521489fbef8f2581d42becdd1"
   integrity sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g==
