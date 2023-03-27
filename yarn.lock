@@ -2470,10 +2470,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@readr-media/react-dual-slides@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-dual-slides/-/react-dual-slides-0.0.5.tgz#3d113034039f2b8c544113154a8b7ca6d3a61470"
-  integrity sha512-BH3L/b8lUKivE293b0cLGWBq1ALyv+ZJJCYkFHPZ4Qy9zZbqZGGZjitJtAeLD4b1kkFB24KTNHSUib3QKmWfkQ==
+"@readr-media/react-dual-slides@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-dual-slides/-/react-dual-slides-0.0.6.tgz#9d48ce099a3e92c180f934ecefd56bdcb21e7afd"
+  integrity sha512-gYHfTxi5SuPBP2gXaF+g8yCVqVZ9l73Zl17ygNSWu704oze6bl8RYXSAjBL3xroyALWKcsCm42Exp1SksDQv3g==
   dependencies:
     default-import "^1.1.5"
     react-intersection-observer "^9.3.5"
@@ -2487,12 +2487,12 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.2.0-beta.5":
-  version "2.2.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.2.0-beta.5.tgz#ee8d393f54ea6a1901591f7cfc87efd40bb6e7f3"
-  integrity sha512-GrDkL9y+AlGvKxOirOf00JKyHS693Q/xuGTRGtXDCm0FXX8xHAqDnfZVs4N5J3LKwvFJSqf3A/zXvbj8z+5z6Q==
+"@readr-media/react-embed-code-generator@2.2.0-beta.6":
+  version "2.2.0-beta.6"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.2.0-beta.6.tgz#9c08d04c742439b8fcafb7ebda66fcea167291c6"
+  integrity sha512-aHYtjUKMyPC5yqhBevmW7XhJGGTentLtVEfsNhVixHPOe4m9nkQQzZ6xTm3vm72DWVM6tdbRvzftyRWk9JwTEw==
   dependencies:
-    "@readr-media/react-dual-slides" "0.0.5"
+    "@readr-media/react-dual-slides" "0.0.6"
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
     "@readr-media/react-full-screen-video" "1.0.5-beta.0"
