@@ -229,7 +229,7 @@ export default withAuth(
           }
 
           res.send(
-            `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>${item?.embedCode}</body></html>`
+            `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"><style> * { box-sizing: border-box; } body { margin:0; } </style></head><body>${item?.embedCode}</body></html>`
           )
         })
 
