@@ -694,6 +694,7 @@ model DualSlide {
   id          Int       @id @default(autoincrement())
   name        String    @default("")
   slides      Json?     @default("[{\"content\":[\"\"],\"imgSrc\":\"\"}]")
+  shiftLeft   Boolean   @default(false)
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?     @relation("DualSlide_createdBy", fields: [createdById], references: [id])

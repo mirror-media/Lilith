@@ -2,7 +2,7 @@
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, json, virtual } from '@keystone-6/core/fields'
+import { checkbox, text, json, virtual } from '@keystone-6/core/fields'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const {
@@ -28,6 +28,10 @@ const listConfigurations = list({
         },
       ],
     }),
+    shiftLeft: checkbox({
+      label: 'READr 版型（向左移動）',
+      defaultValue: false,
+    }),
     embedCode: virtual({
       label: 'embed code',
       field: graphql.field({
@@ -41,6 +45,35 @@ const listConfigurations = list({
             },
             embedCodeWebpackAssets
           )
+
+          const shiftLeft = item?.shiftLeft
+
+          if (shiftLeft) {
+            const style = `
+            <style>
+              .embedded-code-container {
+                margin-top: -32px;
+                margin-left: -20px;
+                z-index: 100;
+                position: relative;
+              }
+              @media (min-width:768px) {
+                .embedded-code-container {
+                  margin-left: calc((100vw - 568px)/2 * -1);
+                }
+              }
+              @media (min-width:1200px) {
+                .embedded-code-container {
+                  margin-left: calc((100vw - 600px)/2 * -1);
+                }
+              }
+            </style>
+          `
+            return code.replace(
+              /(<div id=.*><\/div>)/,
+              `${style}<div class='embedded-code-container'>$1</div>`
+            )
+          }
 
           return code
         },
