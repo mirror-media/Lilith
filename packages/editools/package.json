@@ -21,7 +21,7 @@
     "@keystone-6/core": "1.1.1",
     "@keystone-6/fields-document": "1.0.1",
     "@mirrormedia/lilith-core": "1.2.6",
-    "@readr-media/react-embed-code-generator": "2.2.0-beta.6",
+    "@readr-media/react-embed-code-generator": "2.2.0-beta.7",
     "cheerio": "^1.0.0-rc.12",
     "express": "^4.17.1",
     "finalhandler": "^1.2.0",
