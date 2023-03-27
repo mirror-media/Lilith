@@ -2,7 +2,13 @@
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { checkbox, text, json, virtual } from '@keystone-6/core/fields'
+import {
+  checkbox,
+  relationship,
+  text,
+  json,
+  virtual,
+} from '@keystone-6/core/fields'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const {
@@ -31,6 +37,9 @@ const listConfigurations = list({
     shiftLeft: checkbox({
       label: 'READr 版型（向左移動）',
       defaultValue: false,
+    }),
+    helper: relationship({
+      ref: 'ComponentHelp',
     }),
     embedCode: virtual({
       label: 'embed code',

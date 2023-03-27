@@ -2351,6 +2351,7 @@ type Karaoke {
   audioLink: String
   imageLink: String
   muteHint: Boolean
+  helper: ComponentHelp
   embedCode: String
   previewButton: JSON
   createdAt: DateTime
@@ -2393,6 +2394,7 @@ input KaraokeWhereInput {
   audioLink: StringFilter
   imageLink: StringFilter
   muteHint: BooleanFilter
+  helper: ComponentHelpWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2418,10 +2420,17 @@ input KaraokeUpdateInput {
   audioLink: String
   imageLink: String
   muteHint: Boolean
+  helper: ComponentHelpRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ComponentHelpRelateToOneForUpdateInput {
+  create: ComponentHelpCreateInput
+  connect: ComponentHelpWhereUniqueInput
+  disconnect: Boolean
 }
 
 input KaraokeUpdateArgs {
@@ -2437,10 +2446,16 @@ input KaraokeCreateInput {
   audioLink: String
   imageLink: String
   muteHint: Boolean
+  helper: ComponentHelpRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input ComponentHelpRelateToOneForCreateInput {
+  create: ComponentHelpCreateInput
+  connect: ComponentHelpWhereUniqueInput
 }
 
 type VideoPicker {
@@ -2858,6 +2873,7 @@ type DualSlide {
   name: String
   slides: JSON
   shiftLeft: Boolean
+  helper: ComponentHelp
   embedCode: String
   preview: JSON
   createdAt: DateTime
@@ -2877,6 +2893,7 @@ input DualSlideWhereInput {
   id: IDFilter
   name: StringFilter
   shiftLeft: BooleanFilter
+  helper: ComponentHelpWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2895,6 +2912,7 @@ input DualSlideUpdateInput {
   name: String
   slides: JSON
   shiftLeft: Boolean
+  helper: ComponentHelpRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2910,6 +2928,65 @@ input DualSlideCreateInput {
   name: String
   slides: JSON
   shiftLeft: Boolean
+  helper: ComponentHelpRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type ComponentHelp {
+  id: ID!
+  name: String
+  desc: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ComponentHelpWhereUniqueInput {
+  id: ID
+}
+
+input ComponentHelpWhereInput {
+  AND: [ComponentHelpWhereInput!]
+  OR: [ComponentHelpWhereInput!]
+  NOT: [ComponentHelpWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  desc: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ComponentHelpOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  desc: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ComponentHelpUpdateInput {
+  name: String
+  desc: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ComponentHelpUpdateArgs {
+  where: ComponentHelpWhereUniqueInput!
+  data: ComponentHelpUpdateInput!
+}
+
+input ComponentHelpCreateInput {
+  name: String
+  desc: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -3157,6 +3234,17 @@ type Mutation {
   updateDualSlides(data: [DualSlideUpdateArgs!]!): [DualSlide]
   deleteDualSlide(where: DualSlideWhereUniqueInput!): DualSlide
   deleteDualSlides(where: [DualSlideWhereUniqueInput!]!): [DualSlide]
+  createComponentHelp(data: ComponentHelpCreateInput!): ComponentHelp
+  createComponentHelps(data: [ComponentHelpCreateInput!]!): [ComponentHelp]
+  updateComponentHelp(
+    where: ComponentHelpWhereUniqueInput!
+    data: ComponentHelpUpdateInput!
+  ): ComponentHelp
+  updateComponentHelps(data: [ComponentHelpUpdateArgs!]!): [ComponentHelp]
+  deleteComponentHelp(where: ComponentHelpWhereUniqueInput!): ComponentHelp
+  deleteComponentHelps(
+    where: [ComponentHelpWhereUniqueInput!]!
+  ): [ComponentHelp]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -3398,6 +3486,14 @@ type Query {
   ): [DualSlide!]
   dualSlide(where: DualSlideWhereUniqueInput!): DualSlide
   dualSlidesCount(where: DualSlideWhereInput! = {}): Int
+  componentHelps(
+    where: ComponentHelpWhereInput! = {}
+    orderBy: [ComponentHelpOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ComponentHelp!]
+  componentHelp(where: ComponentHelpWhereUniqueInput!): ComponentHelp
+  componentHelpsCount(where: ComponentHelpWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

@@ -68,6 +68,8 @@ model User {
   from_ThreeStoryPoint_updatedBy     ThreeStoryPoint[]     @relation("ThreeStoryPoint_updatedBy")
   from_DualSlide_createdBy           DualSlide[]           @relation("DualSlide_createdBy")
   from_DualSlide_updatedBy           DualSlide[]           @relation("DualSlide_updatedBy")
+  from_ComponentHelp_createdBy       ComponentHelp[]       @relation("ComponentHelp_createdBy")
+  from_ComponentHelp_updatedBy       ComponentHelp[]       @relation("ComponentHelp_updatedBy")
 }
 
 model LiveblogItem {
@@ -550,9 +552,9 @@ model IndexItem {
 }
 
 model Karaoke {
-  id                  Int       @id @default(autoincrement())
-  name                String    @default("")
-  quote               String    @default("")
+  id                  Int            @id @default(autoincrement())
+  name                String         @default("")
+  quote               String         @default("")
   audio_filesize      Int?
   audio_mode          String?
   audio_filename      String?
@@ -562,16 +564,19 @@ model Karaoke {
   imageFile_height    Int?
   imageFile_mode      String?
   imageFile_id        String?
-  audioLink           String    @default("")
-  imageLink           String    @default("")
-  muteHint            Boolean   @default(false)
+  audioLink           String         @default("")
+  imageLink           String         @default("")
+  muteHint            Boolean        @default(false)
+  helper              ComponentHelp? @relation("Karaoke_helper", fields: [helperId], references: [id])
+  helperId            Int?           @map("helper")
   createdAt           DateTime?
   updatedAt           DateTime?
-  createdBy           User?     @relation("Karaoke_createdBy", fields: [createdById], references: [id])
-  createdById         Int?      @map("createdBy")
-  updatedBy           User?     @relation("Karaoke_updatedBy", fields: [updatedById], references: [id])
-  updatedById         Int?      @map("updatedBy")
+  createdBy           User?          @relation("Karaoke_createdBy", fields: [createdById], references: [id])
+  createdById         Int?           @map("createdBy")
+  updatedBy           User?          @relation("Karaoke_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?           @map("updatedBy")
 
+  @@index([helperId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -691,16 +696,36 @@ model ThreeStoryPoint {
 }
 
 model DualSlide {
-  id          Int       @id @default(autoincrement())
-  name        String    @default("")
-  slides      Json?     @default("[{\"content\":[\"\"],\"imgSrc\":\"\"}]")
-  shiftLeft   Boolean   @default(false)
+  id          Int            @id @default(autoincrement())
+  name        String         @default("")
+  slides      Json?          @default("[{\"content\":[\"\"],\"imgSrc\":\"\"}]")
+  shiftLeft   Boolean        @default(false)
+  helper      ComponentHelp? @relation("DualSlide_helper", fields: [helperId], references: [id])
+  helperId    Int?           @map("helper")
   createdAt   DateTime?
   updatedAt   DateTime?
-  createdBy   User?     @relation("DualSlide_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("DualSlide_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
+  createdBy   User?          @relation("DualSlide_createdBy", fields: [createdById], references: [id])
+  createdById Int?           @map("createdBy")
+  updatedBy   User?          @relation("DualSlide_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?           @map("updatedBy")
+
+  @@index([helperId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model ComponentHelp {
+  id                    Int         @id @default(autoincrement())
+  name                  String      @default("")
+  desc                  String      @default("")
+  createdAt             DateTime?
+  updatedAt             DateTime?
+  createdBy             User?       @relation("ComponentHelp_createdBy", fields: [createdById], references: [id])
+  createdById           Int?        @map("createdBy")
+  updatedBy             User?       @relation("ComponentHelp_updatedBy", fields: [updatedById], references: [id])
+  updatedById           Int?        @map("updatedBy")
+  from_Karaoke_helper   Karaoke[]   @relation("Karaoke_helper")
+  from_DualSlide_helper DualSlide[] @relation("DualSlide_helper")
 
   @@index([createdById])
   @@index([updatedById])
