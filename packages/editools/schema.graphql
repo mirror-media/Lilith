@@ -2853,6 +2853,69 @@ input ThreeStoryPointCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type DualSlide {
+  id: ID!
+  name: String
+  slides: JSON
+  shiftLeft: Boolean
+  embedCode: String
+  preview: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input DualSlideWhereUniqueInput {
+  id: ID
+}
+
+input DualSlideWhereInput {
+  AND: [DualSlideWhereInput!]
+  OR: [DualSlideWhereInput!]
+  NOT: [DualSlideWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  shiftLeft: BooleanFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input DualSlideOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  shiftLeft: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input DualSlideUpdateInput {
+  name: String
+  slides: JSON
+  shiftLeft: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input DualSlideUpdateArgs {
+  where: DualSlideWhereUniqueInput!
+  data: DualSlideUpdateInput!
+}
+
+input DualSlideCreateInput {
+  name: String
+  slides: JSON
+  shiftLeft: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -3085,6 +3148,15 @@ type Mutation {
   deleteThreeStoryPoints(
     where: [ThreeStoryPointWhereUniqueInput!]!
   ): [ThreeStoryPoint]
+  createDualSlide(data: DualSlideCreateInput!): DualSlide
+  createDualSlides(data: [DualSlideCreateInput!]!): [DualSlide]
+  updateDualSlide(
+    where: DualSlideWhereUniqueInput!
+    data: DualSlideUpdateInput!
+  ): DualSlide
+  updateDualSlides(data: [DualSlideUpdateArgs!]!): [DualSlide]
+  deleteDualSlide(where: DualSlideWhereUniqueInput!): DualSlide
+  deleteDualSlides(where: [DualSlideWhereUniqueInput!]!): [DualSlide]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -3318,6 +3390,14 @@ type Query {
   ): [ThreeStoryPoint!]
   threeStoryPoint(where: ThreeStoryPointWhereUniqueInput!): ThreeStoryPoint
   threeStoryPointsCount(where: ThreeStoryPointWhereInput! = {}): Int
+  dualSlides(
+    where: DualSlideWhereInput! = {}
+    orderBy: [DualSlideOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [DualSlide!]
+  dualSlide(where: DualSlideWhereUniqueInput!): DualSlide
+  dualSlidesCount(where: DualSlideWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

@@ -215,6 +215,24 @@ export default withAuth(
           }
         )
 
+        app.get('/demo/dual-slides/:id', authenticationMw, async (req, res) => {
+          const itemId = req.params.id
+
+          const context = await createContext(req, res)
+          const item = await context.query.DualSlide.findOne({
+            where: { id: itemId },
+            query: 'embedCode',
+          })
+
+          if (!item) {
+            return res.status(404).send(`DualSlide ${itemId} is not found`)
+          }
+
+          res.send(
+            `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"><style> * { box-sizing: border-box; } body { margin:0; } </style></head><body>${item?.embedCode}</body></html>`
+          )
+        })
+
         // ThreeJS router
         app.use(
           '/three',
