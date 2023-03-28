@@ -15,6 +15,7 @@ type Post {
     skip: Int! = 0
   ): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
+  manualOrderOfSections: JSON
   categories(
     where: CategoryWhereInput! = {}
     orderBy: [CategoryOrderByInput!]! = []
@@ -29,6 +30,7 @@ type Post {
     skip: Int! = 0
   ): [Contact!]
   writersCount(where: ContactWhereInput! = {}): Int
+  manualOrderOfWriters: JSON
   photographers(
     where: ContactWhereInput! = {}
     orderBy: [ContactOrderByInput!]! = []
@@ -82,6 +84,7 @@ type Post {
     skip: Int! = 0
   ): [Post!]
   relatedsCount(where: PostWhereInput! = {}): Int
+  manualOrderOfRelateds: JSON
   tags(
     where: TagWhereInput! = {}
     orderBy: [TagOrderByInput!]! = []
@@ -325,8 +328,10 @@ input PostUpdateInput {
   state: String
   publishedDate: DateTime
   sections: SectionRelateToManyForUpdateInput
+  manualOrderOfSections: JSON
   categories: CategoryRelateToManyForUpdateInput
   writers: ContactRelateToManyForUpdateInput
+  manualOrderOfWriters: JSON
   photographers: ContactRelateToManyForUpdateInput
   camera_man: ContactRelateToManyForUpdateInput
   designers: ContactRelateToManyForUpdateInput
@@ -343,6 +348,7 @@ input PostUpdateInput {
   topics: TopicRelateToOneForUpdateInput
   titleColor: String
   relateds: PostRelateToManyForUpdateInput
+  manualOrderOfRelateds: JSON
   tags: TagRelateToManyForUpdateInput
   og_title: String
   og_description: String
@@ -436,8 +442,10 @@ input PostCreateInput {
   state: String
   publishedDate: DateTime
   sections: SectionRelateToManyForCreateInput
+  manualOrderOfSections: JSON
   categories: CategoryRelateToManyForCreateInput
   writers: ContactRelateToManyForCreateInput
+  manualOrderOfWriters: JSON
   photographers: ContactRelateToManyForCreateInput
   camera_man: ContactRelateToManyForCreateInput
   designers: ContactRelateToManyForCreateInput
@@ -454,6 +462,7 @@ input PostCreateInput {
   topics: TopicRelateToOneForCreateInput
   titleColor: String
   relateds: PostRelateToManyForCreateInput
+  manualOrderOfRelateds: JSON
   tags: TagRelateToManyForCreateInput
   og_title: String
   og_description: String
