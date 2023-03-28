@@ -66,6 +66,8 @@ model User {
   from_FeedbackCounter_updatedBy     FeedbackCounter[]     @relation("FeedbackCounter_updatedBy")
   from_ThreeStoryPoint_createdBy     ThreeStoryPoint[]     @relation("ThreeStoryPoint_createdBy")
   from_ThreeStoryPoint_updatedBy     ThreeStoryPoint[]     @relation("ThreeStoryPoint_updatedBy")
+  from_DualSlide_createdBy           DualSlide[]           @relation("DualSlide_createdBy")
+  from_DualSlide_updatedBy           DualSlide[]           @relation("DualSlide_updatedBy")
 }
 
 model LiveblogItem {
@@ -683,6 +685,22 @@ model ThreeStoryPoint {
   createdById           Int?      @map("createdBy")
   updatedBy             User?     @relation("ThreeStoryPoint_updatedBy", fields: [updatedById], references: [id])
   updatedById           Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model DualSlide {
+  id          Int       @id @default(autoincrement())
+  name        String    @default("")
+  slides      Json?     @default("[{\"content\":[\"\"],\"imgSrc\":\"\"}]")
+  shiftLeft   Boolean   @default(false)
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("DualSlide_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("DualSlide_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
