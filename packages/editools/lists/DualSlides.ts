@@ -63,9 +63,16 @@ const listConfigurations = list({
               .embedded-code-container {
                 margin-top: -32px;
                 margin-left: -20px;
-                z-index: 100;
+                z-index: 1000;
                 position: relative;
               }
+
+              @media (max-width:767px) {
+                .embedded-code-container {
+                  width: 100vw;
+                }
+              }
+
               @media (min-width:768px) {
                 .embedded-code-container {
                   margin-left: calc((100vw - 568px)/2 * -1);
