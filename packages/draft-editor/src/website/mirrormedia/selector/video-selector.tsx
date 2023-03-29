@@ -92,6 +92,10 @@ const ErrorWrapper = styled.div`
   }
 `
 
+const VideoName = styled.p`
+  text-align: center;
+`
+
 type ID = string
 
 export type VideoEntity = {
@@ -178,6 +182,7 @@ function VideoMetaGrid(props: {
         <source src={video?.urlOriginal} />
         <source src={video?.file?.url} />
       </Video>
+      <VideoName>{video?.name}</VideoName>
     </VideoMetaGridWrapper>
   )
 }
