@@ -31,6 +31,7 @@ import {
 } from '../../draft-js/buttons/text-align'
 import { FontColorButton } from '../../draft-js/buttons/font-color'
 import { BackgroundColorButton } from '../../draft-js/buttons/background-color'
+import { VideoButton } from '../../draft-js/buttons/video'
 
 import {
   CUSTOM_STYLE_PREFIX_FONT_COLOR,
@@ -74,6 +75,7 @@ export const buttonNames = {
   backgroundVideo: 'background-video',
   relatedPost: 'related-post',
   sideIndex: 'side-index',
+  video: 'video',
 }
 
 const disabledButtonsOnBasicEditor = [
@@ -91,6 +93,7 @@ const disabledButtonsOnBasicEditor = [
   buttonNames.backgroundVideo,
   buttonNames.relatedPost,
   buttonNames.sideIndex,
+  buttonNames.video,
 ]
 
 type ButtonStyleProps = {
@@ -259,6 +262,7 @@ const CustomAlignCenterButton = createButtonWithoutProps(
   true
 )
 const CustomAlignLeftButton = createButtonWithoutProps(AlignLeftButton, true)
+const CustomVideoButton = createButtonWithoutProps(VideoButton)
 
 const DraftEditorWrapper = styled.div`
   /* Rich-editor default setting (.RichEditor-root)*/
@@ -780,6 +784,15 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
                   ImageSelector={ImageSelector}
+                />
+              </ButtonGroup>
+              <ButtonGroup>
+                <CustomVideoButton
+                  isDisabled={disabledButtons.includes(buttonNames.video)}
+                  editorState={editorState}
+                  onChange={this.onChange}
+                  readOnly={this.state.readOnly}
+                  VideoSelector={VideoSelector}
                 />
               </ButtonGroup>
               <ButtonGroup>

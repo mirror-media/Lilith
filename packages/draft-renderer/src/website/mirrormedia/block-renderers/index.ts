@@ -10,6 +10,7 @@ import { RelatedPostBlock } from './related-post-block'
 import { SideIndexBlock } from './side-index-block'
 import { SlideshowBlock, SlideshowBlockV2 } from './slideshow-block'
 import { TableBlock } from './table-block'
+import { VideoBlock } from './video-block'
 
 export const blockRenderers = {
   BGImageBlock,
@@ -25,4 +26,5 @@ export const blockRenderers = {
   SlideshowBlock,
   SlideshowBlockV2,
   TableBlock,
+  VideoBlock,
 }

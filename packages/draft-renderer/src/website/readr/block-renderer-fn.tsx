@@ -13,6 +13,7 @@ const {
   BGVideoBlock,
   RelatedPostBlock,
   SideIndexBlock,
+  VideoBlock,
 } = blockRenderers
 
 const AtomicBlock = (props: any) => {
@@ -61,6 +62,9 @@ const AtomicBlock = (props: any) => {
     }
     case 'SIDEINDEX': {
       return SideIndexBlock(props)
+    }
+    case 'VIDEO': {
+      return VideoBlock(entity)
     }
   }
   return null
