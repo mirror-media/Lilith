@@ -2528,6 +2528,11 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
+"@readr-media/react-image@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-image/-/react-image-1.5.1.tgz#d04b809416be6a1432a0a3154f2641292d7b6b8d"
+  integrity sha512-BExGQWO158vtfox2mkwjT8khZp00KOwAObnZsQVzO4JNO4RlTog/5u7ccw7WuBd1OR07rlh/jKm4ts+qt78saw==
+
 "@readr-media/react-karaoke@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@readr-media/react-karaoke/-/react-karaoke-2.0.0.tgz#1b05e302b52ab3e4e29612fb4028ce277890d44b"
