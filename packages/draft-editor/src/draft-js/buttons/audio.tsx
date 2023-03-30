@@ -1,43 +1,45 @@
 import React, { useState } from 'react'
 import { AtomicBlockUtils, EditorState } from 'draft-js'
 
-import { ImageSelector as DefaultImageSelector } from './selector/image-selector'
+import {
+  AudioSelector as DefaultAudioSelector,
+  AudioEntityWithMeta,
+} from './selector/audio-selector'
 
-export function ImageButton(props: {
+export function AudioButton(props: {
   editorState: EditorState
   onChange: (param: EditorState) => void
   className?: string
-  ImageSelector: typeof DefaultImageSelector
+  AudioSelector: typeof DefaultAudioSelector
 }) {
   const {
     editorState,
     onChange,
     className,
-    ImageSelector = DefaultImageSelector,
+    AudioSelector = DefaultAudioSelector,
   } = props
 
-  const [toShowImageSelector, setToShowImageSelector] = useState(false)
+  const [toShowAudioSelector, setToShowAudioSelector] = useState(false)
 
-  const promptForImageSelector = () => {
-    setToShowImageSelector(true)
+  const promptForAudioSelector = () => {
+    setToShowAudioSelector(true)
   }
 
-  const onImageSelectorChange = (selectedImagesWithMeta, align) => {
-    const selected = selectedImagesWithMeta?.[0]
-    if (!selected) {
-      setToShowImageSelector(false)
+  const onAudioSelectorChange = (
+    selectedAudiosWithMeta: AudioEntityWithMeta[]
+  ) => {
+    const audio = selectedAudiosWithMeta?.[0]?.audio
+    if (!audio) {
+      setToShowAudioSelector(false)
       return
     }
 
     const contentState = editorState.getCurrentContent()
     const contentStateWithEntity = contentState.createEntity(
-      'image',
+      'AUDIO',
       'IMMUTABLE',
       {
-        ...selected?.image,
-        desc: selected?.desc,
-        url: selected?.url,
-        alignment: align,
+        audio,
       }
     )
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey()
@@ -48,23 +50,18 @@ export function ImageButton(props: {
     // The third parameter here is a space string, not an empty string
     // If you set an empty string, you will get an error: Unknown DraftEntity key: null
     onChange(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '))
-    setToShowImageSelector(false)
+    setToShowAudioSelector(false)
   }
 
   return (
     <React.Fragment>
-      {toShowImageSelector && (
-        <ImageSelector
-          onChange={onImageSelectorChange}
-          enableCaption={true}
-          enableUrl={true}
-          enableAlignment={true}
-        />
+      {toShowAudioSelector && (
+        <AudioSelector onChange={onAudioSelectorChange} />
       )}
 
-      <div className={className} onClick={promptForImageSelector}>
-        <i className="far fa-image"></i>
-        <span> Image</span>
+      <div className={className} onClick={promptForAudioSelector}>
+        <i className="fa fa-file-audio"></i>
+        <span> Audio</span>
       </div>
     </React.Fragment>
   )
