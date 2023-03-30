@@ -2137,6 +2137,14 @@
     styled-components "5.3.5"
     zlib "^1.0.5"
 
+"@mirrormedia/lilith-draft-editor@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-editor/-/lilith-draft-editor-1.0.1.tgz#995ece11c47a98be721656ee9bdc6e481d94b975"
+  integrity sha512-yB/qx8dLYAWSFmyp4Dj3toe2+WSrlfPRnrn8VoSBY8O3hjqxQPQlgvT3zZp2MIjhVMk2D/OrLy6yS7gwuDk/Vg==
+  dependencies:
+    "@mirrormedia/lilith-draft-renderer" "1.0.0"
+    draft-js "^0.11.7"
+
 "@mirrormedia/lilith-draft-renderer@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.0.0.tgz#eb29a1c2cc3603e3f670e30c697101678475143a"
