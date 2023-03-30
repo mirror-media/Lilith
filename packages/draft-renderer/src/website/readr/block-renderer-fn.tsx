@@ -14,6 +14,7 @@ const {
   RelatedPostBlock,
   SideIndexBlock,
   VideoBlock,
+  AudioBlock,
 } = blockRenderers
 
 const AtomicBlock = (props: any) => {
@@ -65,6 +66,9 @@ const AtomicBlock = (props: any) => {
     }
     case 'VIDEO': {
       return VideoBlock(entity)
+    }
+    case 'AUDIO': {
+      return AudioBlock(entity)
     }
   }
   return null
