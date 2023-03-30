@@ -1448,7 +1448,6 @@ type Post {
 
 input PostWhereUniqueInput {
   id: ID
-  slug: String
 }
 
 input PostWhereInput {
@@ -1456,7 +1455,7 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
-  slug: StringNullableFilter
+  slug: StringFilter
   sortOrder: IntNullableFilter
   name: StringFilter
   subtitle: StringNullableFilter
