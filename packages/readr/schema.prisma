@@ -319,7 +319,7 @@ model User {
 
 model Post {
   id                           Int               @id @default(autoincrement())
-  slug                         String?           @unique
+  slug                         String            @default("")
   sortOrder                    Int?
   name                         String            @default("")
   subtitle                     String?

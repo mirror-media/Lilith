@@ -16,12 +16,7 @@ const { allowRoles, admin, moderator, editor } = utils.accessControl
 const listConfigurations = list({
   fields: {
     slug: text({
-      validation: { isRequired: true },
       label: '網址名稱（英文）',
-      isIndexed: 'unique',
-      db: {
-        isNullable: true,
-      },
     }),
     sortOrder: integer({
       label: '排列順序',
@@ -158,7 +153,7 @@ const listConfigurations = list({
     }),
     summary: customFields.richTextEditor({
       label: '重點摘要',
-      disabledButtons: [],
+      disabledButtons: ['header-three', 'header-four'],
       website: 'readr',
     }),
     // brief: customFields.richTextEditor({
@@ -168,17 +163,17 @@ const listConfigurations = list({
     // }),
     content: customFields.richTextEditor({
       label: '內文',
-      disabledButtons: [],
+      disabledButtons: ['header-three', 'header-four'],
       website: 'readr',
     }),
     actionList: customFields.richTextEditor({
       label: '延伸議題',
-      disabledButtons: [],
+      disabledButtons: ['header-three', 'header-four'],
       website: 'readr',
     }),
     citation: customFields.richTextEditor({
       label: '引用數據',
-      disabledButtons: [],
+      disabledButtons: ['header-three', 'header-four'],
       website: 'readr',
     }),
     readringTime: integer({
