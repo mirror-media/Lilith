@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { gql, useLazyQuery } from '@keystone-6/core/admin-ui/apollo'
-import { ImageEntity } from './image-selector'
 import { SearchBox, SearchBoxOnChangeFn } from './search-box'
 import { Pagination } from './pagination'
 
@@ -72,7 +71,6 @@ export type AudioEntity = {
   file?: {
     url: string
   }
-  heroImage?: ImageEntity
 }
 
 export type AudioEntityWithMeta = {
@@ -166,18 +164,6 @@ const AudiosQuery = gql`
       url
       file {
         url
-      }
-      heroImage {
-        imageFile {
-          url
-        }
-        resized {
-          w480
-          w800
-          w1200
-          w1600
-          w2400
-        }
       }
     }
   }

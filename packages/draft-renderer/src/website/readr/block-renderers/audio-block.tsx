@@ -8,22 +8,6 @@ const AudioWrapper = styled.div`
 `
 const Audio = styled.audio``
 
-type ImageEntity = {
-  id: string
-  name?: string
-  imageFile: {
-    url: string
-  }
-  resized: {
-    original: string
-    w480: string
-    w800: string
-    w1200: string
-    w1600: string
-    w2400: string
-  }
-}
-
 type AudioEntity = {
   id: string
   name?: string
@@ -31,7 +15,6 @@ type AudioEntity = {
   file?: {
     url: string
   }
-  heroImage?: ImageEntity
 }
 
 export function AudioBlock(entity: DraftEntityInstance) {
