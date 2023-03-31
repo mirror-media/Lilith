@@ -108,7 +108,6 @@ function AudioGrid(props: {
   onSelect: AudioEntityOnSelectFn
 }) {
   const { audio, onSelect, isSelected } = props
-  console.log('audio', audio)
   return (
     <AudioGridWrapper key={audio?.id} onClick={() => onSelect(audio)}>
       <AudioSelected>
