@@ -68,7 +68,7 @@ const AtomicBlock = (props) => {
     case 'VIDEO': {
       return VideoBlock(entity)
     }
-    case 'AudioBlock': {
+    case 'AUDIO': {
       return AudioBlock(entity)
     }
   }
