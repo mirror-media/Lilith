@@ -20,7 +20,7 @@
     "@keystone-6/auth": "1.0.0",
     "@keystone-6/core": "1.1.1",
     "@keystone-6/fields-document": "1.0.1",
-    "@mirrormedia/lilith-core": "1.2.6",
+    "@mirrormedia/lilith-core": "1.2.7-alpha.0",
     "@readr-media/react-embed-code-generator": "2.2.0",
     "cheerio": "^1.0.0-rc.12",
     "default-import": "^1.1.5",

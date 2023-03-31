@@ -31,6 +31,8 @@ import {
 } from '../../draft-js/buttons/text-align'
 import { FontColorButton } from '../../draft-js/buttons/font-color'
 import { BackgroundColorButton } from '../../draft-js/buttons/background-color'
+import { VideoButton } from '../../draft-js/buttons/video'
+import { AudioButton } from '../../draft-js/buttons/audio'
 
 import {
   CUSTOM_STYLE_PREFIX_FONT_COLOR,
@@ -40,6 +42,7 @@ import { getSelectionBlockData } from '../../draft-js/buttons/text-align'
 import { ImageSelector } from './selector/image-selector'
 import { VideoSelector } from './selector/video-selector'
 import { PostSelector } from './selector/post-selector'
+import { AudioSelector } from './selector/audio-selector'
 
 export const buttonNames = {
   // inline styles
@@ -74,6 +77,8 @@ export const buttonNames = {
   backgroundVideo: 'background-video',
   relatedPost: 'related-post',
   sideIndex: 'side-index',
+  video: 'video',
+  audio: 'audio',
 }
 
 const disabledButtonsOnBasicEditor = [
@@ -91,6 +96,8 @@ const disabledButtonsOnBasicEditor = [
   buttonNames.backgroundVideo,
   buttonNames.relatedPost,
   buttonNames.sideIndex,
+  buttonNames.video,
+  buttonNames.audio,
 ]
 
 type ButtonStyleProps = {
@@ -259,6 +266,8 @@ const CustomAlignCenterButton = createButtonWithoutProps(
   true
 )
 const CustomAlignLeftButton = createButtonWithoutProps(AlignLeftButton, true)
+const CustomVideoButton = createButtonWithoutProps(VideoButton)
+const CustomAudioButton = createButtonWithoutProps(AudioButton)
 
 const DraftEditorWrapper = styled.div`
   /* Rich-editor default setting (.RichEditor-root)*/
@@ -780,6 +789,24 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                   onChange={this.onChange}
                   readOnly={this.state.readOnly}
                   ImageSelector={ImageSelector}
+                />
+              </ButtonGroup>
+              <ButtonGroup>
+                <CustomVideoButton
+                  isDisabled={disabledButtons.includes(buttonNames.video)}
+                  editorState={editorState}
+                  onChange={this.onChange}
+                  readOnly={this.state.readOnly}
+                  VideoSelector={VideoSelector}
+                />
+              </ButtonGroup>
+              <ButtonGroup>
+                <CustomAudioButton
+                  isDisabled={disabledButtons.includes(buttonNames.audio)}
+                  editorState={editorState}
+                  onChange={this.onChange}
+                  readOnly={this.state.readOnly}
+                  AudioSelector={AudioSelector}
                 />
               </ButtonGroup>
               <ButtonGroup>
