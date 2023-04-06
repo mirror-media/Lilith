@@ -108,7 +108,7 @@ const DraftEditorWrapper = styled.div`
       position: absolute;
       color: #054f77;
       left: -15px;
-      width: 15px;
+      width: auto;
     }
   }
   /* code-block */
