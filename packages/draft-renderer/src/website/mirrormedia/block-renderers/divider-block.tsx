@@ -2,9 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 
 const Divider = styled.hr`
-  /* box-sizing: border-box; */
   border-top: 1px solid #9d9d9d;
-  /* border-style: inset; */
+  margin-top: 32px;
+  margin-bottom: 32px;
 `
 
 export const DividerBlock = () => {
