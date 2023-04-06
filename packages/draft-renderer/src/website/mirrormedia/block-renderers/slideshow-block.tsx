@@ -30,12 +30,16 @@ const Figure = styled.figure`
   margin: 0 10px;
 `
 
-const SlideshowWrapper = styled.figure`
+const Wrapper = styled.figure`
+  margin-top: 20px;
+  margin-bottom: 20px;
+`
+const Slideshow = styled.figure`
   overflow: hidden;
   position: relative;
 `
 
-const Slide = styled.div`
+const SlideImages = styled.div`
   display: flex;
   transition: transform 0.35s ease;
 
@@ -143,17 +147,17 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
   }
 
   return (
-    <>
-      <SlideshowWrapper>
+    <Wrapper>
+      <Slideshow>
         <ClickButtonPrev onClick={handleClickPrev}></ClickButtonPrev>
         <ClickButtonNext onClick={handleClickNext}></ClickButtonNext>
-        <Slide move={move}>
+        <SlideImages move={move}>
           {displayedImage.map((item, index) => (
             <CustomImage images={item} key={index} objectFit={'contain'} />
           ))}
-        </Slide>
-      </SlideshowWrapper>
+        </SlideImages>
+      </Slideshow>
       <Desc>{descOfCurrentImage}</Desc>
-    </>
+    </Wrapper>
   )
 }

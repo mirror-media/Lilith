@@ -8,6 +8,8 @@ import CustomImage from '@readr-media/react-image'
 const Figure = styled.figure`
   margin-block: unset;
   margin-inline: unset;
+  margin-top: 20px;
+  margin-bottom: 20px;
 `
 const Figcaption = styled.figcaption`
   font-size: 14px;

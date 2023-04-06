@@ -16,13 +16,15 @@ const AnnotatedText = styled.span`
 const annotationBodyLineHeight = 1.8
 const AnnotationBody = styled.div`
   background-color: #e3e3e3;
+  margin-top: 20px;
+  margin-bottom: 20px;
   padding: 24px 32px;
   color: #054f77;
   font-size: 16px;
   line-height: ${annotationBodyLineHeight};
 
   > * + * {
-    margin-top: 18px;
+    margin-top: 20px;
   }
   a {
     text-decoration: underline;
