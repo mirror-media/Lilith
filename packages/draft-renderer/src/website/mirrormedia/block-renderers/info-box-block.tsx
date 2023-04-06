@@ -5,6 +5,8 @@ import styled from 'styled-components'
 const InfoBoxRenderWrapper = styled.div`
   background-color: #054f77;
   padding: 32px 30px 22px 30px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   position: relative;
   color: #c4c4c4;
   > h2 {
@@ -17,7 +19,7 @@ const InfoBoxRenderWrapper = styled.div`
 const infoBoxLineHeight = 1.8
 const InfoBoxBody = styled.div`
   > * + * {
-    margin-top: 18px;
+    margin-top: 20px;
   }
   font-size: 16px;
   line-height: ${infoBoxLineHeight};
