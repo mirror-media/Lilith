@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { ThemeProvider } from 'styled-components'
+import styled, { css, ThemeProvider } from 'styled-components'
 
 import { Editor, EditorState, convertFromRaw } from 'draft-js'
 import blockquoteDecoration from './assets/blockquote-decoration.png'
@@ -12,6 +12,24 @@ import {
 import theme from './theme'
 
 const draftEditorLineHeight = 2
+/**
+ * Due to the data structure from draftjs, each default block contain one HTML element which class name is `public-DraftStyleDefault-block`.
+ * So we use this behavior to create spacing between blocks by assign margin-top of which.
+ * However, some block should not set spacing (e.g. block in <li> and <blockquote>), so we need to unset its margin-top.
+ */
+const defaultSpacingBetweenContent = css`
+  .public-DraftStyleDefault-block {
+    margin-top: 1.5em;
+  }
+`
+const narrowSpacingBetweenContent = css`
+  margin-top: 20px;
+`
+const noSpacingBetweenContent = css`
+  .public-DraftStyleDefault-block {
+    margin-top: unset;
+  }
+`
 const DraftEditorWrapper = styled.div`
   /* Rich-editor default setting (.RichEditor-root)*/
 
@@ -31,6 +49,9 @@ const DraftEditorWrapper = styled.div`
   padding: 0px;
   font-size: 18px;
   line-height: ${draftEditorLineHeight};
+  *:not(:first-child) {
+    ${defaultSpacingBetweenContent}
+  }
 
   /* Draft built-in buttons' style */
   .public-DraftStyleDefault-header-two {
@@ -73,7 +94,7 @@ const DraftEditorWrapper = styled.div`
       background-repeat: no-repeat;
       background-position: center center;
     }
-
+    ${noSpacingBetweenContent}
     ${({ theme }) => theme.breakpoint.md} {
       padding-top: 26px;
     }
@@ -81,6 +102,8 @@ const DraftEditorWrapper = styled.div`
   .public-DraftStyleDefault-ul {
     margin-left: 18px;
     list-style: none;
+    ${narrowSpacingBetweenContent}
+    ${noSpacingBetweenContent}
   }
   .public-DraftStyleDefault-unorderedListItem {
     position: relative;
@@ -98,6 +121,8 @@ const DraftEditorWrapper = styled.div`
   }
   .public-DraftStyleDefault-ol {
     margin-left: 18px;
+    ${narrowSpacingBetweenContent}
+    ${noSpacingBetweenContent}
   }
   .public-DraftStyleDefault-orderedListItem {
     position: relative;
