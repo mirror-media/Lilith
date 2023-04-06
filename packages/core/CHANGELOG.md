@@ -1,6 +1,15 @@
 # @mirrormedia/lilith-core Changelog
 
-## 2022-02-22, Version 1.2.6
+## 2023-03-06, Version 1.2.7
+
+### Notable Changes
+
+### Commits
+
+* \[[`e56f10ca95`](https://github.com/mirror-media/lilith-core/commit/e56f10ca95)] - chore(core): upgrade Dep version `lilith-draft-editor`, bump version of `lilith-core` (DianYangFu)
+* \[[`997e6f4c7b`](https://github.com/mirror-media/lilith-core/commit/997e6f4c7b)] - fix(draft-editor): solve error by adding `themeProvider` of `styled-component` (DianYangFu)
+
+## 2023-02-22, Version 1.2.6
 
 ### Notable Changes
 
@@ -9,7 +18,7 @@
 - \[[`72ee64b41f`](https://github.com/mirror-media/lilith/commit/72ee64b41f)] - chore(lilith-core): bump version to 1.2.6 (caesar)
 - \[[`21697e0342`](https://github.com/mirror-media/lilith/commit/21697e0342)] - refactor(lilith-core): add error log when website is absent (caesar)
 
-## 2022-02-21, Version 1.2.5
+## 2023-02-21, Version 1.2.5
 
 ### Notable Changes
 
@@ -20,7 +29,7 @@
 - \[[`9930891760`](https://github.com/mirror-media/lilith/commit/9930891760)] - chore: bump versions (caesar)
 - \[[`43e7c825bf`](https://github.com/mirror-media/lilith/commit/43e7c825bf)] - refactor(draft-editor): refine code to minimize bundle size and import specific bundle (caesar)
 
-## 2022-02-16, Version 1.2.3
+## 2023-02-16, Version 1.2.3
 
 ### Notable Changes
 
@@ -31,7 +40,7 @@
 - \[[`0f09040349`](https://github.com/mirror-media/lilith/commit/0f09040349)] - chore: bump versions (caesar)
 - \[[`5585f5da5b`](https://github.com/mirror-media/lilith/commit/5585f5da5b)] - refactor(draft-editor): remove and import renderer block from draft-editor and refine code (caesar)
 
-## 2022-02-13, Version 1.2.2
+## 2023-02-13, Version 1.2.2
 
 ### Notable Changes
 
@@ -42,7 +51,7 @@
 - \[[`cee4b4a327`](https://github.com/mirror-media/lilith/commit/cee4b4a327)] - refactor(lilith-core): bump version to 1.2.2 (caesar)
 - \[[`04545b4318`](https://github.com/mirror-media/lilith/commit/04545b4318)] - refactor(lilith-core): remove draft-js files (caesar)
 
-## 2022-02-06, Version 1.2.1
+## 2023-02-06, Version 1.2.1
 
 ### Notable Changes
 
