@@ -2152,6 +2152,14 @@
   dependencies:
     draft-js "^0.11.7"
 
+"@mirrormedia/lilith-draft-renderer@1.1.0-alpha.7":
+  version "1.1.0-alpha.7"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.1.0-alpha.7.tgz#2ce05bcce96924b6c85d0a220fa1b3daedb97922"
+  integrity sha512-XChQI/ORMIlE8oEZThEKx4iF705/lfrI9LfiuU62iPzFRdsXqq+dei+C9TVgEuZnYpUm8tsvdrGDnLW+UbDvjw==
+  dependencies:
+    "@readr-media/react-image" "^1.5.1"
+    draft-js "^0.11.7"
+
 "@next/env@12.2.5":
   version "12.2.5"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-12.2.5.tgz#d908c57b35262b94db3e431e869b72ac3e1ad3e3"
