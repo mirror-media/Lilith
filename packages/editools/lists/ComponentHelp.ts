@@ -17,6 +17,7 @@ const listConfigurations = list({
     }),
     desc: text({
       label: '套件說明',
+      ui: { displayMode: 'textarea' }
     }),
   },
   access: {
