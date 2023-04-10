@@ -718,6 +718,7 @@ model ComponentHelp {
   id                    Int         @id @default(autoincrement())
   name                  String      @default("")
   desc                  String      @default("")
+  relatedTopics         String      @default("")
   createdAt             DateTime?
   updatedAt             DateTime?
   createdBy             User?       @relation("ComponentHelp_createdBy", fields: [createdById], references: [id])
