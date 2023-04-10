@@ -70,7 +70,10 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/embed-code'),
+        views: require.resolve('./views/link-button'),
+        createView: {
+          fieldMode: 'hidden',
+        },
       },
     }),
     embedCode: virtual({

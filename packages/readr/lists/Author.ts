@@ -71,6 +71,15 @@ const listConfigurations = list({
     isMember: checkbox({
       label: '團隊成員',
     }),
+    special_number: text({
+      label: '數字',
+    }),
+    number_desc: text({
+      label: '數字說明（中文）',
+    }),
+    number_desc_en: text({
+      label: '數字說明（英文）',
+    }),
     facebook: text({
       isIndexed: undefined,
     }),

@@ -391,6 +391,9 @@ type Author {
   homepage: String
   sort: Int
   isMember: Boolean
+  special_number: String
+  number_desc: String
+  number_desc_en: String
   facebook: String
   twitter: String
   instagram: String
@@ -456,6 +459,9 @@ input AuthorWhereInput {
   homepage: StringFilter
   sort: IntNullableFilter
   isMember: BooleanFilter
+  special_number: StringFilter
+  number_desc: StringFilter
+  number_desc_en: StringFilter
   facebook: StringFilter
   twitter: StringFilter
   instagram: StringFilter
@@ -517,6 +523,9 @@ input AuthorOrderByInput {
   homepage: OrderDirection
   sort: OrderDirection
   isMember: OrderDirection
+  special_number: OrderDirection
+  number_desc: OrderDirection
+  number_desc_en: OrderDirection
   facebook: OrderDirection
   twitter: OrderDirection
   instagram: OrderDirection
@@ -536,6 +545,9 @@ input AuthorUpdateInput {
   homepage: String
   sort: Int
   isMember: Boolean
+  special_number: String
+  number_desc: String
+  number_desc_en: String
   facebook: String
   twitter: String
   instagram: String
@@ -602,6 +614,9 @@ input AuthorCreateInput {
   homepage: String
   sort: Int
   isMember: Boolean
+  special_number: String
+  number_desc: String
+  number_desc_en: String
   facebook: String
   twitter: String
   instagram: String

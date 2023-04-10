@@ -23,6 +23,8 @@ import QAItem from './QAItem'
 import FeedbackCounter from './FeedbackCounter'
 import VideoPicker from './VideoPicker'
 import ThreeStoryPoints from './ThreeStoryPoints'
+import DualSlides from './DualSlides'
+import ComponentHelp from './ComponentHelp'
 
 export const listDefinition = {
   User,
@@ -50,4 +52,6 @@ export const listDefinition = {
   QAItem,
   FeedbackCounter,
   ThreeStoryPoint: ThreeStoryPoints,
+  DualSlide: DualSlides,
+  ComponentHelp,
 }

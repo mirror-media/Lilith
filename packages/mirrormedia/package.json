@@ -19,7 +19,7 @@
     "@keystone-6/auth": "1.0.0",
     "@keystone-6/core": "1.1.1",
     "@keystone-6/fields-document": "1.0.1",
-    "@mirrormedia/lilith-core": "1.2.6",
+    "@mirrormedia/lilith-core": "1.2.7-alpha.3",
     "@twreporter/errors": "^1.1.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
