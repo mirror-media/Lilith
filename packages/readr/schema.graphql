@@ -1381,6 +1381,7 @@ type Post {
   dataAnalystsCount(where: AuthorWhereInput! = {}): Int
   manualOrderOfDataAnalysts: JSON
   otherByline: String
+  leadingEmbeddedCode: String
   heroVideo: Video
   heroImage: Photo
   heroCaption: String
@@ -1469,6 +1470,7 @@ input PostWhereInput {
   engineers: AuthorManyRelationFilter
   dataAnalysts: AuthorManyRelationFilter
   otherByline: StringNullableFilter
+  leadingEmbeddedCode: StringFilter
   heroVideo: VideoWhereInput
   heroImage: PhotoWhereInput
   heroCaption: StringNullableFilter
@@ -1528,6 +1530,7 @@ input PostOrderByInput {
   state: OrderDirection
   publishTime: OrderDirection
   otherByline: OrderDirection
+  leadingEmbeddedCode: OrderDirection
   heroCaption: OrderDirection
   heroImageSize: OrderDirection
   style: OrderDirection
@@ -1563,6 +1566,7 @@ input PostUpdateInput {
   dataAnalysts: AuthorRelateToManyForUpdateInput
   manualOrderOfDataAnalysts: JSON
   otherByline: String
+  leadingEmbeddedCode: String
   heroVideo: VideoRelateToOneForUpdateInput
   heroImage: PhotoRelateToOneForUpdateInput
   heroCaption: String
@@ -1664,6 +1668,7 @@ input PostCreateInput {
   dataAnalysts: AuthorRelateToManyForCreateInput
   manualOrderOfDataAnalysts: JSON
   otherByline: String
+  leadingEmbeddedCode: String
   heroVideo: VideoRelateToOneForCreateInput
   heroImage: PhotoRelateToOneForCreateInput
   heroCaption: String
