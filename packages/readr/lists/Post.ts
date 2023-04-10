@@ -108,6 +108,10 @@ const listConfigurations = list({
         isNullable: true,
       },
     }),
+    leadingEmbeddedCode: text({
+      label: 'Leading embedded code',
+      ui: { displayMode: 'textarea' }
+    }),
     heroVideo: relationship({
       label: 'Leading Video',
       ref: 'Video',

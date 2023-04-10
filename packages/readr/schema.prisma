@@ -342,6 +342,7 @@ model Post {
   dataAnalysts                 Author[]          @relation("Post_dataAnalysts")
   manualOrderOfDataAnalysts    Json?
   otherByline                  String?
+  leadingEmbeddedCode          String            @default("")
   heroVideo                    Video?            @relation("Post_heroVideo", fields: [heroVideoId], references: [id])
   heroVideoId                  Int?              @map("heroVideo")
   heroImage                    Photo?            @relation("Post_heroImage", fields: [heroImageId], references: [id])
