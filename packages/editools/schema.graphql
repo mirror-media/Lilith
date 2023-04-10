@@ -2939,6 +2939,7 @@ type ComponentHelp {
   id: ID!
   name: String
   desc: String
+  relatedTopics: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2956,6 +2957,7 @@ input ComponentHelpWhereInput {
   id: IDFilter
   name: StringFilter
   desc: StringFilter
+  relatedTopics: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2966,6 +2968,7 @@ input ComponentHelpOrderByInput {
   id: OrderDirection
   name: OrderDirection
   desc: OrderDirection
+  relatedTopics: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2973,6 +2976,7 @@ input ComponentHelpOrderByInput {
 input ComponentHelpUpdateInput {
   name: String
   desc: String
+  relatedTopics: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2987,6 +2991,7 @@ input ComponentHelpUpdateArgs {
 input ComponentHelpCreateInput {
   name: String
   desc: String
+  relatedTopics: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
