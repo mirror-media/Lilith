@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
 import CustomImage from '@readr-media/react-image'
@@ -30,25 +30,38 @@ const Figure = styled.figure`
   margin: 0 10px;
 `
 
+const sliderWidth = '100%'
+
+const slidesOffset = 2
+
 const Wrapper = styled.figure`
   margin-top: 20px;
   margin-bottom: 20px;
 `
-const Slideshow = styled.figure`
+
+const SlideshowV2 = styled.figure`
+  touch-action: none;
   overflow: hidden;
   position: relative;
+  width: ${sliderWidth};
+  z-index: 1;
 `
 
-const SlideImages = styled.div`
+const SlidesBox = styled.div`
   display: flex;
-  transition: transform 0.35s ease;
+  position: relative;
+  top: 0;
+  left: ${`calc(${sliderWidth} * ${slidesOffset} * -1)`};
+  width: ${sliderWidth};
+  &.shifting {
+    transition: left 0.3s ease-out;
+  }
 
-  ${({ move }) => move && `transform: translateX(${move * -100}%)`};
   .readr-media-react-image {
     object-position: center center;
     background-color: rgba(0, 0, 0, 0.1);
-    max-width: 100%;
-    min-width: 100%;
+    max-width: ${sliderWidth};
+    min-width: ${sliderWidth};
     max-height: 58.75vw;
     min-height: 58.75vw;
     ${({ theme }) => theme.breakpoint.md} {
@@ -109,6 +122,7 @@ const Desc = styled.figcaption`
   margin-top: 20px;
   min-height: 1.8rem;
 `
+
 // support old version of slideshow without delay propertiy
 export function SlideshowBlock(entity: DraftEntityInstance) {
   const images = entity.getData()
@@ -124,39 +138,177 @@ export function SlideshowBlock(entity: DraftEntityInstance) {
 }
 
 // 202206 latest version of slideshow, support delay property
+
+/**
+ * Supports sliding with mouse drag, and button clicks for navigation.
+ *
+ * Inspired by [Works of Claudia Conceicao](https://codepen.io/cconceicao/pen/PBQawy),
+ * [twreporter slideshow component](https://github.com/twreporter/twreporter-npm-packages/blob/master/packages/react-article-components/src/components/body/slideshow/index.js)
+ */
 export function SlideshowBlockV2(entity: DraftEntityInstance) {
-  const [move, setMove] = useState(0)
+  const slidesBoxRef = useRef<HTMLDivElement>(null)
+  const prevRef = useRef<HTMLButtonElement>(null)
+  const nextRef = useRef<HTMLButtonElement>(null)
+  const [indexOfCurrentImage, setIndexOfCurrentImage] = useState(0)
   const { images } = entity.getData()
-  const descOfCurrentImage = images?.[move]?.desc
-  const total = images.length
   const displayedImage = images.map((image) => image.resized)
+  const slidesLength = images.length
+  const descOfCurrentImage = images?.[indexOfCurrentImage]?.desc
 
-  const handleClickPrev = () => {
-    if (move === 0) {
-      setMove(total)
+  /**
+   * Clone first and last slide.
+   * Assuming there are three images [ A, B, C ] for slideshow.
+   * After cloning, there is seven images [ C, B, A, B, C, A, B ] for rendering.
+   * If users drag backward from first A (the third image in array), users can see C (the first image)and B (the second image).
+   * The cloned element is only used for the dragging effect. After switching the slide, cloned element will not be displayed,
+   * but recalculating the image that should be displayed in the original array by executing function `checkIndex`。
+   * The amount of item need to clone is decide by variable `slidesOffset`
+   */
+  const slidesWithClone = []?.concat(
+    displayedImage?.slice(-slidesOffset),
+    displayedImage,
+    displayedImage?.slice(0, slidesOffset)
+  )
+  const slidesJsx = slidesWithClone.map((item, index) => (
+    <CustomImage
+      images={item}
+      key={index}
+      objectFit={'contain'}
+      debugMode={true}
+    />
+  ))
+
+  useEffect(() => {
+    const slidesBox = slidesBoxRef?.current
+    const prev = prevRef?.current
+    const next = nextRef?.current
+    if (slidesBox && prev && next) {
+      /** Current index of the displayed slide */
+      let index = 0
+      /** Whether allow slide shifting animation*/
+      let allowShift = true
+      /** Threshold of slide change */
+      const threshold = 100
+
+      /** Position of pointer when start dragging */
+      let dragStartPositionX = 0
+      /** Position of slides when start dragging */
+      let slidesBoxInitialX = slidesBox.offsetLeft
+
+      /**
+       * Record the mouse position and slidesBox position when dragging starts,
+       * and register dragEnd and dragAction for pointer-related events
+       * @param {PointerEvent} e
+       */
+      const dragStart = (e) => {
+        e.preventDefault()
+        dragStartPositionX = e.pageX
+        slidesBoxInitialX = slidesBox.offsetLeft
+        document.addEventListener('pointerup', dragEnd)
+        document.addEventListener('pointercancel', dragEnd)
+        document.addEventListener('pointerleave', dragEnd)
+        document.addEventListener('pointermove', dragAction)
+      }
+
+      /**
+       * Calculate the distance of dragging, and adjust moving distance of the slidesBox accordingly to achieve dragging effect.
+       * It will recalculate the value of current position of slidesBox, starting position of dragging,
+       * distance of dragging when slidesBox is dragging.
+       */
+      const dragAction = (e: PointerEvent) => {
+        const dragDistance = e.pageX - dragStartPositionX
+        dragStartPositionX = e.pageX
+
+        slidesBox.style.left = `${slidesBox.offsetLeft + dragDistance}px`
+      }
+      /**
+       * Calculate the position of `slidesBox` to decider should show next of previous image.
+       */
+      const dragEnd = () => {
+        const sliderFinalX = slidesBox.offsetLeft
+        if (sliderFinalX - slidesBoxInitialX < -threshold) {
+          //move forward to show next image
+          shiftSlide('forward')
+        } else if (sliderFinalX - slidesBoxInitialX > threshold) {
+          //move backward to show previous image
+          shiftSlide('backward')
+        } else {
+          //do not move, show current image
+          shiftSlide('stay')
+        }
+        document.removeEventListener('pointerup', dragEnd)
+        document.removeEventListener('pointercancel', dragEnd)
+        document.removeEventListener('pointerleave', dragEnd)
+        document.removeEventListener('pointermove', dragAction)
+      }
+      /**
+       * Move the position of slidesBox by adjusting the index to achieve the effect of switching slides
+       */
+      const shiftSlide = (slideDirection: 'forward' | 'backward' | 'stay') => {
+        slidesBox.classList.add('shifting')
+        if (allowShift) {
+          if (slideDirection === 'forward') {
+            index += 1
+          } else if (slideDirection === 'backward') {
+            index -= 1
+          }
+          slidesBox.style.left = `calc((${index +
+            slidesOffset}) * ${sliderWidth} * -1)`
+          setIndexOfCurrentImage(index)
+        }
+
+        allowShift = false
+      }
+      /**
+       * Check and reset index if needed.
+       * It is needed to reset index if scrolling backward from the first image to the last image,
+       * or scrolling forward from the last image to the first image.
+       * After reset, we need to update inline style `left` of slides items according to updated index.
+       */
+      const checkIndex = () => {
+        slidesBox.classList.remove('shifting')
+        //from first image move backward to last image
+        if (index === -1) {
+          index = slidesLength - 1
+        }
+        //from last image move forward to last image
+        else if (index === slidesLength) {
+          index = 0
+        }
+        slidesBox.style.left = `calc((${index +
+          slidesOffset}) * ${sliderWidth} * -1)`
+
+        setIndexOfCurrentImage(index)
+        allowShift = true
+      }
+
+      // Drag events
+      slidesBox.addEventListener('pointerdown', dragStart)
+
+      // Click events
+      prev.addEventListener('pointerdown', () => shiftSlide('backward'))
+      next.addEventListener('pointerdown', () => shiftSlide('forward'))
+
+      // Transition events
+      slidesBox.addEventListener('transitionend', checkIndex)
+
+      return () => {
+        slidesBox.removeEventListener('pointerdown', dragStart)
+        prev.removeEventListener('pointerdown', () => shiftSlide('backward'))
+        next.removeEventListener('pointerdown', () => shiftSlide('forward'))
+        slidesBox.removeEventListener('transitionend', checkIndex)
+      }
     }
-    setMove((prevState) => prevState - 1)
-  }
-
-  const handleClickNext = () => {
-    if (move === total - 1) {
-      setMove(0)
-    } else {
-      setMove((prevState) => prevState + 1)
-    }
-  }
-
+  }, [])
   return (
     <Wrapper>
-      <Slideshow>
-        <ClickButtonPrev onClick={handleClickPrev}></ClickButtonPrev>
-        <ClickButtonNext onClick={handleClickNext}></ClickButtonNext>
-        <SlideImages move={move}>
-          {displayedImage.map((item, index) => (
-            <CustomImage images={item} key={index} objectFit={'contain'} />
-          ))}
-        </SlideImages>
-      </Slideshow>
+      <SlideshowV2>
+        <ClickButtonPrev ref={prevRef}></ClickButtonPrev>
+        <ClickButtonNext ref={nextRef}></ClickButtonNext>
+        <SlidesBox ref={slidesBoxRef} amount={slidesWithClone.length}>
+          {slidesJsx}
+        </SlidesBox>
+      </SlideshowV2>
       <Desc>{descOfCurrentImage}</Desc>
     </Wrapper>
   )
