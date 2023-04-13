@@ -160,11 +160,20 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
   /**
    * Clone first and last slide.
    * Assuming there are three images [ A, B, C ] for slideshow.
-   * After cloning, there is seven images [ C, B, A, B, C, A, B ] for rendering.
-   * If users drag backward from first A (the third image in array), users can see C (the first image)and B (the second image).
-   * The cloned element is only used for the dragging effect. After switching the slide, cloned element will not be displayed,
-   * but recalculating the image that should be displayed in the original array by executing function `checkIndex`。
-   * The amount of item need to clone is decide by variable `slidesOffset`
+   * After cloning, there is seven images [ B(clone), C(clone), A, B, C, A(clone), B(clone) ] for rendering.
+   * Users can see the previous or next image in the process of dragging.
+   * For example, if drag backward from first A (the third image in array), users can see C(clone) and B(clone) when dragging.
+   *
+   * The cloned element is only show in the process of dragging.
+   * For example, even if users drag backward from first A, and stop it at C(clone), the slide is showing C , not C(clone).
+   * We doing this effect by recalculating the position of slide box.
+   *
+   * Why did cloned element only show at the process of dragging, and not show when dragging is end? There is two purposes:
+   * 1. Show cloned element at the process of dragging, is let users can see last image even if drag backward from first image.
+   * 2. Now Show cloned element displayed after the dragging is because if we displayed the cloned element, next dragging process will not as expected.
+   *    For example, if we display C(clone), the next time users drag, there will be no element to drag when dragging backwards.
+   *
+   * The amount of item need to clone is decided by variable `slidesOffset`
    */
   const slidesWithClone = []?.concat(
     displayedImage?.slice(-slidesOffset),
