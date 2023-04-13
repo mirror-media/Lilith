@@ -175,7 +175,7 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
    *
    * The amount of item need to clone is decided by variable `slidesOffset`
    */
-  const slidesWithClone = []?.concat(
+  const slidesWithClone = [].concat(
     displayedImage?.slice(-slidesOffset),
     displayedImage,
     displayedImage?.slice(0, slidesOffset)
