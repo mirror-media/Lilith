@@ -181,12 +181,7 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
     displayedImage?.slice(0, slidesOffset)
   )
   const slidesJsx = slidesWithClone.map((item, index) => (
-    <CustomImage
-      images={item}
-      key={index}
-      objectFit={'contain'}
-      debugMode={true}
-    />
+    <CustomImage images={item} key={index} objectFit={'contain'} />
   ))
 
   /**
