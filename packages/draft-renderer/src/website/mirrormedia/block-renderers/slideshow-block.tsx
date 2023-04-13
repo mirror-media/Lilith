@@ -53,9 +53,9 @@ const SlidesBox = styled.div`
   top: 0;
   left: ${`calc(${sliderWidth} * ${slidesOffset} * -1)`};
   width: ${sliderWidth};
-  &.shifting {
-    transition: left 0.3s ease-out;
-  }
+
+  ${({ shouldShift }) =>
+    shouldShift ? 'transition: left 0.3s ease-out' : null};
 
   .readr-media-react-image {
     object-position: center center;
@@ -147,9 +147,11 @@ export function SlideshowBlock(entity: DraftEntityInstance) {
  */
 export function SlideshowBlockV2(entity: DraftEntityInstance) {
   const slidesBoxRef = useRef<HTMLDivElement>(null)
-  const prevRef = useRef<HTMLButtonElement>(null)
-  const nextRef = useRef<HTMLButtonElement>(null)
+  /** Current index of the displayed slide */
   const [indexOfCurrentImage, setIndexOfCurrentImage] = useState(0)
+  /** Whether allow slide shifting animation*/
+  const [shouldShift, setShouldShift] = useState(false)
+
   const { images } = entity.getData()
   const displayedImage = images.map((image) => image.resized)
   const slidesLength = images.length
@@ -178,15 +180,39 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
     />
   ))
 
+  /**
+   * Shifts the current slide image forward or backward based on the given direction.
+   * It will increase or decrease the value of `indexOfCurrentImage`, and affect the position of slideBox.
+   */
+  const shiftSlide = (slideDirection: 'forward' | 'backward') => {
+    if (shouldShift) {
+      return
+    }
+    setShouldShift(true)
+    if (slideDirection === 'forward') {
+      setIndexOfCurrentImage((prevState) => prevState + 1)
+    } else if (slideDirection === 'backward') {
+      setIndexOfCurrentImage((prevState) => prevState - 1)
+    }
+  }
+
+  /**
+   * Check `indexOfCurrentImage` after transition and reset if needed.
+   * It is needed to reset if scrolling backward from the first image to the last image,
+   * or scrolling forward from the last image to the first image.
+   */
+  const handleTransitionEnd = () => {
+    setShouldShift(false)
+    if (indexOfCurrentImage === -1) {
+      setIndexOfCurrentImage(slidesLength - 1)
+    } else if (indexOfCurrentImage === slidesLength) {
+      setIndexOfCurrentImage(0)
+    }
+  }
+
   useEffect(() => {
     const slidesBox = slidesBoxRef?.current
-    const prev = prevRef?.current
-    const next = nextRef?.current
-    if (slidesBox && prev && next) {
-      /** Current index of the displayed slide */
-      let index = 0
-      /** Whether allow slide shifting animation*/
-      let allowShift = true
+    if (slidesBox) {
       /** Threshold of slide change */
       const threshold = 100
 
@@ -198,9 +224,8 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
       /**
        * Record the mouse position and slidesBox position when dragging starts,
        * and register dragEnd and dragAction for pointer-related events
-       * @param {PointerEvent} e
        */
-      const dragStart = (e) => {
+      const dragStart = (e: PointerEvent) => {
         e.preventDefault()
         dragStartPositionX = e.pageX
         slidesBoxInitialX = slidesBox.offsetLeft
@@ -218,7 +243,6 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
       const dragAction = (e: PointerEvent) => {
         const dragDistance = e.pageX - dragStartPositionX
         dragStartPositionX = e.pageX
-
         slidesBox.style.left = `${slidesBox.offsetLeft + dragDistance}px`
       }
       /**
@@ -234,78 +258,47 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
           shiftSlide('backward')
         } else {
           //do not move, show current image
-          shiftSlide('stay')
         }
         document.removeEventListener('pointerup', dragEnd)
         document.removeEventListener('pointercancel', dragEnd)
         document.removeEventListener('pointerleave', dragEnd)
         document.removeEventListener('pointermove', dragAction)
       }
-      /**
-       * Move the position of slidesBox by adjusting the index to achieve the effect of switching slides
-       */
-      const shiftSlide = (slideDirection: 'forward' | 'backward' | 'stay') => {
-        slidesBox.classList.add('shifting')
-        if (allowShift) {
-          if (slideDirection === 'forward') {
-            index += 1
-          } else if (slideDirection === 'backward') {
-            index -= 1
-          }
-          slidesBox.style.left = `calc((${index +
-            slidesOffset}) * ${sliderWidth} * -1)`
-          setIndexOfCurrentImage(index)
-        }
 
-        allowShift = false
-      }
-      /**
-       * Check and reset index if needed.
-       * It is needed to reset index if scrolling backward from the first image to the last image,
-       * or scrolling forward from the last image to the first image.
-       * After reset, we need to update inline style `left` of slides items according to updated index.
-       */
-      const checkIndex = () => {
-        slidesBox.classList.remove('shifting')
-        //from first image move backward to last image
-        if (index === -1) {
-          index = slidesLength - 1
-        }
-        //from last image move forward to last image
-        else if (index === slidesLength) {
-          index = 0
-        }
-        slidesBox.style.left = `calc((${index +
-          slidesOffset}) * ${sliderWidth} * -1)`
-
-        setIndexOfCurrentImage(index)
-        allowShift = true
-      }
-
-      // Drag events
+      // Add listener of Drag events
       slidesBox.addEventListener('pointerdown', dragStart)
-
-      // Click events
-      prev.addEventListener('pointerdown', () => shiftSlide('backward'))
-      next.addEventListener('pointerdown', () => shiftSlide('forward'))
-
-      // Transition events
-      slidesBox.addEventListener('transitionend', checkIndex)
 
       return () => {
         slidesBox.removeEventListener('pointerdown', dragStart)
-        prev.removeEventListener('pointerdown', () => shiftSlide('backward'))
-        next.removeEventListener('pointerdown', () => shiftSlide('forward'))
-        slidesBox.removeEventListener('transitionend', checkIndex)
       }
     }
   }, [])
+
+  /**
+   * Move the position of slidesBox by `indexOfCurrentImage` to achieve the effect of switching slides
+   */
+  useEffect(() => {
+    const slidesBox = slidesBoxRef?.current
+    if (slidesBox) {
+      slidesBox.style.left = `calc((${indexOfCurrentImage +
+        slidesOffset}) * ${sliderWidth} * -1)`
+    }
+  })
   return (
     <Wrapper>
       <SlideshowV2>
-        <ClickButtonPrev ref={prevRef}></ClickButtonPrev>
-        <ClickButtonNext ref={nextRef}></ClickButtonNext>
-        <SlidesBox ref={slidesBoxRef} amount={slidesWithClone.length}>
+        <ClickButtonPrev
+          onClick={() => shiftSlide('backward')}
+        ></ClickButtonPrev>
+        <ClickButtonNext
+          onClick={() => shiftSlide('forward')}
+        ></ClickButtonNext>
+        <SlidesBox
+          ref={slidesBoxRef}
+          amount={slidesWithClone.length}
+          shouldShift={shouldShift}
+          onTransitionEnd={handleTransitionEnd}
+        >
           {slidesJsx}
         </SlidesBox>
       </SlideshowV2>
