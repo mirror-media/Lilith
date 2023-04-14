@@ -51,11 +51,11 @@ const SlidesBox = styled.div`
   display: flex;
   position: relative;
   top: 0;
-  left: ${({ left }) => left};
+  transform: ${({ translateX }) => `translateX(${translateX})`};
   width: ${sliderWidth};
 
   ${({ shouldShift }) =>
-    shouldShift ? 'transition: left 0.3s ease-out' : null};
+    shouldShift ? 'transition: transform 0.3s ease-out' : null};
 
   .readr-media-react-image {
     object-position: center center;
@@ -238,17 +238,24 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
 
       /** Position of pointer when start dragging */
       let dragStartPositionX = 0
+
+      const getCurrentTranslateX = () => {
+        const style = getComputedStyle(slidesBox)
+        const translateX = new DOMMatrixReadOnly(style.transform).m41
+        return translateX
+      }
       /** Position of slides when start dragging */
-      let slidesBoxInitialX = slidesBox.offsetLeft
+      let slidesBoxInitialX = getCurrentTranslateX()
 
       /**
        * Record the mouse position and slidesBox position when dragging starts,
        * and register dragEnd and dragAction for pointer-related events
        */
-      const dragStart = (e: PointerEvent) => {
+      const dragStart = (e) => {
         e.preventDefault()
         dragStartPositionX = e.pageX
-        slidesBoxInitialX = slidesBox.offsetLeft
+
+        slidesBoxInitialX = getCurrentTranslateX()
         document.addEventListener('pointerup', dragEnd)
         document.addEventListener('pointercancel', dragEnd)
         document.addEventListener('pointerleave', dragEnd)
@@ -260,18 +267,21 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
        * It will recalculate the value of current position of slidesBox, starting position of dragging,
        * distance of dragging when slidesBox is dragging.
        */
-      const dragAction = (e: PointerEvent) => {
+      const dragAction = (e) => {
         const dragDistance = e.pageX - dragStartPositionX
         dragStartPositionX = e.pageX
-        setSlideBoxPosition(`${slidesBox.offsetLeft + dragDistance}px`)
+
+        setSlideBoxPosition(`${getCurrentTranslateX() + dragDistance}px`)
       }
       /**
        * Calculate the position of `slidesBox` to decider should show next of previous image.
        */
       const dragEnd = () => {
-        const sliderFinalX = slidesBox.offsetLeft
+        const sliderFinalX = getCurrentTranslateX()
+
         if (sliderFinalX - slidesBoxInitialX < -threshold) {
           //move forward to show next image
+
           shiftSlide('forward')
         } else if (sliderFinalX - slidesBoxInitialX > threshold) {
           //move backward to show previous image
@@ -294,7 +304,6 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
       }
     }
   }, [shiftSlide])
-
   return (
     <Wrapper>
       <SlideshowV2>
@@ -305,7 +314,7 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
           onClick={() => shiftSlide('forward')}
         ></ClickButtonNext>
         <SlidesBox
-          left={slideBoxPosition}
+          translateX={slideBoxPosition}
           ref={slidesBoxRef}
           amount={slidesWithClone.length}
           shouldShift={shouldShift}
