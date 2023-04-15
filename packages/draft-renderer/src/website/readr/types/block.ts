@@ -1,4 +1,4 @@
-export type Image = {
+export type LightBoxImage = {
   id?: string
   desc?: string
   imageFile?: ImageFile
