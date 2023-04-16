@@ -1,10 +1,7 @@
-import { EntityInstance } from 'draft-js'
+import type { EntityInstance } from 'draft-js'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import ArrowDown from '../assets/arrow-down.svg'
-import ArrowTop from '../assets/arrow-top.svg'
-import Cross from '../assets/cross.svg'
 import { LightBoxImage } from '../types/block'
 
 type SlodeshowProps = {
@@ -151,24 +148,44 @@ const LightBoxWrapper = styled.div`
 
 const ButtonWrapper = styled.div`
   height: 480px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  width: 64px;
+  position: relative;
 
-  svg {
-    opacity: 0.66;
+  .close-cross {
+    position: absolute;
+    top: -64px;
+    width: 64px;
+    height: 64px;
     cursor: pointer;
-    transform: translateY(-64px);
-  }
 
-  &:hover svg {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+    }
+
+    &:before,
+    &:after {
+      position: absolute;
+      top: 26%;
+      left: calc(50% - 0.0625em);
+      width: 0.1em;
+      height: 50%;
+      border-radius: 0.125em;
+      transform: rotate(45deg);
+      background: currentcolor;
+      content: '';
+      opacity: 0.66;
+    }
+
+    &:after {
+      transform: rotate(-45deg);
+    }
   }
 `
 
 const ContentTable = styled.div<LightboxProps>`
   width: 64px;
+  position: relative;
 
   .sidebar-images {
     margin: 15px auto;
@@ -181,23 +198,22 @@ const ContentTable = styled.div<LightboxProps>`
     }
   }
 
-  svg {
-    opacity: 0.66;
-    cursor: pointer;
+  .arrow-up-block {
+    visibility: ${(props) => (props.focusNumber === 0 ? 'hidden' : 'visible')};
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
+    span {
+      display: ${(props) => (props.focusNumber === 0 ? 'none' : 'block')};
     }
   }
 
-  .arrow-top {
-    visibility: ${(props) => (props.focusNumber === 0 ? 'hidden' : 'visible')};
-  }
-
-  .arrow-down {
+  .arrow-down-block {
     visibility: ${(props) =>
       props.focusNumber === (props.length ?? 0) - 1 ? 'hidden' : 'visible'};
+
+    span {
+      display: ${(props) =>
+        props.focusNumber === (props.length ?? 0) - 1 ? 'none' : 'block'};
+    }
   }
 `
 
@@ -261,6 +277,64 @@ const ImageWrapper = styled.div`
   }
 `
 
+const ArrowBlock = styled.div`
+  display: block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+  margin: auto;
+  opacity: 0.66;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+  }
+
+  span {
+    top: 31px;
+    position: absolute;
+    width: 25px;
+    height: 0.25rem;
+    background-color: #efefef;
+    display: inline-block;
+    transition: all 0.2s ease;
+  }
+
+  .arrow-up:first-of-type {
+    left: 12px;
+    transform: rotate(-45deg);
+  }
+  .arrow-up:last-of-type {
+    right: 12px;
+    transform: rotate(45deg);
+  }
+
+  .arrow-down:first-of-type {
+    left: 12px;
+    transform: rotate(45deg);
+  }
+  .arrow-down:last-of-type {
+    right: 12px;
+    transform: rotate(-45deg);
+  }
+`
+
+// support old version of slideshow without delay propertiy
+export function SlideshowBlock(entity: EntityInstance) {
+  const images = entity.getData()
+  return (
+    <Figure>
+      <Image
+        /* @ts-ignore */
+        src={images?.[0]?.resized?.original}
+        /* @ts-ignore */
+        onError={(e) => (e.currentTarget.src = images?.[0]?.imageFile?.url)}
+      />
+    </Figure>
+  )
+}
+
 // 202206 latest version of slideshow, support delay property
 export function SlideshowBlockV2(entity: EntityInstance) {
   const { images } = entity.getData()
@@ -270,15 +344,16 @@ export function SlideshowBlockV2(entity: EntityInstance) {
 
   const imagesRefs = useRef(Array(images.length).fill(null))
 
-  // useEffect(() => {
-  //   if (imagesRefs) {
-  //     /* @ts-ignore */
-  //     imagesRefs.scrollIntoView({
-  //       behavior: 'smooth',
-  //       block: 'center',
-  //     })
-  //   }
-  // }, [focusNumber])
+  useEffect(() => {
+    const focusedImageRef = imagesRefs?.current[focusNumber]
+
+    if (focusedImageRef) {
+      focusedImageRef?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      })
+    }
+  }, [focusNumber])
 
   //lightbox sidebar-images
   const sideBarImages = images.map((image: LightBoxImage, index: number) => {
@@ -289,7 +364,7 @@ export function SlideshowBlockV2(entity: EntityInstance) {
         onClick={() => {
           setFocusNumber(index)
           /* @ts-ignore */
-          imagesRefs.current[index].scrollIntoView({
+          imagesRefs?.current[index]?.scrollIntoView({
             behavior: 'smooth',
             block: 'center',
           })
@@ -308,7 +383,7 @@ export function SlideshowBlockV2(entity: EntityInstance) {
     )
   })
 
-  // TODO: 使用 react-image ?
+  // TODO: react-image
   return (
     <>
       <SliderWrapper onClick={() => setExpand(!expand)} expand={expand}>
@@ -341,35 +416,41 @@ export function SlideshowBlockV2(entity: EntityInstance) {
       {lightbox && (
         <LightBoxWrapper>
           <ContentTable focusNumber={focusNumber} length={images.length}>
-            <ArrowTop
-              className="arrow-top"
+            <ArrowBlock
+              className="arrow-up-block"
               onClick={() => {
                 if (focusNumber > 0) {
                   setFocusNumber(focusNumber - 1)
                   /* @ts-ignore */
-                  imagesRefs.current[focusNumber - 1].scrollIntoView({
+                  imagesRefs?.current[focusNumber - 1]?.scrollIntoView({
                     behavior: 'smooth',
                     block: 'center',
                   })
                 }
               }}
-            />
+            >
+              <span className="arrow-up"></span>
+              <span className="arrow-up"></span>
+            </ArrowBlock>
 
             <div className="sidebar-images">{sideBarImages}</div>
 
-            <ArrowDown
-              className="arrow-down"
+            <ArrowBlock
+              className="arrow-down-block"
               onClick={() => {
                 if (focusNumber < images.length - 1) {
                   setFocusNumber(focusNumber + 1)
                   /* @ts-ignore */
-                  imagesRefs.current[focusNumber + 1].scrollIntoView({
+                  imagesRefs?.current[focusNumber + 1]?.scrollIntoView({
                     behavior: 'smooth',
                     block: 'center',
                   })
                 }
               }}
-            />
+            >
+              <span className="arrow-down"></span>
+              <span className="arrow-down"></span>
+            </ArrowBlock>
           </ContentTable>
 
           <ImageWrapper>
@@ -389,11 +470,14 @@ export function SlideshowBlockV2(entity: EntityInstance) {
               {focusNumber + 1} / {images.length}
             </p>
           </ImageWrapper>
-          <ButtonWrapper
-            onClick={() => setLightbox(false)}
-            className="cross-button"
-          >
-            <Cross />
+          <ButtonWrapper>
+            <div
+              className="close-cross"
+              onClick={(e) => {
+                e.preventDefault()
+                setLightbox(false)
+              }}
+            ></div>
           </ButtonWrapper>
         </LightBoxWrapper>
       )}
