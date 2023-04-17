@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
 import CustomImage from '@readr-media/react-image'
@@ -54,8 +54,8 @@ const SlidesBox = styled.div`
   transform: ${({ translateX }) => `translateX(${translateX})`};
   width: ${sliderWidth};
 
-  ${({ shouldShift }) =>
-    shouldShift ? 'transition: transform 0.3s ease-out' : null};
+  ${({ isShifting }) =>
+    isShifting ? 'transition: transform 0.3s ease-out' : null};
 
   .readr-media-react-image {
     object-position: center center;
@@ -149,12 +149,13 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
   const slidesBoxRef = useRef<HTMLDivElement>(null)
   /** Current index of the displayed slide */
   const [indexOfCurrentImage, setIndexOfCurrentImage] = useState(0)
-  /** Whether allow slide shifting animation*/
-  const [shouldShift, setShouldShift] = useState(false)
+  /** Whether allow slide shifting animation */
+  const [isShifting, setIsShifting] = useState(false)
+  /* Distance of dragging, which will increase/decrease value when dragging, and reset to `0` when dragging complete */
+  const [dragDistance, setDragDistance] = useState(0)
   /** Position of slide box */
-  const [slideBoxPosition, setSlideBoxPosition] = useState(
-    `calc(${sliderWidth} * ${slidesOffset} * -1)`
-  )
+  const slideBoxPosition = `calc(${sliderWidth} * ${slidesOffset +
+    indexOfCurrentImage} * -1 + ${dragDistance}px)`
   const { images } = entity.getData()
   const displayedImage = images.map((image) => image.resized)
   const slidesLength = images.length
@@ -187,34 +188,21 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
     <CustomImage images={item} key={index} objectFit={'contain'} />
   ))
 
-  /**
-   * Set state to update position of slide box and index of showing image
-   */
-  const setIndexAndPosition = (index: number) => {
-    setIndexOfCurrentImage(index)
-    setSlideBoxPosition(`calc((${index + slidesOffset}) * ${sliderWidth} * -1)`)
+  const handleClickPrev = () => {
+    if (isShifting) {
+      return
+    }
+    setIsShifting(true)
+    setIndexOfCurrentImage((pre) => pre - 1)
   }
 
-  /**
-   * Shifts the current slide image forward or backward based on the given direction.
-   * It will increase or decrease the value of `indexOfCurrentImage`, and affect the position of slideBox.
-   */
-  const shiftSlide = useCallback(
-    (slideDirection: 'forward' | 'backward' | 'stay') => {
-      if (shouldShift) {
-        return
-      }
-      setShouldShift(true)
-      let newIndexOfCurrentImage = indexOfCurrentImage
-      if (slideDirection === 'forward') {
-        newIndexOfCurrentImage += 1
-      } else if (slideDirection === 'backward') {
-        newIndexOfCurrentImage -= 1
-      }
-      setIndexAndPosition(newIndexOfCurrentImage)
-    },
-    [shouldShift, indexOfCurrentImage]
-  )
+  const handleClickNext = () => {
+    if (isShifting) {
+      return
+    }
+    setIsShifting(true)
+    setIndexOfCurrentImage((pre) => pre + 1)
+  }
 
   /**
    * Check `indexOfCurrentImage` after transition and reset if needed.
@@ -222,11 +210,11 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
    * or scrolling forward from the last image to the first image.
    */
   const handleTransitionEnd = () => {
-    setShouldShift(false)
-    if (indexOfCurrentImage === -1) {
-      setIndexAndPosition(slidesLength - 1)
-    } else if (indexOfCurrentImage === slidesLength) {
-      setIndexAndPosition(0)
+    setIsShifting(false)
+    if (indexOfCurrentImage <= -1) {
+      setIndexOfCurrentImage(slidesLength - 1)
+    } else if (indexOfCurrentImage >= slidesLength) {
+      setIndexOfCurrentImage(0)
     }
   }
 
@@ -234,18 +222,10 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
     const slidesBox = slidesBoxRef?.current
     if (slidesBox) {
       /** Threshold of slide change */
-      const threshold = 100
-
+      const threshold = 0.25
+      let dragDistance = 0
       /** Position of pointer when start dragging */
       let dragStartPositionX = 0
-
-      const getCurrentTranslateX = () => {
-        const style = getComputedStyle(slidesBox)
-        const translateX = new DOMMatrixReadOnly(style.transform).m41
-        return translateX
-      }
-      /** Position of slides when start dragging */
-      let slidesBoxInitialX = getCurrentTranslateX()
 
       /**
        * Record the mouse position and slidesBox position when dragging starts,
@@ -254,11 +234,6 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
       const dragStart = (e) => {
         e.preventDefault()
         dragStartPositionX = e.pageX
-
-        slidesBoxInitialX = getCurrentTranslateX()
-        document.addEventListener('pointerup', dragEnd)
-        document.addEventListener('pointercancel', dragEnd)
-        document.addEventListener('pointerleave', dragEnd)
         document.addEventListener('pointermove', dragAction)
       }
 
@@ -267,32 +242,30 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
        * It will recalculate the value of current position of slidesBox, starting position of dragging,
        * distance of dragging when slidesBox is dragging.
        */
-      const dragAction = (e) => {
-        const dragDistance = e.pageX - dragStartPositionX
-        dragStartPositionX = e.pageX
-
-        setSlideBoxPosition(`${getCurrentTranslateX() + dragDistance}px`)
+      const dragAction = (e: PointerEvent) => {
+        dragDistance = e.pageX - dragStartPositionX
+        setDragDistance(dragDistance)
+        document.addEventListener('pointerup', dragEnd)
       }
       /**
        * Calculate the position of `slidesBox` to decider should show next of previous image.
        */
       const dragEnd = () => {
-        const sliderFinalX = getCurrentTranslateX()
-
-        if (sliderFinalX - slidesBoxInitialX < -threshold) {
+        setIsShifting(true)
+        if (dragDistance / slidesBox.offsetWidth < -threshold) {
           //move forward to show next image
-
-          shiftSlide('forward')
-        } else if (sliderFinalX - slidesBoxInitialX > threshold) {
+          setIndexOfCurrentImage((pre) => pre + 1)
+        } else if (dragDistance / slidesBox.offsetWidth > threshold) {
           //move backward to show previous image
-          shiftSlide('backward')
+          setIndexOfCurrentImage((pre) => pre - 1)
         } else {
           //do not move, show current image
-          shiftSlide('stay')
         }
+
+        //reset drag distance
+        setDragDistance(0)
+
         document.removeEventListener('pointerup', dragEnd)
-        document.removeEventListener('pointercancel', dragEnd)
-        document.removeEventListener('pointerleave', dragEnd)
         document.removeEventListener('pointermove', dragAction)
       }
 
@@ -303,21 +276,19 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
         slidesBox.removeEventListener('pointerdown', dragStart)
       }
     }
-  }, [shiftSlide])
+  }, [])
+
   return (
     <Wrapper>
       <SlideshowV2>
-        <ClickButtonPrev
-          onClick={() => shiftSlide('backward')}
-        ></ClickButtonPrev>
-        <ClickButtonNext
-          onClick={() => shiftSlide('forward')}
-        ></ClickButtonNext>
+        <ClickButtonPrev onClick={handleClickPrev}></ClickButtonPrev>
+        <ClickButtonNext onClick={handleClickNext}></ClickButtonNext>
         <SlidesBox
-          translateX={slideBoxPosition}
+          style={{ transform: `translateX(${slideBoxPosition})` }}
           ref={slidesBoxRef}
           amount={slidesWithClone.length}
-          shouldShift={shouldShift}
+          isShifting={isShifting}
+          index={indexOfCurrentImage}
           onTransitionEnd={handleTransitionEnd}
         >
           {slidesJsx}
