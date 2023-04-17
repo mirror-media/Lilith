@@ -1,8 +1,9 @@
 // @ts-ignore: no definition
+import config from '../config'
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { GcsFileAdapter } from '../utils/GcsFileAdapter'
-import { list } from '@keystone-6/core'
-import { text } from '@keystone-6/core/fields'
+import { list, graphql } from '@keystone-6/core'
+import { text, virtual } from '@keystone-6/core/fields'
 
 const { admin, allowRoles, moderator } = utils.accessControl
 
@@ -49,16 +50,16 @@ const listConfigurations = list({
         },
       },
     }),
-    url: text({
+    url: virtual({
       label: '檔案網址',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
+      field: graphql.field({
+        type: graphql.String,
+        async resolve(item) {
+          const audioUrl = item.file_filename
+          return `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/files/${audioUrl}`
+
         },
-        itemView: {
-          fieldMode: 'read',
-        },
-      },
+      })
     }),
     duration: text({
       label: '長度（秒）',

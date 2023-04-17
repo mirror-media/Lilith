@@ -174,7 +174,6 @@ model Video {
   description                  String          @default("")
   tags                         String          @default("")
   meta                         String          @default("")
-  url                          String          @default("")
   duration                     String          @default("")
   createdAt                    DateTime?
   updatedAt                    DateTime?
@@ -201,7 +200,6 @@ model AudioFile {
   description   String    @default("")
   tags          String    @default("")
   meta          String    @default("")
-  url           String    @default("")
   duration      String    @default("")
   createdAt     DateTime?
   updatedAt     DateTime?
