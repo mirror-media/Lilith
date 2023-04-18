@@ -231,10 +231,11 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
        * Record the mouse position and slidesBox position when dragging starts,
        * and register dragEnd and dragAction for pointer-related events
        */
-      const dragStart = (e) => {
+      const dragStart = (e: PointerEvent) => {
         e.preventDefault()
         dragStartPositionX = e.pageX
         document.addEventListener('pointermove', dragAction)
+        document.addEventListener('pointerup', dragEnd)
       }
 
       /**
@@ -245,7 +246,6 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
       const dragAction = (e: PointerEvent) => {
         dragDistance = e.pageX - dragStartPositionX
         setDragDistance(dragDistance)
-        document.addEventListener('pointerup', dragEnd)
       }
       /**
        * Calculate the position of `slidesBox` to decider should show next of previous image.
@@ -263,6 +263,8 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
         }
 
         //reset drag distance
+
+        dragDistance = 0
         setDragDistance(0)
 
         document.removeEventListener('pointerup', dragEnd)
