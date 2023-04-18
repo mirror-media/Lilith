@@ -1,13 +1,14 @@
 // @ts-ignore: no definition
+import config from '../config'
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core'
-import { text } from '@keystone-6/core/fields'
+import { list, graphql } from '@keystone-6/core'
+import { text, virtual, file } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator } = utils.accessControl
 
-import { GcsFileAdapter } from '../utils/GcsFileAdapter'
+// import { GcsFileAdapter } from '../utils/GcsFileAdapter'
 
-const gcsFileAdapter = new GcsFileAdapter('video')
+// const gcsFileAdapter = new GcsFileAdapter('video')
 
 const listConfigurations = list({
   fields: {
@@ -18,11 +19,8 @@ const listConfigurations = list({
     youtubeUrl: text({
       label: 'Youtube網址',
     }),
-    file: customFields.file({
-      label: '檔案',
-      customConfig: {
-        fileType: 'video',
-      },
+    file: file({
+      label: '檔案'
     }),
     coverPhoto: customFields.relationship({
       label: '首圖',
@@ -63,16 +61,15 @@ const listConfigurations = list({
         },
       },
     }),
-    url: text({
+    url: virtual({
       label: '檔案網址',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
+      field: graphql.field({
+        type: graphql.String,
+        async resolve(item) {
+          const videoUrl = item.file_filename
+          return videoUrl? `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/files/${videoUrl}`: null
         },
-        itemView: {
-          fieldMode: 'read',
-        },
-      },
+      })
     }),
     duration: text({
       label: '影片長度（秒）',
@@ -97,17 +94,17 @@ const listConfigurations = list({
   },
 
   hooks: {
-    resolveInput: async ({ inputData, item, resolvedData }) => {
-      // @ts-ignore: item might be undefined, should be handle properly
-      gcsFileAdapter.startFileProcessingFlow(resolvedData, item, inputData)
+    // resolveInput: async ({ inputData, item, resolvedData }) => {
+    //   // @ts-ignore: item might be undefined, should be handle properly
+    //   gcsFileAdapter.startFileProcessingFlow(resolvedData, item, inputData)
 
-      return resolvedData
-    },
-    beforeOperation: async ({ operation, item }) => {
-      if (operation === 'delete' && item.file_filename) {
-        gcsFileAdapter.startDeleteProcess(`${item.file_filename}`)
-      }
-    },
+    //   return resolvedData
+    // },
+    // beforeOperation: async ({ operation, item }) => {
+    //   if (operation === 'delete' && item.file_filename) {
+    //     gcsFileAdapter.startDeleteProcess(`${item.file_filename}`)
+    //   }
+    // },
   },
 })
 
