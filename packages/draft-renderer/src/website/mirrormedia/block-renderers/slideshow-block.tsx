@@ -236,6 +236,7 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
         dragStartPositionX = e.pageX
 
         slidesBox.addEventListener('pointerup', dragEnd)
+        slidesBox.addEventListener('pointerout', dragEnd)
         slidesBox.addEventListener('pointermove', dragAction)
       }
 
@@ -269,6 +270,7 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
         setDragDistance(0)
 
         slidesBox.removeEventListener('pointerup', dragEnd)
+        slidesBox.removeEventListener('pointerout', dragEnd)
         slidesBox.removeEventListener('pointermove', dragAction)
       }
 
