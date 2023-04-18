@@ -234,8 +234,9 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
       const dragStart = (e: PointerEvent) => {
         e.preventDefault()
         dragStartPositionX = e.pageX
-        document.addEventListener('pointermove', dragAction)
-        document.addEventListener('pointerup', dragEnd)
+
+        slidesBox.addEventListener('pointerup', dragEnd)
+        slidesBox.addEventListener('pointermove', dragAction)
       }
 
       /**
@@ -267,8 +268,8 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
         dragDistance = 0
         setDragDistance(0)
 
-        document.removeEventListener('pointerup', dragEnd)
-        document.removeEventListener('pointermove', dragAction)
+        slidesBox.removeEventListener('pointerup', dragEnd)
+        slidesBox.removeEventListener('pointermove', dragAction)
       }
 
       // Add listener of Drag events
