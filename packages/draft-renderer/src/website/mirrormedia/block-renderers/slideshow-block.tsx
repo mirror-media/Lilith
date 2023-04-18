@@ -40,7 +40,7 @@ const Wrapper = styled.figure`
 `
 
 const SlideshowV2 = styled.figure`
-  touch-action: none;
+  touch-action: pan-y;
   overflow: hidden;
   position: relative;
   width: ${sliderWidth};
