@@ -296,6 +296,20 @@ type CloudImageFieldOutput implements ImageFieldOutput {
   url: String!
 }
 
+type LocalCustomFileFieldOutput implements CustomFileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+type CloudCustomFileFieldOutput implements CustomFileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
 input PhotoWhereInput {
   AND: [PhotoWhereInput!]
   OR: [PhotoWhereInput!]
@@ -820,7 +834,7 @@ type Video {
   id: ID!
   name: String
   youtubeUrl: String
-  file: CustomFileFieldOutput
+  file: FileFieldOutput
   coverPhoto: Photo
   description: String
   tags: String
@@ -831,6 +845,13 @@ type Video {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+}
+
+interface FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
 }
 
 input VideoWhereUniqueInput {
@@ -870,7 +891,7 @@ input VideoOrderByInput {
 input VideoUpdateInput {
   name: String
   youtubeUrl: String
-  file: CustomFileFieldInput
+  file: FileFieldInput
   coverPhoto: PhotoRelateToOneForUpdateInput
   description: String
   tags: String
@@ -882,6 +903,11 @@ input VideoUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
+input FileFieldInput {
+  upload: Upload
+  ref: String
+}
+
 input VideoUpdateArgs {
   where: VideoWhereUniqueInput!
   data: VideoUpdateInput!
@@ -890,7 +916,7 @@ input VideoUpdateArgs {
 input VideoCreateInput {
   name: String
   youtubeUrl: String
-  file: CustomFileFieldInput
+  file: FileFieldInput
   coverPhoto: PhotoRelateToOneForCreateInput
   description: String
   tags: String
@@ -905,7 +931,7 @@ input VideoCreateInput {
 type AudioFile {
   id: ID!
   name: String
-  file: CustomFileFieldOutput
+  file: FileFieldOutput
   description: String
   tags: String
   meta: String
@@ -921,14 +947,14 @@ input AudioFileWhereUniqueInput {
   id: ID
 }
 
-type LocalCustomFileFieldOutput implements CustomFileFieldOutput {
+type LocalFileFieldOutput implements FileFieldOutput {
   filename: String!
   filesize: Int!
   ref: String!
   url: String!
 }
 
-type CloudCustomFileFieldOutput implements CustomFileFieldOutput {
+type CloudFileFieldOutput implements FileFieldOutput {
   filename: String!
   filesize: Int!
   ref: String!
@@ -964,7 +990,7 @@ input AudioFileOrderByInput {
 
 input AudioFileUpdateInput {
   name: String
-  file: CustomFileFieldInput
+  file: FileFieldInput
   description: String
   tags: String
   meta: String
@@ -982,7 +1008,7 @@ input AudioFileUpdateArgs {
 
 input AudioFileCreateInput {
   name: String
-  file: CustomFileFieldInput
+  file: FileFieldInput
   description: String
   tags: String
   meta: String
