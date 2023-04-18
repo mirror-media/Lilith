@@ -66,8 +66,8 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         async resolve(item) {
-          const audioUrl = item.file_filename
-          return `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/files/${audioUrl}`
+          const videoUrl = item.file_filename
+          return videoUrl? `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/files/${videoUrl}`: null
         },
       })
     }),
