@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import styled from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
 import CustomImage from '@readr-media/react-image'
@@ -156,8 +156,11 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
   /** Position of slide box */
   const slideBoxPosition = `calc(${sliderWidth} * ${slidesOffset +
     indexOfCurrentImage} * -1 + ${dragDistance}px)`
-  const { images } = entity.getData()
-  const displayedImage = images.map((image) => image.resized)
+  const { images } = useMemo(() => entity.getData(), [entity])
+  const displayedImage = useMemo(
+    () => images.map((image) => image.resized),
+    images
+  )
   const slidesLength = images.length
   const descOfCurrentImage = images?.[indexOfCurrentImage]?.desc
 
@@ -179,14 +182,27 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
    *
    * The amount of item need to clone is decided by variable `slidesOffset`
    */
-  const slidesWithClone = [].concat(
-    displayedImage?.slice(-slidesOffset),
-    displayedImage,
-    displayedImage?.slice(0, slidesOffset)
+  const slidesWithClone = useMemo(
+    () =>
+      [].concat(
+        displayedImage?.slice(-slidesOffset),
+        displayedImage,
+        displayedImage?.slice(0, slidesOffset)
+      ),
+    [displayedImage]
   )
-  const slidesJsx = slidesWithClone.map((item, index) => (
-    <CustomImage images={item} key={index} objectFit={'contain'} />
-  ))
+  const slidesJsx = useMemo(
+    () =>
+      slidesWithClone.map((item, index) => (
+        <CustomImage
+          images={item}
+          key={index}
+          objectFit={'contain'}
+          priority={true}
+        />
+      )),
+    [slidesWithClone]
+  )
 
   const handleClickPrev = () => {
     if (isShifting) {
