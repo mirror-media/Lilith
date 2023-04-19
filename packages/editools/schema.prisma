@@ -719,7 +719,7 @@ model DualSlide {
 model RandomTextSelector {
   id                         Int            @id @default(autoincrement())
   name                       String         @default("")
-  json                       Json?
+  json                       Json?          @default("[\"001.json\"]")
   shiftLeft                  Boolean        @default(false)
   helper                     ComponentHelp? @relation("RandomTextSelector_helper", fields: [helperId], references: [id])
   helperId                   Int?           @map("helper")

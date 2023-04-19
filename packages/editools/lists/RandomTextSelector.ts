@@ -29,6 +29,7 @@ const listConfigurations = list({
     json: json({
       label: '內容（JSON）',
       validation: { isRequired: true },
+      defaultValue: ['001.json'],
       ui: {
         displayMode: 'textarea',
       },
