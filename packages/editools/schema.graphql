@@ -2364,26 +2364,6 @@ input KaraokeWhereUniqueInput {
   id: ID
 }
 
-type LocalImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  url: String!
-}
-
-type CloudImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  url: String!
-}
-
 input KaraokeWhereInput {
   AND: [KaraokeWhereInput!]
   OR: [KaraokeWhereInput!]
@@ -2935,6 +2915,112 @@ input DualSlideCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type RandomTextSelector {
+  id: ID!
+  name: String
+  json: JSON
+  shiftLeft: Boolean
+  helper: ComponentHelp
+  highlightDesktop: ImageFieldOutput
+  highlightMobile: ImageFieldOutput
+  button: ImageFieldOutput
+  buttonLabel: String
+  backgroundColor: String
+  embedCode: String
+  preview: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input RandomTextSelectorWhereUniqueInput {
+  id: ID
+}
+
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
+}
+
+type CloudImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
+}
+
+input RandomTextSelectorWhereInput {
+  AND: [RandomTextSelectorWhereInput!]
+  OR: [RandomTextSelectorWhereInput!]
+  NOT: [RandomTextSelectorWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  shiftLeft: BooleanFilter
+  helper: ComponentHelpWhereInput
+  buttonLabel: StringFilter
+  backgroundColor: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input RandomTextSelectorOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  shiftLeft: OrderDirection
+  buttonLabel: OrderDirection
+  backgroundColor: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input RandomTextSelectorUpdateInput {
+  name: String
+  json: JSON
+  shiftLeft: Boolean
+  helper: ComponentHelpRelateToOneForUpdateInput
+  highlightDesktop: ImageFieldInput
+  highlightMobile: ImageFieldInput
+  button: ImageFieldInput
+  buttonLabel: String
+  backgroundColor: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input RandomTextSelectorUpdateArgs {
+  where: RandomTextSelectorWhereUniqueInput!
+  data: RandomTextSelectorUpdateInput!
+}
+
+input RandomTextSelectorCreateInput {
+  name: String
+  json: JSON
+  shiftLeft: Boolean
+  helper: ComponentHelpRelateToOneForCreateInput
+  highlightDesktop: ImageFieldInput
+  highlightMobile: ImageFieldInput
+  button: ImageFieldInput
+  buttonLabel: String
+  backgroundColor: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 type ComponentHelp {
   id: ID!
   name: String
@@ -3239,6 +3325,25 @@ type Mutation {
   updateDualSlides(data: [DualSlideUpdateArgs!]!): [DualSlide]
   deleteDualSlide(where: DualSlideWhereUniqueInput!): DualSlide
   deleteDualSlides(where: [DualSlideWhereUniqueInput!]!): [DualSlide]
+  createRandomTextSelector(
+    data: RandomTextSelectorCreateInput!
+  ): RandomTextSelector
+  createRandomTextSelectors(
+    data: [RandomTextSelectorCreateInput!]!
+  ): [RandomTextSelector]
+  updateRandomTextSelector(
+    where: RandomTextSelectorWhereUniqueInput!
+    data: RandomTextSelectorUpdateInput!
+  ): RandomTextSelector
+  updateRandomTextSelectors(
+    data: [RandomTextSelectorUpdateArgs!]!
+  ): [RandomTextSelector]
+  deleteRandomTextSelector(
+    where: RandomTextSelectorWhereUniqueInput!
+  ): RandomTextSelector
+  deleteRandomTextSelectors(
+    where: [RandomTextSelectorWhereUniqueInput!]!
+  ): [RandomTextSelector]
   createComponentHelp(data: ComponentHelpCreateInput!): ComponentHelp
   createComponentHelps(data: [ComponentHelpCreateInput!]!): [ComponentHelp]
   updateComponentHelp(
@@ -3491,6 +3596,16 @@ type Query {
   ): [DualSlide!]
   dualSlide(where: DualSlideWhereUniqueInput!): DualSlide
   dualSlidesCount(where: DualSlideWhereInput! = {}): Int
+  randomTextSelectors(
+    where: RandomTextSelectorWhereInput! = {}
+    orderBy: [RandomTextSelectorOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [RandomTextSelector!]
+  randomTextSelector(
+    where: RandomTextSelectorWhereUniqueInput!
+  ): RandomTextSelector
+  randomTextSelectorsCount(where: RandomTextSelectorWhereInput! = {}): Int
   componentHelps(
     where: ComponentHelpWhereInput! = {}
     orderBy: [ComponentHelpOrderByInput!]! = []

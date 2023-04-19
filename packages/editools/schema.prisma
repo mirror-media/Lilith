@@ -68,6 +68,8 @@ model User {
   from_ThreeStoryPoint_updatedBy     ThreeStoryPoint[]     @relation("ThreeStoryPoint_updatedBy")
   from_DualSlide_createdBy           DualSlide[]           @relation("DualSlide_createdBy")
   from_DualSlide_updatedBy           DualSlide[]           @relation("DualSlide_updatedBy")
+  from_RandomTextSelector_createdBy  RandomTextSelector[]  @relation("RandomTextSelector_createdBy")
+  from_RandomTextSelector_updatedBy  RandomTextSelector[]  @relation("RandomTextSelector_updatedBy")
   from_ComponentHelp_createdBy       ComponentHelp[]       @relation("ComponentHelp_createdBy")
   from_ComponentHelp_updatedBy       ComponentHelp[]       @relation("ComponentHelp_updatedBy")
 }
@@ -714,19 +716,59 @@ model DualSlide {
   @@index([updatedById])
 }
 
+model RandomTextSelector {
+  id                         Int            @id @default(autoincrement())
+  name                       String         @default("")
+  json                       Json?
+  shiftLeft                  Boolean        @default(false)
+  helper                     ComponentHelp? @relation("RandomTextSelector_helper", fields: [helperId], references: [id])
+  helperId                   Int?           @map("helper")
+  highlightDesktop_filesize  Int?
+  highlightDesktop_extension String?
+  highlightDesktop_width     Int?
+  highlightDesktop_height    Int?
+  highlightDesktop_mode      String?
+  highlightDesktop_id        String?
+  highlightMobile_filesize   Int?
+  highlightMobile_extension  String?
+  highlightMobile_width      Int?
+  highlightMobile_height     Int?
+  highlightMobile_mode       String?
+  highlightMobile_id         String?
+  button_filesize            Int?
+  button_extension           String?
+  button_width               Int?
+  button_height              Int?
+  button_mode                String?
+  button_id                  String?
+  buttonLabel                String         @default("")
+  backgroundColor            String         @default("#000")
+  createdAt                  DateTime?
+  updatedAt                  DateTime?
+  createdBy                  User?          @relation("RandomTextSelector_createdBy", fields: [createdById], references: [id])
+  createdById                Int?           @map("createdBy")
+  updatedBy                  User?          @relation("RandomTextSelector_updatedBy", fields: [updatedById], references: [id])
+  updatedById                Int?           @map("updatedBy")
+
+  @@index([helperId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model ComponentHelp {
-  id                    Int         @id @default(autoincrement())
-  name                  String      @default("")
-  desc                  String      @default("")
-  relatedTopics         String      @default("")
-  createdAt             DateTime?
-  updatedAt             DateTime?
-  createdBy             User?       @relation("ComponentHelp_createdBy", fields: [createdById], references: [id])
-  createdById           Int?        @map("createdBy")
-  updatedBy             User?       @relation("ComponentHelp_updatedBy", fields: [updatedById], references: [id])
-  updatedById           Int?        @map("updatedBy")
-  from_Karaoke_helper   Karaoke[]   @relation("Karaoke_helper")
-  from_DualSlide_helper DualSlide[] @relation("DualSlide_helper")
+  id                             Int                  @id @default(autoincrement())
+  name                           String               @default("")
+  desc                           String               @default("")
+  relatedTopics                  String               @default("")
+  createdAt                      DateTime?
+  updatedAt                      DateTime?
+  createdBy                      User?                @relation("ComponentHelp_createdBy", fields: [createdById], references: [id])
+  createdById                    Int?                 @map("createdBy")
+  updatedBy                      User?                @relation("ComponentHelp_updatedBy", fields: [updatedById], references: [id])
+  updatedById                    Int?                 @map("updatedBy")
+  from_Karaoke_helper            Karaoke[]            @relation("Karaoke_helper")
+  from_DualSlide_helper          DualSlide[]          @relation("DualSlide_helper")
+  from_RandomTextSelector_helper RandomTextSelector[] @relation("RandomTextSelector_helper")
 
   @@index([createdById])
   @@index([updatedById])
