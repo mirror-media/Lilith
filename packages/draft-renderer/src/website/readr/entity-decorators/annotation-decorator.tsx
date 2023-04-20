@@ -79,7 +79,7 @@ function AnnotationBlock(props) {
   const { bodyHTML, annotation } = props.contentState
     .getEntity(props.entityKey)
     .getData()
-  const annotationBodyHtml = bodyHTML || annotation
+  const annotationBodyHtml = bodyHTML || annotation.trim()
   return (
     <React.Fragment>
       <AnnotatedText
