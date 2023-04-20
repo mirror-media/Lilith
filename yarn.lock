@@ -2137,11 +2137,56 @@
     styled-components "5.3.5"
     zlib "^1.0.5"
 
+"@mirrormedia/lilith-core@1.2.7-alpha.2":
+  version "1.2.7-alpha.2"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-1.2.7-alpha.2.tgz#85e2526cdc4b0a14967fd670dfc2843689ed31fa"
+  integrity sha512-SDiaBMpvwSq5MZaYab5kg0p599fMilR6kXoTqCwzctLXqI8CFoPMFWPMVjjXyEx9snTLay9ydCPQagsZXyYugg==
+  dependencies:
+    "@google-cloud/storage" "^5.18.0"
+    "@keystone-ui/button" "^6.0.0"
+    "@keystone-ui/fields" "^6.0.0"
+    "@keystone-ui/modals" "^5.0.0"
+    "@mirrormedia/lilith-draft-editor" "1.1.0-alpha.5"
+    "@twreporter/errors" "^1.1.1"
+    axios "^0.26.0"
+    draft-convert "^2.1.12"
+    draft-js "^0.11.7"
+    htmlparser2 "^7.2.0"
+    immutable "^4.0.0"
+    lodash "^4.17.21"
+    shortid "^2.2.16"
+    styled-components "5.3.5"
+    zlib "^1.0.5"
+
+"@mirrormedia/lilith-draft-editor@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-editor/-/lilith-draft-editor-1.0.1.tgz#995ece11c47a98be721656ee9bdc6e481d94b975"
+  integrity sha512-yB/qx8dLYAWSFmyp4Dj3toe2+WSrlfPRnrn8VoSBY8O3hjqxQPQlgvT3zZp2MIjhVMk2D/OrLy6yS7gwuDk/Vg==
+  dependencies:
+    "@mirrormedia/lilith-draft-renderer" "1.0.0"
+    draft-js "^0.11.7"
+
+"@mirrormedia/lilith-draft-editor@1.1.0-alpha.5":
+  version "1.1.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-editor/-/lilith-draft-editor-1.1.0-alpha.5.tgz#a4a702a5b723a33449e1b7fdf6349ad3ce87e350"
+  integrity sha512-ihQAPHMTEPG4InvfjGyy5eqqA9JdwfgAfRLRwnoAuCST4LcSGumSDXahr5jAO92QBdIS0QeaQC+VuJS6n3wzUg==
+  dependencies:
+    "@mirrormedia/lilith-draft-renderer" "1.1.0-alpha.7"
+    draft-js "^0.11.7"
+
 "@mirrormedia/lilith-draft-renderer@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.0.0.tgz#eb29a1c2cc3603e3f670e30c697101678475143a"
   integrity sha512-NecqJYJ0kXObXUXrT4n9ed3lLMjtrS8VgPrYsUClZftek/RpD1TQGF/FRom5DPPFoiwXRP/+ZDVAwtTk1GKggw==
   dependencies:
+    draft-js "^0.11.7"
+
+"@mirrormedia/lilith-draft-renderer@1.1.0-alpha.7":
+  version "1.1.0-alpha.7"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.1.0-alpha.7.tgz#2ce05bcce96924b6c85d0a220fa1b3daedb97922"
+  integrity sha512-XChQI/ORMIlE8oEZThEKx4iF705/lfrI9LfiuU62iPzFRdsXqq+dei+C9TVgEuZnYpUm8tsvdrGDnLW+UbDvjw==
+  dependencies:
+    "@readr-media/react-image" "^1.5.1"
     draft-js "^0.11.7"
 
 "@next/env@12.2.5":
@@ -2527,6 +2572,11 @@
     serialize-javascript "^6.0.0"
     styled-components "5.3.5"
     uuid "^8.3.2"
+
+"@readr-media/react-image@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-image/-/react-image-1.5.1.tgz#d04b809416be6a1432a0a3154f2641292d7b6b8d"
+  integrity sha512-BExGQWO158vtfox2mkwjT8khZp00KOwAObnZsQVzO4JNO4RlTog/5u7ccw7WuBd1OR07rlh/jKm4ts+qt78saw==
 
 "@readr-media/react-karaoke@2.0.0":
   version "2.0.0"
@@ -5702,6 +5752,11 @@ hasha@5.2.2:
     is-stream "^2.0.0"
     type-fest "^0.8.0"
 
+he@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
+  integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
+
 hexoid@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/hexoid/-/hexoid-1.0.0.tgz#ad10c6573fb907de23d9ec63a711267d9dc9bc18"
@@ -7138,6 +7193,14 @@ node-forge@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-1.3.1.tgz#be8da2af243b2417d5f646a770663a92b7e9ded3"
   integrity sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==
+
+node-html-parser@^6.1.5:
+  version "6.1.5"
+  resolved "https://registry.yarnpkg.com/node-html-parser/-/node-html-parser-6.1.5.tgz#c819dceb13a10a7642ff92f94f870b4f77968097"
+  integrity sha512-fAaM511feX++/Chnhe475a0NHD8M7AxDInsqQpz6x63GRF7xYNdS8Vo5dKsIVPgsOvG7eioRRTZQnWBrhDHBSg==
+  dependencies:
+    css-select "^5.1.0"
+    he "1.2.0"
 
 node-releases@^2.0.6:
   version "2.0.6"

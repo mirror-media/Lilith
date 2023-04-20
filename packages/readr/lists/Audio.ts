@@ -1,12 +1,13 @@
 // @ts-ignore: no definition
+import config from '../config'
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { GcsFileAdapter } from '../utils/GcsFileAdapter'
-import { list } from '@keystone-6/core'
-import { text } from '@keystone-6/core/fields'
+import { list, graphql } from '@keystone-6/core'
+import { text, virtual, file} from '@keystone-6/core/fields'
 
 const { admin, allowRoles, moderator } = utils.accessControl
 
-const gcsFileAdapter = new GcsFileAdapter('video')
+// const gcsFileAdapter = new GcsFileAdapter('video')
 
 const listConfigurations = list({
   fields: {
@@ -14,11 +15,11 @@ const listConfigurations = list({
       label: '標題',
       validation: { isRequired: true },
     }),
-    file: customFields.file({
+    file: file({
       label: '檔案',
-      customConfig: {
-        fileType: 'video',
-      },
+      // customConfig: {
+      //   fileType: 'video',
+      // },
     }),
     description: text({
       label: '描述',
@@ -49,16 +50,16 @@ const listConfigurations = list({
         },
       },
     }),
-    url: text({
+    url: virtual({
       label: '檔案網址',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
+      field: graphql.field({
+        type: graphql.String,
+        async resolve(item) {
+          const audioUrl = item.file_filename
+          return audioUrl? `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/files/${audioUrl}`: null
+
         },
-        itemView: {
-          fieldMode: 'read',
-        },
-      },
+      })
     }),
     duration: text({
       label: '長度（秒）',
@@ -83,17 +84,17 @@ const listConfigurations = list({
   },
 
   hooks: {
-    resolveInput: async ({ inputData, item, resolvedData }) => {
-      // @ts-ignore: item might be undefined, should be handle properly
-      gcsFileAdapter.startFileProcessingFlow(resolvedData, item, inputData)
+    // resolveInput: async ({ inputData, item, resolvedData }) => {
+    //   // @ts-ignore: item might be undefined, should be handle properly
+    //   gcsFileAdapter.startFileProcessingFlow(resolvedData, item, inputData)
 
-      return resolvedData
-    },
-    beforeOperation: async ({ operation, item }) => {
-      if (operation === 'delete' && item.file_filename) {
-        gcsFileAdapter.startDeleteProcess(`${item.file_filename}`)
-      }
-    },
+    //   return resolvedData
+    // },
+    // beforeOperation: async ({ operation, item }) => {
+    //   if (operation === 'delete' && item.file_filename) {
+    //     gcsFileAdapter.startDeleteProcess(`${item.file_filename}`)
+    //   }
+    // },
   },
 })
 

@@ -2,8 +2,11 @@ import React from 'react'
 import styled from 'styled-components'
 
 const LinkWrapper = styled.a`
-  color: #3b5998;
+  color: #054f77;
   text-decoration: underline;
+  &:active {
+    color: rgba(157, 157, 157, 1);
+  }
 `
 
 function findLinkEntities(contentBlock, callback, contentState) {
@@ -23,5 +26,9 @@ export const linkDecorator = {
 
 function Link(props) {
   const { url } = props.contentState.getEntity(props.entityKey).getData()
-  return <LinkWrapper href={url}>{props.children}</LinkWrapper>
+  return (
+    <LinkWrapper href={url} target="_blank" rel="noreferrer noopenner">
+      {props.children}
+    </LinkWrapper>
+  )
 }

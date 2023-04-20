@@ -174,7 +174,6 @@ model Video {
   description                  String          @default("")
   tags                         String          @default("")
   meta                         String          @default("")
-  url                          String          @default("")
   duration                     String          @default("")
   createdAt                    DateTime?
   updatedAt                    DateTime?
@@ -201,7 +200,6 @@ model AudioFile {
   description   String    @default("")
   tags          String    @default("")
   meta          String    @default("")
-  url           String    @default("")
   duration      String    @default("")
   createdAt     DateTime?
   updatedAt     DateTime?
@@ -322,7 +320,7 @@ model User {
 
 model Post {
   id                           Int               @id @default(autoincrement())
-  slug                         String?           @unique
+  slug                         String            @default("")
   sortOrder                    Int?
   name                         String            @default("")
   subtitle                     String?
@@ -342,6 +340,7 @@ model Post {
   dataAnalysts                 Author[]          @relation("Post_dataAnalysts")
   manualOrderOfDataAnalysts    Json?
   otherByline                  String?
+  leadingEmbeddedCode          String            @default("")
   heroVideo                    Video?            @relation("Post_heroVideo", fields: [heroVideoId], references: [id])
   heroVideoId                  Int?              @map("heroVideo")
   heroImage                    Photo?            @relation("Post_heroImage", fields: [heroImageId], references: [id])
