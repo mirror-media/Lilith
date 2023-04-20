@@ -2219,15 +2219,6 @@
     draft-js "^0.11.7"
     node-html-parser "^6.1.5"
 
-"@mirrormedia/lilith-draft-renderer@1.1.0-alpha.17":
-  version "1.1.0-alpha.17"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.1.0-alpha.17.tgz#b0fab04dfd146e9e6e308b873932ed23bec815c6"
-  integrity sha512-Lh3tOdkOhQ21H127Es3ICdrioY6nVdOu347mT1LmJD6Orw6knEiNFA5DxSJftjx5XN7urnZsHOEu5N2TCi1ZVQ==
-  dependencies:
-    "@readr-media/react-image" "^1.5.1"
-    draft-js "^0.11.7"
-    node-html-parser "^6.1.5"
-
 "@mirrormedia/lilith-draft-renderer@1.1.0-alpha.7":
   version "1.1.0-alpha.7"
   resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.1.0-alpha.7.tgz#2ce05bcce96924b6c85d0a220fa1b3daedb97922"
