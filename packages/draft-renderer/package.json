@@ -1,6 +1,6 @@
 {
   "name": "@mirrormedia/lilith-draft-renderer",
-  "version": "1.1.0-alpha.14",
+  "version": "1.1.0-alpha.18",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -23,7 +23,8 @@
   "license": "MIT",
   "dependencies": {
     "@readr-media/react-image": "^1.5.1",
-    "draft-js": "^0.11.7"
+    "draft-js": "^0.11.7",
+    "node-html-parser": "^6.1.5"
   },
   "peerDependencies": {
     "react": "18.1.0",

@@ -61,7 +61,25 @@ function indicatorSvg(shouldRotate: boolean) {
 function AnnotationBlock(props) {
   const { children: annotated } = props
   const [toShowAnnotation, setToShowAnnotation] = useState(false)
-  const { bodyHTML } = props.contentState.getEntity(props.entityKey).getData()
+  /**
+   * to support k5 old annotation data, check if annotation key exist
+   * k5
+   * {
+   *    text: string,
+   *     annotation: html string,
+   *     draftRawObj: DraftBlocks
+   * }
+   * k6
+   * {
+   *   bodyHTML: string,
+   *   bodyEscapedHTML: string,
+   *   rawContentState: DraftBlocks
+   * }
+   */
+  const { bodyHTML, annotation } = props.contentState
+    .getEntity(props.entityKey)
+    .getData()
+  const annotationBodyHtml = bodyHTML || annotation.trim()
   return (
     <React.Fragment>
       <AnnotatedText
@@ -78,7 +96,7 @@ function AnnotationBlock(props) {
       {toShowAnnotation ? (
         <AnnotationBody
           contentEditable={false}
-          dangerouslySetInnerHTML={{ __html: bodyHTML }}
+          dangerouslySetInnerHTML={{ __html: annotationBodyHtml }}
         ></AnnotationBody>
       ) : null}
     </React.Fragment>

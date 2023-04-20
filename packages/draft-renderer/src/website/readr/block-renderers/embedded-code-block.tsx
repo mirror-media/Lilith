@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { DraftEntityInstance } from 'draft-js'
 import styled from 'styled-components'
+import { parse } from 'node-html-parser'
 
 export const Block = styled.div`
   position: relative;
@@ -25,45 +26,60 @@ export const EmbeddedCodeBlock = (entity: DraftEntityInstance) => {
   const { caption, embeddedCode } = entity.getData()
   const embedded = useRef(null)
 
-  useEffect(() => {
-    if (!embedded.current) return
-    const node: HTMLElement = embedded.current
-
-    const fragment = document.createDocumentFragment()
-
-    // `embeddedCode` is a string, which may includes
-    // multiple '<script>' tags and other html tags.
-    // For executing '<script>' tags on the browser,
-    // we need to extract '<script>' tags from `embeddedCode` string first.
-    //
-    // The approach we have here is to parse html string into elements,
-    // and we could use DOM element built-in functions,
-    // such as `querySelectorAll` method, to query '<script>' elements,
-    // and other non '<script>' elements.
-    const parser = new DOMParser()
-    const ele = parser.parseFromString(
-      `<div id="draft-embed">${embeddedCode}</div>`,
-      'text/html'
-    )
-    const scripts = ele.querySelectorAll('script')
-    const nonScripts = ele.querySelectorAll('div#draft-embed > :not(script)')
-
-    nonScripts.forEach((ele) => {
-      fragment.appendChild(ele)
-    })
-
-    scripts.forEach((s) => {
-      const scriptEle = document.createElement('script')
-      const attrs = s.attributes
-      for (let i = 0; i < attrs.length; i++) {
-        scriptEle.setAttribute(attrs[i].name, attrs[i].value)
-      }
-      scriptEle.text = s.text || ''
-      fragment.appendChild(scriptEle)
-    })
-
-    node.appendChild(fragment)
+  // `embeddedCode` is a string, which may includes
+  // multiple script tags and other html tags.
+  // Here we separate script tags and other html tags
+  // by using the isomorphic html parser 'node-html-parser'
+  // into scripts nodes and non-script nodes.
+  //
+  // For non-script nodes we simply put them into dangerouslySetInnerHtml.
+  //
+  // For scripts nodes we only append them on the client side. So we handle scripts
+  // nodes when useEffect is called.
+  // The reasons we don't insert script tags through dangerouslySetInnerHtml:
+  // 1. Since react use setInnerHtml to append the htmlStirng received from
+  //    dangerouslySetInnerHtml, scripts won't be triggered.
+  // 2. Although the setInnerhtml way won't trigger script tags, those script tags
+  //    will still show on the HTML provided from SSR. When the browser parse the
+  //    html it will run those script and produce unexpected behavior.
+  const ele = useMemo(() => {
+    return parse(`<div id="draft-embed">${embeddedCode}</div>`)
   }, [embeddedCode])
+  const nonScripts = useMemo(
+    () => ele.querySelectorAll('div#draft-embed > :not(script)'),
+    [ele]
+  )
+  const scripts = useMemo(() => ele.querySelectorAll('script'), [ele])
+  const nonScriptHtml = useMemo(
+    () => nonScripts.reduce((prev, next) => prev + next.toString(), ''),
+    [embeddedCode]
+  )
+
+  useEffect(() => {
+    if (embedded.current) {
+      const node: HTMLElement = embedded.current
+
+      const fragment = document.createDocumentFragment()
+
+      scripts.forEach((s) => {
+        const scriptEle = document.createElement('script')
+        const attrs = s.attributes
+        for (const key in attrs) {
+          scriptEle.setAttribute(key, attrs[key])
+        }
+        scriptEle.text = s.text || ''
+        fragment.appendChild(scriptEle)
+      })
+
+      node.appendChild(fragment)
+
+      return () => {
+        node.querySelectorAll('script').forEach(function(script) {
+          node.removeChild(script)
+        })
+      }
+    }
+  }, [scripts])
 
   return (
     <div>
@@ -77,7 +93,12 @@ export const EmbeddedCodeBlock = (entity: DraftEntityInstance) => {
         // hijacking the users' cursors.
       }
       <input hidden disabled />
-      <Block ref={embedded} />
+      <Block
+        ref={embedded}
+        dangerouslySetInnerHTML={{
+          __html: nonScriptHtml,
+        }}
+      />
       {caption ? <Caption>{caption}</Caption> : null}
     </div>
   )
