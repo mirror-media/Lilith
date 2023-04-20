@@ -96,6 +96,9 @@ const listConfigurations = list({
       ref: 'Section.posts',
       many: true,
     }),
+    manualOrderOfSections: json({
+      label: '大分類手動排序結果',
+    }),
     categories: relationship({
       label: '小分類',
       ref: 'Category.posts',
@@ -105,6 +108,9 @@ const listConfigurations = list({
       label: '作者',
       ref: 'Contact',
       many: true,
+    }),
+    manualOrderOfWriters: json({
+      label: '作者手動排序結果',
     }),
     photographers: relationship({
       label: '攝影',
@@ -330,6 +336,9 @@ const listConfigurations = list({
       ref: 'Post',
       many: true,
     }),
+    manualOrderOfRelateds: json({
+      label: '相關文章手動排序結果',
+    }),
     tags: relationship({
       label: '標籤',
       ref: 'Tag.posts',
@@ -376,7 +385,7 @@ const listConfigurations = list({
       defaultValue: false,
     }),
     redirect: text({
-      label: '廣編文轉址 slug'
+      label: '廣編文轉址 slug',
     }),
     adTrace: text({
       label: '追蹤代碼',
@@ -436,4 +445,26 @@ const listConfigurations = list({
     },
   },
 })
-export default utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfWriters',
+      targetFieldName: 'writers',
+      targetListName: 'Contact',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfSections',
+      targetFieldName: 'sections',
+      targetListName: 'Section',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfRelateds',
+      targetFieldName: 'relateds',
+      targetListName: 'Post',
+      targetListLabelField: 'title',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)

@@ -19,8 +19,10 @@ model Post {
   state                     String?        @default("draft")
   publishedDate             DateTime?
   sections                  Section[]      @relation("Post_sections")
+  manualOrderOfSections     Json?
   categories                Category[]     @relation("Category_posts")
   writers                   Contact[]      @relation("Post_writers")
+  manualOrderOfWriters      Json?
   photographers             Contact[]      @relation("Post_photographers")
   camera_man                Contact[]      @relation("Post_camera_man")
   designers                 Contact[]      @relation("Post_designers")
@@ -40,6 +42,7 @@ model Post {
   topicsId                  Int?           @map("topics")
   titleColor                String?        @default("light")
   relateds                  Post[]         @relation("Post_relateds")
+  manualOrderOfRelateds     Json?
   tags                      Tag[]          @relation("Post_tags")
   og_title                  String         @default("")
   og_description            String         @default("")

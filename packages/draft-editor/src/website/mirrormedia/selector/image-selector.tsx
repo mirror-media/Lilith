@@ -101,6 +101,10 @@ const ErrorWrapper = styled.div`
   }
 `
 
+const ImageName = styled.p`
+  text-align: center;
+`
+
 type ID = string
 
 export type ImageEntity = {
@@ -208,6 +212,7 @@ function ImageMetaGrid(props: {
         src={image?.resized?.w800}
         onError={(e) => (e.currentTarget.src = image?.imageFile?.url)}
       />
+      <ImageName>{image?.name}</ImageName>
       {enableCaption && (
         <React.Fragment>
           <Label htmlFor="caption">Image Caption:</Label>

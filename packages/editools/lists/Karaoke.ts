@@ -4,7 +4,14 @@ import embedCodeGen from '@readr-media/react-embed-code-generator'
 // @ts-ignore: no definition
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { checkbox, text, image, file, virtual } from '@keystone-6/core/fields'
+import {
+  checkbox,
+  relationship,
+  text,
+  image,
+  file,
+  virtual,
+} from '@keystone-6/core/fields'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const {
@@ -59,6 +66,9 @@ const listConfigurations = list({
     muteHint: checkbox({
       label: '是否顯示聲音播放提醒',
       defaultValue: false,
+    }),
+    helper: relationship({
+      ref: 'ComponentHelp',
     }),
     embedCode: virtual({
       label: 'embed code',
