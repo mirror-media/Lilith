@@ -49,7 +49,7 @@ const listConfigurations = list({
       label: '發佈日期',
     }),
     categories: relationship({
-      ref: 'Category',
+      ref: 'Category.relatedPost',
       label: '分類',
       many: true,
     }),
