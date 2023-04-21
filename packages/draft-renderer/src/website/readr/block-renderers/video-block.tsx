@@ -4,6 +4,7 @@ import { DraftEntityInstance } from 'draft-js'
 
 const Video = styled.video`
   width: 100%;
+  margin-bottom: 32px;
 `
 
 type ImageEntity = {

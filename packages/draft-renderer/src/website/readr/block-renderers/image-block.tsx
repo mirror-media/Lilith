@@ -5,6 +5,7 @@ import styled from 'styled-components'
 const Figure = styled.figure`
   width: calc(100% + 40px);
   transform: translateX(-20px);
+  margin-bottom: 32px;
 `
 
 const Image = styled.img`

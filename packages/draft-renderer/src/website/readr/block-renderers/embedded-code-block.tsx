@@ -81,7 +81,11 @@ export const EmbeddedCodeBlock = (entity: DraftEntityInstance) => {
     }
   }, [scripts])
 
+  const shouldShowCaption = caption && caption !== 'reporter-scroll-video'
+
   return (
+    // only for READr
+    // if `caption === 'reporter-scroll-video'`，embeddedCode need to cover header
     <div>
       {
         // WORKAROUND:
@@ -94,12 +98,13 @@ export const EmbeddedCodeBlock = (entity: DraftEntityInstance) => {
       }
       <input hidden disabled />
       <Block
+        style={{ zIndex: caption === 'reporter-scroll-video' ? 999 : 'auto' }}
         ref={embedded}
         dangerouslySetInnerHTML={{
           __html: nonScriptHtml,
         }}
       />
-      {caption ? <Caption>{caption}</Caption> : null}
+      {shouldShowCaption ? <Caption>{caption}</Caption> : null}
     </div>
   )
 }
