@@ -72,12 +72,6 @@ export const EmbeddedCodeBlock = (entity: DraftEntityInstance) => {
       })
 
       node.appendChild(fragment)
-
-      return () => {
-        node.querySelectorAll('script').forEach(function(script) {
-          node.removeChild(script)
-        })
-      }
     }
   }, [scripts])
 
