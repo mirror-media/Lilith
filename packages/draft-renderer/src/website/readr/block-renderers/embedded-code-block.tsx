@@ -42,18 +42,21 @@ export const EmbeddedCodeBlock = (entity: DraftEntityInstance) => {
   // 2. Although the setInnerhtml way won't trigger script tags, those script tags
   //    will still show on the HTML provided from SSR. When the browser parse the
   //    html it will run those script and produce unexpected behavior.
-  const ele = useMemo(() => {
-    return parse(`<div id="draft-embed">${embeddedCode}</div>`)
+  const nodes = useMemo(() => {
+    const ele = parse(`<div id="draft-embed">${embeddedCode}</div>`)
+    const scripts = ele.querySelectorAll('script')
+    scripts.forEach((s) => {
+      s.remove()
+    })
+    const nonScripts = ele.querySelectorAll('div#draft-embed > :not(script)')
+    const nonScriptsHtml = nonScripts.reduce(
+      (prev, next) => prev + next.toString(),
+      ''
+    )
+
+    return { scripts, nonScripts, nonScriptsHtml }
   }, [embeddedCode])
-  const nonScripts = useMemo(
-    () => ele.querySelectorAll('div#draft-embed > :not(script)'),
-    [ele]
-  )
-  const scripts = useMemo(() => ele.querySelectorAll('script'), [ele])
-  const nonScriptHtml = useMemo(
-    () => nonScripts.reduce((prev, next) => prev + next.toString(), ''),
-    [embeddedCode]
-  )
+  const { scripts, nonScriptsHtml } = nodes
 
   useEffect(() => {
     if (embedded.current) {
@@ -72,16 +75,14 @@ export const EmbeddedCodeBlock = (entity: DraftEntityInstance) => {
       })
 
       node.appendChild(fragment)
-
-      return () => {
-        node.querySelectorAll('script').forEach(function(script) {
-          node.removeChild(script)
-        })
-      }
     }
   }, [scripts])
 
+  const shouldShowCaption = caption && caption !== 'reporter-scroll-video'
+
   return (
+    // only for READr
+    // if `caption === 'reporter-scroll-video'`，embeddedCode need to cover header
     <div>
       {
         // WORKAROUND:
@@ -94,12 +95,13 @@ export const EmbeddedCodeBlock = (entity: DraftEntityInstance) => {
       }
       <input hidden disabled />
       <Block
+        style={{ zIndex: caption === 'reporter-scroll-video' ? 999 : 'auto' }}
         ref={embedded}
         dangerouslySetInnerHTML={{
-          __html: nonScriptHtml,
+          __html: nonScriptsHtml,
         }}
       />
-      {caption ? <Caption>{caption}</Caption> : null}
+      {shouldShowCaption ? <Caption>{caption}</Caption> : null}
     </div>
   )
 }
