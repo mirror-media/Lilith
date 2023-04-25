@@ -51,7 +51,7 @@ const SlidesBox = styled.div`
   display: flex;
   position: relative;
   top: 0;
-  transform: ${({ translateX }) => `translateX(${translateX})`};
+
   width: ${sliderWidth};
 
   ${({ isShifting }) =>
