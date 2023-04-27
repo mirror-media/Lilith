@@ -3084,6 +3084,73 @@ input ComponentHelpCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type DroppingText {
+  id: ID!
+  name: String
+  textArr: JSON
+  shiftLeft: Boolean
+  helper: ComponentHelp
+  embedCode: String
+  preview: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input DroppingTextWhereUniqueInput {
+  id: ID
+}
+
+input DroppingTextWhereInput {
+  AND: [DroppingTextWhereInput!]
+  OR: [DroppingTextWhereInput!]
+  NOT: [DroppingTextWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  shiftLeft: BooleanFilter
+  helper: ComponentHelpWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input DroppingTextOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  shiftLeft: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input DroppingTextUpdateInput {
+  name: String
+  textArr: JSON
+  shiftLeft: Boolean
+  helper: ComponentHelpRelateToOneForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input DroppingTextUpdateArgs {
+  where: DroppingTextWhereUniqueInput!
+  data: DroppingTextUpdateInput!
+}
+
+input DroppingTextCreateInput {
+  name: String
+  textArr: JSON
+  shiftLeft: Boolean
+  helper: ComponentHelpRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -3355,6 +3422,15 @@ type Mutation {
   deleteComponentHelps(
     where: [ComponentHelpWhereUniqueInput!]!
   ): [ComponentHelp]
+  createDroppingText(data: DroppingTextCreateInput!): DroppingText
+  createDroppingTexts(data: [DroppingTextCreateInput!]!): [DroppingText]
+  updateDroppingText(
+    where: DroppingTextWhereUniqueInput!
+    data: DroppingTextUpdateInput!
+  ): DroppingText
+  updateDroppingTexts(data: [DroppingTextUpdateArgs!]!): [DroppingText]
+  deleteDroppingText(where: DroppingTextWhereUniqueInput!): DroppingText
+  deleteDroppingTexts(where: [DroppingTextWhereUniqueInput!]!): [DroppingText]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -3614,6 +3690,14 @@ type Query {
   ): [ComponentHelp!]
   componentHelp(where: ComponentHelpWhereUniqueInput!): ComponentHelp
   componentHelpsCount(where: ComponentHelpWhereInput! = {}): Int
+  droppingTexts(
+    where: DroppingTextWhereInput! = {}
+    orderBy: [DroppingTextOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [DroppingText!]
+  droppingText(where: DroppingTextWhereUniqueInput!): DroppingText
+  droppingTextsCount(where: DroppingTextWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
