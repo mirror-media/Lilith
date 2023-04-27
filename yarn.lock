@@ -3116,10 +3116,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.3.0-nick-alpha.0":
-  version "2.3.0-nick-alpha.0"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-nick-alpha.0.tgz#f1ad725a4440f97ef893894f554908f66b0bde53"
-  integrity sha512-5xPpjlCvURgtWqecnlM4VJas+Yt82PqXkCMpT1fE920t8iAAt3lpsms032xv4wX95Frafs8giNVHIKQdubqtoA==
+"@readr-media/react-embed-code-generator@^2.3.0-hsuan-alpha.3":
+  version "2.3.0-hsuan-alpha.3"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-hsuan-alpha.3.tgz#e56aa01aefde04c548af372cc1701541ceb1a8d5"
+  integrity sha512-fxSFzToYc9BSsqj5RhbGqST2vJ6/phV1wh7lhxTPDEdCtGTua2KYwcJFH4O+MIkHfDOB5OZm+TCmlNvI3HjJ/g==
   dependencies:
     "@readr-media/react-dropping-text" "^1.0.0-beta.0"
     "@readr-media/react-dual-slides" "1.0.0"
@@ -3131,7 +3131,7 @@
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
     "@readr-media/react-three-story-points" "1.0.1"
-    "@readr-media/text-selector" "^1.1.1-alpha.6"
+    "@readr-media/text-selector" "^1.1.1-alpha.10"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -3222,10 +3222,10 @@
     three "^0.150.1"
     three-story-controls "^1.0.6"
 
-"@readr-media/text-selector@^1.1.1-alpha.6":
-  version "1.1.1-alpha.6"
-  resolved "https://registry.yarnpkg.com/@readr-media/text-selector/-/text-selector-1.1.1-alpha.6.tgz#eeb5042819ac7560aaf0296b518906f97b038ce9"
-  integrity sha512-OMRu8SO8QGn3KFqQbS/ZzNut1lCuEn0qTDjuJ0vBt40NYr+rVYNMkn17H1i5qsxpwbPwgT5XVfKa839MsNK42w==
+"@readr-media/text-selector@^1.1.1-alpha.10":
+  version "1.1.1-alpha.11"
+  resolved "https://registry.yarnpkg.com/@readr-media/text-selector/-/text-selector-1.1.1-alpha.11.tgz#0b97ea8567c8a6c6224ce2e5a094001614eea968"
+  integrity sha512-9xlr+E3J/sH/3wvg+2Bzs7/Uy2Vl5s+H+fMxraXi2F3KTuhe1m6yxeOT0EgosoGxrA1cJ4m/BSOe0/ZEXNUe/A==
   dependencies:
     "@babel/cli" "^7.21.0"
     "@babel/core" "^7.21.4"
@@ -3235,7 +3235,6 @@
     babel-loader "^9.1.2"
     react "18.1.0"
     react-dom "^18.1.0"
-    react-intersection-observer "^9.3.5"
     serialize-javascript "^6.0.0"
     styled-components "5.3.5"
     uuid "^8.3.2"

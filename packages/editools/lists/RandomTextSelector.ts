@@ -96,13 +96,8 @@ const listConfigurations = list({
 
           const style = `
             <style>
-              .embedded-code-container-top {
-                margin-top: -60px;
-                z-index: 100;
-              }
               .embedded-code-container {
-                margin-top: -32px;
-                z-index: 100;
+                z-index: 500;
                 position: relative;
               }
             </style>
@@ -130,7 +125,7 @@ const listConfigurations = list({
 
           return code.replace(
             /(<div id=.*><\/div>)/,
-            `${style}<div class='.embedded-code-container'>$1</div>`
+            `${style}<div class='embedded-code-container'>$1</div>`
           )
         },
       }),
