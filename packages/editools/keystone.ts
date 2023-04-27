@@ -234,6 +234,28 @@ export default withAuth(
         })
 
         app.get(
+          '/demo/text-selector/:id',
+          authenticationMw,
+          async (req, res) => {
+            const itemId = req.params.id
+
+            const context = await createContext(req, res)
+            const item = await context.query.RandomTextSelector.findOne({
+              where: { id: itemId },
+              query: 'embedCode',
+            })
+
+            if (!item) {
+              return res.status(404).send(`DualSlide ${itemId} is not found`)
+            }
+
+            res.send(
+              `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"><style> * { box-sizing: border-box; } body { margin:0; } </style></head><body>${item?.embedCode}</body></html>`
+            )
+          }
+        )
+
+        app.get(
           '/demo/dropping-text/:id',
           authenticationMw,
           async (req, res) => {
