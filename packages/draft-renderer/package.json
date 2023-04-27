@@ -36,6 +36,8 @@
     "lib"
   ],
   "devDependencies": {
+    "@types/draft-js": "^0.11.10",
+    "@types/styled-components": "^5.1.26",
     "babel-plugin-file-loader": "^2.0.0",
     "babel-plugin-inline-react-svg": "^2.0.1"
   }
