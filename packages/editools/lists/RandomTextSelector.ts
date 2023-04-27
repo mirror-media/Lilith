@@ -10,8 +10,10 @@ import {
   virtual,
   image,
 } from '@keystone-6/core/fields'
+import embedCodeGen from '@readr-media/react-embed-code-generator'
+import config from '../config'
 
-//const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
+const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const {
   allowRoles,
   admin,
@@ -90,45 +92,46 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
-          const code = ''
+          const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
 
-          const shiftLeft = item?.shiftLeft
-
-          if (shiftLeft) {
-            const style = `
+          const style = `
             <style>
+              .embedded-code-container-top {
+                margin-top: -60px;
+                z-index: 100;
+              }
               .embedded-code-container {
                 margin-top: -32px;
-                margin-left: -20px;
-                z-index: 1000;
+                z-index: 100;
                 position: relative;
-              }
-
-              @media (max-width:767px) {
-                .embedded-code-container {
-                  width: 100vw;
-                }
-              }
-
-              @media (min-width:768px) {
-                .embedded-code-container {
-                  margin-left: calc((100vw - 568px)/2 * -1);
-                }
-              }
-              @media (min-width:1200px) {
-                .embedded-code-container {
-                  margin-left: calc((100vw - 600px)/2 * -1);
-                }
               }
             </style>
           `
-            return code.replace(
-              /(<div id=.*><\/div>)/,
-              `${style}<div class='embedded-code-container'>$1</div>`
-            )
-          }
 
-          return code
+          const code = embedCodeGen.buildEmbeddedCode(
+            'text-selector',
+            {
+              jsonUrls: item?.json ?? [],
+              backgroundColor: item?.backgroundColor ?? '#000000',
+              circleUrl: item.imageFile_id
+                ? `${urlPrefix}/images/${item.imageFile_id}.${item.highlightDesktop_extension}`
+                : undefined,
+              circleUrlMobile: item.highlightMobile_id
+                ? `${urlPrefix}/images/${item.highlightMobile_id}.${item.highlightMobile_extension}`
+                : undefined,
+              buttonBackground: item.button_id
+                ? `${urlPrefix}/images/${item.button_id}.${item.button_extension}`
+                : undefined,
+              buttonWording: item?.buttonLabel ?? '其他案例',
+              shouldShiftLeft: item?.shiftLeft,
+            },
+            embedCodeWebpackAssets
+          )
+
+          return code.replace(
+            /(<div id=.*><\/div>)/,
+            `${style}<div class='.embedded-code-container'>$1</div>`
+          )
         },
       }),
       ui: {
@@ -143,7 +146,7 @@ const listConfigurations = list({
         type: graphql.JSON,
         resolve(item: Record<string, unknown>): Record<string, string> {
           return {
-            href: `/demo/dual-slides/${item.id}`,
+            href: `/demo/text-selector/${item.id}?isDebugMode=true`,
             label: 'Preview',
           }
         },
