@@ -3091,10 +3091,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@readr-media/react-dropping-text@1.0.0-beta.2":
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.0-beta.2.tgz#69b04736d1d9ee0e629e834e450c47fcabc915fa"
-  integrity sha512-mA5AI8FYOtZw1ew+RqyfI5FI82P5ddVh3KqgSR9yUgAE6betvRlwqpZd3szsCAAgylHbbMPB6uKZOd9k/qKkXw==
+"@readr-media/react-dropping-text@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.0.tgz#0b06a0387ee4947de7d93d4a0b27c036f4e3af39"
+  integrity sha512-mxY5B03szgL5SfmnmiLSX3rOuB7WIojtVip/j5eGnH3REMsWWBJ78CwEKD2q5rnuD0Qs4vFmp3MS/l+IoN2/NA==
   dependencies:
     matter-js "^0.19.0"
     react-intersection-observer "^9.3.5"
@@ -3116,12 +3116,12 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.3.0-nick.alpha.2":
-  version "2.3.0-nick.alpha.2"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-nick.alpha.2.tgz#623903dd4c02ffea522e14f8e821cc922808b84f"
-  integrity sha512-cXukCgxfYyqjZkpphiSQBiOUUAgtTmzXqjIo1ACxgqq1hi3ACOD7xnvA7tZLHW3fqTWkvcsUsNTERwF5Nq4WQA==
+"@readr-media/react-embed-code-generator@2.3.0-nick.alpha.3":
+  version "2.3.0-nick.alpha.3"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-nick.alpha.3.tgz#5ba9195d8b0ffaf349337307d01ed4d61107d5eb"
+  integrity sha512-QGTAPAFat11YAHLjjJJpeu7kAEaCIpOGwqQBsBA7GR1OstNGcHbdkIps8A4hk/ftaLxMe/ymD9Xe9hWbcD1c2g==
   dependencies:
-    "@readr-media/react-dropping-text" "1.0.0-beta.2"
+    "@readr-media/react-dropping-text" "1.0.0"
     "@readr-media/react-dual-slides" "1.0.0"
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
