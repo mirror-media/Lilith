@@ -2,14 +2,17 @@ import { ContentBlock, ContentState } from 'draft-js'
 import React from 'react'
 import styled from 'styled-components'
 
+const defaultSpacingBetweenContent = '8px'
+const narrowSpacingBetweenContent = '4px'
+
 const InfoBoxRenderWrapper = styled.div`
   background: #f6f6fb;
   position: relative;
-  padding: 24px 0;
+  padding: 24px 0px;
   width: calc(100% + 40px);
   transform: translateX(-20px);
-  max-width: 448px;
-  margin: auto;
+  max-width: 560px;
+  margin: auto auto 32px auto;
 
   @media screen and (min-width: 448px) {
     transform: none;
@@ -21,12 +24,12 @@ const InfoTitle = styled.div`
   font-style: normal;
   font-weight: 700;
   font-size: 18px;
-  line-height: 150%;
+  line-height: 1.5;
   letter-spacing: 0.03em;
   color: #000928;
   border-left: 8px solid #04295e;
   padding: 0 32px 0 24px;
-  margin-bottom: 8px;
+  margin-bottom: ${defaultSpacingBetweenContent};
 `
 
 const InfoContent = styled.div`
@@ -34,12 +37,11 @@ const InfoContent = styled.div`
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
-  line-height: 160%;
+  line-height: 1.6;
   color: rgba(0, 9, 40, 0.87);
 
-  // margin between paragraph
   > div > * + * {
-    margin: 16px 0 0;
+    margin: ${defaultSpacingBetweenContent} 0 0;
   }
 
   //.public-DraftStyleDefault-header-two
@@ -55,37 +57,6 @@ const InfoContent = styled.div`
     }
   }
 
-  //.public-DraftStyleDefault-blockquote
-  blockquote {
-    width: 100%;
-    padding: 0 12px;
-    text-align: right;
-    margin: 40px auto 64px;
-
-    span {
-      display: block;
-      font-weight: 700;
-      font-size: 20px;
-      line-height: 1.5;
-      text-align: justify;
-      color: rgba(0, 9, 40, 0.87);
-      margin: 0 0 16px;
-    }
-
-    &::before {
-      content: url('https://upload.wikimedia.org/wikipedia/commons/2/25/Quote_left_font_awesome.svg');
-      display: block;
-      margin: 0 auto 16px auto;
-      width: 24px;
-      height: 24px;
-    }
-
-    ${({ theme }) => theme.breakpoint.md} {
-      padding: 0;
-      width: 480px;
-    }
-  }
-
   //.public-DraftStyleDefault-ul
   ul {
     list-style-type: disc;
@@ -96,6 +67,10 @@ const InfoContent = styled.div`
       letter-spacing: 0.01em;
       text-align: justify;
       color: rgba(0, 9, 40, 0.87);
+    }
+
+    > li + li {
+      margin: ${narrowSpacingBetweenContent} 0 0;
     }
   }
 
@@ -109,6 +84,10 @@ const InfoContent = styled.div`
       letter-spacing: 0.01em;
       text-align: justify;
       color: rgba(0, 9, 40, 0.87);
+    }
+
+    > li + li {
+      margin: ${narrowSpacingBetweenContent} 0 0;
     }
   }
 
@@ -148,9 +127,9 @@ export function InfoBoxBlock(props: InfoBoxBlockProps) {
   const { title, body } = entity.getData()
 
   return (
-    <InfoBoxRenderWrapper>
-      <InfoTitle>{title}</InfoTitle>
-      <InfoContent>
+    <InfoBoxRenderWrapper className="infobox-wrapper">
+      <InfoTitle className="infobox-title">{title}</InfoTitle>
+      <InfoContent className="infobox-content">
         <div dangerouslySetInnerHTML={{ __html: body }} />
       </InfoContent>
     </InfoBoxRenderWrapper>
