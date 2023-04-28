@@ -35,4 +35,24 @@ const hasContentInRawContentBlock = (rawContentBlock: Draft) => {
   return defaultBlockHasContent
 }
 
-export { hasContentInRawContentBlock }
+const removeEmptyContentBlock = (rawContentBlock: Draft) => {
+  const hasContent = hasContentInRawContentBlock(rawContentBlock)
+  if (!hasContent) {
+    throw new Error(
+      'There is no content in rawContentBlock, please check again.'
+    )
+  }
+  const blocksWithHideEmptyBlock = rawContentBlock.blocks
+    .map((block) => {
+      if (block.type === 'atomic' || block.text) {
+        return block
+      } else {
+        return undefined
+      }
+    })
+    .filter((block) => block)
+
+  return { ...rawContentBlock, blocks: blocksWithHideEmptyBlock }
+}
+
+export { hasContentInRawContentBlock, removeEmptyContentBlock }
