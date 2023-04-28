@@ -67,6 +67,18 @@ const listConfigurations = list({
       },
       validation: { isRequired: true },
     }),
+    loadingIcon: image({
+      label: 'Loading Icon',
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor),
+          update: allowRoles(admin, moderator),
+          create: allowRoles(admin, moderator),
+          delete: allowRoles(admin),
+        },
+      },
+      validation: { isRequired: false },
+    }),
     button: image({
       label: '按鈕樣式',
       access: {
@@ -86,6 +98,10 @@ const listConfigurations = list({
     backgroundColor: text({
       label: '背景顏色',
       defaultValue: '#000',
+    }),
+    isDebugMode: checkbox({
+      label: 'Debug Mode',
+      defaultValue: false,
     }),
     embedCode: virtual({
       label: 'embed code',

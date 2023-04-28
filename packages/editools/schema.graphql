@@ -2923,9 +2923,11 @@ type RandomTextSelector {
   helper: ComponentHelp
   highlightDesktop: ImageFieldOutput
   highlightMobile: ImageFieldOutput
+  loadingIcon: ImageFieldOutput
   button: ImageFieldOutput
   buttonLabel: String
   backgroundColor: String
+  isDebugMode: Boolean
   embedCode: String
   preview: JSON
   createdAt: DateTime
@@ -2968,6 +2970,7 @@ input RandomTextSelectorWhereInput {
   helper: ComponentHelpWhereInput
   buttonLabel: StringFilter
   backgroundColor: StringFilter
+  isDebugMode: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2980,6 +2983,7 @@ input RandomTextSelectorOrderByInput {
   shiftLeft: OrderDirection
   buttonLabel: OrderDirection
   backgroundColor: OrderDirection
+  isDebugMode: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2991,9 +2995,11 @@ input RandomTextSelectorUpdateInput {
   helper: ComponentHelpRelateToOneForUpdateInput
   highlightDesktop: ImageFieldInput
   highlightMobile: ImageFieldInput
+  loadingIcon: ImageFieldInput
   button: ImageFieldInput
   buttonLabel: String
   backgroundColor: String
+  isDebugMode: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -3012,9 +3018,11 @@ input RandomTextSelectorCreateInput {
   helper: ComponentHelpRelateToOneForCreateInput
   highlightDesktop: ImageFieldInput
   highlightMobile: ImageFieldInput
+  loadingIcon: ImageFieldInput
   button: ImageFieldInput
   buttonLabel: String
   backgroundColor: String
+  isDebugMode: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

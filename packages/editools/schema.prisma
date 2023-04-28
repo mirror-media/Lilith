@@ -737,6 +737,12 @@ model RandomTextSelector {
   highlightMobile_height     Int?
   highlightMobile_mode       String?
   highlightMobile_id         String?
+  loadingIcon_filesize       Int?
+  loadingIcon_extension      String?
+  loadingIcon_width          Int?
+  loadingIcon_height         Int?
+  loadingIcon_mode           String?
+  loadingIcon_id             String?
   button_filesize            Int?
   button_extension           String?
   button_width               Int?
@@ -745,6 +751,7 @@ model RandomTextSelector {
   button_id                  String?
   buttonLabel                String         @default("")
   backgroundColor            String         @default("#000")
+  isDebugMode                Boolean        @default(false)
   createdAt                  DateTime?
   updatedAt                  DateTime?
   createdBy                  User?          @relation("RandomTextSelector_createdBy", fields: [createdById], references: [id])
