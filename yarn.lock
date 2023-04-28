@@ -3116,10 +3116,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.3.0-nick.alpha.3":
-  version "2.3.0-nick.alpha.3"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-nick.alpha.3.tgz#5ba9195d8b0ffaf349337307d01ed4d61107d5eb"
-  integrity sha512-QGTAPAFat11YAHLjjJJpeu7kAEaCIpOGwqQBsBA7GR1OstNGcHbdkIps8A4hk/ftaLxMe/ymD9Xe9hWbcD1c2g==
+"@readr-media/react-embed-code-generator@^2.3.0-hsuan.alpha.5":
+  version "2.3.0-hsuan.alpha.5"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-hsuan.alpha.5.tgz#239e2c0a6560afb82b2f9927b3a227139ec36397"
+  integrity sha512-aliwU2eVB0VJqM7m8Qt/i5cgw+Dsxtrk/4KDLRjih8dls8T1p7nyHOi2m/KimtMhbTLsG6DTjxz6JmjP1OLHGw==
   dependencies:
     "@readr-media/react-dropping-text" "1.0.0"
     "@readr-media/react-dual-slides" "1.0.0"
@@ -3131,7 +3131,7 @@
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
     "@readr-media/react-three-story-points" "1.0.1"
-    "@readr-media/text-selector" "^1.1.1-alpha.10"
+    "@readr-media/text-selector" "^1.1.1-alpha.13"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -3222,10 +3222,10 @@
     three "^0.150.1"
     three-story-controls "^1.0.6"
 
-"@readr-media/text-selector@^1.1.1-alpha.10":
-  version "1.1.1-alpha.11"
-  resolved "https://registry.yarnpkg.com/@readr-media/text-selector/-/text-selector-1.1.1-alpha.11.tgz#0b97ea8567c8a6c6224ce2e5a094001614eea968"
-  integrity sha512-9xlr+E3J/sH/3wvg+2Bzs7/Uy2Vl5s+H+fMxraXi2F3KTuhe1m6yxeOT0EgosoGxrA1cJ4m/BSOe0/ZEXNUe/A==
+"@readr-media/text-selector@^1.1.1-alpha.13":
+  version "1.1.1-alpha.13"
+  resolved "https://registry.yarnpkg.com/@readr-media/text-selector/-/text-selector-1.1.1-alpha.13.tgz#624dcc66a2c84204d5c1792918c4cc8941c90261"
+  integrity sha512-5tmTe4sS2wgIReqf64D5J5iGJB20rDft6PP+ksVa+cGwBHwHE7BORT9JKPN3Y/d9AISdAADqk/F/2lUoaFuAIw==
   dependencies:
     "@babel/cli" "^7.21.0"
     "@babel/core" "^7.21.4"
