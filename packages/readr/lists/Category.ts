@@ -58,7 +58,7 @@ const listConfigurations = list({
       ui: { displayMode: 'textarea' },
     }),
     relatedPost: relationship({
-      ref: 'Post',
+      ref: 'Post.categories',
       many: true,
     }),
   },

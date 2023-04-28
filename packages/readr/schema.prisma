@@ -262,7 +262,6 @@ model Category {
   createdById             Int?      @map("createdBy")
   updatedBy               User?     @relation("Category_updatedBy", fields: [updatedById], references: [id])
   updatedById             Int?      @map("updatedBy")
-  from_Post_categories    Post[]    @relation("Post_categories")
   from_Project_categories Project[] @relation("Project_categories")
 
   @@index([heroImageId])
@@ -326,7 +325,7 @@ model Post {
   subtitle                     String?
   state                        String?           @default("draft")
   publishTime                  DateTime?
-  categories                   Category[]        @relation("Post_categories")
+  categories                   Category[]        @relation("Category_relatedPost")
   writers                      Author[]          @relation("Author_posts")
   manualOrderOfWriters         Json?
   photographers                Author[]          @relation("Post_photographers")
@@ -382,7 +381,6 @@ model Post {
   updatedBy                    User?             @relation("Post_updatedBy", fields: [updatedById], references: [id])
   updatedById                  Int?              @map("updatedBy")
   from_EditorChoice_choices    EditorChoice[]    @relation("EditorChoice_choices")
-  from_Category_relatedPost    Category[]        @relation("Category_relatedPost")
   from_Post_relatedPosts       Post[]            @relation("Post_relatedPosts")
   from_Feature_featurePost     Feature[]         @relation("Feature_featurePost")
 

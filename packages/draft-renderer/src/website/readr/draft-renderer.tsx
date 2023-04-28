@@ -35,6 +35,10 @@ const DraftEditorWrapper = styled.div`
     margin: 32px 0 0;
   }
 
+  *:has(.bg) + div:has(br) + *:has(.bg) {
+    margin-top: -32px !important;
+  }
+
   /* Draft built-in buttons' style */
   .public-DraftStyleDefault-header-two {
     font-size: 24px;
