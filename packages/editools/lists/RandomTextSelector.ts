@@ -135,6 +135,10 @@ const listConfigurations = list({
                 : undefined,
               buttonWording: item?.buttonLabel ?? '其他案例',
               shouldShiftLeft: item?.shiftLeft,
+              isDebugMode: item?.isDebugMode,
+              loadingImgSrc: item.loadingIcon_id
+                ? `${urlPrefix}/images/${item.loadingIcon_id}.${item.loadingIcon_extension}`
+                : undefined,
             },
             embedCodeWebpackAssets
           )
@@ -157,7 +161,7 @@ const listConfigurations = list({
         type: graphql.JSON,
         resolve(item: Record<string, unknown>): Record<string, string> {
           return {
-            href: `/demo/text-selector/${item.id}?isDebugMode=true`,
+            href: `/demo/text-selector/${item.id}`,
             label: 'Preview',
           }
         },
