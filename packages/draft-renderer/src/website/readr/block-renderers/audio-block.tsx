@@ -9,7 +9,7 @@ const AudioWrapper = styled.div`
   justify-content: flex-start;
   align-items: center;
   max-width: 480px;
-  margin: auto;
+  margin: auto auto 32px auto;
   position: relative;
 
   ${({ theme }) => theme.breakpoint.md} {
