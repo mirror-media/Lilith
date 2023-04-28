@@ -3091,10 +3091,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@readr-media/react-dropping-text@1.0.0-beta.1":
-  version "1.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.0-beta.1.tgz#4d33c111809bee65c942c39eeec1d0b31c3d5bb0"
-  integrity sha512-SPTiOQ0+ipYcrFWv2HJsMJf9XoEE2oLLGZaXa1qO0LtWJ2LxszRYMI7ocE4+efPyP6vQsRrxdDNRRBJCAGBMgw==
+"@readr-media/react-dropping-text@1.0.0-beta.2":
+  version "1.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.0-beta.2.tgz#69b04736d1d9ee0e629e834e450c47fcabc915fa"
+  integrity sha512-mA5AI8FYOtZw1ew+RqyfI5FI82P5ddVh3KqgSR9yUgAE6betvRlwqpZd3szsCAAgylHbbMPB6uKZOd9k/qKkXw==
   dependencies:
     matter-js "^0.19.0"
     react-intersection-observer "^9.3.5"
@@ -3116,12 +3116,12 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.3.0-nick.alpha.1":
-  version "2.3.0-nick.alpha.1"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-nick.alpha.1.tgz#eb66b987b0d44db64ae1a13ea2351bb528fcac6f"
-  integrity sha512-MTlP0sxybstwgOXjOiHiv//rxskjNOEQBwFTP3cAr6DK8IX3mzZ42NRJahwL69yC8CXSLuaCQ8bKCN1cG6ipvQ==
+"@readr-media/react-embed-code-generator@2.3.0-nick.alpha.2":
+  version "2.3.0-nick.alpha.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-nick.alpha.2.tgz#623903dd4c02ffea522e14f8e821cc922808b84f"
+  integrity sha512-cXukCgxfYyqjZkpphiSQBiOUUAgtTmzXqjIo1ACxgqq1hi3ACOD7xnvA7tZLHW3fqTWkvcsUsNTERwF5Nq4WQA==
   dependencies:
-    "@readr-media/react-dropping-text" "1.0.0-beta.1"
+    "@readr-media/react-dropping-text" "1.0.0-beta.2"
     "@readr-media/react-dual-slides" "1.0.0"
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
@@ -3386,6 +3386,14 @@
   dependencies:
     "@types/ms" "*"
 
+"@types/draft-js@^0.11.10":
+  version "0.11.10"
+  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.11.10.tgz#46cf41e142b4b572467f7a78269a630a77e1f19c"
+  integrity sha512-o/DST8x0wNerwhRiaE577UHFIXb6HCywaZOZfj9TF2vU3CONvsCGoQmdOsKqERdXp+3ZNlSvFUH0B8lEEYOT4A==
+  dependencies:
+    "@types/react" "*"
+    immutable "~3.7.4"
+
 "@types/es-aggregate-error@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@types/es-aggregate-error/-/es-aggregate-error-1.0.2.tgz#a970b4a5bbee95d87aebaa2aa317c846c18429df"
@@ -3469,6 +3477,14 @@
     "@types/fs-capacitor" "*"
     "@types/koa" "*"
     graphql "0.13.1 - 16"
+
+"@types/hoist-non-react-statics@*":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz#1124aafe5118cb591977aeb1ceaaed1070eb039f"
+  integrity sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==
+  dependencies:
+    "@types/react" "*"
+    hoist-non-react-statics "^3.3.0"
 
 "@types/http-assert@*":
   version "1.5.3"
@@ -3704,6 +3720,15 @@
   integrity sha512-b2nJ9YyXmkhGaa2b8VLM0kJ04xxwNyijcq12/kDoomCt43qbHBeK2SLNJ9iJmETaAj+bKUT05PQUu3Q66GvLhQ==
   dependencies:
     source-map "^0.6.0"
+
+"@types/styled-components@^5.1.26":
+  version "5.1.26"
+  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-5.1.26.tgz#5627e6812ee96d755028a98dae61d28e57c233af"
+  integrity sha512-KuKJ9Z6xb93uJiIyxo/+ksS7yLjS1KzG6iv5i78dhVg/X3u5t1H7juRWqVmodIdz6wGVaIApo1u01kmFRdJHVw==
+  dependencies:
+    "@types/hoist-non-react-statics" "*"
+    "@types/react" "*"
+    csstype "^3.0.2"
 
 "@types/superagent@*":
   version "4.1.15"
@@ -6467,7 +6492,7 @@ hexoid@1.0.0:
   resolved "https://registry.yarnpkg.com/hexoid/-/hexoid-1.0.0.tgz#ad10c6573fb907de23d9ec63a711267d9dc9bc18"
   integrity sha512-QFLV0taWQOZtvIRIAdBChesmogZrtuXvVWsFHZTk2SU+anspqZ2vMnoLg7IE1+Uk16N19APic1BuF8bC8c2m5g==
 
-hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.3.1, hoist-non-react-statics@^3.3.2:
+hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.3.0, hoist-non-react-statics@^3.3.1, hoist-non-react-statics@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
