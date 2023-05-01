@@ -1,6 +1,6 @@
 import { convertFromRaw, Editor, EditorState } from 'draft-js'
 import React from 'react'
-import styled, { ThemeProvider } from 'styled-components'
+import styled, { css, ThemeProvider } from 'styled-components'
 
 import {
   CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR,
@@ -10,12 +10,50 @@ import { atomicBlockRenderer } from './block-renderer-fn'
 import decorators from './entity-decorator'
 import theme from './theme'
 
+import {
+  defaultH2Style,
+  defaultUlStyle,
+  defaultOlStyle,
+  defaultBlockQuoteStyle,
+} from './shared-style'
+
+const defaultSpacingBetweenContent = css`
+  .public-DraftStyleDefault-block {
+    margin-top: 32px;
+  }
+`
+const narrowSpacingBetweenContent = css`
+  .public-DraftStyleDefault-block {
+    margin-top: 16px;
+  }
+`
+const noSpacingBetweenContent = css`
+  .public-DraftStyleDefault-block {
+    margin-top: unset;
+  }
+`
+
+const blockQuoteSpacingBetweenContent = css`
+  .public-DraftStyleDefault-block {
+    margin-top: 8px;
+  }
+`
+const textAroundPictureStyle = css`
+  max-width: 33.3%;
+  > figure {
+    margin-bottom: 0;
+    width: 150%;
+    transform: unset;
+  }
+  figcaption {
+    padding: 0;
+  }
+`
+
 const DraftEditorWrapper = styled.div`
   /* Rich-editor default setting (.RichEditor-root)*/
-  background: #fff;
   font-family: 'Georgia', serif;
-  font-size: 14px;
-  text-align: justify;
+  text-align: left;
 
   /* Custom setting */
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
@@ -23,83 +61,50 @@ const DraftEditorWrapper = styled.div`
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   width: 100%;
   height: 100%;
-  background: rgb(255, 255, 255);
-
-  .DraftEditor-root {
-    font-size: 18px;
-    line-height: 2;
-    letter-spacing: 0.01em;
-    color: rgba(0, 9, 40, 0.87);
+  ${({ theme }) => theme.fontSize.md};
+  line-height: 2;
+  letter-spacing: 0.01em;
+  color: rgba(0, 9, 40, 0.87);
+  *:not(:first-child) {
+    ${defaultSpacingBetweenContent}
   }
 
-  div[data-block='true'] + * {
-    margin: 32px 0 0;
-  }
-
-  *:has(.bg) + div:has(br) + *:has(.bg) {
+  /* *:has(.bg) + div:has(br) + *:has(.bg) {
     margin-top: -32px !important;
-  }
+  } */
 
   /* Draft built-in buttons' style */
   .public-DraftStyleDefault-header-two {
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1.5;
-    letter-spacing: 0.032em;
-    color: #000928;
-    margin: 32px 0 0;
+    ${defaultH2Style}
 
     & + * {
-      margin: 16px 0 0;
-    }
-
-    ${({ theme }) => theme.breakpoint.md} {
-      font-size: 28px;
-    }
-  }
-
-  .public-DraftStyleDefault-blockquote {
-    font-size: 16px;
-    line-height: 1.6;
-    color: rgba(0, 9, 40, 0.66);
-    opacity: 0.87;
-    padding: 0 20px;
-
-    & + *:not(blockquote) {
-      margin: 32px 0 0;
-    }
-
-    & + blockquote {
-      margin: 8px 0 0;
+      ${narrowSpacingBetweenContent}
     }
   }
 
   .public-DraftStyleDefault-ul {
-    list-style-type: disc;
-    margin-top: 0;
-    padding-left: 1.2rem;
+    ${defaultUlStyle}
   }
-  .public-DraftStyleDefault-unorderedListItem {
-    font-size: 18px;
-    line-height: 2;
-    letter-spacing: 0.01em;
-    color: rgba(0, 9, 40, 0.87);
-  }
-  .public-DraftStyleDefault-ol {
-    list-style-type: decimal;
-    margin-top: 0;
-    padding-left: 1.2rem;
 
-    & + * {
-      margin: 32px 0 0;
-    }
+  .public-DraftStyleDefault-unorderedListItem {
+    ${noSpacingBetweenContent};
+  }
+
+  .public-DraftStyleDefault-ol {
+    ${defaultOlStyle}
   }
   .public-DraftStyleDefault-orderedListItem {
-    font-size: 18px;
-    line-height: 2;
-    letter-spacing: 0.01em;
-    color: rgba(0, 9, 40, 0.87);
+    ${noSpacingBetweenContent};
   }
+
+  .public-DraftStyleDefault-blockquote {
+    ${defaultBlockQuoteStyle};
+
+    & + blockquote {
+      ${blockQuoteSpacingBetweenContent};
+    }
+  }
+
   /* code-block */
   .public-DraftStyleDefault-pre {
     overflow: hidden;
@@ -112,35 +117,20 @@ const DraftEditorWrapper = styled.div`
     text-align: left;
   }
 
+  /* image-block: text-around-picture */
   figure.left {
     ${({ theme }) => theme.breakpoint.xl} {
+      ${textAroundPictureStyle};
       float: left;
-      max-width: 200px;
-      margin: 12px 0 0 0;
-      transform: translateX(-110px);
-      > figure {
-        margin: 0;
-        width: 300px;
-      }
-      figcaption {
-        padding: 0;
-      }
+      transform: translateX(calc(-50% - 32px));
     }
   }
 
   figure.right {
     ${({ theme }) => theme.breakpoint.xl} {
+      ${textAroundPictureStyle};
       float: right;
-      max-width: 200px;
-      margin: 12px 0 0 0;
-      transform: translateX(50px);
-      > figure {
-        margin: 0;
-        width: 300px;
-      }
-      figcaption {
-        padding: 0;
-      }
+      transform: translateX(32px);
     }
   }
 `
@@ -209,13 +199,11 @@ const blockRendererFn = (block: any) => {
   return atomicBlockObj
 }
 
-/* @ts-ignore */
-export default function DraftRenderer({ rawContentBlock }) {
+export default function DraftRenderer({ rawContentBlock }: any) {
   const contentState = convertFromRaw(rawContentBlock)
   const editorState = EditorState.createWithContent(contentState, decorators)
 
   return (
-    /* @ts-ignore */
     <ThemeProvider theme={theme}>
       <DraftEditorWrapper>
         <Editor
@@ -225,6 +213,7 @@ export default function DraftRenderer({ rawContentBlock }) {
           blockRendererFn={blockRendererFn}
           customStyleFn={customStyleFn}
           readOnly
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
           onChange={() => {}}
         />
       </DraftEditorWrapper>
