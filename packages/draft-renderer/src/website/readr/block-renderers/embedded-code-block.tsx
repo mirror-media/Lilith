@@ -17,7 +17,7 @@ export const Block = styled.div`
 export const Caption = styled.div`
   line-height: 1.43;
   letter-spacing: 0.4px;
-  font-size: 14px;
+  ${({ theme }) => theme.fontSize.xs};
   color: #808080;
   padding: 15px 15px 0 15px;
 `

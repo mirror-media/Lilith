@@ -2,8 +2,17 @@ import { ContentBlock, ContentState } from 'draft-js'
 import React from 'react'
 import styled from 'styled-components'
 
-const defaultSpacingBetweenContent = '8px'
-const narrowSpacingBetweenContent = '4px'
+import {
+  defaultH2Style,
+  defaultUlStyle,
+  defaultUnorderedListStyle,
+  defaultOlStyle,
+  defaultOrderedListStyle,
+  defaultLinkStyle,
+  defaultBlockQuoteStyle,
+} from '../shared-style'
+
+const infoboxDefaultSpacing = 8
 
 const InfoBoxRenderWrapper = styled.div`
   background: #f6f6fb;
@@ -11,10 +20,10 @@ const InfoBoxRenderWrapper = styled.div`
   padding: 24px 0px;
   width: calc(100% + 40px);
   transform: translateX(-20px);
-  max-width: 560px;
-  margin: auto auto 32px auto;
+  ${({ theme }) => theme.margin.default};
 
-  @media screen and (min-width: 448px) {
+  ${({ theme }) => theme.breakpoint.md} {
+    max-width: 560px;
     transform: none;
   }
 `
@@ -23,85 +32,62 @@ const InfoTitle = styled.div`
   width: 100%;
   font-style: normal;
   font-weight: 700;
-  font-size: 18px;
+  ${({ theme }) => theme.fontSize.md};
   line-height: 1.5;
   letter-spacing: 0.03em;
   color: #000928;
   border-left: 8px solid #04295e;
   padding: 0 32px 0 24px;
-  margin-bottom: ${defaultSpacingBetweenContent};
+  margin-bottom: ${infoboxDefaultSpacing}px;
 `
 
 const InfoContent = styled.div`
   padding: 0px 32px;
   font-style: normal;
   font-weight: 400;
-  font-size: 16px;
+  ${({ theme }) => theme.fontSize.sm};
   line-height: 1.6;
   color: rgba(0, 9, 40, 0.87);
 
   > div > * + * {
-    margin: ${defaultSpacingBetweenContent} 0 0;
+    margin: ${infoboxDefaultSpacing}px 0 0;
+    min-height: 0.01px; //to make margins between paragraphs effective
   }
 
-  //.public-DraftStyleDefault-header-two
   h2 {
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1.5;
-    letter-spacing: 0.032em;
-    color: #000928;
-
-    ${({ theme }) => theme.breakpoint.md} {
-      font-size: 28px;
-    }
+    ${defaultH2Style}
   }
 
-  //.public-DraftStyleDefault-ul
   ul {
-    list-style-type: disc;
-    padding-left: 1.2rem;
+    ${defaultUlStyle}
 
-    //.public-DraftStyleDefault-unorderedListItem
     > li {
-      letter-spacing: 0.01em;
-      text-align: justify;
-      color: rgba(0, 9, 40, 0.87);
-    }
+      ${defaultUnorderedListStyle}
 
-    > li + li {
-      margin: ${narrowSpacingBetweenContent} 0 0;
+      & + li {
+        margin: ${infoboxDefaultSpacing / 2}px 0 0;
+      }
     }
   }
 
-  //.public-DraftStyleDefault-ol
   ol {
-    list-style-type: decimal;
-    padding-left: 1.2rem;
+    ${defaultOlStyle}
 
-    //.public-DraftStyleDefault-orderedListItem
     > li {
-      letter-spacing: 0.01em;
-      text-align: justify;
-      color: rgba(0, 9, 40, 0.87);
-    }
+      ${defaultOrderedListStyle}
 
-    > li + li {
-      margin: ${narrowSpacingBetweenContent} 0 0;
+      & + li {
+        margin: ${infoboxDefaultSpacing / 2}px 0 0;
+      }
     }
   }
 
   a {
-    display: inline;
-    border-bottom: 2px solid #ebf02c;
-    letter-spacing: 0.01em;
-    text-align: justify;
-    color: rgba(0, 9, 40, 0.87);
-    padding-bottom: 2px;
+    ${defaultLinkStyle}
+  }
 
-    &:hover {
-      border-bottom: 2px solid #04295e;
-    }
+  blockquote {
+    ${defaultBlockQuoteStyle}
   }
 `
 
