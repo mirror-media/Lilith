@@ -47,6 +47,7 @@ const AnnotationBody = styled.div`
 
   ul {
     ${defaultUlStyle}
+    margin-top: ${annotationDefaultSpacing}px;
 
     > li {
       ${defaultUnorderedListStyle}
@@ -55,6 +56,7 @@ const AnnotationBody = styled.div`
 
   ol {
     ${defaultOlStyle}
+    margin-top: ${annotationDefaultSpacing}px;
 
     > li {
       ${defaultOrderedListStyle}
