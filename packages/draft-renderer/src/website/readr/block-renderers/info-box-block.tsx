@@ -60,6 +60,7 @@ const InfoContent = styled.div`
 
   ul {
     ${defaultUlStyle}
+    margin-top: ${infoboxDefaultSpacing}px;
 
     > li {
       ${defaultUnorderedListStyle}
@@ -72,6 +73,7 @@ const InfoContent = styled.div`
 
   ol {
     ${defaultOlStyle}
+    margin-top: ${infoboxDefaultSpacing}px;
 
     > li {
       ${defaultOrderedListStyle}
