@@ -2587,10 +2587,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.3.0-beta.4":
-  version "2.3.0-beta.4"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-beta.4.tgz#0f0b87aef649de5b24a72691bdda09d09b336185"
-  integrity sha512-8QN4SGBsv47LtWo1LpswRJih8uniFwbijIOQE2pPv8R+NML4Q3HvlxlBRBW8IDDFMH9MJMko97ZIvgCo83ebmw==
+"@readr-media/react-embed-code-generator@2.3.0-beta.7":
+  version "2.3.0-beta.7"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-beta.7.tgz#d0eb5a65d20e7220f8f4aafdef2d5f3b42f7b441"
+  integrity sha512-DzzkY5L33tOpPktvmFfkboh5PoE9XKeBmiUv6FS28QDKW9+gPwZcf55P969maqrvEReqFJLv6ovif5GKmR0+xw==
   dependencies:
     "@readr-media/react-dropping-text" "1.0.1"
     "@readr-media/react-dual-slides" "1.0.0"
