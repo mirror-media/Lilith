@@ -6,7 +6,7 @@ import CustomImage from '@readr-media/react-image'
 const BackgroundContainer = styled.section`
   clear: both;
   position: relative;
-  margin: 0 calc(50% - 50vw) !important;
+  margin: 32px calc(50% - 50vw) 0 !important;
   width: 100vw;
   min-height: 100vh;
 `
