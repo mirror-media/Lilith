@@ -34,7 +34,7 @@ const BackgroundContent = styled.div`
       left: 20px;
       right: 20px;
       text-shadow: 0px 0px 1px #000000;
-      @include media-breakpoint-up(sm) {
+      ${({ theme }) => theme.breakpoint.sm} {
         bottom: 40px;
       }
     }
