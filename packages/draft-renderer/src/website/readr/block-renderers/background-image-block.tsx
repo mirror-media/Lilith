@@ -6,7 +6,7 @@ import CustomImage from '@readr-media/react-image'
 const BackgroundContainer = styled.section`
   clear: both;
   position: relative;
-  margin: 0 calc(50% - 50vw) !important;
+  margin: 32px calc(50% - 50vw) 0 !important;
   width: 100vw;
   min-height: 100vh;
 `
@@ -34,7 +34,7 @@ const BackgroundContent = styled.div`
       left: 20px;
       right: 20px;
       text-shadow: 0px 0px 1px #000000;
-      @include media-breakpoint-up(sm) {
+      ${({ theme }) => theme.breakpoint.sm} {
         bottom: 40px;
       }
     }

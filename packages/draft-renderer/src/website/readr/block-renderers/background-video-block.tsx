@@ -2,75 +2,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { ContentBlock, ContentState } from 'draft-js'
 
-const BGVideoRenderWrapper = styled.div`
-  position: relative;
-  padding: 30px;
-  width: 100%;
-  ${({ textBlockAlign }) => {
-    if (textBlockAlign === 'left') {
-      return `padding-right: 50%;`
-    } else if (textBlockAlign === 'right') {
-      return `padding-left: 50%;`
-    } else if (textBlockAlign === 'bottom') {
-      return `padding-top: 50%;`
-    }
-  }}
-`
-
-const BGVideoRednerVideo = styled.video`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  background-color: black;
-`
-
-const BGVideoRenderBody = styled.div`
-  background: rgba(0, 0, 0, 0.5);
-  padding: 4px 20px;
-  margin-bottom: 10px;
-`
-
-type BGVideoBlockProps = {
-  block: ContentBlock
-  blockProps: {
-    onEditStart: () => void
-    onEditFinish: ({
-      entityKey,
-      entityData,
-    }: {
-      entityKey?: string
-      entityData?: Record<string, unknown>
-    }) => void
-  }
-  contentState: ContentState
-}
-
-export function BGVideoBlock2(props: BGVideoBlockProps) {
-  const { block, contentState } = props
-  const entityKey = block.getEntityAt(0)
-  const entity = contentState.getEntity(entityKey)
-  const { textBlockAlign, video, body } = entity.getData()
-
-  return (
-    <React.Fragment>
-      <BGVideoRenderWrapper textBlockAlign={textBlockAlign}>
-        <BGVideoRednerVideo muted autoPlay loop>
-          <source src={video?.url} />
-          <source src={video?.file?.url} />
-        </BGVideoRednerVideo>
-        <BGVideoRenderBody dangerouslySetInnerHTML={{ __html: body }} />
-      </BGVideoRenderWrapper>
-    </React.Fragment>
-  )
-}
-
 const BackgroundContainer = styled.section`
   clear: both;
   position: relative;
-  margin: 0 calc(50% - 50vw) !important;
+  margin: 32px calc(50% - 50vw) 0 !important;
   width: 100vw;
   min-height: 100vh;
 `
@@ -98,7 +33,7 @@ const BackgroundContent = styled.div`
       left: 20px;
       right: 20px;
       text-shadow: 0px 0px 1px #000000;
-      @include media-breakpoint-up(sm) {
+      ${({ theme }) => theme.breakpoint.sm} {
         bottom: 40px;
       }
     }
