@@ -2587,10 +2587,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.3.0-beta.2":
-  version "2.3.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-beta.2.tgz#022b1e1c29ccc7368baa4fef0b6428c0d7cc1a24"
-  integrity sha512-aKm0un4eZXpxq2J5Mdt7Ws0DfuiIMuSXYT0xjCo4JlVcCUdtc7KIb4623ANhNtn1oNYyd9lUA1OO8S4vA9ERuA==
+"@readr-media/react-embed-code-generator@2.3.0-beta.4":
+  version "2.3.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-beta.4.tgz#0f0b87aef649de5b24a72691bdda09d09b336185"
+  integrity sha512-8QN4SGBsv47LtWo1LpswRJih8uniFwbijIOQE2pPv8R+NML4Q3HvlxlBRBW8IDDFMH9MJMko97ZIvgCo83ebmw==
   dependencies:
     "@readr-media/react-dropping-text" "1.0.1"
     "@readr-media/react-dual-slides" "1.0.0"
@@ -2602,7 +2602,7 @@
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
     "@readr-media/react-three-story-points" "1.0.1"
-    "@readr-media/text-selector" "^1.1.1-beta.2"
+    "@readr-media/text-selector" "^1.1.1-beta.4"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -2693,10 +2693,10 @@
     three "^0.150.1"
     three-story-controls "^1.0.6"
 
-"@readr-media/text-selector@^1.1.1-beta.2":
-  version "1.1.1-beta.2"
-  resolved "https://registry.yarnpkg.com/@readr-media/text-selector/-/text-selector-1.1.1-beta.2.tgz#1add0044b4dd061dc06ce2d3ea7823483f4e1530"
-  integrity sha512-X0EYJlr2BhH9BxG0DpSLUDwlNUuRdUpWy+1EAQw3JgHuC+t+AvujnLoANygUN6qSoY/uz9rBbMu4n+mNkGR2ww==
+"@readr-media/text-selector@^1.1.1-beta.4":
+  version "1.1.1-beta.4"
+  resolved "https://registry.yarnpkg.com/@readr-media/text-selector/-/text-selector-1.1.1-beta.4.tgz#2644cb437dffce87ff246aee87033f81af75291a"
+  integrity sha512-kNgLM5IGHDDOdLCDgn2slW48d5Cyx1ddsp6pgsSDGejWLRcPSNZ3kEmkCVVk82V8mpovADUK075Bkgb5i0pWyA==
   dependencies:
     axios "^1.3.5"
     styled-components "5.3.5"
