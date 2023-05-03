@@ -206,18 +206,20 @@ const blockStyleFn = (editorState, block) => {
   return result
 }
 
-const blockRendererFn = (block) => {
-  const atomicBlockObj = atomicBlockRenderer(block)
-  return atomicBlockObj
-}
-
-export default function DraftRenderer({ rawContentBlock }) {
+export default function DraftRenderer({
+  rawContentBlock,
+  contentLayout = 'normal',
+}) {
   const contentState = convertFromRaw(rawContentBlock)
-  const editorState = EditorState.createWithContent(contentState, decorators)
 
+  const editorState = EditorState.createWithContent(contentState, decorators)
+  const blockRendererFn = (block) => {
+    const atomicBlockObj = atomicBlockRenderer(block, contentLayout)
+    return atomicBlockObj
+  }
   return (
     <ThemeProvider theme={theme}>
-      <DraftEditorWrapper>
+      <DraftEditorWrapper contentLayout={contentLayout}>
         <Editor
           editorState={editorState}
           customStyleMap={customStyleMap}
