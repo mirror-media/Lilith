@@ -14,21 +14,15 @@ import theme from './theme'
 const draftEditorLineHeight = 2
 /**
  * Due to the data structure from draftjs, each default block contain one HTML element which class name is `public-DraftStyleDefault-block`.
- * So we use this behavior to create spacing between blocks by assign margin-top of which.
+ * So we use this behavior to create spacing between blocks by assign margin-bottom of which.
  * However, some block should not set spacing (e.g. block in <li> and <blockquote>), so we need to unset its margin-top.
  */
 const defaultSpacingBetweenContent = css`
-  .public-DraftStyleDefault-block {
-    margin-top: 1.5em;
-  }
+  margin-bottom: 32px;
 `
-const narrowSpacingBetweenContent = css`
-  margin-top: 20px;
-`
+
 const noSpacingBetweenContent = css`
-  .public-DraftStyleDefault-block {
-    margin-top: unset;
-  }
+  margin-bottom: unset;
 `
 const DraftEditorWrapper = styled.div`
   /* Rich-editor default setting (.RichEditor-root)*/
@@ -49,7 +43,8 @@ const DraftEditorWrapper = styled.div`
   padding: 0px;
   font-size: 18px;
   line-height: ${draftEditorLineHeight};
-  *:not(:first-child) {
+
+  .public-DraftStyleDefault-block {
     ${defaultSpacingBetweenContent}
   }
 
@@ -102,8 +97,10 @@ const DraftEditorWrapper = styled.div`
   .public-DraftStyleDefault-ul {
     margin-left: 18px;
     list-style: none;
-    ${narrowSpacingBetweenContent}
-    ${noSpacingBetweenContent}
+    ${defaultSpacingBetweenContent}
+    .public-DraftStyleDefault-block {
+      ${noSpacingBetweenContent}
+    }
   }
   .public-DraftStyleDefault-unorderedListItem {
     position: relative;
@@ -121,8 +118,10 @@ const DraftEditorWrapper = styled.div`
   }
   .public-DraftStyleDefault-ol {
     margin-left: 18px;
-    ${narrowSpacingBetweenContent}
-    ${noSpacingBetweenContent}
+    ${defaultSpacingBetweenContent}
+    .public-DraftStyleDefault-block {
+      ${noSpacingBetweenContent}
+    }
   }
   .public-DraftStyleDefault-orderedListItem {
     position: relative;
