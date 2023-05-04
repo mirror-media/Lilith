@@ -69,9 +69,11 @@ const DraftEditorWrapper = styled.div`
     ${defaultSpacingBetweenContent}
   }
 
-  /* *:has(.bg) + div:has(br) + *:has(.bg) {
-    margin-top: -32px !important;
-  } */
+  *:has(.bg) + *:has(.bg) {
+    section {
+      margin-top: 0 !important;
+    }
+  }
 
   /* Draft built-in buttons' style */
   .public-DraftStyleDefault-header-two {
