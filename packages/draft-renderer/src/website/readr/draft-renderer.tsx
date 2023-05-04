@@ -15,23 +15,10 @@ import {
   defaultUlStyle,
   defaultOlStyle,
   defaultBlockQuoteStyle,
+  defaultSpacingBetweenContent,
+  narrowSpacingBetweenContent,
+  noSpacingBetweenContent,
 } from './shared-style'
-
-const defaultSpacingBetweenContent = css`
-  .public-DraftStyleDefault-block {
-    margin-top: 32px;
-  }
-`
-const narrowSpacingBetweenContent = css`
-  .public-DraftStyleDefault-block {
-    margin-top: 16px;
-  }
-`
-const noSpacingBetweenContent = css`
-  .public-DraftStyleDefault-block {
-    margin-top: unset;
-  }
-`
 
 const blockQuoteSpacingBetweenContent = css`
   .public-DraftStyleDefault-block {
