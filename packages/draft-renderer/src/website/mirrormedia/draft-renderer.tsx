@@ -21,9 +21,14 @@ const defaultSpacingBetweenContent = css`
   margin-bottom: 32px;
 `
 
-const noSpacingBetweenContent = css`
-  margin-bottom: unset;
-`
+const noSpacingBetweenContent = {
+  blockquote: css`
+    margin-bottom: unset;
+  `,
+  list: css`
+    margin-bottom: 4px;
+  `,
+}
 
 const draftEditorCssNormal = css`
   color: black;
@@ -41,11 +46,28 @@ const draftEditorCssNormal = css`
   }
   .public-DraftStyleDefault-header-four {
   }
+
+  .public-DraftStyleDefault-blockquote {
+    color: rgba(97, 184, 198, 1);
+    border-image: linear-gradient(
+        to right,
+        rgba(97, 184, 198, 1) 42.5%,
+        transparent 42.5%,
+        transparent 57.5%,
+        rgba(97, 184, 198, 1) 57.5%
+      )
+      100% 1;
+    &::before {
+      background-color: rgba(97, 184, 198, 1);
+    }
+  }
 `
 const draftEditorCssWide = css`
   color: rgba(64, 64, 64, 0.87);
   font-family: 'Noto Serif TC', serif;
   font-weight: 600;
+  font-size: 18px;
+  line-height: 2;
   .public-DraftStyleDefault-header-two {
     color: black;
     font-size: 36px;
@@ -57,6 +79,26 @@ const draftEditorCssWide = css`
     font-weight: 700;
   }
   .public-DraftStyleDefault-header-four {
+  }
+  .public-DraftStyleDefault-blockquote {
+    color: rgba(0, 0, 0, 1);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+      'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+      'Noto Color Emoji';
+    font-weight: 400;
+
+    border-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 1) 42.5%,
+        transparent 42.5%,
+        transparent 57.5%,
+        rgba(0, 0, 0, 1) 57.5%
+      )
+      100% 1;
+    &::before {
+      background-color: rgba(0, 0, 0, 1);
+    }
   }
 `
 
@@ -80,18 +122,9 @@ const DraftEditorWrapper = styled.div`
     margin: 0 auto;
     max-width: 480px;
     text-align: left;
-    color: rgba(97, 184, 198, 1);
     margin: 48px auto;
     padding-top: 34px;
     border-top: 2px solid;
-    border-image: linear-gradient(
-        to right,
-        rgba(97, 184, 198, 1) 42.5%,
-        transparent 42.5%,
-        transparent 57.5%,
-        rgba(97, 184, 198, 1) 57.5%
-      )
-      100% 1;
     &::before {
       content: '';
       position: absolute;
@@ -100,11 +133,11 @@ const DraftEditorWrapper = styled.div`
       transform: translate(-50%, -50%);
       width: 100%;
       height: 20px;
-      background-image: url(${blockquoteDecoration});
-      background-repeat: no-repeat;
-      background-position: center center;
+      mask-image: url(${blockquoteDecoration});
+      mask-repeat: no-repeat;
+      mask-position: center center;
     }
-    ${noSpacingBetweenContent}
+    ${noSpacingBetweenContent.blockquote}
     ${({ theme }) => theme.breakpoint.md} {
       padding-top: 26px;
     }
@@ -114,7 +147,7 @@ const DraftEditorWrapper = styled.div`
     list-style: none;
     ${defaultSpacingBetweenContent}
     .public-DraftStyleDefault-block {
-      ${noSpacingBetweenContent}
+      ${noSpacingBetweenContent.list}
     }
   }
   .public-DraftStyleDefault-unorderedListItem {
@@ -135,7 +168,7 @@ const DraftEditorWrapper = styled.div`
     margin-left: 18px;
     ${defaultSpacingBetweenContent}
     .public-DraftStyleDefault-block {
-      ${noSpacingBetweenContent}
+      ${noSpacingBetweenContent.list}
     }
   }
   .public-DraftStyleDefault-orderedListItem {
@@ -252,6 +285,8 @@ export default function DraftRenderer({
           blockRendererFn={blockRendererFn}
           customStyleFn={customStyleFn}
           readOnly
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onChange={() => {}}
         />
       </DraftEditorWrapper>
     </ThemeProvider>
