@@ -211,7 +211,6 @@ export function PostSelector(props: {
   onChange: PostSelectorOnChangeFn
   enableMultiSelect?: boolean
   minSelectCount?: number
-  maxSelectCount?: number
 }) {
   const [
     queryPosts,
@@ -224,12 +223,7 @@ export function PostSelector(props: {
 
   const pageSize = 6
 
-  const {
-    onChange,
-    enableMultiSelect = false,
-    minSelectCount = 1,
-    maxSelectCount = 3,
-  } = props
+  const { onChange, enableMultiSelect = false, minSelectCount = 1 } = props
 
   const onSave = () => {
     if (
@@ -266,13 +260,7 @@ export function PostSelector(props: {
 
       // add new selected one and check shrink the array if there is a limit
       if (enableMultiSelect) {
-        let newSelected = selected.concat([{ post: postEntity }])
-
-        if (maxSelectCount && newSelected.length >= maxSelectCount) {
-          newSelected = newSelected.slice(-maxSelectCount)
-        }
-
-        return newSelected
+        return selected.concat([{ post: postEntity }])
       }
 
       // single select
