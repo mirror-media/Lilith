@@ -24,31 +24,13 @@ const defaultSpacingBetweenContent = css`
 const noSpacingBetweenContent = css`
   margin-bottom: unset;
 `
-const DraftEditorWrapper = styled.div`
-  /* Rich-editor default setting (.RichEditor-root)*/
 
-  border: 1px solid #ddd;
-  font-family: 'Georgia', serif;
-  font-size: 14px;
-  padding: 15px;
-
-  /* Custom setting */
+const draftEditorCssNormal = css`
+  color: black;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  width: 100%;
-  height: 100%;
-  border-radius: 6px;
-  border: 0;
-  padding: 0px;
-  font-size: 18px;
-  line-height: ${draftEditorLineHeight};
-
-  .public-DraftStyleDefault-block {
-    ${defaultSpacingBetweenContent}
-  }
-
-  /* Draft built-in buttons' style */
+  font-weight: normal;
   .public-DraftStyleDefault-header-two {
     font-size: 36px;
     line-height: 1.5;
@@ -59,6 +41,39 @@ const DraftEditorWrapper = styled.div`
   }
   .public-DraftStyleDefault-header-four {
   }
+`
+const draftEditorCssWide = css`
+  color: rgba(64, 64, 64, 0.87);
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 600;
+  .public-DraftStyleDefault-header-two {
+    color: black;
+    font-size: 36px;
+    font-weight: 700;
+  }
+  .public-DraftStyleDefault-header-three {
+    color: black;
+    font-size: 32px;
+    font-weight: 700;
+  }
+  .public-DraftStyleDefault-header-four {
+  }
+`
+
+const DraftEditorWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0px;
+  font-size: 18px;
+  line-height: ${draftEditorLineHeight};
+
+  .public-DraftStyleDefault-block {
+    ${defaultSpacingBetweenContent}
+  }
+
+  /* Draft built-in buttons' style */
+
   .public-DraftStyleDefault-blockquote {
     position: relative;
     width: 100%;
@@ -138,6 +153,17 @@ const DraftEditorWrapper = styled.div`
   /* code-block */
   .public-DraftStyleDefault-pre {
   }
+
+  ${({ contentLayout }) => {
+    switch (contentLayout) {
+      case 'normal':
+        return draftEditorCssNormal
+      case 'wide':
+        return draftEditorCssWide
+      default:
+        return draftEditorCssNormal
+    }
+  }}
   .alignCenter * {
     text-align: center;
   }
