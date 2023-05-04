@@ -42,7 +42,7 @@ const BackgroundContent = styled.div`
   &.parallax {
     ${BackgroundContentRow} {
       > div {
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(169, 118, 118, 0.1);
         padding: 20px;
         ${({ theme }) => theme.breakpoint.xl} {
           width: 480px;
