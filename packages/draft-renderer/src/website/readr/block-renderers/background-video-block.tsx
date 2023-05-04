@@ -42,6 +42,7 @@ const BackgroundContent = styled.div`
     ${BackgroundContentRow} {
       > div {
         background: rgba(169, 118, 118, 0.1);
+        border-radius: 8px;
         padding: 20px;
         ${({ theme }) => theme.breakpoint.xl} {
           width: 480px;
