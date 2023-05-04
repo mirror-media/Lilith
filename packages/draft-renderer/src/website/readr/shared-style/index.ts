@@ -56,3 +56,21 @@ export const defaultBlockQuoteStyle = css`
   opacity: 0.87;
   padding: 0 20px;
 `
+
+export const defaultSpacingBetweenContent = css`
+  .public-DraftStyleDefault-block {
+    margin-top: 32px;
+  }
+`
+
+export const narrowSpacingBetweenContent = css`
+  .public-DraftStyleDefault-block {
+    margin-top: 16px;
+  }
+`
+
+export const noSpacingBetweenContent = css`
+  .public-DraftStyleDefault-block {
+    margin-top: unset;
+  }
+`
