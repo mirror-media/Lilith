@@ -2578,10 +2578,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.3.0-beta.11":
-  version "2.3.0-beta.11"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-beta.11.tgz#c4896b010f08de0d3a033553ed19d47d047d1ad4"
-  integrity sha512-UeQTHgqyvqNojpQIY6mTYo80uMto7FuMJ/MQAYHaK7wUGZI6WOVtXTIR/aNBTc9TMLbeIwWCeY1kfIWuwuHHzQ==
+"@readr-media/react-embed-code-generator@2.3.0-beta.12":
+  version "2.3.0-beta.12"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-beta.12.tgz#7b0107eccc50022cfefd1677385a67caaad420c9"
+  integrity sha512-TKRtxNb94Lty4dmzX0lSbqvoioH6hybyZ6EspL49OoOXwOSHeDOBwipvodeRnn4K73ux3Fyz6GCphWYSqlctlQ==
   dependencies:
     "@readr-media/react-dropping-text" "1.0.4"
     "@readr-media/react-dual-slides" "1.0.1"
@@ -2593,7 +2593,7 @@
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
     "@readr-media/react-three-story-points" "1.0.2"
-    "@readr-media/text-selector" "^1.1.1-beta.8"
+    "@readr-media/text-selector" "^1.1.1-beta.9"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -2684,10 +2684,10 @@
     three "^0.150.1"
     three-story-controls "^1.0.6"
 
-"@readr-media/text-selector@^1.1.1-beta.8":
-  version "1.1.1-beta.8"
-  resolved "https://registry.yarnpkg.com/@readr-media/text-selector/-/text-selector-1.1.1-beta.8.tgz#113a389781e18804675fae05590b8fdc1b5ff9b0"
-  integrity sha512-7GrlX0/W1gILkA98cJdM4J691TOT9m31vfCmumQOY5C5mDhGfJY+IcQoeASMxzD7wSDzWproC5CVuDxHjqgSPw==
+"@readr-media/text-selector@^1.1.1-beta.9":
+  version "1.1.1-beta.9"
+  resolved "https://registry.yarnpkg.com/@readr-media/text-selector/-/text-selector-1.1.1-beta.9.tgz#d889254f810a51d2dfe9abe400ea549896641b4f"
+  integrity sha512-rVmXhlZhrIzKekjF2/rqJwfw2XhtpFeJhddvISVZvaDsbMPV+ppuujp8xQtyyO1lkiBnsInZjCvZH2nR4SeyFA==
   dependencies:
     axios "^1.3.5"
 
