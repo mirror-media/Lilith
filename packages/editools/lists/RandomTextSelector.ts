@@ -120,7 +120,7 @@ const listConfigurations = list({
                 position: relative;
                 z-index: 800;
               }
-              @media (min-width:768px) {
+              @media (min-width:608px) {
                 .embedded-code-container {
                   margin-left: calc((100vw - 568px)/2 * -1);
                 }
