@@ -16,6 +16,17 @@ export const theme = {
     xl: `@media (min-width: ${mediaSize.xl}px)`,
     xxl: `@media (min-width: ${mediaSize.xxl}px)`,
   },
+  fontSize: {
+    xs: 'font-size: 14px;',
+    sm: 'font-size: 16px;',
+    md: 'font-size: 18px;',
+    lg: 'font-size: 24px;',
+    xl: 'font-size: 28px;',
+  },
+  margin: {
+    default: 'margin: 32px auto;',
+    narrow: 'margin: 16px auto;',
+  },
 }
 
 export default theme
