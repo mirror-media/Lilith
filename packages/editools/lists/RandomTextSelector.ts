@@ -110,7 +110,10 @@ const listConfigurations = list({
         resolve: async (item: Record<string, unknown>): Promise<string> => {
           const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
 
-          const style = `
+          let style = ''
+
+          if (item?.shiftLeft) {
+            style = `
             <style>
               .embedded-code-container {
                 margin-left: -20px;
@@ -128,6 +131,7 @@ const listConfigurations = list({
               }
             </style>
           `
+          }
 
           const code = embedCodeGen.buildEmbeddedCode(
             'text-selector',
@@ -144,7 +148,6 @@ const listConfigurations = list({
                 ? `${urlPrefix}/images/${item.button_id}.${item.button_extension}`
                 : undefined,
               buttonWording: item?.buttonLabel ?? '其他案例',
-              shouldShiftLeft: item?.shiftLeft,
               isDebugMode: item?.isDebugMode,
               loadingImgSrc: item.loadingIcon_id
                 ? `${urlPrefix}/images/${item.loadingIcon_id}.${item.loadingIcon_extension}`
