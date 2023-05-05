@@ -65,9 +65,9 @@ const SlidesBox = styled.div`
     max-height: 58.75vw;
     min-height: 58.75vw;
     ${({ theme }) => theme.breakpoint.md} {
-      min-width: 640px;
+      min-width: 100%;
       min-height: 428px;
-      max-width: 640px;
+      max-width: 100%;
       max-height: 428px;
     }
   }
