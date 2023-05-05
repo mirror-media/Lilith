@@ -113,8 +113,18 @@ const listConfigurations = list({
           const style = `
             <style>
               .embedded-code-container {
-                z-index: 500;
+                margin-left: -20px;
                 position: relative;
+              }
+              @media (min-width:768px) {
+                .embedded-code-container {
+                  margin-left: calc((100vw - 568px)/2 * -1);
+                }
+              }
+              @media (min-width:1200px) {
+                .embedded-code-container {
+                  margin-left: calc((100vw - 600px)/2 * -1);
+                }
               }
             </style>
           `
