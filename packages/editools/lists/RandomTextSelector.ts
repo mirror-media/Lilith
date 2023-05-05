@@ -118,6 +118,7 @@ const listConfigurations = list({
               .embedded-code-container {
                 margin-left: -20px;
                 position: relative;
+                z-index: 800;
               }
               @media (min-width:768px) {
                 .embedded-code-container {
