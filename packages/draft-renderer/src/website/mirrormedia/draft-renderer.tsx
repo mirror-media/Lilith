@@ -270,7 +270,10 @@ export default function DraftRenderer({
 }) {
   const contentState = convertFromRaw(rawContentBlock)
 
-  const editorState = EditorState.createWithContent(contentState, decorators)
+  const editorState = EditorState.createWithContent(
+    contentState,
+    decorators(contentLayout)
+  )
   const blockRendererFn = (block) => {
     const atomicBlockObj = atomicBlockRenderer(block, contentLayout)
     return atomicBlockObj

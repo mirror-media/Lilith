@@ -120,7 +120,10 @@ function findAnnotationEntities(contentBlock, callback, contentState) {
   }, callback)
 }
 
-export const annotationDecorator = {
-  strategy: findAnnotationEntities,
-  component: AnnotationBlock,
+export const annotationDecorator = (contentLayout = 'normal') => {
+  return {
+    strategy: findAnnotationEntities,
+    component: AnnotationBlock,
+    props: { contentLayout },
+  }
 }
