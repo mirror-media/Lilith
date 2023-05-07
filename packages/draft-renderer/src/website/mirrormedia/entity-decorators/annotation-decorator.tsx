@@ -170,7 +170,6 @@ function indicatorSvg(shouldRotate: boolean, contentLayout = 'normal') {
 
 function AnnotationBlock(props) {
   const { children: annotated, contentLayout = 'normal' } = props
-  console.log('contentLayout in annotation', contentLayout)
   const [toShowAnnotation, setToShowAnnotation] = useState(false)
   const { bodyHTML } = props.contentState.getEntity(props.entityKey).getData()
   return (
