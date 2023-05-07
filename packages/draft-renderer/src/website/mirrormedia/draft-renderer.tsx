@@ -14,46 +14,28 @@ import theme from './theme'
 const draftEditorLineHeight = 2
 /**
  * Due to the data structure from draftjs, each default block contain one HTML element which class name is `public-DraftStyleDefault-block`.
- * So we use this behavior to create spacing between blocks by assign margin-top of which.
+ * So we use this behavior to create spacing between blocks by assign margin-bottom of which.
  * However, some block should not set spacing (e.g. block in <li> and <blockquote>), so we need to unset its margin-top.
  */
 const defaultSpacingBetweenContent = css`
-  .public-DraftStyleDefault-block {
-    margin-top: 1.5em;
-  }
+  margin-bottom: 32px;
 `
-const narrowSpacingBetweenContent = css`
-  margin-top: 20px;
-`
-const noSpacingBetweenContent = css`
-  .public-DraftStyleDefault-block {
-    margin-top: unset;
-  }
-`
-const DraftEditorWrapper = styled.div`
-  /* Rich-editor default setting (.RichEditor-root)*/
 
-  border: 1px solid #ddd;
-  font-family: 'Georgia', serif;
-  font-size: 14px;
-  padding: 15px;
+const noSpacingBetweenContent = {
+  blockquote: css`
+    margin-bottom: unset;
+  `,
+  list: css`
+    margin-bottom: 4px;
+  `,
+}
 
-  /* Custom setting */
+const draftEditorCssNormal = css`
+  color: black;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  width: 100%;
-  height: 100%;
-  border-radius: 6px;
-  border: 0;
-  padding: 0px;
-  font-size: 18px;
-  line-height: ${draftEditorLineHeight};
-  *:not(:first-child) {
-    ${defaultSpacingBetweenContent}
-  }
-
-  /* Draft built-in buttons' style */
+  font-weight: normal;
   .public-DraftStyleDefault-header-two {
     font-size: 36px;
     line-height: 1.5;
@@ -64,16 +46,9 @@ const DraftEditorWrapper = styled.div`
   }
   .public-DraftStyleDefault-header-four {
   }
+
   .public-DraftStyleDefault-blockquote {
-    position: relative;
-    width: 100%;
-    margin: 0 auto;
-    max-width: 480px;
-    text-align: left;
     color: rgba(97, 184, 198, 1);
-    margin: 48px auto;
-    padding-top: 34px;
-    border-top: 2px solid;
     border-image: linear-gradient(
         to right,
         rgba(97, 184, 198, 1) 42.5%,
@@ -83,6 +58,74 @@ const DraftEditorWrapper = styled.div`
       )
       100% 1;
     &::before {
+      background-color: rgba(97, 184, 198, 1);
+    }
+  }
+`
+const draftEditorCssWide = css`
+  color: rgba(64, 64, 64, 0.87);
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 2;
+  .public-DraftStyleDefault-header-two {
+    color: black;
+    font-size: 36px;
+    font-weight: 700;
+  }
+  .public-DraftStyleDefault-header-three {
+    color: black;
+    font-size: 32px;
+    font-weight: 700;
+  }
+  .public-DraftStyleDefault-header-four {
+  }
+  .public-DraftStyleDefault-blockquote {
+    color: rgba(0, 0, 0, 1);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+      'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+      'Noto Color Emoji';
+    font-weight: 400;
+
+    border-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 1) 42.5%,
+        transparent 42.5%,
+        transparent 57.5%,
+        rgba(0, 0, 0, 1) 57.5%
+      )
+      100% 1;
+    &::before {
+      background-color: rgba(0, 0, 0, 1);
+    }
+  }
+`
+
+const DraftEditorWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0px;
+  font-size: 18px;
+  line-height: ${draftEditorLineHeight};
+
+  .public-DraftStyleDefault-block {
+    ${defaultSpacingBetweenContent}
+  }
+
+  /* Draft built-in buttons' style */
+
+  .public-DraftStyleDefault-blockquote {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 480px;
+    text-align: left;
+    margin: 48px auto;
+    padding-top: 34px;
+    border-top: 2px solid;
+    &::before {
       content: '';
       position: absolute;
       top: 0;
@@ -90,11 +133,11 @@ const DraftEditorWrapper = styled.div`
       transform: translate(-50%, -50%);
       width: 100%;
       height: 20px;
-      background-image: url(${blockquoteDecoration});
-      background-repeat: no-repeat;
-      background-position: center center;
+      mask-image: url(${blockquoteDecoration});
+      mask-repeat: no-repeat;
+      mask-position: center center;
     }
-    ${noSpacingBetweenContent}
+    ${noSpacingBetweenContent.blockquote}
     ${({ theme }) => theme.breakpoint.md} {
       padding-top: 26px;
     }
@@ -102,8 +145,10 @@ const DraftEditorWrapper = styled.div`
   .public-DraftStyleDefault-ul {
     margin-left: 18px;
     list-style: none;
-    ${narrowSpacingBetweenContent}
-    ${noSpacingBetweenContent}
+    ${defaultSpacingBetweenContent}
+    .public-DraftStyleDefault-block {
+      ${noSpacingBetweenContent.list}
+    }
   }
   .public-DraftStyleDefault-unorderedListItem {
     position: relative;
@@ -121,8 +166,10 @@ const DraftEditorWrapper = styled.div`
   }
   .public-DraftStyleDefault-ol {
     margin-left: 18px;
-    ${narrowSpacingBetweenContent}
-    ${noSpacingBetweenContent}
+    ${defaultSpacingBetweenContent}
+    .public-DraftStyleDefault-block {
+      ${noSpacingBetweenContent.list}
+    }
   }
   .public-DraftStyleDefault-orderedListItem {
     position: relative;
@@ -139,6 +186,17 @@ const DraftEditorWrapper = styled.div`
   /* code-block */
   .public-DraftStyleDefault-pre {
   }
+
+  ${({ contentLayout }) => {
+    switch (contentLayout) {
+      case 'normal':
+        return draftEditorCssNormal
+      case 'wide':
+        return draftEditorCssWide
+      default:
+        return draftEditorCssNormal
+    }
+  }}
   .alignCenter * {
     text-align: center;
   }
@@ -206,18 +264,23 @@ const blockStyleFn = (editorState, block) => {
   return result
 }
 
-const blockRendererFn = (block) => {
-  const atomicBlockObj = atomicBlockRenderer(block)
-  return atomicBlockObj
-}
-
-export default function DraftRenderer({ rawContentBlock }) {
+export default function DraftRenderer({
+  rawContentBlock,
+  contentLayout = 'normal',
+}) {
   const contentState = convertFromRaw(rawContentBlock)
-  const editorState = EditorState.createWithContent(contentState, decorators)
 
+  const editorState = EditorState.createWithContent(
+    contentState,
+    decorators(contentLayout)
+  )
+  const blockRendererFn = (block) => {
+    const atomicBlockObj = atomicBlockRenderer(block, contentLayout)
+    return atomicBlockObj
+  }
   return (
     <ThemeProvider theme={theme}>
-      <DraftEditorWrapper>
+      <DraftEditorWrapper contentLayout={contentLayout}>
         <Editor
           editorState={editorState}
           customStyleMap={customStyleMap}
@@ -225,6 +288,8 @@ export default function DraftRenderer({ rawContentBlock }) {
           blockRendererFn={blockRendererFn}
           customStyleFn={customStyleFn}
           readOnly
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onChange={() => {}}
         />
       </DraftEditorWrapper>
     </ThemeProvider>
