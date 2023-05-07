@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
 import defaultImage from '../assets/default-og-img.png'
 import loadingImage from '../assets/loading.gif'
@@ -10,6 +10,35 @@ import {
   clearAllBodyScrollLocks,
 } from 'body-scroll-lock'
 
+const imageFigureLayoutNormal = css``
+const imageFigureLayoutWide = css`
+  .readr-media-react-image {
+    position: relative;
+    max-width: calc(100% + 20px + 20px);
+    transform: translateX(-20px);
+  }
+`
+
+const figcaptionLayoutNormal = css`
+  margin-top: 12px;
+  ${({ theme }) => theme.breakpoint.md} {
+    margin-top: 20px;
+  }
+`
+const figcaptionLayoutWide = css`
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  padding-top: 12px;
+  margin-top: 16px;
+  position: relative;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  ${({ theme }) => theme.breakpoint.md} {
+    max-width: calc(100% + 20px + 20px);
+    transform: translateX(-20px);
+  }
+`
+
 const Figure = styled.figure`
   margin-block: unset;
   margin-inline: unset;
@@ -19,15 +48,33 @@ const Figure = styled.figure`
     cursor: pointer;
   }
 `
+const ImageFigure = styled(Figure)`
+  ${({ contentLayout }) => {
+    switch (contentLayout) {
+      case 'normal':
+        return imageFigureLayoutNormal
+      case 'wide':
+        return imageFigureLayoutWide
+      default:
+        return imageFigureLayoutNormal
+    }
+  }}
+`
 const Figcaption = styled.figcaption`
   font-size: 14px;
   line-height: 1.8;
   font-weight: 400;
   color: rgba(0, 0, 0, 0.5);
-  margin-top: 12px;
-  ${({ theme }) => theme.breakpoint.md} {
-    margin-top: 20px;
-  }
+  ${({ contentLayout }) => {
+    switch (contentLayout) {
+      case 'normal':
+        return figcaptionLayoutNormal
+      case 'wide':
+        return figcaptionLayoutWide
+      default:
+        return figcaptionLayoutNormal
+    }
+  }}
 `
 const Anchor = styled.a`
   text-decoration: none;
@@ -92,12 +139,14 @@ const LightBoxWrapper = styled.div`
     cursor: auto;
   }
 `
-export function ImageBlock(entity: DraftEntityInstance) {
+export function ImageBlock(
+  entity: DraftEntityInstance,
+  contentLayout = 'normal'
+) {
   const lightBoxRef = useRef(null)
 
   const [shouldOpenLightBox, setShouldOpenLightBox] = useState(false)
   const { name, desc, resized, url } = entity.getData()
-
   const handleOpen = () => {
     if (url) {
       return
@@ -106,19 +155,31 @@ export function ImageBlock(entity: DraftEntityInstance) {
   }
 
   let imgBlock = (
-    <Figure onClick={handleOpen}>
+    <ImageFigure
+      key={resized.original}
+      contentLayout={contentLayout}
+      onClick={handleOpen}
+    >
       <CustomImage
         images={resized}
         defaultImage={defaultImage}
         loadingImage={loadingImage}
+        width={'100vw'}
+        height={'auto'}
+        objectFit={'contain'}
         alt={name}
-        rwd={{ mobile: '100vw', tablet: '640px', default: '100%' }}
+        rwd={{ mobile: '100vw', tablet: '640px', default: '640px' }}
         priority={true}
       ></CustomImage>
       {desc ? (
-        <Figcaption onClick={(e) => e.stopPropagation()}>{desc}</Figcaption>
+        <Figcaption
+          contentLayout={contentLayout}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {desc}
+        </Figcaption>
       ) : null}
-    </Figure>
+    </ImageFigure>
   )
   useEffect(() => {
     if (lightBoxRef && lightBoxRef.current) {
