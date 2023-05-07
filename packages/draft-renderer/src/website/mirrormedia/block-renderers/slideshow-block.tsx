@@ -121,6 +121,9 @@ const Desc = styled.figcaption`
   color: rgba(0, 0, 0, 0.5);
   margin-top: 20px;
   min-height: 1.8rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 `
 
 // support old version of slideshow without delay propertiy
