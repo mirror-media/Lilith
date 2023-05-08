@@ -14,9 +14,17 @@ import {
 
 const annotationDefaultSpacing = 8
 
-const AnnotatedText = styled.span`
+const AnnotationText = styled.span`
+  ${defaultLinkStyle};
+`
+
+const AnnotationWrapper = styled.span`
   display: inline-block;
   cursor: pointer;
+
+  &:hover ${AnnotationText} {
+    border-bottom: 2px solid #04295e;
+  }
 `
 
 const AnnotationBody = styled.div`
@@ -110,15 +118,15 @@ function AnnotationBlock(props) {
   const annotationBodyHtml = bodyHTML || annotation.trim()
   return (
     <React.Fragment>
-      <AnnotatedText
+      <AnnotationWrapper
         onClick={(e) => {
           e.preventDefault()
           setShowContent(!showContent)
         }}
       >
-        {annotated}
+        <AnnotationText className="text">{annotated}</AnnotationText>
         <ArrowIcon showContent={showContent} />
-      </AnnotatedText>
+      </AnnotationWrapper>
       {showContent ? (
         <AnnotationBody
           contentEditable={false}
