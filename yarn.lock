@@ -2553,10 +2553,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@readr-media/react-dropping-text@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.4.tgz#a38d9e31ba3a3ec800bb4b2b181abceeb4791c16"
-  integrity sha512-I/v7vmVLQLsMc2sD66zD7Yv/kVxhawd3e6SHSAKclDHSZ4LrsACP2rbX+j09lIFHZdrKS6yI0Bs44GkTxvraTg==
+"@readr-media/react-dropping-text@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.5.tgz#49b6320e10bd00689fcd61fccebc044e797fdf43"
+  integrity sha512-HgT0DObr3ZLkMkce/OOsQaQ1CarhGikemwCN95B2kmyp71ROYzPFGFcNe1k0qlp0fyCQhjT0vCpd+WhmyWbB7w==
   dependencies:
     matter-js "^0.19.0"
     react-intersection-observer "^9.3.5"
@@ -2578,12 +2578,12 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.3.0-beta.15":
-  version "2.3.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-beta.15.tgz#9890ab6bf643fb19238404dd2b83dc1f5675f33e"
-  integrity sha512-kzkab+jKZ9mW3zaiYKb50Snu0aMhLl9mVBHP7MYPCDYhfC7Ns6PBf/X/vHUZjMWB7jKrhZvNixU0+hh6sNYC1A==
+"@readr-media/react-embed-code-generator@2.3.0-beta.17":
+  version "2.3.0-beta.17"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-beta.17.tgz#6e7edc7e7df74867be887e239703d4ae1db488f8"
+  integrity sha512-+uwYhzSxlA3PE/tzDx6/piiF1SkIV/BIcfuja9Nyus2OPBwRsRjwBBs+iBey19A+q7KUBZYMIXTV+iUm5+hNlw==
   dependencies:
-    "@readr-media/react-dropping-text" "1.0.4"
+    "@readr-media/react-dropping-text" "1.0.5"
     "@readr-media/react-dual-slides" "1.0.1"
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
@@ -2685,9 +2685,9 @@
     three-story-controls "^1.0.6"
 
 "@readr-media/text-selector@^1.1.1-beta.12":
-  version "1.1.1-beta.12"
-  resolved "https://registry.yarnpkg.com/@readr-media/text-selector/-/text-selector-1.1.1-beta.12.tgz#1d391d3e54b2f343c7081eb5762dcffefe2d2b58"
-  integrity sha512-PJ/qeZu+x+J5vCAxD7yEK40SKaN2p7wY9PEzkBcYGB7JD47JsHeWASk/o753KgP77CnALnI5Z1C/BGbUKG4TmQ==
+  version "1.1.1-beta.13"
+  resolved "https://registry.yarnpkg.com/@readr-media/text-selector/-/text-selector-1.1.1-beta.13.tgz#867c7cb65bc2449f20ff04e476c267ba5b302af7"
+  integrity sha512-AElljoVyVX9G91L+KU0QsjRdtysMAmyvtG9xvFlJccJGePdu/m7g/ux+5vfPStK6A4783EAFiKJ3CCj+xpJ+ug==
   dependencies:
     axios "^1.3.5"
 
