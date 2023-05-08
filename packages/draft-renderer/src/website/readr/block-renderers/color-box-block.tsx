@@ -19,6 +19,7 @@ const ColorBoxRenderWrapper = styled.div`
   padding: 12px 24px;
   position: relative;
   color: #000928;
+  ${({ theme }) => theme.margin.default};
 
   > div > * + * {
     margin: ${colorBoxDefaultSpacing}px 0 0;
