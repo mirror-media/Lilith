@@ -139,9 +139,12 @@ const customStyleFn = (style: any) => {
       styles['color'] = styleName.split(CUSTOM_STYLE_PREFIX_FONT_COLOR)[1]
     }
     if (styleName?.startsWith(CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR)) {
-      styles['backgroundColor'] = styleName.split(
+      const highlightColor = styleName.split(
         CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR
       )[1]
+      styles[
+        'background'
+      ] = `linear-gradient(to top, transparent 25%, ${highlightColor} 25% 65%, transparent 65%)`
     }
     return styles
   }, {})
