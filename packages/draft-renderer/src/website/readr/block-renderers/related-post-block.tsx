@@ -9,6 +9,8 @@ const RelatedPostWrapper = styled.div`
   border: 2px solid #04295e;
   border-width: 2px 2px 2px 12px;
   padding: 16px;
+  ${({ theme }) => theme.margin.default};
+
   ${({ theme }) => theme.breakpoint.md} {
     padding: 24px;
   }
@@ -29,16 +31,21 @@ const RelatedPostItem = styled.div`
   display: flex;
 `
 const RelatedPostAnchorWrapper = styled.a`
-  display: flex;
   text-decoration: none;
+  display: inline-block;
+  margin: 12px 0 0;
+
+  &:hover span {
+    border-bottom: 2px solid #04295e;
+  }
 `
 
 const RelatedPost = styled.span`
   color: rgba(0, 9, 40, 0.87);
   font-size: 18px;
   line-height: 1.6;
-  margin: 12px 0 0;
   border-bottom: 2px solid #ebf02c;
+  padding-bottom: 2px;
 `
 
 export function RelatedPostBlock(entity: DraftEntityInstance) {

@@ -1,4 +1,9 @@
-import { convertFromRaw, Editor, EditorState } from 'draft-js'
+import {
+  convertFromRaw,
+  Editor,
+  EditorState,
+  RawDraftContentState,
+} from 'draft-js'
 import React from 'react'
 import styled, { css, ThemeProvider } from 'styled-components'
 
@@ -8,17 +13,19 @@ import {
 } from '../../draft-js/const'
 import { atomicBlockRenderer } from './block-renderer-fn'
 import decorators from './entity-decorator'
-import theme from './theme'
-
 import {
-  defaultH2Style,
-  defaultUlStyle,
-  defaultOlStyle,
   defaultBlockQuoteStyle,
+  defaultH2Style,
+  defaultOlStyle,
   defaultSpacingBetweenContent,
+  defaultUlStyle,
   narrowSpacingBetweenContent,
   noSpacingBetweenContent,
 } from './shared-style'
+import theme from './theme'
+// eslint-disable-next-line prettier/prettier
+import type { Post } from './types'
+import { insertRecommendInContent, removeEmptyContentBlock } from './utils'
 
 const blockQuoteSpacingBetweenContent = css`
   .public-DraftStyleDefault-block {
@@ -191,8 +198,43 @@ const blockRendererFn = (block: any) => {
   return atomicBlockObj
 }
 
-export default function DraftRenderer({ rawContentBlock }: any) {
-  const contentState = convertFromRaw(rawContentBlock)
+type DraftRendererProps = {
+  rawContentBlock?: RawDraftContentState
+  insertRecommend?: Post[]
+}
+
+export default function DraftRenderer({
+  rawContentBlock,
+  insertRecommend = [],
+}: DraftRendererProps) {
+
+  //if `rawContentBlock` has no data, throw error
+  if (
+    !rawContentBlock ||
+    !rawContentBlock.blocks ||
+    !rawContentBlock.blocks.length
+  ) {
+    throw new Error(
+      'There is no content in rawContentBlock, please check again.'
+    )
+  }
+
+  let contentState
+
+  //if `rawContentBlock` data need to insert recommends, use `insertRecommendInContent` utils 
+  if (insertRecommend.length) {
+    const contentWithRecommend = insertRecommendInContent(
+      rawContentBlock,
+      insertRecommend
+    )
+    contentState = convertFromRaw(contentWithRecommend)
+  } else {
+  
+  //if `rawContentBlock` data has no recommends, only remove empty content blocks
+    const contentRemoveEmpty = removeEmptyContentBlock(rawContentBlock)
+    contentState = convertFromRaw(contentRemoveEmpty)
+  }
+
   const editorState = EditorState.createWithContent(contentState, decorators)
 
   return (
