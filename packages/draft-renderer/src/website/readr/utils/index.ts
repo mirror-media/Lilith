@@ -111,10 +111,18 @@ const insertRecommendInContent = (
       (item: any) => item?.type === 'unstyled' && item?.text.length
     )
 
-    const divideAmount =
-      Math.round(paragraphs?.length / (relatedPostsBlocks.length + 1)) || 0
+    let divideAmount
 
-    if (data?.length) {
+    //if relatedPosts amounts far more than paragraphs amounts, insert a recommend every other paragraph until paragraphs end.
+    if (relatedPostsBlocks.length) {
+      divideAmount =
+        Math.round(paragraphs?.length / (relatedPostsBlocks.length + 1)) ||
+        (paragraphs?.length ? 1 : 0)
+    } else {
+      divideAmount = 0
+    }
+
+    if (paragraphs?.length) {
       while (i < data.length && divideAmount) {
         if (data[i]?.type === 'unstyled' && data[i]?.text.length) {
           count++
