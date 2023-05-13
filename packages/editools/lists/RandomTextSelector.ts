@@ -135,7 +135,7 @@ const listConfigurations = list({
           }
 
           const code = embedCodeGen.buildEmbeddedCode(
-            'text-selector',
+            'react-random-text-selector',
             {
               jsonUrls: item?.json ?? [],
               backgroundColor: item?.backgroundColor ?? '#000000',
