@@ -170,7 +170,7 @@ export function ImageBlock(
         objectFit={'contain'}
         alt={name}
         rwd={{ mobile: '100vw', tablet: '640px', default: '640px' }}
-        priority={true}
+        priority={false}
       ></CustomImage>
       {desc ? (
         <Figcaption

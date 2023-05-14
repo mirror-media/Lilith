@@ -202,7 +202,7 @@ export function SlideshowBlockV2(entity: EntityInstance) {
           images={item}
           key={index}
           objectFit={'contain'}
-          priority={true}
+          priority={false}
         />
       )),
     [slidesWithClone]
