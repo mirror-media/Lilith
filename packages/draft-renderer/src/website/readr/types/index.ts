@@ -24,6 +24,13 @@ enum ValidPostStyle {
   SCROLLABLE_VIDEO = 'scrollablevideo',
 }
 
+export enum ValidPostContentType {
+  SUMMARY = 'summary',
+  NORMAL = 'normal',
+  ACTIONLIST = 'actionlist',
+  CITATION = 'citation',
+}
+
 export type Post = {
   id: string
   slug: string
