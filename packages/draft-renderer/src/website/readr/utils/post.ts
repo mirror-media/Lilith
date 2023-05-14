@@ -1,55 +1,11 @@
 import { RawDraftContentState } from 'draft-js'
+
 // eslint-disable-next-line prettier/prettier
 import type { Post } from '../types'
+import { removeEmptyContentBlock } from './common'
 
-const hasContentInRawContentBlock = (
-  rawContentBlock?: RawDraftContentState
-) => {
-  if (
-    !rawContentBlock ||
-    !rawContentBlock.blocks ||
-    !rawContentBlock.blocks.length
-  ) {
-    return false
-  }
-  const hasAtomicBlock = Boolean(
-    rawContentBlock.blocks.some((block) => block.type === 'atomic')
-  )
-  if (hasAtomicBlock) {
-    return hasAtomicBlock
-  }
-  const defaultBlockHasContent = Boolean(
-    rawContentBlock.blocks
-      .filter((block) => block.type !== 'atomic')
-      .some((block) => block.text.trim())
-  )
-  return defaultBlockHasContent
-}
-
-const removeEmptyContentBlock = (
-  rawContentBlock?: RawDraftContentState
-): any => {
-  const hasContent = hasContentInRawContentBlock(rawContentBlock)
-  if (!hasContent) {
-    throw new Error(
-      'There is no content in rawContentBlock, please check again.'
-    )
-  }
-  const blocksWithHideEmptyBlock = rawContentBlock?.blocks
-    .map((block) => {
-      if (block.type === 'atomic' || block.text) {
-        return block
-      } else {
-        return undefined
-      }
-    })
-    .filter((block) => block)
-
-  return { ...rawContentBlock, blocks: blocksWithHideEmptyBlock }
-}
-
-const insertRecommendInContent = (
-  content: RawDraftContentState,
+const insertRecommendInContentBlock = (
+  rawContentBlock: RawDraftContentState,
   insertRecommend: Post[]
 ) => {
   const relatedPostsEntityMaps = insertRecommend?.map((post: Post) => ({
@@ -82,7 +38,7 @@ const insertRecommendInContent = (
   )
 
   const entityMapWithInsertRecommend = {
-    ...content.entityMap,
+    ...rawContentBlock.entityMap,
     ...insertRelatedEntities,
   }
 
@@ -113,7 +69,6 @@ const insertRecommendInContent = (
 
     let divideAmount
 
-    //if relatedPosts amounts far more than paragraphs amounts, insert a recommend every other paragraph until paragraphs end.
     if (relatedPostsBlocks.length) {
       divideAmount =
         Math.round(paragraphs?.length / (relatedPostsBlocks.length + 1)) ||
@@ -122,7 +77,7 @@ const insertRecommendInContent = (
       divideAmount = 0
     }
 
-    if (paragraphs?.length) {
+    if (data?.length) {
       while (i < data.length && divideAmount) {
         if (data[i]?.type === 'unstyled' && data[i]?.text.length) {
           count++
@@ -153,18 +108,53 @@ const insertRecommendInContent = (
     return data
   }
 
-  const rawContent = removeEmptyContentBlock(content)
+  const contentWithoutEmptyBlock = removeEmptyContentBlock(rawContentBlock)
 
   const contentWithInsertRecommend: any = {
-    blocks: insertRecommendBlocks(rawContent?.blocks),
+    blocks: insertRecommendBlocks(contentWithoutEmptyBlock?.blocks),
     entityMap: entityMapWithInsertRecommend,
   }
 
   return contentWithInsertRecommend
 }
 
+const getFirstBlockEntityType = (rawContentBlock: RawDraftContentState) => {
+  const contentBlocks = removeEmptyContentBlock(rawContentBlock)
+
+  if (contentBlocks) {
+    return contentBlocks?.entityMap[0]?.type
+  } else {
+    return undefined
+  }
+}
+
+const getSideIndexEntityData = (rawContentBlock: RawDraftContentState) => {
+  const contentBlocks = removeEmptyContentBlock(rawContentBlock)
+
+  if (contentBlocks?.entityMap) {
+    return Object.values(contentBlocks.entityMap)
+      .filter((entity) => entity.type === 'SIDEINDEX')
+      .map((entity) => {
+        const content = entity.data ?? {}
+
+        const sideIndexTitle = content.sideIndexText || content.h2Text || ''
+
+        const key = sideIndexTitle.replace(/\s+/g, '')
+
+        return {
+          title: sideIndexTitle,
+          id: `header-${key}`,
+          href: content?.sideIndexUrl || null,
+          isActive: false,
+        }
+      })
+  } else {
+    return undefined
+  }
+}
+
 export {
-  hasContentInRawContentBlock,
-  insertRecommendInContent,
-  removeEmptyContentBlock,
+  getFirstBlockEntityType,
+  getSideIndexEntityData,
+  insertRecommendInContentBlock,
 }
