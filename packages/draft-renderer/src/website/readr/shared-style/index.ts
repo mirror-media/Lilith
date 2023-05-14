@@ -1,5 +1,22 @@
 import { css } from 'styled-components'
 
+export const blockQuoteSpacingBetweenContent = css`
+  .public-DraftStyleDefault-block {
+    margin-top: 8px;
+  }
+`
+export const textAroundPictureStyle = css`
+  max-width: 33.3%;
+  > figure {
+    margin-bottom: 0;
+    width: 150%;
+    transform: unset;
+  }
+  figcaption {
+    padding: 0;
+  }
+`
+
 export const defaultH2Style = css`
   ${({ theme }) => theme.fontSize.lg};
   font-weight: 700;
@@ -15,7 +32,6 @@ export const defaultH2Style = css`
 export const defaultUlStyle = css`
   list-style-type: disc;
   padding-left: 1.2rem;
-  margin-top: 32px;
 `
 
 export const defaultUnorderedListStyle = css`
@@ -27,7 +43,6 @@ export const defaultUnorderedListStyle = css`
 export const defaultOlStyle = css`
   list-style-type: decimal;
   padding-left: 1.2rem;
-  margin-top: 32px;
 `
 
 export const defaultOrderedListStyle = css`
