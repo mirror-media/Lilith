@@ -9,6 +9,7 @@ import {
   CUSTOM_STYLE_PREFIX_FONT_COLOR,
   CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR,
 } from '../../draft-js/const'
+import { defaultMarginBottom } from './shared-style'
 import theme from './theme'
 
 const draftEditorLineHeight = 2
@@ -17,9 +18,6 @@ const draftEditorLineHeight = 2
  * So we use this behavior to create spacing between blocks by assign margin-bottom of which.
  * However, some block should not set spacing (e.g. block in <li> and <blockquote>), so we need to unset its margin-top.
  */
-const defaultSpacingBetweenContent = css`
-  margin-bottom: 32px;
-`
 
 const noSpacingBetweenContent = {
   blockquote: css`
@@ -111,7 +109,7 @@ const DraftEditorWrapper = styled.div`
   line-height: ${draftEditorLineHeight};
 
   .public-DraftStyleDefault-block {
-    ${defaultSpacingBetweenContent}
+    ${defaultMarginBottom}
   }
 
   /* Draft built-in buttons' style */
@@ -145,7 +143,7 @@ const DraftEditorWrapper = styled.div`
   .public-DraftStyleDefault-ul {
     margin-left: 18px;
     list-style: none;
-    ${defaultSpacingBetweenContent}
+    ${defaultMarginBottom}
     .public-DraftStyleDefault-block {
       ${noSpacingBetweenContent.list}
     }
@@ -166,7 +164,7 @@ const DraftEditorWrapper = styled.div`
   }
   .public-DraftStyleDefault-ol {
     margin-left: 18px;
-    ${defaultSpacingBetweenContent}
+    ${defaultMarginBottom}
     .public-DraftStyleDefault-block {
       ${noSpacingBetweenContent.list}
     }

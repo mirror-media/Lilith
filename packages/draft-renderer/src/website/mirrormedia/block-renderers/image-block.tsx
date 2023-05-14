@@ -4,6 +4,7 @@ import { DraftEntityInstance } from 'draft-js'
 import defaultImage from '../assets/default-og-img.png'
 import loadingImage from '../assets/loading.gif'
 import CustomImage from '@readr-media/react-image'
+import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
 import {
   disableBodyScroll,
   enableBodyScroll,
@@ -42,8 +43,8 @@ const figcaptionLayoutWide = css`
 const Figure = styled.figure`
   margin-block: unset;
   margin-inline: unset;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  ${defaultMarginTop}
+  ${defaultMarginBottom}
   .readr-media-react-image {
     cursor: pointer;
   }
