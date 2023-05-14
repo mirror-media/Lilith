@@ -5,7 +5,7 @@ import {
   RawDraftContentState,
 } from 'draft-js'
 import React from 'react'
-import styled, { css, ThemeProvider } from 'styled-components'
+import styled, { ThemeProvider } from 'styled-components'
 
 import {
   CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR,
@@ -14,37 +14,29 @@ import {
 import { atomicBlockRenderer } from './block-renderer-fn'
 import decorators from './entity-decorator'
 import {
-  defaultBlockQuoteStyle,
+  CitationStyle,
+  NormalStyle,
+  SummaryStyle,
+} from './shared-style/content-type'
+import {
   defaultH2Style,
   defaultOlStyle,
-  defaultSpacingBetweenContent,
   defaultUlStyle,
   narrowSpacingBetweenContent,
-  noSpacingBetweenContent,
-} from './shared-style'
+  textAroundPictureStyle,
+} from './shared-style/index'
 import theme from './theme'
 // eslint-disable-next-line prettier/prettier
 import type { Post } from './types'
-import { insertRecommendInContent, removeEmptyContentBlock } from './utils'
+import { ValidPostContentType } from './types'
+import { removeEmptyContentBlock } from './utils/common'
+import { insertRecommendInContentBlock } from './utils/post'
 
-const blockQuoteSpacingBetweenContent = css`
-  .public-DraftStyleDefault-block {
-    margin-top: 8px;
-  }
-`
-const textAroundPictureStyle = css`
-  max-width: 33.3%;
-  > figure {
-    margin-bottom: 0;
-    width: 150%;
-    transform: unset;
-  }
-  figcaption {
-    padding: 0;
-  }
-`
+type DraftEditorProps = {
+  contentType: string
+}
 
-const DraftEditorWrapper = styled.div`
+const DraftEditorWrapper = styled.div<DraftEditorProps>`
   /* Rich-editor default setting (.RichEditor-root)*/
   font-family: 'Georgia', serif;
   text-align: left;
@@ -55,13 +47,8 @@ const DraftEditorWrapper = styled.div`
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   width: 100%;
   height: 100%;
-  ${({ theme }) => theme.fontSize.md};
-  line-height: 2;
   letter-spacing: 0.01em;
   color: rgba(0, 9, 40, 0.87);
-  *:not(:first-child) {
-    ${defaultSpacingBetweenContent}
-  }
 
   *:has(.bg) + *:has(.bg) {
     section {
@@ -82,23 +69,8 @@ const DraftEditorWrapper = styled.div`
     ${defaultUlStyle}
   }
 
-  .public-DraftStyleDefault-unorderedListItem {
-    ${noSpacingBetweenContent};
-  }
-
   .public-DraftStyleDefault-ol {
     ${defaultOlStyle}
-  }
-  .public-DraftStyleDefault-orderedListItem {
-    ${noSpacingBetweenContent};
-  }
-
-  .public-DraftStyleDefault-blockquote {
-    ${defaultBlockQuoteStyle};
-
-    & + blockquote {
-      ${blockQuoteSpacingBetweenContent};
-    }
   }
 
   /* code-block */
@@ -129,6 +101,20 @@ const DraftEditorWrapper = styled.div`
       transform: translateX(32px);
     }
   }
+
+  ${({ contentType }) => {
+    switch (contentType) {
+      case ValidPostContentType.NORMAL:
+      case ValidPostContentType.ACTIONLIST:
+        return NormalStyle
+      case ValidPostContentType.SUMMARY:
+        return SummaryStyle
+      case ValidPostContentType.CITATION:
+        return CitationStyle
+      default:
+        return NormalStyle
+    }
+  }}
 `
 
 const customStyleMap = {
@@ -151,7 +137,7 @@ const customStyleFn = (style: any) => {
       )[1]
       styles[
         'background'
-      ] = `linear-gradient(to top, transparent 25%, ${highlightColor} 25% 65%, transparent 65%)`
+      ] = `linear-gradient(to top, transparent 25%, ${highlightColor} 25% 75%, transparent 75%)`
     }
     return styles
   }, {})
@@ -201,13 +187,14 @@ const blockRendererFn = (block: any) => {
 type DraftRendererProps = {
   rawContentBlock?: RawDraftContentState
   insertRecommend?: Post[]
+  contentType?: ValidPostContentType
 }
 
 export default function DraftRenderer({
   rawContentBlock,
   insertRecommend = [],
+  contentType = ValidPostContentType.NORMAL,
 }: DraftRendererProps) {
-
   //if `rawContentBlock` has no data, throw error
   if (
     !rawContentBlock ||
@@ -221,16 +208,15 @@ export default function DraftRenderer({
 
   let contentState
 
-  //if `rawContentBlock` data need to insert recommends, use `insertRecommendInContent` utils 
+  //if `rawContentBlock` data need to insert recommends, use `insertRecommendInContent` utils
   if (insertRecommend.length) {
-    const contentWithRecommend = insertRecommendInContent(
+    const contentWithRecommend = insertRecommendInContentBlock(
       rawContentBlock,
       insertRecommend
     )
     contentState = convertFromRaw(contentWithRecommend)
   } else {
-  
-  //if `rawContentBlock` data has no recommends, only remove empty content blocks
+    //if `rawContentBlock` data has no recommends, only remove empty content blocks
     const contentRemoveEmpty = removeEmptyContentBlock(rawContentBlock)
     contentState = convertFromRaw(contentRemoveEmpty)
   }
@@ -239,7 +225,7 @@ export default function DraftRenderer({
 
   return (
     <ThemeProvider theme={theme}>
-      <DraftEditorWrapper>
+      <DraftEditorWrapper contentType={contentType}>
         <Editor
           editorState={editorState}
           customStyleMap={customStyleMap}
