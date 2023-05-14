@@ -1,6 +1,7 @@
 import React from 'react'
 import { ContentBlock, ContentState } from 'draft-js'
 import styled, { css } from 'styled-components'
+import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
 
 //for setting background color info box
 const backgroundColorNormal = '#054f77'
@@ -32,8 +33,8 @@ const infoBoxWrapperWide = css`
 
 const InfoBoxRenderWrapper = styled.div`
   padding: 32px 30px 22px 30px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  ${defaultMarginTop}
+  ${defaultMarginBottom}
   position: relative;
   > h2 {
     font-size: 20px;
