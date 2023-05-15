@@ -28,6 +28,11 @@ const SlideShowBlockWrapper = styled.div`
     overflow: ${(props) => (props.expandSlideShow ? 'visible' : 'hidden')};
     margin-bottom: ${(props) => (props.expandSlideShow ? '32px' : '16px')};
   }
+
+  .slideshow-image {
+    max-height: ${(props) =>
+      props.shouldLimitFigureHeight ? 'calc(960px - 324px)' : 'none'};
+  }
 `
 
 const SlideShowImage = styled.figure`
@@ -175,6 +180,7 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
   }, [focusImageIndex])
 
   const shouldMaskSlideShow = Boolean(images.length > 9 && !expandSlideShow)
+  const shouldLimitFigureHeight = Boolean(images.length > 1)
 
   const slideShowImages = images.map((image, index) => {
     const { id, resized, desc, name } = image
@@ -209,6 +215,7 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
       <SlideShowBlockWrapper
         onClick={() => setExpandSlideShow(!expandSlideShow)}
         expandSlideShow={expandSlideShow}
+        shouldLimitFigureHeight={shouldLimitFigureHeight}
       >
         {slideShowImages}
         {shouldMaskSlideShow && <GradientMask />}
