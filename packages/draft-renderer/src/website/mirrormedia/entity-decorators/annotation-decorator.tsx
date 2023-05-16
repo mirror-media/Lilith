@@ -1,14 +1,27 @@
 import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 
-const colorNormal = '#054f77'
-const colorWide = 'rgba(64, 64, 64, 0.87);'
+const annotationBodyColorNormal = {
+  backgroundColor: '#F2F2F2',
+  textColor: '#054f77',
+}
+const annotationBodyColorWide = {
+  backgroundColor: '#E3E3E3',
+  textColor: 'rgba(0, 0, 0, 0.87)',
+}
+const annotationBodyColorPremium = {
+  backgroundColor: '#F3F5F6',
+  textColor: 'rgba(0, 0, 0, 0.87)',
+}
 
 const annotatedTextNormal = css`
-  color: ${colorNormal};
+  color: #054f77;
 `
 const annotatedTextWide = css`
-  color: ${colorWide};
+  color: rgba(64, 64, 64, 0.87);
+`
+const annotatedTextPremium = css`
+  color: #054f77;
 `
 const AnnotatedText = styled.span`
   text-decoration: underline;
@@ -26,6 +39,8 @@ const AnnotatedText = styled.span`
         return annotatedTextNormal
       case 'wide':
         return annotatedTextWide
+      case 'premium':
+        return annotatedTextPremium
       default:
         return annotatedTextNormal
     }
@@ -34,18 +49,21 @@ const AnnotatedText = styled.span`
 //for setting color of text, color of `<li>` marker in `<ul>` and `<ol>`.
 
 const annotationBodyNormal = css`
-  color: ${colorNormal};
+  color: ${annotationBodyColorNormal.textColor};
+  background-color: ${annotationBodyColorNormal.backgroundColor};
   margin-top: 16px;
   margin-bottom: 24px;
   ul {
     li {
-      background-color: ${colorNormal};
+      &::before {
+        background-color: ${annotationBodyColorNormal.textColor};
+      }
     }
   }
   ol {
     li {
       &::before {
-        color: ${colorNormal};
+        color: ${annotationBodyColorNormal.textColor};
       }
     }
   }
@@ -58,21 +76,49 @@ const annotationBodyWide = css`
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  color: ${colorWide};
+  color: ${annotationBodyColorWide.textColor};
+  background-color: ${annotationBodyColorWide.backgroundColor};
+
   margin-top: 16px;
   margin-bottom: 24px;
   border: 1px solid black;
   ul {
     li {
       &::before {
-        background-color: ${colorWide};
+        background-color: ${annotationBodyColorWide.textColor};
       }
     }
   }
   ol {
     li {
       &::before {
-        color: ${colorWide};
+        color: ${annotationBodyColorWide.textColor};
+      }
+    }
+  }
+  ${({ theme }) => theme.breakpoint.md} {
+    margin-top: 8px;
+    margin-bottom: 32px;
+  }
+`
+
+const annotationBodyPremium = css`
+  color: ${annotationBodyColorPremium.textColor};
+  background-color: ${annotationBodyColorPremium.backgroundColor};
+
+  margin-top: 16px;
+  margin-bottom: 24px;
+  ul {
+    li {
+      &::before {
+        background-color: ${annotationBodyColorPremium.textColor};
+      }
+    }
+  }
+  ol {
+    li {
+      &::before {
+        color: ${annotationBodyColorPremium.textColor};
       }
     }
   }
@@ -132,6 +178,8 @@ const AnnotationBody = styled.div`
         return annotationBodyNormal
       case 'wide':
         return annotationBodyWide
+      case 'premium':
+        return annotationBodyPremium
       default:
         return annotationBodyNormal
     }
@@ -143,6 +191,8 @@ const getSvgColor = (contentLayout = 'normal') => {
       return '#054f77'
     case 'wide':
       return '#333333'
+    case 'premium':
+      return '#054f77'
     default:
       return '#054f77'
   }

@@ -67,11 +67,13 @@ const draftEditorCssWide = css`
   font-size: 18px;
   line-height: 2;
   .public-DraftStyleDefault-header-two {
+    text-align: center;
     color: black;
     font-size: 36px;
     font-weight: 700;
   }
   .public-DraftStyleDefault-header-three {
+    text-align: center;
     color: black;
     font-size: 32px;
     font-weight: 700;
@@ -99,6 +101,44 @@ const draftEditorCssWide = css`
     }
   }
 `
+const draftEditorCssPremium = css`
+  color: black;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  font-weight: normal;
+  .public-DraftStyleDefault-header-two {
+    color: rgba(5, 79, 119, 1);
+    font-weight: 500;
+    text-align: center;
+    font-size: 36px;
+    line-height: 1.5;
+  }
+  .public-DraftStyleDefault-header-three {
+    color: rgba(5, 79, 119, 1);
+    text-align: center;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 1.5;
+  }
+  .public-DraftStyleDefault-header-four {
+  }
+
+  .public-DraftStyleDefault-blockquote {
+    color: rgba(5, 79, 119, 1);
+    border-image: linear-gradient(
+        to right,
+        rgba(5, 79, 119, 1) 42.5%,
+        transparent 42.5%,
+        transparent 57.5%,
+        rgba(5, 79, 119, 1) 57.5%
+      )
+      100% 1;
+    &::before {
+      background-color: rgba(5, 79, 119, 1);
+    }
+  }
+`
 
 const DraftEditorWrapper = styled.div`
   width: 100%;
@@ -110,6 +150,17 @@ const DraftEditorWrapper = styled.div`
 
   .public-DraftStyleDefault-block {
     ${defaultMarginBottom}
+  }
+
+  //last item in raw-content block should not have margin-bottom
+  .public-DraftEditor-content {
+    > div {
+      > *:last-child {
+        > *:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
   }
 
   /* Draft built-in buttons' style */
@@ -191,6 +242,8 @@ const DraftEditorWrapper = styled.div`
         return draftEditorCssNormal
       case 'wide':
         return draftEditorCssWide
+      case 'premium':
+        return draftEditorCssPremium
       default:
         return draftEditorCssNormal
     }
