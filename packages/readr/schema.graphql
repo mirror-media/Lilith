@@ -1357,7 +1357,6 @@ type Post {
     skip: Int! = 0
   ): [Author!]
   writersCount(where: AuthorWhereInput! = {}): Int
-  manualOrderOfWriters: JSON
   photographers(
     where: AuthorWhereInput! = {}
     orderBy: [AuthorOrderByInput!]! = []
@@ -1365,7 +1364,6 @@ type Post {
     skip: Int! = 0
   ): [Author!]
   photographersCount(where: AuthorWhereInput! = {}): Int
-  manualOrderOfPhotographers: JSON
   cameraOperators(
     where: AuthorWhereInput! = {}
     orderBy: [AuthorOrderByInput!]! = []
@@ -1373,7 +1371,6 @@ type Post {
     skip: Int! = 0
   ): [Author!]
   cameraOperatorsCount(where: AuthorWhereInput! = {}): Int
-  manualOrderOfCameraOperators: JSON
   designers(
     where: AuthorWhereInput! = {}
     orderBy: [AuthorOrderByInput!]! = []
@@ -1381,7 +1378,6 @@ type Post {
     skip: Int! = 0
   ): [Author!]
   designersCount(where: AuthorWhereInput! = {}): Int
-  manualOrderOfDesigners: JSON
   engineers(
     where: AuthorWhereInput! = {}
     orderBy: [AuthorOrderByInput!]! = []
@@ -1389,7 +1385,6 @@ type Post {
     skip: Int! = 0
   ): [Author!]
   engineersCount(where: AuthorWhereInput! = {}): Int
-  manualOrderOfEngineers: JSON
   dataAnalysts(
     where: AuthorWhereInput! = {}
     orderBy: [AuthorOrderByInput!]! = []
@@ -1397,7 +1392,6 @@ type Post {
     skip: Int! = 0
   ): [Author!]
   dataAnalystsCount(where: AuthorWhereInput! = {}): Int
-  manualOrderOfDataAnalysts: JSON
   otherByline: String
   leadingEmbeddedCode: String
   heroVideo: Video
@@ -1434,7 +1428,6 @@ type Post {
     skip: Int! = 0
   ): [Post!]
   relatedPostsCount(where: PostWhereInput! = {}): Int
-  manualOrderOfRelatedPosts: JSON
   data(
     where: DataSetWhereInput! = {}
     orderBy: [DataSetOrderByInput!]! = []
@@ -1463,6 +1456,20 @@ type Post {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+  manualOrderOfWriters: JSON
+  writersInInputOrder: [Author]
+  manualOrderOfPhotographers: JSON
+  photographersInInputOrder: [Author]
+  manualOrderOfCameraOperators: JSON
+  cameraOperatorsInInputOrder: [Author]
+  manualOrderOfDesigners: JSON
+  designersInInputOrder: [Author]
+  manualOrderOfEngineers: JSON
+  engineersInInputOrder: [Author]
+  manualOrderOfDataAnalysts: JSON
+  dataAnalystsInInputOrder: [Author]
+  manualOrderOfRelatedPosts: JSON
+  relatedPostsInInputOrder: [Post]
 }
 
 input PostWhereUniqueInput {
@@ -1572,17 +1579,11 @@ input PostUpdateInput {
   publishTime: DateTime
   categories: CategoryRelateToManyForUpdateInput
   writers: AuthorRelateToManyForUpdateInput
-  manualOrderOfWriters: JSON
   photographers: AuthorRelateToManyForUpdateInput
-  manualOrderOfPhotographers: JSON
   cameraOperators: AuthorRelateToManyForUpdateInput
-  manualOrderOfCameraOperators: JSON
   designers: AuthorRelateToManyForUpdateInput
-  manualOrderOfDesigners: JSON
   engineers: AuthorRelateToManyForUpdateInput
-  manualOrderOfEngineers: JSON
   dataAnalysts: AuthorRelateToManyForUpdateInput
-  manualOrderOfDataAnalysts: JSON
   otherByline: String
   leadingEmbeddedCode: String
   heroVideo: VideoRelateToOneForUpdateInput
@@ -1601,7 +1602,6 @@ input PostUpdateInput {
   readingTime: Int
   collabration: CollaborationRelateToManyForUpdateInput
   relatedPosts: PostRelateToManyForUpdateInput
-  manualOrderOfRelatedPosts: JSON
   data: DataSetRelateToManyForUpdateInput
   ogTitle: String
   ogDescription: String
@@ -1618,6 +1618,13 @@ input PostUpdateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+  manualOrderOfWriters: JSON
+  manualOrderOfPhotographers: JSON
+  manualOrderOfCameraOperators: JSON
+  manualOrderOfDesigners: JSON
+  manualOrderOfEngineers: JSON
+  manualOrderOfDataAnalysts: JSON
+  manualOrderOfRelatedPosts: JSON
 }
 
 input CategoryRelateToManyForUpdateInput {
@@ -1674,17 +1681,11 @@ input PostCreateInput {
   publishTime: DateTime
   categories: CategoryRelateToManyForCreateInput
   writers: AuthorRelateToManyForCreateInput
-  manualOrderOfWriters: JSON
   photographers: AuthorRelateToManyForCreateInput
-  manualOrderOfPhotographers: JSON
   cameraOperators: AuthorRelateToManyForCreateInput
-  manualOrderOfCameraOperators: JSON
   designers: AuthorRelateToManyForCreateInput
-  manualOrderOfDesigners: JSON
   engineers: AuthorRelateToManyForCreateInput
-  manualOrderOfEngineers: JSON
   dataAnalysts: AuthorRelateToManyForCreateInput
-  manualOrderOfDataAnalysts: JSON
   otherByline: String
   leadingEmbeddedCode: String
   heroVideo: VideoRelateToOneForCreateInput
@@ -1703,7 +1704,6 @@ input PostCreateInput {
   readingTime: Int
   collabration: CollaborationRelateToManyForCreateInput
   relatedPosts: PostRelateToManyForCreateInput
-  manualOrderOfRelatedPosts: JSON
   data: DataSetRelateToManyForCreateInput
   ogTitle: String
   ogDescription: String
@@ -1720,6 +1720,13 @@ input PostCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+  manualOrderOfWriters: JSON
+  manualOrderOfPhotographers: JSON
+  manualOrderOfCameraOperators: JSON
+  manualOrderOfDesigners: JSON
+  manualOrderOfEngineers: JSON
+  manualOrderOfDataAnalysts: JSON
+  manualOrderOfRelatedPosts: JSON
 }
 
 input CategoryRelateToManyForCreateInput {
