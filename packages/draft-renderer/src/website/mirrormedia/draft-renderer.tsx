@@ -111,6 +111,16 @@ const DraftEditorWrapper = styled.div`
   .public-DraftStyleDefault-block {
     ${defaultMarginBottom}
   }
+  //last item in raw-content block should not have margin-bottom
+  .public-DraftEditor-content {
+    > div {
+      > *:last-child {
+        > *:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
 
   /* Draft built-in buttons' style */
 
