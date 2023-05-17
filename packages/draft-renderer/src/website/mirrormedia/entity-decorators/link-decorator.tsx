@@ -19,9 +19,12 @@ function findLinkEntities(contentBlock, callback, contentState) {
   }, callback)
 }
 
-export const linkDecorator = {
-  strategy: findLinkEntities,
-  component: Link,
+export const linkDecorator = (contentLayout = 'normal') => {
+  return {
+    strategy: findLinkEntities,
+    component: Link,
+    props: { contentLayout },
+  }
 }
 
 function Link(props) {

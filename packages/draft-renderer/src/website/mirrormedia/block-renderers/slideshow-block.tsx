@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import styled from 'styled-components'
-import { DraftEntityInstance } from 'draft-js'
+import { EntityInstance } from 'draft-js'
+import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
 import CustomImage from '@readr-media/react-image'
 const Image = styled.img`
   width: 100%;
@@ -35,8 +36,8 @@ const sliderWidth = '100%'
 const slidesOffset = 2
 
 const Wrapper = styled.figure`
-  margin-top: 20px;
-  margin-bottom: 20px;
+  ${defaultMarginTop}
+  ${defaultMarginBottom}
 `
 
 const SlideshowV2 = styled.figure`
@@ -51,7 +52,7 @@ const SlidesBox = styled.div`
   display: flex;
   position: relative;
   top: 0;
-  transform: ${({ translateX }) => `translateX(${translateX})`};
+
   width: ${sliderWidth};
 
   ${({ isShifting }) =>
@@ -65,9 +66,9 @@ const SlidesBox = styled.div`
     max-height: 58.75vw;
     min-height: 58.75vw;
     ${({ theme }) => theme.breakpoint.md} {
-      min-width: 640px;
+      min-width: 100%;
       min-height: 428px;
-      max-width: 640px;
+      max-width: 100%;
       max-height: 428px;
     }
   }
@@ -121,10 +122,13 @@ const Desc = styled.figcaption`
   color: rgba(0, 0, 0, 0.5);
   margin-top: 20px;
   min-height: 1.8rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 `
 
 // support old version of slideshow without delay propertiy
-export function SlideshowBlock(entity: DraftEntityInstance) {
+export function SlideshowBlock(entity: EntityInstance) {
   const images = entity.getData()
   return (
     <Figure>
@@ -145,7 +149,7 @@ export function SlideshowBlock(entity: DraftEntityInstance) {
  * Inspired by [Works of Claudia Conceicao](https://codepen.io/cconceicao/pen/PBQawy),
  * [twreporter slideshow component](https://github.com/twreporter/twreporter-npm-packages/blob/master/packages/react-article-components/src/components/body/slideshow/index.js)
  */
-export function SlideshowBlockV2(entity: DraftEntityInstance) {
+export function SlideshowBlockV2(entity: EntityInstance) {
   const slidesBoxRef = useRef<HTMLDivElement>(null)
   /** Current index of the displayed slide */
   const [indexOfCurrentImage, setIndexOfCurrentImage] = useState(0)
@@ -198,7 +202,7 @@ export function SlideshowBlockV2(entity: DraftEntityInstance) {
           images={item}
           key={index}
           objectFit={'contain'}
-          priority={true}
+          priority={false}
         />
       )),
     [slidesWithClone]

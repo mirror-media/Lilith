@@ -5,6 +5,7 @@ import { parse } from 'node-html-parser'
 
 export const Block = styled.div`
   position: relative;
+  white-space: normal;
   /* styles for image link */
   img.img-responsive {
     margin: 0 auto;
@@ -17,7 +18,7 @@ export const Block = styled.div`
 export const Caption = styled.div`
   line-height: 1.43;
   letter-spacing: 0.4px;
-  font-size: 14px;
+  ${({ theme }) => theme.fontSize.xs};
   color: #808080;
   padding: 15px 15px 0 15px;
 `
