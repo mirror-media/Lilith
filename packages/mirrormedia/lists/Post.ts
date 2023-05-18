@@ -71,10 +71,6 @@ const listConfigurations = list({
       label: '標題',
       validation: { isRequired: true },
     }),
-    subtitle: text({
-      label: '副標',
-      validation: { isRequired: false },
-    }),
     state: select({
       label: '狀態',
       options: [
@@ -90,6 +86,7 @@ const listConfigurations = list({
     publishedDate: timestamp({
       isIndexed: true,
       label: '發佈日期',
+      validation: { isRequired: true },
     }),
     sections: relationship({
       label: '大分類',
@@ -153,15 +150,6 @@ const listConfigurations = list({
       label: '首圖圖說',
       validation: { isRequired: false },
     }),
-    heroImageSize: select({
-      label: '首圖尺寸',
-      options: [
-        { label: 'Normal', value: 'normal' },
-        { label: 'Wide', value: 'wide' },
-        { label: 'Small', value: 'small' },
-      ],
-      defaultValue: 'normal',
-    }),
     style: select({
       label: '文章樣式',
       isIndexed: true,
@@ -177,7 +165,7 @@ const listConfigurations = list({
     }),
     brief: customFields.richTextEditor({
       label: '前言',
-      disabledButtons: [],
+      disabledButtons: ['header-four', 'background-video'],
       website: 'mirrormedia',
     }),
     trimmedContent: virtual({
@@ -229,7 +217,7 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
-      disabledButtons: [],
+      disabledButtons: ['header-four', 'background-video'],
       website: 'mirrormedia',
       access: {
         read: async () => /*{
@@ -325,14 +313,6 @@ const listConfigurations = list({
       label: '專題',
       ref: 'Topic.posts',
     }),
-    titleColor: select({
-      label: '標題模式',
-      options: [
-        { label: 'light', value: 'light' },
-        { label: 'dark', value: 'dark' },
-      ],
-      defaultValue: 'light',
-    }),
     relateds: relationship({
       label: '相關文章',
       ref: 'Post',
@@ -374,16 +354,8 @@ const listConfigurations = list({
       label: 'google廣告違規',
       defaultValue: false,
     }),
-    isCampaign: checkbox({
-      label: '活動',
-      defaultValue: false,
-    }),
     isAdult: checkbox({
       label: '18禁',
-      defaultValue: false,
-    }),
-    lockJS: checkbox({
-      label: '鎖定右鍵',
       defaultValue: false,
     }),
     redirect: text({
@@ -413,7 +385,7 @@ const listConfigurations = list({
     }),
   },
   ui: {
-    labelField: 'slug',
+    labelField: 'title',
     listView: {
       initialColumns: ['id', 'slug', 'state'],
       initialSort: { field: 'publishedDate', direction: 'DESC' },
