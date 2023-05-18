@@ -1,15 +1,17 @@
-import React from 'react'
 import { ContentBlock, ContentState } from 'draft-js'
+import React from 'react'
 import styled from 'styled-components'
 
-const SideIndexBlockWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`
+import { defaultH2Style } from '../shared-style'
 
-const SideIndex = styled.span`
-  font-size: 16px;
-  margin-left: 20px;
+const sideIndexDefaultSpacing = 32
+
+const SideIndexBlockWrapper = styled.div`
+  margin-top: ${sideIndexDefaultSpacing}px;
+
+  h2 {
+    ${defaultH2Style}
+  }
 `
 
 type SideIndexBlockProps = {
@@ -21,7 +23,7 @@ type SideIndexBlockProps = {
       entityData,
     }: {
       entityKey?: string
-      entityData?: Record<string, unknown>
+      entityDaZta?: Record<string, unknown>
     }) => void
   }
   contentState: ContentState
@@ -31,23 +33,23 @@ export function SideIndexBlock(props: SideIndexBlockProps) {
   const { block, contentState } = props
   const entityKey = block.getEntityAt(0)
   const entity = contentState.getEntity(entityKey)
-  const { h2Text, sideIndexText, sideIndexUrl } = entity.getData()
+  const { h2Text, sideIndexText } = entity.getData()
+
+  const sideIndexTitle = sideIndexText || h2Text || ''
+
+  const key = sideIndexTitle.replace(/\s+/g, '')
 
   let sideIndexBlock
-  if (sideIndexUrl) {
+
+  if (h2Text) {
     sideIndexBlock = (
-      <a href={sideIndexUrl}>
-        <SideIndex>側欄： {sideIndexText ? sideIndexText : h2Text}</SideIndex>
-      </a>
+      <SideIndexBlockWrapper id={`header-${key}`}>
+        <h2>{h2Text}</h2>
+      </SideIndexBlockWrapper>
     )
   } else {
-    sideIndexBlock = (
-      <h2>
-        {h2Text}
-        <SideIndex>側欄： {sideIndexText ? sideIndexText : h2Text}</SideIndex>
-      </h2>
-    )
+    sideIndexBlock = null
   }
 
-  return <SideIndexBlockWrapper>{sideIndexBlock}</SideIndexBlockWrapper>
+  return <>{sideIndexBlock}</>
 }

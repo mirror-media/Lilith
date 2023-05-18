@@ -19,7 +19,7 @@ const {
 
 const AtomicBlock = (props) => {
   const entity = props.contentState.getEntity(props.block.getEntityAt(0))
-
+  const { contentLayout } = props.blockProps
   const entityType = entity.getType()
 
   switch (entityType) {
@@ -29,7 +29,7 @@ const AtomicBlock = (props) => {
       return MediaBlock(entity)
     }
     case 'image': {
-      return ImageBlock(entity)
+      return ImageBlock(entity, contentLayout)
     }
     case 'slideshow': {
       return SlideshowBlock(entity)
@@ -41,7 +41,7 @@ const AtomicBlock = (props) => {
       return EmbeddedCodeBlock(entity)
     }
     case 'INFOBOX': {
-      return InfoBoxBlock(props)
+      return InfoBoxBlock(props, contentLayout)
     }
     case 'DIVIDER': {
       return DividerBlock()
@@ -74,11 +74,12 @@ const AtomicBlock = (props) => {
   return null
 }
 
-export function atomicBlockRenderer(block) {
+export function atomicBlockRenderer(block, contentLayout) {
   if (block.getType() === 'atomic') {
     return {
       component: AtomicBlock,
       editable: false,
+      props: { contentLayout },
     }
   }
 

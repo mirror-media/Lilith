@@ -25,6 +25,8 @@ import VideoPicker from './VideoPicker'
 import ThreeStoryPoints from './ThreeStoryPoints'
 import DualSlides from './DualSlides'
 import ComponentHelp from './ComponentHelp'
+import RandomTextSelector from './RandomTextSelector'
+import DroppingText from './DroppingText'
 
 export const listDefinition = {
   User,
@@ -53,5 +55,7 @@ export const listDefinition = {
   FeedbackCounter,
   ThreeStoryPoint: ThreeStoryPoints,
   DualSlide: DualSlides,
+  RandomTextSelector,
   ComponentHelp,
+  DroppingText,
 }

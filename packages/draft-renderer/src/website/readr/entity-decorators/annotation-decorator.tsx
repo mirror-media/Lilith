@@ -1,84 +1,136 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
-const AnnotatedText = styled.span`
+import annotationArrow from '../assets/annotation-arrow.png'
+import {
+  defaultH2Style,
+  defaultLinkStyle,
+  defaultOlStyle,
+  defaultOrderedListStyle,
+  defaultUlStyle,
+  defaultUnorderedListStyle,
+  defaultBlockQuoteStyle,
+} from '../shared-style'
+
+const annotationDefaultSpacing = 8
+
+const AnnotationText = styled.span`
+  ${defaultLinkStyle};
+`
+
+const AnnotationWrapper = styled.span`
   display: inline-block;
   cursor: pointer;
 
-  svg {
-    display: inline-flex;
-    width: 24px;
-    height: 24px;
-    vertical-align: middle;
-    margin: 0 4px;
-    transition: transform 0.3s;
-  }
-
-  path {
-    width: 5px;
-    transform: translate(calc(50% - 5px), calc(50% - 2.9px));
+  &:hover ${AnnotationText} {
+    border-bottom: 2px solid #04295e;
   }
 `
 
 const AnnotationBody = styled.div`
-  width: 600px;
   border-radius: 2px;
   background-color: #f6f6fb;
   padding: 12px 24px;
   margin: 8px 0 32px;
   font-size: 16px;
-  line-height: 24px;
+  font-weight: 400;
+  line-height: 1.6;
   display: inline-block;
   text-align: left;
   width: 100%;
+  color: rgba(0, 9, 40, 0.87);
 
   ${({ theme }) => theme.breakpoint.md} {
     padding: 16px 32px;
   }
+
+  > * + * {
+    margin: ${annotationDefaultSpacing}px 0 0;
+    min-height: 0.01px; //to make margins between paragraphs effective
+  }
+
+  h2 {
+    ${defaultH2Style}
+  }
+
+  ul {
+    ${defaultUlStyle}
+    margin-top: ${annotationDefaultSpacing}px;
+
+    > li {
+      ${defaultUnorderedListStyle}
+    }
+  }
+
+  ol {
+    ${defaultOlStyle}
+    margin-top: ${annotationDefaultSpacing}px;
+
+    > li {
+      ${defaultOrderedListStyle}
+    }
+  }
+
+  a {
+    ${defaultLinkStyle}
+  }
+
+  blockquote {
+    ${defaultBlockQuoteStyle}
+  }
 `
 
-function indicatorSvg(shouldRotate: boolean) {
-  const transform = shouldRotate ? '' : 'rotate(-180)'
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      transform={transform}
-    >
-      <circle cx="10" cy="10" r="10" fill="#f6f6fb" />
-
-      <path
-        d="m9.81473.492288c-.12331-.125265-.26952-.187845-.4385-.187845h-8.730815c-.169011 0-.31512.06258-.438567.187845-.123413.125402-.1851195.273662-.1851195.445056 0 .171356.0617065.319616.1851195.444916l4.365422 4.42968c.12362.12527.2697.18798.43861.18798.16884 0 .31508-.06271.43846-.18798l4.36539-4.42971c.12331-.12527.18526-.27353.18526-.444921 0-.171359-.06195-.319619-.18526-.445021"
-        fill="#2b2b2b"
-      ></path>
-    </svg>
-  )
-}
+const ArrowIcon = styled.span`
+  width: 24px;
+  height: 24px;
+  background-image: url(${annotationArrow});
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 24px;
+  margin: auto 4px;
+  transition: transform 0.3s;
+  display: inline-flex;
+  vertical-align: text-top;
+  transform: ${(props) => (props.showContent ? 'rotate(-180deg)' : '')};
+`
 
 function AnnotationBlock(props) {
   const { children: annotated } = props
-  const [toShowAnnotation, setToShowAnnotation] = useState(false)
-  const { bodyHTML } = props.contentState.getEntity(props.entityKey).getData()
+  const [showContent, setShowContent] = useState(false)
+  /**
+   * to support k5 old annotation data, check if annotation key exist
+   * k5
+   * {
+   *    text: string,
+   *     annotation: html string,
+   *     draftRawObj: DraftBlocks
+   * }
+   * k6
+   * {
+   *   bodyHTML: string,
+   *   bodyEscapedHTML: string,
+   *   rawContentState: DraftBlocks
+   * }
+   */
+  const { bodyHTML, annotation } = props.contentState
+    .getEntity(props.entityKey)
+    .getData()
+  const annotationBodyHtml = bodyHTML || annotation.trim()
   return (
     <React.Fragment>
-      <AnnotatedText
+      <AnnotationWrapper
         onClick={(e) => {
           e.preventDefault()
-          setToShowAnnotation(!toShowAnnotation)
+          setShowContent(!showContent)
         }}
       >
-        {annotated}
-        <span>
-          {toShowAnnotation ? indicatorSvg(false) : indicatorSvg(true)}
-        </span>
-      </AnnotatedText>
-      {toShowAnnotation ? (
+        <AnnotationText className="text">{annotated}</AnnotationText>
+        <ArrowIcon showContent={showContent} />
+      </AnnotationWrapper>
+      {showContent ? (
         <AnnotationBody
           contentEditable={false}
-          dangerouslySetInnerHTML={{ __html: bodyHTML }}
+          dangerouslySetInnerHTML={{ __html: annotationBodyHtml }}
         ></AnnotationBody>
       ) : null}
     </React.Fragment>

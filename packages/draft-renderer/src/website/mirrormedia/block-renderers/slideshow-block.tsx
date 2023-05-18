@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import styled from 'styled-components'
-import { DraftEntityInstance } from 'draft-js'
+import { EntityInstance } from 'draft-js'
+import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
 import CustomImage from '@readr-media/react-image'
 const Image = styled.img`
   width: 100%;
@@ -30,31 +31,44 @@ const Figure = styled.figure`
   margin: 0 10px;
 `
 
+const sliderWidth = '100%'
+
+const slidesOffset = 2
+
 const Wrapper = styled.figure`
-  margin-top: 20px;
-  margin-bottom: 20px;
+  ${defaultMarginTop}
+  ${defaultMarginBottom}
 `
-const Slideshow = styled.figure`
+
+const SlideshowV2 = styled.figure`
+  touch-action: pan-y;
   overflow: hidden;
   position: relative;
+  width: ${sliderWidth};
+  z-index: 1;
 `
 
-const SlideImages = styled.div`
+const SlidesBox = styled.div`
   display: flex;
-  transition: transform 0.35s ease;
+  position: relative;
+  top: 0;
 
-  ${({ move }) => move && `transform: translateX(${move * -100}%)`};
+  width: ${sliderWidth};
+
+  ${({ isShifting }) =>
+    isShifting ? 'transition: transform 0.3s ease-out' : null};
+
   .readr-media-react-image {
     object-position: center center;
     background-color: rgba(0, 0, 0, 0.1);
-    max-width: 100%;
-    min-width: 100%;
+    max-width: ${sliderWidth};
+    min-width: ${sliderWidth};
     max-height: 58.75vw;
     min-height: 58.75vw;
     ${({ theme }) => theme.breakpoint.md} {
-      min-width: 640px;
+      min-width: 100%;
       min-height: 428px;
-      max-width: 640px;
+      max-width: 100%;
       max-height: 428px;
     }
   }
@@ -108,9 +122,13 @@ const Desc = styled.figcaption`
   color: rgba(0, 0, 0, 0.5);
   margin-top: 20px;
   min-height: 1.8rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 `
+
 // support old version of slideshow without delay propertiy
-export function SlideshowBlock(entity: DraftEntityInstance) {
+export function SlideshowBlock(entity: EntityInstance) {
   const images = entity.getData()
   return (
     <Figure>
@@ -124,39 +142,183 @@ export function SlideshowBlock(entity: DraftEntityInstance) {
 }
 
 // 202206 latest version of slideshow, support delay property
-export function SlideshowBlockV2(entity: DraftEntityInstance) {
-  const [move, setMove] = useState(0)
-  const { images } = entity.getData()
-  const descOfCurrentImage = images?.[move]?.desc
-  const total = images.length
-  const displayedImage = images.map((image) => image.resized)
+
+/**
+ * Supports sliding with mouse drag, and button clicks for navigation.
+ *
+ * Inspired by [Works of Claudia Conceicao](https://codepen.io/cconceicao/pen/PBQawy),
+ * [twreporter slideshow component](https://github.com/twreporter/twreporter-npm-packages/blob/master/packages/react-article-components/src/components/body/slideshow/index.js)
+ */
+export function SlideshowBlockV2(entity: EntityInstance) {
+  const slidesBoxRef = useRef<HTMLDivElement>(null)
+  /** Current index of the displayed slide */
+  const [indexOfCurrentImage, setIndexOfCurrentImage] = useState(0)
+  /** Whether allow slide shifting animation */
+  const [isShifting, setIsShifting] = useState(false)
+  /* Distance of dragging, which will increase/decrease value when dragging, and reset to `0` when dragging complete */
+  const [dragDistance, setDragDistance] = useState(0)
+  /** Position of slide box */
+  const slideBoxPosition = `calc(${sliderWidth} * ${slidesOffset +
+    indexOfCurrentImage} * -1 + ${dragDistance}px)`
+  const { images } = useMemo(() => entity.getData(), [entity])
+  const displayedImage = useMemo(
+    () => images.map((image) => image.resized),
+    images
+  )
+  const slidesLength = images.length
+  const descOfCurrentImage = images?.[indexOfCurrentImage]?.desc
+
+  /**
+   * Clone first and last slide.
+   * Assuming there are three images [ A, B, C ] for slideshow.
+   * After cloning, there is seven images [ B(clone), C(clone), A, B, C, A(clone), B(clone) ] for rendering.
+   * Users can see the previous or next image in the process of dragging.
+   * For example, if drag backward from first A (the third image in array), users can see C(clone) and B(clone) when dragging.
+   *
+   * The cloned element is only show in the process of dragging.
+   * For example, even if users drag backward from first A, and stop it at C(clone), the slide is showing C , not C(clone).
+   * We doing this effect by recalculating the position of slide box.
+   *
+   * Why did cloned element only show at the process of dragging, and not show when dragging is end? There is two purposes:
+   * 1. Show cloned element at the process of dragging, is let users can see last image even if drag backward from first image.
+   * 2. Now Show cloned element displayed after the dragging is because if we displayed the cloned element, next dragging process will not as expected.
+   *    For example, if we display C(clone), the next time users drag, there will be no element to drag when dragging backwards.
+   *
+   * The amount of item need to clone is decided by variable `slidesOffset`
+   */
+  const slidesWithClone = useMemo(
+    () =>
+      [].concat(
+        displayedImage?.slice(-slidesOffset),
+        displayedImage,
+        displayedImage?.slice(0, slidesOffset)
+      ),
+    [displayedImage]
+  )
+  const slidesJsx = useMemo(
+    () =>
+      slidesWithClone.map((item, index) => (
+        <CustomImage
+          images={item}
+          key={index}
+          objectFit={'contain'}
+          priority={false}
+        />
+      )),
+    [slidesWithClone]
+  )
 
   const handleClickPrev = () => {
-    if (move === 0) {
-      setMove(total)
+    if (isShifting) {
+      return
     }
-    setMove((prevState) => prevState - 1)
+    setIsShifting(true)
+    setIndexOfCurrentImage((pre) => pre - 1)
   }
 
   const handleClickNext = () => {
-    if (move === total - 1) {
-      setMove(0)
-    } else {
-      setMove((prevState) => prevState + 1)
+    if (isShifting) {
+      return
+    }
+    setIsShifting(true)
+    setIndexOfCurrentImage((pre) => pre + 1)
+  }
+
+  /**
+   * Check `indexOfCurrentImage` after transition and reset if needed.
+   * It is needed to reset if scrolling backward from the first image to the last image,
+   * or scrolling forward from the last image to the first image.
+   */
+  const handleTransitionEnd = () => {
+    setIsShifting(false)
+    if (indexOfCurrentImage <= -1) {
+      setIndexOfCurrentImage(slidesLength - 1)
+    } else if (indexOfCurrentImage >= slidesLength) {
+      setIndexOfCurrentImage(0)
     }
   }
 
+  useEffect(() => {
+    const slidesBox = slidesBoxRef?.current
+    if (slidesBox) {
+      /** Threshold of slide change */
+      const threshold = 0.25
+      let dragDistance = 0
+      /** Position of pointer when start dragging */
+      let dragStartPositionX = 0
+
+      /**
+       * Record the mouse position and slidesBox position when dragging starts,
+       * and register dragEnd and dragAction for pointer-related events
+       */
+      const dragStart = (e: PointerEvent) => {
+        e.preventDefault()
+        dragStartPositionX = e.pageX
+
+        slidesBox.addEventListener('pointerup', dragEnd)
+        slidesBox.addEventListener('pointerout', dragEnd)
+        slidesBox.addEventListener('pointermove', dragAction)
+      }
+
+      /**
+       * Calculate the distance of dragging, and adjust moving distance of the slidesBox accordingly to achieve dragging effect.
+       * It will recalculate the value of current position of slidesBox, starting position of dragging,
+       * distance of dragging when slidesBox is dragging.
+       */
+      const dragAction = (e: PointerEvent) => {
+        dragDistance = e.pageX - dragStartPositionX
+        setDragDistance(dragDistance)
+      }
+      /**
+       * Calculate the position of `slidesBox` to decider should show next of previous image.
+       */
+      const dragEnd = () => {
+        setIsShifting(true)
+        if (dragDistance / slidesBox.offsetWidth < -threshold) {
+          //move forward to show next image
+          setIndexOfCurrentImage((pre) => pre + 1)
+        } else if (dragDistance / slidesBox.offsetWidth > threshold) {
+          //move backward to show previous image
+          setIndexOfCurrentImage((pre) => pre - 1)
+        } else {
+          //do not move, show current image
+        }
+
+        //reset drag distance
+
+        dragDistance = 0
+        setDragDistance(0)
+
+        slidesBox.removeEventListener('pointerup', dragEnd)
+        slidesBox.removeEventListener('pointerout', dragEnd)
+        slidesBox.removeEventListener('pointermove', dragAction)
+      }
+
+      // Add listener of Drag events
+      slidesBox.addEventListener('pointerdown', dragStart)
+
+      return () => {
+        slidesBox.removeEventListener('pointerdown', dragStart)
+      }
+    }
+  }, [])
+
   return (
     <Wrapper>
-      <Slideshow>
+      <SlideshowV2>
         <ClickButtonPrev onClick={handleClickPrev}></ClickButtonPrev>
         <ClickButtonNext onClick={handleClickNext}></ClickButtonNext>
-        <SlideImages move={move}>
-          {displayedImage.map((item, index) => (
-            <CustomImage images={item} key={index} objectFit={'contain'} />
-          ))}
-        </SlideImages>
-      </Slideshow>
+        <SlidesBox
+          style={{ transform: `translateX(${slideBoxPosition})` }}
+          ref={slidesBoxRef}
+          amount={slidesWithClone.length}
+          isShifting={isShifting}
+          index={indexOfCurrentImage}
+          onTransitionEnd={handleTransitionEnd}
+        >
+          {slidesJsx}
+        </SlidesBox>
+      </SlideshowV2>
       <Desc>{descOfCurrentImage}</Desc>
     </Wrapper>
   )
