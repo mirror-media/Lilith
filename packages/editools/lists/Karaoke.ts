@@ -48,6 +48,7 @@ const listConfigurations = list({
       },
     }),
     audio: file({
+      storage: 'files',
       //external users can't upload files to our GCS. They can only use the image from their sources.
       ui: {
         createView: { fieldMode: imageFileACL },
@@ -56,6 +57,7 @@ const listConfigurations = list({
     }),
     //external users can't upload files to our GCS. They can only use the image from their sources.
     imageFile: image({
+      storage: 'images',
       ui: {
         createView: { fieldMode: imageFileACL },
         itemView: { fieldMode: imageFileACL },
@@ -98,7 +100,7 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/embed-code'),
+        views: './lists/views/embed-code',
         createView: {
           fieldMode: 'hidden',
         },
@@ -115,7 +117,7 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/link-button'),
+        views: './lists/views/link-button',
         createView: {
           fieldMode: 'hidden',
         },
