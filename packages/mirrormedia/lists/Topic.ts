@@ -17,7 +17,7 @@ const listConfigurations = list({
       label: '標題',
     }),
     slug: text({
-      label: '原ID',
+      label: 'slug',
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
