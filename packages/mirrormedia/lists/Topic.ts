@@ -16,6 +16,13 @@ const listConfigurations = list({
       validation: { isRequired: true },
       label: '標題',
     }),
+    slug: text({
+      label: '原ID',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      }
+    }),
     sortOrder: integer(),
     state: select({
       label: '狀態',
@@ -29,6 +36,7 @@ const listConfigurations = list({
     brief: customFields.richTextEditor({
       label: '前言',
       website: 'mirrormedia',
+      disabledButtons: ['header-four', 'background-video'],
     }),
     heroImage: relationship({
       ref: 'Photo',
