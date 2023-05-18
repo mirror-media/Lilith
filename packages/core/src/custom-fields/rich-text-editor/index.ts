@@ -52,7 +52,7 @@ export const richTextEditor = <ListTypeInfo extends BaseListTypeInfo>({
         update: { arg: graphql.arg({ type: graphql.JSON }), resolve },
       },
       output: graphql.field({ type: graphql.JSON }),
-      views: require.resolve(`./views/${website}`),
+      views: `@mirrormedia/lilith-core/lib/custom-fields/rich-text-editor/views/${website}`,
       getAdminMeta: () => ({ defaultValue, disabledButtons }),
     },
     {
