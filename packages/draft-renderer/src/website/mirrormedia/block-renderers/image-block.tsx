@@ -18,17 +18,26 @@ const imageFigureLayoutNormal = css`
 `
 const imageFigureLayoutWide = css`
   .readr-media-react-image {
+    position: relative;
+    max-width: calc(100% + 20px + 20px);
     width: 100vw;
-    max-width: 640px;
-    transform: translateX(min(50vw - 50% - 20px, 0px));
+    transform: translateX(-20px);
+    @media (min-width: 680px) {
+      max-width: 100%;
+      transform: translateX(0px);
+    }
   }
 `
 const imageFigureLayoutPremium = css`
   .readr-media-react-image {
+    position: relative;
+    max-width: calc(100% + 20px + 20px);
     width: 100vw;
-    max-width: 640px;
-
-    transform: translateX(min(50vw - 50% - 20px, 0px));
+    transform: translateX(-20px);
+    @media (min-width: 680px) {
+      max-width: 100%;
+      transform: translateX(0px);
+    }
   }
 `
 

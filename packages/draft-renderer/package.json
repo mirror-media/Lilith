@@ -1,6 +1,6 @@
 {
   "name": "@mirrormedia/lilith-draft-renderer",
-  "version": "1.2.0-alpha.20",
+  "version": "1.2.0-alpha.21",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
