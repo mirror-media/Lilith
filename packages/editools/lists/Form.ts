@@ -61,9 +61,6 @@ const listConfigurations = list({
     heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
       access: {
         operation: {
           query: allowRoles(admin, moderator, editor, contributor),
@@ -76,9 +73,6 @@ const listConfigurations = list({
     mobileImage: relationship({
       label: '手機首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
       access: {
         operation: {
           query: allowRoles(admin, moderator, editor),
