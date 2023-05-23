@@ -15,9 +15,8 @@ model Post {
   id                        Int            @id @default(autoincrement())
   slug                      String         @unique @default("")
   title                     String         @default("")
-  subtitle                  String         @default("")
   state                     String?        @default("draft")
-  publishedDate             DateTime?
+  publishedDate             DateTime
   sections                  Section[]      @relation("Post_sections")
   manualOrderOfSections     Json?
   categories                Category[]     @relation("Category_posts")
@@ -34,13 +33,11 @@ model Post {
   heroImage                 Photo?         @relation("Post_heroImage", fields: [heroImageId], references: [id])
   heroImageId               Int?           @map("heroImage")
   heroCaption               String         @default("")
-  heroImageSize             String?        @default("normal")
   style                     String?        @default("article")
   brief                     Json?
   content                   Json?
   topics                    Topic?         @relation("Post_topics", fields: [topicsId], references: [id])
   topicsId                  Int?           @map("topics")
-  titleColor                String?        @default("light")
   relateds                  Post[]         @relation("Post_relateds")
   manualOrderOfRelateds     Json?
   tags                      Tag[]          @relation("Post_tags")
@@ -52,9 +49,7 @@ model Post {
   isFeatured                Boolean        @default(false)
   isAdvertised              Boolean        @default(false)
   hiddenAdvertised          Boolean        @default(false)
-  isCampaign                Boolean        @default(false)
   isAdult                   Boolean        @default(false)
-  lockJS                    Boolean        @default(false)
   redirect                  String         @default("")
   adTrace                   String         @default("")
   css                       String         @default("")
@@ -180,6 +175,7 @@ model Tag {
 model Topic {
   id            Int       @id @default(autoincrement())
   name          String    @default("")
+  slug          String    @default("")
   sortOrder     Int?
   state         String?   @default("draft")
   brief         Json?

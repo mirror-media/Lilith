@@ -1,9 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
-
+import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
 const Video = styled.video`
   width: 100%;
+  ${defaultMarginTop}
+  ${defaultMarginBottom}
 `
 
 type ImageEntity = {

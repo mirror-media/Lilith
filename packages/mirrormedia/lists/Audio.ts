@@ -33,6 +33,7 @@ const listConfigurations = list({
     content: customFields.richTextEditor({
       label: '敘述',
       website: 'mirrormedia',
+      disabledButtons: ['header-four', 'background-video'],
     }),
     tags: relationship({
       label: '標籤',

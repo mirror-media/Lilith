@@ -5,7 +5,6 @@ type Post {
   id: ID!
   slug: String
   title: String
-  subtitle: String
   state: String
   publishedDate: DateTime
   sections(
@@ -70,13 +69,11 @@ type Post {
   heroVideo: Video
   heroImage: Photo
   heroCaption: String
-  heroImageSize: String
   style: String
   brief: JSON
   trimmedContent: JSON
   content: JSON
   topics: Topic
-  titleColor: String
   relateds(
     where: PostWhereInput! = {}
     orderBy: [PostOrderByInput!]! = []
@@ -99,9 +96,7 @@ type Post {
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
-  isCampaign: Boolean
   isAdult: Boolean
-  lockJS: Boolean
   redirect: String
   adTrace: String
   css: String
@@ -111,9 +106,6 @@ type Post {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
-  writersInInputOrder: [Contact]
-  sectionsInInputOrder: [Section]
-  relatedsInInputOrder: [Post]
 }
 
 scalar DateTime
@@ -131,9 +123,8 @@ input PostWhereInput {
   id: IDFilter
   slug: StringFilter
   title: StringFilter
-  subtitle: StringFilter
   state: StringNullableFilter
-  publishedDate: DateTimeNullableFilter
+  publishedDate: DateTimeFilter
   sections: SectionManyRelationFilter
   categories: CategoryManyRelationFilter
   writers: ContactManyRelationFilter
@@ -146,10 +137,8 @@ input PostWhereInput {
   heroVideo: VideoWhereInput
   heroImage: PhotoWhereInput
   heroCaption: StringFilter
-  heroImageSize: StringNullableFilter
   style: StringNullableFilter
   topics: TopicWhereInput
-  titleColor: StringNullableFilter
   relateds: PostManyRelationFilter
   tags: TagManyRelationFilter
   og_title: StringFilter
@@ -159,9 +148,7 @@ input PostWhereInput {
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
   hiddenAdvertised: BooleanFilter
-  isCampaign: BooleanFilter
   isAdult: BooleanFilter
-  lockJS: BooleanFilter
   redirect: StringFilter
   adTrace: StringFilter
   css: StringFilter
@@ -245,7 +232,7 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
-input DateTimeNullableFilter {
+input DateTimeFilter {
   equals: DateTime
   in: [DateTime!]
   notIn: [DateTime!]
@@ -253,7 +240,7 @@ input DateTimeNullableFilter {
   lte: DateTime
   gt: DateTime
   gte: DateTime
-  not: DateTimeNullableFilter
+  not: DateTimeFilter
 }
 
 input SectionManyRelationFilter {
@@ -291,27 +278,33 @@ input BooleanFilter {
   not: BooleanFilter
 }
 
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeNullableFilter
+}
+
 input PostOrderByInput {
   id: OrderDirection
   slug: OrderDirection
   title: OrderDirection
-  subtitle: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
   extend_byline: OrderDirection
   heroCaption: OrderDirection
-  heroImageSize: OrderDirection
   style: OrderDirection
-  titleColor: OrderDirection
   og_title: OrderDirection
   og_description: OrderDirection
   isMember: OrderDirection
   isFeatured: OrderDirection
   isAdvertised: OrderDirection
   hiddenAdvertised: OrderDirection
-  isCampaign: OrderDirection
   isAdult: OrderDirection
-  lockJS: OrderDirection
   redirect: OrderDirection
   adTrace: OrderDirection
   css: OrderDirection
@@ -327,7 +320,6 @@ enum OrderDirection {
 input PostUpdateInput {
   slug: String
   title: String
-  subtitle: String
   state: String
   publishedDate: DateTime
   sections: SectionRelateToManyForUpdateInput
@@ -344,12 +336,10 @@ input PostUpdateInput {
   heroVideo: VideoRelateToOneForUpdateInput
   heroImage: PhotoRelateToOneForUpdateInput
   heroCaption: String
-  heroImageSize: String
   style: String
   brief: JSON
   content: JSON
   topics: TopicRelateToOneForUpdateInput
-  titleColor: String
   relateds: PostRelateToManyForUpdateInput
   manualOrderOfRelateds: JSON
   tags: TagRelateToManyForUpdateInput
@@ -360,9 +350,7 @@ input PostUpdateInput {
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
-  isCampaign: Boolean
   isAdult: Boolean
-  lockJS: Boolean
   redirect: String
   adTrace: String
   css: String
@@ -441,7 +429,6 @@ input PostUpdateArgs {
 input PostCreateInput {
   slug: String
   title: String
-  subtitle: String
   state: String
   publishedDate: DateTime
   sections: SectionRelateToManyForCreateInput
@@ -458,12 +445,10 @@ input PostCreateInput {
   heroVideo: VideoRelateToOneForCreateInput
   heroImage: PhotoRelateToOneForCreateInput
   heroCaption: String
-  heroImageSize: String
   style: String
   brief: JSON
   content: JSON
   topics: TopicRelateToOneForCreateInput
-  titleColor: String
   relateds: PostRelateToManyForCreateInput
   manualOrderOfRelateds: JSON
   tags: TagRelateToManyForCreateInput
@@ -474,9 +459,7 @@ input PostCreateInput {
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
-  isCampaign: Boolean
   isAdult: Boolean
-  lockJS: Boolean
   redirect: String
   adTrace: String
   css: String
@@ -673,17 +656,6 @@ input EventWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input DateTimeFilter {
-  equals: DateTime
-  in: [DateTime!]
-  notIn: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  gt: DateTime
-  gte: DateTime
-  not: DateTimeFilter
 }
 
 input EventOrderByInput {
@@ -952,6 +924,7 @@ input TopicRelateToManyForCreateInput {
 type Topic {
   id: ID!
   name: String
+  slug: String
   sortOrder: Int
   state: String
   brief: JSON
@@ -1002,6 +975,7 @@ input TopicWhereInput {
   NOT: [TopicWhereInput!]
   id: IDFilter
   name: StringFilter
+  slug: StringFilter
   sortOrder: IntNullableFilter
   state: StringNullableFilter
   heroImage: PhotoWhereInput
@@ -1026,6 +1000,7 @@ input TopicWhereInput {
 input TopicOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  slug: OrderDirection
   sortOrder: OrderDirection
   state: OrderDirection
   leading: OrderDirection
@@ -1043,6 +1018,7 @@ input TopicOrderByInput {
 
 input TopicUpdateInput {
   name: String
+  slug: String
   sortOrder: Int
   state: String
   brief: JSON
@@ -1072,6 +1048,7 @@ input TopicUpdateArgs {
 
 input TopicCreateInput {
   name: String
+  slug: String
   sortOrder: Int
   state: String
   brief: JSON
