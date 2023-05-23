@@ -6,8 +6,10 @@ import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
 //for setting background color info box
 const backgroundColorNormal = '#054f77'
 const backgroundColorWide = '#F2F2F2'
+const backgroundColorPremium = '#F2F2F2'
 const textColorNormal = '#c4c4c4'
 const textColorWide = 'rgba(0, 0, 0, 0.66)'
+const textColorPremium = 'rgba(0, 0, 0, 0.66)'
 
 const infoBoxWrapperNormal = css`
   background-color: ${backgroundColorNormal};
@@ -30,6 +32,17 @@ const infoBoxWrapperWide = css`
     color: black;
   }
 `
+const infoBoxWrapperPremium = css`
+  background-color: ${backgroundColorPremium};
+  color: ${textColorPremium};
+  border-top: 2px solid #054f77;
+  filter: drop-shadow(0px 4px 12px rgba(0, 0, 0, 0.08))
+    drop-shadow(0px 2px 28px rgba(0, 0, 0, 0.06));
+
+  > h2 {
+    color: #054f77;
+  }
+`
 
 const InfoBoxRenderWrapper = styled.div`
   padding: 32px 30px 22px 30px;
@@ -48,6 +61,8 @@ const InfoBoxRenderWrapper = styled.div`
         return infoBoxWrapperNormal
       case 'wide':
         return infoBoxWrapperWide
+      case 'premium':
+        return infoBoxWrapperPremium
       default:
         return infoBoxWrapperNormal
     }
@@ -82,6 +97,22 @@ const infoBoxBodyWide = css`
     li {
       &::before {
         color: ${textColorWide};
+      }
+    }
+  }
+`
+const infoBoxBodyPremium = css`
+  ul {
+    li {
+      &::before {
+        background-color: ${textColorPremium};
+      }
+    }
+  }
+  ol {
+    li {
+      &::before {
+        color: ${textColorPremium};
       }
     }
   }
@@ -133,6 +164,8 @@ const InfoBoxBody = styled.div`
         return infoBoxBodyNormal
       case 'wide':
         return infoBoxBodyWide
+      case 'premium':
+        return infoBoxBodyPremium
       default:
         return infoBoxBodyNormal
     }

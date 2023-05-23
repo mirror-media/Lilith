@@ -13,7 +13,7 @@ const {
 const listConfigurations = list({
   fields: {
     slug: text({
-      label: 'slug',
+      label: '期數',
       isIndexed: 'unique',
       validation: { isRequired: true }
     }), 

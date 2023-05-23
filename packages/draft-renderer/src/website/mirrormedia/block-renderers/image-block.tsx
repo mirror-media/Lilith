@@ -11,12 +11,33 @@ import {
   clearAllBodyScrollLocks,
 } from 'body-scroll-lock'
 
-const imageFigureLayoutNormal = css``
+const imageFigureLayoutNormal = css`
+  .readr-media-react-image {
+    width: 100%;
+  }
+`
 const imageFigureLayoutWide = css`
   .readr-media-react-image {
     position: relative;
     max-width: calc(100% + 20px + 20px);
+    width: 100vw;
     transform: translateX(-20px);
+    @media (min-width: 680px) {
+      max-width: 100%;
+      transform: translateX(0px);
+    }
+  }
+`
+const imageFigureLayoutPremium = css`
+  .readr-media-react-image {
+    position: relative;
+    max-width: calc(100% + 20px + 20px);
+    width: 100vw;
+    transform: translateX(-20px);
+    @media (min-width: 680px) {
+      max-width: 100%;
+      transform: translateX(0px);
+    }
   }
 `
 
@@ -34,15 +55,11 @@ const figcaptionLayoutWide = css`
   margin-top: 16px;
   position: relative;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-  ${({ theme }) => theme.breakpoint.md} {
-    max-width: calc(100% + 20px + 20px);
-    transform: translateX(-20px);
-  }
 `
 
 const Figure = styled.figure`
-  margin-block: unset;
-  margin-inline: unset;
+  /* margin-block: unset; */
+  /* margin-inline: unset; */
   ${defaultMarginTop}
   ${defaultMarginBottom}
   .readr-media-react-image {
@@ -56,6 +73,8 @@ const ImageFigure = styled(Figure)`
         return imageFigureLayoutNormal
       case 'wide':
         return imageFigureLayoutWide
+      case 'premium':
+        return imageFigureLayoutPremium
       default:
         return imageFigureLayoutNormal
     }
@@ -165,7 +184,7 @@ export function ImageBlock(
         images={resized}
         defaultImage={defaultImage}
         loadingImage={loadingImage}
-        width={'100vw'}
+        width={''}
         height={'auto'}
         objectFit={'contain'}
         alt={name}
