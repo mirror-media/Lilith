@@ -37,6 +37,7 @@ const listConfigurations = list({
     content: customFields.richTextEditor({
       label: '敘述',
       website: 'mirrormedia',
+      disabledButtons: ['header-four', 'background-video'],
     }),
     heroImage: relationship({
       label: '首圖',

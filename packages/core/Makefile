@@ -6,15 +6,12 @@ help:
 
 build-lib:
 	@echo "$(P) Transpile es6, typescript, jsx and tsx to es5"
-	NODE_ENV=production yarn babel src --out-dir lib-temp --extensions '.ts,.tsx,.js,.jsx' --copy-files --root-mode upward  --ignore 'src/custom-fields/**/views/*'
-	NODE_ENV=production yarn babel lib-temp --out-dir lib --extensions '.ts,.tsx' --copy-files --config-file ./.views.babelrc.js
-	rm -rf lib-temp/
+	NODE_ENV=production yarn babel src --out-dir lib --extensions '.ts,.tsx,.js,.jsx' --copy-files --root-mode upward
 
 build: clean build-lib
 
 clean:
-	@echo "$(P) Clean lib-temp/ lib/"
-	rm -rf lib-temp/
+	@echo "$(P) Clean lib/"
 	rm -rf lib/
 
 .PHONY: build clean build-lib
