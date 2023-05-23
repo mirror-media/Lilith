@@ -2525,10 +2525,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@readr-media/react-dropping-text@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.4.tgz#a38d9e31ba3a3ec800bb4b2b181abceeb4791c16"
-  integrity sha512-I/v7vmVLQLsMc2sD66zD7Yv/kVxhawd3e6SHSAKclDHSZ4LrsACP2rbX+j09lIFHZdrKS6yI0Bs44GkTxvraTg==
+"@readr-media/react-dropping-text@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.5.tgz#49b6320e10bd00689fcd61fccebc044e797fdf43"
+  integrity sha512-HgT0DObr3ZLkMkce/OOsQaQ1CarhGikemwCN95B2kmyp71ROYzPFGFcNe1k0qlp0fyCQhjT0vCpd+WhmyWbB7w==
   dependencies:
     matter-js "^0.19.0"
     react-intersection-observer "^9.3.5"
@@ -2550,12 +2550,12 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.3.0-beta.15":
-  version "2.3.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-beta.15.tgz#9890ab6bf643fb19238404dd2b83dc1f5675f33e"
-  integrity sha512-kzkab+jKZ9mW3zaiYKb50Snu0aMhLl9mVBHP7MYPCDYhfC7Ns6PBf/X/vHUZjMWB7jKrhZvNixU0+hh6sNYC1A==
+"@readr-media/react-embed-code-generator@2.3.0-beta.18":
+  version "2.3.0-beta.18"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-beta.18.tgz#b0b17f04fc86554b6e89995cf641e6b0334ba2c6"
+  integrity sha512-/sYLHQvGzGjU3FsjFhH4qSbzoxKS9EkBjcHbQonYL/dUgfjq/KvdsAUslAr0utqQYBaF+9pzz0lF+hlL6Rc2Aw==
   dependencies:
-    "@readr-media/react-dropping-text" "1.0.4"
+    "@readr-media/react-dropping-text" "1.0.5"
     "@readr-media/react-dual-slides" "1.0.1"
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
@@ -2564,8 +2564,8 @@
     "@readr-media/react-live-blog" "1.1.2"
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
+    "@readr-media/react-random-text-selector" "^1.0.2"
     "@readr-media/react-three-story-points" "1.0.2"
-    "@readr-media/text-selector" "^1.1.1-beta.12"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
     uuid "^8.3.2"
@@ -2645,6 +2645,13 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
+"@readr-media/react-random-text-selector@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-random-text-selector/-/react-random-text-selector-1.0.2.tgz#2a25571929fdc2dd14aab6ddc9e0319bff3e4308"
+  integrity sha512-SfHVRM47xVuyIEzBF0vg7NTOsRbDPkx14mbDTVmEjBDrlhB/aXvrvonUg6E8VJWYjqrK/PjqrhGYiQTgPt37Ng==
+  dependencies:
+    axios "^1.3.5"
+
 "@readr-media/react-three-story-points@1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.2.tgz#7a24cdc13cea2fda1ac83df1f610bdd943f0fef6"
@@ -2655,13 +2662,6 @@
     react-intersection-observer "^9.3.5"
     three "^0.150.1"
     three-story-controls "^1.0.6"
-
-"@readr-media/text-selector@^1.1.1-beta.12":
-  version "1.1.1-beta.13"
-  resolved "https://registry.yarnpkg.com/@readr-media/text-selector/-/text-selector-1.1.1-beta.13.tgz#867c7cb65bc2449f20ff04e476c267ba5b302af7"
-  integrity sha512-AElljoVyVX9G91L+KU0QsjRdtysMAmyvtG9xvFlJccJGePdu/m7g/ux+5vfPStK6A4783EAFiKJ3CCj+xpJ+ug==
-  dependencies:
-    axios "^1.3.5"
 
 "@sindresorhus/slugify@1.1.2", "@sindresorhus/slugify@^1.1.2":
   version "1.1.2"
