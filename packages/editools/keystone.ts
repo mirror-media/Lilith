@@ -47,7 +47,7 @@ export default withAuth(
         serverRoute: {
           path: '/files',
         },
-        generateUrl: (path) => `http://localhost:3000/files${path}`,
+        generateUrl: (path) => `/files${path}`,
       },
       images: {
         kind: 'local',
@@ -56,7 +56,7 @@ export default withAuth(
         serverRoute: {
           path: '/images',
         },
-        generateUrl: (path) => `http://localhost:3000/images${path}`,
+        generateUrl: (path) => `/images${path}`,
       },
     },
     graphql: {
