@@ -1,7 +1,13 @@
 {
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/core",
+    "packages/draft-editor",
+    "packages/draft-renderer",
+    "packages/mesh",
+    "packages/mirrormedia",
+    "packages/openrelationship",
+    "packages/readr"
   ],
   "scripts": {
     "prepare": "husky install"

@@ -1,4 +1,4 @@
-import { customFields, utils } from '@mirrormedia/lilith-core'
+import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { text, relationship, integer } from '@keystone-6/core/fields'
 
@@ -10,20 +10,17 @@ const listConfigurations = list({
       label: '標題',
       validation: { isRequired: true },
     }),
-    heroImage: customFields.relationship({
+    heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor),
+          update: allowRoles(admin, moderator),
+          create: allowRoles(admin, moderator),
+          delete: allowRoles(admin),
+        },
       },
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor),
-		  update: allowRoles(admin, moderator),
-		  create: allowRoles(admin, moderator),
-		  delete: allowRoles(admin),
-		},
-  	  },
     }),
     heroImageLink: text({
       label: '首圖網址',

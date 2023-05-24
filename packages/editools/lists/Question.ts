@@ -6,6 +6,7 @@ import {
   text,
   select,
   relationship,
+  timestamp,
 } from '@keystone-6/core/fields'
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -31,19 +32,12 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
-    publishTime: customFields.timestamp({
+    publishTime: timestamp({
       label: '發布時間',
-      customConfig: {
-        hasNowButton: true,
-        hideTime: false,
-      },
     }),
-    heroImage: customFields.relationship({
+    heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
       access: {
         operation: {
           query: allowRoles(admin, moderator, editor),

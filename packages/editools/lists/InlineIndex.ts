@@ -139,7 +139,7 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/embed-code'),
+        views: './lists/views/embed-code',
         createView: {
           fieldMode: 'hidden',
         },
@@ -156,7 +156,7 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/link-button'),
+        views: './lists/views/link-button',
         createView: {
           fieldMode: 'hidden',
         },

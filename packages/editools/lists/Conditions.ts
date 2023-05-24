@@ -1,4 +1,4 @@
-import { customFields, utils } from '@mirrormedia/lilith-core'
+import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { relationship, select, text, integer } from '@keystone-6/core/fields'
 
