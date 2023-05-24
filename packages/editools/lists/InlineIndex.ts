@@ -120,7 +120,7 @@ const listConfigurations = list({
           index
             .sort((a, b) => a.order - b.order)
             .forEach((item) => {
-              const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
+              const urlPrefix = config.images.gcsBaseUrl
               const leftArea = item.imageFile?.url
                 ? `<img src='${urlPrefix}${item.imageFile?.url}' class='item__img' alt='${item.name}'/>`
                 : `<div class='item__color'>
