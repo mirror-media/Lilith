@@ -106,6 +106,9 @@ type Post {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+  writersInInputOrder: [Contact]
+  sectionsInInputOrder: [Section]
+  relatedsInInputOrder: [Post]
 }
 
 scalar DateTime

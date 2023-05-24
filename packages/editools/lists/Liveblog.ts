@@ -114,8 +114,8 @@ const listConfigurations = list({
             'react-live-blog',
             {
               initialLiveblog: liveblog,
-              fetchLiveblogUrl: `https://${config.googleCloudStorage.bucket}/files/liveblogs/${item?.slug}.json`,
-              fetchImageBaseUrl: `https://${config.googleCloudStorage.bucket}`,
+              fetchLiveblogUrl: `${config.files.gcsBaseUrl}/files/liveblogs/${item?.slug}.json`,
+              fetchImageBaseUrl: config.images.gcsBaseUrl,
               toLoadPeriodically: !item.archive,
             },
             embedCodeWebpackAssets

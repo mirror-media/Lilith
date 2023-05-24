@@ -73,7 +73,7 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
-          const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
+          const urlPrefix = config.images.gcsBaseUrl
 
           let style = ''
 

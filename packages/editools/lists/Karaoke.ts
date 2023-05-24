@@ -77,14 +77,14 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
-          const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
           const audioSrc =
             (item?.audioLink && `${item.audioLink}`) ||
-            (item?.audio_id && `${urlPrefix}/files/${item?.audio_filename}`)
+            (item?.audio_id &&
+              `${config.files.gcsBaseUrl}/files/${item?.audio_filename}`)
           const imgSrc =
             (item?.imageLink && `${item.imageLink}`) ||
             (item?.imageFile_id &&
-              `${urlPrefix}/images/${item.imageFile_id}.${item.imageFile_extension}`)
+              `${config.images.gcsBaseUrl}/images/${item.imageFile_id}.${item.imageFile_extension}`)
 
           return embedCodeGen.buildEmbeddedCode(
             'react-karaoke',
