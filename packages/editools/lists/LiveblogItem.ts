@@ -7,6 +7,7 @@ import {
   json,
   checkbox,
   virtual,
+  timestamp,
 } from '@keystone-6/core/fields'
 import { saveLiveblogJSON } from './utils'
 import { graphql } from '@graphql-ts/schema'
@@ -33,21 +34,14 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
-    publishTime: customFields.timestamp({
+    publishTime: timestamp({
       label: '發布時間',
-      customConfig: {
-        hasNowButton: true,
-        hideTime: false,
-      },
     }),
-    heroImage: customFields.relationship({
+    heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
     }),
-    heroVideo: customFields.relationship({
+    heroVideo: relationship({
       label: '首屏影片',
       ref: 'Video',
     }),

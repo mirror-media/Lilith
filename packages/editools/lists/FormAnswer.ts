@@ -16,12 +16,9 @@ const listConfigurations = list({
       label: '標題',
       validation: { isRequired: true },
     }),
-    heroImage: customFields.relationship({
+    heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
       access: {
         operation: {
           query: allowRoles(admin, moderator, editor),
@@ -34,12 +31,9 @@ const listConfigurations = list({
     heroImageLink: text({
       label: '首圖網址',
     }),
-    mobileImage: customFields.relationship({
+    mobileImage: relationship({
       label: '手機首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
       access: {
         operation: {
           query: allowRoles(admin, moderator, editor),

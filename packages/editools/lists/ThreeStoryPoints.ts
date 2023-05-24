@@ -31,12 +31,15 @@ const listConfigurations = list({
     }),
     model: file({
       label: '上傳 model glb 檔案',
+      storage: 'files',
     }),
     desktopModel: file({
       label: '上傳 model 桌機版 glb 檔案',
+      storage: 'files',
     }),
     lightModel: file({
       label: '上傳 light（燈光）glb 檔案',
+      storage: 'files',
     }),
     captions: json({
       label: '鏡頭移動分鏡說明',
@@ -70,7 +73,8 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/link-button'),
+        // A module path that is resolved from where `keystone start` is run
+        views: './lists/views/link-button',
         createView: {
           fieldMode: 'hidden',
         },
@@ -147,7 +151,8 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/embed-code'),
+        // A module path that is resolved from where `keystone start` is run
+        views: './lists/views/embed-code',
         createView: {
           fieldMode: 'hidden',
         },
@@ -164,7 +169,8 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/link-button'),
+        // A module path that is resolved from where `keystone start` is run
+        views: './lists/views/link-button',
         createView: {
           fieldMode: 'hidden',
         },

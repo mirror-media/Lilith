@@ -129,12 +129,7 @@ type LiveblogItem {
   external: String
   externalCoverPhoto: String
   liveblog: Liveblog
-  tags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   apiData: JSON
   createdAt: DateTime
@@ -143,8 +138,7 @@ type LiveblogItem {
   updatedBy: User
 }
 
-scalar DateTime
-  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input LiveblogItemWhereUniqueInput {
   id: ID
@@ -347,12 +341,7 @@ type Liveblog {
   archive: Boolean
   credit: String
   css: String
-  liveblog_items(
-    where: LiveblogItemWhereInput! = {}
-    orderBy: [LiveblogItemOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [LiveblogItem!]
+  liveblog_items(where: LiveblogItemWhereInput! = {}, orderBy: [LiveblogItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LiveblogItemWhereUniqueInput): [LiveblogItem!]
   liveblog_itemsCount(where: LiveblogItemWhereInput! = {}): Int
   tags: Tag
   publisher: Publisher
@@ -494,19 +483,9 @@ type Publisher {
   intro: String
   is_active: Boolean
   template: String
-  liveblog(
-    where: LiveblogWhereInput! = {}
-    orderBy: [LiveblogOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Liveblog!]
+  liveblog(where: LiveblogWhereInput! = {}, orderBy: [LiveblogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LiveblogWhereUniqueInput): [Liveblog!]
   liveblogCount(where: LiveblogWhereInput! = {}): Int
-  form(
-    where: FormWhereInput! = {}
-    orderBy: [FormOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Form!]
+  form(where: FormWhereInput! = {}, orderBy: [FormOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FormWhereUniqueInput): [Form!]
   formCount(where: FormWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -631,10 +610,9 @@ type AudioFile {
   updatedBy: User
 }
 
-interface FileFieldOutput {
+type FileFieldOutput {
   filename: String!
   filesize: Int!
-  ref: String!
   url: String!
 }
 
@@ -685,13 +663,10 @@ input AudioFileUpdateInput {
 }
 
 input FileFieldInput {
-  upload: Upload
-  ref: String
+  upload: Upload!
 }
 
-"""
-The `Upload` scalar type represents a file upload.
-"""
+"""The `Upload` scalar type represents a file upload."""
 scalar Upload
 
 input AudioFileUpdateArgs {
@@ -808,7 +783,6 @@ type Photo {
   name: String
   imageFile: ImageFieldOutput
   resized: ResizedImages
-  file: CustomFileFieldOutput
   urlOriginal: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -816,13 +790,12 @@ type Photo {
   updatedBy: User
 }
 
-interface ImageFieldOutput {
+type ImageFieldOutput {
   id: ID!
   filesize: Int!
   width: Int!
   height: Int!
   extension: ImageExtension!
-  ref: String!
   url: String!
 }
 
@@ -842,29 +815,8 @@ type ResizedImages {
   w2400: String
 }
 
-interface CustomFileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
 input PhotoWhereUniqueInput {
   id: ID
-}
-
-type LocalCustomFileFieldOutput implements CustomFileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
-type CloudCustomFileFieldOutput implements CustomFileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
 }
 
 input PhotoWhereInput {
@@ -891,7 +843,6 @@ input PhotoOrderByInput {
 input PhotoUpdateInput {
   name: String
   imageFile: ImageFieldInput
-  file: CustomFileFieldInput
   urlOriginal: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -900,13 +851,7 @@ input PhotoUpdateInput {
 }
 
 input ImageFieldInput {
-  upload: Upload
-  ref: String
-}
-
-input CustomFileFieldInput {
-  upload: Upload
-  ref: String
+  upload: Upload!
 }
 
 input PhotoUpdateArgs {
@@ -917,7 +862,6 @@ input PhotoUpdateArgs {
 input PhotoCreateInput {
   name: String
   imageFile: ImageFieldInput
-  file: CustomFileFieldInput
   urlOriginal: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -928,40 +872,15 @@ input PhotoCreateInput {
 type Tag {
   id: ID!
   name: String
-  liveblog(
-    where: LiveblogWhereInput! = {}
-    orderBy: [LiveblogOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Liveblog!]
+  liveblog(where: LiveblogWhereInput! = {}, orderBy: [LiveblogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LiveblogWhereUniqueInput): [Liveblog!]
   liveblogCount(where: LiveblogWhereInput! = {}): Int
-  liveblog_items(
-    where: LiveblogItemWhereInput! = {}
-    orderBy: [LiveblogItemOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [LiveblogItem!]
+  liveblog_items(where: LiveblogItemWhereInput! = {}, orderBy: [LiveblogItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LiveblogItemWhereUniqueInput): [LiveblogItem!]
   liveblog_itemsCount(where: LiveblogItemWhereInput! = {}): Int
-  questions(
-    where: QuestionWhereInput! = {}
-    orderBy: [QuestionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Question!]
+  questions(where: QuestionWhereInput! = {}, orderBy: [QuestionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: QuestionWhereUniqueInput): [Question!]
   questionsCount(where: QuestionWhereInput! = {}): Int
-  questionSection(
-    where: QuestionWhereInput! = {}
-    orderBy: [QuestionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Question!]
+  questionSection(where: QuestionWhereInput! = {}, orderBy: [QuestionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: QuestionWhereUniqueInput): [Question!]
   questionSectionCount(where: QuestionWhereInput! = {}): Int
-  form(
-    where: FormWhereInput! = {}
-    orderBy: [FormOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Form!]
+  form(where: FormWhereInput! = {}, orderBy: [FormOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FormWhereUniqueInput): [Form!]
   formCount(where: FormWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -1060,50 +979,20 @@ type Form {
   heroVideo: Video
   heroVideoLink: String
   active: Boolean
-  fields(
-    where: FieldWhereInput! = {}
-    orderBy: [FieldOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Field!]
+  fields(where: FieldWhereInput! = {}, orderBy: [FieldOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FieldWhereUniqueInput): [Field!]
   fieldsCount(where: FieldWhereInput! = {}): Int
-  answers(
-    where: FormAnswerWhereInput! = {}
-    orderBy: [FormAnswerOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [FormAnswer!]
+  answers(where: FormAnswerWhereInput! = {}, orderBy: [FormAnswerOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FormAnswerWhereUniqueInput): [FormAnswer!]
   answersCount(where: FormAnswerWhereInput! = {}): Int
   updateTimeDesc: String
   updateTime: DateTime
-  questions(
-    where: QuestionWhereInput! = {}
-    orderBy: [QuestionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Question!]
+  questions(where: QuestionWhereInput! = {}, orderBy: [QuestionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: QuestionWhereUniqueInput): [Question!]
   questionsCount(where: QuestionWhereInput! = {}): Int
-  tags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
-  conditions(
-    where: ConditionCollectionWhereInput! = {}
-    orderBy: [ConditionCollectionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ConditionCollection!]
+  conditions(where: ConditionCollectionWhereInput! = {}, orderBy: [ConditionCollectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ConditionCollectionWhereUniqueInput): [ConditionCollection!]
   conditionsCount(where: ConditionCollectionWhereInput! = {}): Int
   publisher: Publisher
-  result(
-    where: FormResultWhereInput! = {}
-    orderBy: [FormResultOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [FormResult!]
+  result(where: FormResultWhereInput! = {}, orderBy: [FormResultOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FormResultWhereUniqueInput): [FormResult!]
   resultCount(where: FormResultWhereInput! = {}): Int
   feedback: String
   apiData: JSON
@@ -1324,34 +1213,14 @@ type Field {
   content: JSON
   sortOrder: Int
   form: Form
-  options(
-    where: FieldOptionWhereInput! = {}
-    orderBy: [FieldOptionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [FieldOption!]
+  options(where: FieldOptionWhereInput! = {}, orderBy: [FieldOptionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FieldOptionWhereUniqueInput): [FieldOption!]
   optionsCount(where: FieldOptionWhereInput! = {}): Int
-  conditionCollection(
-    where: ConditionCollectionWhereInput! = {}
-    orderBy: [ConditionCollectionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ConditionCollection!]
+  conditionCollection(where: ConditionCollectionWhereInput! = {}, orderBy: [ConditionCollectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ConditionCollectionWhereUniqueInput): [ConditionCollection!]
   conditionCollectionCount(where: ConditionCollectionWhereInput! = {}): Int
-  condition(
-    where: ConditionWhereInput! = {}
-    orderBy: [ConditionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Condition!]
+  condition(where: ConditionWhereInput! = {}, orderBy: [ConditionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ConditionWhereUniqueInput): [Condition!]
   conditionCount(where: ConditionWhereInput! = {}): Int
   apiData: JSON
-  result(
-    where: FormResultWhereInput! = {}
-    orderBy: [FormResultOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [FormResult!]
+  result(where: FormResultWhereInput! = {}, orderBy: [FormResultOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FormResultWhereUniqueInput): [FormResult!]
   resultCount(where: FormResultWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -1522,12 +1391,7 @@ type FieldOption {
   value: String
   sortOrder: Int
   field: Field
-  condition(
-    where: ConditionWhereInput! = {}
-    orderBy: [ConditionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Condition!]
+  condition(where: ConditionWhereInput! = {}, orderBy: [ConditionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ConditionWhereUniqueInput): [Condition!]
   conditionCount(where: ConditionWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -1624,12 +1488,7 @@ type FormAnswer {
   mobileHeroImageLink: String
   content: JSON
   form: Form
-  conditionCollection(
-    where: ConditionCollectionWhereInput! = {}
-    orderBy: [ConditionCollectionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ConditionCollection!]
+  conditionCollection(where: ConditionCollectionWhereInput! = {}, orderBy: [ConditionCollectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ConditionCollectionWhereUniqueInput): [ConditionCollection!]
   conditionCollectionCount(where: ConditionCollectionWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -1794,19 +1653,9 @@ type Condition {
   title: String
   formField: Field
   compare: String
-  option(
-    where: FieldOptionWhereInput! = {}
-    orderBy: [FieldOptionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [FieldOption!]
+  option(where: FieldOptionWhereInput! = {}, orderBy: [FieldOptionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FieldOptionWhereUniqueInput): [FieldOption!]
   optionCount(where: FieldOptionWhereInput! = {}): Int
-  conditionCollection(
-    where: ConditionCollectionWhereInput! = {}
-    orderBy: [ConditionCollectionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ConditionCollection!]
+  conditionCollection(where: ConditionCollectionWhereInput! = {}, orderBy: [ConditionCollectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ConditionCollectionWhereUniqueInput): [ConditionCollection!]
   conditionCollectionCount(where: ConditionCollectionWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -1875,12 +1724,7 @@ type ConditionCollection {
   id: ID!
   type: String
   order: Int
-  condition(
-    where: ConditionWhereInput! = {}
-    orderBy: [ConditionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Condition!]
+  condition(where: ConditionWhereInput! = {}, orderBy: [ConditionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ConditionWhereUniqueInput): [Condition!]
   conditionCount(where: ConditionWhereInput! = {}): Int
   answer: FormAnswer
   next: Field
@@ -1989,19 +1833,9 @@ type Question {
   content: JSON
   boost: Boolean
   subject: Tag
-  tags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
-  form(
-    where: FormWhereInput! = {}
-    orderBy: [FormOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Form!]
+  form(where: FormWhereInput! = {}, orderBy: [FormOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FormWhereUniqueInput): [Form!]
   formCount(where: FormWhereInput! = {}): Int
   apiData: JSON
   createdAt: DateTime
@@ -2152,12 +1986,7 @@ input EmbedCodeCreateInput {
 type InlineIndex {
   id: ID!
   name: String
-  index(
-    where: IndexItemWhereInput! = {}
-    orderBy: [IndexItemOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [IndexItem!]
+  index(where: IndexItemWhereInput! = {}, orderBy: [IndexItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: IndexItemWhereUniqueInput): [IndexItem!]
   indexCount(where: IndexItemWhereInput! = {}): Int
   embedCode: String
   previewButton: JSON
@@ -2240,12 +2069,7 @@ type IndexItem {
   imageFile: ImageFieldOutput
   imageLink: String
   color: String
-  index(
-    where: InlineIndexWhereInput! = {}
-    orderBy: [InlineIndexOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [InlineIndex!]
+  index(where: InlineIndexWhereInput! = {}, orderBy: [InlineIndexOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: InlineIndexWhereUniqueInput): [InlineIndex!]
   indexCount(where: InlineIndexWhereInput! = {}): Int
   originCode: String
   embedCode: String
@@ -2531,12 +2355,7 @@ input VideoPickerCreateInput {
 type QAList {
   id: ID!
   name: String
-  items(
-    where: QAItemWhereInput! = {}
-    orderBy: [QAItemOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [QAItem!]
+  items(where: QAItemWhereInput! = {}, orderBy: [QAItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: QAItemWhereUniqueInput): [QAItem!]
   itemsCount(where: QAItemWhereInput! = {}): Int
   embedCode: String
   createdAt: DateTime
@@ -2778,20 +2597,6 @@ input ThreeStoryPointWhereUniqueInput {
   id: ID
 }
 
-type LocalFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
-type CloudFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
 input ThreeStoryPointWhereInput {
   AND: [ThreeStoryPointWhereInput!]
   OR: [ThreeStoryPointWhereInput!]
@@ -2938,26 +2743,6 @@ type RandomTextSelector {
 
 input RandomTextSelectorWhereUniqueInput {
   id: ID
-}
-
-type LocalImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  url: String!
-}
-
-type CloudImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  url: String!
 }
 
 input RandomTextSelectorWhereInput {
@@ -3162,10 +2947,7 @@ input DroppingTextCreateInput {
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
-scalar JSON
-  @specifiedBy(
-    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
-  )
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
 type Mutation {
   createUser(data: UserCreateInput!): User
@@ -3176,37 +2958,25 @@ type Mutation {
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
   createLiveblogItem(data: LiveblogItemCreateInput!): LiveblogItem
   createLiveblogItems(data: [LiveblogItemCreateInput!]!): [LiveblogItem]
-  updateLiveblogItem(
-    where: LiveblogItemWhereUniqueInput!
-    data: LiveblogItemUpdateInput!
-  ): LiveblogItem
+  updateLiveblogItem(where: LiveblogItemWhereUniqueInput!, data: LiveblogItemUpdateInput!): LiveblogItem
   updateLiveblogItems(data: [LiveblogItemUpdateArgs!]!): [LiveblogItem]
   deleteLiveblogItem(where: LiveblogItemWhereUniqueInput!): LiveblogItem
   deleteLiveblogItems(where: [LiveblogItemWhereUniqueInput!]!): [LiveblogItem]
   createLiveblog(data: LiveblogCreateInput!): Liveblog
   createLiveblogs(data: [LiveblogCreateInput!]!): [Liveblog]
-  updateLiveblog(
-    where: LiveblogWhereUniqueInput!
-    data: LiveblogUpdateInput!
-  ): Liveblog
+  updateLiveblog(where: LiveblogWhereUniqueInput!, data: LiveblogUpdateInput!): Liveblog
   updateLiveblogs(data: [LiveblogUpdateArgs!]!): [Liveblog]
   deleteLiveblog(where: LiveblogWhereUniqueInput!): Liveblog
   deleteLiveblogs(where: [LiveblogWhereUniqueInput!]!): [Liveblog]
   createPublisher(data: PublisherCreateInput!): Publisher
   createPublishers(data: [PublisherCreateInput!]!): [Publisher]
-  updatePublisher(
-    where: PublisherWhereUniqueInput!
-    data: PublisherUpdateInput!
-  ): Publisher
+  updatePublisher(where: PublisherWhereUniqueInput!, data: PublisherUpdateInput!): Publisher
   updatePublishers(data: [PublisherUpdateArgs!]!): [Publisher]
   deletePublisher(where: PublisherWhereUniqueInput!): Publisher
   deletePublishers(where: [PublisherWhereUniqueInput!]!): [Publisher]
   createAudioFile(data: AudioFileCreateInput!): AudioFile
   createAudioFiles(data: [AudioFileCreateInput!]!): [AudioFile]
-  updateAudioFile(
-    where: AudioFileWhereUniqueInput!
-    data: AudioFileUpdateInput!
-  ): AudioFile
+  updateAudioFile(where: AudioFileWhereUniqueInput!, data: AudioFileUpdateInput!): AudioFile
   updateAudioFiles(data: [AudioFileUpdateArgs!]!): [AudioFile]
   deleteAudioFile(where: AudioFileWhereUniqueInput!): AudioFile
   deleteAudioFiles(where: [AudioFileWhereUniqueInput!]!): [AudioFile]
@@ -3242,110 +3012,67 @@ type Mutation {
   deleteFields(where: [FieldWhereUniqueInput!]!): [Field]
   createFieldOption(data: FieldOptionCreateInput!): FieldOption
   createFieldOptions(data: [FieldOptionCreateInput!]!): [FieldOption]
-  updateFieldOption(
-    where: FieldOptionWhereUniqueInput!
-    data: FieldOptionUpdateInput!
-  ): FieldOption
+  updateFieldOption(where: FieldOptionWhereUniqueInput!, data: FieldOptionUpdateInput!): FieldOption
   updateFieldOptions(data: [FieldOptionUpdateArgs!]!): [FieldOption]
   deleteFieldOption(where: FieldOptionWhereUniqueInput!): FieldOption
   deleteFieldOptions(where: [FieldOptionWhereUniqueInput!]!): [FieldOption]
   createFormAnswer(data: FormAnswerCreateInput!): FormAnswer
   createFormAnswers(data: [FormAnswerCreateInput!]!): [FormAnswer]
-  updateFormAnswer(
-    where: FormAnswerWhereUniqueInput!
-    data: FormAnswerUpdateInput!
-  ): FormAnswer
+  updateFormAnswer(where: FormAnswerWhereUniqueInput!, data: FormAnswerUpdateInput!): FormAnswer
   updateFormAnswers(data: [FormAnswerUpdateArgs!]!): [FormAnswer]
   deleteFormAnswer(where: FormAnswerWhereUniqueInput!): FormAnswer
   deleteFormAnswers(where: [FormAnswerWhereUniqueInput!]!): [FormAnswer]
   createFormResult(data: FormResultCreateInput!): FormResult
   createFormResults(data: [FormResultCreateInput!]!): [FormResult]
-  updateFormResult(
-    where: FormResultWhereUniqueInput!
-    data: FormResultUpdateInput!
-  ): FormResult
+  updateFormResult(where: FormResultWhereUniqueInput!, data: FormResultUpdateInput!): FormResult
   updateFormResults(data: [FormResultUpdateArgs!]!): [FormResult]
   deleteFormResult(where: FormResultWhereUniqueInput!): FormResult
   deleteFormResults(where: [FormResultWhereUniqueInput!]!): [FormResult]
   createCondition(data: ConditionCreateInput!): Condition
   createConditions(data: [ConditionCreateInput!]!): [Condition]
-  updateCondition(
-    where: ConditionWhereUniqueInput!
-    data: ConditionUpdateInput!
-  ): Condition
+  updateCondition(where: ConditionWhereUniqueInput!, data: ConditionUpdateInput!): Condition
   updateConditions(data: [ConditionUpdateArgs!]!): [Condition]
   deleteCondition(where: ConditionWhereUniqueInput!): Condition
   deleteConditions(where: [ConditionWhereUniqueInput!]!): [Condition]
-  createConditionCollection(
-    data: ConditionCollectionCreateInput!
-  ): ConditionCollection
-  createConditionCollections(
-    data: [ConditionCollectionCreateInput!]!
-  ): [ConditionCollection]
-  updateConditionCollection(
-    where: ConditionCollectionWhereUniqueInput!
-    data: ConditionCollectionUpdateInput!
-  ): ConditionCollection
-  updateConditionCollections(
-    data: [ConditionCollectionUpdateArgs!]!
-  ): [ConditionCollection]
-  deleteConditionCollection(
-    where: ConditionCollectionWhereUniqueInput!
-  ): ConditionCollection
-  deleteConditionCollections(
-    where: [ConditionCollectionWhereUniqueInput!]!
-  ): [ConditionCollection]
+  createConditionCollection(data: ConditionCollectionCreateInput!): ConditionCollection
+  createConditionCollections(data: [ConditionCollectionCreateInput!]!): [ConditionCollection]
+  updateConditionCollection(where: ConditionCollectionWhereUniqueInput!, data: ConditionCollectionUpdateInput!): ConditionCollection
+  updateConditionCollections(data: [ConditionCollectionUpdateArgs!]!): [ConditionCollection]
+  deleteConditionCollection(where: ConditionCollectionWhereUniqueInput!): ConditionCollection
+  deleteConditionCollections(where: [ConditionCollectionWhereUniqueInput!]!): [ConditionCollection]
   createQuestion(data: QuestionCreateInput!): Question
   createQuestions(data: [QuestionCreateInput!]!): [Question]
-  updateQuestion(
-    where: QuestionWhereUniqueInput!
-    data: QuestionUpdateInput!
-  ): Question
+  updateQuestion(where: QuestionWhereUniqueInput!, data: QuestionUpdateInput!): Question
   updateQuestions(data: [QuestionUpdateArgs!]!): [Question]
   deleteQuestion(where: QuestionWhereUniqueInput!): Question
   deleteQuestions(where: [QuestionWhereUniqueInput!]!): [Question]
   createEmbedCode(data: EmbedCodeCreateInput!): EmbedCode
   createEmbedCodes(data: [EmbedCodeCreateInput!]!): [EmbedCode]
-  updateEmbedCode(
-    where: EmbedCodeWhereUniqueInput!
-    data: EmbedCodeUpdateInput!
-  ): EmbedCode
+  updateEmbedCode(where: EmbedCodeWhereUniqueInput!, data: EmbedCodeUpdateInput!): EmbedCode
   updateEmbedCodes(data: [EmbedCodeUpdateArgs!]!): [EmbedCode]
   deleteEmbedCode(where: EmbedCodeWhereUniqueInput!): EmbedCode
   deleteEmbedCodes(where: [EmbedCodeWhereUniqueInput!]!): [EmbedCode]
   createInlineIndex(data: InlineIndexCreateInput!): InlineIndex
   createInlineIndices(data: [InlineIndexCreateInput!]!): [InlineIndex]
-  updateInlineIndex(
-    where: InlineIndexWhereUniqueInput!
-    data: InlineIndexUpdateInput!
-  ): InlineIndex
+  updateInlineIndex(where: InlineIndexWhereUniqueInput!, data: InlineIndexUpdateInput!): InlineIndex
   updateInlineIndices(data: [InlineIndexUpdateArgs!]!): [InlineIndex]
   deleteInlineIndex(where: InlineIndexWhereUniqueInput!): InlineIndex
   deleteInlineIndices(where: [InlineIndexWhereUniqueInput!]!): [InlineIndex]
   createIndexItem(data: IndexItemCreateInput!): IndexItem
   createIndexItems(data: [IndexItemCreateInput!]!): [IndexItem]
-  updateIndexItem(
-    where: IndexItemWhereUniqueInput!
-    data: IndexItemUpdateInput!
-  ): IndexItem
+  updateIndexItem(where: IndexItemWhereUniqueInput!, data: IndexItemUpdateInput!): IndexItem
   updateIndexItems(data: [IndexItemUpdateArgs!]!): [IndexItem]
   deleteIndexItem(where: IndexItemWhereUniqueInput!): IndexItem
   deleteIndexItems(where: [IndexItemWhereUniqueInput!]!): [IndexItem]
   createKaraoke(data: KaraokeCreateInput!): Karaoke
   createKaraokes(data: [KaraokeCreateInput!]!): [Karaoke]
-  updateKaraoke(
-    where: KaraokeWhereUniqueInput!
-    data: KaraokeUpdateInput!
-  ): Karaoke
+  updateKaraoke(where: KaraokeWhereUniqueInput!, data: KaraokeUpdateInput!): Karaoke
   updateKaraokes(data: [KaraokeUpdateArgs!]!): [Karaoke]
   deleteKaraoke(where: KaraokeWhereUniqueInput!): Karaoke
   deleteKaraokes(where: [KaraokeWhereUniqueInput!]!): [Karaoke]
   createVideoPicker(data: VideoPickerCreateInput!): VideoPicker
   createVideoPickers(data: [VideoPickerCreateInput!]!): [VideoPicker]
-  updateVideoPicker(
-    where: VideoPickerWhereUniqueInput!
-    data: VideoPickerUpdateInput!
-  ): VideoPicker
+  updateVideoPicker(where: VideoPickerWhereUniqueInput!, data: VideoPickerUpdateInput!): VideoPicker
   updateVideoPickers(data: [VideoPickerUpdateArgs!]!): [VideoPicker]
   deleteVideoPicker(where: VideoPickerWhereUniqueInput!): VideoPicker
   deleteVideoPickers(where: [VideoPickerWhereUniqueInput!]!): [VideoPicker]
@@ -3362,96 +3089,47 @@ type Mutation {
   deleteQAItem(where: QAItemWhereUniqueInput!): QAItem
   deleteQAItems(where: [QAItemWhereUniqueInput!]!): [QAItem]
   createFeedbackCounter(data: FeedbackCounterCreateInput!): FeedbackCounter
-  createFeedbackCounters(
-    data: [FeedbackCounterCreateInput!]!
-  ): [FeedbackCounter]
-  updateFeedbackCounter(
-    where: FeedbackCounterWhereUniqueInput!
-    data: FeedbackCounterUpdateInput!
-  ): FeedbackCounter
+  createFeedbackCounters(data: [FeedbackCounterCreateInput!]!): [FeedbackCounter]
+  updateFeedbackCounter(where: FeedbackCounterWhereUniqueInput!, data: FeedbackCounterUpdateInput!): FeedbackCounter
   updateFeedbackCounters(data: [FeedbackCounterUpdateArgs!]!): [FeedbackCounter]
-  deleteFeedbackCounter(
-    where: FeedbackCounterWhereUniqueInput!
-  ): FeedbackCounter
-  deleteFeedbackCounters(
-    where: [FeedbackCounterWhereUniqueInput!]!
-  ): [FeedbackCounter]
+  deleteFeedbackCounter(where: FeedbackCounterWhereUniqueInput!): FeedbackCounter
+  deleteFeedbackCounters(where: [FeedbackCounterWhereUniqueInput!]!): [FeedbackCounter]
   createThreeStoryPoint(data: ThreeStoryPointCreateInput!): ThreeStoryPoint
-  createThreeStoryPoints(
-    data: [ThreeStoryPointCreateInput!]!
-  ): [ThreeStoryPoint]
-  updateThreeStoryPoint(
-    where: ThreeStoryPointWhereUniqueInput!
-    data: ThreeStoryPointUpdateInput!
-  ): ThreeStoryPoint
+  createThreeStoryPoints(data: [ThreeStoryPointCreateInput!]!): [ThreeStoryPoint]
+  updateThreeStoryPoint(where: ThreeStoryPointWhereUniqueInput!, data: ThreeStoryPointUpdateInput!): ThreeStoryPoint
   updateThreeStoryPoints(data: [ThreeStoryPointUpdateArgs!]!): [ThreeStoryPoint]
-  deleteThreeStoryPoint(
-    where: ThreeStoryPointWhereUniqueInput!
-  ): ThreeStoryPoint
-  deleteThreeStoryPoints(
-    where: [ThreeStoryPointWhereUniqueInput!]!
-  ): [ThreeStoryPoint]
+  deleteThreeStoryPoint(where: ThreeStoryPointWhereUniqueInput!): ThreeStoryPoint
+  deleteThreeStoryPoints(where: [ThreeStoryPointWhereUniqueInput!]!): [ThreeStoryPoint]
   createDualSlide(data: DualSlideCreateInput!): DualSlide
   createDualSlides(data: [DualSlideCreateInput!]!): [DualSlide]
-  updateDualSlide(
-    where: DualSlideWhereUniqueInput!
-    data: DualSlideUpdateInput!
-  ): DualSlide
+  updateDualSlide(where: DualSlideWhereUniqueInput!, data: DualSlideUpdateInput!): DualSlide
   updateDualSlides(data: [DualSlideUpdateArgs!]!): [DualSlide]
   deleteDualSlide(where: DualSlideWhereUniqueInput!): DualSlide
   deleteDualSlides(where: [DualSlideWhereUniqueInput!]!): [DualSlide]
-  createRandomTextSelector(
-    data: RandomTextSelectorCreateInput!
-  ): RandomTextSelector
-  createRandomTextSelectors(
-    data: [RandomTextSelectorCreateInput!]!
-  ): [RandomTextSelector]
-  updateRandomTextSelector(
-    where: RandomTextSelectorWhereUniqueInput!
-    data: RandomTextSelectorUpdateInput!
-  ): RandomTextSelector
-  updateRandomTextSelectors(
-    data: [RandomTextSelectorUpdateArgs!]!
-  ): [RandomTextSelector]
-  deleteRandomTextSelector(
-    where: RandomTextSelectorWhereUniqueInput!
-  ): RandomTextSelector
-  deleteRandomTextSelectors(
-    where: [RandomTextSelectorWhereUniqueInput!]!
-  ): [RandomTextSelector]
+  createRandomTextSelector(data: RandomTextSelectorCreateInput!): RandomTextSelector
+  createRandomTextSelectors(data: [RandomTextSelectorCreateInput!]!): [RandomTextSelector]
+  updateRandomTextSelector(where: RandomTextSelectorWhereUniqueInput!, data: RandomTextSelectorUpdateInput!): RandomTextSelector
+  updateRandomTextSelectors(data: [RandomTextSelectorUpdateArgs!]!): [RandomTextSelector]
+  deleteRandomTextSelector(where: RandomTextSelectorWhereUniqueInput!): RandomTextSelector
+  deleteRandomTextSelectors(where: [RandomTextSelectorWhereUniqueInput!]!): [RandomTextSelector]
   createComponentHelp(data: ComponentHelpCreateInput!): ComponentHelp
   createComponentHelps(data: [ComponentHelpCreateInput!]!): [ComponentHelp]
-  updateComponentHelp(
-    where: ComponentHelpWhereUniqueInput!
-    data: ComponentHelpUpdateInput!
-  ): ComponentHelp
+  updateComponentHelp(where: ComponentHelpWhereUniqueInput!, data: ComponentHelpUpdateInput!): ComponentHelp
   updateComponentHelps(data: [ComponentHelpUpdateArgs!]!): [ComponentHelp]
   deleteComponentHelp(where: ComponentHelpWhereUniqueInput!): ComponentHelp
-  deleteComponentHelps(
-    where: [ComponentHelpWhereUniqueInput!]!
-  ): [ComponentHelp]
+  deleteComponentHelps(where: [ComponentHelpWhereUniqueInput!]!): [ComponentHelp]
   createDroppingText(data: DroppingTextCreateInput!): DroppingText
   createDroppingTexts(data: [DroppingTextCreateInput!]!): [DroppingText]
-  updateDroppingText(
-    where: DroppingTextWhereUniqueInput!
-    data: DroppingTextUpdateInput!
-  ): DroppingText
+  updateDroppingText(where: DroppingTextWhereUniqueInput!, data: DroppingTextUpdateInput!): DroppingText
   updateDroppingTexts(data: [DroppingTextUpdateArgs!]!): [DroppingText]
   deleteDroppingText(where: DroppingTextWhereUniqueInput!): DroppingText
   deleteDroppingTexts(where: [DroppingTextWhereUniqueInput!]!): [DroppingText]
   endSession: Boolean!
-  authenticateUserWithPassword(
-    email: String!
-    password: String!
-  ): UserAuthenticationWithPasswordResult
-  createInitialUser(
-    data: CreateInitialUserInput!
-  ): UserAuthenticationWithPasswordSuccess!
+  authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
+  createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
 }
 
-union UserAuthenticationWithPasswordResult =
-    UserAuthenticationWithPasswordSuccess
-  | UserAuthenticationWithPasswordFailure
+union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
 
 type UserAuthenticationWithPasswordSuccess {
   sessionToken: String!
@@ -3470,240 +3148,91 @@ input CreateInitialUserInput {
 }
 
 type Query {
-  users(
-    where: UserWhereInput! = {}
-    orderBy: [UserOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [User!]
+  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
-  liveblogItems(
-    where: LiveblogItemWhereInput! = {}
-    orderBy: [LiveblogItemOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [LiveblogItem!]
+  liveblogItems(where: LiveblogItemWhereInput! = {}, orderBy: [LiveblogItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LiveblogItemWhereUniqueInput): [LiveblogItem!]
   liveblogItem(where: LiveblogItemWhereUniqueInput!): LiveblogItem
   liveblogItemsCount(where: LiveblogItemWhereInput! = {}): Int
-  liveblogs(
-    where: LiveblogWhereInput! = {}
-    orderBy: [LiveblogOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Liveblog!]
+  liveblogs(where: LiveblogWhereInput! = {}, orderBy: [LiveblogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LiveblogWhereUniqueInput): [Liveblog!]
   liveblog(where: LiveblogWhereUniqueInput!): Liveblog
   liveblogsCount(where: LiveblogWhereInput! = {}): Int
-  publishers(
-    where: PublisherWhereInput! = {}
-    orderBy: [PublisherOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Publisher!]
+  publishers(where: PublisherWhereInput! = {}, orderBy: [PublisherOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PublisherWhereUniqueInput): [Publisher!]
   publisher(where: PublisherWhereUniqueInput!): Publisher
   publishersCount(where: PublisherWhereInput! = {}): Int
-  audioFiles(
-    where: AudioFileWhereInput! = {}
-    orderBy: [AudioFileOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [AudioFile!]
+  audioFiles(where: AudioFileWhereInput! = {}, orderBy: [AudioFileOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AudioFileWhereUniqueInput): [AudioFile!]
   audioFile(where: AudioFileWhereUniqueInput!): AudioFile
   audioFilesCount(where: AudioFileWhereInput! = {}): Int
-  videos(
-    where: VideoWhereInput! = {}
-    orderBy: [VideoOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Video!]
+  videos(where: VideoWhereInput! = {}, orderBy: [VideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoWhereUniqueInput): [Video!]
   video(where: VideoWhereUniqueInput!): Video
   videosCount(where: VideoWhereInput! = {}): Int
-  photos(
-    where: PhotoWhereInput! = {}
-    orderBy: [PhotoOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Photo!]
+  photos(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
   photo(where: PhotoWhereUniqueInput!): Photo
   photosCount(where: PhotoWhereInput! = {}): Int
-  tags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tag(where: TagWhereUniqueInput!): Tag
   tagsCount(where: TagWhereInput! = {}): Int
-  forms(
-    where: FormWhereInput! = {}
-    orderBy: [FormOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Form!]
+  forms(where: FormWhereInput! = {}, orderBy: [FormOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FormWhereUniqueInput): [Form!]
   form(where: FormWhereUniqueInput!): Form
   formsCount(where: FormWhereInput! = {}): Int
-  fields(
-    where: FieldWhereInput! = {}
-    orderBy: [FieldOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Field!]
+  fields(where: FieldWhereInput! = {}, orderBy: [FieldOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FieldWhereUniqueInput): [Field!]
   field(where: FieldWhereUniqueInput!): Field
   fieldsCount(where: FieldWhereInput! = {}): Int
-  fieldOptions(
-    where: FieldOptionWhereInput! = {}
-    orderBy: [FieldOptionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [FieldOption!]
+  fieldOptions(where: FieldOptionWhereInput! = {}, orderBy: [FieldOptionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FieldOptionWhereUniqueInput): [FieldOption!]
   fieldOption(where: FieldOptionWhereUniqueInput!): FieldOption
   fieldOptionsCount(where: FieldOptionWhereInput! = {}): Int
-  formAnswers(
-    where: FormAnswerWhereInput! = {}
-    orderBy: [FormAnswerOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [FormAnswer!]
+  formAnswers(where: FormAnswerWhereInput! = {}, orderBy: [FormAnswerOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FormAnswerWhereUniqueInput): [FormAnswer!]
   formAnswer(where: FormAnswerWhereUniqueInput!): FormAnswer
   formAnswersCount(where: FormAnswerWhereInput! = {}): Int
-  formResults(
-    where: FormResultWhereInput! = {}
-    orderBy: [FormResultOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [FormResult!]
+  formResults(where: FormResultWhereInput! = {}, orderBy: [FormResultOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FormResultWhereUniqueInput): [FormResult!]
   formResult(where: FormResultWhereUniqueInput!): FormResult
   formResultsCount(where: FormResultWhereInput! = {}): Int
-  conditions(
-    where: ConditionWhereInput! = {}
-    orderBy: [ConditionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Condition!]
+  conditions(where: ConditionWhereInput! = {}, orderBy: [ConditionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ConditionWhereUniqueInput): [Condition!]
   condition(where: ConditionWhereUniqueInput!): Condition
   conditionsCount(where: ConditionWhereInput! = {}): Int
-  conditionCollections(
-    where: ConditionCollectionWhereInput! = {}
-    orderBy: [ConditionCollectionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ConditionCollection!]
-  conditionCollection(
-    where: ConditionCollectionWhereUniqueInput!
-  ): ConditionCollection
+  conditionCollections(where: ConditionCollectionWhereInput! = {}, orderBy: [ConditionCollectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ConditionCollectionWhereUniqueInput): [ConditionCollection!]
+  conditionCollection(where: ConditionCollectionWhereUniqueInput!): ConditionCollection
   conditionCollectionsCount(where: ConditionCollectionWhereInput! = {}): Int
-  questions(
-    where: QuestionWhereInput! = {}
-    orderBy: [QuestionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Question!]
+  questions(where: QuestionWhereInput! = {}, orderBy: [QuestionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: QuestionWhereUniqueInput): [Question!]
   question(where: QuestionWhereUniqueInput!): Question
   questionsCount(where: QuestionWhereInput! = {}): Int
-  embedCodes(
-    where: EmbedCodeWhereInput! = {}
-    orderBy: [EmbedCodeOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [EmbedCode!]
+  embedCodes(where: EmbedCodeWhereInput! = {}, orderBy: [EmbedCodeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EmbedCodeWhereUniqueInput): [EmbedCode!]
   embedCode(where: EmbedCodeWhereUniqueInput!): EmbedCode
   embedCodesCount(where: EmbedCodeWhereInput! = {}): Int
-  inlineIndices(
-    where: InlineIndexWhereInput! = {}
-    orderBy: [InlineIndexOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [InlineIndex!]
+  inlineIndices(where: InlineIndexWhereInput! = {}, orderBy: [InlineIndexOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: InlineIndexWhereUniqueInput): [InlineIndex!]
   inlineIndex(where: InlineIndexWhereUniqueInput!): InlineIndex
   inlineIndicesCount(where: InlineIndexWhereInput! = {}): Int
-  indexItems(
-    where: IndexItemWhereInput! = {}
-    orderBy: [IndexItemOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [IndexItem!]
+  indexItems(where: IndexItemWhereInput! = {}, orderBy: [IndexItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: IndexItemWhereUniqueInput): [IndexItem!]
   indexItem(where: IndexItemWhereUniqueInput!): IndexItem
   indexItemsCount(where: IndexItemWhereInput! = {}): Int
-  karaokes(
-    where: KaraokeWhereInput! = {}
-    orderBy: [KaraokeOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Karaoke!]
+  karaokes(where: KaraokeWhereInput! = {}, orderBy: [KaraokeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: KaraokeWhereUniqueInput): [Karaoke!]
   karaoke(where: KaraokeWhereUniqueInput!): Karaoke
   karaokesCount(where: KaraokeWhereInput! = {}): Int
-  videoPickers(
-    where: VideoPickerWhereInput! = {}
-    orderBy: [VideoPickerOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [VideoPicker!]
+  videoPickers(where: VideoPickerWhereInput! = {}, orderBy: [VideoPickerOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoPickerWhereUniqueInput): [VideoPicker!]
   videoPicker(where: VideoPickerWhereUniqueInput!): VideoPicker
   videoPickersCount(where: VideoPickerWhereInput! = {}): Int
-  qALists(
-    where: QAListWhereInput! = {}
-    orderBy: [QAListOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [QAList!]
+  qALists(where: QAListWhereInput! = {}, orderBy: [QAListOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: QAListWhereUniqueInput): [QAList!]
   qAList(where: QAListWhereUniqueInput!): QAList
   qAListsCount(where: QAListWhereInput! = {}): Int
-  qAItems(
-    where: QAItemWhereInput! = {}
-    orderBy: [QAItemOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [QAItem!]
+  qAItems(where: QAItemWhereInput! = {}, orderBy: [QAItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: QAItemWhereUniqueInput): [QAItem!]
   qAItem(where: QAItemWhereUniqueInput!): QAItem
   qAItemsCount(where: QAItemWhereInput! = {}): Int
-  feedbackCounters(
-    where: FeedbackCounterWhereInput! = {}
-    orderBy: [FeedbackCounterOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [FeedbackCounter!]
+  feedbackCounters(where: FeedbackCounterWhereInput! = {}, orderBy: [FeedbackCounterOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FeedbackCounterWhereUniqueInput): [FeedbackCounter!]
   feedbackCounter(where: FeedbackCounterWhereUniqueInput!): FeedbackCounter
   feedbackCountersCount(where: FeedbackCounterWhereInput! = {}): Int
-  threeStoryPoints(
-    where: ThreeStoryPointWhereInput! = {}
-    orderBy: [ThreeStoryPointOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ThreeStoryPoint!]
+  threeStoryPoints(where: ThreeStoryPointWhereInput! = {}, orderBy: [ThreeStoryPointOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ThreeStoryPointWhereUniqueInput): [ThreeStoryPoint!]
   threeStoryPoint(where: ThreeStoryPointWhereUniqueInput!): ThreeStoryPoint
   threeStoryPointsCount(where: ThreeStoryPointWhereInput! = {}): Int
-  dualSlides(
-    where: DualSlideWhereInput! = {}
-    orderBy: [DualSlideOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [DualSlide!]
+  dualSlides(where: DualSlideWhereInput! = {}, orderBy: [DualSlideOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DualSlideWhereUniqueInput): [DualSlide!]
   dualSlide(where: DualSlideWhereUniqueInput!): DualSlide
   dualSlidesCount(where: DualSlideWhereInput! = {}): Int
-  randomTextSelectors(
-    where: RandomTextSelectorWhereInput! = {}
-    orderBy: [RandomTextSelectorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [RandomTextSelector!]
-  randomTextSelector(
-    where: RandomTextSelectorWhereUniqueInput!
-  ): RandomTextSelector
+  randomTextSelectors(where: RandomTextSelectorWhereInput! = {}, orderBy: [RandomTextSelectorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: RandomTextSelectorWhereUniqueInput): [RandomTextSelector!]
+  randomTextSelector(where: RandomTextSelectorWhereUniqueInput!): RandomTextSelector
   randomTextSelectorsCount(where: RandomTextSelectorWhereInput! = {}): Int
-  componentHelps(
-    where: ComponentHelpWhereInput! = {}
-    orderBy: [ComponentHelpOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ComponentHelp!]
+  componentHelps(where: ComponentHelpWhereInput! = {}, orderBy: [ComponentHelpOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ComponentHelpWhereUniqueInput): [ComponentHelp!]
   componentHelp(where: ComponentHelpWhereUniqueInput!): ComponentHelp
   componentHelpsCount(where: ComponentHelpWhereInput! = {}): Int
-  droppingTexts(
-    where: DroppingTextWhereInput! = {}
-    orderBy: [DroppingTextOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [DroppingText!]
+  droppingTexts(where: DroppingTextWhereInput! = {}, orderBy: [DroppingTextOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DroppingTextWhereUniqueInput): [DroppingText!]
   droppingText(where: DroppingTextWhereUniqueInput!): DroppingText
   droppingTextsCount(where: DroppingTextWhereInput! = {}): Int
   keystone: KeystoneMeta!
@@ -3717,8 +3246,6 @@ type KeystoneMeta {
 }
 
 type KeystoneAdminMeta {
-  enableSignout: Boolean!
-  enableSessionItem: Boolean!
   lists: [KeystoneAdminUIListMeta!]!
   list(key: String!): KeystoneAdminUIListMeta
 }
@@ -3738,15 +3265,19 @@ type KeystoneAdminUIListMeta {
   pageSize: Int!
   labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
+  groups: [KeystoneAdminUIFieldGroupMeta!]!
   initialSort: KeystoneAdminUISort
   isHidden: Boolean!
+  isSingleton: Boolean!
 }
 
 type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
+  description: String
   isOrderable: Boolean!
   isFilterable: Boolean!
+  isNonNull: [KeystoneAdminUIFieldMetaIsNonNull!]
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int
@@ -3754,6 +3285,12 @@ type KeystoneAdminUIFieldMeta {
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
+}
+
+enum KeystoneAdminUIFieldMetaIsNonNull {
+  read
+  create
+  update
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
@@ -3776,12 +3313,24 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 
 type KeystoneAdminUIFieldMetaItemView {
   fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
+  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
+  form
+  sidebar
+}
+
+type KeystoneAdminUIFieldGroupMeta {
+  label: String!
+  description: String
+  fields: [KeystoneAdminUIFieldMeta!]!
 }
 
 type KeystoneAdminUISort {
