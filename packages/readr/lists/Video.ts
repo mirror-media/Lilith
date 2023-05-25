@@ -6,10 +6,6 @@ import { relationship, text, virtual, file } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator } = utils.accessControl
 
-// import { GcsFileAdapter } from '../utils/GcsFileAdapter'
-
-// const gcsFileAdapter = new GcsFileAdapter('video')
-
 const listConfigurations = list({
   fields: {
     name: text({
