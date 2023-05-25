@@ -16,17 +16,17 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@keystone-6/auth": "1.0.0",
-    "@keystone-6/core": "1.1.1",
-    "@keystone-6/fields-document": "1.0.1",
-    "@mirrormedia/lilith-core": "1.2.8",
+    "@keystone-6/auth": "7.0.0",
+    "@keystone-6/core": "5.2.0",
+    "@mirrormedia/lilith-core": "2.0.0-alpha.5",
     "express": "^4.17.1",
     "http-proxy-middleware": "^2.0.3",
     "patch-package": "^6.4.7"
   },
   "resolutions": {
-    "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "**/next": "13.3.4",
+    "**/react": "18.2.0",
+    "**/react-dom": "18.2.0"
   },
   "devDependencies": {
     "typescript": "^4.7.4"
