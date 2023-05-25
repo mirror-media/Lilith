@@ -16,8 +16,7 @@ type EditorChoice {
   updatedBy: User
 }
 
-scalar DateTime
-  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input EditorChoiceWhereUniqueInput {
   id: ID
@@ -224,13 +223,8 @@ type Photo {
   name: String
   imageFile: ImageFieldOutput
   resized: ResizedImages
-  file: CustomFileFieldOutput
-  tags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
+  file: FileFieldOutput
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   urlOriginal: String
   createdAt: DateTime
@@ -239,13 +233,12 @@ type Photo {
   updatedBy: User
 }
 
-interface ImageFieldOutput {
+type ImageFieldOutput {
   id: ID!
   filesize: Int!
   width: Int!
   height: Int!
   extension: ImageExtension!
-  ref: String!
   url: String!
 }
 
@@ -265,49 +258,14 @@ type ResizedImages {
   w2400: String
 }
 
-interface CustomFileFieldOutput {
+type FileFieldOutput {
   filename: String!
   filesize: Int!
-  ref: String!
   url: String!
 }
 
 input PhotoWhereUniqueInput {
   id: ID
-}
-
-type LocalImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  url: String!
-}
-
-type CloudImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  url: String!
-}
-
-type LocalCustomFileFieldOutput implements CustomFileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
-type CloudCustomFileFieldOutput implements CustomFileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
 }
 
 input PhotoWhereInput {
@@ -341,7 +299,7 @@ input PhotoOrderByInput {
 input PhotoUpdateInput {
   name: String
   imageFile: ImageFieldInput
-  file: CustomFileFieldInput
+  file: FileFieldInput
   tags: TagRelateToManyForUpdateInput
   urlOriginal: String
   createdAt: DateTime
@@ -351,18 +309,14 @@ input PhotoUpdateInput {
 }
 
 input ImageFieldInput {
-  upload: Upload
-  ref: String
+  upload: Upload!
 }
 
-"""
-The `Upload` scalar type represents a file upload.
-"""
+"""The `Upload` scalar type represents a file upload."""
 scalar Upload
 
-input CustomFileFieldInput {
-  upload: Upload
-  ref: String
+input FileFieldInput {
+  upload: Upload!
 }
 
 input TagRelateToManyForUpdateInput {
@@ -380,7 +334,7 @@ input PhotoUpdateArgs {
 input PhotoCreateInput {
   name: String
   imageFile: ImageFieldInput
-  file: CustomFileFieldInput
+  file: FileFieldInput
   tags: TagRelateToManyForCreateInput
   urlOriginal: String
   createdAt: DateTime
@@ -413,40 +367,15 @@ type Author {
   instagram: String
   address: String
   bio: String
-  posts(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
-  notes(
-    where: ProjectNoteWhereInput! = {}
-    orderBy: [ProjectNoteOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ProjectNote!]
+  notes(where: ProjectNoteWhereInput! = {}, orderBy: [ProjectNoteOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProjectNoteWhereUniqueInput): [ProjectNote!]
   notesCount(where: ProjectNoteWhereInput! = {}): Int
-  quote(
-    where: QuoteWhereInput! = {}
-    orderBy: [QuoteOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Quote!]
+  quote(where: QuoteWhereInput! = {}, orderBy: [QuoteOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: QuoteWhereUniqueInput): [Quote!]
   quoteCount(where: QuoteWhereInput! = {}): Int
-  gallery(
-    where: GalleryWhereInput! = {}
-    orderBy: [GalleryOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Gallery!]
+  gallery(where: GalleryWhereInput! = {}, orderBy: [GalleryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GalleryWhereUniqueInput): [Gallery!]
   galleryCount(where: GalleryWhereInput! = {}): Int
-  projects(
-    where: ProjectWhereInput! = {}
-    orderBy: [ProjectOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Project!]
+  projects(where: ProjectWhereInput! = {}, orderBy: [ProjectOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProjectWhereUniqueInput): [Project!]
   projectsCount(where: ProjectWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -847,13 +776,6 @@ type Video {
   updatedBy: User
 }
 
-interface FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
 input VideoWhereUniqueInput {
   id: ID
 }
@@ -903,11 +825,6 @@ input VideoUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input FileFieldInput {
-  upload: Upload
-  ref: String
-}
-
 input VideoUpdateArgs {
   where: VideoWhereUniqueInput!
   data: VideoUpdateInput!
@@ -945,20 +862,6 @@ type AudioFile {
 
 input AudioFileWhereUniqueInput {
   id: ID
-}
-
-type LocalFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
-type CloudFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
 }
 
 input AudioFileWhereInput {
@@ -1029,26 +932,11 @@ type Tag {
   ogDescription: String
   ogImage: Photo
   isFeatured: Boolean
-  posts(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
-  images(
-    where: PhotoWhereInput! = {}
-    orderBy: [PhotoOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Photo!]
+  images(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
   imagesCount(where: PhotoWhereInput! = {}): Int
-  projects(
-    where: ProjectWhereInput! = {}
-    orderBy: [ProjectOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Project!]
+  projects(where: ProjectWhereInput! = {}, orderBy: [ProjectOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProjectWhereUniqueInput): [Project!]
   projectsCount(where: ProjectWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -1178,12 +1066,7 @@ type Category {
   ogImage: Photo
   css: String
   javascript: String
-  relatedPost(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
+  relatedPost(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedPostCount(where: PostWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -1343,54 +1226,19 @@ type Post {
   subtitle: String
   state: String
   publishTime: DateTime
-  categories(
-    where: CategoryWhereInput! = {}
-    orderBy: [CategoryOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Category!]
+  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   categoriesCount(where: CategoryWhereInput! = {}): Int
-  writers(
-    where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Author!]
+  writers(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
   writersCount(where: AuthorWhereInput! = {}): Int
-  photographers(
-    where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Author!]
+  photographers(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
   photographersCount(where: AuthorWhereInput! = {}): Int
-  cameraOperators(
-    where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Author!]
+  cameraOperators(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
   cameraOperatorsCount(where: AuthorWhereInput! = {}): Int
-  designers(
-    where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Author!]
+  designers(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
   designersCount(where: AuthorWhereInput! = {}): Int
-  engineers(
-    where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Author!]
+  engineers(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
   engineersCount(where: AuthorWhereInput! = {}): Int
-  dataAnalysts(
-    where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Author!]
+  dataAnalysts(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
   dataAnalystsCount(where: AuthorWhereInput! = {}): Int
   otherByline: String
   leadingEmbeddedCode: String
@@ -1405,46 +1253,21 @@ type Post {
   citation: JSON
   readringTime: Int
   projects: Project
-  tags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   wordCount: Int
   readingTime: Int
-  collabration(
-    where: CollaborationWhereInput! = {}
-    orderBy: [CollaborationOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Collaboration!]
+  collabration(where: CollaborationWhereInput! = {}, orderBy: [CollaborationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CollaborationWhereUniqueInput): [Collaboration!]
   collabrationCount(where: CollaborationWhereInput! = {}): Int
-  relatedPosts(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
+  relatedPosts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedPostsCount(where: PostWhereInput! = {}): Int
-  data(
-    where: DataSetWhereInput! = {}
-    orderBy: [DataSetOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [DataSet!]
+  data(where: DataSetWhereInput! = {}, orderBy: [DataSetOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DataSetWhereUniqueInput): [DataSet!]
   dataCount(where: DataSetWhereInput! = {}): Int
   ogTitle: String
   ogDescription: String
   ogImage: Photo
   isFeatured: Boolean
-  note(
-    where: ProjectNoteWhereInput! = {}
-    orderBy: [ProjectNoteOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ProjectNote!]
+  note(where: ProjectNoteWhereInput! = {}, orderBy: [ProjectNoteOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProjectNoteWhereUniqueInput): [ProjectNote!]
   noteCount(where: ProjectNoteWhereInput! = {}): Int
   project: ProjectChecklist
   css: String
@@ -1773,12 +1596,7 @@ type Collaboration {
   collabLink: String
   achvLink: String
   state: String
-  posts(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
   publishTime: DateTime
   createdAt: DateTime
@@ -1886,19 +1704,9 @@ type DataSet {
   sortOrder: Int
   state: String
   description: String
-  relatedPosts(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
+  relatedPosts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedPostsCount(where: PostWhereInput! = {}): Int
-  gallery(
-    where: GalleryWhereInput! = {}
-    orderBy: [GalleryOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Gallery!]
+  gallery(where: GalleryWhereInput! = {}, orderBy: [GalleryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GalleryWhereUniqueInput): [Gallery!]
   galleryCount(where: GalleryWhereInput! = {}): Int
   publishTime: DateTime
   link: String
@@ -2062,21 +1870,11 @@ input FeatureCreateInput {
 
 type Gallery {
   id: ID!
-  data(
-    where: DataSetWhereInput! = {}
-    orderBy: [DataSetOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [DataSet!]
+  data(where: DataSetWhereInput! = {}, orderBy: [DataSetOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DataSetWhereUniqueInput): [DataSet!]
   dataCount(where: DataSetWhereInput! = {}): Int
   link: String
   heroImage: Photo
-  writer(
-    where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Author!]
+  writer(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
   writerCount(where: AuthorWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -2145,12 +1943,7 @@ type Project {
   state: String
   description: String
   leading: String
-  categories(
-    where: CategoryWhereInput! = {}
-    orderBy: [CategoryOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Category!]
+  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   categoriesCount(where: CategoryWhereInput! = {}): Int
   heroVideo: Video
   heroImage: Photo
@@ -2159,28 +1952,13 @@ type Project {
   ogDescription: String
   ogImage: Photo
   isFeatured: Boolean
-  writers(
-    where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Author!]
+  writers(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
   writersCount(where: AuthorWhereInput! = {}): Int
   title_style: String
   style: String
-  tags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
-  posts(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
   javascript: String
   publishTime: DateTime
@@ -2426,27 +2204,12 @@ input ProjectChecklistCreateInput {
 
 type ProjectNote {
   id: ID!
-  post(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
+  post(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postCount(where: PostWhereInput! = {}): Int
   title: String
-  writers(
-    where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Author!]
+  writers(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
   writersCount(where: AuthorWhereInput! = {}): Int
-  category(
-    where: NoteCategoryWhereInput! = {}
-    orderBy: [NoteCategoryOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [NoteCategory!]
+  category(where: NoteCategoryWhereInput! = {}, orderBy: [NoteCategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NoteCategoryWhereUniqueInput): [NoteCategory!]
   categoryCount(where: NoteCategoryWhereInput! = {}): Int
   publishTime: DateTime
   content: JSON
@@ -2542,12 +2305,7 @@ type NoteCategory {
   title: String
   isFeatured: Boolean
   state: String
-  note(
-    where: ProjectNoteWhereInput! = {}
-    orderBy: [ProjectNoteOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ProjectNote!]
+  note(where: ProjectNoteWhereInput! = {}, orderBy: [ProjectNoteOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProjectNoteWhereUniqueInput): [ProjectNote!]
   noteCount(where: ProjectNoteWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -2711,18 +2469,12 @@ input AuthorRelateToOneForCreateInput {
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
-scalar JSON
-  @specifiedBy(
-    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
-  )
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
 type Mutation {
   createEditorChoice(data: EditorChoiceCreateInput!): EditorChoice
   createEditorChoices(data: [EditorChoiceCreateInput!]!): [EditorChoice]
-  updateEditorChoice(
-    where: EditorChoiceWhereUniqueInput!
-    data: EditorChoiceUpdateInput!
-  ): EditorChoice
+  updateEditorChoice(where: EditorChoiceWhereUniqueInput!, data: EditorChoiceUpdateInput!): EditorChoice
   updateEditorChoices(data: [EditorChoiceUpdateArgs!]!): [EditorChoice]
   deleteEditorChoice(where: EditorChoiceWhereUniqueInput!): EditorChoice
   deleteEditorChoices(where: [EditorChoiceWhereUniqueInput!]!): [EditorChoice]
@@ -2740,10 +2492,7 @@ type Mutation {
   deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author]
   createPageVariable(data: PageVariableCreateInput!): PageVariable
   createPageVariables(data: [PageVariableCreateInput!]!): [PageVariable]
-  updatePageVariable(
-    where: PageVariableWhereUniqueInput!
-    data: PageVariableUpdateInput!
-  ): PageVariable
+  updatePageVariable(where: PageVariableWhereUniqueInput!, data: PageVariableUpdateInput!): PageVariable
   updatePageVariables(data: [PageVariableUpdateArgs!]!): [PageVariable]
   deletePageVariable(where: PageVariableWhereUniqueInput!): PageVariable
   deletePageVariables(where: [PageVariableWhereUniqueInput!]!): [PageVariable]
@@ -2761,10 +2510,7 @@ type Mutation {
   deleteVideos(where: [VideoWhereUniqueInput!]!): [Video]
   createAudioFile(data: AudioFileCreateInput!): AudioFile
   createAudioFiles(data: [AudioFileCreateInput!]!): [AudioFile]
-  updateAudioFile(
-    where: AudioFileWhereUniqueInput!
-    data: AudioFileUpdateInput!
-  ): AudioFile
+  updateAudioFile(where: AudioFileWhereUniqueInput!, data: AudioFileUpdateInput!): AudioFile
   updateAudioFiles(data: [AudioFileUpdateArgs!]!): [AudioFile]
   deleteAudioFile(where: AudioFileWhereUniqueInput!): AudioFile
   deleteAudioFiles(where: [AudioFileWhereUniqueInput!]!): [AudioFile]
@@ -2776,10 +2522,7 @@ type Mutation {
   deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
   createCategory(data: CategoryCreateInput!): Category
   createCategories(data: [CategoryCreateInput!]!): [Category]
-  updateCategory(
-    where: CategoryWhereUniqueInput!
-    data: CategoryUpdateInput!
-  ): Category
+  updateCategory(where: CategoryWhereUniqueInput!, data: CategoryUpdateInput!): Category
   updateCategories(data: [CategoryUpdateArgs!]!): [Category]
   deleteCategory(where: CategoryWhereUniqueInput!): Category
   deleteCategories(where: [CategoryWhereUniqueInput!]!): [Category]
@@ -2797,83 +2540,49 @@ type Mutation {
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
   createCollaboration(data: CollaborationCreateInput!): Collaboration
   createCollaborations(data: [CollaborationCreateInput!]!): [Collaboration]
-  updateCollaboration(
-    where: CollaborationWhereUniqueInput!
-    data: CollaborationUpdateInput!
-  ): Collaboration
+  updateCollaboration(where: CollaborationWhereUniqueInput!, data: CollaborationUpdateInput!): Collaboration
   updateCollaborations(data: [CollaborationUpdateArgs!]!): [Collaboration]
   deleteCollaboration(where: CollaborationWhereUniqueInput!): Collaboration
-  deleteCollaborations(
-    where: [CollaborationWhereUniqueInput!]!
-  ): [Collaboration]
+  deleteCollaborations(where: [CollaborationWhereUniqueInput!]!): [Collaboration]
   createDataSet(data: DataSetCreateInput!): DataSet
   createDataSets(data: [DataSetCreateInput!]!): [DataSet]
-  updateDataSet(
-    where: DataSetWhereUniqueInput!
-    data: DataSetUpdateInput!
-  ): DataSet
+  updateDataSet(where: DataSetWhereUniqueInput!, data: DataSetUpdateInput!): DataSet
   updateDataSets(data: [DataSetUpdateArgs!]!): [DataSet]
   deleteDataSet(where: DataSetWhereUniqueInput!): DataSet
   deleteDataSets(where: [DataSetWhereUniqueInput!]!): [DataSet]
   createFeature(data: FeatureCreateInput!): Feature
   createFeatures(data: [FeatureCreateInput!]!): [Feature]
-  updateFeature(
-    where: FeatureWhereUniqueInput!
-    data: FeatureUpdateInput!
-  ): Feature
+  updateFeature(where: FeatureWhereUniqueInput!, data: FeatureUpdateInput!): Feature
   updateFeatures(data: [FeatureUpdateArgs!]!): [Feature]
   deleteFeature(where: FeatureWhereUniqueInput!): Feature
   deleteFeatures(where: [FeatureWhereUniqueInput!]!): [Feature]
   createGallery(data: GalleryCreateInput!): Gallery
   createGalleries(data: [GalleryCreateInput!]!): [Gallery]
-  updateGallery(
-    where: GalleryWhereUniqueInput!
-    data: GalleryUpdateInput!
-  ): Gallery
+  updateGallery(where: GalleryWhereUniqueInput!, data: GalleryUpdateInput!): Gallery
   updateGalleries(data: [GalleryUpdateArgs!]!): [Gallery]
   deleteGallery(where: GalleryWhereUniqueInput!): Gallery
   deleteGalleries(where: [GalleryWhereUniqueInput!]!): [Gallery]
   createProject(data: ProjectCreateInput!): Project
   createProjects(data: [ProjectCreateInput!]!): [Project]
-  updateProject(
-    where: ProjectWhereUniqueInput!
-    data: ProjectUpdateInput!
-  ): Project
+  updateProject(where: ProjectWhereUniqueInput!, data: ProjectUpdateInput!): Project
   updateProjects(data: [ProjectUpdateArgs!]!): [Project]
   deleteProject(where: ProjectWhereUniqueInput!): Project
   deleteProjects(where: [ProjectWhereUniqueInput!]!): [Project]
   createProjectChecklist(data: ProjectChecklistCreateInput!): ProjectChecklist
-  createProjectChecklists(
-    data: [ProjectChecklistCreateInput!]!
-  ): [ProjectChecklist]
-  updateProjectChecklist(
-    where: ProjectChecklistWhereUniqueInput!
-    data: ProjectChecklistUpdateInput!
-  ): ProjectChecklist
-  updateProjectChecklists(
-    data: [ProjectChecklistUpdateArgs!]!
-  ): [ProjectChecklist]
-  deleteProjectChecklist(
-    where: ProjectChecklistWhereUniqueInput!
-  ): ProjectChecklist
-  deleteProjectChecklists(
-    where: [ProjectChecklistWhereUniqueInput!]!
-  ): [ProjectChecklist]
+  createProjectChecklists(data: [ProjectChecklistCreateInput!]!): [ProjectChecklist]
+  updateProjectChecklist(where: ProjectChecklistWhereUniqueInput!, data: ProjectChecklistUpdateInput!): ProjectChecklist
+  updateProjectChecklists(data: [ProjectChecklistUpdateArgs!]!): [ProjectChecklist]
+  deleteProjectChecklist(where: ProjectChecklistWhereUniqueInput!): ProjectChecklist
+  deleteProjectChecklists(where: [ProjectChecklistWhereUniqueInput!]!): [ProjectChecklist]
   createProjectNote(data: ProjectNoteCreateInput!): ProjectNote
   createProjectNotes(data: [ProjectNoteCreateInput!]!): [ProjectNote]
-  updateProjectNote(
-    where: ProjectNoteWhereUniqueInput!
-    data: ProjectNoteUpdateInput!
-  ): ProjectNote
+  updateProjectNote(where: ProjectNoteWhereUniqueInput!, data: ProjectNoteUpdateInput!): ProjectNote
   updateProjectNotes(data: [ProjectNoteUpdateArgs!]!): [ProjectNote]
   deleteProjectNote(where: ProjectNoteWhereUniqueInput!): ProjectNote
   deleteProjectNotes(where: [ProjectNoteWhereUniqueInput!]!): [ProjectNote]
   createNoteCategory(data: NoteCategoryCreateInput!): NoteCategory
   createNoteCategories(data: [NoteCategoryCreateInput!]!): [NoteCategory]
-  updateNoteCategory(
-    where: NoteCategoryWhereUniqueInput!
-    data: NoteCategoryUpdateInput!
-  ): NoteCategory
+  updateNoteCategory(where: NoteCategoryWhereUniqueInput!, data: NoteCategoryUpdateInput!): NoteCategory
   updateNoteCategories(data: [NoteCategoryUpdateArgs!]!): [NoteCategory]
   deleteNoteCategory(where: NoteCategoryWhereUniqueInput!): NoteCategory
   deleteNoteCategories(where: [NoteCategoryWhereUniqueInput!]!): [NoteCategory]
@@ -2884,18 +2593,11 @@ type Mutation {
   deleteQuote(where: QuoteWhereUniqueInput!): Quote
   deleteQuotes(where: [QuoteWhereUniqueInput!]!): [Quote]
   endSession: Boolean!
-  authenticateUserWithPassword(
-    email: String!
-    password: String!
-  ): UserAuthenticationWithPasswordResult
-  createInitialUser(
-    data: CreateInitialUserInput!
-  ): UserAuthenticationWithPasswordSuccess!
+  authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
+  createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
 }
 
-union UserAuthenticationWithPasswordResult =
-    UserAuthenticationWithPasswordSuccess
-  | UserAuthenticationWithPasswordFailure
+union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
 
 type UserAuthenticationWithPasswordSuccess {
   sessionToken: String!
@@ -2914,164 +2616,64 @@ input CreateInitialUserInput {
 }
 
 type Query {
-  editorChoices(
-    where: EditorChoiceWhereInput! = {}
-    orderBy: [EditorChoiceOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [EditorChoice!]
+  editorChoices(where: EditorChoiceWhereInput! = {}, orderBy: [EditorChoiceOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EditorChoiceWhereUniqueInput): [EditorChoice!]
   editorChoice(where: EditorChoiceWhereUniqueInput!): EditorChoice
   editorChoicesCount(where: EditorChoiceWhereInput! = {}): Int
-  photos(
-    where: PhotoWhereInput! = {}
-    orderBy: [PhotoOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Photo!]
+  photos(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
   photo(where: PhotoWhereUniqueInput!): Photo
   photosCount(where: PhotoWhereInput! = {}): Int
-  authors(
-    where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Author!]
+  authors(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AuthorWhereUniqueInput): [Author!]
   author(where: AuthorWhereUniqueInput!): Author
   authorsCount(where: AuthorWhereInput! = {}): Int
-  pageVariables(
-    where: PageVariableWhereInput! = {}
-    orderBy: [PageVariableOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [PageVariable!]
+  pageVariables(where: PageVariableWhereInput! = {}, orderBy: [PageVariableOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PageVariableWhereUniqueInput): [PageVariable!]
   pageVariable(where: PageVariableWhereUniqueInput!): PageVariable
   pageVariablesCount(where: PageVariableWhereInput! = {}): Int
-  awards(
-    where: AwardWhereInput! = {}
-    orderBy: [AwardOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Award!]
+  awards(where: AwardWhereInput! = {}, orderBy: [AwardOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AwardWhereUniqueInput): [Award!]
   award(where: AwardWhereUniqueInput!): Award
   awardsCount(where: AwardWhereInput! = {}): Int
-  videos(
-    where: VideoWhereInput! = {}
-    orderBy: [VideoOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Video!]
+  videos(where: VideoWhereInput! = {}, orderBy: [VideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoWhereUniqueInput): [Video!]
   video(where: VideoWhereUniqueInput!): Video
   videosCount(where: VideoWhereInput! = {}): Int
-  audioFiles(
-    where: AudioFileWhereInput! = {}
-    orderBy: [AudioFileOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [AudioFile!]
+  audioFiles(where: AudioFileWhereInput! = {}, orderBy: [AudioFileOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AudioFileWhereUniqueInput): [AudioFile!]
   audioFile(where: AudioFileWhereUniqueInput!): AudioFile
   audioFilesCount(where: AudioFileWhereInput! = {}): Int
-  tags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tag(where: TagWhereUniqueInput!): Tag
   tagsCount(where: TagWhereInput! = {}): Int
-  categories(
-    where: CategoryWhereInput! = {}
-    orderBy: [CategoryOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Category!]
+  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   category(where: CategoryWhereUniqueInput!): Category
   categoriesCount(where: CategoryWhereInput! = {}): Int
-  users(
-    where: UserWhereInput! = {}
-    orderBy: [UserOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [User!]
+  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
-  posts(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
-  collaborations(
-    where: CollaborationWhereInput! = {}
-    orderBy: [CollaborationOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Collaboration!]
+  collaborations(where: CollaborationWhereInput! = {}, orderBy: [CollaborationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CollaborationWhereUniqueInput): [Collaboration!]
   collaboration(where: CollaborationWhereUniqueInput!): Collaboration
   collaborationsCount(where: CollaborationWhereInput! = {}): Int
-  dataSets(
-    where: DataSetWhereInput! = {}
-    orderBy: [DataSetOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [DataSet!]
+  dataSets(where: DataSetWhereInput! = {}, orderBy: [DataSetOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DataSetWhereUniqueInput): [DataSet!]
   dataSet(where: DataSetWhereUniqueInput!): DataSet
   dataSetsCount(where: DataSetWhereInput! = {}): Int
-  features(
-    where: FeatureWhereInput! = {}
-    orderBy: [FeatureOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Feature!]
+  features(where: FeatureWhereInput! = {}, orderBy: [FeatureOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FeatureWhereUniqueInput): [Feature!]
   feature(where: FeatureWhereUniqueInput!): Feature
   featuresCount(where: FeatureWhereInput! = {}): Int
-  galleries(
-    where: GalleryWhereInput! = {}
-    orderBy: [GalleryOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Gallery!]
+  galleries(where: GalleryWhereInput! = {}, orderBy: [GalleryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GalleryWhereUniqueInput): [Gallery!]
   gallery(where: GalleryWhereUniqueInput!): Gallery
   galleriesCount(where: GalleryWhereInput! = {}): Int
-  projects(
-    where: ProjectWhereInput! = {}
-    orderBy: [ProjectOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Project!]
+  projects(where: ProjectWhereInput! = {}, orderBy: [ProjectOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProjectWhereUniqueInput): [Project!]
   project(where: ProjectWhereUniqueInput!): Project
   projectsCount(where: ProjectWhereInput! = {}): Int
-  projectChecklists(
-    where: ProjectChecklistWhereInput! = {}
-    orderBy: [ProjectChecklistOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ProjectChecklist!]
+  projectChecklists(where: ProjectChecklistWhereInput! = {}, orderBy: [ProjectChecklistOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProjectChecklistWhereUniqueInput): [ProjectChecklist!]
   projectChecklist(where: ProjectChecklistWhereUniqueInput!): ProjectChecklist
   projectChecklistsCount(where: ProjectChecklistWhereInput! = {}): Int
-  projectNotes(
-    where: ProjectNoteWhereInput! = {}
-    orderBy: [ProjectNoteOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ProjectNote!]
+  projectNotes(where: ProjectNoteWhereInput! = {}, orderBy: [ProjectNoteOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProjectNoteWhereUniqueInput): [ProjectNote!]
   projectNote(where: ProjectNoteWhereUniqueInput!): ProjectNote
   projectNotesCount(where: ProjectNoteWhereInput! = {}): Int
-  noteCategories(
-    where: NoteCategoryWhereInput! = {}
-    orderBy: [NoteCategoryOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [NoteCategory!]
+  noteCategories(where: NoteCategoryWhereInput! = {}, orderBy: [NoteCategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NoteCategoryWhereUniqueInput): [NoteCategory!]
   noteCategory(where: NoteCategoryWhereUniqueInput!): NoteCategory
   noteCategoriesCount(where: NoteCategoryWhereInput! = {}): Int
-  quotes(
-    where: QuoteWhereInput! = {}
-    orderBy: [QuoteOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Quote!]
+  quotes(where: QuoteWhereInput! = {}, orderBy: [QuoteOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: QuoteWhereUniqueInput): [Quote!]
   quote(where: QuoteWhereUniqueInput!): Quote
   quotesCount(where: QuoteWhereInput! = {}): Int
   keystone: KeystoneMeta!
@@ -3085,8 +2687,6 @@ type KeystoneMeta {
 }
 
 type KeystoneAdminMeta {
-  enableSignout: Boolean!
-  enableSessionItem: Boolean!
   lists: [KeystoneAdminUIListMeta!]!
   list(key: String!): KeystoneAdminUIListMeta
 }
@@ -3106,15 +2706,19 @@ type KeystoneAdminUIListMeta {
   pageSize: Int!
   labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
+  groups: [KeystoneAdminUIFieldGroupMeta!]!
   initialSort: KeystoneAdminUISort
   isHidden: Boolean!
+  isSingleton: Boolean!
 }
 
 type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
+  description: String
   isOrderable: Boolean!
   isFilterable: Boolean!
+  isNonNull: [KeystoneAdminUIFieldMetaIsNonNull!]
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int
@@ -3122,6 +2726,12 @@ type KeystoneAdminUIFieldMeta {
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
+}
+
+enum KeystoneAdminUIFieldMetaIsNonNull {
+  read
+  create
+  update
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
@@ -3144,12 +2754,24 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 
 type KeystoneAdminUIFieldMetaItemView {
   fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
+  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
+  form
+  sidebar
+}
+
+type KeystoneAdminUIFieldGroupMeta {
+  label: String!
+  description: String
+  fields: [KeystoneAdminUIFieldMeta!]!
 }
 
 type KeystoneAdminUISort {
