@@ -1,8 +1,14 @@
 import config from '../config'
 // @ts-ignore: no definition
-import { customFields, utils } from '@mirrormedia/lilith-core'
+import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { image, text, relationship, virtual } from '@keystone-6/core/fields'
+import {
+  file,
+  image,
+  text,
+  relationship,
+  virtual,
+} from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -15,7 +21,9 @@ const listConfigurations = list({
       label: '標題',
       validation: { isRequired: true },
     }),
-    imageFile: image(),
+    imageFile: image({
+      storage: 'images',
+    }),
     resized: virtual({
       field: graphql.field({
         type: graphql.object<{
@@ -92,11 +100,9 @@ const listConfigurations = list({
         query: '{ original w480 w800 w1200 w1600 w2400 }',
       },
     }),
-    file: customFields.file({
+    file: file({
       label: '檔案（建議長邊大於 2000 pixel）',
-      customConfig: {
-        fileType: 'image',
-      },
+      storage: 'files',
       ui: {
         createView: {
           fieldMode: 'hidden',
@@ -114,9 +120,9 @@ const listConfigurations = list({
       many: true,
       label: '相關標籤',
       ui: {
-        itemView: { fieldMode: 'hidden'},
-        createView: { fieldMode: 'hidden'}
-      }
+        itemView: { fieldMode: 'hidden' },
+        createView: { fieldMode: 'hidden' },
+      },
     }),
     urlOriginal: text({
       ui: {
