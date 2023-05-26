@@ -173,36 +173,40 @@ model Tag {
 }
 
 model Topic {
-  id            Int       @id @default(autoincrement())
-  name          String    @default("")
-  slug          String    @default("")
-  sortOrder     Int?
-  state         String?   @default("draft")
-  brief         Json?
-  heroImage     Photo?    @relation("Topic_heroImage", fields: [heroImageId], references: [id])
-  heroImageId   Int?      @map("heroImage")
-  leading       String?
-  sections      Section[] @relation("Section_topics")
-  heroImageSize String?   @default("normal")
-  isFeatured    Boolean   @default(false)
-  title_style   String?   @default("feature")
-  type          String?   @default("list")
-  style         String    @default("")
-  tags          Tag[]     @relation("Tag_topics")
-  posts         Post[]    @relation("Post_topics")
-  javascript    String    @default("")
-  dfp           String    @default("")
-  mobile_dfp    String    @default("")
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?     @relation("Topic_createdBy", fields: [createdById], references: [id])
-  createdById   Int?      @map("createdBy")
-  updatedBy     User?     @relation("Topic_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?      @map("updatedBy")
+  id             Int       @id @default(autoincrement())
+  name           String    @default("")
+  slug           String    @default("")
+  sortOrder      Int?
+  state          String?   @default("draft")
+  brief          Json?
+  heroImage      Photo?    @relation("Topic_heroImage", fields: [heroImageId], references: [id])
+  heroImageId    Int?      @map("heroImage")
+  leading        String?
+  sections       Section[] @relation("Section_topics")
+  og_title       String    @default("")
+  og_description String    @default("")
+  og_image       Photo?    @relation("Topic_og_image", fields: [og_imageId], references: [id])
+  og_imageId     Int?      @map("og_image")
+  isFeatured     Boolean   @default(false)
+  title_style    String?   @default("feature")
+  type           String?   @default("list")
+  style          String    @default("")
+  tags           Tag[]     @relation("Tag_topics")
+  posts          Post[]    @relation("Post_topics")
+  javascript     String    @default("")
+  dfp            String    @default("")
+  mobile_dfp     String    @default("")
+  createdAt      DateTime?
+  updatedAt      DateTime?
+  createdBy      User?     @relation("Topic_createdBy", fields: [createdById], references: [id])
+  createdById    Int?      @map("createdBy")
+  updatedBy      User?     @relation("Topic_updatedBy", fields: [updatedById], references: [id])
+  updatedById    Int?      @map("updatedBy")
 
   @@index([state])
   @@index([heroImageId])
   @@index([leading])
+  @@index([og_imageId])
   @@index([title_style])
   @@index([type])
   @@index([createdById])
@@ -264,6 +268,7 @@ model AudioFile {
 model Photo {
   id                       Int         @id @default(autoincrement())
   name                     String      @default("")
+  isWatermark              Boolean     @default(false)
   imageFile_filesize       Int?
   imageFile_extension      String?
   imageFile_width          Int?
@@ -285,6 +290,7 @@ model Photo {
   from_Post_og_image       Post[]      @relation("Post_og_image")
   from_Event_heroImage     Event[]     @relation("Event_heroImage")
   from_Topic_heroImage     Topic[]     @relation("Topic_heroImage")
+  from_Topic_og_image      Topic[]     @relation("Topic_og_image")
   from_Magazine_coverPhoto Magazine[]  @relation("Magazine_coverPhoto")
   from_AudioFile_heroImage AudioFile[] @relation("AudioFile_heroImage")
   from_Video_heroImage     Video[]     @relation("Video_heroImage")
