@@ -6,7 +6,6 @@ import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createPreviewMiniApp } from './express-mini-apps/preview/app'
-import { createApp as createPremiumMemberMiniApp } from './express-mini-apps/premium-membership/app'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -65,17 +64,6 @@ export default withAuth(
             createPreviewMiniApp({
               previewServerOrigin: envVar.previewServerOrigin,
               createContext,
-            })
-          )
-        }
-        if (envVar.accessControlStrategy === 'gql') {
-          app.use(
-            createPremiumMemberMiniApp({
-              gcpProjectId: envVar.gcp.projectId,
-              firebaseProjectId: envVar.firebase.projectId,
-              memberApiUrl: envVar.memberApiUrl,
-              jwtSecret: envVar.jwt.secret,
-              corsAllowOrigin: envVar.cors.allowOrigins,
             })
           )
         }
