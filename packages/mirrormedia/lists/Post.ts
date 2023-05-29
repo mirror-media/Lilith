@@ -1,6 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { graphql, list } from '@keystone-6/core'
-import { /*KeystoneContext,*/ JSONValue } from '@keystone-6/core/types'
+import { KeystoneContext, JSONValue } from '@keystone-6/core/types'
 import {
   checkbox,
   relationship,
@@ -12,10 +12,10 @@ import {
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 // @ts-ignore @twreporter/errors does not have typescript definition
-// import errors from '@twreporter/errors'
+import errors from '@twreporter/errors'
 // @ts-ignore draft-js does not have typescript definition
 import { RawContentState } from 'draft-js'
-// import logUtils from '../utils/gcp-logging'
+import logUtils from '../utils/gcp-logging'
 
 const { allowRoles, admin, moderator } = utils.accessControl
 
@@ -220,89 +220,87 @@ const listConfigurations = list({
       disabledButtons: ['header-four', 'background-video'],
       website: 'mirrormedia',
       access: {
-        read: async () => /*{
+        read: async ({
           context,
           item,
         }: {
           context: KeystoneContext
           item: Record<string, unknown>
-        }*/ {
-          // TODO uncomment the following codes
-          // when member post logics implemented
-          //if (envVar.accessControlStrategy === 'gql') {
-          //  const scope = context.req?.headers?.['x-access-token-scope']
+        }) => {
+          if (envVar.accessControlStrategy === 'gql') {
+            const scope = context.req?.headers?.['x-access-token-scope']
 
-          //  // get acl from scope
-          //  const acl =
-          //    typeof scope === 'string'
-          //      ? scope.match(/read:member-posts:([^\s]*)/i)?.[1]
-          //      : ''
+            // get acl from scope
+            const acl =
+              typeof scope === 'string'
+                ? scope.match(/read:member-posts:([^\s]*)/i)?.[1]
+                : ''
 
-          //  if (typeof acl !== 'string') {
-          //    return false
-          //  } else if (acl === 'all') {
-          //    // scope contains 'read:memeber-posts:all'
-          //    // the request has the permission to read this field
-          //    return true
-          //  } else {
-          //    // scope contains 'read:member-posts:${postId1},${postId2},...,${postIdN}'
-          //    const postIdArr = acl.split(',')
+            if (typeof acl !== 'string') {
+              return false
+            } else if (acl === 'all') {
+              // scope contains 'read:memeber-posts:all'
+              // the request has the permission to read this field
+              return true
+            } else {
+              // scope contains 'read:member-posts:${postId1},${postId2},...,${postIdN}'
+              const postIdArr = acl.split(',')
 
-          //    // check the request has the permission to read this field
-          //    if (postIdArr.indexOf(`${item.id}`) > -1) {
-          //      return true
-          //    }
-          //  }
+              // check the request has the permission to read this field
+              if (postIdArr.indexOf(`${item.id}`) > -1) {
+                return true
+              }
+            }
 
-          //  let post
-          //  const queryArgs = {
-          //    where: { id: `${item.id}` },
-          //    query: 'categories { isMemberOnly }',
-          //  }
-          //  try {
-          //    // Due to many-to-many relationship,
-          //    // `item` won't contain `categories` value.
-          //    // Therefore, we have to query `categories`
-          //    // object by ourselves.
-          //    post = await context.query.Post.findOne(queryArgs)
-          //  } catch (err) {
-          //    const wrappedErr = errors.helpers.wrap(
-          //      err,
-          //      'QueryAPIError',
-          //      'Error to query post item by Keystone Query API',
-          //      queryArgs
-          //    )
-          //    console.log(
-          //      JSON.stringify({
-          //        severity: 'Error',
-          //        message: errors.helpers.printAll(
-          //          wrappedErr,
-          //          {
-          //            withStack: true,
-          //            withPayload: true,
-          //          },
-          //          0,
-          //          0
-          //        ),
-          //        ...logUtils.getGlobalLogFields(
-          //          context.req,
-          //          envVar.gcp.projectId
-          //        ),
-          //      })
-          //    )
-          //    // access denial due to unexpected error
-          //    return false
-          //  }
+            let post
+            const queryArgs = {
+              where: { id: `${item.id}` },
+              query: 'categories { isMemberOnly }',
+            }
+            try {
+              // Due to many-to-many relationship,
+              // `item` won't contain `categories` value.
+              // Therefore, we have to query `categories`
+              // object by ourselves.
+              post = await context.query.Post.findOne(queryArgs)
+            } catch (err) {
+              const wrappedErr = errors.helpers.wrap(
+                err,
+                'QueryAPIError',
+                'Error to query post item by Keystone Query API',
+                queryArgs
+              )
+              console.log(
+                JSON.stringify({
+                  severity: 'Error',
+                  message: errors.helpers.printAll(
+                    wrappedErr,
+                    {
+                      withStack: true,
+                      withPayload: true,
+                    },
+                    0,
+                    0
+                  ),
+                  ...logUtils.getGlobalLogFields(
+                    context.req,
+                    envVar.gcp.projectId
+                  ),
+                })
+              )
+              // access denial due to unexpected error
+              return false
+            }
 
-          //  const memberCategory = post?.categories?.find(
-          //    (c: { isMemberOnly: boolean }) => {
-          //      return c.isMemberOnly
-          //    }
-          //  )
+            const memberCategory = post?.categories?.find(
+              (c: { isMemberOnly: boolean }) => {
+                return c.isMemberOnly
+              }
+            )
 
-          //  // the request does not have permission to read this field if the post is premiun post
-          //  return memberCategory ? false : true
-          //}
+            // the request does not have permission to read this field if the post is premiun post
+            return memberCategory ? false : true
+          }
 
           // the request has permission to read this field
           return true
