@@ -225,6 +225,14 @@ const listConfigurations = list({
           item: Record<string, unknown>
         }) => {
           if (envVar.accessControlStrategy === 'gql') {
+            // Post is not member only,
+            // every request could access content field
+            if (item?.isMember === false) {
+              return true
+            }
+
+            // Post is member only.
+            // Check request permission.
             const scope = context.req?.headers?.['x-access-token-scope']
 
             // get acl from scope
@@ -249,8 +257,7 @@ const listConfigurations = list({
               }
             }
 
-            // check if the post is member only or not
-            return item?.isMember !== true
+            return false
           }
 
           // the request has permission to read this field
