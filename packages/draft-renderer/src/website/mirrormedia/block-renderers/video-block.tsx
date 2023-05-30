@@ -37,13 +37,47 @@ type VideoEntity = {
   heroImage: ImageEntity
 }
 
-export function VideoBlock(entity: DraftEntityInstance) {
+export function VideoBlock(entity: DraftEntityInstance, contentLayout: string) {
+  const isAmp = contentLayout === 'amp'
   const { video }: { video: VideoEntity } = entity.getData()
+  function extractFileExtension(url) {
+    const parts = url?.split('.')
+    if (parts?.length > 1) {
+      return parts[parts.length - 1]
+    }
+    return null
+  }
 
   return (
-    <Video muted autoPlay loop controls>
-      <source src={video?.urlOriginal} />
-      <source src={video?.file?.url} />
-    </Video>
+    <>
+      {isAmp ? (
+        <amp-video
+          controls="controls"
+          autoplay="autoplay"
+          loop="loop"
+          layout="responsive"
+          width="100vw"
+          height="50vw"
+        >
+          {extractFileExtension(video?.urlOriginal) && (
+            <source
+              src={video?.urlOriginal}
+              type={`video/${extractFileExtension(video?.urlOriginal)}`}
+            />
+          )}
+          {extractFileExtension(video?.file?.url) && (
+            <source
+              src={video?.file?.url}
+              type={`video/${extractFileExtension(video?.file?.url)}`}
+            />
+          )}
+        </amp-video>
+      ) : (
+        <Video muted autoPlay loop controls>
+          <source src={video?.urlOriginal} />
+          <source src={video?.file?.url} />
+        </Video>
+      )}
+    </>
   )
 }

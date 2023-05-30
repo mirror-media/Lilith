@@ -66,7 +66,7 @@ const AtomicBlock = (props) => {
       return SideIndexBlock(props)
     }
     case 'VIDEO': {
-      return VideoBlock(entity)
+      return VideoBlock(entity, contentLayout)
     }
     case 'AUDIO': {
       return AudioBlock(entity)
