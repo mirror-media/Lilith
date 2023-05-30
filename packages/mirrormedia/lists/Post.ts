@@ -249,6 +249,7 @@ const listConfigurations = list({
               }
             }
 
+            // check if the post is member only or not
             return item?.isMember !== true
           }
 
