@@ -57,14 +57,21 @@ const removeEmptyContentBlock = (rawContentBlock: Draft): Draft => {
 const getContentBlocksH2H3 = (
   rawContentBlock: Draft
 ): Pick<DraftBlock, 'text' | 'key' | 'type'>[] => {
-  const contentBlocks = removeEmptyContentBlock(rawContentBlock)
-  return contentBlocks.blocks
-    .filter(
-      (block) => block.type === 'header-two' || block.type === 'header-three'
+  try {
+    const contentBlocks = removeEmptyContentBlock(rawContentBlock)
+    return contentBlocks.blocks
+      .filter(
+        (block) => block.type === 'header-two' || block.type === 'header-three'
+      )
+      .map((block) => {
+        return { key: block.key, text: block.text, type: block.type }
+      })
+  } catch (error) {
+    console.warn(
+      `Because ${error}, Function 'getContentBlocksH2H3' return an empty array`
     )
-    .map((block) => {
-      return { key: block.key, text: block.text, type: block.type }
-    })
+    return []
+  }
 }
 export {
   hasContentInRawContentBlock,
