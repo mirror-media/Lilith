@@ -5,7 +5,6 @@
     "packages/draft-editor",
     "packages/draft-renderer",
     "packages/mesh",
-    "packages/mirrormedia",
     "packages/openrelationship"
   ],
   "scripts": {
