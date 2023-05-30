@@ -73,8 +73,18 @@ const getContentBlocksH2H3 = (
     return []
   }
 }
+
+function extractFileExtension(url) {
+  const parts = url?.split('.')
+  if (parts?.length > 1) {
+    return parts[parts.length - 1]
+  }
+  return null
+}
+
 export {
   hasContentInRawContentBlock,
   removeEmptyContentBlock,
   getContentBlocksH2H3,
+  extractFileExtension,
 }

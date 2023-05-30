@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
+import { extractFileExtension } from '../utils'
 
 const AudioWrapper = styled.div`
   display: flex;
@@ -34,16 +35,34 @@ type AudioEntity = {
   heroImage?: ImageEntity
 }
 
-export function AudioBlock(entity: DraftEntityInstance) {
+export function AudioBlock(entity: DraftEntityInstance, contentLayout: string) {
+  const isAmp = contentLayout === 'amp'
   const { audio }: { audio: AudioEntity } = entity.getData()
 
   return (
     <AudioWrapper>
       <p>{audio?.name}</p>
-      <Audio controls>
-        <source src={audio?.urlOriginal} />
-        <source src={audio?.file?.url} />
-      </Audio>
+      {isAmp ? (
+        <amp-audio width="50vw" height="54">
+          {audio?.urlOriginal && (
+            <source
+              type={`audio/${extractFileExtension(audio?.urlOriginal)}`}
+              src={audio?.urlOriginal}
+            />
+          )}
+          {audio?.file?.url && (
+            <source
+              type={`audio/${extractFileExtension(audio?.file?.url)}`}
+              src={audio?.file?.url}
+            />
+          )}
+        </amp-audio>
+      ) : (
+        <Audio controls>
+          <source src={audio?.urlOriginal} />
+          <source src={audio?.file?.url} />
+        </Audio>
+      )}
     </AudioWrapper>
   )
 }

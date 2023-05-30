@@ -2,6 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
 import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
+import { extractFileExtension } from '../utils'
+
 const Video = styled.video`
   width: 100%;
   ${defaultMarginTop}
@@ -40,13 +42,6 @@ type VideoEntity = {
 export function VideoBlock(entity: DraftEntityInstance, contentLayout: string) {
   const isAmp = contentLayout === 'amp'
   const { video }: { video: VideoEntity } = entity.getData()
-  function extractFileExtension(url) {
-    const parts = url?.split('.')
-    if (parts?.length > 1) {
-      return parts[parts.length - 1]
-    }
-    return null
-  }
 
   return (
     <>

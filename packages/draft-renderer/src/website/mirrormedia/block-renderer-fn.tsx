@@ -69,7 +69,7 @@ const AtomicBlock = (props) => {
       return VideoBlock(entity, contentLayout)
     }
     case 'AUDIO': {
-      return AudioBlock(entity)
+      return AudioBlock(entity, contentLayout)
     }
     case 'YOUTUBE': {
       return YoutubeBlock(entity)
