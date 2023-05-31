@@ -1180,8 +1180,8 @@ input AudioFileCreateInput {
 type Photo {
   id: ID!
   name: String
-  isWatermark: Boolean
   imageFile: ImageFieldOutput
+  waterMark: Boolean
   resized: ResizedImages
   file: FileFieldOutput
   urlOriginal: String
@@ -1227,7 +1227,7 @@ input PhotoWhereInput {
   NOT: [PhotoWhereInput!]
   id: IDFilter
   name: StringFilter
-  isWatermark: BooleanFilter
+  waterMark: BooleanFilter
   urlOriginal: StringFilter
   copyRight: BooleanFilter
   createdAt: DateTimeNullableFilter
@@ -1239,7 +1239,7 @@ input PhotoWhereInput {
 input PhotoOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  isWatermark: OrderDirection
+  waterMark: OrderDirection
   urlOriginal: OrderDirection
   copyRight: OrderDirection
   createdAt: OrderDirection
@@ -1248,8 +1248,8 @@ input PhotoOrderByInput {
 
 input PhotoUpdateInput {
   name: String
-  isWatermark: Boolean
   imageFile: ImageFieldInput
+  waterMark: Boolean
   file: FileFieldInput
   urlOriginal: String
   copyRight: Boolean
@@ -1270,8 +1270,8 @@ input PhotoUpdateArgs {
 
 input PhotoCreateInput {
   name: String
-  isWatermark: Boolean
   imageFile: ImageFieldInput
+  waterMark: Boolean
   file: FileFieldInput
   urlOriginal: String
   copyRight: Boolean

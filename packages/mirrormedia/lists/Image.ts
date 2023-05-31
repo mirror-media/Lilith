@@ -17,6 +17,10 @@ const listConfigurations = list({
     imageFile: image({
       storage: 'images',
     }),
+    waterMark: checkbox({
+      label: '浮水印',
+	  defaultValue: true,
+    }),
     resized: virtual({
       field: graphql.field({
         type: graphql.object<{
