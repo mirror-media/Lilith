@@ -79,7 +79,7 @@ const listConfigurations = list({
         resolve: async (item: Record<string, unknown>): Promise<string> => {
           const audioSrc =
             (item?.audioLink && `${item.audioLink}`) ||
-            (item?.audio_id &&
+            (item?.audio_filename &&
               `${config.files.gcsBaseUrl}/files/${item?.audio_filename}`)
           const imgSrc =
             (item?.imageLink && `${item.imageLink}`) ||
