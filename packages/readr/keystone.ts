@@ -39,18 +39,24 @@ export default withAuth(
     },
     lists,
     session,
-    files: {
-      upload: 'local',
-      local: {
+    storage: {
+      files: {
+        kind: 'local',
+        type: 'file',
         storagePath: appConfig.files.storagePath,
-        baseUrl: appConfig.files.baseUrl,
+        serverRoute: {
+          path: '/files',
+        },
+        generateUrl: (path) => `/files${path}`,
       },
-    },
-    images: {
-      upload: 'local',
-      local: {
+      images: {
+        kind: 'local',
+        type: 'image',
         storagePath: appConfig.images.storagePath,
-        baseUrl: appConfig.images.baseUrl,
+        serverRoute: {
+          path: '/images',
+        },
+        generateUrl: (path) => `/images${path}`,
       },
     },
     graphql: {
@@ -64,7 +70,7 @@ export default withAuth(
       },
     },
     server: {
-      extendExpressApp: (app, createContext) => {
+      extendExpressApp: (app, commonContext) => {
         // This middleware is available in Express v4.16.0 onwards
         // Set to 50mb because DraftJS Editor playload could be really large
         const jsonBodyParser = express.json({ limit: '50mb' })
@@ -76,7 +82,7 @@ export default withAuth(
           res: Response,
           next: NextFunction
         ) => {
-          const context = await createContext(req, res)
+          const context = await commonContext.withRequest(req, res)
           // User has been logged in
           if (context?.session?.data?.role) {
             return next()

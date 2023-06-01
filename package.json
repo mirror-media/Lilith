@@ -5,9 +5,7 @@
     "packages/draft-editor",
     "packages/draft-renderer",
     "packages/mesh",
-    "packages/mirrormedia",
-    "packages/openrelationship",
-    "packages/readr"
+    "packages/openrelationship"
   ],
   "scripts": {
     "prepare": "husky install"

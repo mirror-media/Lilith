@@ -17,11 +17,7 @@ const listConfigurations = list({
       label: '標題',
     }),
     slug: text({
-      label: 'slug',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
-      }
+      label: '原ID',
     }),
     sortOrder: integer(),
     state: select({
@@ -56,14 +52,17 @@ const listConfigurations = list({
       ref: 'Section.topics',
       many: true,
     }),
-    heroImageSize: select({
-      label: '首圖尺寸',
-      options: [
-        { label: 'Normal', value: 'normal' },
-        { label: 'Wide', value: 'wide' },
-        { label: 'Small', value: 'small' },
-      ],
-      defaultValue: 'normal',
+    og_title: text({
+      label: 'FB分享標題',
+      validation: { isRequired: false },
+    }),
+    og_description: text({
+      label: 'FB分享說明',
+      validation: { isRequired: false },
+    }),
+    og_image: relationship({
+      label: 'FB分享縮圖',
+      ref: 'Photo',
     }),
     isFeatured: checkbox({
       label: '置頂',

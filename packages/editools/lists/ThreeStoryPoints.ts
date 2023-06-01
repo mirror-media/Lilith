@@ -86,7 +86,7 @@ const listConfigurations = list({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
           const cameraRig: CameraRigData = item?.cameraRig as CameraRigData
-          const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
+          const urlPrefix = config.files.gcsBaseUrl
           const mobileModel = {
             url: `${urlPrefix}/files/${item?.model_filename}`,
             fileFormat: 'glb',
