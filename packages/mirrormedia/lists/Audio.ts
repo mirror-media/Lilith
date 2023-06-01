@@ -12,6 +12,7 @@ const listConfigurations = list({
     }),
     file: file({
       label: '檔案',
+      storage: 'files',
     }),
     urlOriginal: text({
       ui: {

@@ -2,13 +2,13 @@
 // Modify your Keystone config when you want to change this.
 
 datasource postgresql {
-  url      = env("DATABASE_URL")
-  provider = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider          = "postgresql"
 }
 
 generator client {
   provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
 }
 
 model Post {
@@ -218,7 +218,6 @@ model Magazine {
   slug             String    @unique @default("")
   title            String    @default("")
   pdfFile_filesize Int?
-  pdfFile_mode     String?
   pdfFile_filename String?
   urlOriginal      String    @default("")
   coverPhoto       Photo?    @relation("Magazine_coverPhoto", fields: [coverPhotoId], references: [id])
@@ -245,7 +244,6 @@ model AudioFile {
   id            Int       @id @default(autoincrement())
   name          String    @default("")
   file_filesize Int?
-  file_mode     String?
   file_filename String?
   urlOriginal   String    @default("")
   heroImage     Photo?    @relation("AudioFile_heroImage", fields: [heroImageId], references: [id])
@@ -268,15 +266,13 @@ model AudioFile {
 model Photo {
   id                       Int         @id @default(autoincrement())
   name                     String      @default("")
-  isWatermark              Boolean     @default(false)
   imageFile_filesize       Int?
   imageFile_extension      String?
   imageFile_width          Int?
   imageFile_height         Int?
-  imageFile_mode           String?
   imageFile_id             String?
+  waterMark                Boolean     @default(true)
   file_filesize            Int?
-  file_mode                String?
   file_filename            String?
   urlOriginal              String      @default("")
   copyRight                Boolean     @default(false)
@@ -306,7 +302,6 @@ model Video {
   id                  Int       @id @default(autoincrement())
   name                String    @default("")
   file_filesize       Int?
-  file_mode           String?
   file_filename       String?
   urlOriginal         String    @default("")
   content             Json?
