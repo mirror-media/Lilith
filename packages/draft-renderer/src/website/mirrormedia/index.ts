@@ -5,6 +5,7 @@ import {
   hasContentInRawContentBlock,
   removeEmptyContentBlock,
   getContentBlocksH2H3,
+  getContentTextBlocks,
 } from './utils'
 const MirrorMedia = {
   DraftRenderer,
@@ -13,6 +14,7 @@ const MirrorMedia = {
   hasContentInRawContentBlock,
   removeEmptyContentBlock,
   getContentBlocksH2H3,
+  getContentTextBlocks,
 }
 
 export default MirrorMedia
