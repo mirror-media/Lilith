@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
 import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
-import { extractFileExtension } from '../utils'
+import AmpVideoBlock from './amp/amp-video-block'
 
 const Video = styled.video`
   width: 100%;
@@ -43,36 +43,16 @@ export function VideoBlock(entity: DraftEntityInstance, contentLayout: string) {
   const isAmp = contentLayout === 'amp'
   const { video }: { video: VideoEntity } = entity.getData()
 
+  if (isAmp) {
+    return <AmpVideoBlock video={video} />
+  }
+
   return (
     <>
-      {isAmp ? (
-        <amp-video
-          controls="controls"
-          autoplay="autoplay"
-          loop="loop"
-          layout="responsive"
-          width="100vw"
-          height="50vw"
-        >
-          {extractFileExtension(video?.urlOriginal) && (
-            <source
-              src={video?.urlOriginal}
-              type={`video/${extractFileExtension(video?.urlOriginal)}`}
-            />
-          )}
-          {extractFileExtension(video?.file?.url) && (
-            <source
-              src={video?.file?.url}
-              type={`video/${extractFileExtension(video?.file?.url)}`}
-            />
-          )}
-        </amp-video>
-      ) : (
-        <Video muted autoPlay loop controls>
-          <source src={video?.urlOriginal} />
-          <source src={video?.file?.url} />
-        </Video>
-      )}
+      <Video muted autoPlay loop controls>
+        <source src={video?.urlOriginal} />
+        <source src={video?.file?.url} />
+      </Video>
     </>
   )
 }
