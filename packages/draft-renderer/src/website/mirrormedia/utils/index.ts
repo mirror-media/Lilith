@@ -91,7 +91,7 @@ const getContentTextBlocks = (
       })
   } catch (error) {
     console.warn(
-      `Because ${error}, Function 'getContentBlocksH2H3' return an empty array`
+      `Because ${error}, Function 'getContentTextBlocks' return an empty array`
     )
     return []
   }

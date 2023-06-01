@@ -140,6 +140,9 @@ const draftEditorCssPremium = css`
   }
 `
 
+//目前 Photography 文末樣式僅支援：H2, H3, 粗體、底線、斜體、超連結
+//目前 photography 裡的 <figure> 都會被隱藏（因此 video、infobox、colorbox，就算在 CMS 裡上稿也都無法呈現 )
+// Todo: 新增一個 util function 篩選出 Image
 const draftEditorCssPhotography = css`
   color: white;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
