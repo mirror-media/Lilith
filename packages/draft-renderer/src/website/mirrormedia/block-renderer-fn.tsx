@@ -39,7 +39,7 @@ const AtomicBlock = (props) => {
       return SlideshowBlockV2(entity)
     }
     case 'EMBEDDEDCODE': {
-      return EmbeddedCodeBlock(entity)
+      return EmbeddedCodeBlock(entity, contentLayout)
     }
     case 'INFOBOX': {
       return InfoBoxBlock(props, contentLayout)
