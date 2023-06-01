@@ -73,8 +73,33 @@ const getContentBlocksH2H3 = (
     return []
   }
 }
+
+const getContentTextBlocks = (
+  rawContentBlock: Draft
+): Pick<DraftBlock, 'text' | 'key' | 'type'>[] => {
+  try {
+    const contentBlocks = removeEmptyContentBlock(rawContentBlock)
+    return contentBlocks.blocks
+      .filter(
+        (block) =>
+          block.type === 'header-two' ||
+          block.type === 'header-three' ||
+          block.type === 'unstyled'
+      )
+      .map((block) => {
+        return { key: block.key, text: block.text, type: block.type }
+      })
+  } catch (error) {
+    console.warn(
+      `Because ${error}, Function 'getContentTextBlocks' return an empty array`
+    )
+    return []
+  }
+}
+
 export {
   hasContentInRawContentBlock,
   removeEmptyContentBlock,
   getContentBlocksH2H3,
+  getContentTextBlocks,
 }
