@@ -28,7 +28,6 @@ type AudioEntity = {
 }
 
 export default function AmpAudioBlock({ audio }: { audio: AudioEntity }) {
-  console.log('amp-audio', audio, typeof audio)
   const urlOriginalType = extractFileExtension(audio?.urlOriginal)
   const fileUrlType = extractFileExtension(audio?.file?.url)
   return (
