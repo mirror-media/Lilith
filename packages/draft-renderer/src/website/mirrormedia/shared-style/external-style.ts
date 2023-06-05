@@ -5,12 +5,15 @@ import {
   draftEditorLineHeight,
 } from '../draft-renderer'
 
+const narrowMarginBottom = css`
+  margin-bottom: 16px;
+`
+
 /**
  * Since the `content` of the externals posts is in `string` format and not draft data (ex: blocks.entityMap).
  * So we create `draftEditorCssExternal` to manage `/external/[slug]` page's `content` style.
  * The styles are similar to `draftEditorCssNormal`, but there are differences in the block styles.(ex: image-block)
  */
-
 const draftEditorCssExternal = css`
   width: 100%;
   height: 100%;
@@ -63,7 +66,7 @@ const draftEditorCssExternal = css`
 
   img {
     ${defaultMarginTop}
-    ${defaultMarginBottom}
+    ${narrowMarginBottom}
   }
 
   a {
