@@ -5,9 +5,26 @@ import AmpAudioBlock from './amp/amp-audio-block'
 
 const AudioWrapper = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 8px;
+  align-items: start;
+  flex-direction: column;
+  ${({ theme }) => theme.breakpoint.md} {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+  }
 `
-const Audio = styled.audio``
+const AudioName = styled.p`
+  color: #979797;
+  font-size: 14px;
+  line-height: 2;
+  font-weight: 500;
+`
+const Audio = styled.audio`
+  width: 100%;
+  max-width: 300px;
+`
 
 type ImageEntity = {
   id: string
@@ -50,7 +67,7 @@ export function AudioBlock(entity: DraftEntityInstance, contentLayout: string) {
 
   return (
     <AudioWrapper>
-      <p>{audio?.name}</p>
+      <AudioName>{audio?.name}</AudioName>
       {AudioJsx}
     </AudioWrapper>
   )
