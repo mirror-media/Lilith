@@ -12,14 +12,14 @@ import {
 import { defaultMarginBottom } from './shared-style'
 import theme from './theme'
 
-const draftEditorLineHeight = 2
+export const draftEditorLineHeight = 2
 /**
  * Due to the data structure from draftjs, each default block contain one HTML element which class name is `public-DraftStyleDefault-block`.
  * So we use this behavior to create spacing between blocks by assign margin-bottom of which.
  * However, some block should not set spacing (e.g. block in <li> and <blockquote>), so we need to unset its margin-top.
  */
 
-const noSpacingBetweenContent = {
+export const noSpacingBetweenContent = {
   blockquote: css`
     margin-bottom: unset;
   `,
