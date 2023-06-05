@@ -218,6 +218,31 @@ function indicatorSvg(shouldRotate: boolean, contentLayout = 'normal') {
   )
 }
 
+function AmpAnnotationBlock(props) {
+  const { children: annotated, contentLayout = 'normal' } = props
+  const { bodyHTML } = props.contentState.getEntity(props.entityKey).getData()
+  return (
+    <React.Fragment>
+      <AnnotatedText contentLayout={contentLayout}>
+        {annotated}
+        <span on="tap:annotation-body.toggleVisibility, arrow-up.toggleVisibility, array-down.toggleVisibility">
+          <span id="arrow-up">{indicatorSvg(false, contentLayout)}</span>
+          <span id="array-down" hidden>
+            {indicatorSvg(true, contentLayout)}
+          </span>
+        </span>
+      </AnnotatedText>
+      <AnnotationBody
+        hidden
+        id="annotation-body"
+        contentLayout={contentLayout}
+        contentEditable={false}
+        dangerouslySetInnerHTML={{ __html: bodyHTML }}
+      ></AnnotationBody>
+    </React.Fragment>
+  )
+}
+
 function AnnotationBlock(props) {
   const { children: annotated, contentLayout = 'normal' } = props
   const [toShowAnnotation, setToShowAnnotation] = useState(false)
@@ -261,7 +286,7 @@ function findAnnotationEntities(contentBlock, callback, contentState) {
 export const annotationDecorator = (contentLayout = 'normal') => {
   return {
     strategy: findAnnotationEntities,
-    component: AnnotationBlock,
+    component: contentLayout === 'amp' ? AmpAnnotationBlock : AnnotationBlock,
     props: { contentLayout },
   }
 }

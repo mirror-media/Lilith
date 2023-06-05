@@ -74,6 +74,15 @@ const getContentBlocksH2H3 = (
   }
 }
 
+
+function extractFileExtension(url) {
+  const parts = url?.split('.')
+  if (parts?.length > 1) {
+    return parts[parts.length - 1]
+  }
+  return null
+}
+
 const getContentTextBlocks = (
   rawContentBlock: Draft
 ): Pick<DraftBlock, 'text' | 'key' | 'type'>[] => {
@@ -101,5 +110,6 @@ export {
   hasContentInRawContentBlock,
   removeEmptyContentBlock,
   getContentBlocksH2H3,
+  extractFileExtension,
   getContentTextBlocks,
 }
