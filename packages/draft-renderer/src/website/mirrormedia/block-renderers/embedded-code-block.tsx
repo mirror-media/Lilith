@@ -2,9 +2,12 @@ import React, { useEffect, useRef } from 'react'
 import { DraftEntityInstance } from 'draft-js'
 import styled from 'styled-components'
 import AmpEmbeddedCodeBlock from './amp/amp-embedded-code-block'
-
+import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
 export const Block = styled.div`
   position: relative;
+  ${defaultMarginTop}
+  ${defaultMarginBottom}
+  
   /* styles for image link */
   img.img-responsive {
     margin: 0 auto;
