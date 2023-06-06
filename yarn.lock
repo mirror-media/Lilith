@@ -3288,45 +3288,6 @@
     "@keystone-ui/popover" "^6.0.2"
     apply-ref "^1.0.0"
 
-"@mirrormedia/lilith-core@2.0.0-alpha.5":
-  version "2.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-2.0.0-alpha.5.tgz#4e6c8bd8f74aec0930cafb298191ba754bf0e3bd"
-  integrity sha512-hXs59oW+gvvwo+V5pzAsQBRq7+7bDdBDZE3Ii9caeQv3c+tupVM1vXnBjvFLedKC0+nQdupQ6/k/DcxGx8L9KQ==
-  dependencies:
-    "@google-cloud/storage" "^5.18.0"
-    "@keystone-ui/button" "^7.0.2"
-    "@keystone-ui/fields" "^7.2.0"
-    "@keystone-ui/modals" "^6.0.3"
-    "@mirrormedia/lilith-draft-editor" "1.1.0-alpha.13"
-    "@twreporter/errors" "^1.1.1"
-    axios "^0.26.0"
-    draft-convert "^2.1.12"
-    draft-js "^0.11.7"
-    htmlparser2 "^7.2.0"
-    immutable "^4.0.0"
-    lodash "^4.17.21"
-    shortid "^2.2.16"
-    styled-components "5.3.5"
-    zlib "^1.0.5"
-
-"@mirrormedia/lilith-draft-editor@1.1.0-alpha.13":
-  version "1.1.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-editor/-/lilith-draft-editor-1.1.0-alpha.13.tgz#69a3be98ceae9e30f8df146b430dea18ac2385bb"
-  integrity sha512-/AyNpp4+Bfzk1CMOeKOW34Pl+esBlQY9FfXIgTP+tTN6U33aMULFKUdQrqaMhdYQREcJLUknkDntqhzVkLuCAg==
-  dependencies:
-    "@mirrormedia/lilith-draft-renderer" "1.2.0-alpha.9"
-    draft-js "^0.11.7"
-
-"@mirrormedia/lilith-draft-renderer@1.2.0-alpha.9":
-  version "1.2.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.2.0-alpha.9.tgz#e6cad57c7d22040cb17fab1052d93553f6fe9476"
-  integrity sha512-2RggpwCTzZnH7IXeQJjxRZl5obW/0UyT/o9umKu5dk3Wxpnh19c1pl08PAljE1AMIKp1hhhqYrYkchVL11ZAzg==
-  dependencies:
-    "@readr-media/react-image" "^1.5.1"
-    body-scroll-lock "3.1.5"
-    draft-js "^0.11.7"
-    node-html-parser "^6.1.5"
-
 "@next/env@13.4.4":
   version "13.4.4"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-13.4.4.tgz#46b620f6bef97fe67a1566bf570dbb791d40c50a"
