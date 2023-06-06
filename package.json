@@ -4,8 +4,7 @@
     "packages/core",
     "packages/draft-editor",
     "packages/draft-renderer",
-    "packages/mesh",
-    "packages/openrelationship"
+    "packages/mesh"
   ],
   "scripts": {
     "prepare": "husky install"

@@ -6,7 +6,7 @@ import envVar from './environment-variables'
 import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
-import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache';
+import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -39,40 +39,48 @@ export default withAuth(
     },
     lists,
     session,
-    files: {
-      upload: 'local',
-      local: {
+    storage: {
+      files: {
+        kind: 'local',
+        type: 'file',
         storagePath: appConfig.files.storagePath,
-        baseUrl: appConfig.files.baseUrl,
+        serverRoute: {
+          path: '/files',
+        },
+        generateUrl: (path) => `/files${path}`,
       },
-    },
-    images: {
-      upload: 'local',
-      local: {
+      images: {
+        kind: 'local',
+        type: 'image',
         storagePath: appConfig.images.storagePath,
-        baseUrl: appConfig.images.baseUrl,
+        serverRoute: {
+          path: '/images',
+        },
+        generateUrl: (path) => `/images${path}`,
       },
     },
-	graphql: {
-	  apolloConfig: {
-		cache: new InMemoryLRUCache({
-		  // ~100MiB
-		  maxSize: Math.pow(2, 20) * envVar.memoryCacheSize,
-		  // 5 minutes (in milliseconds)
-		  ttl: envVar.memoryCacheTtl,
-		}),		
-	  }
-	},
+    graphql: {
+      apolloConfig: {
+        cache: new InMemoryLRUCache({
+          // ~100MiB
+          maxSize: Math.pow(2, 20) * envVar.memoryCacheSize,
+          // 5 minutes (in milliseconds)
+          ttl: envVar.memoryCacheTtl,
+        }),
+      },
+    },
     server: {
-      extendExpressApp: (app, createContext) => {
+      extendExpressApp: (app, commonContext) => {
         // This middleware is available in Express v4.16.0 onwards
         // Set to 50mb because DraftJS Editor playload could be really large
         const jsonBodyParser = express.json({ limit: '50mb' })
         app.use(jsonBodyParser)
 
+        // eslint-disable-next-line
+        // @ts-ignore
         // Check if the request is sent by an authenticated user
         const authenticationMw = async (req, res, next) => {
-          const context = await createContext(req, res)
+          const context = await commonContext.withRequest(req, res)
           // User has been logged in
           if (context?.session?.data?.role) {
             return next()
