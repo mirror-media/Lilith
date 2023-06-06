@@ -22,8 +22,8 @@ enum DatabaseProvider {
 
 export default {
   isUIDisabled: IS_UI_DISABLED === 'true',
-  memoryCacheTtl: MEMORY_CACHE_TTL || 300_000,
-  memoryCacheSize: MEMORY_CACHE_SIZE || 300,
+  memoryCacheTtl: Number(MEMORY_CACHE_TTL) || 300,
+  memoryCacheSize: Number(MEMORY_CACHE_SIZE) || 300,
   accessControlStrategy: ACCESS_CONTROL_STRATEGY || 'cms', // the value could be one of 'cms', 'gql' or 'preview'
   previewServerOrigin: PREVIEW_SERVER_ORIGIN || 'http://localhost:3001',
   database: {
