@@ -1,6 +1,6 @@
 {
   "name": "@mirrormedia/lilith-draft-editor",
-  "version": "1.1.0-alpha.14",
+  "version": "1.1.0-alpha.15",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -23,16 +23,16 @@
   "license": "MIT",
   "dependencies": {
     "draft-js": "^0.11.7",
-    "@mirrormedia/lilith-draft-renderer": "1.2.0-alpha.9"
+    "@mirrormedia/lilith-draft-renderer": "1.2.0-alpha.29"
   },
   "peerDependencies": {
-    "react": "18.1.0",
-    "react-dom": "18.1.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "styled-components": "5.3.5",
-    "@keystone-6/core": "1.1.1",
-    "@keystone-ui/button": "^6.0.0",
-    "@keystone-ui/fields": "^6.0.0",
-    "@keystone-ui/modals": "^5.0.0"
+    "@keystone-6/core": "5.2.0",
+    "@keystone-ui/button": "^7.0.2",
+    "@keystone-ui/fields": "^7.2.0",
+    "@keystone-ui/modals": "^6.0.3"
   },
   "files": [
     "lib"
