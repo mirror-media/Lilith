@@ -3,8 +3,7 @@
   "workspaces": [
     "packages/core",
     "packages/draft-editor",
-    "packages/draft-renderer",
-    "packages/mesh"
+    "packages/draft-renderer"
   ],
   "scripts": {
     "prepare": "husky install"
