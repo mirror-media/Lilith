@@ -4,7 +4,7 @@ import styled, { css, ThemeProvider } from 'styled-components'
 import { Editor, EditorState, convertFromRaw } from 'draft-js'
 import blockquoteDecoration from './assets/blockquote-decoration.png'
 import { atomicBlockRenderer } from './block-renderer-fn'
-import decorators from './entity-decorator'
+import decoratorsGenerator from './entity-decorator'
 import {
   CUSTOM_STYLE_PREFIX_FONT_COLOR,
   CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR,
@@ -353,11 +353,8 @@ export default function DraftRenderer({
   contentLayout = 'normal',
 }) {
   const contentState = convertFromRaw(rawContentBlock)
-
-  const editorState = EditorState.createWithContent(
-    contentState,
-    decorators(contentLayout)
-  )
+  const decorators = decoratorsGenerator(contentLayout)
+  const editorState = EditorState.createWithContent(contentState, decorators)
   const blockRendererFn = (block) => {
     const atomicBlockObj = atomicBlockRenderer(block, contentLayout)
     return atomicBlockObj
