@@ -4,11 +4,10 @@ import { entityDecorators } from './entity-decorators'
 
 const { annotationDecorator, linkDecorator } = entityDecorators
 
-const decorators = (contentLayout = 'normal') => {
+const decoratorsGenerator = (contentLayout = 'normal') => {
   return new CompositeDecorator([
     annotationDecorator(contentLayout),
     linkDecorator(contentLayout),
   ])
 }
-
-export default decorators
+export default decoratorsGenerator
