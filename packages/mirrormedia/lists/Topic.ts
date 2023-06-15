@@ -93,11 +93,6 @@ const listConfigurations = list({
       label: '標籤',
       many: true,
     }),
-    slideshow_images: relationship({
-      ref: 'Photo',
-      label: 'slideshow 圖片',
-      many: true,
-    }),
     posts: relationship({
       ref: 'Post.topics',
       label: '文章',
