@@ -6,6 +6,7 @@ import {
   text,
   select,
   integer,
+  json,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -93,6 +94,14 @@ const listConfigurations = list({
       label: '標籤',
       many: true,
     }),
+    slideshow_images: relationship({
+      ref: 'Photo',
+      label: 'slideshow 圖片',
+      many: true,
+    }),
+    manualOrderOfSlideshowImages: json({
+      label: 'slideshow 圖片排序結果',
+    }),
     posts: relationship({
       ref: 'Post.topics',
       label: '文章',
@@ -120,4 +129,15 @@ const listConfigurations = list({
     },
   },
 })
-export default utils.addTrackingFields(listConfigurations)
+
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfSlideshowImages',
+      targetFieldName: 'slideshow_images',
+      targetListName: 'Photo',
+      targetListLabelField: 'name',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)

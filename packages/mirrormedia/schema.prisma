@@ -173,35 +173,37 @@ model Tag {
 }
 
 model Topic {
-  id             Int       @id @default(autoincrement())
-  name           String    @default("")
-  slug           String    @default("")
-  sortOrder      Int?
-  state          String?   @default("draft")
-  brief          Json?
-  heroImage      Photo?    @relation("Topic_heroImage", fields: [heroImageId], references: [id])
-  heroImageId    Int?      @map("heroImage")
-  leading        String?
-  sections       Section[] @relation("Section_topics")
-  og_title       String    @default("")
-  og_description String    @default("")
-  og_image       Photo?    @relation("Topic_og_image", fields: [og_imageId], references: [id])
-  og_imageId     Int?      @map("og_image")
-  isFeatured     Boolean   @default(false)
-  title_style    String?   @default("feature")
-  type           String?   @default("list")
-  style          String    @default("")
-  tags           Tag[]     @relation("Tag_topics")
-  posts          Post[]    @relation("Post_topics")
-  javascript     String    @default("")
-  dfp            String    @default("")
-  mobile_dfp     String    @default("")
-  createdAt      DateTime?
-  updatedAt      DateTime?
-  createdBy      User?     @relation("Topic_createdBy", fields: [createdById], references: [id])
-  createdById    Int?      @map("createdBy")
-  updatedBy      User?     @relation("Topic_updatedBy", fields: [updatedById], references: [id])
-  updatedById    Int?      @map("updatedBy")
+  id                           Int       @id @default(autoincrement())
+  name                         String    @default("")
+  slug                         String    @default("")
+  sortOrder                    Int?
+  state                        String?   @default("draft")
+  brief                        Json?
+  heroImage                    Photo?    @relation("Topic_heroImage", fields: [heroImageId], references: [id])
+  heroImageId                  Int?      @map("heroImage")
+  leading                      String?
+  sections                     Section[] @relation("Section_topics")
+  og_title                     String    @default("")
+  og_description               String    @default("")
+  og_image                     Photo?    @relation("Topic_og_image", fields: [og_imageId], references: [id])
+  og_imageId                   Int?      @map("og_image")
+  isFeatured                   Boolean   @default(false)
+  title_style                  String?   @default("feature")
+  type                         String?   @default("list")
+  style                        String    @default("")
+  tags                         Tag[]     @relation("Tag_topics")
+  slideshow_images             Photo[]   @relation("Topic_slideshow_images")
+  manualOrderOfSlideshowImages Json?
+  posts                        Post[]    @relation("Post_topics")
+  javascript                   String    @default("")
+  dfp                          String    @default("")
+  mobile_dfp                   String    @default("")
+  createdAt                    DateTime?
+  updatedAt                    DateTime?
+  createdBy                    User?     @relation("Topic_createdBy", fields: [createdById], references: [id])
+  createdById                  Int?      @map("createdBy")
+  updatedBy                    User?     @relation("Topic_updatedBy", fields: [updatedById], references: [id])
+  updatedById                  Int?      @map("updatedBy")
 
   @@index([state])
   @@index([heroImageId])
@@ -264,34 +266,35 @@ model AudioFile {
 }
 
 model Photo {
-  id                       Int         @id @default(autoincrement())
-  name                     String      @default("")
-  imageFile_filesize       Int?
-  imageFile_extension      String?
-  imageFile_width          Int?
-  imageFile_height         Int?
-  imageFile_id             String?
-  waterMark                Boolean     @default(true)
-  file_filesize            Int?
-  file_filename            String?
-  urlOriginal              String      @default("")
-  copyRight                Boolean     @default(false)
-  createdAt                DateTime?
-  updatedAt                DateTime?
-  createdBy                User?       @relation("Photo_createdBy", fields: [createdById], references: [id])
-  createdById              Int?        @map("createdBy")
-  updatedBy                User?       @relation("Photo_updatedBy", fields: [updatedById], references: [id])
-  updatedById              Int?        @map("updatedBy")
-  from_Post_heroImage      Post[]      @relation("Post_heroImage")
-  from_Post_og_image       Post[]      @relation("Post_og_image")
-  from_Event_heroImage     Event[]     @relation("Event_heroImage")
-  from_Topic_heroImage     Topic[]     @relation("Topic_heroImage")
-  from_Topic_og_image      Topic[]     @relation("Topic_og_image")
-  from_Magazine_coverPhoto Magazine[]  @relation("Magazine_coverPhoto")
-  from_AudioFile_heroImage AudioFile[] @relation("AudioFile_heroImage")
-  from_Video_heroImage     Video[]     @relation("Video_heroImage")
-  from_Section_heroImage   Section[]   @relation("Section_heroImage")
-  from_Category_heroImage  Category[]  @relation("Category_heroImage")
+  id                          Int         @id @default(autoincrement())
+  name                        String      @default("")
+  imageFile_filesize          Int?
+  imageFile_extension         String?
+  imageFile_width             Int?
+  imageFile_height            Int?
+  imageFile_id                String?
+  waterMark                   Boolean     @default(true)
+  file_filesize               Int?
+  file_filename               String?
+  urlOriginal                 String      @default("")
+  copyRight                   Boolean     @default(false)
+  createdAt                   DateTime?
+  updatedAt                   DateTime?
+  createdBy                   User?       @relation("Photo_createdBy", fields: [createdById], references: [id])
+  createdById                 Int?        @map("createdBy")
+  updatedBy                   User?       @relation("Photo_updatedBy", fields: [updatedById], references: [id])
+  updatedById                 Int?        @map("updatedBy")
+  from_Post_heroImage         Post[]      @relation("Post_heroImage")
+  from_Post_og_image          Post[]      @relation("Post_og_image")
+  from_Event_heroImage        Event[]     @relation("Event_heroImage")
+  from_Topic_heroImage        Topic[]     @relation("Topic_heroImage")
+  from_Topic_og_image         Topic[]     @relation("Topic_og_image")
+  from_Topic_slideshow_images Topic[]     @relation("Topic_slideshow_images")
+  from_Magazine_coverPhoto    Magazine[]  @relation("Magazine_coverPhoto")
+  from_AudioFile_heroImage    AudioFile[] @relation("AudioFile_heroImage")
+  from_Video_heroImage        Video[]     @relation("Video_heroImage")
+  from_Section_heroImage      Section[]   @relation("Section_heroImage")
+  from_Category_heroImage     Category[]  @relation("Category_heroImage")
 
   @@index([createdById])
   @@index([updatedById])
