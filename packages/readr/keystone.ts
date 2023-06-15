@@ -71,7 +71,7 @@ export default withAuth(
     },
     server: {
 	  healthCheck: {
-	    path: '/healthz',
+	    path: '/health_check',
 	    data: { status: 'healthy' },
 	  },
       extendExpressApp: (app, commonContext) => {
