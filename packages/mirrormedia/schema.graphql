@@ -880,6 +880,7 @@ type Topic {
   tagsCount(where: TagWhereInput! = {}): Int
   slideshow_images(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
   slideshow_imagesCount(where: PhotoWhereInput! = {}): Int
+  manualOrderOfSlideshowImages: JSON
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
   javascript: String
@@ -889,6 +890,7 @@ type Topic {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+  slideshow_imagesInInputOrder: [Photo]
 }
 
 input TopicWhereUniqueInput {
@@ -970,6 +972,7 @@ input TopicUpdateInput {
   style: String
   tags: TagRelateToManyForUpdateInput
   slideshow_images: PhotoRelateToManyForUpdateInput
+  manualOrderOfSlideshowImages: JSON
   posts: PostRelateToManyForUpdateInput
   javascript: String
   dfp: String
@@ -1010,6 +1013,7 @@ input TopicCreateInput {
   style: String
   tags: TagRelateToManyForCreateInput
   slideshow_images: PhotoRelateToManyForCreateInput
+  manualOrderOfSlideshowImages: JSON
   posts: PostRelateToManyForCreateInput
   javascript: String
   dfp: String
