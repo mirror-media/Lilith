@@ -878,8 +878,6 @@ type Topic {
   style: String
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
-  slideshow_images(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
-  slideshow_imagesCount(where: PhotoWhereInput! = {}): Int
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
   javascript: String
@@ -915,7 +913,6 @@ input TopicWhereInput {
   type: StringNullableFilter
   style: StringFilter
   tags: TagManyRelationFilter
-  slideshow_images: PhotoManyRelationFilter
   posts: PostManyRelationFilter
   javascript: StringFilter
   dfp: StringFilter
@@ -924,12 +921,6 @@ input TopicWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input PhotoManyRelationFilter {
-  every: PhotoWhereInput
-  some: PhotoWhereInput
-  none: PhotoWhereInput
 }
 
 input TopicOrderByInput {
@@ -969,7 +960,6 @@ input TopicUpdateInput {
   type: String
   style: String
   tags: TagRelateToManyForUpdateInput
-  slideshow_images: PhotoRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
   javascript: String
   dfp: String
@@ -978,13 +968,6 @@ input TopicUpdateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
-}
-
-input PhotoRelateToManyForUpdateInput {
-  disconnect: [PhotoWhereUniqueInput!]
-  set: [PhotoWhereUniqueInput!]
-  create: [PhotoCreateInput!]
-  connect: [PhotoWhereUniqueInput!]
 }
 
 input TopicUpdateArgs {
@@ -1009,7 +992,6 @@ input TopicCreateInput {
   type: String
   style: String
   tags: TagRelateToManyForCreateInput
-  slideshow_images: PhotoRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
   javascript: String
   dfp: String
@@ -1018,11 +1000,6 @@ input TopicCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input PhotoRelateToManyForCreateInput {
-  create: [PhotoCreateInput!]
-  connect: [PhotoWhereUniqueInput!]
 }
 
 type Magazine {
