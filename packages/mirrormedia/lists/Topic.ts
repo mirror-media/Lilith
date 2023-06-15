@@ -101,6 +101,7 @@ const listConfigurations = list({
     }),
     manualOrderOfSlideshowImages: json({
       label: 'slideshow 圖片排序結果',
+      defaultValue: null,
     }),
     posts: relationship({
       ref: 'Post.topics',
