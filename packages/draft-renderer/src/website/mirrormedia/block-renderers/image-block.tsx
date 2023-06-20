@@ -41,6 +41,18 @@ const imageFigureLayoutPremium = css`
   }
 `
 
+const AmpImgWrapper = styled.section`
+  margin-top: 20px;
+  width: 100%;
+  height: 50vw;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  amp-img img {
+    object-fit: contain;
+  }
+`
+
 const figcaptionLayoutNormal = css`
   margin-top: 12px;
   ${({ theme }) => theme.breakpoint.md} {
@@ -164,6 +176,7 @@ export function ImageBlock(
   contentLayout = 'normal'
 ) {
   const lightBoxRef = useRef(null)
+  const isAmp = contentLayout === 'amp'
 
   const [shouldOpenLightBox, setShouldOpenLightBox] = useState(false)
   const { name, desc, resized, url } = entity.getData()
@@ -174,23 +187,35 @@ export function ImageBlock(
     setShouldOpenLightBox(true)
   }
 
+  let imageJsx = (
+    <CustomImage
+      images={resized}
+      defaultImage={defaultImage}
+      loadingImage={loadingImage}
+      width={''}
+      height={'auto'}
+      objectFit={'contain'}
+      alt={name}
+      rwd={{ mobile: '100vw', tablet: '640px', default: '640px' }}
+      priority={false}
+    ></CustomImage>
+  )
+
+  if (isAmp) {
+    imageJsx = (
+      <AmpImgWrapper>
+        <amp-img src={resized?.original} alt={name} layout="fill" />
+      </AmpImgWrapper>
+    )
+  }
+
   let imgBlock = (
     <ImageFigure
       key={resized.original}
       contentLayout={contentLayout}
       onClick={handleOpen}
     >
-      <CustomImage
-        images={resized}
-        defaultImage={defaultImage}
-        loadingImage={loadingImage}
-        width={''}
-        height={'auto'}
-        objectFit={'contain'}
-        alt={name}
-        rwd={{ mobile: '100vw', tablet: '640px', default: '640px' }}
-        priority={false}
-      ></CustomImage>
+      {imageJsx}
       {desc ? (
         <Figcaption
           contentLayout={contentLayout}

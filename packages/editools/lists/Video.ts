@@ -1,6 +1,6 @@
-import { customFields, utils } from '@mirrormedia/lilith-core'
+import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { text, file } from '@keystone-6/core/fields'
+import { text, file, relationship } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator } = utils.accessControl
 
@@ -13,13 +13,12 @@ const listConfigurations = list({
     youtubeUrl: text({
       label: 'Youtube網址',
     }),
-    file: file(),
-    coverPhoto: customFields.relationship({
+    file: file({
+      storage: 'files',
+    }),
+    coverPhoto: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
     }),
     description: text({
       label: '描述',
@@ -82,7 +81,6 @@ const listConfigurations = list({
       delete: allowRoles(admin),
     },
   },
-
 })
 
 export default utils.addTrackingFields(listConfigurations)

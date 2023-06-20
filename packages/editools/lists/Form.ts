@@ -6,6 +6,7 @@ import {
   select,
   checkbox,
   json,
+  timestamp,
 } from '@keystone-6/core/fields'
 
 const {
@@ -57,12 +58,9 @@ const listConfigurations = list({
       disabledButtons: [],
       website: 'readr',
     }),
-    heroImage: customFields.relationship({
+    heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
       access: {
         operation: {
           query: allowRoles(admin, moderator, editor, contributor),
@@ -72,12 +70,9 @@ const listConfigurations = list({
         },
       },
     }),
-    mobileImage: customFields.relationship({
+    mobileImage: relationship({
       label: '手機首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
       access: {
         operation: {
           query: allowRoles(admin, moderator, editor),
@@ -93,7 +88,7 @@ const listConfigurations = list({
     mobileImageLink: text({
       label: '手機首圖網址',
     }),
-    heroVideo: customFields.relationship({
+    heroVideo: relationship({
       label: '首屏影片',
       ref: 'Video',
       access: {
@@ -151,12 +146,8 @@ const listConfigurations = list({
     updateTimeDesc: text({
       label: '更新時間說明（若空白則顯示「最後更新時間」）',
     }),
-    updateTime: customFields.timestamp({
+    updateTime: timestamp({
       label: '最後更新時間',
-      customConfig: {
-        hasNowButton: true,
-        hideTime: false,
-      },
     }),
     questions: relationship({
       ref: 'Question.form',

@@ -10,7 +10,6 @@ export function buildLiveBlogQuery(take?: number) {
     heroImage {
       name
       imageFile {
-        ref
         url
       }
     }
@@ -35,7 +34,6 @@ export function buildLiveBlogQuery(take?: number) {
       heroImage {
         name
         imageFile {
-          ref
           url
           width
           height

@@ -1,9 +1,13 @@
 import React, { useEffect, useRef } from 'react'
 import { DraftEntityInstance } from 'draft-js'
 import styled from 'styled-components'
-
+import AmpEmbeddedCodeBlock from './amp/amp-embedded-code-block'
+import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
 export const Block = styled.div`
   position: relative;
+  ${defaultMarginTop}
+  ${defaultMarginBottom}
+  
   /* styles for image link */
   img.img-responsive {
     margin: 0 auto;
@@ -27,7 +31,10 @@ export const Caption = styled.div`
   padding: 15px 15px 0 15px;
 `
 
-export const EmbeddedCodeBlock = (entity: DraftEntityInstance) => {
+export const EmbeddedCodeBlock = (
+  entity: DraftEntityInstance,
+  contentLayout: string
+) => {
   const { caption, embeddedCode } = entity.getData()
   const embedded = useRef(null)
 
@@ -70,6 +77,15 @@ export const EmbeddedCodeBlock = (entity: DraftEntityInstance) => {
 
     node.appendChild(fragment)
   }, [embeddedCode])
+
+  if (contentLayout === 'amp') {
+    return (
+      <div>
+        <AmpEmbeddedCodeBlock embeddedCode={embeddedCode} />
+        {caption ? <Caption>{caption}</Caption> : null}
+      </div>
+    )
+  }
 
   return (
     <div>

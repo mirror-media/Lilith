@@ -39,18 +39,24 @@ export default withAuth(
     },
     lists,
     session,
-    files: {
-      upload: 'local',
-      local: {
+    storage: {
+      files: {
+        kind: 'local',
+        type: 'file',
         storagePath: appConfig.files.storagePath,
-        baseUrl: appConfig.files.baseUrl,
+        serverRoute: {
+          path: '/files',
+        },
+        generateUrl: (path) => `/files${path}`,
       },
-    },
-    images: {
-      upload: 'local',
-      local: {
+      images: {
+        kind: 'local',
+        type: 'image',
         storagePath: appConfig.images.storagePath,
-        baseUrl: appConfig.images.baseUrl,
+        serverRoute: {
+          path: '/images',
+        },
+        generateUrl: (path) => `/images${path}`,
       },
     },
     graphql: {
@@ -64,12 +70,12 @@ export default withAuth(
       },
     },
     server: {
-      extendExpressApp: (app, createContext) => {
+      extendExpressApp: (app, commonContext) => {
         // eslint-disable-next-line
         // @ts-ignore
         // Check if the request is sent by an authenticated user
         const authenticationMw = async (req, res, next) => {
-          const context = await createContext(req, res)
+          const context = await commonContext.withRequest(req, res)
 
           // User has been logged in
           if (context?.session?.data?.role) {
@@ -83,7 +89,7 @@ export default withAuth(
         app.get('/demo/karaokes/:id', authenticationMw, async (req, res) => {
           const karaokeId = req.params.id
 
-          const context = await createContext(req, res)
+          const context = await commonContext.withRequest(req, res)
           const item = await context.query.Karaoke.findOne({
             where: { id: karaokeId },
             query: 'embedCode',
@@ -104,7 +110,7 @@ export default withAuth(
           async (req, res) => {
             const itemId = req.params.id
 
-            const context = await createContext(req, res)
+            const context = await commonContext.withRequest(req, res)
             const item = await context.query.FeedbackCounter.findOne({
               where: { id: itemId },
               query: 'embeddedCode',
@@ -136,7 +142,7 @@ export default withAuth(
           authenticationMw,
           async (req, res) => {
             const inlineIndicesId = req.params.id
-            const context = await createContext(req, res)
+            const context = await commonContext.withRequest(req, res)
             const item = await context.query.InlineIndex.findOne({
               where: { id: inlineIndicesId },
               query: `
@@ -173,7 +179,7 @@ export default withAuth(
           async (req, res) => {
             const itemId = req.params.id
 
-            const context = await createContext(req, res)
+            const context = await commonContext.withRequest(req, res)
             const item = await context.query.VideoPicker.findOne({
               where: { id: itemId },
               query: 'embedCode',
@@ -197,7 +203,7 @@ export default withAuth(
           async (req, res) => {
             const itemId = req.params.id
 
-            const context = await createContext(req, res)
+            const context = await commonContext.withRequest(req, res)
             const item = await context.query.ThreeStoryPoint.findOne({
               where: { id: itemId },
               query: 'embedCode',
@@ -218,7 +224,7 @@ export default withAuth(
         app.get('/demo/dual-slides/:id', authenticationMw, async (req, res) => {
           const itemId = req.params.id
 
-          const context = await createContext(req, res)
+          const context = await commonContext.withRequest(req, res)
           const item = await context.query.DualSlide.findOne({
             where: { id: itemId },
             query: 'embedCode',
@@ -239,7 +245,7 @@ export default withAuth(
           async (req, res) => {
             const itemId = req.params.id
 
-            const context = await createContext(req, res)
+            const context = await commonContext.withRequest(req, res)
             const item = await context.query.RandomTextSelector.findOne({
               where: { id: itemId },
               query: 'embedCode',
@@ -261,7 +267,7 @@ export default withAuth(
           async (req, res) => {
             const itemId = req.params.id
 
-            const context = await createContext(req, res)
+            const context = await commonContext.withRequest(req, res)
             const item = await context.query.DroppingText.findOne({
               where: { id: itemId },
               query: 'embedCode',

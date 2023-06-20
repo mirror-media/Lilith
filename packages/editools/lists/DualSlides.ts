@@ -95,7 +95,8 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/embed-code'),
+        // A module path that is resolved from where `keystone start` is run
+        views: './lists/views/embed-code',
         createView: {
           fieldMode: 'hidden',
         },
@@ -112,7 +113,8 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/link-button'),
+        // A module path that is resolved from where `keystone start` is run
+        views: './lists/views/link-button',
         createView: {
           fieldMode: 'hidden',
         },

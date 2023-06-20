@@ -1,13 +1,15 @@
 import express from 'express'
+import { KeystoneContext } from '@keystone-6/core/types' // eslint-disable-line
+
 import { createProxyMiddleware } from 'http-proxy-middleware'
 
 /**
  *  @param {Object} opts
  *  @param {string} opts.previewServerOrigin
- *  @param {Function} opts.createContext
+ *  @param {KeystoneContext} opts.keystoneContext
  *  @returns {express.Router}
  */
-export function createPreviewMiniApp({ previewServerOrigin, createContext }) {
+export function createPreviewMiniApp({ previewServerOrigin, keystoneContext }) {
   const router = express.Router()
 
   /**
@@ -17,7 +19,7 @@ export function createPreviewMiniApp({ previewServerOrigin, createContext }) {
    *  @param {express.NextFunction} next
    */
   const authenticationMw = async (req, res, next) => {
-    const context = await createContext(req, res)
+    const context = await keystoneContext.withRequest(req, res)
     // User has been logged in
     if (context?.session?.data?.role) {
       return next()

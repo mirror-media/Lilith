@@ -1,6 +1,6 @@
 {
   "name": "@mirrormedia/lilith-draft-renderer",
-  "version": "1.2.0-alpha.22",
+  "version": "1.2.0-alpha.30",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -28,8 +28,8 @@
     "node-html-parser": "^6.1.5"
   },
   "peerDependencies": {
-    "react": "18.1.0",
-    "react-dom": "18.1.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "styled-components": "5.3.5"
   },
   "files": [

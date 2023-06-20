@@ -49,12 +49,9 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
-    heroImage: customFields.relationship({
+    heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
       access: {
         operation: {
           query: allowRoles(admin, moderator, editor),

@@ -10,25 +10,13 @@ const session: { secret: string; maxAge: number } = {
   maxAge: envVar.session.maxAge,
 }
 
-const storage = {
-  gcpUrlBase: `https://storage.googleapis.com/${envVar.gcs.bucket}/`,
-  webUrlBase: `https://storage.googleapis.com/${envVar.gcs.bucket}/`,
-  bucket: envVar.gcs.bucket,
-  filename: 'original',
-}
-
-const googleCloudStorage = {
-  origin: envVar.gcs.baseUrl,
-  bucket: envVar.gcs.bucket,
-}
-
 const files = {
-  baseUrl: envVar.files.baseUrl,
+  gcsBaseUrl: envVar.files.gcsBaseUrl,
   storagePath: envVar.files.storagePath,
 }
 
 const images = {
-  baseUrl: envVar.images.baseUrl,
+  gcsBaseUrl: envVar.images.gcsBaseUrl,
   storagePath: envVar.images.storagePath,
 }
 
@@ -39,8 +27,6 @@ const liveblogFiles = {
 export default {
   database,
   session,
-  storage,
-  googleCloudStorage,
   files,
   images,
   liveblogFiles,

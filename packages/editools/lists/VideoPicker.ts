@@ -20,11 +20,11 @@ const listConfigurations = list({
       label: 'Video Picker 名稱',
       validation: { isRequired: true },
     }),
-    video1920: file(),
-    video1440: file(),
-    video1280: file(),
-    video960: file(),
-    video720: file(),
+    video1920: file({ storage: 'files' }),
+    video1440: file({ storage: 'files' }),
+    video1280: file({ storage: 'files' }),
+    video960: file({ storage: 'files' }),
+    video720: file({ storage: 'files' }),
     muteHint: checkbox({
       label: '是否顯示聲音播放提醒',
       defaultValue: false,
@@ -55,7 +55,7 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
-          const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
+          const urlPrefix = config.files.gcsBaseUrl
           const videoUrls = []
           if (item?.video720_filename) {
             videoUrls.push({
@@ -139,7 +139,8 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/embed-code'),
+        // A module path that is resolved from where `keystone start` is run.
+        views: './lists/views/embed-code',
         createView: {
           fieldMode: 'hidden',
         },
@@ -156,7 +157,8 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/link-button'),
+        //  A module path that is resolved from where `keystone start` is run
+        views: './lists/views/link-button',
         createView: {
           fieldMode: 'hidden',
         },

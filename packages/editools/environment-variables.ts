@@ -6,11 +6,8 @@ const {
   DATABASE_URL,
   SESSION_SECRET,
   SESSION_MAX_AGE,
-  GCS_BUCKET,
   GCS_BASE_URL,
-  FILES_BASE_URL,
   FILES_STORAGE_PATH,
-  IMAGES_BASE_URL,
   IMAGES_STORAGE_PATH,
   LIVEBLOG_FILES_STORAGE_PATH,
   MEMORY_CACHE_TTL,
@@ -47,16 +44,12 @@ export default {
       'default_session_secret_and_it_should_be_more_than_32_characters',
     maxAge: (SESSION_MAX_AGE && parseInt(SESSION_MAX_AGE)) || 60 * 60 * 24 * 1, // 1 days
   },
-  gcs: {
-    bucket: GCS_BUCKET || 'editools-gcs-dev.readr.tw',
-    baseUrl: GCS_BASE_URL || 'https://storage.googleapis.com',
-  },
   files: {
-    baseUrl: FILES_BASE_URL || '/files',
+    gcsBaseUrl: GCS_BASE_URL || 'https://editools-gcs-dev.readr.tw',
     storagePath: FILES_STORAGE_PATH || 'public/files',
   },
   images: {
-    baseUrl: IMAGES_BASE_URL || '/images',
+    gcsBaseUrl: GCS_BASE_URL || 'https://editools-gcs-dev.readr.tw',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
   liveblogFiles: {
