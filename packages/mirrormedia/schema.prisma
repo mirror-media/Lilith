@@ -277,6 +277,7 @@ model Photo {
   file_filesize               Int?
   file_filename               String?
   urlOriginal                 String      @default("")
+  topicKeywords               String      @default("")
   copyRight                   Boolean     @default(false)
   createdAt                   DateTime?
   updatedAt                   DateTime?
