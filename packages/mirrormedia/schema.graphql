@@ -1212,6 +1212,7 @@ type Photo {
   resized: ResizedImages
   file: FileFieldOutput
   urlOriginal: String
+  topicKeywords: String
   copyRight: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -1256,6 +1257,7 @@ input PhotoWhereInput {
   name: StringFilter
   waterMark: BooleanFilter
   urlOriginal: StringFilter
+  topicKeywords: StringFilter
   copyRight: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1268,6 +1270,7 @@ input PhotoOrderByInput {
   name: OrderDirection
   waterMark: OrderDirection
   urlOriginal: OrderDirection
+  topicKeywords: OrderDirection
   copyRight: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1279,6 +1282,7 @@ input PhotoUpdateInput {
   waterMark: Boolean
   file: FileFieldInput
   urlOriginal: String
+  topicKeywords: String
   copyRight: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -1301,6 +1305,7 @@ input PhotoCreateInput {
   waterMark: Boolean
   file: FileFieldInput
   urlOriginal: String
+  topicKeywords: String
   copyRight: Boolean
   createdAt: DateTime
   updatedAt: DateTime
