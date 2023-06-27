@@ -19,7 +19,7 @@ const listConfigurations = list({
     }),
     waterMark: checkbox({
       label: '浮水印',
-	  defaultValue: true,
+      defaultValue: true,
     }),
     resized: virtual({
       field: graphql.field({
@@ -124,6 +124,10 @@ const listConfigurations = list({
           fieldMode: 'read',
         },
       },
+    }),
+    topicKeywords: text({
+      label: 'topic keyword ( 首圖小slideshow上稿：@-網址 )',
+      validation: { isRequired: false },
     }),
     copyRight: checkbox({
       label: '版權',

@@ -2,12 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
 import AmpAudioBlock from './amp/amp-audio-block'
-
+import { defaultMarginBottom, defaultMarginTop } from '../shared-style'
 const AudioWrapper = styled.div`
   display: flex;
   gap: 8px;
   align-items: start;
   flex-direction: column;
+  ${defaultMarginTop}
+  ${defaultMarginBottom}
   ${({ theme }) => theme.breakpoint.md} {
     flex-direction: row;
     align-items: center;
