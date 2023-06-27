@@ -5,7 +5,10 @@ import {
   hasContentInRawContentBlock,
   removeEmptyContentBlock,
   getContentBlocksH2H3,
+  getContentTextBlocks,
 } from './utils'
+import { draftEditorCssExternal } from './shared-style/external-style'
+
 const MirrorMedia = {
   DraftRenderer,
   blockRenderers,
@@ -13,6 +16,8 @@ const MirrorMedia = {
   hasContentInRawContentBlock,
   removeEmptyContentBlock,
   getContentBlocksH2H3,
+  getContentTextBlocks,
+  draftEditorCssExternal,
 }
 
 export default MirrorMedia

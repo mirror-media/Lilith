@@ -4,7 +4,7 @@ import styled, { css, ThemeProvider } from 'styled-components'
 import { Editor, EditorState, convertFromRaw } from 'draft-js'
 import blockquoteDecoration from './assets/blockquote-decoration.png'
 import { atomicBlockRenderer } from './block-renderer-fn'
-import decorators from './entity-decorator'
+import decoratorsGenerator from './entity-decorator'
 import {
   CUSTOM_STYLE_PREFIX_FONT_COLOR,
   CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR,
@@ -12,14 +12,14 @@ import {
 import { defaultMarginBottom } from './shared-style'
 import theme from './theme'
 
-const draftEditorLineHeight = 2
+export const draftEditorLineHeight = 2
 /**
  * Due to the data structure from draftjs, each default block contain one HTML element which class name is `public-DraftStyleDefault-block`.
  * So we use this behavior to create spacing between blocks by assign margin-bottom of which.
  * However, some block should not set spacing (e.g. block in <li> and <blockquote>), so we need to unset its margin-top.
  */
 
-const noSpacingBetweenContent = {
+export const noSpacingBetweenContent = {
   blockquote: css`
     margin-bottom: unset;
   `,
@@ -140,6 +140,37 @@ const draftEditorCssPremium = css`
   }
 `
 
+//目前 Photography 文末樣式僅支援：H2, H3, 粗體、底線、斜體、超連結
+//目前 photography 裡的 <figure> 都會被隱藏（因此 video、infobox、colorbox，就算在 CMS 裡上稿也都無法呈現 )
+// Todo: 新增一個 util function 篩選出 Image
+const draftEditorCssPhotography = css`
+  color: white;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  font-weight: normal;
+  .public-DraftStyleDefault-header-two {
+    font-weight: 500;
+    text-align: center;
+    font-size: 24px;
+    line-height: 1.5;
+
+    ${({ theme }) => theme.breakpoint.md} {
+      font-size: 32px;
+    }
+  }
+  .public-DraftStyleDefault-header-three {
+    text-align: center;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.5;
+
+    ${({ theme }) => theme.breakpoint.md} {
+      font-size: 24px;
+    }
+  }
+`
+
 const DraftEditorWrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -244,6 +275,8 @@ const DraftEditorWrapper = styled.div`
         return draftEditorCssWide
       case 'premium':
         return draftEditorCssPremium
+      case 'photography':
+        return draftEditorCssPhotography
       default:
         return draftEditorCssNormal
     }
@@ -320,11 +353,8 @@ export default function DraftRenderer({
   contentLayout = 'normal',
 }) {
   const contentState = convertFromRaw(rawContentBlock)
-
-  const editorState = EditorState.createWithContent(
-    contentState,
-    decorators(contentLayout)
-  )
+  const decorators = decoratorsGenerator(contentLayout)
+  const editorState = EditorState.createWithContent(contentState, decorators)
   const blockRendererFn = (block) => {
     const atomicBlockObj = atomicBlockRenderer(block, contentLayout)
     return atomicBlockObj

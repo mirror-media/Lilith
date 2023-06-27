@@ -10,6 +10,7 @@ import {
   virtual,
   image,
 } from '@keystone-6/core/fields'
+// @ts-ignore no definitino file
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import config from '../config'
 
@@ -30,11 +31,7 @@ const listConfigurations = list({
     }),
     json: json({
       label: '內容（JSON）',
-      validation: { isRequired: true },
       defaultValue: ['001.json'],
-      ui: {
-        displayMode: 'textarea',
-      },
     }),
     shiftLeft: checkbox({
       label: 'READr 版型（向左移動）',
@@ -44,52 +41,20 @@ const listConfigurations = list({
       ref: 'ComponentHelp',
     }),
     highlightDesktop: image({
+      storage: 'images',
       label: '段落醒目樣式（桌機版）',
-      access: {
-        operation: {
-          query: allowRoles(admin, moderator, editor),
-          update: allowRoles(admin, moderator),
-          create: allowRoles(admin, moderator),
-          delete: allowRoles(admin),
-        },
-      },
-      validation: { isRequired: true },
     }),
     highlightMobile: image({
+      storage: 'images',
       label: '段落醒目樣式（手機版）',
-      access: {
-        operation: {
-          query: allowRoles(admin, moderator, editor),
-          update: allowRoles(admin, moderator),
-          create: allowRoles(admin, moderator),
-          delete: allowRoles(admin),
-        },
-      },
-      validation: { isRequired: true },
     }),
     loadingIcon: image({
+      storage: 'images',
       label: 'Loading Icon',
-      access: {
-        operation: {
-          query: allowRoles(admin, moderator, editor),
-          update: allowRoles(admin, moderator),
-          create: allowRoles(admin, moderator),
-          delete: allowRoles(admin),
-        },
-      },
-      validation: { isRequired: false },
     }),
     button: image({
+      storage: 'images',
       label: '按鈕樣式',
-      access: {
-        operation: {
-          query: allowRoles(admin, moderator, editor),
-          update: allowRoles(admin, moderator),
-          create: allowRoles(admin, moderator),
-          delete: allowRoles(admin),
-        },
-      },
-      validation: { isRequired: true },
     }),
     buttonLabel: text({
       label: '按鈕文字',
@@ -108,7 +73,7 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
-          const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
+          const urlPrefix = config.images.gcsBaseUrl
 
           let style = ''
 
@@ -164,7 +129,7 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/embed-code'),
+        views: './lists/views/embed-code',
         createView: {
           fieldMode: 'hidden',
         },
@@ -181,14 +146,11 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/link-button'),
+        views: './lists/views/link-button',
         createView: {
           fieldMode: 'hidden',
         },
       },
-    }),
-    helper: relationship({
-      ref: 'ComponentHelp',
     }),
   },
   ui: {

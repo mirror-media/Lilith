@@ -1,5 +1,5 @@
 import config from '../config'
-import { customFields, utils } from '@mirrormedia/lilith-core'
+import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import { image, text, virtual } from '@keystone-6/core/fields'
 
@@ -14,7 +14,7 @@ const listConfigurations = list({
       label: '標題',
       validation: { isRequired: true },
     }),
-    imageFile: image(),
+    imageFile: image({ storage: 'images' }),
     resized: virtual({
       field: graphql.field({
         type: graphql.object<{
@@ -53,7 +53,7 @@ const listConfigurations = list({
             })
           }
 
-          const rtn : Record<string, string> = {}
+          const rtn: Record<string, string> = {}
           const filename = item?.imageFile_id
 
           if (!filename) {
@@ -63,8 +63,12 @@ const listConfigurations = list({
           const extension = item?.imageFile_extension
             ? '.' + item.imageFile_extension
             : ''
-          const width = typeof item?.imageFile_width === 'number' ? item.imageFile_width : 0
-          const height = typeof item?.imageFile_height === 'number' ? item.imageFile_height : 0
+          const width =
+            typeof item?.imageFile_width === 'number' ? item.imageFile_width : 0
+          const height =
+            typeof item?.imageFile_height === 'number'
+              ? item.imageFile_height
+              : 0
 
           const resizedTargets =
             width >= height
@@ -72,34 +76,19 @@ const listConfigurations = list({
               : ['w480', 'w800', 'w1200', 'w1600']
 
           resizedTargets.forEach((target) => {
-            rtn[target] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+            rtn[
+              target
+            ] = `${config.images.gcsBaseUrl}/images/${filename}-${target}${extension}`
           })
 
           rtn[
             'original'
-          ] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}${extension}`
+          ] = `${config.images.gcsBaseUrl}/images/${filename}${extension}`
           return Object.assign(empty, rtn)
         },
       }),
       ui: {
         query: '{ original w480 w800 w1200 w1600 w2400 }',
-      },
-    }),
-    file: customFields.file({
-      label: '檔案（建議長邊大於 2000 pixel）',
-      customConfig: {
-        fileType: 'image',
-      },
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
-        listView: {
-          fieldMode: 'read',
-        },
       },
     }),
     urlOriginal: text({
@@ -118,8 +107,8 @@ const listConfigurations = list({
   },
   ui: {
     listView: {
-      initialColumns: ['name', 'imageFile'],
-      initialSort: { field: 'updatedAt', direction: 'ASC' },
+      initialColumns: ['name'],
+      initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
   },

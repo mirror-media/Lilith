@@ -6,6 +6,7 @@ import {
   text,
   select,
   integer,
+  json,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -17,11 +18,7 @@ const listConfigurations = list({
       label: '標題',
     }),
     slug: text({
-      label: 'slug',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
-      }
+      label: '原ID',
     }),
     sortOrder: integer(),
     state: select({
@@ -56,14 +53,17 @@ const listConfigurations = list({
       ref: 'Section.topics',
       many: true,
     }),
-    heroImageSize: select({
-      label: '首圖尺寸',
-      options: [
-        { label: 'Normal', value: 'normal' },
-        { label: 'Wide', value: 'wide' },
-        { label: 'Small', value: 'small' },
-      ],
-      defaultValue: 'normal',
+    og_title: text({
+      label: 'FB分享標題',
+      validation: { isRequired: false },
+    }),
+    og_description: text({
+      label: 'FB分享說明',
+      validation: { isRequired: false },
+    }),
+    og_image: relationship({
+      label: 'FB分享縮圖',
+      ref: 'Photo',
     }),
     isFeatured: checkbox({
       label: '置頂',
@@ -94,6 +94,15 @@ const listConfigurations = list({
       label: '標籤',
       many: true,
     }),
+    slideshow_images: relationship({
+      ref: 'Photo',
+      label: 'slideshow 圖片',
+      many: true,
+    }),
+    manualOrderOfSlideshowImages: json({
+      label: 'slideshow 圖片排序結果',
+      defaultValue: null,
+    }),
     posts: relationship({
       ref: 'Post.topics',
       label: '文章',
@@ -121,4 +130,15 @@ const listConfigurations = list({
     },
   },
 })
-export default utils.addTrackingFields(listConfigurations)
+
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfSlideshowImages',
+      targetFieldName: 'slideshow_images',
+      targetListName: 'Photo',
+      targetListLabelField: 'name',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)

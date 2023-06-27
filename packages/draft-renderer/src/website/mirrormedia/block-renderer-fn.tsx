@@ -15,6 +15,7 @@ const {
   SideIndexBlock,
   VideoBlock,
   AudioBlock,
+  YoutubeBlock,
 } = blockRenderers
 
 const AtomicBlock = (props) => {
@@ -38,7 +39,7 @@ const AtomicBlock = (props) => {
       return SlideshowBlockV2(entity)
     }
     case 'EMBEDDEDCODE': {
-      return EmbeddedCodeBlock(entity)
+      return EmbeddedCodeBlock(entity, contentLayout)
     }
     case 'INFOBOX': {
       return InfoBoxBlock(props, contentLayout)
@@ -65,10 +66,13 @@ const AtomicBlock = (props) => {
       return SideIndexBlock(props)
     }
     case 'VIDEO': {
-      return VideoBlock(entity)
+      return VideoBlock(entity, contentLayout)
     }
     case 'AUDIO': {
-      return AudioBlock(entity)
+      return AudioBlock(entity, contentLayout)
+    }
+    case 'YOUTUBE': {
+      return YoutubeBlock(entity)
     }
   }
   return null

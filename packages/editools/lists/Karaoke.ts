@@ -48,6 +48,7 @@ const listConfigurations = list({
       },
     }),
     audio: file({
+      storage: 'files',
       //external users can't upload files to our GCS. They can only use the image from their sources.
       ui: {
         createView: { fieldMode: imageFileACL },
@@ -56,6 +57,7 @@ const listConfigurations = list({
     }),
     //external users can't upload files to our GCS. They can only use the image from their sources.
     imageFile: image({
+      storage: 'images',
       ui: {
         createView: { fieldMode: imageFileACL },
         itemView: { fieldMode: imageFileACL },
@@ -75,14 +77,14 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
-          const urlPrefix = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}`
           const audioSrc =
             (item?.audioLink && `${item.audioLink}`) ||
-            (item?.audio_id && `${urlPrefix}/files/${item?.audio_filename}`)
+            (item?.audio_filename &&
+              `${config.files.gcsBaseUrl}/files/${item?.audio_filename}`)
           const imgSrc =
             (item?.imageLink && `${item.imageLink}`) ||
             (item?.imageFile_id &&
-              `${urlPrefix}/images/${item.imageFile_id}.${item.imageFile_extension}`)
+              `${config.images.gcsBaseUrl}/images/${item.imageFile_id}.${item.imageFile_extension}`)
 
           return embedCodeGen.buildEmbeddedCode(
             'react-karaoke',
@@ -98,7 +100,7 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/embed-code'),
+        views: './lists/views/embed-code',
         createView: {
           fieldMode: 'hidden',
         },
@@ -115,7 +117,7 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/link-button'),
+        views: './lists/views/link-button',
         createView: {
           fieldMode: 'hidden',
         },

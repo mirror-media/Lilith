@@ -1,13 +1,10 @@
 // @ts-ignore: no definition
 import config from '../config'
-import { customFields, utils } from '@mirrormedia/lilith-core'
-import { GcsFileAdapter } from '../utils/GcsFileAdapter'
+import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, virtual, file} from '@keystone-6/core/fields'
+import { text, virtual, file } from '@keystone-6/core/fields'
 
 const { admin, allowRoles, moderator } = utils.accessControl
-
-// const gcsFileAdapter = new GcsFileAdapter('video')
 
 const listConfigurations = list({
   fields: {
@@ -17,9 +14,7 @@ const listConfigurations = list({
     }),
     file: file({
       label: '檔案',
-      // customConfig: {
-      //   fileType: 'video',
-      // },
+      storage: 'files',
     }),
     description: text({
       label: '描述',
@@ -56,10 +51,11 @@ const listConfigurations = list({
         type: graphql.String,
         async resolve(item) {
           const audioUrl = item.file_filename
-          return audioUrl? `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/files/${audioUrl}`: null
-
+          return audioUrl
+            ? `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/files/${audioUrl}`
+            : null
         },
-      })
+      }),
     }),
     duration: text({
       label: '長度（秒）',
@@ -87,7 +83,6 @@ const listConfigurations = list({
     // resolveInput: async ({ inputData, item, resolvedData }) => {
     //   // @ts-ignore: item might be undefined, should be handle properly
     //   gcsFileAdapter.startFileProcessingFlow(resolvedData, item, inputData)
-
     //   return resolvedData
     // },
     // beforeOperation: async ({ operation, item }) => {

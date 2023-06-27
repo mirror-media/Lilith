@@ -1,3 +1,4 @@
+// @ts-ignore no definition file
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
@@ -69,7 +70,7 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        views: require.resolve('./views/embed-code'),
+        views: './lists/views/embed-code',
         createView: {
           fieldMode: 'hidden',
         },

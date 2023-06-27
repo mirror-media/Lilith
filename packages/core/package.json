@@ -1,6 +1,6 @@
 {
   "name": "@mirrormedia/lilith-core",
-  "version": "1.2.8",
+  "version": "2.0.0-alpha.8",
   "description": "",
   "main": "lib/index.js",
   "types": "src/index.ts",
@@ -25,15 +25,15 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@keystone-6/core": "1.1.1"
+    "@keystone-6/core": "5.2.0"
   },
   "dependencies": {
     "@google-cloud/storage": "^5.18.0",
-    "@keystone-ui/button": "^6.0.0",
-    "@keystone-ui/fields": "^6.0.0",
-    "@keystone-ui/modals": "^5.0.0",
+    "@keystone-ui/button": "^7.0.2",
+    "@keystone-ui/fields": "^7.2.0",
+    "@keystone-ui/modals": "^6.0.3",
     "@twreporter/errors": "^1.1.1",
-    "@mirrormedia/lilith-draft-editor": "1.1.0-alpha.13",
+    "@mirrormedia/lilith-draft-editor": "1.1.0-alpha.16",
     "axios": "^0.26.0",
     "draft-convert": "^2.1.12",
     "draft-js": "^0.11.7",

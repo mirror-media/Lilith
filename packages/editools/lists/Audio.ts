@@ -1,6 +1,6 @@
-import { customFields, utils } from '@mirrormedia/lilith-core'
+import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { text, file } from '@keystone-6/core/fields'
+import { relationship, text, file } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -10,13 +10,12 @@ const listConfigurations = list({
       label: '標題',
       validation: { isRequired: true },
     }),
-    file: file(),
-    coverPhoto: customFields.relationship({
+    file: file({
+      storage: 'files',
+    }),
+    coverPhoto: relationship({
       label: '首圖',
       ref: 'Photo',
-      customConfig: {
-        isImage: true,
-      },
     }),
     // todo
     tags: text({

@@ -130,8 +130,7 @@ type Post {
   updatedBy: User
 }
 
-scalar DateTime
-  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input PostWhereUniqueInput {
   id: ID
@@ -254,20 +253,10 @@ type Area {
   classification: String
   parent: Area
   geometry: String
-  organizations(
-    where: OrganizationWhereInput! = {}
-    orderBy: [OrganizationOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Organization!]
+  organizations(where: OrganizationWhereInput! = {}, orderBy: [OrganizationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrganizationWhereUniqueInput): [Organization!]
   organizationsCount(where: OrganizationWhereInput! = {}): Int
   posts: String
-  children(
-    where: AreaWhereInput! = {}
-    orderBy: [AreaOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Area!]
+  children(where: AreaWhereInput! = {}, orderBy: [AreaOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AreaWhereUniqueInput): [Area!]
   childrenCount(where: AreaWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -504,20 +493,10 @@ type Election {
   type: String
   register_date: String
   location: String
-  electionArea(
-    where: ElectionAreaWhereInput! = {}
-    orderBy: [ElectionAreaOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ElectionArea!]
+  electionArea(where: ElectionAreaWhereInput! = {}, orderBy: [ElectionAreaOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ElectionAreaWhereUniqueInput): [ElectionArea!]
   electionAreaCount(where: ElectionAreaWhereInput! = {}): Int
   status: String
-  tags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -889,12 +868,7 @@ type Person {
   source: String
   status: String
   thread_parent: Person
-  tags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   reviewed: Boolean
   createdAt: DateTime
@@ -1160,12 +1134,7 @@ type Organization {
   address: String
   source: String
   status: String
-  tags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   reviewed: Boolean
   createdAt: DateTime
@@ -1809,12 +1778,7 @@ type PersonElection {
   source: String
   politicSource: String
   organization: PersonOrganization
-  politics(
-    where: PoliticWhereInput! = {}
-    orderBy: [PoliticOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Politic!]
+  politics(where: PoliticWhereInput! = {}, orderBy: [PoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticWhereUniqueInput): [Politic!]
   politicsCount(where: PoliticWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -2265,19 +2229,9 @@ type Politic {
   dispute: String
   source: String
   contributer: String
-  timeline(
-    where: PoliticTimelineWhereInput! = {}
-    orderBy: [PoliticTimelineOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [PoliticTimeline!]
+  timeline(where: PoliticTimelineWhereInput! = {}, orderBy: [PoliticTimelineOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticTimelineWhereUniqueInput): [PoliticTimeline!]
   timelineCount(where: PoliticTimelineWhereInput! = {}): Int
-  expertPoint(
-    where: PoliticExpertWhereInput! = {}
-    orderBy: [PoliticExpertOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [PoliticExpert!]
+  expertPoint(where: PoliticExpertWhereInput! = {}, orderBy: [PoliticExpertOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticExpertWhereUniqueInput): [PoliticExpert!]
   expertPointCount(where: PoliticExpertWhereInput! = {}): Int
   status: String
   tag: Tag
@@ -2771,10 +2725,7 @@ input TagCreateInput {
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
-scalar JSON
-  @specifiedBy(
-    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
-  )
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
 type Mutation {
   createUser(data: UserCreateInput!): User
@@ -2803,19 +2754,13 @@ type Mutation {
   deleteEvents(where: [EventWhereUniqueInput!]!): [Event]
   createElection(data: ElectionCreateInput!): Election
   createElections(data: [ElectionCreateInput!]!): [Election]
-  updateElection(
-    where: ElectionWhereUniqueInput!
-    data: ElectionUpdateInput!
-  ): Election
+  updateElection(where: ElectionWhereUniqueInput!, data: ElectionUpdateInput!): Election
   updateElections(data: [ElectionUpdateArgs!]!): [Election]
   deleteElection(where: ElectionWhereUniqueInput!): Election
   deleteElections(where: [ElectionWhereUniqueInput!]!): [Election]
   createElectionArea(data: ElectionAreaCreateInput!): ElectionArea
   createElectionAreas(data: [ElectionAreaCreateInput!]!): [ElectionArea]
-  updateElectionArea(
-    where: ElectionAreaWhereUniqueInput!
-    data: ElectionAreaUpdateInput!
-  ): ElectionArea
+  updateElectionArea(where: ElectionAreaWhereUniqueInput!, data: ElectionAreaUpdateInput!): ElectionArea
   updateElectionAreas(data: [ElectionAreaUpdateArgs!]!): [ElectionArea]
   deleteElectionArea(where: ElectionAreaWhereUniqueInput!): ElectionArea
   deleteElectionAreas(where: [ElectionAreaWhereUniqueInput!]!): [ElectionArea]
@@ -2839,195 +2784,91 @@ type Mutation {
   deleteMotions(where: [MotionWhereUniqueInput!]!): [Motion]
   createOrganization(data: OrganizationCreateInput!): Organization
   createOrganizations(data: [OrganizationCreateInput!]!): [Organization]
-  updateOrganization(
-    where: OrganizationWhereUniqueInput!
-    data: OrganizationUpdateInput!
-  ): Organization
+  updateOrganization(where: OrganizationWhereUniqueInput!, data: OrganizationUpdateInput!): Organization
   updateOrganizations(data: [OrganizationUpdateArgs!]!): [Organization]
   deleteOrganization(where: OrganizationWhereUniqueInput!): Organization
   deleteOrganizations(where: [OrganizationWhereUniqueInput!]!): [Organization]
   createCollaborate(data: CollaborateCreateInput!): Collaborate
   createCollaborates(data: [CollaborateCreateInput!]!): [Collaborate]
-  updateCollaborate(
-    where: CollaborateWhereUniqueInput!
-    data: CollaborateUpdateInput!
-  ): Collaborate
+  updateCollaborate(where: CollaborateWhereUniqueInput!, data: CollaborateUpdateInput!): Collaborate
   updateCollaborates(data: [CollaborateUpdateArgs!]!): [Collaborate]
   deleteCollaborate(where: CollaborateWhereUniqueInput!): Collaborate
   deleteCollaborates(where: [CollaborateWhereUniqueInput!]!): [Collaborate]
   createMembership(data: MembershipCreateInput!): Membership
   createMemberships(data: [MembershipCreateInput!]!): [Membership]
-  updateMembership(
-    where: MembershipWhereUniqueInput!
-    data: MembershipUpdateInput!
-  ): Membership
+  updateMembership(where: MembershipWhereUniqueInput!, data: MembershipUpdateInput!): Membership
   updateMemberships(data: [MembershipUpdateArgs!]!): [Membership]
   deleteMembership(where: MembershipWhereUniqueInput!): Membership
   deleteMemberships(where: [MembershipWhereUniqueInput!]!): [Membership]
   createContactDetail(data: ContactDetailCreateInput!): ContactDetail
   createContactDetails(data: [ContactDetailCreateInput!]!): [ContactDetail]
-  updateContactDetail(
-    where: ContactDetailWhereUniqueInput!
-    data: ContactDetailUpdateInput!
-  ): ContactDetail
+  updateContactDetail(where: ContactDetailWhereUniqueInput!, data: ContactDetailUpdateInput!): ContactDetail
   updateContactDetails(data: [ContactDetailUpdateArgs!]!): [ContactDetail]
   deleteContactDetail(where: ContactDetailWhereUniqueInput!): ContactDetail
-  deleteContactDetails(
-    where: [ContactDetailWhereUniqueInput!]!
-  ): [ContactDetail]
+  deleteContactDetails(where: [ContactDetailWhereUniqueInput!]!): [ContactDetail]
   createCount(data: CountCreateInput!): Count
   createCounts(data: [CountCreateInput!]!): [Count]
   updateCount(where: CountWhereUniqueInput!, data: CountUpdateInput!): Count
   updateCounts(data: [CountUpdateArgs!]!): [Count]
   deleteCount(where: CountWhereUniqueInput!): Count
   deleteCounts(where: [CountWhereUniqueInput!]!): [Count]
-  createOrganizationsElection(
-    data: OrganizationsElectionCreateInput!
-  ): OrganizationsElection
-  createOrganizationsElections(
-    data: [OrganizationsElectionCreateInput!]!
-  ): [OrganizationsElection]
-  updateOrganizationsElection(
-    where: OrganizationsElectionWhereUniqueInput!
-    data: OrganizationsElectionUpdateInput!
-  ): OrganizationsElection
-  updateOrganizationsElections(
-    data: [OrganizationsElectionUpdateArgs!]!
-  ): [OrganizationsElection]
-  deleteOrganizationsElection(
-    where: OrganizationsElectionWhereUniqueInput!
-  ): OrganizationsElection
-  deleteOrganizationsElections(
-    where: [OrganizationsElectionWhereUniqueInput!]!
-  ): [OrganizationsElection]
-  createOrganizationsRelationship(
-    data: OrganizationsRelationshipCreateInput!
-  ): OrganizationsRelationship
-  createOrganizationsRelationships(
-    data: [OrganizationsRelationshipCreateInput!]!
-  ): [OrganizationsRelationship]
-  updateOrganizationsRelationship(
-    where: OrganizationsRelationshipWhereUniqueInput!
-    data: OrganizationsRelationshipUpdateInput!
-  ): OrganizationsRelationship
-  updateOrganizationsRelationships(
-    data: [OrganizationsRelationshipUpdateArgs!]!
-  ): [OrganizationsRelationship]
-  deleteOrganizationsRelationship(
-    where: OrganizationsRelationshipWhereUniqueInput!
-  ): OrganizationsRelationship
-  deleteOrganizationsRelationships(
-    where: [OrganizationsRelationshipWhereUniqueInput!]!
-  ): [OrganizationsRelationship]
+  createOrganizationsElection(data: OrganizationsElectionCreateInput!): OrganizationsElection
+  createOrganizationsElections(data: [OrganizationsElectionCreateInput!]!): [OrganizationsElection]
+  updateOrganizationsElection(where: OrganizationsElectionWhereUniqueInput!, data: OrganizationsElectionUpdateInput!): OrganizationsElection
+  updateOrganizationsElections(data: [OrganizationsElectionUpdateArgs!]!): [OrganizationsElection]
+  deleteOrganizationsElection(where: OrganizationsElectionWhereUniqueInput!): OrganizationsElection
+  deleteOrganizationsElections(where: [OrganizationsElectionWhereUniqueInput!]!): [OrganizationsElection]
+  createOrganizationsRelationship(data: OrganizationsRelationshipCreateInput!): OrganizationsRelationship
+  createOrganizationsRelationships(data: [OrganizationsRelationshipCreateInput!]!): [OrganizationsRelationship]
+  updateOrganizationsRelationship(where: OrganizationsRelationshipWhereUniqueInput!, data: OrganizationsRelationshipUpdateInput!): OrganizationsRelationship
+  updateOrganizationsRelationships(data: [OrganizationsRelationshipUpdateArgs!]!): [OrganizationsRelationship]
+  deleteOrganizationsRelationship(where: OrganizationsRelationshipWhereUniqueInput!): OrganizationsRelationship
+  deleteOrganizationsRelationships(where: [OrganizationsRelationshipWhereUniqueInput!]!): [OrganizationsRelationship]
   createPersonElection(data: PersonElectionCreateInput!): PersonElection
   createPersonElections(data: [PersonElectionCreateInput!]!): [PersonElection]
-  updatePersonElection(
-    where: PersonElectionWhereUniqueInput!
-    data: PersonElectionUpdateInput!
-  ): PersonElection
+  updatePersonElection(where: PersonElectionWhereUniqueInput!, data: PersonElectionUpdateInput!): PersonElection
   updatePersonElections(data: [PersonElectionUpdateArgs!]!): [PersonElection]
   deletePersonElection(where: PersonElectionWhereUniqueInput!): PersonElection
-  deletePersonElections(
-    where: [PersonElectionWhereUniqueInput!]!
-  ): [PersonElection]
-  createPersonOrganization(
-    data: PersonOrganizationCreateInput!
-  ): PersonOrganization
-  createPersonOrganizations(
-    data: [PersonOrganizationCreateInput!]!
-  ): [PersonOrganization]
-  updatePersonOrganization(
-    where: PersonOrganizationWhereUniqueInput!
-    data: PersonOrganizationUpdateInput!
-  ): PersonOrganization
-  updatePersonOrganizations(
-    data: [PersonOrganizationUpdateArgs!]!
-  ): [PersonOrganization]
-  deletePersonOrganization(
-    where: PersonOrganizationWhereUniqueInput!
-  ): PersonOrganization
-  deletePersonOrganizations(
-    where: [PersonOrganizationWhereUniqueInput!]!
-  ): [PersonOrganization]
-  createPersonPublication(
-    data: PersonPublicationCreateInput!
-  ): PersonPublication
-  createPersonPublications(
-    data: [PersonPublicationCreateInput!]!
-  ): [PersonPublication]
-  updatePersonPublication(
-    where: PersonPublicationWhereUniqueInput!
-    data: PersonPublicationUpdateInput!
-  ): PersonPublication
-  updatePersonPublications(
-    data: [PersonPublicationUpdateArgs!]!
-  ): [PersonPublication]
-  deletePersonPublication(
-    where: PersonPublicationWhereUniqueInput!
-  ): PersonPublication
-  deletePersonPublications(
-    where: [PersonPublicationWhereUniqueInput!]!
-  ): [PersonPublication]
-  createPersonRelationship(
-    data: PersonRelationshipCreateInput!
-  ): PersonRelationship
-  createPersonRelationships(
-    data: [PersonRelationshipCreateInput!]!
-  ): [PersonRelationship]
-  updatePersonRelationship(
-    where: PersonRelationshipWhereUniqueInput!
-    data: PersonRelationshipUpdateInput!
-  ): PersonRelationship
-  updatePersonRelationships(
-    data: [PersonRelationshipUpdateArgs!]!
-  ): [PersonRelationship]
-  deletePersonRelationship(
-    where: PersonRelationshipWhereUniqueInput!
-  ): PersonRelationship
-  deletePersonRelationships(
-    where: [PersonRelationshipWhereUniqueInput!]!
-  ): [PersonRelationship]
+  deletePersonElections(where: [PersonElectionWhereUniqueInput!]!): [PersonElection]
+  createPersonOrganization(data: PersonOrganizationCreateInput!): PersonOrganization
+  createPersonOrganizations(data: [PersonOrganizationCreateInput!]!): [PersonOrganization]
+  updatePersonOrganization(where: PersonOrganizationWhereUniqueInput!, data: PersonOrganizationUpdateInput!): PersonOrganization
+  updatePersonOrganizations(data: [PersonOrganizationUpdateArgs!]!): [PersonOrganization]
+  deletePersonOrganization(where: PersonOrganizationWhereUniqueInput!): PersonOrganization
+  deletePersonOrganizations(where: [PersonOrganizationWhereUniqueInput!]!): [PersonOrganization]
+  createPersonPublication(data: PersonPublicationCreateInput!): PersonPublication
+  createPersonPublications(data: [PersonPublicationCreateInput!]!): [PersonPublication]
+  updatePersonPublication(where: PersonPublicationWhereUniqueInput!, data: PersonPublicationUpdateInput!): PersonPublication
+  updatePersonPublications(data: [PersonPublicationUpdateArgs!]!): [PersonPublication]
+  deletePersonPublication(where: PersonPublicationWhereUniqueInput!): PersonPublication
+  deletePersonPublications(where: [PersonPublicationWhereUniqueInput!]!): [PersonPublication]
+  createPersonRelationship(data: PersonRelationshipCreateInput!): PersonRelationship
+  createPersonRelationships(data: [PersonRelationshipCreateInput!]!): [PersonRelationship]
+  updatePersonRelationship(where: PersonRelationshipWhereUniqueInput!, data: PersonRelationshipUpdateInput!): PersonRelationship
+  updatePersonRelationships(data: [PersonRelationshipUpdateArgs!]!): [PersonRelationship]
+  deletePersonRelationship(where: PersonRelationshipWhereUniqueInput!): PersonRelationship
+  deletePersonRelationships(where: [PersonRelationshipWhereUniqueInput!]!): [PersonRelationship]
   createPolitic(data: PoliticCreateInput!): Politic
   createPolitics(data: [PoliticCreateInput!]!): [Politic]
-  updatePolitic(
-    where: PoliticWhereUniqueInput!
-    data: PoliticUpdateInput!
-  ): Politic
+  updatePolitic(where: PoliticWhereUniqueInput!, data: PoliticUpdateInput!): Politic
   updatePolitics(data: [PoliticUpdateArgs!]!): [Politic]
   deletePolitic(where: PoliticWhereUniqueInput!): Politic
   deletePolitics(where: [PoliticWhereUniqueInput!]!): [Politic]
   createPoliticTimeline(data: PoliticTimelineCreateInput!): PoliticTimeline
-  createPoliticTimelines(
-    data: [PoliticTimelineCreateInput!]!
-  ): [PoliticTimeline]
-  updatePoliticTimeline(
-    where: PoliticTimelineWhereUniqueInput!
-    data: PoliticTimelineUpdateInput!
-  ): PoliticTimeline
+  createPoliticTimelines(data: [PoliticTimelineCreateInput!]!): [PoliticTimeline]
+  updatePoliticTimeline(where: PoliticTimelineWhereUniqueInput!, data: PoliticTimelineUpdateInput!): PoliticTimeline
   updatePoliticTimelines(data: [PoliticTimelineUpdateArgs!]!): [PoliticTimeline]
-  deletePoliticTimeline(
-    where: PoliticTimelineWhereUniqueInput!
-  ): PoliticTimeline
-  deletePoliticTimelines(
-    where: [PoliticTimelineWhereUniqueInput!]!
-  ): [PoliticTimeline]
+  deletePoliticTimeline(where: PoliticTimelineWhereUniqueInput!): PoliticTimeline
+  deletePoliticTimelines(where: [PoliticTimelineWhereUniqueInput!]!): [PoliticTimeline]
   createPoliticExpert(data: PoliticExpertCreateInput!): PoliticExpert
   createPoliticExperts(data: [PoliticExpertCreateInput!]!): [PoliticExpert]
-  updatePoliticExpert(
-    where: PoliticExpertWhereUniqueInput!
-    data: PoliticExpertUpdateInput!
-  ): PoliticExpert
+  updatePoliticExpert(where: PoliticExpertWhereUniqueInput!, data: PoliticExpertUpdateInput!): PoliticExpert
   updatePoliticExperts(data: [PoliticExpertUpdateArgs!]!): [PoliticExpert]
   deletePoliticExpert(where: PoliticExpertWhereUniqueInput!): PoliticExpert
-  deletePoliticExperts(
-    where: [PoliticExpertWhereUniqueInput!]!
-  ): [PoliticExpert]
+  deletePoliticExperts(where: [PoliticExpertWhereUniqueInput!]!): [PoliticExpert]
   createLawsuit(data: LawsuitCreateInput!): Lawsuit
   createLawsuits(data: [LawsuitCreateInput!]!): [Lawsuit]
-  updateLawsuit(
-    where: LawsuitWhereUniqueInput!
-    data: LawsuitUpdateInput!
-  ): Lawsuit
+  updateLawsuit(where: LawsuitWhereUniqueInput!, data: LawsuitUpdateInput!): Lawsuit
   updateLawsuits(data: [LawsuitUpdateArgs!]!): [Lawsuit]
   deleteLawsuit(where: LawsuitWhereUniqueInput!): Lawsuit
   deleteLawsuits(where: [LawsuitWhereUniqueInput!]!): [Lawsuit]
@@ -3038,18 +2879,11 @@ type Mutation {
   deleteTag(where: TagWhereUniqueInput!): Tag
   deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
   endSession: Boolean!
-  authenticateUserWithPassword(
-    email: String!
-    password: String!
-  ): UserAuthenticationWithPasswordResult
-  createInitialUser(
-    data: CreateInitialUserInput!
-  ): UserAuthenticationWithPasswordSuccess!
+  authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
+  createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
 }
 
-union UserAuthenticationWithPasswordResult =
-    UserAuthenticationWithPasswordSuccess
-  | UserAuthenticationWithPasswordFailure
+union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
 
 type UserAuthenticationWithPasswordSuccess {
   sessionToken: String!
@@ -3068,216 +2902,79 @@ input CreateInitialUserInput {
 }
 
 type Query {
-  users(
-    where: UserWhereInput! = {}
-    orderBy: [UserOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [User!]
+  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
-  posts(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
-  areas(
-    where: AreaWhereInput! = {}
-    orderBy: [AreaOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Area!]
+  areas(where: AreaWhereInput! = {}, orderBy: [AreaOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AreaWhereUniqueInput): [Area!]
   area(where: AreaWhereUniqueInput!): Area
   areasCount(where: AreaWhereInput! = {}): Int
-  events(
-    where: EventWhereInput! = {}
-    orderBy: [EventOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Event!]
+  events(where: EventWhereInput! = {}, orderBy: [EventOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EventWhereUniqueInput): [Event!]
   event(where: EventWhereUniqueInput!): Event
   eventsCount(where: EventWhereInput! = {}): Int
-  elections(
-    where: ElectionWhereInput! = {}
-    orderBy: [ElectionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Election!]
+  elections(where: ElectionWhereInput! = {}, orderBy: [ElectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ElectionWhereUniqueInput): [Election!]
   election(where: ElectionWhereUniqueInput!): Election
   electionsCount(where: ElectionWhereInput! = {}): Int
-  electionAreas(
-    where: ElectionAreaWhereInput! = {}
-    orderBy: [ElectionAreaOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ElectionArea!]
+  electionAreas(where: ElectionAreaWhereInput! = {}, orderBy: [ElectionAreaOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ElectionAreaWhereUniqueInput): [ElectionArea!]
   electionArea(where: ElectionAreaWhereUniqueInput!): ElectionArea
   electionAreasCount(where: ElectionAreaWhereInput! = {}): Int
-  votes(
-    where: VoteWhereInput! = {}
-    orderBy: [VoteOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Vote!]
+  votes(where: VoteWhereInput! = {}, orderBy: [VoteOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VoteWhereUniqueInput): [Vote!]
   vote(where: VoteWhereUniqueInput!): Vote
   votesCount(where: VoteWhereInput! = {}): Int
-  people(
-    where: PersonWhereInput! = {}
-    orderBy: [PersonOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Person!]
+  people(where: PersonWhereInput! = {}, orderBy: [PersonOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonWhereUniqueInput): [Person!]
   person(where: PersonWhereUniqueInput!): Person
   peopleCount(where: PersonWhereInput! = {}): Int
-  motions(
-    where: MotionWhereInput! = {}
-    orderBy: [MotionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Motion!]
+  motions(where: MotionWhereInput! = {}, orderBy: [MotionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MotionWhereUniqueInput): [Motion!]
   motion(where: MotionWhereUniqueInput!): Motion
   motionsCount(where: MotionWhereInput! = {}): Int
-  organizations(
-    where: OrganizationWhereInput! = {}
-    orderBy: [OrganizationOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Organization!]
+  organizations(where: OrganizationWhereInput! = {}, orderBy: [OrganizationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrganizationWhereUniqueInput): [Organization!]
   organization(where: OrganizationWhereUniqueInput!): Organization
   organizationsCount(where: OrganizationWhereInput! = {}): Int
-  collaborates(
-    where: CollaborateWhereInput! = {}
-    orderBy: [CollaborateOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Collaborate!]
+  collaborates(where: CollaborateWhereInput! = {}, orderBy: [CollaborateOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CollaborateWhereUniqueInput): [Collaborate!]
   collaborate(where: CollaborateWhereUniqueInput!): Collaborate
   collaboratesCount(where: CollaborateWhereInput! = {}): Int
-  memberships(
-    where: MembershipWhereInput! = {}
-    orderBy: [MembershipOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Membership!]
+  memberships(where: MembershipWhereInput! = {}, orderBy: [MembershipOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MembershipWhereUniqueInput): [Membership!]
   membership(where: MembershipWhereUniqueInput!): Membership
   membershipsCount(where: MembershipWhereInput! = {}): Int
-  contactDetails(
-    where: ContactDetailWhereInput! = {}
-    orderBy: [ContactDetailOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ContactDetail!]
+  contactDetails(where: ContactDetailWhereInput! = {}, orderBy: [ContactDetailOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactDetailWhereUniqueInput): [ContactDetail!]
   contactDetail(where: ContactDetailWhereUniqueInput!): ContactDetail
   contactDetailsCount(where: ContactDetailWhereInput! = {}): Int
-  counts(
-    where: CountWhereInput! = {}
-    orderBy: [CountOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Count!]
+  counts(where: CountWhereInput! = {}, orderBy: [CountOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CountWhereUniqueInput): [Count!]
   count(where: CountWhereUniqueInput!): Count
   countsCount(where: CountWhereInput! = {}): Int
-  organizationsElections(
-    where: OrganizationsElectionWhereInput! = {}
-    orderBy: [OrganizationsElectionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [OrganizationsElection!]
-  organizationsElection(
-    where: OrganizationsElectionWhereUniqueInput!
-  ): OrganizationsElection
+  organizationsElections(where: OrganizationsElectionWhereInput! = {}, orderBy: [OrganizationsElectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrganizationsElectionWhereUniqueInput): [OrganizationsElection!]
+  organizationsElection(where: OrganizationsElectionWhereUniqueInput!): OrganizationsElection
   organizationsElectionsCount(where: OrganizationsElectionWhereInput! = {}): Int
-  organizationsRelationships(
-    where: OrganizationsRelationshipWhereInput! = {}
-    orderBy: [OrganizationsRelationshipOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [OrganizationsRelationship!]
-  organizationsRelationship(
-    where: OrganizationsRelationshipWhereUniqueInput!
-  ): OrganizationsRelationship
-  organizationsRelationshipsCount(
-    where: OrganizationsRelationshipWhereInput! = {}
-  ): Int
-  personElections(
-    where: PersonElectionWhereInput! = {}
-    orderBy: [PersonElectionOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [PersonElection!]
+  organizationsRelationships(where: OrganizationsRelationshipWhereInput! = {}, orderBy: [OrganizationsRelationshipOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrganizationsRelationshipWhereUniqueInput): [OrganizationsRelationship!]
+  organizationsRelationship(where: OrganizationsRelationshipWhereUniqueInput!): OrganizationsRelationship
+  organizationsRelationshipsCount(where: OrganizationsRelationshipWhereInput! = {}): Int
+  personElections(where: PersonElectionWhereInput! = {}, orderBy: [PersonElectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonElectionWhereUniqueInput): [PersonElection!]
   personElection(where: PersonElectionWhereUniqueInput!): PersonElection
   personElectionsCount(where: PersonElectionWhereInput! = {}): Int
-  personOrganizations(
-    where: PersonOrganizationWhereInput! = {}
-    orderBy: [PersonOrganizationOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [PersonOrganization!]
-  personOrganization(
-    where: PersonOrganizationWhereUniqueInput!
-  ): PersonOrganization
+  personOrganizations(where: PersonOrganizationWhereInput! = {}, orderBy: [PersonOrganizationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonOrganizationWhereUniqueInput): [PersonOrganization!]
+  personOrganization(where: PersonOrganizationWhereUniqueInput!): PersonOrganization
   personOrganizationsCount(where: PersonOrganizationWhereInput! = {}): Int
-  personPublications(
-    where: PersonPublicationWhereInput! = {}
-    orderBy: [PersonPublicationOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [PersonPublication!]
-  personPublication(
-    where: PersonPublicationWhereUniqueInput!
-  ): PersonPublication
+  personPublications(where: PersonPublicationWhereInput! = {}, orderBy: [PersonPublicationOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonPublicationWhereUniqueInput): [PersonPublication!]
+  personPublication(where: PersonPublicationWhereUniqueInput!): PersonPublication
   personPublicationsCount(where: PersonPublicationWhereInput! = {}): Int
-  personRelationships(
-    where: PersonRelationshipWhereInput! = {}
-    orderBy: [PersonRelationshipOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [PersonRelationship!]
-  personRelationship(
-    where: PersonRelationshipWhereUniqueInput!
-  ): PersonRelationship
+  personRelationships(where: PersonRelationshipWhereInput! = {}, orderBy: [PersonRelationshipOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonRelationshipWhereUniqueInput): [PersonRelationship!]
+  personRelationship(where: PersonRelationshipWhereUniqueInput!): PersonRelationship
   personRelationshipsCount(where: PersonRelationshipWhereInput! = {}): Int
-  politics(
-    where: PoliticWhereInput! = {}
-    orderBy: [PoliticOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Politic!]
+  politics(where: PoliticWhereInput! = {}, orderBy: [PoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticWhereUniqueInput): [Politic!]
   politic(where: PoliticWhereUniqueInput!): Politic
   politicsCount(where: PoliticWhereInput! = {}): Int
-  politicTimelines(
-    where: PoliticTimelineWhereInput! = {}
-    orderBy: [PoliticTimelineOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [PoliticTimeline!]
+  politicTimelines(where: PoliticTimelineWhereInput! = {}, orderBy: [PoliticTimelineOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticTimelineWhereUniqueInput): [PoliticTimeline!]
   politicTimeline(where: PoliticTimelineWhereUniqueInput!): PoliticTimeline
   politicTimelinesCount(where: PoliticTimelineWhereInput! = {}): Int
-  politicExperts(
-    where: PoliticExpertWhereInput! = {}
-    orderBy: [PoliticExpertOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [PoliticExpert!]
+  politicExperts(where: PoliticExpertWhereInput! = {}, orderBy: [PoliticExpertOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticExpertWhereUniqueInput): [PoliticExpert!]
   politicExpert(where: PoliticExpertWhereUniqueInput!): PoliticExpert
   politicExpertsCount(where: PoliticExpertWhereInput! = {}): Int
-  lawsuits(
-    where: LawsuitWhereInput! = {}
-    orderBy: [LawsuitOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Lawsuit!]
+  lawsuits(where: LawsuitWhereInput! = {}, orderBy: [LawsuitOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LawsuitWhereUniqueInput): [Lawsuit!]
   lawsuit(where: LawsuitWhereUniqueInput!): Lawsuit
   lawsuitsCount(where: LawsuitWhereInput! = {}): Int
-  tags(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tag(where: TagWhereUniqueInput!): Tag
   tagsCount(where: TagWhereInput! = {}): Int
   keystone: KeystoneMeta!
@@ -3291,8 +2988,6 @@ type KeystoneMeta {
 }
 
 type KeystoneAdminMeta {
-  enableSignout: Boolean!
-  enableSessionItem: Boolean!
   lists: [KeystoneAdminUIListMeta!]!
   list(key: String!): KeystoneAdminUIListMeta
 }
@@ -3312,15 +3007,19 @@ type KeystoneAdminUIListMeta {
   pageSize: Int!
   labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
+  groups: [KeystoneAdminUIFieldGroupMeta!]!
   initialSort: KeystoneAdminUISort
   isHidden: Boolean!
+  isSingleton: Boolean!
 }
 
 type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
+  description: String
   isOrderable: Boolean!
   isFilterable: Boolean!
+  isNonNull: [KeystoneAdminUIFieldMetaIsNonNull!]
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int
@@ -3328,6 +3027,12 @@ type KeystoneAdminUIFieldMeta {
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
+}
+
+enum KeystoneAdminUIFieldMetaIsNonNull {
+  read
+  create
+  update
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
@@ -3350,12 +3055,24 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 
 type KeystoneAdminUIFieldMetaItemView {
   fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
+  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
+  form
+  sidebar
+}
+
+type KeystoneAdminUIFieldGroupMeta {
+  label: String!
+  description: String
+  fields: [KeystoneAdminUIFieldMeta!]!
 }
 
 type KeystoneAdminUISort {

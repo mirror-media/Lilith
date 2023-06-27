@@ -2,13 +2,13 @@
 // Modify your Keystone config when you want to change this.
 
 datasource postgresql {
-  url      = env("DATABASE_URL")
-  provider = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider          = "postgresql"
 }
 
 generator client {
   provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
 }
 
 model User {
@@ -166,7 +166,6 @@ model AudioFile {
   id            Int       @id @default(autoincrement())
   name          String    @default("")
   file_filesize Int?
-  file_mode     String?
   file_filename String?
   coverPhoto    Photo?    @relation("AudioFile_coverPhoto", fields: [coverPhotoId], references: [id])
   coverPhotoId  Int?      @map("coverPhoto")
@@ -191,7 +190,6 @@ model Video {
   name                        String         @default("")
   youtubeUrl                  String         @default("")
   file_filesize               Int?
-  file_mode                   String?
   file_filename               String?
   coverPhoto                  Photo?         @relation("Video_coverPhoto", fields: [coverPhotoId], references: [id])
   coverPhotoId                Int?           @map("coverPhoto")
@@ -222,11 +220,7 @@ model Photo {
   imageFile_extension         String?
   imageFile_width             Int?
   imageFile_height            Int?
-  imageFile_mode              String?
   imageFile_id                String?
-  file_filesize               Int?
-  file_mode                   String?
-  file_filename               String?
   urlOriginal                 String         @default("")
   createdAt                   DateTime?
   updatedAt                   DateTime?
@@ -538,7 +532,6 @@ model IndexItem {
   imageFile_extension String?
   imageFile_width     Int?
   imageFile_height    Int?
-  imageFile_mode      String?
   imageFile_id        String?
   imageLink           String        @default("")
   color               String        @default("#fff")
@@ -560,13 +553,11 @@ model Karaoke {
   name                String         @default("")
   quote               String         @default("")
   audio_filesize      Int?
-  audio_mode          String?
   audio_filename      String?
   imageFile_filesize  Int?
   imageFile_extension String?
   imageFile_width     Int?
   imageFile_height    Int?
-  imageFile_mode      String?
   imageFile_id        String?
   audioLink           String         @default("")
   imageLink           String         @default("")
@@ -589,19 +580,14 @@ model VideoPicker {
   id                 Int       @id @default(autoincrement())
   name               String    @default("")
   video1920_filesize Int?
-  video1920_mode     String?
   video1920_filename String?
   video1440_filesize Int?
-  video1440_mode     String?
   video1440_filename String?
   video1280_filesize Int?
-  video1280_mode     String?
   video1280_filename String?
   video960_filesize  Int?
-  video960_mode      String?
   video960_filename  String?
   video720_filesize  Int?
-  video720_mode      String?
   video720_filename  String?
   muteHint           Boolean   @default(false)
   voiceHint          String    @default("")
@@ -676,13 +662,10 @@ model ThreeStoryPoint {
   id                    Int       @id @default(autoincrement())
   name                  String    @default("")
   model_filesize        Int?
-  model_mode            String?
   model_filename        String?
   desktopModel_filesize Int?
-  desktopModel_mode     String?
   desktopModel_filename String?
   lightModel_filesize   Int?
-  lightModel_mode       String?
   lightModel_filename   String?
   captions              Json?     @default("[]")
   audios                Json?     @default("[{\"urls\":[],\"preload\":\"auto\"}]")
@@ -729,25 +712,21 @@ model RandomTextSelector {
   highlightDesktop_extension String?
   highlightDesktop_width     Int?
   highlightDesktop_height    Int?
-  highlightDesktop_mode      String?
   highlightDesktop_id        String?
   highlightMobile_filesize   Int?
   highlightMobile_extension  String?
   highlightMobile_width      Int?
   highlightMobile_height     Int?
-  highlightMobile_mode       String?
   highlightMobile_id         String?
   loadingIcon_filesize       Int?
   loadingIcon_extension      String?
   loadingIcon_width          Int?
   loadingIcon_height         Int?
-  loadingIcon_mode           String?
   loadingIcon_id             String?
   button_filesize            Int?
   button_extension           String?
   button_width               Int?
   button_height              Int?
-  button_mode                String?
   button_id                  String?
   buttonLabel                String         @default("")
   backgroundColor            String         @default("#000")
