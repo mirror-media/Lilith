@@ -1,20 +1,13 @@
 import React, { useState } from 'react'
-import {
-  AtomicBlockUtils,
-  EditorState,
-  RawDraftContentState,
-  convertToRaw,
-  convertFromRaw,
-  CompositeDecorator,
-} from 'draft-js'
+import { AtomicBlockUtils, EditorState } from 'draft-js'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { TextInput } from '@keystone-ui/fields'
-import draftConverter from '../draft-converter'
 import styled from 'styled-components'
 
-const TitleInput = styled(TextInput)`
-  margin-top: 30px;
-  margin-bottom: 10px;
+const Label = styled.label`
+  display: block;
+  font-weight: 600;
+  margin: 10px 0;
 `
 
 export type RenderBasicEditor = (propsOfBasicEditor: {
@@ -22,43 +15,24 @@ export type RenderBasicEditor = (propsOfBasicEditor: {
   editorState: EditorState
 }) => React.ReactElement
 
-type InfoBoxInputType = {
-  title?: string
-  rawContentStateForInfoBoxEditor?: RawDraftContentState
+type YoutubeInputType = {
   isOpen: boolean
   onChange: ({
-    title,
-    rawContentState,
+    description,
+    youtubeId,
   }: {
-    title: string
-    rawContentState: RawDraftContentState
+    description: string
+    youtubeId: string
   }) => void
   onCancel: () => void
-  renderBasicEditor: RenderBasicEditor
-  decorators?: CompositeDecorator
 }
 
-export function InfoBoxInput(props: InfoBoxInputType) {
-  const {
-    isOpen,
-    onChange,
-    onCancel,
-    title,
-    rawContentStateForInfoBoxEditor,
-    renderBasicEditor,
-    decorators,
-  } = props
-  const rawContentState = rawContentStateForInfoBoxEditor || {
-    blocks: [],
-    entityMap: {},
-  }
+export function YoutubeInput(props: YoutubeInputType) {
+  const { isOpen, onChange, onCancel } = props
+
   const initialInputValue = {
-    title: title || '',
-    // create an `editorState` from raw content state object
-    editorStateOfBasicEditor: EditorState.createWithContent(
-      convertFromRaw(rawContentState),
-      decorators
-    ),
+    description: '',
+    youtubeId: '',
   }
 
   const [inputValue, setInputValue] = useState(initialInputValue)
@@ -67,20 +41,10 @@ export function InfoBoxInput(props: InfoBoxInputType) {
     setInputValue(initialInputValue)
   }
 
-  const basicEditorJsx = renderBasicEditor({
-    editorState: inputValue.editorStateOfBasicEditor,
-    onChange: (editorStateOfBasicEditor: EditorState) => {
-      setInputValue({
-        title: inputValue.title,
-        editorStateOfBasicEditor,
-      })
-    },
-  })
-
   return (
     <DrawerController isOpen={isOpen}>
       <Drawer
-        title={`Insert Info Box`}
+        title={`Insert Youtube video`}
         actions={{
           cancel: {
             label: 'Cancel',
@@ -93,67 +57,72 @@ export function InfoBoxInput(props: InfoBoxInputType) {
             label: 'Confirm',
             action: () => {
               onChange({
-                title: inputValue.title,
-                // convert `contentState` of the `editorState` into raw content state object
-                rawContentState: convertToRaw(
-                  inputValue.editorStateOfBasicEditor.getCurrentContent()
-                ),
+                description: inputValue.description,
+                youtubeId: inputValue.youtubeId,
               })
               clearInputValue()
             },
           },
         }}
       >
-        <TitleInput
+        <Label htmlFor="description">Youtube Description</Label>
+        <TextInput
           onChange={(e) =>
             setInputValue({
-              title: e.target.value,
-              editorStateOfBasicEditor: inputValue.editorStateOfBasicEditor,
+              description: e.target.value,
+              youtubeId: inputValue.youtubeId,
             })
           }
           type="text"
-          placeholder="Title"
-          value={inputValue.title}
+          placeholder="description"
+          id="description"
+          value={inputValue.description}
         />
-        {basicEditorJsx}
+        <Label htmlFor="youtubeId">Youtube Videi Id</Label>
+        <TextInput
+          onChange={(e) =>
+            setInputValue({
+              description: inputValue.description,
+              youtubeId: e.target.value,
+            })
+          }
+          type="text"
+          placeholder="youtubeId"
+          id="youtubeId"
+          value={inputValue.youtubeId}
+        />
       </Drawer>
     </DrawerController>
   )
 }
 
-type InfoBoxButtonProps = {
+type YoutubeButtonProps = {
   className: string
   editorState: EditorState
   onChange: (param: EditorState) => void
   renderBasicEditor: RenderBasicEditor
 }
 
-export function InfoBoxButton(props: InfoBoxButtonProps) {
+export function YoutubeButton(props: YoutubeButtonProps) {
   const [toShowInput, setToShowInput] = useState(false)
-  const {
-    className,
-    editorState,
-    onChange: onEditorStateChange,
-    renderBasicEditor,
-  } = props
+  const { className, editorState, onChange: onEditorStateChange } = props
 
   const onChange = ({
-    title,
-    rawContentState,
+    description,
+    youtubeId,
   }: {
-    title: string
-    rawContentState: RawDraftContentState
+    description: string
+    youtubeId: string
   }) => {
     const contentState = editorState.getCurrentContent()
 
     // create an InfoBox entity
     const contentStateWithEntity = contentState.createEntity(
-      'INFOBOX',
+      'YOUTUBE',
       'IMMUTABLE',
       {
-        title,
-        rawContentState,
-        body: draftConverter.convertToHtml(rawContentState),
+        description,
+        youtubeId,
       }
     )
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey()
@@ -171,8 +140,7 @@ export function InfoBoxButton(props: InfoBoxButtonProps) {
 
   return (
     <React.Fragment>
-      <InfoBoxInput
-        renderBasicEditor={renderBasicEditor}
+      <YoutubeInput
         onChange={onChange}
         onCancel={() => {
           setToShowInput(false)
@@ -185,8 +153,23 @@ export function InfoBoxButton(props: InfoBoxButtonProps) {
           setToShowInput(true)
         }}
       >
-        <i className="far"></i>
-        <span>InfoBox</span>
+        <svg
+          height="16px"
+          width="14px"
+          version="1.1"
+          id="Layer_1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 461.001 461.001"
+        >
+          <path
+            fill="#6b7280"
+            d="M365.257,67.393H95.744C42.866,67.393,0,110.259,0,163.137v134.728
+		c0,52.878,42.866,95.744,95.744,95.744h269.513c52.878,0,95.744-42.866,95.744-95.744V163.137
+		C461.001,110.259,418.135,67.393,365.257,67.393z M300.506,237.056l-126.06,60.123c-3.359,1.602-7.239-0.847-7.239-4.568V168.607
+		c0-3.774,3.982-6.22,7.348-4.514l126.06,63.881C304.363,229.873,304.298,235.248,300.506,237.056z"
+          />
+        </svg>
+        <span>Youtube</span>
       </div>
     </React.Fragment>
   )
