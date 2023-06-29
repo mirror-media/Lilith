@@ -35,7 +35,7 @@ type InfoBoxInputType = {
   }) => void
   onCancel: () => void
   renderBasicEditor: RenderBasicEditor
-  decorators: CompositeDecorator
+  decorators?: CompositeDecorator
 }
 
 export function InfoBoxInput(props: InfoBoxInputType) {
@@ -124,7 +124,7 @@ export function InfoBoxInput(props: InfoBoxInputType) {
 type InfoBoxButtonProps = {
   className: string
   editorState: EditorState
-  onChange: ({ editorState }: { editorState: EditorState }) => void
+  onChange: (param: EditorState) => void
   renderBasicEditor: RenderBasicEditor
 }
 
