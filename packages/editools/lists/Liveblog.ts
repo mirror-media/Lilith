@@ -3,7 +3,7 @@ import config from '../config'
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, relationship, checkbox, virtual } from '@keystone-6/core/fields'
+import { text, select, relationship, checkbox, virtual } from '@keystone-6/core/fields'
 import { saveLiveblogJSON, deleteLiveblogJSON } from './utils'
 import { buildLiveBlogQuery } from './queries/liveblogQuery'
 
@@ -30,6 +30,18 @@ const listConfigurations = list({
       label: '描述',
       ui: {
         displayMode: 'textarea',
+      },
+    }),
+    displayType: select({
+      options: [
+        { label: 'liveblog', value: 'liveblog' },
+        { label: 'timeline', value: 'timeline' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: 'liveblog',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
       },
     }),
     heroImage: relationship({

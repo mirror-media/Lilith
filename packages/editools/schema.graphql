@@ -335,6 +335,7 @@ type Liveblog {
   name: String
   slug: String
   desc: String
+  displayType: String
   heroImage: Photo
   heroVideo: Video
   active: Boolean
@@ -365,6 +366,7 @@ input LiveblogWhereInput {
   name: StringFilter
   slug: StringFilter
   desc: StringFilter
+  displayType: StringNullableFilter
   heroImage: PhotoWhereInput
   heroVideo: VideoWhereInput
   active: BooleanFilter
@@ -391,6 +393,7 @@ input LiveblogOrderByInput {
   name: OrderDirection
   slug: OrderDirection
   desc: OrderDirection
+  displayType: OrderDirection
   active: OrderDirection
   archive: OrderDirection
   credit: OrderDirection
@@ -403,6 +406,7 @@ input LiveblogUpdateInput {
   name: String
   slug: String
   desc: String
+  displayType: String
   heroImage: PhotoRelateToOneForUpdateInput
   heroVideo: VideoRelateToOneForUpdateInput
   active: Boolean
@@ -446,6 +450,7 @@ input LiveblogCreateInput {
   name: String
   slug: String
   desc: String
+  displayType: String
   heroImage: PhotoRelateToOneForCreateInput
   heroVideo: VideoRelateToOneForCreateInput
   active: Boolean

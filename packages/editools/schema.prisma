@@ -114,6 +114,7 @@ model Liveblog {
   name           String         @default("")
   slug           String         @unique @default("")
   desc           String         @default("")
+  displayType    String?        @default("liveblog")
   heroImage      Photo?         @relation("Liveblog_heroImage", fields: [heroImageId], references: [id])
   heroImageId    Int?           @map("heroImage")
   heroVideo      Video?         @relation("Liveblog_heroVideo", fields: [heroVideoId], references: [id])
