@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import { EntityInstance } from 'draft-js'
 import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
 import CustomImage from '@readr-media/react-image'
+import defaultImage from '../assets/default-og-img.png'
+import loadingImage from '../assets/loading.gif'
+
 const Image = styled.img`
   width: 100%;
 `
@@ -197,14 +200,37 @@ export function SlideshowBlockV2(entity: EntityInstance) {
   )
   const slidesJsx = useMemo(
     () =>
-      slidesWithClone.map((item, index) => (
-        <CustomImage
-          images={item}
-          key={index}
-          objectFit={'contain'}
-          priority={false}
-        />
-      )),
+      slidesWithClone.map((item, index) => {
+        /**
+         * Why image with this index should load immediately?
+         * Assuming there are three images [ A, B, C ] for slideshow.
+         * After cloning, there is seven images [ B(clone), C(clone), A, B, C, A(clone), B(clone) ] for rendering.
+         * If user dragging from A to C(clone), after dragging, the function `handleTransitionEnd` will set state `setIndexOfCurrentImage`,
+         * and then display 'C'.
+         * However, before dragging, C is not loaded, and after `handleTransitionEnd` is triggered, C is on appear and start to lazy-load,
+         * and before C is loaded, there is no image show on the screen.
+         * At the point of user experience, the slideshow will flash and blink: Has Image C -> No Image -> Has Image C again.
+         * To avoid this problem to hurt user experience, we decide to immediately load image C, despite time of initial load will longer.
+         *
+         */
+        const isNeedToLoadImmediately =
+          index === slidesLength + slidesOffset - 1
+        return (
+          <CustomImage
+            images={item}
+            key={index}
+            loadingImage={loadingImage}
+            defaultImage={defaultImage}
+            objectFit={'contain'}
+            priority={isNeedToLoadImmediately}
+            intersectionObserverOptions={{
+              root: null,
+              rootMargin: '0px',
+              threshold: 0,
+            }}
+          />
+        )
+      }),
     [slidesWithClone]
   )
 
