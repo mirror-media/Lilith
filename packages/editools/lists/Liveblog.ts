@@ -64,7 +64,6 @@ const listConfigurations = list({
         { label: '年', value: 'year' },
         { label: '月', value: 'month' },
         { label: '日', value: 'day' },
-        { label: '事件', value: 'event' },
       ],
       // We want to make sure new posts start off as a draft when they are created
       defaultValue: '年',
