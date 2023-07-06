@@ -32,7 +32,21 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
+    sort: select({
+	  label: '時間排序',
+      options: [
+        { label: '升冪', value: 'asc' },
+        { label: '降冪', value: 'desc' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: 'asc',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
+      },
+    }),
     displayType: select({
+	  label: '類型',
       options: [
         { label: 'liveblog', value: 'liveblog' },
         { label: 'timeline', value: 'timeline' },

@@ -340,6 +340,7 @@ type Liveblog {
   name: String
   slug: String
   desc: String
+  sort: String
   displayType: String
   maxMeasures: String
   defaultMeasures: String
@@ -373,6 +374,7 @@ input LiveblogWhereInput {
   name: StringFilter
   slug: StringFilter
   desc: StringFilter
+  sort: StringNullableFilter
   displayType: StringNullableFilter
   maxMeasures: StringNullableFilter
   defaultMeasures: StringNullableFilter
@@ -402,6 +404,7 @@ input LiveblogOrderByInput {
   name: OrderDirection
   slug: OrderDirection
   desc: OrderDirection
+  sort: OrderDirection
   displayType: OrderDirection
   maxMeasures: OrderDirection
   defaultMeasures: OrderDirection
@@ -417,6 +420,7 @@ input LiveblogUpdateInput {
   name: String
   slug: String
   desc: String
+  sort: String
   displayType: String
   maxMeasures: String
   defaultMeasures: String
@@ -463,6 +467,7 @@ input LiveblogCreateInput {
   name: String
   slug: String
   desc: String
+  sort: String
   displayType: String
   maxMeasures: String
   defaultMeasures: String

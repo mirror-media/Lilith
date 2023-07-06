@@ -115,6 +115,7 @@ model Liveblog {
   name            String         @default("")
   slug            String         @unique @default("")
   desc            String         @default("")
+  sort            String?        @default("asc")
   displayType     String?        @default("liveblog")
   maxMeasures     String?        @default("年")
   defaultMeasures String?        @default("year")
