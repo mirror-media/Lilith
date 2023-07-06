@@ -44,6 +44,36 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
+    maxMeasures: select({
+	  label: '最大時間軸尺度',
+      options: [
+        { label: '年', value: 'year' },
+        { label: '月', value: 'month' },
+        { label: '日', value: 'day' },
+        { label: '事件', value: 'event' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: '年',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
+      },
+    }),
+    defaultMeasures: select({
+	  label: '預設時間軸尺度',
+      options: [
+        { label: '年', value: 'year' },
+        { label: '月', value: 'month' },
+        { label: '日', value: 'day' },
+        { label: '事件', value: 'event' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: 'year',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
+      },
+    }),
     heroImage: relationship({
       label: '首圖',
       ref: 'Photo',

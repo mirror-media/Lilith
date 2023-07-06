@@ -77,30 +77,31 @@ model User {
 }
 
 model LiveblogItem {
-  id           Int       @id @default(autoincrement())
-  title        String    @default("")
-  status       String?   @default("draft")
-  publishTime  DateTime?
-  heroImage    Photo?    @relation("LiveblogItem_heroImage", fields: [heroImageId], references: [id])
-  heroImageId  Int?      @map("heroImage")
-  heroVideo    Video?    @relation("LiveblogItem_heroVideo", fields: [heroVideoId], references: [id])
-  heroVideoId  Int?      @map("heroVideo")
-  imageCaption String    @default("")
-  type         String?   @default("article")
-  author       String    @default("")
-  name         Json?
-  boost        Boolean   @default(false)
-  external     String    @default("")
-  liveblog     Liveblog? @relation("LiveblogItem_liveblog", fields: [liveblogId], references: [id])
-  liveblogId   Int?      @map("liveblog")
-  tags         Tag[]     @relation("LiveblogItem_tags")
-  apiData      Json?
-  createdAt    DateTime?
-  updatedAt    DateTime?
-  createdBy    User?     @relation("LiveblogItem_createdBy", fields: [createdById], references: [id])
-  createdById  Int?      @map("createdBy")
-  updatedBy    User?     @relation("LiveblogItem_updatedBy", fields: [updatedById], references: [id])
-  updatedById  Int?      @map("updatedBy")
+  id                Int       @id @default(autoincrement())
+  title             String    @default("")
+  status            String?   @default("draft")
+  publishTime       DateTime?
+  displayDateString String?   @default("day")
+  heroImage         Photo?    @relation("LiveblogItem_heroImage", fields: [heroImageId], references: [id])
+  heroImageId       Int?      @map("heroImage")
+  heroVideo         Video?    @relation("LiveblogItem_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId       Int?      @map("heroVideo")
+  imageCaption      String    @default("")
+  type              String?   @default("article")
+  author            String    @default("")
+  name              Json?
+  boost             Boolean   @default(false)
+  external          String    @default("")
+  liveblog          Liveblog? @relation("LiveblogItem_liveblog", fields: [liveblogId], references: [id])
+  liveblogId        Int?      @map("liveblog")
+  tags              Tag[]     @relation("LiveblogItem_tags")
+  apiData           Json?
+  createdAt         DateTime?
+  updatedAt         DateTime?
+  createdBy         User?     @relation("LiveblogItem_createdBy", fields: [createdById], references: [id])
+  createdById       Int?      @map("createdBy")
+  updatedBy         User?     @relation("LiveblogItem_updatedBy", fields: [updatedById], references: [id])
+  updatedById       Int?      @map("updatedBy")
 
   @@index([heroImageId])
   @@index([heroVideoId])
@@ -110,30 +111,32 @@ model LiveblogItem {
 }
 
 model Liveblog {
-  id             Int            @id @default(autoincrement())
-  name           String         @default("")
-  slug           String         @unique @default("")
-  desc           String         @default("")
-  displayType    String?        @default("liveblog")
-  heroImage      Photo?         @relation("Liveblog_heroImage", fields: [heroImageId], references: [id])
-  heroImageId    Int?           @map("heroImage")
-  heroVideo      Video?         @relation("Liveblog_heroVideo", fields: [heroVideoId], references: [id])
-  heroVideoId    Int?           @map("heroVideo")
-  active         Boolean        @default(true)
-  archive        Boolean        @default(false)
-  credit         String         @default("")
-  css            String         @default("")
-  liveblog_items LiveblogItem[] @relation("LiveblogItem_liveblog")
-  tags           Tag?           @relation("Liveblog_tags", fields: [tagsId], references: [id])
-  tagsId         Int?           @map("tags")
-  publisher      Publisher?     @relation("Liveblog_publisher", fields: [publisherId], references: [id])
-  publisherId    Int?           @map("publisher")
-  createdAt      DateTime?
-  updatedAt      DateTime?
-  createdBy      User?          @relation("Liveblog_createdBy", fields: [createdById], references: [id])
-  createdById    Int?           @map("createdBy")
-  updatedBy      User?          @relation("Liveblog_updatedBy", fields: [updatedById], references: [id])
-  updatedById    Int?           @map("updatedBy")
+  id              Int            @id @default(autoincrement())
+  name            String         @default("")
+  slug            String         @unique @default("")
+  desc            String         @default("")
+  displayType     String?        @default("liveblog")
+  maxMeasures     String?        @default("年")
+  defaultMeasures String?        @default("year")
+  heroImage       Photo?         @relation("Liveblog_heroImage", fields: [heroImageId], references: [id])
+  heroImageId     Int?           @map("heroImage")
+  heroVideo       Video?         @relation("Liveblog_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId     Int?           @map("heroVideo")
+  active          Boolean        @default(true)
+  archive         Boolean        @default(false)
+  credit          String         @default("")
+  css             String         @default("")
+  liveblog_items  LiveblogItem[] @relation("LiveblogItem_liveblog")
+  tags            Tag?           @relation("Liveblog_tags", fields: [tagsId], references: [id])
+  tagsId          Int?           @map("tags")
+  publisher       Publisher?     @relation("Liveblog_publisher", fields: [publisherId], references: [id])
+  publisherId     Int?           @map("publisher")
+  createdAt       DateTime?
+  updatedAt       DateTime?
+  createdBy       User?          @relation("Liveblog_createdBy", fields: [createdById], references: [id])
+  createdById     Int?           @map("createdBy")
+  updatedBy       User?          @relation("Liveblog_updatedBy", fields: [updatedById], references: [id])
+  updatedById     Int?           @map("updatedBy")
 
   @@index([heroImageId])
   @@index([heroVideoId])
