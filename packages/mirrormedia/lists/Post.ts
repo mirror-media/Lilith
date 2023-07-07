@@ -403,6 +403,12 @@ export default utils.addManualOrderRelationshipFields(
       targetListName: 'Post',
       targetListLabelField: 'title',
     },
+    {
+      fieldName: 'manualOrderOfRelatedVideos',
+      targetFieldName: 'related_videos',
+      targetListName: 'Video',
+      targetListLabelField: 'name',
+    },
   ],
   utils.addTrackingFields(listConfigurations)
 )

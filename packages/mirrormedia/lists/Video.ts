@@ -107,4 +107,14 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfRelatedPosts',
+      targetFieldName: 'related_posts',
+      targetListName: 'Post',
+      targetListLabelField: 'title',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)
