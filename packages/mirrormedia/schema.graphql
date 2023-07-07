@@ -42,6 +42,9 @@ type Post {
   og_title: String
   og_description: String
   og_image: Photo
+  related_videos(where: VideoWhereInput! = {}, orderBy: [VideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoWhereUniqueInput): [Video!]
+  related_videosCount(where: VideoWhereInput! = {}): Int
+  manualOrderOfRelatedVideos: JSON
   isMember: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
@@ -96,6 +99,7 @@ input PostWhereInput {
   og_title: StringFilter
   og_description: StringFilter
   og_image: PhotoWhereInput
+  related_videos: VideoManyRelationFilter
   isMember: BooleanFilter
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
@@ -225,6 +229,12 @@ input TagManyRelationFilter {
   none: TagWhereInput
 }
 
+input VideoManyRelationFilter {
+  every: VideoWhereInput
+  some: VideoWhereInput
+  none: VideoWhereInput
+}
+
 input BooleanFilter {
   equals: Boolean
   not: BooleanFilter
@@ -298,6 +308,8 @@ input PostUpdateInput {
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForUpdateInput
+  related_videos: VideoRelateToManyForUpdateInput
+  manualOrderOfRelatedVideos: JSON
   isMember: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
@@ -367,6 +379,13 @@ input TagRelateToManyForUpdateInput {
   connect: [TagWhereUniqueInput!]
 }
 
+input VideoRelateToManyForUpdateInput {
+  disconnect: [VideoWhereUniqueInput!]
+  set: [VideoWhereUniqueInput!]
+  create: [VideoCreateInput!]
+  connect: [VideoWhereUniqueInput!]
+}
+
 input UserRelateToOneForUpdateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
@@ -407,6 +426,8 @@ input PostCreateInput {
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForCreateInput
+  related_videos: VideoRelateToManyForCreateInput
+  manualOrderOfRelatedVideos: JSON
   isMember: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
@@ -461,6 +482,11 @@ input PostRelateToManyForCreateInput {
 input TagRelateToManyForCreateInput {
   create: [TagCreateInput!]
   connect: [TagWhereUniqueInput!]
+}
+
+input VideoRelateToManyForCreateInput {
+  create: [VideoCreateInput!]
+  connect: [VideoWhereUniqueInput!]
 }
 
 input UserRelateToOneForCreateInput {
@@ -1321,6 +1347,9 @@ type Video {
   content: JSON
   heroImage: Photo
   isFeed: Boolean
+  related_posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  related_postsCount(where: PostWhereInput! = {}): Int
+  manualOrderOfRelatedPosts: JSON
   state: String
   publishedDate: DateTime
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
@@ -1345,6 +1374,7 @@ input VideoWhereInput {
   urlOriginal: StringFilter
   heroImage: PhotoWhereInput
   isFeed: BooleanFilter
+  related_posts: PostManyRelationFilter
   state: StringNullableFilter
   publishedDate: DateTimeNullableFilter
   tags: TagManyRelationFilter
@@ -1372,6 +1402,8 @@ input VideoUpdateInput {
   content: JSON
   heroImage: PhotoRelateToOneForUpdateInput
   isFeed: Boolean
+  related_posts: PostRelateToManyForUpdateInput
+  manualOrderOfRelatedPosts: JSON
   state: String
   publishedDate: DateTime
   tags: TagRelateToManyForUpdateInput
@@ -1394,6 +1426,8 @@ input VideoCreateInput {
   content: JSON
   heroImage: PhotoRelateToOneForCreateInput
   isFeed: Boolean
+  related_posts: PostRelateToManyForCreateInput
+  manualOrderOfRelatedPosts: JSON
   state: String
   publishedDate: DateTime
   tags: TagRelateToManyForCreateInput

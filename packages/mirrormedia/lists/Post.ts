@@ -294,6 +294,14 @@ const listConfigurations = list({
       label: 'FB分享縮圖',
       ref: 'Photo',
     }),
+    related_videos: relationship({
+      label: '相關影片',
+      ref: 'Video',
+      many: true,
+    }),
+    manualOrderOfRelatedVideos: json({
+      label: '相關影片手動排序結果',
+    }),
     isMember: checkbox({
       label: '會員文章',
       defaultValue: false,

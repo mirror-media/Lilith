@@ -50,6 +50,14 @@ const listConfigurations = list({
     isFeed: checkbox({
       label: '供稿',
     }),
+    related_posts: relationship({
+      label: '相關文章',
+      ref: 'Post',
+      many: true,
+    }),
+    manualOrderOfRelatedPosts: json({
+      label: '相關文章手動排序結果',
+    }),
     state: select({
       label: '狀態',
       options: [
