@@ -296,7 +296,7 @@ const listConfigurations = list({
     }),
     related_videos: relationship({
       label: '相關影片',
-      ref: 'Video',
+      ref: 'Video.related_posts',
       many: true,
     }),
     manualOrderOfRelatedVideos: json({

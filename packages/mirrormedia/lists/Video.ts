@@ -52,7 +52,7 @@ const listConfigurations = list({
     }),
     related_posts: relationship({
       label: '相關文章',
-      ref: 'Post',
+      ref: 'Post.related_videos',
       many: true,
     }),
     manualOrderOfRelatedPosts: json({
