@@ -65,7 +65,6 @@ model Post {
   updatedById                Int?           @map("updatedBy")
   from_Post_relateds         Post[]         @relation("Post_relateds")
   from_EditorChoice_choices  EditorChoice[] @relation("EditorChoice_choices")
-  from_Video_related_posts   Video[]        @relation("Video_related_posts")
 
   @@index([state])
   @@index([publishedDate])
@@ -315,7 +314,7 @@ model Video {
   heroImage                 Photo?    @relation("Video_heroImage", fields: [heroImageId], references: [id])
   heroImageId               Int?      @map("heroImage")
   isFeed                    Boolean   @default(false)
-  related_posts             Post[]    @relation("Video_related_posts")
+  related_posts             Post[]    @relation("Post_related_videos")
   manualOrderOfRelatedPosts Json?
   state                     String?   @default("draft")
   publishedDate             DateTime?
@@ -328,7 +327,6 @@ model Video {
   updatedBy                 User?     @relation("Video_updatedBy", fields: [updatedById], references: [id])
   updatedById               Int?      @map("updatedBy")
   from_Post_heroVideo       Post[]    @relation("Post_heroVideo")
-  from_Post_related_videos  Post[]    @relation("Post_related_videos")
 
   @@index([heroImageId])
   @@index([state])
