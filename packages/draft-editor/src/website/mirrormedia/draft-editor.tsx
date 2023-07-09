@@ -33,6 +33,7 @@ import { FontColorButton } from '../../draft-js/buttons/font-color'
 import { BackgroundColorButton } from '../../draft-js/buttons/background-color'
 import { VideoButton } from '../../draft-js/buttons/video'
 import { AudioButton } from '../../draft-js/buttons/audio'
+import { YoutubeButton } from '../../draft-js/buttons/youtube'
 
 import {
   CUSTOM_STYLE_PREFIX_FONT_COLOR,
@@ -79,6 +80,7 @@ export const buttonNames = {
   sideIndex: 'side-index',
   video: 'video',
   audio: 'audio',
+  youtube: 'youtube',
 }
 
 const disabledButtonsOnBasicEditor = [
@@ -98,6 +100,7 @@ const disabledButtonsOnBasicEditor = [
   buttonNames.sideIndex,
   buttonNames.video,
   buttonNames.audio,
+  buttonNames.youtube,
 ]
 
 type ButtonStyleProps = {
@@ -268,6 +271,7 @@ const CustomAlignCenterButton = createButtonWithoutProps(
 const CustomAlignLeftButton = createButtonWithoutProps(AlignLeftButton, true)
 const CustomVideoButton = createButtonWithoutProps(VideoButton)
 const CustomAudioButton = createButtonWithoutProps(AudioButton)
+const CustomYoutubeButton = createButtonWithoutProps(YoutubeButton)
 
 const DraftEditorWrapper = styled.div`
   /* Rich-editor default setting (.RichEditor-root)*/
@@ -804,6 +808,14 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                   />
                 </ButtonGroup>
                 <ButtonGroup>
+                  <CustomYoutubeButton
+                    isDisabled={disabledButtons.includes(buttonNames.youtube)}
+                    editorState={editorState}
+                    onChange={this.onChange}
+                    readOnly={this.state.readOnly}
+                  />
+                </ButtonGroup>
+                <ButtonGroup>
                   <CustomAudioButton
                     isDisabled={disabledButtons.includes(buttonNames.audio)}
                     editorState={editorState}
@@ -946,7 +958,7 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
             <TextEditorWrapper
               onClick={() => {
                 // eslint-disable-next-line prettier/prettier
-              (this.refs.editor as HTMLElement)?.focus()
+                (this.refs.editor as HTMLElement)?.focus()
               }}
             >
               <Editor

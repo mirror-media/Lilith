@@ -91,7 +91,6 @@ const listConfigurations = list({
           const style = `
             <style>
               .embedded-code-container-top {
-                margin-top: -60px;
                 margin-left: -20px;
                 z-index: 100;
               }

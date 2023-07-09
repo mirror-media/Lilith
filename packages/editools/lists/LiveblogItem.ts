@@ -37,6 +37,20 @@ const listConfigurations = list({
     publishTime: timestamp({
       label: '發布時間',
     }),
+    displayDateString: select({
+	  label: '前端時間字串',
+      options: [
+        { label: '年', value: 'year' },
+        { label: '月', value: 'month' },
+        { label: '日', value: 'day' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: 'day',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
+      },
+    }),
     heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
