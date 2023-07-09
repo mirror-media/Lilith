@@ -50,6 +50,14 @@ const listConfigurations = list({
     isFeed: checkbox({
       label: '供稿',
     }),
+    related_posts: relationship({
+      label: '相關文章',
+      ref: 'Post.related_videos',
+      many: true,
+    }),
+    manualOrderOfRelatedPosts: json({
+      label: '相關文章手動排序結果',
+    }),
     state: select({
       label: '狀態',
       options: [
@@ -99,4 +107,14 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfRelatedPosts',
+      targetFieldName: 'related_posts',
+      targetListName: 'Post',
+      targetListLabelField: 'title',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)

@@ -12,57 +12,59 @@ generator client {
 }
 
 model Post {
-  id                        Int            @id @default(autoincrement())
-  slug                      String         @unique @default("")
-  title                     String         @default("")
-  state                     String?        @default("draft")
-  publishedDate             DateTime
-  sections                  Section[]      @relation("Post_sections")
-  manualOrderOfSections     Json?
-  categories                Category[]     @relation("Category_posts")
-  writers                   Contact[]      @relation("Post_writers")
-  manualOrderOfWriters      Json?
-  photographers             Contact[]      @relation("Post_photographers")
-  camera_man                Contact[]      @relation("Post_camera_man")
-  designers                 Contact[]      @relation("Post_designers")
-  engineers                 Contact[]      @relation("Post_engineers")
-  vocals                    Contact[]      @relation("Post_vocals")
-  extend_byline             String         @default("")
-  heroVideo                 Video?         @relation("Post_heroVideo", fields: [heroVideoId], references: [id])
-  heroVideoId               Int?           @map("heroVideo")
-  heroImage                 Photo?         @relation("Post_heroImage", fields: [heroImageId], references: [id])
-  heroImageId               Int?           @map("heroImage")
-  heroCaption               String         @default("")
-  style                     String?        @default("article")
-  brief                     Json?
-  content                   Json?
-  topics                    Topic?         @relation("Post_topics", fields: [topicsId], references: [id])
-  topicsId                  Int?           @map("topics")
-  relateds                  Post[]         @relation("Post_relateds")
-  manualOrderOfRelateds     Json?
-  tags                      Tag[]          @relation("Post_tags")
-  og_title                  String         @default("")
-  og_description            String         @default("")
-  og_image                  Photo?         @relation("Post_og_image", fields: [og_imageId], references: [id])
-  og_imageId                Int?           @map("og_image")
-  isMember                  Boolean        @default(false)
-  isFeatured                Boolean        @default(false)
-  isAdvertised              Boolean        @default(false)
-  hiddenAdvertised          Boolean        @default(false)
-  isAdult                   Boolean        @default(false)
-  redirect                  String         @default("")
-  adTrace                   String         @default("")
-  css                       String         @default("")
-  apiDataBrief              Json?
-  apiData                   Json?
-  createdAt                 DateTime?
-  updatedAt                 DateTime?
-  createdBy                 User?          @relation("Post_createdBy", fields: [createdById], references: [id])
-  createdById               Int?           @map("createdBy")
-  updatedBy                 User?          @relation("Post_updatedBy", fields: [updatedById], references: [id])
-  updatedById               Int?           @map("updatedBy")
-  from_Post_relateds        Post[]         @relation("Post_relateds")
-  from_EditorChoice_choices EditorChoice[] @relation("EditorChoice_choices")
+  id                         Int            @id @default(autoincrement())
+  slug                       String         @unique @default("")
+  title                      String         @default("")
+  state                      String?        @default("draft")
+  publishedDate              DateTime
+  sections                   Section[]      @relation("Post_sections")
+  manualOrderOfSections      Json?
+  categories                 Category[]     @relation("Category_posts")
+  writers                    Contact[]      @relation("Post_writers")
+  manualOrderOfWriters       Json?
+  photographers              Contact[]      @relation("Post_photographers")
+  camera_man                 Contact[]      @relation("Post_camera_man")
+  designers                  Contact[]      @relation("Post_designers")
+  engineers                  Contact[]      @relation("Post_engineers")
+  vocals                     Contact[]      @relation("Post_vocals")
+  extend_byline              String         @default("")
+  heroVideo                  Video?         @relation("Post_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId                Int?           @map("heroVideo")
+  heroImage                  Photo?         @relation("Post_heroImage", fields: [heroImageId], references: [id])
+  heroImageId                Int?           @map("heroImage")
+  heroCaption                String         @default("")
+  style                      String?        @default("article")
+  brief                      Json?
+  content                    Json?
+  topics                     Topic?         @relation("Post_topics", fields: [topicsId], references: [id])
+  topicsId                   Int?           @map("topics")
+  relateds                   Post[]         @relation("Post_relateds")
+  manualOrderOfRelateds      Json?
+  tags                       Tag[]          @relation("Post_tags")
+  og_title                   String         @default("")
+  og_description             String         @default("")
+  og_image                   Photo?         @relation("Post_og_image", fields: [og_imageId], references: [id])
+  og_imageId                 Int?           @map("og_image")
+  related_videos             Video[]        @relation("Post_related_videos")
+  manualOrderOfRelatedVideos Json?
+  isMember                   Boolean        @default(false)
+  isFeatured                 Boolean        @default(false)
+  isAdvertised               Boolean        @default(false)
+  hiddenAdvertised           Boolean        @default(false)
+  isAdult                    Boolean        @default(false)
+  redirect                   String         @default("")
+  adTrace                    String         @default("")
+  css                        String         @default("")
+  apiDataBrief               Json?
+  apiData                    Json?
+  createdAt                  DateTime?
+  updatedAt                  DateTime?
+  createdBy                  User?          @relation("Post_createdBy", fields: [createdById], references: [id])
+  createdById                Int?           @map("createdBy")
+  updatedBy                  User?          @relation("Post_updatedBy", fields: [updatedById], references: [id])
+  updatedById                Int?           @map("updatedBy")
+  from_Post_relateds         Post[]         @relation("Post_relateds")
+  from_EditorChoice_choices  EditorChoice[] @relation("EditorChoice_choices")
 
   @@index([state])
   @@index([publishedDate])
@@ -303,26 +305,28 @@ model Photo {
 }
 
 model Video {
-  id                  Int       @id @default(autoincrement())
-  name                String    @default("")
-  file_filesize       Int?
-  file_filename       String?
-  urlOriginal         String    @default("")
-  content             Json?
-  heroImage           Photo?    @relation("Video_heroImage", fields: [heroImageId], references: [id])
-  heroImageId         Int?      @map("heroImage")
-  isFeed              Boolean   @default(false)
-  state               String?   @default("draft")
-  publishedDate       DateTime?
-  tags                Tag[]     @relation("Video_tags")
-  apiData             Json?
-  createdAt           DateTime?
-  updatedAt           DateTime?
-  createdBy           User?     @relation("Video_createdBy", fields: [createdById], references: [id])
-  createdById         Int?      @map("createdBy")
-  updatedBy           User?     @relation("Video_updatedBy", fields: [updatedById], references: [id])
-  updatedById         Int?      @map("updatedBy")
-  from_Post_heroVideo Post[]    @relation("Post_heroVideo")
+  id                        Int       @id @default(autoincrement())
+  name                      String    @default("")
+  file_filesize             Int?
+  file_filename             String?
+  urlOriginal               String    @default("")
+  content                   Json?
+  heroImage                 Photo?    @relation("Video_heroImage", fields: [heroImageId], references: [id])
+  heroImageId               Int?      @map("heroImage")
+  isFeed                    Boolean   @default(false)
+  related_posts             Post[]    @relation("Post_related_videos")
+  manualOrderOfRelatedPosts Json?
+  state                     String?   @default("draft")
+  publishedDate             DateTime?
+  tags                      Tag[]     @relation("Video_tags")
+  apiData                   Json?
+  createdAt                 DateTime?
+  updatedAt                 DateTime?
+  createdBy                 User?     @relation("Video_createdBy", fields: [createdById], references: [id])
+  createdById               Int?      @map("createdBy")
+  updatedBy                 User?     @relation("Video_updatedBy", fields: [updatedById], references: [id])
+  updatedById               Int?      @map("updatedBy")
+  from_Post_heroVideo       Post[]    @relation("Post_heroVideo")
 
   @@index([heroImageId])
   @@index([state])

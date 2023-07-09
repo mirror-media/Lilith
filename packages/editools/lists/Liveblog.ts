@@ -3,7 +3,7 @@ import config from '../config'
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, relationship, checkbox, virtual } from '@keystone-6/core/fields'
+import { text, select, relationship, checkbox, virtual } from '@keystone-6/core/fields'
 import { saveLiveblogJSON, deleteLiveblogJSON } from './utils'
 import { buildLiveBlogQuery } from './queries/liveblogQuery'
 
@@ -30,6 +30,61 @@ const listConfigurations = list({
       label: '描述',
       ui: {
         displayMode: 'textarea',
+      },
+    }),
+    sort: select({
+	  label: '時間排序',
+      options: [
+        { label: '升冪', value: 'asc' },
+        { label: '降冪', value: 'desc' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: 'asc',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
+      },
+    }),
+    displayType: select({
+	  label: '類型',
+      options: [
+        { label: 'liveblog', value: 'liveblog' },
+        { label: 'timeline', value: 'timeline' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: 'liveblog',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
+      },
+    }),
+    maxMeasures: select({
+	  label: '最大時間軸尺度',
+      options: [
+        { label: '年', value: 'year' },
+        { label: '月', value: 'month' },
+        { label: '日', value: 'day' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: '年',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
+      },
+    }),
+    defaultMeasures: select({
+	  label: '預設時間軸尺度',
+      options: [
+        { label: '年', value: 'year' },
+        { label: '月', value: 'month' },
+        { label: '日', value: 'day' },
+        { label: '事件', value: 'event' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: 'year',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
       },
     }),
     heroImage: relationship({

@@ -119,6 +119,7 @@ type LiveblogItem {
   title: String
   status: String
   publishTime: DateTime
+  displayDateString: String
   heroImage: Photo
   heroVideo: Video
   imageCaption: String
@@ -152,6 +153,7 @@ input LiveblogItemWhereInput {
   title: StringFilter
   status: StringNullableFilter
   publishTime: DateTimeNullableFilter
+  displayDateString: StringNullableFilter
   heroImage: PhotoWhereInput
   heroVideo: VideoWhereInput
   imageCaption: StringFilter
@@ -218,6 +220,7 @@ input LiveblogItemOrderByInput {
   title: OrderDirection
   status: OrderDirection
   publishTime: OrderDirection
+  displayDateString: OrderDirection
   imageCaption: OrderDirection
   type: OrderDirection
   author: OrderDirection
@@ -231,6 +234,7 @@ input LiveblogItemUpdateInput {
   title: String
   status: String
   publishTime: DateTime
+  displayDateString: String
   heroImage: PhotoRelateToOneForUpdateInput
   heroVideo: VideoRelateToOneForUpdateInput
   imageCaption: String
@@ -288,6 +292,7 @@ input LiveblogItemCreateInput {
   title: String
   status: String
   publishTime: DateTime
+  displayDateString: String
   heroImage: PhotoRelateToOneForCreateInput
   heroVideo: VideoRelateToOneForCreateInput
   imageCaption: String
@@ -335,6 +340,10 @@ type Liveblog {
   name: String
   slug: String
   desc: String
+  sort: String
+  displayType: String
+  maxMeasures: String
+  defaultMeasures: String
   heroImage: Photo
   heroVideo: Video
   active: Boolean
@@ -365,6 +374,10 @@ input LiveblogWhereInput {
   name: StringFilter
   slug: StringFilter
   desc: StringFilter
+  sort: StringNullableFilter
+  displayType: StringNullableFilter
+  maxMeasures: StringNullableFilter
+  defaultMeasures: StringNullableFilter
   heroImage: PhotoWhereInput
   heroVideo: VideoWhereInput
   active: BooleanFilter
@@ -391,6 +404,10 @@ input LiveblogOrderByInput {
   name: OrderDirection
   slug: OrderDirection
   desc: OrderDirection
+  sort: OrderDirection
+  displayType: OrderDirection
+  maxMeasures: OrderDirection
+  defaultMeasures: OrderDirection
   active: OrderDirection
   archive: OrderDirection
   credit: OrderDirection
@@ -403,6 +420,10 @@ input LiveblogUpdateInput {
   name: String
   slug: String
   desc: String
+  sort: String
+  displayType: String
+  maxMeasures: String
+  defaultMeasures: String
   heroImage: PhotoRelateToOneForUpdateInput
   heroVideo: VideoRelateToOneForUpdateInput
   active: Boolean
@@ -446,6 +467,10 @@ input LiveblogCreateInput {
   name: String
   slug: String
   desc: String
+  sort: String
+  displayType: String
+  maxMeasures: String
+  defaultMeasures: String
   heroImage: PhotoRelateToOneForCreateInput
   heroVideo: VideoRelateToOneForCreateInput
   active: Boolean
