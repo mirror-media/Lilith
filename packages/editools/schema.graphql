@@ -2969,6 +2969,66 @@ input DroppingTextCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Theatre {
+  id: ID!
+  name: String
+  objectJson: JSON
+  animationJson: JSON
+  embedCode: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input TheatreWhereUniqueInput {
+  id: ID
+}
+
+input TheatreWhereInput {
+  AND: [TheatreWhereInput!]
+  OR: [TheatreWhereInput!]
+  NOT: [TheatreWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input TheatreOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input TheatreUpdateInput {
+  name: String
+  objectJson: JSON
+  animationJson: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input TheatreUpdateArgs {
+  where: TheatreWhereUniqueInput!
+  data: TheatreUpdateInput!
+}
+
+input TheatreCreateInput {
+  name: String
+  objectJson: JSON
+  animationJson: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -3149,6 +3209,12 @@ type Mutation {
   updateDroppingTexts(data: [DroppingTextUpdateArgs!]!): [DroppingText]
   deleteDroppingText(where: DroppingTextWhereUniqueInput!): DroppingText
   deleteDroppingTexts(where: [DroppingTextWhereUniqueInput!]!): [DroppingText]
+  createTheatre(data: TheatreCreateInput!): Theatre
+  createTheatres(data: [TheatreCreateInput!]!): [Theatre]
+  updateTheatre(where: TheatreWhereUniqueInput!, data: TheatreUpdateInput!): Theatre
+  updateTheatres(data: [TheatreUpdateArgs!]!): [Theatre]
+  deleteTheatre(where: TheatreWhereUniqueInput!): Theatre
+  deleteTheatres(where: [TheatreWhereUniqueInput!]!): [Theatre]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -3260,6 +3326,9 @@ type Query {
   droppingTexts(where: DroppingTextWhereInput! = {}, orderBy: [DroppingTextOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DroppingTextWhereUniqueInput): [DroppingText!]
   droppingText(where: DroppingTextWhereUniqueInput!): DroppingText
   droppingTextsCount(where: DroppingTextWhereInput! = {}): Int
+  theatres(where: TheatreWhereInput! = {}, orderBy: [TheatreOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TheatreWhereUniqueInput): [Theatre!]
+  theatre(where: TheatreWhereUniqueInput!): Theatre
+  theatresCount(where: TheatreWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

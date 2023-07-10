@@ -74,6 +74,8 @@ model User {
   from_ComponentHelp_updatedBy       ComponentHelp[]       @relation("ComponentHelp_updatedBy")
   from_DroppingText_createdBy        DroppingText[]        @relation("DroppingText_createdBy")
   from_DroppingText_updatedBy        DroppingText[]        @relation("DroppingText_updatedBy")
+  from_Theatre_createdBy             Theatre[]             @relation("Theatre_createdBy")
+  from_Theatre_updatedBy             Theatre[]             @relation("Theatre_updatedBy")
 }
 
 model LiveblogItem {
@@ -783,6 +785,22 @@ model DroppingText {
   updatedById Int?           @map("updatedBy")
 
   @@index([helperId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Theatre {
+  id            Int       @id @default(autoincrement())
+  name          String    @default("")
+  objectJson    Json?
+  animationJson Json?
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Theatre_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Theatre_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
   @@index([createdById])
   @@index([updatedById])
 }
