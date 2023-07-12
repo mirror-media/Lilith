@@ -33,7 +33,7 @@ const listConfigurations = list({
 		  create: allowRoles(admin),
 		  delete: allowRoles(admin),
 		},
-  },
+  	  },
     }),
     animationJson: json({
 	  label: '動畫 json',
@@ -47,7 +47,25 @@ const listConfigurations = list({
 		  create: allowRoles(admin),
 		  delete: allowRoles(admin),
 		},
-  },
+  	  },
+    }),
+    theatreEditor: virtual({
+      field: graphql.field({
+        type: graphql.JSON,
+        resolve(item: Record<string, unknown>): Record<string, string> {
+          return {
+            href: `/theatre/theatre-editor/index.html?three-story-point-id=${item.id}`,
+            label: 'Theatre 編輯器',
+          }
+        },
+      }),
+      ui: {
+        // A module path that is resolved from where `keystone start` is run
+        views: './lists/views/link-button',
+        createView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     embedCode: virtual({
       label: 'embed code',
@@ -70,6 +88,24 @@ const listConfigurations = list({
       }),
       ui: {
         views: './lists/views/embed-code',
+        createView: {
+          fieldMode: 'hidden',
+        },
+      },
+    }),
+    preview: virtual({
+      field: graphql.field({
+        type: graphql.JSON,
+        resolve(item: Record<string, unknown>): Record<string, string> {
+          return {
+            href: `/demo/theatre/${item.id}`,
+            label: 'Preview',
+          }
+        },
+      }),
+      ui: {
+        // A module path that is resolved from where `keystone start` is run
+        views: './lists/views/link-button',
         createView: {
           fieldMode: 'hidden',
         },

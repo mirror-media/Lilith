@@ -2974,7 +2974,9 @@ type Theatre {
   name: String
   objectJson: JSON
   animationJson: JSON
+  theatreEditor: JSON
   embedCode: String
+  preview: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
