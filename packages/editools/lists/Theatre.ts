@@ -2,7 +2,7 @@
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, json, virtual } from '@keystone-6/core/fields'
+import { text, select, json, virtual } from '@keystone-6/core/fields'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const {
@@ -19,6 +19,19 @@ const listConfigurations = list({
       label: '名稱',
       validation: {
         isRequired: true,
+      },
+    }),
+    displayMode: select({
+	  label: '播放形式',
+      options: [
+        { label: '滑動', value: 'scroll' },
+        { label: '自動', value: 'auto' },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: 'scroll',
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
       },
     }),
     objectJson: json({

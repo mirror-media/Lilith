@@ -792,6 +792,7 @@ model DroppingText {
 model Theatre {
   id            Int       @id @default(autoincrement())
   name          String    @default("")
+  displayMode   String?   @default("scroll")
   objectJson    Json?
   animationJson Json?
   createdAt     DateTime?

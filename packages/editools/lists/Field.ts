@@ -92,7 +92,6 @@ const listConfigurations = list({
         inlineEdit: {
           fields: ['name', 'heroImage', 'content', 'value', 'sortOrder'],
         },
-        linkToItem: true,
         removeMode: true,
         hideCreate: true,
         linkToItem: true,

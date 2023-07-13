@@ -2972,6 +2972,7 @@ input DroppingTextCreateInput {
 type Theatre {
   id: ID!
   name: String
+  displayMode: String
   objectJson: JSON
   animationJson: JSON
   theatreEditor: JSON
@@ -2993,6 +2994,7 @@ input TheatreWhereInput {
   NOT: [TheatreWhereInput!]
   id: IDFilter
   name: StringFilter
+  displayMode: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -3002,12 +3004,14 @@ input TheatreWhereInput {
 input TheatreOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  displayMode: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input TheatreUpdateInput {
   name: String
+  displayMode: String
   objectJson: JSON
   animationJson: JSON
   createdAt: DateTime
@@ -3023,6 +3027,7 @@ input TheatreUpdateArgs {
 
 input TheatreCreateInput {
   name: String
+  displayMode: String
   objectJson: JSON
   animationJson: JSON
   createdAt: DateTime
