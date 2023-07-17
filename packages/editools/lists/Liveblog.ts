@@ -3,7 +3,7 @@ import config from '../config'
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, select, relationship, checkbox, virtual } from '@keystone-6/core/fields'
+import { integer, text, select, relationship, checkbox, virtual } from '@keystone-6/core/fields'
 import { saveLiveblogJSON, deleteLiveblogJSON } from './utils'
 import { buildLiveBlogQuery } from './queries/liveblogQuery'
 
@@ -45,6 +45,13 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
+	segment: integer({
+	  label: '分段',
+	  defaultValue: 5,
+	  validation: {
+		max: 7,
+	  }
+	}), 
     displayType: select({
 	  label: '類型',
       options: [

@@ -118,6 +118,7 @@ model Liveblog {
   slug            String         @unique @default("")
   desc            String         @default("")
   sort            String?        @default("asc")
+  segment         Int?           @default(5)
   displayType     String?        @default("liveblog")
   maxMeasures     String?        @default("年")
   defaultMeasures String?        @default("year")

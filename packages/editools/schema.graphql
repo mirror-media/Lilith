@@ -341,6 +341,7 @@ type Liveblog {
   slug: String
   desc: String
   sort: String
+  segment: Int
   displayType: String
   maxMeasures: String
   defaultMeasures: String
@@ -375,6 +376,7 @@ input LiveblogWhereInput {
   slug: StringFilter
   desc: StringFilter
   sort: StringNullableFilter
+  segment: IntNullableFilter
   displayType: StringNullableFilter
   maxMeasures: StringNullableFilter
   defaultMeasures: StringNullableFilter
@@ -393,6 +395,17 @@ input LiveblogWhereInput {
   updatedBy: UserWhereInput
 }
 
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
 input LiveblogItemManyRelationFilter {
   every: LiveblogItemWhereInput
   some: LiveblogItemWhereInput
@@ -405,6 +418,7 @@ input LiveblogOrderByInput {
   slug: OrderDirection
   desc: OrderDirection
   sort: OrderDirection
+  segment: OrderDirection
   displayType: OrderDirection
   maxMeasures: OrderDirection
   defaultMeasures: OrderDirection
@@ -421,6 +435,7 @@ input LiveblogUpdateInput {
   slug: String
   desc: String
   sort: String
+  segment: Int
   displayType: String
   maxMeasures: String
   defaultMeasures: String
@@ -468,6 +483,7 @@ input LiveblogCreateInput {
   slug: String
   desc: String
   sort: String
+  segment: Int
   displayType: String
   maxMeasures: String
   defaultMeasures: String
@@ -1291,17 +1307,6 @@ input FieldTypeTypeNullableFilter {
   in: [FieldTypeType!]
   notIn: [FieldTypeType!]
   not: FieldTypeTypeNullableFilter
-}
-
-input IntNullableFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: IntNullableFilter
 }
 
 input FieldOptionManyRelationFilter {
