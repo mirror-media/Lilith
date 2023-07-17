@@ -27,6 +27,7 @@ import DualSlides from './DualSlides'
 import ComponentHelp from './ComponentHelp'
 import RandomTextSelector from './RandomTextSelector'
 import DroppingText from './DroppingText'
+import Theatre from './Theatre'
 
 export const listDefinition = {
   User,
@@ -58,4 +59,5 @@ export const listDefinition = {
   RandomTextSelector,
   ComponentHelp,
   DroppingText,
+  Theatre,
 }

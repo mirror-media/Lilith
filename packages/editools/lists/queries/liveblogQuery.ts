@@ -24,6 +24,10 @@ export function buildLiveBlogQuery(take?: number) {
     }
     createdAt
     updatedAt
+    displayType
+    maxMeasures
+    defaultMeasures
+    sort
     liveblog_items(where: { status: { equals: "published" }}${
       take ? ', take:' + take : ''
     } ) {
@@ -51,6 +55,7 @@ export function buildLiveBlogQuery(take?: number) {
       type
       external
       externalCoverPhoto
+      displayDateString
     }
   `
 }
