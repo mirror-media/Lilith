@@ -283,6 +283,27 @@ export default withAuth(
           }
         )
 
+        app.get(
+          '/demo/theatre/:id',
+          authenticationMw,
+          async (req, res) => {
+            const itemId = req.params.id
+
+            const context = await commonContext.withRequest(req, res)
+            const item = await context.query.DroppingText.findOne({
+              where: { id: itemId },
+              query: 'embedCode',
+            })
+
+            if (!item) {
+              return res.status(404).send(`DroppingText ${itemId} is not found`)
+            }
+
+            res.send(
+              `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"><style> * { box-sizing: border-box; } body { margin:0; } </style></head><body>${item?.embedCode}</body></html>`
+            )
+          }
+        )
         // ThreeJS router
         app.use(
           '/three',
@@ -292,6 +313,16 @@ export default withAuth(
           // it return a wrong relative path `../..`.
           // I think it is a bug for `@keystone/core`.
           express.static(path.resolve(process.cwd(), './public/three'))
+        )
+        // TheatreJS router
+        app.use(
+          '/theatre',
+          // Serve static files, including js, css and html
+          // BTW, the reason we use `process.cwd()` rather than `__dirname`
+          // is because `__dirname` won't return the correct absolute path;
+          // it return a wrong relative path `../..`.
+          // I think it is a bug for `@keystone/core`.
+          express.static(path.resolve(process.cwd(), './public/theatre'))
         )
       },
     },

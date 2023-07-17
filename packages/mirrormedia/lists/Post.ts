@@ -14,7 +14,7 @@ import envVar from '../environment-variables'
 // @ts-ignore draft-js does not have typescript definition
 import { RawContentState } from 'draft-js'
 
-const { allowRoles, admin, moderator } = utils.accessControl
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 enum UserRole {
   Admin = 'admin',
@@ -358,8 +358,8 @@ const listConfigurations = list({
   },
   access: {
     operation: {
-      update: allowRoles(admin, moderator),
-      create: allowRoles(admin, moderator),
+      update: allowRoles(admin, moderator, editor),
+      create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin),
     },
     filter: {
