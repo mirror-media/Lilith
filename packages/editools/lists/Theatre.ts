@@ -22,10 +22,10 @@ const listConfigurations = list({
       },
     }),
     displayMode: select({
-	  label: '播放形式',
+      label: '播放形式',
       options: [
         { label: '滑動', value: 'scroll' },
-        { label: '自動', value: 'auto' },
+        { label: '自動', value: 'video' },
       ],
       // We want to make sure new posts start off as a draft when they are created
       defaultValue: 'scroll',
@@ -35,32 +35,32 @@ const listConfigurations = list({
       },
     }),
     objectJson: json({
-	  label: '物件 json',
+      label: '物件 json',
       ui: {
         createView: { fieldMode: 'hidden' },
       },
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor, contributor),
-		  update: allowRoles(admin),
-		  create: allowRoles(admin),
-		  delete: allowRoles(admin),
-		},
-  	  },
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor, contributor),
+          update: allowRoles(admin),
+          create: allowRoles(admin),
+          delete: allowRoles(admin),
+        },
+      },
     }),
     animationJson: json({
-	  label: '動畫 json',
+      label: '動畫 json',
       ui: {
         createView: { fieldMode: 'hidden' },
       },
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor, contributor),
-		  update: allowRoles(admin),
-		  create: allowRoles(admin),
-		  delete: allowRoles(admin),
-		},
-  	  },
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor, contributor),
+          update: allowRoles(admin),
+          create: allowRoles(admin),
+          delete: allowRoles(admin),
+        },
+      },
     }),
     theatreEditor: virtual({
       field: graphql.field({
@@ -84,19 +84,21 @@ const listConfigurations = list({
       label: 'embed code',
       field: graphql.field({
         type: graphql.String,
-        resolve: async (
-          item: Record<string, unknown>,
-          args,
-          context
-        ): Promise<string> => {
-          const id = typeof item?.id === 'number' ? item.id.toString() : null
-          // Find the QAList item
-          //return embedCodeGen.buildEmbeddedCode(
-          //  'theatre',
-          //  {  },
-          //  embedCodeWebpackAssets
-          //)
-		  return ''
+        resolve: async (item: Record<string, unknown>): Promise<string> => {
+          const code = embedCodeGen.buildEmbeddedCode(
+            'react-theatre',
+            {
+              state: item?.animationJson ?? {},
+              elements: item?.objectJson ?? [],
+              type: item?.displayMode ?? 'scroll',
+            },
+            embedCodeWebpackAssets
+          )
+
+          return code.replace(
+            /(<div id=.*><\/div>)/,
+            `<div class='embedded-code-container'>$1</div>`
+          )
         },
       }),
       ui: {
