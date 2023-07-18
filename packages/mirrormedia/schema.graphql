@@ -1237,6 +1237,7 @@ type Photo {
   imageFile: ImageFieldOutput
   waterMark: Boolean
   resized: ResizedImages
+  resizedWebp: ResizedWebPImages
   file: FileFieldOutput
   urlOriginal: String
   topicKeywords: String
@@ -1264,6 +1265,15 @@ enum ImageExtension {
 }
 
 type ResizedImages {
+  original: String
+  w480: String
+  w800: String
+  w1200: String
+  w1600: String
+  w2400: String
+}
+
+type ResizedWebPImages {
   original: String
   w480: String
   w800: String
