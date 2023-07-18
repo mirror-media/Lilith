@@ -117,6 +117,7 @@ model Liveblog {
   name            String         @default("")
   slug            String         @unique @default("")
   desc            String         @default("")
+  hint            String         @default("")
   sort            String?        @default("asc")
   segment         Int?           @default(5)
   displayType     String?        @default("liveblog")

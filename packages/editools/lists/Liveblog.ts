@@ -32,6 +32,12 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
+    hint: text({
+      label: '提示文字及其他設定',
+      ui: {
+        displayMode: 'textarea',
+      },
+    }),
     sort: select({
 	  label: '時間排序',
       options: [
