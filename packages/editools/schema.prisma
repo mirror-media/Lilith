@@ -795,6 +795,7 @@ model Theatre {
   id            Int       @id @default(autoincrement())
   name          String    @default("")
   displayMode   String?   @default("scroll")
+  shiftLeft     Boolean   @default(false)
   objectJson    Json?
   animationJson Json?
   createdAt     DateTime?

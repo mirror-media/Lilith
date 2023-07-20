@@ -2,7 +2,7 @@
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, select, json, virtual } from '@keystone-6/core/fields'
+import { checkbox, text, select, json, virtual } from '@keystone-6/core/fields'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const {
@@ -34,11 +34,15 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
+    shiftLeft: checkbox({
+      label: 'READr 版型（向左移動）',
+      defaultValue: false,
+    }),
     objectJson: json({
       label: '物件 json',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-      },
+      //ui: {
+      //  createView: { fieldMode: 'hidden' },
+      //},
       access: {
         operation: {
           query: allowRoles(admin, moderator, editor, contributor),
@@ -50,9 +54,9 @@ const listConfigurations = list({
     }),
     animationJson: json({
       label: '動畫 json',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-      },
+      //ui: {
+      //  createView: { fieldMode: 'hidden' },
+      //},
       access: {
         operation: {
           query: allowRoles(admin, moderator, editor, contributor),
