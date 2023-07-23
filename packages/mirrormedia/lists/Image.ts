@@ -97,6 +97,55 @@ const listConfigurations = list({
         query: '{ original w480 w800 w1200 w1600 w2400 }',
       },
     }),
+    resizedWebp: virtual({
+      field: graphql.field({
+        type: graphql.object<{
+          w1600: string
+          w2400: string
+        }>()({
+          name: 'ResizedWebPImages',
+          fields: {
+            w1600: graphql.field({ type: graphql.String }),
+            w2400: graphql.field({ type: graphql.String }),
+          },
+        }),
+        resolve(item: Record<string, unknown>) {
+          const empty = {
+            w1600: '',
+            w2400: '',
+          }
+
+          const rtn: Record<string, string> = {}
+          const filename = item?.imageFile_id
+
+          if (!filename) {
+            return empty
+          }
+
+          const extension = '.webP'
+
+          const width =
+            typeof item?.imageFile_width === 'number' ? item.imageFile_width : 0
+          const height =
+            typeof item?.imageFile_height === 'number'
+              ? item.imageFile_height
+              : 0
+
+          const resizedTargets = width >= height ? ['w2400'] : ['w1600']
+
+          resizedTargets.forEach((target) => {
+            rtn[
+              target
+            ] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+          })
+
+          return Object.assign(empty, rtn)
+        },
+      }),
+      ui: {
+        query: '{ w1600 w2400 }',
+      },
+    }),
     file: file({
       label: '檔案（建議長邊大於 2000 pixel）',
       storage: 'files',

@@ -340,6 +340,7 @@ type Liveblog {
   name: String
   slug: String
   desc: String
+  hint: String
   sort: String
   segment: Int
   displayType: String
@@ -375,6 +376,7 @@ input LiveblogWhereInput {
   name: StringFilter
   slug: StringFilter
   desc: StringFilter
+  hint: StringFilter
   sort: StringNullableFilter
   segment: IntNullableFilter
   displayType: StringNullableFilter
@@ -417,6 +419,7 @@ input LiveblogOrderByInput {
   name: OrderDirection
   slug: OrderDirection
   desc: OrderDirection
+  hint: OrderDirection
   sort: OrderDirection
   segment: OrderDirection
   displayType: OrderDirection
@@ -434,6 +437,7 @@ input LiveblogUpdateInput {
   name: String
   slug: String
   desc: String
+  hint: String
   sort: String
   segment: Int
   displayType: String
@@ -482,6 +486,7 @@ input LiveblogCreateInput {
   name: String
   slug: String
   desc: String
+  hint: String
   sort: String
   segment: Int
   displayType: String
@@ -2978,6 +2983,7 @@ type Theatre {
   id: ID!
   name: String
   displayMode: String
+  shiftLeft: Boolean
   objectJson: JSON
   animationJson: JSON
   theatreEditor: JSON
@@ -3000,6 +3006,7 @@ input TheatreWhereInput {
   id: IDFilter
   name: StringFilter
   displayMode: StringNullableFilter
+  shiftLeft: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -3010,6 +3017,7 @@ input TheatreOrderByInput {
   id: OrderDirection
   name: OrderDirection
   displayMode: OrderDirection
+  shiftLeft: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -3017,6 +3025,7 @@ input TheatreOrderByInput {
 input TheatreUpdateInput {
   name: String
   displayMode: String
+  shiftLeft: Boolean
   objectJson: JSON
   animationJson: JSON
   createdAt: DateTime
@@ -3033,6 +3042,7 @@ input TheatreUpdateArgs {
 input TheatreCreateInput {
   name: String
   displayMode: String
+  shiftLeft: Boolean
   objectJson: JSON
   animationJson: JSON
   createdAt: DateTime
