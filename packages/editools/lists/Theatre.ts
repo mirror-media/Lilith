@@ -2,7 +2,7 @@
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, select, json, virtual } from '@keystone-6/core/fields'
+import { checkbox, text, select, json, virtual } from '@keystone-6/core/fields'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const {
@@ -22,10 +22,10 @@ const listConfigurations = list({
       },
     }),
     displayMode: select({
-	  label: '播放形式',
+      label: '播放形式',
       options: [
         { label: '滑動', value: 'scroll' },
-        { label: '自動', value: 'auto' },
+        { label: '自動', value: 'video' },
       ],
       // We want to make sure new posts start off as a draft when they are created
       defaultValue: 'scroll',
@@ -34,33 +34,37 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
+    shiftLeft: checkbox({
+      label: 'READr 版型（向左移動）',
+      defaultValue: false,
+    }),
     objectJson: json({
-	  label: '物件 json',
-      ui: {
-        createView: { fieldMode: 'hidden' },
+      label: '物件 json',
+      //ui: {
+      //  createView: { fieldMode: 'hidden' },
+      //},
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor, contributor),
+          update: allowRoles(admin),
+          create: allowRoles(admin),
+          delete: allowRoles(admin),
+        },
       },
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor, contributor),
-		  update: allowRoles(admin),
-		  create: allowRoles(admin),
-		  delete: allowRoles(admin),
-		},
-  	  },
     }),
     animationJson: json({
-	  label: '動畫 json',
-      ui: {
-        createView: { fieldMode: 'hidden' },
+      label: '動畫 json',
+      //ui: {
+      //  createView: { fieldMode: 'hidden' },
+      //},
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor, contributor),
+          update: allowRoles(admin),
+          create: allowRoles(admin),
+          delete: allowRoles(admin),
+        },
       },
-	  access: {
-		operation: {
-		  query: allowRoles(admin, moderator, editor, contributor),
-		  update: allowRoles(admin),
-		  create: allowRoles(admin),
-		  delete: allowRoles(admin),
-		},
-  	  },
     }),
     theatreEditor: virtual({
       field: graphql.field({
@@ -84,19 +88,45 @@ const listConfigurations = list({
       label: 'embed code',
       field: graphql.field({
         type: graphql.String,
-        resolve: async (
-          item: Record<string, unknown>,
-          args,
-          context
-        ): Promise<string> => {
-          const id = typeof item?.id === 'number' ? item.id.toString() : null
-          // Find the QAList item
-          //return embedCodeGen.buildEmbeddedCode(
-          //  'theatre',
-          //  {  },
-          //  embedCodeWebpackAssets
-          //)
-		  return ''
+        resolve: async (item: Record<string, unknown>): Promise<string> => {
+          let style = ''
+
+          if (item?.shiftLeft) {
+            style = `
+            <style>
+              .embedded-code-container {
+                margin-left: -20px;
+                position: relative;
+                z-index: 800;
+              }
+              @media (min-width:608px) {
+                .embedded-code-container {
+                  margin-left: calc((100vw - 568px)/2 * -1);
+                }
+              }
+              @media (min-width:1200px) {
+                .embedded-code-container {
+                  margin-left: calc((100vw - 600px)/2 * -1);
+                }
+              }
+            </style>
+          `
+          }
+
+          const code = embedCodeGen.buildEmbeddedCode(
+            'react-theatre',
+            {
+              animateJson: item?.animationJson ?? {},
+              objectJson: item?.objectJson ?? [],
+              type: item?.displayMode ?? 'scroll',
+            },
+            embedCodeWebpackAssets
+          )
+
+          return code.replace(
+            /(<div id=.*><\/div>)/,
+            `${style}<div class='embedded-code-container'>$1</div>`
+          )
         },
       }),
       ui: {

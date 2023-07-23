@@ -3327,6 +3327,16 @@
     draft-js "^0.11.7"
     node-html-parser "^6.1.5"
 
+"@mirrormedia/lilith-draft-renderer@1.2.0-alpha.31":
+  version "1.2.0-alpha.31"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.2.0-alpha.31.tgz#89f4daf844630e7b66bd291cc65d4b646a6c70ad"
+  integrity sha512-dqPLgpTB6W2NP68mksbokbutfOB2s02/SzkpivFtjcV6YCmlWoXVV1DP3IF0nogF0YJU3E2juWeH9W2OGsLdiA==
+  dependencies:
+    "@readr-media/react-image" "^1.5.1"
+    body-scroll-lock "3.1.5"
+    draft-js "^0.11.7"
+    node-html-parser "^6.1.5"
+
 "@next/env@13.4.4":
   version "13.4.4"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-13.4.4.tgz#46b620f6bef97fe67a1566bf570dbb791d40c50a"
@@ -3710,10 +3720,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.3.0-beta.18":
-  version "2.3.0-beta.18"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.3.0-beta.18.tgz#b0b17f04fc86554b6e89995cf641e6b0334ba2c6"
-  integrity sha512-/sYLHQvGzGjU3FsjFhH4qSbzoxKS9EkBjcHbQonYL/dUgfjq/KvdsAUslAr0utqQYBaF+9pzz0lF+hlL6Rc2Aw==
+"@readr-media/react-embed-code-generator@2.4.0-alpha.3":
+  version "2.4.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.3.tgz#68a17a3ea5ba5674d391535f68472fdb9bc7a35f"
+  integrity sha512-rsro3EoJqYn3JqW4ZzSJxGO1L3jN113GEqrWGPk+7orGDYpWKOB643UTUmCsA2LJujl1VrijPc4Ebp8nuiMPMA==
   dependencies:
     "@readr-media/react-dropping-text" "1.0.5"
     "@readr-media/react-dual-slides" "1.0.1"
@@ -3725,10 +3735,10 @@
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
     "@readr-media/react-random-text-selector" "^1.0.2"
+    "@readr-media/react-theatre" "^0.1.0-alpha.10"
     "@readr-media/react-three-story-points" "1.0.2"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
-    uuid "^8.3.2"
 
 "@readr-media/react-feedback@^3.0.2":
   version "3.3.0"
@@ -3817,6 +3827,15 @@
   dependencies:
     axios "^1.3.5"
 
+"@readr-media/react-theatre@^0.1.0-alpha.10":
+  version "0.1.0-alpha.10"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-theatre/-/react-theatre-0.1.0-alpha.10.tgz#f5e3b7368320d9b9133deb2cefa0c39ea5d90ece"
+  integrity sha512-5R2QDg/C6qcvEzmorqesc/QDVfK0q5A49wNkoqafgvhpVy2wNYJgGpWaquYtc59o0O/rl+tJw5sjBcdcKiYunA==
+  dependencies:
+    "@theatre/core" "0.6.1"
+    url "^0.11.1"
+    uuid "^9.0.0"
+
 "@readr-media/react-three-story-points@1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@readr-media/react-three-story-points/-/react-three-story-points-1.0.2.tgz#7a24cdc13cea2fda1ac83df1f610bdd943f0fef6"
@@ -3870,6 +3889,20 @@
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@tediousjs/connection-string/-/connection-string-0.4.2.tgz#7bd1c68a7b075439768e85e9fa116b7e9020ec95"
   integrity sha512-1R9UC7Qc5wief2oJL+c1+d7v1/oPBayL85u8L/jV2DzIKput1TZ8ZUjj2nxQaSfzu210zp0oFWUrYUiUs8NhBQ==
+
+"@theatre/core@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@theatre/core/-/core-0.6.1.tgz#db572cfd8c527deed50f2e8da49c693052e8447f"
+  integrity sha512-ZvSqAAB2LVVnB6hDzKQOVHjeZtb7Hvqu1IrFRITv4Kq6465Cn9VI2nwcDjelDCOmTIv23pd8d3Fz2DPYjjF9mg==
+  dependencies:
+    "@theatre/dataverse" "0.6.1"
+
+"@theatre/dataverse@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@theatre/dataverse/-/dataverse-0.6.1.tgz#5a0870da55f18f95e9b1c78b16f196deea425754"
+  integrity sha512-iomovt4oWCEAZFP6/BdSJAb2cAjPOs6y3wh7QlrUBmEwdQ/21ISK9N2IsCzlJ0t16w58l7Eh61Gw60Y0t7/uNA==
+  dependencies:
+    lodash-es "^4.17.21"
 
 "@tokenizer/token@^0.3.0":
   version "0.3.0"
@@ -7646,6 +7679,11 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
+lodash-es@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
+
 lodash.camelcase@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
@@ -8865,6 +8903,11 @@ pumpify@^2.0.0:
     inherits "^2.0.3"
     pump "^3.0.0"
 
+punycode@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
+  integrity sha512-jmYNElW7yvO7TV33CjSmvSiE2yco3bV2czu/OzDKdMNVZQWfxCblURLhf+47syQRBntjfLdd/H0egrzIG+oaFQ==
+
 punycode@^2.1.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
@@ -8886,6 +8929,13 @@ qs@6.11.0:
   version "6.11.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.0.tgz#fd0d963446f7a65e1367e01abd85429453f0c37a"
   integrity sha512-MvjoMCJwEarSbUYk5O+nmoSzSutSsTwF85zcHPQ9OrlFoZOYIjaqBAJIqIXjptyD5vThxGq52Xu/MaJzRkIk4Q==
+  dependencies:
+    side-channel "^1.0.4"
+
+qs@^6.11.0:
+  version "6.11.2"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.2.tgz#64bea51f12c1f5da1bc01496f48ffcff7c69d7d9"
+  integrity sha512-tDNIz22aBzCDxLtVH++VnTfzxlfeK5CbqohpSqpJgj1Wg/cQbStNAz3NuqCs5vV+pjBsK4x4pN9HlVh7rcYRiA==
   dependencies:
     side-channel "^1.0.4"
 
@@ -10279,6 +10329,14 @@ uri-js@^4.2.2:
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==
   dependencies:
     punycode "^2.1.0"
+
+url@^0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/url/-/url-0.11.1.tgz#26f90f615427eca1b9f4d6a28288c147e2302a32"
+  integrity sha512-rWS3H04/+mzzJkv0eZ7vEDGiQbgquI1fGfOad6zKvgYQi1SzMmhl7c/DdRGxhaWrVH6z0qWITo8rpnxK/RfEhA==
+  dependencies:
+    punycode "^1.4.1"
+    qs "^6.11.0"
 
 use-callback-ref@^1.3.0:
   version "1.3.0"
