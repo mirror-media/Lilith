@@ -180,52 +180,7 @@ export function ImageBlock(
 
   const [shouldOpenLightBox, setShouldOpenLightBox] = useState(false)
   const { name, desc, resized, url } = entity.getData()
-  const handleOpen = () => {
-    if (url) {
-      return
-    }
-    setShouldOpenLightBox(true)
-  }
-
-  let imageJsx = (
-    <CustomImage
-      images={resized}
-      defaultImage={defaultImage}
-      loadingImage={loadingImage}
-      width={''}
-      height={'auto'}
-      objectFit={'contain'}
-      alt={name}
-      rwd={{ mobile: '100vw', tablet: '640px', default: '640px' }}
-      priority={false}
-    ></CustomImage>
-  )
-
-  if (isAmp) {
-    imageJsx = (
-      <AmpImgWrapper>
-        <amp-img src={resized?.original} alt={name} layout="fill" />
-      </AmpImgWrapper>
-    )
-  }
-
-  let imgBlock = (
-    <ImageFigure
-      key={resized.original}
-      contentLayout={contentLayout}
-      onClick={handleOpen}
-    >
-      {imageJsx}
-      {desc ? (
-        <Figcaption
-          contentLayout={contentLayout}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {desc}
-        </Figcaption>
-      ) : null}
-    </ImageFigure>
-  )
+  const hasDescription = Boolean(desc)
   useEffect(() => {
     if (lightBoxRef && lightBoxRef.current) {
       const lightBox = lightBoxRef.current
@@ -239,6 +194,50 @@ export function ImageBlock(
       clearAllBodyScrollLocks()
     }
   }, [shouldOpenLightBox])
+
+  const handleOpen = () => {
+    if (url) {
+      return
+    }
+    setShouldOpenLightBox(true)
+  }
+
+  const imageJsx = isAmp ? (
+    <AmpImgWrapper>
+      <amp-img src={resized?.original} alt={name} layout="fill" />
+    </AmpImgWrapper>
+  ) : (
+    <CustomImage
+      images={resized}
+      defaultImage={defaultImage}
+      loadingImage={loadingImage}
+      width={''}
+      height={'auto'}
+      objectFit={'contain'}
+      alt={name}
+      rwd={{ mobile: '100vw', tablet: '640px', default: '640px' }}
+      priority={false}
+    ></CustomImage>
+  )
+
+  const imageFigureJsx = (
+    <ImageFigure
+      key={resized.original}
+      contentLayout={contentLayout}
+      onClick={handleOpen}
+    >
+      {imageJsx}
+      {hasDescription && (
+        <Figcaption
+          contentLayout={contentLayout}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {desc}
+        </Figcaption>
+      )}
+    </ImageFigure>
+  )
+
   const lightBox = (
     <LightBoxWrapper onClick={() => setShouldOpenLightBox(false)}>
       <Figure ref={lightBoxRef} onClick={(e) => e.stopPropagation()}>
@@ -259,20 +258,16 @@ export function ImageBlock(
     </LightBoxWrapper>
   )
 
-  if (url) {
-    imgBlock = (
-      <Anchor href={url} target="_blank">
-        {imgBlock}
-      </Anchor>
-    )
-  } else {
-    imgBlock = (
-      <>
-        {shouldOpenLightBox && lightBox}
-        {imgBlock}
-      </>
-    )
-  }
+  const renderImageBlockJsx = url ? (
+    <Anchor href={url} target="_blank">
+      {imageFigureJsx}
+    </Anchor>
+  ) : (
+    <>
+      {shouldOpenLightBox && lightBox}
+      {imageFigureJsx}
+    </>
+  )
 
-  return imgBlock
+  return renderImageBlockJsx
 }
