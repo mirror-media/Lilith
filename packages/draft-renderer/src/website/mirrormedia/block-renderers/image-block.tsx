@@ -1,3 +1,5 @@
+//REMINDER: DO NOT REMOVE className which has prefix `GTM-`, since it is used for collecting data of Google Analytics event.
+
 import React, { useState, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
@@ -259,7 +261,7 @@ export function ImageBlock(
   )
 
   const renderImageBlockJsx = url ? (
-    <Anchor href={url} target="_blank">
+    <Anchor href={url} target="_blank" className="GTM-story-image">
       {imageFigureJsx}
     </Anchor>
   ) : (
