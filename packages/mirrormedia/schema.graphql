@@ -1239,7 +1239,6 @@ type Photo {
   resized: ResizedImages
   resizedWebp: ResizedWebPImages
   file: FileFieldOutput
-  urlOriginal: String
   topicKeywords: String
   copyRight: Boolean
   createdAt: DateTime
@@ -1289,7 +1288,6 @@ input PhotoWhereInput {
   id: IDFilter
   name: StringFilter
   waterMark: BooleanFilter
-  urlOriginal: StringFilter
   topicKeywords: StringFilter
   copyRight: BooleanFilter
   createdAt: DateTimeNullableFilter
@@ -1302,7 +1300,6 @@ input PhotoOrderByInput {
   id: OrderDirection
   name: OrderDirection
   waterMark: OrderDirection
-  urlOriginal: OrderDirection
   topicKeywords: OrderDirection
   copyRight: OrderDirection
   createdAt: OrderDirection
@@ -1314,7 +1311,6 @@ input PhotoUpdateInput {
   imageFile: ImageFieldInput
   waterMark: Boolean
   file: FileFieldInput
-  urlOriginal: String
   topicKeywords: String
   copyRight: Boolean
   createdAt: DateTime
@@ -1337,7 +1333,6 @@ input PhotoCreateInput {
   imageFile: ImageFieldInput
   waterMark: Boolean
   file: FileFieldInput
-  urlOriginal: String
   topicKeywords: String
   copyRight: Boolean
   createdAt: DateTime
