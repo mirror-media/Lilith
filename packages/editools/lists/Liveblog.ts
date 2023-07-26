@@ -3,7 +3,7 @@ import config from '../config'
 import embedCodeGen from '@readr-media/react-embed-code-generator'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { integer, text, select, relationship, checkbox, virtual } from '@keystone-6/core/fields'
+import { json, integer, text, select, relationship, checkbox, virtual } from '@keystone-6/core/fields'
 import { saveLiveblogJSON, deleteLiveblogJSON } from './utils'
 import { buildLiveBlogQuery } from './queries/liveblogQuery'
 
@@ -32,8 +32,64 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
-    hint: text({
+    hint: json({
       label: '提示文字及其他設定',
+	  defaultValue: {
+  "dividerConfig": {
+    "rwd": {
+      "mobile": {
+        "year": 5,
+        "month": 6,
+        "day": 7
+      },
+      "pc": {
+        "year": 5,
+        "month": 6,
+        "day": 7
+      }
+    },
+    "bubbleLevelSizesInDivider": {
+      "5": [
+        23,
+        36,
+        48,
+        60,
+        76
+      ],
+      "6": [
+        23,
+        36,
+        48,
+        60,
+        66
+      ],
+      "7": [
+        23,
+        28,
+        36,
+        48,
+        60
+      ]
+    }
+  },
+  "headerHeightConfig": {
+    "rwd": {
+      "mobile": 66,
+      "pc": 80
+    },
+    "rwdBreakpoints": [
+      {
+        "minWidth": 0,
+        "name": "mobile"
+      },
+      {
+        "minWidth": 568,
+        "name": "pc"
+      }
+    ]
+  },
+  "noEventContent": "<span style=\"text-align: center; font-size: 14px; line-height: 1.5; color: #989898;\">點擊泡泡<br />或往下滑動</span>"
+},
       ui: {
         displayMode: 'textarea',
       },
