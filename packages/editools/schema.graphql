@@ -2986,6 +2986,9 @@ type Theatre {
   shiftLeft: Boolean
   objectJson: JSON
   animationJson: JSON
+  mobileWidth: Int
+  mobileObjectJson: JSON
+  mobileAnimationJson: JSON
   theatreEditor: JSON
   embedCode: String
   preview: JSON
@@ -3007,6 +3010,7 @@ input TheatreWhereInput {
   name: StringFilter
   displayMode: StringNullableFilter
   shiftLeft: BooleanFilter
+  mobileWidth: IntNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -3018,6 +3022,7 @@ input TheatreOrderByInput {
   name: OrderDirection
   displayMode: OrderDirection
   shiftLeft: OrderDirection
+  mobileWidth: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -3028,6 +3033,9 @@ input TheatreUpdateInput {
   shiftLeft: Boolean
   objectJson: JSON
   animationJson: JSON
+  mobileWidth: Int
+  mobileObjectJson: JSON
+  mobileAnimationJson: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -3045,6 +3053,9 @@ input TheatreCreateInput {
   shiftLeft: Boolean
   objectJson: JSON
   animationJson: JSON
+  mobileWidth: Int
+  mobileObjectJson: JSON
+  mobileAnimationJson: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

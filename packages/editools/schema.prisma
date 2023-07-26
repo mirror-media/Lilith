@@ -792,18 +792,21 @@ model DroppingText {
 }
 
 model Theatre {
-  id            Int       @id @default(autoincrement())
-  name          String    @default("")
-  displayMode   String?   @default("scroll")
-  shiftLeft     Boolean   @default(false)
-  objectJson    Json?
-  animationJson Json?
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?     @relation("Theatre_createdBy", fields: [createdById], references: [id])
-  createdById   Int?      @map("createdBy")
-  updatedBy     User?     @relation("Theatre_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?      @map("updatedBy")
+  id                  Int       @id @default(autoincrement())
+  name                String    @default("")
+  displayMode         String?   @default("scroll")
+  shiftLeft           Boolean   @default(false)
+  objectJson          Json?
+  animationJson       Json?
+  mobileWidth         Int?      @default(768)
+  mobileObjectJson    Json?
+  mobileAnimationJson Json?
+  createdAt           DateTime?
+  updatedAt           DateTime?
+  createdBy           User?     @relation("Theatre_createdBy", fields: [createdById], references: [id])
+  createdById         Int?      @map("createdBy")
+  updatedBy           User?     @relation("Theatre_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?      @map("updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
