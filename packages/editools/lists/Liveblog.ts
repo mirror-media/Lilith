@@ -107,13 +107,6 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
-	segment: integer({
-	  label: '分段',
-	  defaultValue: 5,
-	  validation: {
-		max: 7,
-	  }
-	}), 
     displayType: select({
 	  label: '類型',
       options: [
