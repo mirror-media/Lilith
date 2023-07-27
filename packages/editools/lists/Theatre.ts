@@ -67,7 +67,7 @@ const listConfigurations = list({
       },
     }),
     mobileWidth: select({
-	  type: 'integer',
+      type: 'integer',
       label: '手機寬度',
       options: [
         { label: '576', value: 576 },
@@ -161,7 +161,10 @@ const listConfigurations = list({
             'react-theatre',
             {
               animateJson: item?.animationJson ?? {},
+              mobileAnimateJson: item?.mobileAnimationJson ?? {},
               objectJson: item?.objectJson ?? [],
+              mobileObjectJson: item?.mobileObjectJson ?? [],
+              mobileSize: item?.mobileWidth ?? 768,
               type: item?.displayMode ?? 'scroll',
             },
             embedCodeWebpackAssets
