@@ -3720,10 +3720,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.4.0-alpha.3":
-  version "2.4.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.3.tgz#68a17a3ea5ba5674d391535f68472fdb9bc7a35f"
-  integrity sha512-rsro3EoJqYn3JqW4ZzSJxGO1L3jN113GEqrWGPk+7orGDYpWKOB643UTUmCsA2LJujl1VrijPc4Ebp8nuiMPMA==
+"@readr-media/react-embed-code-generator@2.4.0-alpha.4":
+  version "2.4.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.4.tgz#21922d0d022d359b67cf573dcd4baed2d16af46b"
+  integrity sha512-qS5b9yPl99Ly42Zl8iZQV3vNYGonX/fPc869TOpzYgtXrmcBKnFGAlr0ACEeQ5DpDEDzWTV1FfV/xJQr5GRP8g==
   dependencies:
     "@readr-media/react-dropping-text" "1.0.5"
     "@readr-media/react-dual-slides" "1.0.1"
@@ -3735,7 +3735,7 @@
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
     "@readr-media/react-random-text-selector" "^1.0.2"
-    "@readr-media/react-theatre" "^0.1.0-alpha.10"
+    "@readr-media/react-theatre" "^0.2.0-alpha.2"
     "@readr-media/react-three-story-points" "1.0.2"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
@@ -3827,10 +3827,10 @@
   dependencies:
     axios "^1.3.5"
 
-"@readr-media/react-theatre@^0.1.0-alpha.10":
-  version "0.1.0-alpha.10"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-theatre/-/react-theatre-0.1.0-alpha.10.tgz#f5e3b7368320d9b9133deb2cefa0c39ea5d90ece"
-  integrity sha512-5R2QDg/C6qcvEzmorqesc/QDVfK0q5A49wNkoqafgvhpVy2wNYJgGpWaquYtc59o0O/rl+tJw5sjBcdcKiYunA==
+"@readr-media/react-theatre@^0.2.0-alpha.2":
+  version "0.2.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-theatre/-/react-theatre-0.2.0-alpha.2.tgz#7e1d20f373d69f2ad693e8d52888ebb8a70f1791"
+  integrity sha512-Df5VWXe29X3Dy6e3yJZqd6+JrjvzGQmgAzpKlj6sFJqaoM4mKBSgz/j+2NlD/P+WNFdOgUJjvlMmY8+3vH5piQ==
   dependencies:
     "@theatre/core" "0.6.1"
     url "^0.11.1"
@@ -9010,21 +9010,13 @@ react-day-picker@^8.0.4:
   resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.2.0.tgz#f6cac34d53e1ce963e561940e33fadec874e48cb"
   integrity sha512-6sI9+qk1xXSvV94WOz0H4FVGFaGquwMLQGw9WXoOZajMY/CVrLsautRFwkdjZ9jWj7WZR2Se1mTMrEpmcB6BEQ==
 
-react-dom@^18.1.0:
+react-dom@18.1.0, react-dom@^18.1.0, react-dom@^18.2.0:
   version "18.1.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.1.0.tgz#7f6dd84b706408adde05e1df575b3a024d7e8a2f"
   integrity sha512-fU1Txz7Budmvamp7bshe4Zi32d0ll7ect+ccxNu9FlObT605GOEB8BfO4tmRJ39R5Zj831VCpvQ05QPBW5yb+w==
   dependencies:
     loose-envify "^1.1.0"
     scheduler "^0.22.0"
-
-react-dom@^18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
-  integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
-  dependencies:
-    loose-envify "^1.1.0"
-    scheduler "^0.23.0"
 
 react-fast-compare@^3.0.1:
   version "3.2.0"
@@ -9112,17 +9104,10 @@ react-transition-group@^4.3.0, react-transition-group@^4.4.2, react-transition-g
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react@18.1.0, react@^18.1.0:
+react@18.1.0, react@^18.1.0, react@^18.2.0:
   version "18.1.0"
   resolved "https://registry.yarnpkg.com/react/-/react-18.1.0.tgz#6f8620382decb17fdc5cc223a115e2adbf104890"
   integrity sha512-4oL8ivCz5ZEPyclFQXaNksK3adutVS8l2xzZU0cqEFrE9Sb7fC0EFK5uEk74wIreL1DERyjvsU915j1pcT2uEQ==
-  dependencies:
-    loose-envify "^1.1.0"
-
-react@^18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
-  integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
   dependencies:
     loose-envify "^1.1.0"
 
@@ -9420,13 +9405,6 @@ scheduler@^0.22.0:
   version "0.22.0"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.22.0.tgz#83a5d63594edf074add9a7198b1bae76c3db01b8"
   integrity sha512-6QAm1BgQI88NPYymgGQLCZgvep4FyePDWFpXVK+zNSUgHwlqpJy8VEh8Et0KxTACS4VWwMousBElAZOH9nkkoQ==
-  dependencies:
-    loose-envify "^1.1.0"
-
-scheduler@^0.23.0:
-  version "0.23.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.0.tgz#ba8041afc3d30eb206a487b6b384002e4e61fdfe"
-  integrity sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==
   dependencies:
     loose-envify "^1.1.0"
 
