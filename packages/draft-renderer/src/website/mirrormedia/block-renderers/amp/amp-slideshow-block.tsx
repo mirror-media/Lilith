@@ -30,7 +30,7 @@ const Wrapper = styled.figure`
       content: '';
       width: 16px;
       height: 16px;
-      top: 50%
+      top: 50%;
       transform: rotate(45deg) translateY(-50%);
       cursor: pointer;
       display: block;
