@@ -4,15 +4,13 @@ import { EntityInstance } from 'draft-js'
 import { defaultMarginTop, defaultMarginBottom } from '../../shared-style'
 import defaultImage from '../../assets/default-og-img.png'
 
-const sliderWidth = '100%'
-
 const Wrapper = styled.figure`
   ${defaultMarginTop}
   ${defaultMarginBottom}
   position: relative;
-  min-height: 58.75vw;
+  height: 58.75vw;
   ${({ theme }) => theme.breakpoint.md} {
-    min-height: 428px;
+    height: 428px;
   }
 
   .amp-carousel-button {
@@ -67,15 +65,10 @@ const SlideImage = styled.div`
   position: relative;
   object-position: center center;
   background-color: rgba(0, 0, 0, 0.1);
-  max-width: ${sliderWidth};
-  min-width: ${sliderWidth};
-  max-height: 58.75vw;
-  min-height: 58.75vw;
+  width: 100%;
+  height: 58.75vw;
   ${({ theme }) => theme.breakpoint.md} {
-    min-width: 100%;
-    min-height: 428px;
-    max-width: 100%;
-    max-height: 428px;
+    height: 428px;
   }
 
   .contain img {
@@ -99,38 +92,35 @@ export function AmpSlideshowBlockV2(entity: EntityInstance) {
   const { images = [], delay = 2 } = entity.getData()
 
   return (
-    <>
-      <Wrapper>
-        <amp-carousel
-          class="carousel1"
-          layout="fill"
-          type="slides"
-          autoplay=""
-          loop=""
-          control=""
-          delay={delay * 1000}
-          aria-label="Carousel"
-        >
-          {images.map((slide) => {
-            return (
-              <div key={slide.id} className="slide">
-                <SlideImage>
-                  <amp-img
-                    class="contain"
-                    src={slide?.resized?.original ?? defaultImage}
-                    layout="fill"
-                    alt={slide?.name}
-                  ></amp-img>
-                </SlideImage>
+    <Wrapper>
+      <amp-carousel
+        layout="fill"
+        type="slides"
+        autoplay=""
+        loop=""
+        control=""
+        delay={delay * 1000}
+        aria-label="Carousel"
+      >
+        {images.map((slide) => {
+          return (
+            <div key={slide.id}>
+              <SlideImage>
+                <amp-img
+                  class="contain"
+                  src={slide?.resized?.original ?? defaultImage}
+                  layout="fill"
+                  alt={slide?.name}
+                ></amp-img>
+              </SlideImage>
 
-                {/* <Desc layout="responsive" width="500" height="150">
+              {/* <Desc layout="responsive" width="500" height="150">
           {slide.desc}
         </Desc> */}
-              </div>
-            )
-          })}
-        </amp-carousel>
-      </Wrapper>
-    </>
+            </div>
+          )
+        })}
+      </amp-carousel>
+    </Wrapper>
   )
 }
