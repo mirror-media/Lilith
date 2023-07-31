@@ -8,18 +8,18 @@ const Wrapper = styled.figure`
   ${defaultMarginTop}
   ${defaultMarginBottom}
   position: relative;
-  height: 58.75vw;
+  height: calc(58.75vw + 80px);
   ${({ theme }) => theme.breakpoint.md} {
-    height: 428px;
+    height: 508px;
   }
 
   .amp-carousel-button {
     position: absolute;
-    top: 50%;
+    top: calc(50% - 40px);
     z-index: 1;
     transform: translateY(-50%);
     color: white;
-    height: 100%;
+    height: calc(100% - 80px);
     width: 40px;
     background: none;
     &:focus {
@@ -75,17 +75,19 @@ const SlideImage = styled.div`
   }
 `
 
-// const Desc = styled('amp-fit-text')`
-//   font-size: 14px;
-//   line-height: 1.8;
-//   font-weight: 400;
-//   color: rgba(0, 0, 0, 0.5);
-//   margin-top: 20px;
-//   min-height: 1.8rem;
-//   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-//     'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
-//     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-// `
+const Desc = styled.figcaption`
+  font-size: 14px;
+  line-height: 1.8;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.5);
+  margin-top: 20px;
+  min-height: 1.8rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  max-height: 60px;
+  overflow: scroll;
+`
 
 export function AmpSlideshowBlockV2(entity: EntityInstance) {
   const { images = [], delay = 2 } = entity.getData()
@@ -113,9 +115,7 @@ export function AmpSlideshowBlockV2(entity: EntityInstance) {
                 ></amp-img>
               </SlideImage>
 
-              {/* <Desc layout="responsive" width="500" height="150">
-          {slide.desc}
-        </Desc> */}
+              <Desc>{slide.desc}</Desc>
             </div>
           )
         })}
