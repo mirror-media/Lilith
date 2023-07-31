@@ -27,14 +27,13 @@ const Wrapper = styled.figure`
       outline: none;
     }
     &::before {
+      position: absolute;
       content: '';
       width: 16px;
       height: 16px;
       top: 50%;
-      transform: rotate(45deg) translateY(-50%);
       cursor: pointer;
       display: block;
-      position: absolute;
     }
   }
 
