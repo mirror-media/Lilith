@@ -109,7 +109,7 @@ export function AmpSlideshowBlockV2(entity: EntityInstance) {
               <SlideImage>
                 <amp-img
                   class="contain"
-                  src={slide?.resized?.original ?? defaultImage}
+                  src={slide?.resized?.original || defaultImage}
                   layout="fill"
                   alt={slide?.name}
                 ></amp-img>
