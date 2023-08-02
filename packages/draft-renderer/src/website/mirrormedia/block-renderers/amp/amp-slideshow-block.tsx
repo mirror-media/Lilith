@@ -105,18 +105,17 @@ export function AmpSlideshowBlockV2(entity: EntityInstance) {
       >
         {images.map((slide) => {
           return (
-            <div key={slide.id}>
+            <figure key={slide.id}>
               <SlideImage>
                 <amp-img
                   class="contain"
                   src={slide?.resized?.original || defaultImage}
                   layout="fill"
-                  alt={slide?.name}
+                  alt={slide?.name || 'slide'}
                 ></amp-img>
               </SlideImage>
-
               <Desc>{slide.desc}</Desc>
-            </div>
+            </figure>
           )
         })}
       </amp-carousel>
