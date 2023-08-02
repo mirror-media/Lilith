@@ -117,9 +117,8 @@ model Liveblog {
   name            String         @default("")
   slug            String         @unique @default("")
   desc            String         @default("")
-  hint            String         @default("")
+  hint            Json?          @default("{\"dividerConfig\":{\"rwd\":{\"mobile\":{\"year\":5,\"month\":6,\"day\":7},\"pc\":{\"year\":5,\"month\":6,\"day\":7}},\"bubbleLevelSizesInDivider\":{\"5\":[23,36,48,60,76],\"6\":[23,36,48,60,66],\"7\":[23,28,36,48,60]}},\"headerHeightConfig\":{\"rwd\":{\"mobile\":66,\"pc\":80},\"rwdBreakpoints\":[{\"minWidth\":0,\"name\":\"mobile\"},{\"minWidth\":568,\"name\":\"pc\"}]},\"noEventContent\":\"<span style=\\\"text-align: center; font-size: 14px; line-height: 1.5; color: #989898;\\\">點擊泡泡<br />或往下滑動</span>\"}")
   sort            String?        @default("asc")
-  segment         Int?           @default(5)
   displayType     String?        @default("liveblog")
   maxMeasures     String?        @default("年")
   defaultMeasures String?        @default("year")
@@ -792,18 +791,21 @@ model DroppingText {
 }
 
 model Theatre {
-  id            Int       @id @default(autoincrement())
-  name          String    @default("")
-  displayMode   String?   @default("scroll")
-  shiftLeft     Boolean   @default(false)
-  objectJson    Json?
-  animationJson Json?
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?     @relation("Theatre_createdBy", fields: [createdById], references: [id])
-  createdById   Int?      @map("createdBy")
-  updatedBy     User?     @relation("Theatre_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?      @map("updatedBy")
+  id                  Int       @id @default(autoincrement())
+  name                String    @default("")
+  displayMode         String?   @default("scroll")
+  shiftLeft           Boolean   @default(false)
+  objectJson          Json?
+  animationJson       Json?
+  mobileWidth         Int?      @default(768)
+  mobileObjectJson    Json?
+  mobileAnimationJson Json?
+  createdAt           DateTime?
+  updatedAt           DateTime?
+  createdBy           User?     @relation("Theatre_createdBy", fields: [createdById], references: [id])
+  createdById         Int?      @map("createdBy")
+  updatedBy           User?     @relation("Theatre_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?      @map("updatedBy")
 
   @@index([createdById])
   @@index([updatedById])

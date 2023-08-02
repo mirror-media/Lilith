@@ -28,6 +28,7 @@ export function buildLiveBlogQuery(take?: number) {
     maxMeasures
     defaultMeasures
     sort
+    hint
     liveblog_items(where: { status: { equals: "published" }}${
       take ? ', take:' + take : ''
     } ) {

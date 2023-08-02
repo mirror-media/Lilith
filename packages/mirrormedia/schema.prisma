@@ -278,7 +278,6 @@ model Photo {
   waterMark                   Boolean     @default(true)
   file_filesize               Int?
   file_filename               String?
-  urlOriginal                 String      @default("")
   topicKeywords               String      @default("")
   copyRight                   Boolean     @default(false)
   createdAt                   DateTime?
@@ -390,6 +389,7 @@ model Partner {
   name                  String     @default("")
   website               String     @default("")
   public                Boolean    @default(true)
+  showOnIndex           Boolean    @default(true)
   createdAt             DateTime?
   updatedAt             DateTime?
   createdBy             User?      @relation("Partner_createdBy", fields: [createdById], references: [id])

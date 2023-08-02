@@ -340,9 +340,8 @@ type Liveblog {
   name: String
   slug: String
   desc: String
-  hint: String
+  hint: JSON
   sort: String
-  segment: Int
   displayType: String
   maxMeasures: String
   defaultMeasures: String
@@ -376,9 +375,7 @@ input LiveblogWhereInput {
   name: StringFilter
   slug: StringFilter
   desc: StringFilter
-  hint: StringFilter
   sort: StringNullableFilter
-  segment: IntNullableFilter
   displayType: StringNullableFilter
   maxMeasures: StringNullableFilter
   defaultMeasures: StringNullableFilter
@@ -397,17 +394,6 @@ input LiveblogWhereInput {
   updatedBy: UserWhereInput
 }
 
-input IntNullableFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: IntNullableFilter
-}
-
 input LiveblogItemManyRelationFilter {
   every: LiveblogItemWhereInput
   some: LiveblogItemWhereInput
@@ -419,9 +405,7 @@ input LiveblogOrderByInput {
   name: OrderDirection
   slug: OrderDirection
   desc: OrderDirection
-  hint: OrderDirection
   sort: OrderDirection
-  segment: OrderDirection
   displayType: OrderDirection
   maxMeasures: OrderDirection
   defaultMeasures: OrderDirection
@@ -437,9 +421,8 @@ input LiveblogUpdateInput {
   name: String
   slug: String
   desc: String
-  hint: String
+  hint: JSON
   sort: String
-  segment: Int
   displayType: String
   maxMeasures: String
   defaultMeasures: String
@@ -486,9 +469,8 @@ input LiveblogCreateInput {
   name: String
   slug: String
   desc: String
-  hint: String
+  hint: JSON
   sort: String
-  segment: Int
   displayType: String
   maxMeasures: String
   defaultMeasures: String
@@ -1312,6 +1294,17 @@ input FieldTypeTypeNullableFilter {
   in: [FieldTypeType!]
   notIn: [FieldTypeType!]
   not: FieldTypeTypeNullableFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
 }
 
 input FieldOptionManyRelationFilter {
@@ -2986,6 +2979,9 @@ type Theatre {
   shiftLeft: Boolean
   objectJson: JSON
   animationJson: JSON
+  mobileWidth: Int
+  mobileObjectJson: JSON
+  mobileAnimationJson: JSON
   theatreEditor: JSON
   embedCode: String
   preview: JSON
@@ -3007,6 +3003,7 @@ input TheatreWhereInput {
   name: StringFilter
   displayMode: StringNullableFilter
   shiftLeft: BooleanFilter
+  mobileWidth: IntNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -3018,6 +3015,7 @@ input TheatreOrderByInput {
   name: OrderDirection
   displayMode: OrderDirection
   shiftLeft: OrderDirection
+  mobileWidth: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -3028,6 +3026,9 @@ input TheatreUpdateInput {
   shiftLeft: Boolean
   objectJson: JSON
   animationJson: JSON
+  mobileWidth: Int
+  mobileObjectJson: JSON
+  mobileAnimationJson: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -3045,6 +3046,9 @@ input TheatreCreateInput {
   shiftLeft: Boolean
   objectJson: JSON
   animationJson: JSON
+  mobileWidth: Int
+  mobileObjectJson: JSON
+  mobileAnimationJson: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
