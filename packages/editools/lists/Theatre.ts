@@ -133,30 +133,6 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
-          let style = ''
-
-          if (item?.shiftLeft) {
-            style = `
-            <style>
-              .embedded-code-container {
-                margin-left: -20px;
-                position: relative;
-                z-index: 800;
-              }
-              @media (min-width:608px) {
-                .embedded-code-container {
-                  margin-left: calc((100vw - 568px)/2 * -1);
-                }
-              }
-              @media (min-width:1200px) {
-                .embedded-code-container {
-                  margin-left: calc((100vw - 600px)/2 * -1);
-                }
-              }
-            </style>
-          `
-          }
-
           const code = embedCodeGen.buildEmbeddedCode(
             'react-theatre',
             {
@@ -172,7 +148,7 @@ const listConfigurations = list({
 
           return code.replace(
             /(<div id=.*><\/div>)/,
-            `${style}<div class='embedded-code-container'>$1</div>`
+            `<div class='embedded-code-container'>$1</div>`
           )
         },
       }),
