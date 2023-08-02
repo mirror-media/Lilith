@@ -3720,10 +3720,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.4.0-alpha.14":
-  version "2.4.0-alpha.14"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.14.tgz#63dceea37baffef796fdece0827a14d03932b592"
-  integrity sha512-+TeP3smvtTx6MvODBIiBqz/JEwNJE3AxlYztjjuAX7h1aNvH+9nvLCHiJHjQ3kCLHrmuuiZktrnYu0AZIWMo+g==
+"@readr-media/react-embed-code-generator@2.4.0-alpha.16":
+  version "2.4.0-alpha.16"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.16.tgz#7c2117da3949b904f7537542383df1411f236091"
+  integrity sha512-4T8LuvwdK4ECDV5iDfahYvxZARpsxlNfOThCV6g5kkQxKva4j+H1J16w+ZHw1O2rssZhNV/QziUUQzt5PyoEJw==
   dependencies:
     "@readr-media/react-dropping-text" "1.0.5"
     "@readr-media/react-dual-slides" "1.0.1"
@@ -3735,7 +3735,7 @@
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
     "@readr-media/react-random-text-selector" "^1.0.2"
-    "@readr-media/react-theatre" "^0.2.0-alpha.2"
+    "@readr-media/react-theatre" "^0.2.0-alpha.4"
     "@readr-media/react-three-story-points" "1.0.2"
     "@readr-media/react-timeline" "^1.0.0-alpha.11"
     lodash "^4.17.21"
@@ -3828,12 +3828,13 @@
   dependencies:
     axios "^1.3.5"
 
-"@readr-media/react-theatre@^0.2.0-alpha.2":
-  version "0.2.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-theatre/-/react-theatre-0.2.0-alpha.2.tgz#7e1d20f373d69f2ad693e8d52888ebb8a70f1791"
-  integrity sha512-Df5VWXe29X3Dy6e3yJZqd6+JrjvzGQmgAzpKlj6sFJqaoM4mKBSgz/j+2NlD/P+WNFdOgUJjvlMmY8+3vH5piQ==
+"@readr-media/react-theatre@^0.2.0-alpha.4":
+  version "0.2.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-theatre/-/react-theatre-0.2.0-alpha.4.tgz#24809de6a1339cb65cbf383d5146d4105ca79228"
+  integrity sha512-llLUmDtlFjuuPnGF55qEnTs6mQjfkcZYTF3lWppuaDpquj1cJ01+smEDkiiDfY+a6P89M1t7XqLtN8WiN7/VKw==
   dependencies:
     "@theatre/core" "0.6.1"
+    react-transition-group "^4.4.5"
     url "^0.11.1"
     uuid "^9.0.0"
 
