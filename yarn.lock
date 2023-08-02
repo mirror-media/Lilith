@@ -3720,10 +3720,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.4.0-alpha.4":
-  version "2.4.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.4.tgz#21922d0d022d359b67cf573dcd4baed2d16af46b"
-  integrity sha512-qS5b9yPl99Ly42Zl8iZQV3vNYGonX/fPc869TOpzYgtXrmcBKnFGAlr0ACEeQ5DpDEDzWTV1FfV/xJQr5GRP8g==
+"@readr-media/react-embed-code-generator@2.4.0-alpha.14":
+  version "2.4.0-alpha.14"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.14.tgz#63dceea37baffef796fdece0827a14d03932b592"
+  integrity sha512-+TeP3smvtTx6MvODBIiBqz/JEwNJE3AxlYztjjuAX7h1aNvH+9nvLCHiJHjQ3kCLHrmuuiZktrnYu0AZIWMo+g==
   dependencies:
     "@readr-media/react-dropping-text" "1.0.5"
     "@readr-media/react-dual-slides" "1.0.1"
@@ -3737,6 +3737,7 @@
     "@readr-media/react-random-text-selector" "^1.0.2"
     "@readr-media/react-theatre" "^0.2.0-alpha.2"
     "@readr-media/react-three-story-points" "1.0.2"
+    "@readr-media/react-timeline" "^1.0.0-alpha.11"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
 
@@ -3846,6 +3847,14 @@
     react-intersection-observer "^9.3.5"
     three "^0.150.1"
     three-story-controls "^1.0.6"
+
+"@readr-media/react-timeline@^1.0.0-alpha.11":
+  version "1.0.0-alpha.11"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-timeline/-/react-timeline-1.0.0-alpha.11.tgz#f0be9b7fe4eb4ab554a8082d5d5d499692ec8e01"
+  integrity sha512-DDlZvNFlyUSy+Iusnma6le9Fwp6hO/TQNGuzhAkO09qSLFiXrlfy1w73ukKppW11gSRrjCXckpr0S+vOgfvWQA==
+  dependencies:
+    axios "^0.27.2"
+    draft-js "^0.11.7"
 
 "@sindresorhus/slugify@1.1.2", "@sindresorhus/slugify@^1.1.2":
   version "1.1.2"
