@@ -66,6 +66,50 @@ const listConfigurations = list({
         },
       },
     }),
+    mobileWidth: select({
+      type: 'integer',
+      label: '手機寬度',
+      options: [
+        { label: '576', value: 576 },
+        { label: '768', value: 768 },
+        { label: '960', value: 960 },
+        { label: '1200', value: 1200 },
+      ],
+      // We want to make sure new posts start off as a draft when they are created
+      defaultValue: 768,
+      // fields also have the ability to configure their appearance in the Admin UI
+      ui: {
+        displayMode: 'segmented-control',
+      },
+    }),
+    mobileObjectJson: json({
+      label: '手機物件 json',
+      //ui: {
+      //  createView: { fieldMode: 'hidden' },
+      //},
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor, contributor),
+          update: allowRoles(admin),
+          create: allowRoles(admin),
+          delete: allowRoles(admin),
+        },
+      },
+    }),
+    mobileAnimationJson: json({
+      label: '手機動畫 json',
+      //ui: {
+      //  createView: { fieldMode: 'hidden' },
+      //},
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor, contributor),
+          update: allowRoles(admin),
+          create: allowRoles(admin),
+          delete: allowRoles(admin),
+        },
+      },
+    }),
     theatreEditor: virtual({
       field: graphql.field({
         type: graphql.JSON,
@@ -117,7 +161,10 @@ const listConfigurations = list({
             'react-theatre',
             {
               animateJson: item?.animationJson ?? {},
+              mobileAnimateJson: item?.mobileAnimationJson ?? {},
               objectJson: item?.objectJson ?? [],
+              mobileObjectJson: item?.mobileObjectJson ?? [],
+              mobileSize: item?.mobileWidth ?? 768,
               type: item?.displayMode ?? 'scroll',
             },
             embedCodeWebpackAssets

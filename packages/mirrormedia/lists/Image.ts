@@ -161,19 +161,6 @@ const listConfigurations = list({
         },
       },
     }),
-    urlOriginal: text({
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
-        listView: {
-          fieldMode: 'read',
-        },
-      },
-    }),
     topicKeywords: text({
       label: 'topic keyword ( 首圖小slideshow上稿：@-網址 )',
       validation: { isRequired: false },
