@@ -228,11 +228,12 @@ const listConfigurations = list({
               embedCodeWebpackAssets
             )
           } else if (liveblog.displayType === 'timeline') {
-            return (
-              embedCodeGen.buildEmbeddedCode('react-timeline', {
-                liveblog,
+            return embedCodeGen.buildEmbeddedCode(
+              'react-timeline',
+              {
+                liveblog: liveblog,
                 fetchImageBaseUrl: config.images.gcsBaseUrl,
-              }),
+              },
               embedCodeWebpackAssets
             )
           }
