@@ -211,12 +211,12 @@ const listConfigurations = list({
           args,
           context
         ): Promise<string> => {
-          const take = 5
-          const liveblog = await context.query.Liveblog.findOne({
-            where: { id: `${item.id}` },
-            query: buildLiveBlogQuery(take),
-          })
-          if (liveblog.displayType === 'liveblog' || !liveblog.displayType) {
+          if (item.displayType === 'liveblog' || !item.displayType) {
+            const take = 5
+            const liveblog = await context.query.Liveblog.findOne({
+              where: { id: `${item.id}` },
+              query: buildLiveBlogQuery(take),
+            })
             return embedCodeGen.buildEmbeddedCode(
               'react-live-blog',
               {
@@ -227,7 +227,11 @@ const listConfigurations = list({
               },
               embedCodeWebpackAssets
             )
-          } else if (liveblog.displayType === 'timeline') {
+          } else if (item.displayType === 'timeline') {
+            const liveblog = await context.query.Liveblog.findOne({
+              where: { id: `${item.id}` },
+              query: buildLiveBlogQuery(),
+            })
             return embedCodeGen.buildEmbeddedCode(
               'react-timeline',
               {
