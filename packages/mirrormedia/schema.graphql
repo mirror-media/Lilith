@@ -1273,6 +1273,10 @@ type ResizedImages {
 }
 
 type ResizedWebPImages {
+  original: String
+  w480: String
+  w800: String
+  w1200: String
   w1600: String
   w2400: String
 }
