@@ -3695,10 +3695,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@readr-media/react-dropping-text@1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.5.tgz#49b6320e10bd00689fcd61fccebc044e797fdf43"
-  integrity sha512-HgT0DObr3ZLkMkce/OOsQaQ1CarhGikemwCN95B2kmyp71ROYzPFGFcNe1k0qlp0fyCQhjT0vCpd+WhmyWbB7w==
+"@readr-media/react-dropping-text@1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.6.tgz#b66c2dde91fd95af93da7bc0c1191b4f704635ed"
+  integrity sha512-0lA5gzi+DBU6fXZOC+Rd3mU0rYVgLha9eIUlKGIJwYmx3ucwT1BkT7l3E/lUgQB0Im4C6bOEXlrrKkWmwTiIAw==
   dependencies:
     matter-js "^0.19.0"
     react-intersection-observer "^9.3.5"
@@ -3720,12 +3720,12 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.4.0-alpha.17":
-  version "2.4.0-alpha.17"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.17.tgz#47d3f6feb614225c1386ba825d7afaae10e5c711"
-  integrity sha512-ETVDEssJwdTuq2Dv/CYIV3imzSEpBAlxBa/L5fN6oZScICUSDWSXDbUk9Ux7L1tohh4NIZb3bNOMa5shgPWODQ==
+"@readr-media/react-embed-code-generator@2.4.0-alpha.18":
+  version "2.4.0-alpha.18"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.18.tgz#f2798d6e616979b7b176d0453a828e9c99dd5c24"
+  integrity sha512-UGhMMQRJshTcIp7CiOo729ecOH1S6nZ9apG1x7ByaeL/HuUnf7R5BuHRpxT0odlKFZ9f4gJoplMeKynY04worQ==
   dependencies:
-    "@readr-media/react-dropping-text" "1.0.5"
+    "@readr-media/react-dropping-text" "1.0.6"
     "@readr-media/react-dual-slides" "1.0.1"
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
@@ -3735,7 +3735,7 @@
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
     "@readr-media/react-random-text-selector" "^1.0.2"
-    "@readr-media/react-theatre" "^0.2.0-alpha.5"
+    "@readr-media/react-theatre" "^0.2.0-alpha.6"
     "@readr-media/react-three-story-points" "1.0.2"
     "@readr-media/react-timeline" "^1.0.0-alpha.11"
     lodash "^4.17.21"
@@ -3828,10 +3828,10 @@
   dependencies:
     axios "^1.3.5"
 
-"@readr-media/react-theatre@^0.2.0-alpha.5":
-  version "0.2.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-theatre/-/react-theatre-0.2.0-alpha.5.tgz#9177721639be8228b4d0923c12dc34827947aa62"
-  integrity sha512-/L0rvdlAC5rFVhaaWB7c5qFecA1O6y/27ZMTxDJ8gPb+Fs0htAuxcmhZqNU0Nq3mu+CF4YpIBaCOuc7EGylDLw==
+"@readr-media/react-theatre@^0.2.0-alpha.6":
+  version "0.2.0-alpha.6"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-theatre/-/react-theatre-0.2.0-alpha.6.tgz#1d4511b5d1784412ab924637e065c80ab9ad8c1f"
+  integrity sha512-wrWEyCN8YelvMCN1WGBy5xorRLz2KzEzNTaF4KenngKAuv0cgoOCrXGHXAbOV7eokEv+R7WzQhp2ahd4HcU9sA==
   dependencies:
     "@theatre/core" "0.6.1"
     react-transition-group "^4.4.5"
