@@ -3720,10 +3720,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.4.0-alpha.23":
-  version "2.4.0-alpha.23"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.23.tgz#335e40363f3c533f6d7caf522b37a94d63655771"
-  integrity sha512-UnKKHQq7wgtAV/1VgEnSnmODKONa2nwRecsC9E2eMtOxzn6Tx9lxil/gj4Ok4PDKfm2XFadfqD7cEiICvIlunA==
+"@readr-media/react-embed-code-generator@2.4.0-alpha.24":
+  version "2.4.0-alpha.24"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.24.tgz#67b90eb5814c687608dd8f6636e1d9106ee727bd"
+  integrity sha512-0OOUVHCJPMmbif/9fLlUo0FeC/3BzoTT84th72N/ISavvdl+wloORIPGM/f/y7n6zfkDxpeBEUlqPQTHfvZAfg==
   dependencies:
     "@readr-media/react-dropping-text" "1.0.6"
     "@readr-media/react-dual-slides" "1.0.1"
@@ -3737,7 +3737,7 @@
     "@readr-media/react-random-text-selector" "^1.0.2"
     "@readr-media/react-theatre" "^0.2.0-alpha.10"
     "@readr-media/react-three-story-points" "1.0.2"
-    "@readr-media/react-timeline" "^1.0.0-alpha.13"
+    "@readr-media/react-timeline" "^1.0.0-alpha.14"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
 
@@ -3849,10 +3849,10 @@
     three "^0.150.1"
     three-story-controls "^1.0.6"
 
-"@readr-media/react-timeline@^1.0.0-alpha.13":
-  version "1.0.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-timeline/-/react-timeline-1.0.0-alpha.13.tgz#abf0f2b9f7c0269d619e3ef50b9b7916cd5eae57"
-  integrity sha512-g0iA1yOfH1AbaFAMa0BLMF/43dMU/K803AQPyTLYnSVnk75wKxTldIMZtTQaib3LVTuIA3p1zhjuIkAH/E1UPw==
+"@readr-media/react-timeline@^1.0.0-alpha.14":
+  version "1.0.0-alpha.14"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-timeline/-/react-timeline-1.0.0-alpha.14.tgz#80cd5820759069223143e153ebf9815694e6b0e2"
+  integrity sha512-xSX/6/zhl+HGhZtpsBqwMx/qFv6y1Ra8bGPpLd3EZdXEu9bn32yVVGMLrFxdZkKr4T0z8ok9yEHa2XTww/QtIw==
   dependencies:
     axios "^0.27.2"
     draft-js "^0.11.7"
