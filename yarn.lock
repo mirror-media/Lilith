@@ -3720,10 +3720,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.4.0-alpha.25":
-  version "2.4.0-alpha.25"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.25.tgz#fd1c226d8a726d9def7e82266d1c3b1aabad94a5"
-  integrity sha512-mWu/mT2rVJAhWyrwHYPnFyOFKlw/zKEUzTgHnFP3BNL2fhwIFnhDO6/Q/s8ahKTNHeuaIigIjo8gwJapYXJy9g==
+"@readr-media/react-embed-code-generator@2.4.0-alpha.26":
+  version "2.4.0-alpha.26"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.26.tgz#7646bf8bfc11471112467b288db57def4bbfed61"
+  integrity sha512-BKw0Y+rb6ClQmDxVPi7KCAw/VXb7bU8cYhwHWUo+fL1zaA81zfnZp+SY2dEKvTaWbxYY/EI79osRyfl/TGoVLg==
   dependencies:
     "@readr-media/react-dropping-text" "1.0.6"
     "@readr-media/react-dual-slides" "1.0.1"
@@ -3735,7 +3735,7 @@
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
     "@readr-media/react-random-text-selector" "^1.0.2"
-    "@readr-media/react-theatre" "^1.0.0-alpha.1"
+    "@readr-media/react-theatre" "^1.1.0"
     "@readr-media/react-three-story-points" "1.0.2"
     "@readr-media/react-timeline" "^1.0.0-alpha.14"
     lodash "^4.17.21"
@@ -3828,10 +3828,10 @@
   dependencies:
     axios "^1.3.5"
 
-"@readr-media/react-theatre@^1.0.0-alpha.1":
-  version "1.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-theatre/-/react-theatre-1.0.0-alpha.1.tgz#becdef914b48412cb09502f368b76ec61744abe0"
-  integrity sha512-DGEkVukMBofhJd0h1yPHX8Lm/SVvOBIH6zhLrLxsZTUkzOqlEZFQ9tPIoraCABi0//mGaW52CpmHN/B3uXdUsQ==
+"@readr-media/react-theatre@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-theatre/-/react-theatre-1.1.0.tgz#18a8e099f8d22439585403709f67ab5c0301fcbd"
+  integrity sha512-PnFJr81c5h1/TD0C3PjkHCxfXMAQ3xSTqf90HE478pDxjQbuH+RlM0dMCR6jVpQ1m/Z2+i2rTREMyi6CuN2zzA==
   dependencies:
     "@theatre/core" "0.6.1"
     react-transition-group "^4.4.5"
