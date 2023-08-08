@@ -84,12 +84,12 @@ const listConfigurations = list({
           resizedTargets.forEach((target) => {
             rtn[
               target
-            ] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+            ] = `https://${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
           })
 
           rtn[
             'original'
-          ] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}${extension}`
+          ] = `https://${config.googleCloudStorage.bucket}/images/${filename}${extension}`
           return Object.assign(empty, rtn)
         },
       }),
@@ -100,19 +100,39 @@ const listConfigurations = list({
     resizedWebp: virtual({
       field: graphql.field({
         type: graphql.object<{
+          original: string
+          w480: string
+          w800: string
+          w1200: string
           w1600: string
           w2400: string
         }>()({
           name: 'ResizedWebPImages',
           fields: {
+            original: graphql.field({ type: graphql.String }),
+            w480: graphql.field({ type: graphql.String }),
+            w800: graphql.field({ type: graphql.String }),
+            w1200: graphql.field({ type: graphql.String }),
             w1600: graphql.field({ type: graphql.String }),
             w2400: graphql.field({ type: graphql.String }),
           },
         }),
         resolve(item: Record<string, unknown>) {
           const empty = {
+            original: '',
+            w480: '',
+            w800: '',
+            w1200: '',
             w1600: '',
             w2400: '',
+          }
+
+          // For backward compatibility,
+          // this image item is uploaded via `GCSFile` custom field.
+          if (item?.urlOriginal) {
+            return Object.assign(empty, {
+              original: item.urlOriginal,
+            })
           }
 
           const rtn: Record<string, string> = {}
@@ -131,19 +151,25 @@ const listConfigurations = list({
               ? item.imageFile_height
               : 0
 
-          const resizedTargets = width >= height ? ['w2400'] : ['w1600']
+          const resizedTargets =
+            width >= height
+              ? ['w480', 'w800', 'w1600', 'w2400']
+              : ['w480', 'w800', 'w1200', 'w1600']
 
           resizedTargets.forEach((target) => {
             rtn[
               target
-            ] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+            ] = `https://${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
           })
 
+          rtn[
+            'original'
+          ] = `https://${config.googleCloudStorage.bucket}/images/${filename}${extension}`
           return Object.assign(empty, rtn)
         },
       }),
       ui: {
-        query: '{ w1600 w2400 }',
+        query: '{ original w480 w800 w1200 w1600 w2400 }',
       },
     }),
     file: file({

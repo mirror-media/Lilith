@@ -3695,10 +3695,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@readr-media/react-dropping-text@1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.5.tgz#49b6320e10bd00689fcd61fccebc044e797fdf43"
-  integrity sha512-HgT0DObr3ZLkMkce/OOsQaQ1CarhGikemwCN95B2kmyp71ROYzPFGFcNe1k0qlp0fyCQhjT0vCpd+WhmyWbB7w==
+"@readr-media/react-dropping-text@1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.6.tgz#b66c2dde91fd95af93da7bc0c1191b4f704635ed"
+  integrity sha512-0lA5gzi+DBU6fXZOC+Rd3mU0rYVgLha9eIUlKGIJwYmx3ucwT1BkT7l3E/lUgQB0Im4C6bOEXlrrKkWmwTiIAw==
   dependencies:
     matter-js "^0.19.0"
     react-intersection-observer "^9.3.5"
@@ -3720,24 +3720,24 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.4.0-alpha.17":
-  version "2.4.0-alpha.17"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.17.tgz#47d3f6feb614225c1386ba825d7afaae10e5c711"
-  integrity sha512-ETVDEssJwdTuq2Dv/CYIV3imzSEpBAlxBa/L5fN6oZScICUSDWSXDbUk9Ux7L1tohh4NIZb3bNOMa5shgPWODQ==
+"@readr-media/react-embed-code-generator@2.4.0-alpha.25":
+  version "2.4.0-alpha.25"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.25.tgz#fd1c226d8a726d9def7e82266d1c3b1aabad94a5"
+  integrity sha512-mWu/mT2rVJAhWyrwHYPnFyOFKlw/zKEUzTgHnFP3BNL2fhwIFnhDO6/Q/s8ahKTNHeuaIigIjo8gwJapYXJy9g==
   dependencies:
-    "@readr-media/react-dropping-text" "1.0.5"
+    "@readr-media/react-dropping-text" "1.0.6"
     "@readr-media/react-dual-slides" "1.0.1"
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
     "@readr-media/react-full-screen-video" "1.0.5-beta.0"
     "@readr-media/react-karaoke" "2.0.1"
-    "@readr-media/react-live-blog" "1.1.2"
+    "@readr-media/react-live-blog" "1.1.9"
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
     "@readr-media/react-random-text-selector" "^1.0.2"
-    "@readr-media/react-theatre" "^0.2.0-alpha.5"
+    "@readr-media/react-theatre" "^1.0.0-alpha.1"
     "@readr-media/react-three-story-points" "1.0.2"
-    "@readr-media/react-timeline" "^1.0.0-alpha.11"
+    "@readr-media/react-timeline" "^1.0.0-alpha.14"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
 
@@ -3786,10 +3786,10 @@
     styled-components "5.3.5"
     uuid "^8.3.2"
 
-"@readr-media/react-live-blog@1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-live-blog/-/react-live-blog-1.1.2.tgz#5fc02072efadc316bd1d0cee5a0ae2993024b96d"
-  integrity sha512-F/X/ZiuwUr/OK5xN3qu3vytnZK8jfpe6yXJ0XLfl57FnX8pNGL/iQ3BJ6xZNNIqkLcsYCAswAUi4HxxYDFZVog==
+"@readr-media/react-live-blog@1.1.9":
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-live-blog/-/react-live-blog-1.1.9.tgz#9081f85cce42c37a1a905408a4b1f30fc42e8a46"
+  integrity sha512-+xgZT3qFkEiT8WDFKKQKI3yJR9FDsLY8B3PFpOBFf2YhgwTm2/5F5QIMgd7nhAs+lGINRfdQ5zxS9wkkXlS/Hw==
   dependencies:
     axios "^0.27.2"
     draft-js "^0.11.7"
@@ -3828,10 +3828,10 @@
   dependencies:
     axios "^1.3.5"
 
-"@readr-media/react-theatre@^0.2.0-alpha.5":
-  version "0.2.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-theatre/-/react-theatre-0.2.0-alpha.5.tgz#9177721639be8228b4d0923c12dc34827947aa62"
-  integrity sha512-/L0rvdlAC5rFVhaaWB7c5qFecA1O6y/27ZMTxDJ8gPb+Fs0htAuxcmhZqNU0Nq3mu+CF4YpIBaCOuc7EGylDLw==
+"@readr-media/react-theatre@^1.0.0-alpha.1":
+  version "1.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-theatre/-/react-theatre-1.0.0-alpha.1.tgz#becdef914b48412cb09502f368b76ec61744abe0"
+  integrity sha512-DGEkVukMBofhJd0h1yPHX8Lm/SVvOBIH6zhLrLxsZTUkzOqlEZFQ9tPIoraCABi0//mGaW52CpmHN/B3uXdUsQ==
   dependencies:
     "@theatre/core" "0.6.1"
     react-transition-group "^4.4.5"
@@ -3849,10 +3849,10 @@
     three "^0.150.1"
     three-story-controls "^1.0.6"
 
-"@readr-media/react-timeline@^1.0.0-alpha.11":
-  version "1.0.0-alpha.11"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-timeline/-/react-timeline-1.0.0-alpha.11.tgz#f0be9b7fe4eb4ab554a8082d5d5d499692ec8e01"
-  integrity sha512-DDlZvNFlyUSy+Iusnma6le9Fwp6hO/TQNGuzhAkO09qSLFiXrlfy1w73ukKppW11gSRrjCXckpr0S+vOgfvWQA==
+"@readr-media/react-timeline@^1.0.0-alpha.14":
+  version "1.0.0-alpha.14"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-timeline/-/react-timeline-1.0.0-alpha.14.tgz#80cd5820759069223143e153ebf9815694e6b0e2"
+  integrity sha512-xSX/6/zhl+HGhZtpsBqwMx/qFv6y1Ra8bGPpLd3EZdXEu9bn32yVVGMLrFxdZkKr4T0z8ok9yEHa2XTww/QtIw==
   dependencies:
     axios "^0.27.2"
     draft-js "^0.11.7"
