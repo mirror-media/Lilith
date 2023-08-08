@@ -104,8 +104,8 @@ const listConfigurations = list({
             {
               jsonUrls: item?.json ?? [],
               backgroundColor: item?.backgroundColor ?? '#000000',
-              circleUrl: item.imageFile_id
-                ? `${urlPrefix}/images/${item.imageFile_id}.${item.highlightDesktop_extension}`
+              circleUrl: item.highlightDesktop_id
+                ? `${urlPrefix}/images/${item.highlightDesktop_id}.${item.highlightDesktop_extension}`
                 : undefined,
               circleUrlMobile: item.highlightMobile_id
                 ? `${urlPrefix}/images/${item.highlightMobile_id}.${item.highlightMobile_extension}`
