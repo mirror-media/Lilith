@@ -7,6 +7,7 @@ import path from 'path'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache'
+import bodyParser from 'body-parser' //extend JSON fileSize limit
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -320,6 +321,9 @@ export default withAuth(
           // I think it is a bug for `@keystone/core`.
           express.static(path.resolve(process.cwd(), './public/theatre'))
         )
+        // extend JSON fileSize limit
+        app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
+        app.use(bodyParser.json({ limit: '50mb' }))
       },
     },
   })
