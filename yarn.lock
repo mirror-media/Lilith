@@ -3720,10 +3720,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.4.0-alpha.26":
-  version "2.4.0-alpha.26"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.26.tgz#7646bf8bfc11471112467b288db57def4bbfed61"
-  integrity sha512-BKw0Y+rb6ClQmDxVPi7KCAw/VXb7bU8cYhwHWUo+fL1zaA81zfnZp+SY2dEKvTaWbxYY/EI79osRyfl/TGoVLg==
+"@readr-media/react-embed-code-generator@2.4.0-alpha.27":
+  version "2.4.0-alpha.27"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.0-alpha.27.tgz#50ccf751908ea5b36132ac97c9809715a7c9e293"
+  integrity sha512-qtNjOwK5WEc55a53xrIRNEU8J9WeC6TRGn2qQJeRwdoJ/YrxSRkVcI6y/P3P6lw8Q3Sml34ilREHFi2PjxtjVQ==
   dependencies:
     "@readr-media/react-dropping-text" "1.0.6"
     "@readr-media/react-dual-slides" "1.0.1"
@@ -3737,7 +3737,7 @@
     "@readr-media/react-random-text-selector" "^1.0.2"
     "@readr-media/react-theatre" "^1.1.0"
     "@readr-media/react-three-story-points" "1.0.2"
-    "@readr-media/react-timeline" "^1.0.0-alpha.14"
+    "@readr-media/react-timeline" "^1.0.0-alpha.15"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
 
@@ -3849,10 +3849,10 @@
     three "^0.150.1"
     three-story-controls "^1.0.6"
 
-"@readr-media/react-timeline@^1.0.0-alpha.14":
-  version "1.0.0-alpha.14"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-timeline/-/react-timeline-1.0.0-alpha.14.tgz#80cd5820759069223143e153ebf9815694e6b0e2"
-  integrity sha512-xSX/6/zhl+HGhZtpsBqwMx/qFv6y1Ra8bGPpLd3EZdXEu9bn32yVVGMLrFxdZkKr4T0z8ok9yEHa2XTww/QtIw==
+"@readr-media/react-timeline@^1.0.0-alpha.15":
+  version "1.0.0-alpha.15"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-timeline/-/react-timeline-1.0.0-alpha.15.tgz#d44ee20c569448bf770da2ef81f4e265fcdb4b5d"
+  integrity sha512-P1vHjQVBi2e0FrYGL1J83NwRJiakvx2zM06FEpb0VBkDDUgvbTHBTxyRbkEe95NfqNZHqNNhhRkIUJQXbALjKw==
   dependencies:
     axios "^0.27.2"
     draft-js "^0.11.7"
@@ -8189,7 +8189,7 @@ new-github-issue-url@0.2.1:
   resolved "https://registry.yarnpkg.com/new-github-issue-url/-/new-github-issue-url-0.2.1.tgz#e17be1f665a92de465926603e44b9f8685630c1d"
   integrity sha512-md4cGoxuT4T4d/HDOXbrUHkTKrp/vp+m3aOA7XXVYwNsUNMK49g3SQicTSeV5GIz/5QVGAeYRAOlyp9OvlgsYA==
 
-next@13.3.4, next@^13.3.0:
+next@^13.3.0:
   version "13.3.4"
   resolved "https://registry.yarnpkg.com/next/-/next-13.3.4.tgz#ce2d96053cabfca092cc829941efe5dfbe015d16"
   integrity sha512-sod7HeokBSvH5QV0KB+pXeLfcXUlLrGnVUXxHpmhilQ+nQYT3Im2O8DswD5e4uqbR8Pvdu9pcWgb1CbXZQZlmQ==
@@ -9019,13 +9019,13 @@ react-day-picker@^8.0.4:
   resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.2.0.tgz#f6cac34d53e1ce963e561940e33fadec874e48cb"
   integrity sha512-6sI9+qk1xXSvV94WOz0H4FVGFaGquwMLQGw9WXoOZajMY/CVrLsautRFwkdjZ9jWj7WZR2Se1mTMrEpmcB6BEQ==
 
-react-dom@18.2.0, react-dom@^18.1.0, react-dom@^18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
-  integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
+react-dom@18.1.0, react-dom@^18.1.0, react-dom@^18.2.0:
+  version "18.1.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.1.0.tgz#7f6dd84b706408adde05e1df575b3a024d7e8a2f"
+  integrity sha512-fU1Txz7Budmvamp7bshe4Zi32d0ll7ect+ccxNu9FlObT605GOEB8BfO4tmRJ39R5Zj831VCpvQ05QPBW5yb+w==
   dependencies:
     loose-envify "^1.1.0"
-    scheduler "^0.23.0"
+    scheduler "^0.22.0"
 
 react-fast-compare@^3.0.1:
   version "3.2.0"
@@ -9113,10 +9113,10 @@ react-transition-group@^4.3.0, react-transition-group@^4.4.2, react-transition-g
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react@18.1.0, react@18.2.0, react@^18.1.0, react@^18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
-  integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
+react@18.1.0, react@^18.1.0, react@^18.2.0:
+  version "18.1.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-18.1.0.tgz#6f8620382decb17fdc5cc223a115e2adbf104890"
+  integrity sha512-4oL8ivCz5ZEPyclFQXaNksK3adutVS8l2xzZU0cqEFrE9Sb7fC0EFK5uEk74wIreL1DERyjvsU915j1pcT2uEQ==
   dependencies:
     loose-envify "^1.1.0"
 
@@ -9410,10 +9410,10 @@ saslprep@^1.0.3:
   dependencies:
     sparse-bitfield "^3.0.3"
 
-scheduler@^0.23.0:
-  version "0.23.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.0.tgz#ba8041afc3d30eb206a487b6b384002e4e61fdfe"
-  integrity sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==
+scheduler@^0.22.0:
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.22.0.tgz#83a5d63594edf074add9a7198b1bae76c3db01b8"
+  integrity sha512-6QAm1BgQI88NPYymgGQLCZgvep4FyePDWFpXVK+zNSUgHwlqpJy8VEh8Et0KxTACS4VWwMousBElAZOH9nkkoQ==
   dependencies:
     loose-envify "^1.1.0"
 
