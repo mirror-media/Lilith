@@ -13,21 +13,23 @@ import Magazine from './Magazine'
 import Partner from './Partner'
 import Topic from './Topic'
 import External from './External'
+import Header from './Header'
 
 export const listDefinition = {
-  Post,
+  AudioFile: Audio,
+  Category,
+  Contact,
   EditorChoice,
   Event,
   External,
+  Header,
+  Magazine,
+  Partner,
+  Photo: Image,
+  Post,
+  Section,
   Tag,
   Topic,
-  Magazine,
-  AudioFile: Audio,
-  Photo: Image,
-  Video,
-  Section,
-  Category,
-  Partner,
-  Contact,
   User,
+  Video,
 }
