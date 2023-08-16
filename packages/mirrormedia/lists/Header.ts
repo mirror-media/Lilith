@@ -24,13 +24,52 @@ const listConfigurations = list({
     }),
   },
   hooks: {
-    validateInput: ({ resolvedData, addValidationError }) => {
-      const { section } = resolvedData
-      const { category } = resolvedData
-      if (section !== undefined && category !== undefined) {
-        addValidationError('大分類跟小分類只要選擇其中一個')
-      } else if (section === undefined && category === undefined) {
-        addValidationError('大分類跟小分類至少選擇其中一個')
+    validateInput: ({ operation, inputData, item, addValidationError }) => {
+      const { section } = inputData
+      const { category } = inputData
+
+      switch (operation) {
+        case 'create': {
+          if (section !== undefined && category !== undefined) {
+            addValidationError('大分類跟小分類只要選擇其中一個')
+          } else if (section === undefined && category === undefined) {
+            addValidationError('大分類跟小分類至少選擇其中一個')
+          }
+          break
+        }
+        case 'update': {
+          const sectionId = item.sectionId
+          const categoryId = item.categoryId
+
+          if (sectionId !== null) {
+            if (
+              section?.disconnect !== undefined &&
+              category?.connect === undefined
+            ) {
+              addValidationError('大分類跟小分類至少選擇其中一個')
+            } else if (
+              section?.disconnect === undefined &&
+              category?.connect !== undefined
+            ) {
+              addValidationError('大分類跟小分類只要選擇其中一個')
+            }
+          } else if (categoryId !== null) {
+            if (
+              category?.disconnect !== undefined &&
+              section?.connect === undefined
+            ) {
+              addValidationError('大分類跟小分類至少選擇其中一個')
+            } else if (
+              category?.disconnect === undefined &&
+              section?.connect !== undefined
+            ) {
+              addValidationError('大分類跟小分類只要選擇其中一個')
+            }
+          }
+          break
+        }
+        default:
+          break
       }
     },
   },
