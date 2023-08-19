@@ -16,7 +16,6 @@ const {
   VideoBlock,
   AudioBlock,
   YoutubeBlock,
-  AmpSlideshowBlockV2,
 } = blockRenderers
 
 const AtomicBlock = (props) => {
@@ -37,9 +36,7 @@ const AtomicBlock = (props) => {
       return SlideshowBlock(entity)
     }
     case 'slideshow-v2': {
-      return contentLayout === 'amp'
-        ? AmpSlideshowBlockV2(entity)
-        : SlideshowBlockV2(entity)
+      return SlideshowBlockV2(entity, contentLayout)
     }
     case 'EMBEDDEDCODE': {
       return EmbeddedCodeBlock(entity, contentLayout)

@@ -89,7 +89,11 @@ const Desc = styled.figcaption`
   overflow: scroll;
 `
 
-export function AmpSlideshowBlockV2(entity: EntityInstance) {
+export default function AmpSlideshowBlockV2({
+  entity,
+}: {
+  entity: EntityInstance
+}) {
   const { images = [], delay = 2 } = entity.getData()
 
   return (

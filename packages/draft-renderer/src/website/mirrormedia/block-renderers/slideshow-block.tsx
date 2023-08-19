@@ -6,6 +6,8 @@ import CustomImage from '@readr-media/react-image'
 import defaultImage from '../assets/default-og-img.png'
 import loadingImage from '../assets/loading.gif'
 
+import AmpSlideshowBlockV2 from './amp/amp-slideshow-block'
+
 const Image = styled.img`
   width: 100%;
 `
@@ -152,7 +154,10 @@ export function SlideshowBlock(entity: EntityInstance) {
  * Inspired by [Works of Claudia Conceicao](https://codepen.io/cconceicao/pen/PBQawy),
  * [twreporter slideshow component](https://github.com/twreporter/twreporter-npm-packages/blob/master/packages/react-article-components/src/components/body/slideshow/index.js)
  */
-export function SlideshowBlockV2(entity: EntityInstance) {
+export function SlideshowBlockV2(
+  entity: EntityInstance,
+  contentLayout: string
+) {
   const slidesBoxRef = useRef<HTMLDivElement>(null)
   /** Current index of the displayed slide */
   const [indexOfCurrentImage, setIndexOfCurrentImage] = useState(0)
@@ -170,6 +175,10 @@ export function SlideshowBlockV2(entity: EntityInstance) {
   )
   const slidesLength = images.length
   const descOfCurrentImage = images?.[indexOfCurrentImage]?.desc
+
+  if (contentLayout === 'amp') {
+    return <AmpSlideshowBlockV2 entity={entity} />
+  }
 
   /**
    * Clone first and last slide.
