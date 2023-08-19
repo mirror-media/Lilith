@@ -207,7 +207,7 @@ export function ImageBlock(
   const imageJsx = isAmp ? (
     <AmpImgWrapper>
       <amp-img src={resized?.original} alt={name} layout="fill">
-        <amp-img src={defaultImage} alt={name}></amp-img>
+        <amp-img src={defaultImage} alt={name} layout="fill"></amp-img>
       </amp-img>
     </AmpImgWrapper>
   ) : (
