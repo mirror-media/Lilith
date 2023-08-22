@@ -28,6 +28,7 @@ enum PostStatus {
   Draft = 'draft',
   Scheduled = 'scheduled',
   Archived = 'archived',
+  Invisible = 'invisible',
 }
 
 type Session = {
@@ -41,8 +42,8 @@ function filterPosts(roles: string[]) {
   return ({ session }: { session: Session }) => {
     switch (envVar.accessControlStrategy) {
       case 'gql': {
-        // Only expose `published` posts
-        return { state: { equals: PostStatus.Published } }
+        // Expose `published` and `invisible` posts
+        return { state: { in: [PostStatus.Published, PostStatus.Invisible] } }
       }
       case 'preview': {
         // Expose all posts, including `published`, `draft` and `archived` posts
