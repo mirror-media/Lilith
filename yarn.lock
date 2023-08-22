@@ -3727,10 +3727,10 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.4.1-alpha.1":
-  version "2.4.1-alpha.1"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.1-alpha.1.tgz#dd30faedb6d1cdef2adad7682449ddd982d6242a"
-  integrity sha512-UNF26Ab/yaNulKEp+00kew+CF6r75roIunp5eLHGwrwPdnwRLKHLOfUVbj61AE8Ro48bu2cAxjqlpG0KtEQklQ==
+"@readr-media/react-embed-code-generator@2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.1.tgz#5c6d8d0191d1173f50a8b9b9a819f22bda8417c5"
+  integrity sha512-+/rZKinVkioPatzEjo/YEgRQKQ3w9DNnQ/YscDE0MfRtCy/2za2SPcsk6hNltIwTl00loyxgPLZTLD7z7l7Wcg==
   dependencies:
     "@readr-media/react-dropping-text" "1.0.6"
     "@readr-media/react-dual-slides" "1.0.1"
@@ -3744,7 +3744,7 @@
     "@readr-media/react-random-text-selector" "^1.0.2"
     "@readr-media/react-theatre" "^1.1.0"
     "@readr-media/react-three-story-points" "1.0.2"
-    "@readr-media/react-timeline" "1.1.0-alpha.1"
+    "@readr-media/react-timeline" "1.1.0"
     lodash "^4.17.21"
     serialize-javascript "^6.0.0"
 
@@ -3856,10 +3856,10 @@
     three "^0.150.1"
     three-story-controls "^1.0.6"
 
-"@readr-media/react-timeline@1.1.0-alpha.1":
-  version "1.1.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-timeline/-/react-timeline-1.1.0-alpha.1.tgz#9b8d16b202dfedbcd08a2cda0c145586a6a58527"
-  integrity sha512-3yNI+DZuJmEAs7mIZJXt4qCHTE8KQqSD01XV1y099BhIpiyzhnN14qGMsMYBHlRd2Zx2a7S62uh2bKwH3ZyVUg==
+"@readr-media/react-timeline@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-timeline/-/react-timeline-1.1.0.tgz#d688cd94bdc7e41725433d7460fde5c156b62027"
+  integrity sha512-1NbYKzQgwhDbLnF6GC+rB5eNuVvUOuYBYGXSVQhmlk4d/TbJJKRklpnAonZXPZwmfVkeEdQFfENhE85iv1sESw==
   dependencies:
     axios "^0.27.2"
     draft-js "^0.11.7"
