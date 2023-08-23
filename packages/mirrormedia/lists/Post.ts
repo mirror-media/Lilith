@@ -149,6 +149,11 @@ const listConfigurations = list({
     heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['imageFile'],
+        inlineConnect: true,
+      },
     }),
     heroCaption: text({
       label: '首圖圖說',
