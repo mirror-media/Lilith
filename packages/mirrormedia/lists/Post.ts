@@ -90,6 +90,9 @@ const listConfigurations = list({
       label: '大分類',
       ref: 'Section.posts',
       many: true,
+      ui: {
+        labelField: 'slug',
+      },
     }),
     manualOrderOfSections: json({
       label: '大分類手動排序結果',
@@ -98,6 +101,9 @@ const listConfigurations = list({
       label: '小分類',
       ref: 'Category.posts',
       many: true,
+      ui: {
+        labelField: 'slug',
+      },
     }),
     writers: relationship({
       label: '作者',
@@ -143,6 +149,11 @@ const listConfigurations = list({
     heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['imageFile'],
+        inlineConnect: true,
+      },
     }),
     heroCaption: text({
       label: '首圖圖說',
@@ -274,6 +285,9 @@ const listConfigurations = list({
       label: '相關文章',
       ref: 'Post',
       many: true,
+      ui: {
+        labelField: 'slug',
+      },
     }),
     manualOrderOfRelateds: json({
       label: '相關文章手動排序結果',
@@ -352,7 +366,7 @@ const listConfigurations = list({
   ui: {
     labelField: 'title',
     listView: {
-      initialColumns: ['id', 'slug', 'state'],
+      initialColumns: ['title', 'slug', 'state', 'publishedDate'],
       initialSort: { field: 'publishedDate', direction: 'DESC' },
       pageSize: 50,
     },
