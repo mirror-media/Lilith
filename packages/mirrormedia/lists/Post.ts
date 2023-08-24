@@ -67,7 +67,6 @@ const listConfigurations = list({
     }),
     title: text({
       label: '標題',
-      validation: { isRequired: true },
     }),
     state: select({
       label: '狀態',
@@ -85,6 +84,7 @@ const listConfigurations = list({
       isIndexed: true,
       label: '發佈日期',
       validation: { isRequired: true },
+      defaultValue: { kind: 'now' },
     }),
     sections: relationship({
       label: '大分類',
@@ -382,8 +382,11 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    resolveInput: async ({ resolvedData }) => {
-      const { content, brief } = resolvedData
+    resolveInput: async ({ operation, resolvedData }) => {
+      const { publishedDate, content, brief } = resolvedData
+      if (operation === 'create') {
+        resolvedData.publishedDate = new Date(publishedDate.setSeconds(0, 0))
+      }
       if (content) {
         resolvedData.apiData = customFields.draftConverter
           .convertToApiData(content)
