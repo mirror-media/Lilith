@@ -59,10 +59,10 @@ export default withAuth(
       },
     },
     server: {
-	  healthCheck: {
-	    path: '/healthz',
-	    data: { status: 'healthy' },
-	  },
+      healthCheck: {
+        path: '/health_check',
+        data: { status: 'healthy' },
+      },
       extendExpressApp: (app, context) => {
         // This middleware is available in Express v4.16.0 onwards
         // Set to 50mb because DraftJS Editor playload could be really large

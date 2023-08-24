@@ -89,7 +89,11 @@ const Desc = styled.figcaption`
   overflow: scroll;
 `
 
-export function AmpSlideshowBlockV2(entity: EntityInstance) {
+export default function AmpSlideshowBlockV2({
+  entity,
+}: {
+  entity: EntityInstance
+}) {
   const { images = [], delay = 2 } = entity.getData()
 
   return (
@@ -109,10 +113,17 @@ export function AmpSlideshowBlockV2(entity: EntityInstance) {
               <SlideImage>
                 <amp-img
                   class="contain"
-                  src={slide?.resized?.original || defaultImage}
+                  src={slide?.resized?.original}
                   layout="fill"
                   alt={slide?.name || 'slide'}
-                ></amp-img>
+                >
+                  <amp-img
+                    class="contain"
+                    src={defaultImage}
+                    layout="fill"
+                    alt={slide?.name || 'slide'}
+                  ></amp-img>
+                </amp-img>
               </SlideImage>
               <Desc>{slide.desc}</Desc>
             </figure>
