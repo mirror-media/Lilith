@@ -3702,10 +3702,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@readr-media/react-dropping-text@1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.6.tgz#b66c2dde91fd95af93da7bc0c1191b4f704635ed"
-  integrity sha512-0lA5gzi+DBU6fXZOC+Rd3mU0rYVgLha9eIUlKGIJwYmx3ucwT1BkT7l3E/lUgQB0Im4C6bOEXlrrKkWmwTiIAw==
+"@readr-media/react-dropping-text@1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.7.tgz#f30897154e721386d35fe69c6f1d1cd4ba38723e"
+  integrity sha512-49YgIgPrqmI/4wo1d+qBqLs+V7yo0oYbXBMYpfhEMUdJb2/E0eBfPp5mlNMGmmdKnodtfI+V7t8bZF5iFS/qXg==
   dependencies:
     matter-js "^0.19.0"
     react-intersection-observer "^9.3.5"
@@ -3726,12 +3726,12 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.4.3-alpha.1":
-  version "2.4.3-alpha.1"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.3-alpha.1.tgz#092054926b2b1f9469b4570fdbd11c15823223a0"
-  integrity sha512-a9gTRzXDI1PNEhcyjeQUHXzFABIGF3WTbVxShXjaGwg9p3nLEZ8s9a6j7eO7bNFU0wPIn0GoeY11Ilbj8GVEzQ==
+"@readr-media/react-embed-code-generator@2.4.3-alpha.2":
+  version "2.4.3-alpha.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.3-alpha.2.tgz#2e6f9cf5a87946f800da61b09c7316f7e978b086"
+  integrity sha512-RchOIjhjiG3DJHqZ1MWTeQbkgOKUloD4Wqa7QJ/avH8ADKXF07WzVAEcyL1qiH/qKZ8/qpmju75nn4UlL1qVlQ==
   dependencies:
-    "@readr-media/react-dropping-text" "1.0.6"
+    "@readr-media/react-dropping-text" "1.0.7"
     "@readr-media/react-dual-slides" "^1.1.0"
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
