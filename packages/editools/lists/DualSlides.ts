@@ -34,10 +34,6 @@ const listConfigurations = list({
         },
       ],
     }),
-    shiftLeft: checkbox({
-      label: 'READr 版型（向左移動）',
-      defaultValue: false,
-    }),
     helper: relationship({
       ref: 'ComponentHelp',
     }),
