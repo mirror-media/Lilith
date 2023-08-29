@@ -21,7 +21,6 @@ ENV APP_DIR /app
 ## Set fallback mount directory
 ENV MNT_DIR /app/gcs
 ENV HOST 0.0.0.0
-ENV PORT 3000
 
 RUN mkdir -p $APP_DIR
 
