@@ -7,6 +7,7 @@ RUN set -e; \
     gnupg2 \
     tini \
     openssl \
+    lsof \
     lsb-release; \
     gcsFuseRepo=gcsfuse-`lsb_release -c -s`; \
     echo "deb http://packages.cloud.google.com/apt $gcsFuseRepo main" | \
@@ -27,10 +28,14 @@ RUN mkdir -p $APP_DIR
 
 WORKDIR $APP_DIR
 
-COPY . $APP_DIR
+COPY package.json yarn.lock $APP_DIR/
 
-## Install application dependencies
-RUN yarn install
+## Install application dependencies without `yarn postinstall`
+RUN SKIP_POSTINSTALL=1 yarn install
+
+COPY . $APP_DIR/
+
+## Run yarn postinstall
 RUN yarn postinstall
 
 ## Build application bundles

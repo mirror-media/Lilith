@@ -694,7 +694,6 @@ model DualSlide {
   id          Int            @id @default(autoincrement())
   name        String         @default("")
   slides      Json?          @default("[{\"content\":[\"\"],\"imgSrc\":\"\"}]")
-  shiftLeft   Boolean        @default(false)
   helper      ComponentHelp? @relation("DualSlide_helper", fields: [helperId], references: [id])
   helperId    Int?           @map("helper")
   createdAt   DateTime?
@@ -794,7 +793,6 @@ model Theatre {
   id                  Int       @id @default(autoincrement())
   name                String    @default("")
   displayMode         String?   @default("scroll")
-  shiftLeft           Boolean   @default(false)
   objectJson          Json?
   animationJson       Json?
   mobileWidth         Int?      @default(768)
