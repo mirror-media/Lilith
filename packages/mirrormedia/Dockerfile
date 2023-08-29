@@ -33,6 +33,8 @@ RUN SKIP_POSTINSTALL=1 yarn install
 
 COPY . $APP_DIR/
 
+RUN ls
+RUN ls /app/
 ## Run yarn postinstall
 RUN yarn postinstall
 
