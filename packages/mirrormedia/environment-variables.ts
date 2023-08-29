@@ -27,6 +27,7 @@ export default {
   isUIDisabled: IS_UI_DISABLED === 'true',
   accessControlStrategy: ACCESS_CONTROL_STRATEGY || 'cms', // the value could be one of 'cms', 'gql' or 'preview'
   previewServerOrigin: PREVIEW_SERVER_ORIGIN || 'http://localhost:3001',
+  keystoneServerPort: parseInt(process.env.KEYSTONE_SERVER_PORT || '3000'),
   database: {
     provider:
       DATABASE_PROVIDER === 'sqlite'

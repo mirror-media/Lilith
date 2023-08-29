@@ -64,6 +64,8 @@ export default withAuth(
         path: '/health_check',
         data: { status: 'healthy' },
       },
+	  port: envVar.keystoneServerPort,
+	  maxFileSize: 200 * 1024 * 1024,
       extendExpressApp: (app, context) => {
         // This middleware is available in Express v4.16.0 onwards
         // Set to 50mb because DraftJS Editor playload could be really large

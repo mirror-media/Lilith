@@ -45,7 +45,7 @@ RUN yarn cache clean
 ## Ensure the script is executable
 RUN chmod +x run.sh
 
-EXPOSE 3000
+EXPOSE 3002 3000
 
 ## Use tini to manage zombie processes and signal forwarding
 ## https://github.com/krallin/tini
