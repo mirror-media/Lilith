@@ -7,7 +7,6 @@ RUN set -e; \
     gnupg2 \
     tini \
     openssl \
-    lsof \
     lsb-release; \
     gcsFuseRepo=gcsfuse-`lsb_release -c -s`; \
     echo "deb http://packages.cloud.google.com/apt $gcsFuseRepo main" | \
@@ -22,15 +21,20 @@ ENV APP_DIR /app
 ## Set fallback mount directory
 ENV MNT_DIR /app/gcs
 ENV HOST 0.0.0.0
+ENV PORT 3000
 
 RUN mkdir -p $APP_DIR
 
 WORKDIR $APP_DIR
 
-COPY . $APP_DIR
+COPY package.json yarn.lock $APP_DIR/
 
 ## Install application dependencies
-RUN yarn install
+RUN SKIP_POSTINSTALL=1 yarn install
+
+COPY . $APP_DIR/
+
+## Run yarn postinstall
 RUN yarn postinstall
 
 ## Build application bundles
@@ -41,7 +45,7 @@ RUN yarn cache clean
 ## Ensure the script is executable
 RUN chmod +x run.sh
 
-EXPOSE 3002 3000
+EXPOSE 3000
 
 ## Use tini to manage zombie processes and signal forwarding
 ## https://github.com/krallin/tini
