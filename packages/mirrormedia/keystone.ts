@@ -6,6 +6,7 @@ import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createPreviewMiniApp } from './express-mini-apps/preview/app'
+import bodyParser from 'body-parser' //extend JSON fileSize limit
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -66,8 +67,8 @@ export default withAuth(
       extendExpressApp: (app, context) => {
         // This middleware is available in Express v4.16.0 onwards
         // Set to 50mb because DraftJS Editor playload could be really large
-        const jsonBodyParser = express.json({ limit: '500mb' })
-        app.use(jsonBodyParser)
+        app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
+        app.use(bodyParser.json({ limit: '50mb' }))
 
         if (envVar.accessControlStrategy === 'cms') {
           app.use(
