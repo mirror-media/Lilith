@@ -6,6 +6,7 @@
     "dev": "keystone dev",
     "start": "keystone start",
     "db-migrate": "keystone prisma migrate deploy",
+    "start-http2-proxy-server": "node http2-proxy-server",
     "build": "keystone build",
     "postinstall": "test -n \"$WINDOWS_ONLY\" || test -n \"$SKIP_POSTINSTALL\" || (patch-package && keystone postinstall --fix)"
   },
@@ -24,6 +25,7 @@
     "express": "^4.17.1",
     "firebase-admin": "^11.4.1",
     "http-proxy-middleware": "^2.0.3",
+	"http2-proxy": "^5.0.53",
     "jsonwebtoken": "^9.0.0",
     "patch-package": "^6.4.7"
   },
