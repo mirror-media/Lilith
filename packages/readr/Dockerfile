@@ -6,9 +6,9 @@ RUN set -e; \
     curl \
     gnupg2 \
     tini \
+    lsof \
     openssl \
     lsb-release; \
-    lsof \
     gcsFuseRepo=gcsfuse-`lsb_release -c -s`; \
     echo "deb http://packages.cloud.google.com/apt $gcsFuseRepo main" | \
     tee /etc/apt/sources.list.d/gcsfuse.list; \
