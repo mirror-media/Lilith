@@ -362,6 +362,26 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
+    trimmedApiData: virtual({
+      label: '擷取apiData中的前五段內容',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+      field: graphql.field({
+        type: graphql.JSON,
+        resolve: async (
+          item: Record<string, unknown>
+        ): Promise<JSONValue | undefined> => {
+          const apiData = item?.apiData
+          if (Array.isArray(apiData)) {
+            return apiData.slice(0, 5)
+          } else {
+            return undefined
+          }
+        },
+      }),
+    }),
   },
   ui: {
     labelField: 'title',
