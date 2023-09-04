@@ -2685,7 +2685,6 @@ type DualSlide {
   id: ID!
   name: String
   slides: JSON
-  shiftLeft: Boolean
   helper: ComponentHelp
   embedCode: String
   preview: JSON
@@ -2705,7 +2704,6 @@ input DualSlideWhereInput {
   NOT: [DualSlideWhereInput!]
   id: IDFilter
   name: StringFilter
-  shiftLeft: BooleanFilter
   helper: ComponentHelpWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2716,7 +2714,6 @@ input DualSlideWhereInput {
 input DualSlideOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  shiftLeft: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2724,7 +2721,6 @@ input DualSlideOrderByInput {
 input DualSlideUpdateInput {
   name: String
   slides: JSON
-  shiftLeft: Boolean
   helper: ComponentHelpRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -2740,7 +2736,6 @@ input DualSlideUpdateArgs {
 input DualSlideCreateInput {
   name: String
   slides: JSON
-  shiftLeft: Boolean
   helper: ComponentHelpRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -2976,7 +2971,6 @@ type Theatre {
   id: ID!
   name: String
   displayMode: String
-  shiftLeft: Boolean
   objectJson: JSON
   animationJson: JSON
   mobileWidth: Int
@@ -3002,7 +2996,6 @@ input TheatreWhereInput {
   id: IDFilter
   name: StringFilter
   displayMode: StringNullableFilter
-  shiftLeft: BooleanFilter
   mobileWidth: IntNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -3014,7 +3007,6 @@ input TheatreOrderByInput {
   id: OrderDirection
   name: OrderDirection
   displayMode: OrderDirection
-  shiftLeft: OrderDirection
   mobileWidth: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -3023,7 +3015,6 @@ input TheatreOrderByInput {
 input TheatreUpdateInput {
   name: String
   displayMode: String
-  shiftLeft: Boolean
   objectJson: JSON
   animationJson: JSON
   mobileWidth: Int
@@ -3043,7 +3034,6 @@ input TheatreUpdateArgs {
 input TheatreCreateInput {
   name: String
   displayMode: String
-  shiftLeft: Boolean
   objectJson: JSON
   animationJson: JSON
   mobileWidth: Int

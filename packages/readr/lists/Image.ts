@@ -149,6 +149,9 @@ const listConfigurations = list({
       pageSize: 50,
     },
   },
+  graphql: {
+    cacheHint: { maxAge: 1200, scope: 'PRIVATE' }
+  },
 
   access: {
     operation: {

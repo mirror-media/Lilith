@@ -34,10 +34,6 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
-    shiftLeft: checkbox({
-      label: 'READr 版型（向左移動）',
-      defaultValue: false,
-    }),
     objectJson: json({
       label: '物件 json',
       //ui: {

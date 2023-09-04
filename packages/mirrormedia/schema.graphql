@@ -1134,6 +1134,7 @@ type Post {
   css: String
   apiDataBrief: JSON
   apiData: JSON
+  trimmedApiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
