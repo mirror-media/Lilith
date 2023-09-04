@@ -58,6 +58,9 @@ const listConfigurations = list({
       defaultValue: false,
     }),
   },
+  ui: {
+    labelField: 'slug',
+  },
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),

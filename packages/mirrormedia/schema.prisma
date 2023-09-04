@@ -264,6 +264,9 @@ model Photo {
 
 model Post {
   id                         Int            @id @default(autoincrement())
+  lockBy                     User?          @relation("Post_lockBy", fields: [lockById], references: [id])
+  lockById                   Int?           @map("lockBy")
+  lockExpireAt               DateTime?
   slug                       String         @unique @default("")
   title                      String         @default("")
   state                      String?        @default("draft")
@@ -317,6 +320,8 @@ model Post {
   from_EditorChoice_choices  EditorChoice[] @relation("EditorChoice_choices")
   from_Post_relateds         Post[]         @relation("Post_relateds")
 
+  @@index([lockById])
+  @@index([lockExpireAt])
   @@index([state])
   @@index([publishedDate])
   @@index([heroVideoId])
@@ -444,6 +449,7 @@ model User {
   from_Partner_updatedBy      Partner[]      @relation("Partner_updatedBy")
   from_Photo_createdBy        Photo[]        @relation("Photo_createdBy")
   from_Photo_updatedBy        Photo[]        @relation("Photo_updatedBy")
+  from_Post_lockBy            Post[]         @relation("Post_lockBy")
   from_Post_createdBy         Post[]         @relation("Post_createdBy")
   from_Post_updatedBy         Post[]         @relation("Post_updatedBy")
   from_Section_createdBy      Section[]      @relation("Section_createdBy")

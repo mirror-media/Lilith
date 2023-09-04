@@ -58,8 +58,74 @@ function filterPosts(roles: string[]) {
   }
 }
 
+type FieldMode = 'edit' | 'read' | 'hidden'
+
+type ListTypeInfo = {
+  session: Session
+  context: KeystoneContext
+  item: Record<string, any>
+}
+
+type MaybeItemFunction<T extends FieldMode, ListTypeInfo> =
+  | T
+  | ((args: ListTypeInfo) => Promise<T>)
+
+const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
+  session,
+  context,
+  item,
+}) => {
+  if (session.data?.role == UserRole.Editor) {
+    const { lockBy } = await context.query.Post.findOne({
+      where: { id: item.id },
+      query: 'lockBy { id }',
+    })
+
+    if (!lockBy) {
+      const lockExpireAt = new Date(
+        new Date().setMinutes(new Date().getMinutes() + 30, 0, 0)
+      ).toISOString()
+      const updatedPost = await context.query.Post.updateOne({
+        where: { id: item.id },
+        data: {
+          lockBy: { connect: { id: session.data?.id } },
+          lockExpireAt: lockExpireAt,
+        },
+        query: 'lockBy { id }',
+      })
+      return updatedPost.lockBy?.id === session.data?.id ? 'edit' : 'read'
+    } else if (lockBy.id == session.data?.id) {
+      return 'edit'
+    }
+    return 'read'
+  }
+
+  return 'edit'
+}
+
 const listConfigurations = list({
   fields: {
+    lockBy: relationship({
+      ref: 'User',
+      label: '誰正在編輯',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+        displayMode: 'cards',
+        cardFields: ['name'],
+      },
+    }),
+    lockExpireAt: timestamp({
+      isIndexed: true,
+      db: {
+        isNullable: true,
+      },
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
     slug: text({
       label: 'slug網址名稱（英文）',
       isIndexed: 'unique',
@@ -90,9 +156,6 @@ const listConfigurations = list({
       label: '大分類',
       ref: 'Section.posts',
       many: true,
-      ui: {
-        labelField: 'slug',
-      },
     }),
     manualOrderOfSections: json({
       label: '大分類手動排序結果',
@@ -101,9 +164,6 @@ const listConfigurations = list({
       label: '小分類',
       ref: 'Category.posts',
       many: true,
-      ui: {
-        labelField: 'slug',
-      },
     }),
     writers: relationship({
       label: '作者',
@@ -285,9 +345,6 @@ const listConfigurations = list({
       label: '相關文章',
       ref: 'Post',
       many: true,
-      ui: {
-        labelField: 'slug',
-      },
     }),
     manualOrderOfRelateds: json({
       label: '相關文章手動排序結果',
@@ -384,11 +441,14 @@ const listConfigurations = list({
     }),
   },
   ui: {
-    labelField: 'title',
+    labelField: 'slug',
     listView: {
       initialColumns: ['title', 'slug', 'state', 'publishedDate'],
       initialSort: { field: 'publishedDate', direction: 'DESC' },
       pageSize: 50,
+    },
+    itemView: {
+      defaultFieldMode: itemViewFunction,
     },
   },
   access: {
@@ -402,6 +462,18 @@ const listConfigurations = list({
     },
   },
   hooks: {
+    validateInput: async ({ operation, item, context, addValidationError }) => {
+      if (operation === 'update') {
+        const { lockBy } = await context.query.Post.findOne({
+          where: { id: item.id.toString() },
+          query: 'lockBy { id }',
+        })
+
+        if (lockBy?.id && lockBy?.id !== context.session?.data?.id) {
+          addValidationError('可能有其他人正在編輯，請重新整理頁面。')
+        }
+      }
+    },
     resolveInput: async ({ operation, resolvedData }) => {
       const { publishedDate, content, brief } = resolvedData
       if (operation === 'create') {
@@ -418,6 +490,27 @@ const listConfigurations = list({
           .toJS()
       }
       return resolvedData
+    },
+    afterOperation: async ({ operation, inputData, item, context }) => {
+      if (operation === 'update') {
+        // If the operation is to update lockBy and lockExpireAt, then no need to do anything further.
+        // inputDate example:
+        // { lockBy: { connect: { id: '1' } }, lockExpireAt: 2023-09-01T09:37:00.000Z }
+        // { lockBy: { disconnect: true }, lockExpireAt: null }
+        if (Object.keys(inputData).length === 2 && inputData.lockBy) {
+          return
+        }
+
+        // The user saved changes, release the lock.
+        // This will trigger `afterOperation` again, so the above condition check is necessary.
+        await context.query.Post.updateOne({
+          where: { id: item.id.toString() },
+          data: {
+            lockBy: { disconnect: true },
+            lockExpireAt: null,
+          },
+        })
+      }
     },
   },
 })

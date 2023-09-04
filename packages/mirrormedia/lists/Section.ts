@@ -1,14 +1,14 @@
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core';
-import { text, select, checkbox, relationship, integer } from '@keystone-6/core/fields';
+import { list } from '@keystone-6/core'
+import {
+  text,
+  select,
+  checkbox,
+  relationship,
+  integer,
+} from '@keystone-6/core/fields'
 
-const {
-  allowRoles,
-  admin,
-  moderator,
-  editor,
-  owner,
-} = utils.accessControl
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
@@ -22,10 +22,10 @@ const listConfigurations = list({
     slug: text({
       label: 'slug',
       isIndexed: 'unique',
-      validation: { isRequired: true }
+      validation: { isRequired: true },
     }),
-    order: integer({ 
-      label: '排序', 
+    order: integer({
+      label: '排序',
       validation: {
         min: 1,
         max: 9999,
@@ -53,21 +53,24 @@ const listConfigurations = list({
       many: true,
     }),
     posts: relationship({
-      ref: "Post.sections",
+      ref: 'Post.sections',
       many: true,
       ui: {
-        createView: { fieldMode: 'hidden'},
+        createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
-      }
+      },
     }),
     topics: relationship({
-      ref: "Topic.sections",
+      ref: 'Topic.sections',
       many: true,
       ui: {
-        createView: { fieldMode: 'hidden'},
+        createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
-      }
+      },
     }),
+  },
+  ui: {
+    labelField: 'slug',
   },
   access: {
     operation: {

@@ -1082,6 +1082,8 @@ input PhotoCreateInput {
 
 type Post {
   id: ID!
+  lockBy: User
+  lockExpireAt: DateTime
   slug: String
   title: String
   state: String
@@ -1155,6 +1157,8 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
+  lockBy: UserWhereInput
+  lockExpireAt: DateTimeNullableFilter
   slug: StringFilter
   title: StringFilter
   state: StringNullableFilter
@@ -1213,6 +1217,7 @@ input VideoManyRelationFilter {
 
 input PostOrderByInput {
   id: OrderDirection
+  lockExpireAt: OrderDirection
   slug: OrderDirection
   title: OrderDirection
   state: OrderDirection
@@ -1235,6 +1240,8 @@ input PostOrderByInput {
 }
 
 input PostUpdateInput {
+  lockBy: UserRelateToOneForUpdateInput
+  lockExpireAt: DateTime
   slug: String
   title: String
   state: String
@@ -1320,6 +1327,8 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
+  lockBy: UserRelateToOneForCreateInput
+  lockExpireAt: DateTime
   slug: String
   title: String
   state: String
