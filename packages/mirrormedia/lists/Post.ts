@@ -422,6 +422,54 @@ const listConfigurations = list({
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
       },
+      access: {
+        read: ({
+          context,
+          item,
+        }: {
+          context: KeystoneContext
+          item: Record<string, unknown>
+        }) => {
+          if (envVar.accessControlStrategy === 'gql') {
+            // Post is not member only,
+            // every request could access content field
+            if (item?.isMember === false) {
+              return true
+            }
+
+            // Post is member only.
+            // Check request permission.
+            const scope = context.req?.headers?.['x-access-token-scope']
+
+            // get acl from scope
+            const acl =
+              typeof scope === 'string'
+                ? scope.match(/read:member-posts:([^\s]*)/i)?.[1]
+                : ''
+
+            if (typeof acl !== 'string') {
+              return false
+            } else if (acl === 'all') {
+              // scope contains 'read:memeber-posts:all'
+              // the request has the permission to read this field
+              return true
+            } else {
+              // scope contains 'read:member-posts:${postId1},${postId2},...,${postIdN}'
+              const postIdArr = acl.split(',')
+
+              // check the request has the permission to read this field
+              if (postIdArr.indexOf(`${item.id}`) > -1) {
+                return true
+              }
+            }
+
+            return false
+          }
+
+          // the request has permission to read this field
+          return true
+        },
+      },
     }),
     trimmedApiData: virtual({
       label: '擷取apiData中的前五段內容',
