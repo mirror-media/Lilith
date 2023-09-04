@@ -83,7 +83,11 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
 
     if (!lockBy) {
       const lockExpireAt = new Date(
-        new Date().setMinutes(new Date().getMinutes() + 30, 0, 0)
+        new Date().setMinutes(
+          new Date().getMinutes() + envVar.lockDuration,
+          0,
+          0
+        )
       ).toISOString()
       const updatedPost = await context.query.Post.updateOne({
         where: { id: item.id },
@@ -463,14 +467,16 @@ const listConfigurations = list({
   },
   hooks: {
     validateInput: async ({ operation, item, context, addValidationError }) => {
-      if (operation === 'update') {
-        const { lockBy } = await context.query.Post.findOne({
-          where: { id: item.id.toString() },
-          query: 'lockBy { id }',
-        })
+      if (context.session?.data?.role !== UserRole.Admin) {
+        if (operation === 'update') {
+          const { lockBy } = await context.query.Post.findOne({
+            where: { id: item.id.toString() },
+            query: 'lockBy { id }',
+          })
 
-        if (lockBy?.id && lockBy?.id !== context.session?.data?.id) {
-          addValidationError('可能有其他人正在編輯，請重新整理頁面。')
+          if (lockBy?.id && lockBy?.id !== context.session?.data?.id) {
+            addValidationError('可能有其他人正在編輯，請重新整理頁面。')
+          }
         }
       }
     },
