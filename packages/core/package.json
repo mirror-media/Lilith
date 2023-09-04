@@ -33,7 +33,7 @@
     "@keystone-ui/fields": "^7.2.0",
     "@keystone-ui/modals": "^6.0.3",
     "@twreporter/errors": "^1.1.1",
-    "@mirrormedia/lilith-draft-editor": "1.1.0-alpha.17",
+    "@mirrormedia/lilith-draft-editor": "1.1.0-alpha.18",
     "axios": "^0.26.0",
     "draft-convert": "^2.1.12",
     "draft-js": "^0.11.7",
