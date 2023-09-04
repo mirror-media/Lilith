@@ -60,6 +60,7 @@ export default withAuth(
       },
     },
     graphql: {
+      cacheHint: { maxAge: 30, scope: 'PUBLIC' },
       apolloConfig: {
         cache: new InMemoryLRUCache({
           // ~100MiB

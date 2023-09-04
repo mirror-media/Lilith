@@ -326,6 +326,9 @@ const listConfigurations = list({
       delete: allowRoles(admin),
     },
   },
+  graphql: {
+    cacheHint: { maxAge: 1200, scope: 'PUBLIC' }
+  },
   hooks: {
     resolveInput: async ({ resolvedData }) => {
       const { summary, content, actionList, citation } = resolvedData

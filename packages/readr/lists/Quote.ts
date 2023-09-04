@@ -55,5 +55,8 @@ const listConfigurations = list({
       delete: allowRoles(admin),
     },
   },
+  graphql: {
+    cacheHint: { maxAge: 1200, scope: 'PRIVATE' }
+  },
 })
 export default utils.addTrackingFields(listConfigurations)
