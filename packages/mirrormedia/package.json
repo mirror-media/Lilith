@@ -25,6 +25,7 @@
     "express": "^4.17.1",
     "firebase-admin": "^11.4.1",
     "http-proxy-middleware": "^2.0.3",
+    "http2-proxy": "^5.0.53",
     "jsonwebtoken": "^9.0.0",
     "patch-package": "^6.4.7"
   },
