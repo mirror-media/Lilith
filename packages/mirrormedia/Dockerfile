@@ -39,8 +39,7 @@ RUN yarn build
 
 RUN yarn cache clean
 
-RUN ls /app/
-RUN ls /app/node_modules/
+RUN ls /app/node_modules/http2-proxy/
 RUN whereis http2-proxy-server
 ## Ensure the script is executable
 RUN chmod +x run.sh
