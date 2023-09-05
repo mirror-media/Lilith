@@ -16,6 +16,7 @@ const {
   FIREBASE_PROJECT_ID,
   MEMBER_API_URL,
   CORS_ALLOW_ORIGINS,
+  LOCK_DURATION,
 } = process.env
 
 enum DatabaseProvider {
@@ -70,4 +71,6 @@ export default {
         ? CORS_ALLOW_ORIGINS.split(',')
         : ['https://www.mirrormedia.mg', 'https://mirrormedia.mg'],
   },
+  lockDuration:
+    (typeof LOCK_DURATION === 'string' && parseInt(LOCK_DURATION)) || 30,
 }

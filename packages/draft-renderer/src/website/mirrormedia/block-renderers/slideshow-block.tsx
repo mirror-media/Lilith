@@ -6,6 +6,13 @@ import CustomImage from '@readr-media/react-image'
 import defaultImage from '../assets/default-og-img.png'
 import loadingImage from '../assets/loading.gif'
 
+type ImageType = Record<
+  'w480' | 'w800' | 'w1200' | 'w1600' | 'w2400' | 'original',
+  string
+>
+
+type ImageResized = ImageType
+type ImageResizedWebp = ImageType | null
 import AmpSlideshowBlockV2 from './amp/amp-slideshow-block'
 
 const Image = styled.img`
@@ -168,9 +175,21 @@ export function SlideshowBlockV2(
   /** Position of slide box */
   const slideBoxPosition = `calc(${sliderWidth} * ${slidesOffset +
     indexOfCurrentImage} * -1 + ${dragDistance}px)`
+  /**
+   * TODO: add type in images
+   */
   const { images } = useMemo(() => entity.getData(), [entity])
-  const displayedImage = useMemo(
-    () => images.map((image) => image.resized),
+
+  type DisplayedImage = {
+    resized: ImageResized
+    resizedWebp: ImageResizedWebp
+  }
+  const displayedImage: Array<DisplayedImage> = useMemo(
+    () =>
+      images.map((image) => {
+        const { resized, resizedWebp } = image
+        return { resized, resizedWebp }
+      }),
     images
   )
   const slidesLength = images.length
@@ -199,14 +218,14 @@ export function SlideshowBlockV2(
    * The amount of item need to clone is decided by variable `slidesOffset`
    */
   const slidesWithClone = useMemo(
-    () =>
-      [].concat(
-        displayedImage?.slice(-slidesOffset),
-        displayedImage,
-        displayedImage?.slice(0, slidesOffset)
-      ),
+    () => [
+      ...displayedImage.slice(-slidesOffset),
+      ...displayedImage,
+      ...displayedImage?.slice(0, slidesOffset),
+    ],
     [displayedImage]
   )
+
   const slidesJsx = useMemo(
     () =>
       slidesWithClone.map((item, index) => {
@@ -226,7 +245,8 @@ export function SlideshowBlockV2(
           index === slidesLength + slidesOffset - 1
         return (
           <CustomImage
-            images={item}
+            images={item.resized}
+            imagesWebP={item.resizedWebp}
             key={index}
             loadingImage={loadingImage}
             defaultImage={defaultImage}

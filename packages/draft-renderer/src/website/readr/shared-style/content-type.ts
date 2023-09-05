@@ -1,4 +1,5 @@
 import { css } from 'styled-components'
+import citationLink from '../assets/citation-link.png'
 
 import {
   blockQuoteSpacingBetweenContent,
@@ -113,7 +114,7 @@ export const CitationStyle = css`
 
       &::after {
         content: '';
-        background-image: url('../assets/citation-download.png');
+        background-image: url(${citationLink});
         background-repeat: no-repeat;
         background-position: center center;
         background-size: contain;

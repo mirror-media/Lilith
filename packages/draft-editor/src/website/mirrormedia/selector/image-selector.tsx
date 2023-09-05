@@ -29,6 +29,14 @@ const imagesQuery = gql`
         w1600
         w2400
       }
+      resizedWebp {
+        original
+        w480
+        w800
+        w1200
+        w1600
+        w2400
+      }
     }
   }
 `
@@ -114,6 +122,14 @@ export type ImageEntity = {
     url: string
   }
   resized: {
+    original: string
+    w480: string
+    w800: string
+    w1200: string
+    w1600: string
+    w2400: string
+  }
+  resizedWebp: {
     original: string
     w480: string
     w800: string
