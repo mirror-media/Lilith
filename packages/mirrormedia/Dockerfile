@@ -6,6 +6,7 @@ RUN set -e; \
     curl \
     gnupg2 \
     tini \
+    lsof \
     openssl \
     lsb-release; \
     gcsFuseRepo=gcsfuse-`lsb_release -c -s`; \
@@ -27,14 +28,10 @@ RUN mkdir -p $APP_DIR
 
 WORKDIR $APP_DIR
 
-COPY package.json yarn.lock $APP_DIR/
+COPY . $APP_DIR
 
 ## Install application dependencies
-RUN SKIP_POSTINSTALL=1 yarn install
-
-COPY . $APP_DIR/
-
-## Run yarn postinstall
+RUN yarn install
 RUN yarn postinstall
 
 ## Build application bundles
@@ -42,6 +39,7 @@ RUN yarn build
 
 RUN yarn cache clean
 
+RUN whereis http2-proxy-server
 ## Ensure the script is executable
 RUN chmod +x run.sh
 

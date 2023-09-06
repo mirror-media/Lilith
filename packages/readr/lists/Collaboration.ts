@@ -70,6 +70,9 @@ const listConfigurations = list({
       label: '發布時間',
     }),
   },
+  graphql: {
+    cacheHint: { maxAge: 3600, scope: 'PUBLIC' }
+  },
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),
