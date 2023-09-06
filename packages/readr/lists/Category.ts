@@ -71,7 +71,7 @@ const listConfigurations = list({
     },
   },
   graphql: {
-    cacheHint: { maxAge: 1200, scope: 'PRIVATE' }
+    cacheHint: { maxAge: 1200, scope: 'PUBLIC' }
   },
 })
 export default utils.addTrackingFields(listConfigurations)
