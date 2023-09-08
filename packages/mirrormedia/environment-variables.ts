@@ -17,6 +17,8 @@ const {
   MEMBER_API_URL,
   CORS_ALLOW_ORIGINS,
   LOCK_DURATION,
+  CACHE_MAXAGE,
+  REDIS_SERVER,
 } = process.env
 
 enum DatabaseProvider {
@@ -62,6 +64,15 @@ export default {
   },
   firebase: {
     projectId: FIREBASE_PROJECT_ID || 'mirror-weekly',
+  },
+  cache: {
+    apolloConfig: IS_UI_DISABLED === 'true' ? 
+      {
+        //cacheHint: { maxAge: 120, scope: 'PUBLIC' },
+		plugins: [responseCachePlugin(), ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
+        cache: new KeyvAdapter(new Keyv(REDIS_SERVER)), 
+      } : {}
+
   },
   memberApiUrl:
     MEMBER_API_URL || 'https://israfel-gql.mirrormedia.mg/api/graphql',

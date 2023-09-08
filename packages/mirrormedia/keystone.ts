@@ -6,6 +6,10 @@ import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createPreviewMiniApp } from './express-mini-apps/preview/app'
+import Keyv from "keyv";
+import { KeyvAdapter } from "@apollo/utils.keyvadapter";
+import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
+import responseCachePlugin from '@apollo/server-plugin-response-cache';
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -35,6 +39,9 @@ export default withAuth(
       isDisabled: envVar.isUIDisabled,
       // For our starter, we check that someone has session data before letting them see the Admin UI.
       isAccessAllowed: (context) => !!context.session?.data,
+    },
+    graphql: {
+      apolloConfig: appConfig.cache,
     },
     lists,
     session,

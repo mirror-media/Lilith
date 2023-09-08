@@ -7,6 +7,8 @@ import express, { Request, Response, NextFunction } from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache'
+import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
+import responseCachePlugin from '@apollo/server-plugin-response-cache';
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -61,6 +63,7 @@ export default withAuth(
     },
     graphql: {
       cacheHint: { maxAge: 30, scope: 'PUBLIC' },
+	  plugins: [responseCachePlugin(), ApolloServerPluginCacheControl({ defaultMaxAge: 300 })],  // 5 se
       apolloConfig: {
         cache: new InMemoryLRUCache({
           // ~100MiB
