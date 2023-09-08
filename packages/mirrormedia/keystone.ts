@@ -41,7 +41,7 @@ export default withAuth(
       isAccessAllowed: (context) => !!context.session?.data,
     },
     graphql: {
-      apolloConfig: appConfig.cache,
+      apolloConfig: envVar.cache.apolloConfig,
     },
     lists,
     session,
