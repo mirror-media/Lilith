@@ -1,3 +1,7 @@
+
+import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
+import responseCachePlugin from '@apollo/server-plugin-response-cache';
+
 const {
   IS_UI_DISABLED,
   ACCESS_CONTROL_STRATEGY,
