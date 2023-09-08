@@ -11,6 +11,11 @@ import { KeyvAdapter } from "@apollo/utils.keyvadapter";
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
 import responseCachePlugin from '@apollo/server-plugin-response-cache';
 
+const {
+  CACHE_MAXAGE,
+  REDIS_SERVER,
+} = process.env
+
 const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
@@ -41,7 +46,12 @@ export default withAuth(
       isAccessAllowed: (context) => !!context.session?.data,
     },
     graphql: {
-      apolloConfig: envVar.cache.apolloConfig,
+      //apolloConfig: envVar.cache.apolloConfig,
+      apolloConfig: {
+        //cacheHint: { maxAge: 120, scope: 'PUBLIC' },
+		plugins: [responseCachePlugin(), ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
+        cache: new KeyvAdapter(new Keyv(REDIS_SERVER)), 
+      }
     },
     lists,
     session,
