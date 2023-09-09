@@ -11,7 +11,6 @@ import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheContr
 import responseCachePlugin from '@apollo/server-plugin-response-cache';
 import Keyv from "keyv";
 import { KeyvAdapter } from "@apollo/utils.keyvadapter";
-import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
 
 const {
   REDIS_SERVER,
@@ -74,7 +73,7 @@ export default withAuth(
       apolloConfig: {
         cacheHint: { maxAge: 120, scope: 'PUBLIC' },
 		plugins: [responseCachePlugin(), ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
-		plugins: [ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
+		//plugins: [ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
         cache: new KeyvAdapter(new Keyv(REDIS_SERVER)), 
       }
     },
