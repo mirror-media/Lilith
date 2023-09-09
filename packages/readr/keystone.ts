@@ -9,6 +9,14 @@ import { statelessSessions } from '@keystone-6/core/session'
 import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
 import responseCachePlugin from '@apollo/server-plugin-response-cache';
+import Keyv from "keyv";
+import { KeyvAdapter } from "@apollo/utils.keyvadapter";
+import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
+
+const {
+  REDIS_SERVER,
+  CACHE_MAXAGE,
+} = process.env
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -62,16 +70,13 @@ export default withAuth(
       },
     },
     graphql: {
-      cacheHint: { maxAge: 30, scope: 'PUBLIC' },
-	  plugins: [responseCachePlugin(), ApolloServerPluginCacheControl({ defaultMaxAge: 300 })],  // 5 se
+      //apolloConfig: envVar.cache.apolloConfig,
       apolloConfig: {
-        cache: new InMemoryLRUCache({
-          // ~100MiB
-          maxSize: Math.pow(2, 20) * envVar.memoryCacheSize,
-          // 5 minutes (in milliseconds)
-          ttl: envVar.memoryCacheTtl,
-        }),
-      },
+        cacheHint: { maxAge: 120, scope: 'PUBLIC' },
+		plugins: [responseCachePlugin(), ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
+		plugins: [ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
+        cache: new KeyvAdapter(new Keyv(REDIS_SERVER)), 
+      }
     },
     server: {
 	  healthCheck: {
