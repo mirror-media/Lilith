@@ -9,12 +9,12 @@ import { createPreviewMiniApp } from './express-mini-apps/preview/app'
 //import Keyv from "keyv";
 //import { KeyvAdapter } from "@apollo/utils.keyvadapter";
 //import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
-import responseCachePlugin from '@apollo/server-plugin-response-cache';
+//import responseCachePlugin from '@apollo/server-plugin-response-cache';
 
-const {
-  CACHE_MAXAGE,
-  REDIS_SERVER,
-} = process.env
+//const {
+//  CACHE_MAXAGE,
+//  REDIS_SERVER,
+//} = process.env
 
 const { withAuth } = createAuth({
   listKey: 'User',

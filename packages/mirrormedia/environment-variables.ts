@@ -1,8 +1,3 @@
-import Keyv from "keyv";
-import { KeyvAdapter } from "@apollo/utils.keyvadapter";
-import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
-import responseCachePlugin from '@apollo/server-plugin-response-cache';
-
 const {
   IS_UI_DISABLED,
   ACCESS_CONTROL_STRATEGY,
@@ -22,8 +17,6 @@ const {
   MEMBER_API_URL,
   CORS_ALLOW_ORIGINS,
   LOCK_DURATION,
-  CACHE_MAXAGE,
-  REDIS_SERVER,
 } = process.env
 
 enum DatabaseProvider {
@@ -40,7 +33,7 @@ export default {
       DATABASE_PROVIDER === 'sqlite'
         ? DatabaseProvider.Sqlite
         : DatabaseProvider.Postgres,
-    url: DATABASE_URL || 'postgres://username:password@localhost:5432/mirrormedia',
+    url: DATABASE_URL || 'postgres://hcchien@localhost:5432/mirrormedia',
   },
   session: {
     secret:
@@ -69,15 +62,6 @@ export default {
   },
   firebase: {
     projectId: FIREBASE_PROJECT_ID || 'mirror-weekly',
-  },
-  cache: {
-    apolloConfig: IS_UI_DISABLED === 'true' ? 
-      {
-        //cacheHint: { maxAge: 120, scope: 'PUBLIC' },
-		plugins: [responseCachePlugin(), ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
-        cache: new KeyvAdapter(new Keyv(REDIS_SERVER)), 
-      } : {}
-
   },
   memberApiUrl:
     MEMBER_API_URL || 'https://israfel-gql.mirrormedia.mg/api/graphql',
