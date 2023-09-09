@@ -6,16 +6,6 @@ import envVar from './environment-variables'
 import express, { Request, Response, NextFunction } from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
-import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache'
-import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
-import responseCachePlugin from '@apollo/server-plugin-response-cache';
-import Keyv from "keyv";
-import { KeyvAdapter } from "@apollo/utils.keyvadapter";
-
-const {
-  REDIS_SERVER,
-  CACHE_MAXAGE,
-} = process.env
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -67,15 +57,6 @@ export default withAuth(
         },
         generateUrl: (path) => `/images${path}`,
       },
-    },
-    graphql: {
-      //apolloConfig: envVar.cache.apolloConfig,
-      apolloConfig: {
-        cacheHint: { maxAge: 120, scope: 'PUBLIC' },
-		plugins: [responseCachePlugin(), ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
-		//plugins: [ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
-        cache: new KeyvAdapter(new Keyv(REDIS_SERVER)), 
-      }
     },
     server: {
 	  healthCheck: {
