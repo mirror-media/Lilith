@@ -33,8 +33,7 @@
     "patch-package": "^6.4.7",
     "redis-errors": "^1.2.0",
     "redis-parser": "^3.0.0",
-    "jsonwebtoken": "^9.0.0",
-    "patch-package": "^6.4.7"
+    "jsonwebtoken": "^9.0.0"
   },
   "resolutions": {
     "**/next": "13.3.4",
