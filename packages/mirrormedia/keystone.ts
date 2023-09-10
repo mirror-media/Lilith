@@ -51,7 +51,7 @@ export default withAuth(
         //cacheHint: { maxAge: 120, scope: 'PUBLIC' },
 		plugins: [responseCachePlugin(), ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
 		//plugins: [ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
-        //cache: new KeyvAdapter(new Keyv(REDIS_SERVER)), 
+        cache: new KeyvAdapter(new Keyv(REDIS_SERVER)), 
       }
     },
     lists,
