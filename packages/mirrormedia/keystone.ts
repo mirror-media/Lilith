@@ -6,15 +6,13 @@ import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createPreviewMiniApp } from './express-mini-apps/preview/app'
-import Keyv from "keyv";
-import { KeyvAdapter } from "@apollo/utils.keyvadapter";
-import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
-import responseCachePlugin from '@apollo/server-plugin-response-cache';
+// import Keyv from 'keyv'
+// import { KeyvAdapter } from '@apollo/utils.keyvadapter'
+import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
+import responseCachePlugin from '@apollo/server-plugin-response-cache'
+import Redis from 'ioredis'
 
-const {
-  CACHE_MAXAGE,
-  REDIS_SERVER,
-} = process.env
+const { CACHE_MAXAGE, REDIS_SERVER } = process.env
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -27,6 +25,30 @@ const { withAuth } = createAuth({
     fields: ['name', 'email', 'password', 'role'],
   },
 })
+
+function createRedisInstance() {
+  return new Redis(REDIS_SERVER ?? '')
+}
+
+async function testRedisConnection() {
+  const testKey = 'testKey'
+  const testVal = '5'
+  try {
+    console.log('// create test redis instance //')
+    const redisInstance = createRedisInstance()
+
+    console.log('// write testKey to redis //')
+    await redisInstance.set(testKey, testVal)
+
+    console.log('// get testKey from redis //')
+    const value = await redisInstance.get(testKey)
+    console.log(`testVal: ${value}`)
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+testRedisConnection()
 
 const session = statelessSessions(appConfig.session)
 
@@ -49,10 +71,15 @@ export default withAuth(
       //apolloConfig: envVar.cache.apolloConfig,
       apolloConfig: {
         //cacheHint: { maxAge: 120, scope: 'PUBLIC' },
-		plugins: [responseCachePlugin(), ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
-		//plugins: [ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
-        //cache: new KeyvAdapter(new Keyv(REDIS_SERVER)), 
-      }
+        plugins: [
+          responseCachePlugin(),
+          ApolloServerPluginCacheControl({
+            defaultMaxAge: Number(CACHE_MAXAGE),
+          }),
+        ], // 5 se
+        //plugins: [ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
+        //cache: new KeyvAdapter(new Keyv(REDIS_SERVER)),
+      },
     },
     lists,
     session,
