@@ -2,7 +2,6 @@
 const http2 = require('http2')
 const proxy = require('http2-proxy')
 const finalhandler = require('finalhandler')
-
 const keystoneServerPort = process.env.KEYSTONE_SERVER_PORT || '3000'
 const reverseProxyPort = process.env.REVERSE_PROXY_PORT || '3002'
 
