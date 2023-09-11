@@ -14,7 +14,11 @@ import Redis from 'ioredis'
 const { REDIS_SERVER } = process.env
 
 function createRedisInstance() {
-  return new Redis(REDIS_SERVER ?? '')
+  return new Redis(REDIS_SERVER ?? '', {
+    lazyConnect: true,
+    connectionName: 'weekly-cms',
+    connectTimeout: 10000,
+  })
 }
 
 async function testRedisConnection() {
