@@ -6,40 +6,11 @@ import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createPreviewMiniApp } from './express-mini-apps/preview/app'
-// import Keyv from 'keyv'
-// import { KeyvAdapter } from '@apollo/utils.keyvadapter'
+import Keyv from 'keyv'
+import { KeyvAdapter } from '@apollo/utils.keyvadapter'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
 import responseCachePlugin from '@apollo/server-plugin-response-cache'
-import Redis from 'ioredis'
-const { REDIS_SERVER } = process.env
-
-function createRedisInstance() {
-  return new Redis(REDIS_SERVER ?? '', {
-    lazyConnect: true,
-    connectionName: 'weekly-cms',
-    connectTimeout: 10000,
-  })
-}
-
-async function testRedisConnection() {
-  const testKey = 'testKey'
-  const testVal = '5'
-  try {
-    console.log('// create test redis instance //')
-    const redisInstance = createRedisInstance()
-
-    console.log('// write testKey to redis //')
-    await redisInstance.set(testKey, testVal)
-
-    console.log('// get testKey from redis //')
-    const value = await redisInstance.get(testKey)
-    console.log(`testVal: ${value}`)
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-const { CACHE_MAXAGE } = process.env
+import { GraphQLConfig } from '@keystone-6/core/types'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -54,6 +25,28 @@ const { withAuth } = createAuth({
 })
 
 const session = statelessSessions(appConfig.session)
+
+const graphqlConfig: GraphQLConfig = {
+  apolloConfig:
+    envVar.accessControlStrategy === 'gql'
+      ? {
+          plugins: [
+            responseCachePlugin(),
+            ApolloServerPluginCacheControl({
+              defaultMaxAge: envVar.cache.maxAge,
+            }),
+          ],
+          cache: new KeyvAdapter(
+            new Keyv(envVar.cache.url, {
+              lazyConnect: true,
+              namespace: envVar.cache.identifier,
+              connectionName: envVar.cache.identifier,
+              connectTimeout: envVar.cache.connectTimeOut,
+            })
+          ),
+        }
+      : undefined,
+}
 
 export default withAuth(
   config({
@@ -70,20 +63,7 @@ export default withAuth(
       // For our starter, we check that someone has session data before letting them see the Admin UI.
       isAccessAllowed: (context) => !!context.session?.data,
     },
-    graphql: {
-      //apolloConfig: envVar.cache.apolloConfig,
-      apolloConfig: {
-        //cacheHint: { maxAge: 120, scope: 'PUBLIC' },
-        plugins: [
-          responseCachePlugin(),
-          ApolloServerPluginCacheControl({
-            defaultMaxAge: Number(CACHE_MAXAGE),
-          }),
-        ], // 5 se
-        //plugins: [ApolloServerPluginCacheControl({ defaultMaxAge: CACHE_MAXAGE })],  // 5 se
-        //cache: new KeyvAdapter(new Keyv(REDIS_SERVER)),
-      },
-    },
+    graphql: graphqlConfig,
     lists,
     session,
     storage: {
@@ -124,11 +104,6 @@ export default withAuth(
               keystoneContext: context,
             })
           )
-
-          app.get('/test-redis', async (req, res) => {
-            await testRedisConnection()
-            res.send('endpoint called successfully')
-          })
         }
       },
     },
