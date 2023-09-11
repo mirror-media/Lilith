@@ -10,6 +10,30 @@ import { createPreviewMiniApp } from './express-mini-apps/preview/app'
 // import { KeyvAdapter } from '@apollo/utils.keyvadapter'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
 import responseCachePlugin from '@apollo/server-plugin-response-cache'
+import Redis from 'ioredis'
+const { REDIS_SERVER } = process.env
+
+function createRedisInstance() {
+  return new Redis(REDIS_SERVER ?? '')
+}
+
+async function testRedisConnection() {
+  const testKey = 'testKey'
+  const testVal = '5'
+  try {
+    console.log('// create test redis instance //')
+    const redisInstance = createRedisInstance()
+
+    console.log('// write testKey to redis //')
+    await redisInstance.set(testKey, testVal)
+
+    console.log('// get testKey from redis //')
+    const value = await redisInstance.get(testKey)
+    console.log(`testVal: ${value}`)
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 const { CACHE_MAXAGE } = process.env
 
@@ -96,6 +120,11 @@ export default withAuth(
               keystoneContext: context,
             })
           )
+
+          app.get('/test-redis', async (req, res) => {
+            await testRedisConnection()
+            res.send('endpoint called successfully')
+          })
         }
       },
     },
