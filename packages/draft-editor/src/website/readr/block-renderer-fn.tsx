@@ -30,7 +30,7 @@ const AtomicBlock = (props) => {
       return MediaBlock(entity)
     }
     case 'image': {
-      return ImageBlock(entity)
+      return ImageBlock(props)
     }
     case 'slideshow': {
       return SlideshowBlock(entity)
