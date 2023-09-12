@@ -6,7 +6,6 @@
     "packages/draft-renderer",
     "packages/editools",
     "packages/readr",
-    "packages/mirrormedia",
     "packages/openrelationship"
   ],
   "scripts": {
@@ -31,6 +30,8 @@
     "eslint-plugin-react": "^7.30.0",
     "husky": "^8.0.1",
     "lint-staged": "^12.4.2",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "prettier": "1.19.1",
     "typescript": "^4.7.4"
   },
@@ -40,6 +41,5 @@
   "resolutions": {
     "react": "18.1.0",
     "react-dom": "18.1.0"
-  },
-  "version": "0.0.0"
+  }
 }

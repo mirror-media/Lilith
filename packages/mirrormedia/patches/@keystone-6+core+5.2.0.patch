@@ -1,0 +1,1497 @@
+diff --git a/node_modules/@keystone-6/core/.DS_Store b/node_modules/@keystone-6/core/.DS_Store
+new file mode 100644
+index 0000000..33be68e
+Binary files /dev/null and b/node_modules/@keystone-6/core/.DS_Store differ
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.dev.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.dev.js
+index abf36c5..1acab7b 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.dev.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.dev.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.prod.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.prod.js
+index 7e863a8..f6efd82 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.prod.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.prod.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.esm.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.esm.js
+index 99a86be..71c5e82 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.esm.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.esm.js
+@@ -23,6 +23,7 @@ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import 'next/head';
+ import '../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '../../../../dist/Fields-ff30179b.esm.js';
+ import 'fast-deep-equal';
+ import '@keystone-ui/notice';
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.cjs.dev.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.cjs.dev.js
+index 48c92a6..9023ea0 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.cjs.dev.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.cjs.dev.js
+@@ -15,6 +15,7 @@ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('@keystone-ui/modals');
+ require('@keystone-ui/loading');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.cjs.prod.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.cjs.prod.js
+index 07b3f59..0ebc340 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.cjs.prod.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.cjs.prod.js
+@@ -15,6 +15,7 @@ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('@keystone-ui/modals');
+ require('@keystone-ui/loading');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.esm.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.esm.js
+index 64d0aed..0234e00 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.esm.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.esm.js
+@@ -11,6 +11,7 @@ import '@keystone-ui/popover';
+ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '@keystone-ui/modals';
+ import '@keystone-ui/loading';
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.cjs.dev.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.cjs.dev.js
+index c400777..1329282 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.cjs.dev.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.cjs.dev.js
+@@ -10,7 +10,7 @@ var Fields = require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('../../../../../dist/getRootGraphQLFieldsFromFieldController-e2b649ed.cjs.dev.js');
+ require('react');
+ require('fast-deep-equal');
+-var PageContainer = require('../../../../../dist/PageContainer-6e3879ad.cjs.dev.js');
++var PageContainer = require('../../../../../dist/PageContainer-f2212b3d.cjs.dev.js');
+ var adminUi_context_dist_keystone6CoreAdminUiContext = require('../../../../../admin-ui/context/dist/keystone-6-core-admin-ui-context.cjs.dev.js');
+ require('@babel/runtime/helpers/extends');
+ require('next/link');
+@@ -24,10 +24,11 @@ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
+ require('@keystone-ui/modals');
+ var useCreateItem = require('../../../../../dist/useCreateItem-dcb6fd86.cjs.dev.js');
+ var GraphQLErrorNotice = require('../../../../../dist/GraphQLErrorNotice-b11fa9f5.cjs.dev.js');
+-var common = require('../../../../../dist/common-7c5b6ab2.cjs.dev.js');
++var common = require('../../../../../dist/common-3d7651ec.cjs.dev.js');
+ require('@keystone-ui/fields');
+ require('@emotion/weak-memoize');
+ require('graphql');
++require('@keystone-ui/icons');
+ require('../../../../../admin-ui/router/dist/keystone-6-core-admin-ui-router.cjs.dev.js');
+ require('@keystone-ui/toast');
+ require('apollo-upload-client');
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.cjs.prod.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.cjs.prod.js
+index bac3cf5..7342833 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.cjs.prod.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.cjs.prod.js
+@@ -10,7 +10,7 @@ var Fields = require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('../../../../../dist/getRootGraphQLFieldsFromFieldController-713db5a8.cjs.prod.js');
+ require('react');
+ require('fast-deep-equal');
+-var PageContainer = require('../../../../../dist/PageContainer-5378c41c.cjs.prod.js');
++var PageContainer = require('../../../../../dist/PageContainer-646b7c93.cjs.prod.js');
+ var adminUi_context_dist_keystone6CoreAdminUiContext = require('../../../../../admin-ui/context/dist/keystone-6-core-admin-ui-context.cjs.prod.js');
+ require('@babel/runtime/helpers/extends');
+ require('next/link');
+@@ -24,10 +24,11 @@ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
+ require('@keystone-ui/modals');
+ var useCreateItem = require('../../../../../dist/useCreateItem-6046995b.cjs.prod.js');
+ var GraphQLErrorNotice = require('../../../../../dist/GraphQLErrorNotice-46a95125.cjs.prod.js');
+-var common = require('../../../../../dist/common-8ddbd01c.cjs.prod.js');
++var common = require('../../../../../dist/common-99de1d1f.cjs.prod.js');
+ require('@keystone-ui/fields');
+ require('@emotion/weak-memoize');
+ require('graphql');
++require('@keystone-ui/icons');
+ require('../../../../../admin-ui/router/dist/keystone-6-core-admin-ui-router.cjs.prod.js');
+ require('@keystone-ui/toast');
+ require('apollo-upload-client');
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.esm.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.esm.js
+index e63de63..a80bb1b 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.esm.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.esm.js
+@@ -6,7 +6,7 @@ import { F as Fields } from '../../../../../dist/Fields-ff30179b.esm.js';
+ import '../../../../../dist/getRootGraphQLFieldsFromFieldController-11021ec8.esm.js';
+ import 'react';
+ import 'fast-deep-equal';
+-import { P as PageContainer } from '../../../../../dist/PageContainer-0d8d0d38.esm.js';
++import { P as PageContainer } from '../../../../../dist/PageContainer-57a4d68e.esm.js';
+ import { useList, useKeystone } from '../../../../../admin-ui/context/dist/keystone-6-core-admin-ui-context.esm.js';
+ import '@babel/runtime/helpers/extends';
+ import 'next/link';
+@@ -20,10 +20,11 @@ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
+ import '@keystone-ui/modals';
+ import { u as useCreateItem } from '../../../../../dist/useCreateItem-2ddc288f.esm.js';
+ import { G as GraphQLErrorNotice } from '../../../../../dist/GraphQLErrorNotice-b586b151.esm.js';
+-import { I as ItemPageHeader, C as ColumnLayout, B as BaseToolbar } from '../../../../../dist/common-e0ed4d13.esm.js';
++import { I as ItemPageHeader, C as ColumnLayout, B as BaseToolbar } from '../../../../../dist/common-8a24f94d.esm.js';
+ import '@keystone-ui/fields';
+ import '@emotion/weak-memoize';
+ import 'graphql';
++import '@keystone-ui/icons';
+ import '../../../../../admin-ui/router/dist/keystone-6-core-admin-ui-router.esm.js';
+ import '@keystone-ui/toast';
+ import 'apollo-upload-client';
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.cjs.dev.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.cjs.dev.js
+index 58284ac..4606940 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.cjs.dev.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.cjs.dev.js
+@@ -11,7 +11,7 @@ var dataGetter = require('../../../../../dist/dataGetter-cce02896.cjs.dev.js');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('../../../../../dist/getRootGraphQLFieldsFromFieldController-e2b649ed.cjs.dev.js');
+ require('fast-deep-equal');
+-var PageContainer = require('../../../../../dist/PageContainer-6e3879ad.cjs.dev.js');
++var PageContainer = require('../../../../../dist/PageContainer-f2212b3d.cjs.dev.js');
+ var client = require('@apollo/client');
+ var adminUi_context_dist_keystone6CoreAdminUiContext = require('../../../../../admin-ui/context/dist/keystone-6-core-admin-ui-context.cjs.dev.js');
+ var adminUi_router_dist_keystone6CoreAdminUiRouter = require('../../../../../admin-ui/router/dist/keystone-6-core-admin-ui-router.cjs.dev.js');
+@@ -19,6 +19,7 @@ require('@keystone-ui/fields');
+ require('@keystone-ui/button');
+ require('@emotion/weak-memoize');
+ require('graphql');
++require('@keystone-ui/icons');
+ require('next/router');
+ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.cjs.prod.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.cjs.prod.js
+index 47bbfd4..0dafde1 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.cjs.prod.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.cjs.prod.js
+@@ -11,7 +11,7 @@ var dataGetter = require('../../../../../dist/dataGetter-2824eb60.cjs.prod.js');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('../../../../../dist/getRootGraphQLFieldsFromFieldController-713db5a8.cjs.prod.js');
+ require('fast-deep-equal');
+-var PageContainer = require('../../../../../dist/PageContainer-5378c41c.cjs.prod.js');
++var PageContainer = require('../../../../../dist/PageContainer-646b7c93.cjs.prod.js');
+ var client = require('@apollo/client');
+ var adminUi_context_dist_keystone6CoreAdminUiContext = require('../../../../../admin-ui/context/dist/keystone-6-core-admin-ui-context.cjs.prod.js');
+ var adminUi_router_dist_keystone6CoreAdminUiRouter = require('../../../../../admin-ui/router/dist/keystone-6-core-admin-ui-router.cjs.prod.js');
+@@ -19,6 +19,7 @@ require('@keystone-ui/fields');
+ require('@keystone-ui/button');
+ require('@emotion/weak-memoize');
+ require('graphql');
++require('@keystone-ui/icons');
+ require('next/router');
+ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.esm.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.esm.js
+index e740898..efe023c 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.esm.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.esm.js
+@@ -7,7 +7,7 @@ import { m as makeDataGetter } from '../../../../../dist/dataGetter-54fa8f6b.esm
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+ import '../../../../../dist/getRootGraphQLFieldsFromFieldController-11021ec8.esm.js';
+ import 'fast-deep-equal';
+-import { P as PageContainer, H as HEADER_HEIGHT } from '../../../../../dist/PageContainer-0d8d0d38.esm.js';
++import { P as PageContainer, H as HEADER_HEIGHT } from '../../../../../dist/PageContainer-57a4d68e.esm.js';
+ import { gql, useQuery } from '@apollo/client';
+ import { useKeystone, useList } from '../../../../../admin-ui/context/dist/keystone-6-core-admin-ui-context.esm.js';
+ import { Link } from '../../../../../admin-ui/router/dist/keystone-6-core-admin-ui-router.esm.js';
+@@ -15,6 +15,7 @@ import '@keystone-ui/fields';
+ import '@keystone-ui/button';
+ import '@emotion/weak-memoize';
+ import 'graphql';
++import '@keystone-ui/icons';
+ import 'next/router';
+ import '@keystone-ui/popover';
+ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.cjs.dev.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.cjs.dev.js
+index a8bee85..f09e5ca 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.cjs.dev.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.cjs.dev.js
+@@ -21,10 +21,10 @@ require('../../../../../dist/getRootGraphQLFieldsFromFieldController-e2b649ed.cj
+ var useInvalidFields = require('../../../../../dist/useInvalidFields-7ad269b2.cjs.dev.js');
+ var client = require('@apollo/client');
+ var adminUi_context_dist_keystone6CoreAdminUiContext = require('../../../../../admin-ui/context/dist/keystone-6-core-admin-ui-context.cjs.dev.js');
+-var PageContainer = require('../../../../../dist/PageContainer-6e3879ad.cjs.dev.js');
++var PageContainer = require('../../../../../dist/PageContainer-f2212b3d.cjs.dev.js');
+ var GraphQLErrorNotice = require('../../../../../dist/GraphQLErrorNotice-b11fa9f5.cjs.dev.js');
+ var CreateButtonLink = require('../../../../../dist/CreateButtonLink-369756ea.cjs.dev.js');
+-var common = require('../../../../../dist/common-7c5b6ab2.cjs.dev.js');
++var common = require('../../../../../dist/common-3d7651ec.cjs.dev.js');
+ require('@emotion/weak-memoize');
+ require('graphql');
+ require('fast-deep-equal');
+@@ -40,6 +40,7 @@ require('@graphql-ts/schema/api-without-context');
+ require('@graphql-ts/extend');
+ require('@graphql-ts/schema/api-with-context');
+ require('../../../../../dist/admin-meta-graphql-2063c7b9.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.cjs.prod.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.cjs.prod.js
+index 0137a82..9701bae 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.cjs.prod.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.cjs.prod.js
+@@ -21,10 +21,10 @@ require('../../../../../dist/getRootGraphQLFieldsFromFieldController-713db5a8.cj
+ var useInvalidFields = require('../../../../../dist/useInvalidFields-4f6f2fc8.cjs.prod.js');
+ var client = require('@apollo/client');
+ var adminUi_context_dist_keystone6CoreAdminUiContext = require('../../../../../admin-ui/context/dist/keystone-6-core-admin-ui-context.cjs.prod.js');
+-var PageContainer = require('../../../../../dist/PageContainer-5378c41c.cjs.prod.js');
++var PageContainer = require('../../../../../dist/PageContainer-646b7c93.cjs.prod.js');
+ var GraphQLErrorNotice = require('../../../../../dist/GraphQLErrorNotice-46a95125.cjs.prod.js');
+ var CreateButtonLink = require('../../../../../dist/CreateButtonLink-b25229e8.cjs.prod.js');
+-var common = require('../../../../../dist/common-8ddbd01c.cjs.prod.js');
++var common = require('../../../../../dist/common-99de1d1f.cjs.prod.js');
+ require('@emotion/weak-memoize');
+ require('graphql');
+ require('fast-deep-equal');
+@@ -40,6 +40,7 @@ require('@graphql-ts/schema/api-without-context');
+ require('@graphql-ts/extend');
+ require('@graphql-ts/schema/api-with-context');
+ require('../../../../../dist/admin-meta-graphql-4908958f.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.esm.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.esm.js
+index 10b04e8..38c9d9b 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.esm.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.esm.js
+@@ -17,10 +17,10 @@ import '../../../../../dist/getRootGraphQLFieldsFromFieldController-11021ec8.esm
+ import { d as deserializeValue, u as useChangedFieldsAndDataForUpdate, a as useInvalidFields } from '../../../../../dist/useInvalidFields-5a1ca587.esm.js';
+ import { gql, useQuery, useMutation } from '@apollo/client';
+ import { useList } from '../../../../../admin-ui/context/dist/keystone-6-core-admin-ui-context.esm.js';
+-import { P as PageContainer, H as HEADER_HEIGHT } from '../../../../../dist/PageContainer-0d8d0d38.esm.js';
++import { P as PageContainer, H as HEADER_HEIGHT } from '../../../../../dist/PageContainer-57a4d68e.esm.js';
+ import { G as GraphQLErrorNotice, u as usePreventNavigation } from '../../../../../dist/GraphQLErrorNotice-b586b151.esm.js';
+ import { C as CreateButtonLink } from '../../../../../dist/CreateButtonLink-41201098.esm.js';
+-import { I as ItemPageHeader, C as ColumnLayout, B as BaseToolbar } from '../../../../../dist/common-e0ed4d13.esm.js';
++import { I as ItemPageHeader, C as ColumnLayout, B as BaseToolbar } from '../../../../../dist/common-8a24f94d.esm.js';
+ import '@emotion/weak-memoize';
+ import 'graphql';
+ import 'fast-deep-equal';
+@@ -36,6 +36,7 @@ import '@graphql-ts/schema/api-without-context';
+ import '@graphql-ts/extend';
+ import '@graphql-ts/schema/api-with-context';
+ import '../../../../../dist/admin-meta-graphql-75e8cfcb.esm.js';
++import '@keystone-ui/icons';
+ import '@keystone-ui/popover';
+ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.cjs.dev.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.cjs.dev.js
+index 5c1e3cb..9a0c2af 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.cjs.dev.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.cjs.dev.js
+@@ -28,7 +28,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ var ChevronRightIcon = require('@keystone-ui/icons/icons/ChevronRightIcon');
+ var adminUi_router_dist_keystone6CoreAdminUiRouter = require('../../../../../admin-ui/router/dist/keystone-6-core-admin-ui-router.cjs.dev.js');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
+-var PageContainer = require('../../../../../dist/PageContainer-6e3879ad.cjs.dev.js');
++var PageContainer = require('../../../../../dist/PageContainer-f2212b3d.cjs.dev.js');
+ require('@keystone-ui/notice');
+ var icons = require('@keystone-ui/icons');
+ var fields_types_relationship_views_RelationshipSelect_dist_keystone6CoreFieldsTypesRelationshipViewsRelationshipSelect = require('../../../../../fields/types/relationship/views/RelationshipSelect/dist/keystone-6-core-fields-types-relationship-views-RelationshipSelect.cjs.dev.js');
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.cjs.prod.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.cjs.prod.js
+index d7e0642..e70b9fd 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.cjs.prod.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.cjs.prod.js
+@@ -28,7 +28,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ var ChevronRightIcon = require('@keystone-ui/icons/icons/ChevronRightIcon');
+ var adminUi_router_dist_keystone6CoreAdminUiRouter = require('../../../../../admin-ui/router/dist/keystone-6-core-admin-ui-router.cjs.prod.js');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
+-var PageContainer = require('../../../../../dist/PageContainer-5378c41c.cjs.prod.js');
++var PageContainer = require('../../../../../dist/PageContainer-646b7c93.cjs.prod.js');
+ require('@keystone-ui/notice');
+ var icons = require('@keystone-ui/icons');
+ var fields_types_relationship_views_RelationshipSelect_dist_keystone6CoreFieldsTypesRelationshipViewsRelationshipSelect = require('../../../../../fields/types/relationship/views/RelationshipSelect/dist/keystone-6-core-fields-types-relationship-views-RelationshipSelect.cjs.prod.js');
+diff --git a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.esm.js b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.esm.js
+index cac89c6..361e179 100644
+--- a/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.esm.js
++++ b/node_modules/@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.esm.js
+@@ -24,7 +24,7 @@ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import { ChevronRightIcon as ChevronRightIcon$1 } from '@keystone-ui/icons/icons/ChevronRightIcon';
+ import { Link } from '../../../../../admin-ui/router/dist/keystone-6-core-admin-ui-router.esm.js';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
+-import { P as PageContainer, H as HEADER_HEIGHT } from '../../../../../dist/PageContainer-0d8d0d38.esm.js';
++import { P as PageContainer, H as HEADER_HEIGHT } from '../../../../../dist/PageContainer-57a4d68e.esm.js';
+ import '@keystone-ui/notice';
+ import { ChevronLeftIcon, ChevronRightIcon } from '@keystone-ui/icons';
+ import { useFilter } from '../../../../../fields/types/relationship/views/RelationshipSelect/dist/keystone-6-core-fields-types-relationship-views-RelationshipSelect.esm.js';
+diff --git a/node_modules/@keystone-6/core/admin-ui/components/dist/keystone-6-core-admin-ui-components.cjs.dev.js b/node_modules/@keystone-6/core/admin-ui/components/dist/keystone-6-core-admin-ui-components.cjs.dev.js
+index 3c4d3f1..0875e43 100644
+--- a/node_modules/@keystone-6/core/admin-ui/components/dist/keystone-6-core-admin-ui-components.cjs.dev.js
++++ b/node_modules/@keystone-6/core/admin-ui/components/dist/keystone-6-core-admin-ui-components.cjs.dev.js
+@@ -5,7 +5,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
+ var CellContainer = require('../../../dist/CellContainer-524f7ad6.cjs.dev.js');
+ var CellLink = require('../../../dist/CellLink-eaa8183d.cjs.dev.js');
+ var Errors = require('../../../dist/Errors-d7ffd745.cjs.dev.js');
+-var PageContainer = require('../../../dist/PageContainer-6e3879ad.cjs.dev.js');
++var PageContainer = require('../../../dist/PageContainer-f2212b3d.cjs.dev.js');
+ var CreateItemDrawer = require('../../../dist/CreateItemDrawer-6e294d8a.cjs.dev.js');
+ var GraphQLErrorNotice = require('../../../dist/GraphQLErrorNotice-b11fa9f5.cjs.dev.js');
+ require('@babel/runtime/helpers/extends');
+@@ -18,6 +18,7 @@ require('@babel/runtime/helpers/defineProperty');
+ require('react');
+ require('@keystone-ui/button');
+ require('@keystone-ui/icons/icons/AlertTriangleIcon');
++require('@keystone-ui/icons');
+ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+diff --git a/node_modules/@keystone-6/core/admin-ui/components/dist/keystone-6-core-admin-ui-components.cjs.prod.js b/node_modules/@keystone-6/core/admin-ui/components/dist/keystone-6-core-admin-ui-components.cjs.prod.js
+index 0841927..2d4db5b 100644
+--- a/node_modules/@keystone-6/core/admin-ui/components/dist/keystone-6-core-admin-ui-components.cjs.prod.js
++++ b/node_modules/@keystone-6/core/admin-ui/components/dist/keystone-6-core-admin-ui-components.cjs.prod.js
+@@ -5,7 +5,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
+ var CellContainer = require('../../../dist/CellContainer-e370d64d.cjs.prod.js');
+ var CellLink = require('../../../dist/CellLink-10f89ceb.cjs.prod.js');
+ var Errors = require('../../../dist/Errors-b841e5fe.cjs.prod.js');
+-var PageContainer = require('../../../dist/PageContainer-5378c41c.cjs.prod.js');
++var PageContainer = require('../../../dist/PageContainer-646b7c93.cjs.prod.js');
+ var CreateItemDrawer = require('../../../dist/CreateItemDrawer-aa66f086.cjs.prod.js');
+ var GraphQLErrorNotice = require('../../../dist/GraphQLErrorNotice-46a95125.cjs.prod.js');
+ require('@babel/runtime/helpers/extends');
+@@ -18,6 +18,7 @@ require('@babel/runtime/helpers/defineProperty');
+ require('react');
+ require('@keystone-ui/button');
+ require('@keystone-ui/icons/icons/AlertTriangleIcon');
++require('@keystone-ui/icons');
+ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+diff --git a/node_modules/@keystone-6/core/admin-ui/components/dist/keystone-6-core-admin-ui-components.esm.js b/node_modules/@keystone-6/core/admin-ui/components/dist/keystone-6-core-admin-ui-components.esm.js
+index c53f8b8..c008c9a 100644
+--- a/node_modules/@keystone-6/core/admin-ui/components/dist/keystone-6-core-admin-ui-components.esm.js
++++ b/node_modules/@keystone-6/core/admin-ui/components/dist/keystone-6-core-admin-ui-components.esm.js
+@@ -1,7 +1,7 @@
+ export { C as CellContainer } from '../../../dist/CellContainer-8cce1185.esm.js';
+ export { C as CellLink } from '../../../dist/CellLink-c169ac58.esm.js';
+ export { E as ErrorBoundary, a as ErrorContainer } from '../../../dist/Errors-f59723d8.esm.js';
+-export { d as ListNavItem, c as ListNavItems, L as Logo, b as NavItem, N as Navigation, a as NavigationContainer, P as PageContainer } from '../../../dist/PageContainer-0d8d0d38.esm.js';
++export { d as ListNavItem, c as ListNavItems, L as Logo, b as NavItem, N as Navigation, a as NavigationContainer, P as PageContainer } from '../../../dist/PageContainer-57a4d68e.esm.js';
+ export { C as CreateItemDrawer } from '../../../dist/CreateItemDrawer-7a696da3.esm.js';
+ export { G as GraphQLErrorNotice } from '../../../dist/GraphQLErrorNotice-b586b151.esm.js';
+ import '@babel/runtime/helpers/extends';
+@@ -14,6 +14,7 @@ import '@babel/runtime/helpers/defineProperty';
+ import 'react';
+ import '@keystone-ui/button';
+ import '@keystone-ui/icons/icons/AlertTriangleIcon';
++import '@keystone-ui/icons';
+ import '@keystone-ui/popover';
+ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+diff --git a/node_modules/@keystone-6/core/dist/PageContainer-0d8d0d38.esm.js b/node_modules/@keystone-6/core/dist/PageContainer-57a4d68e.esm.js
+similarity index 85%
+rename from node_modules/@keystone-6/core/dist/PageContainer-0d8d0d38.esm.js
+rename to node_modules/@keystone-6/core/dist/PageContainer-57a4d68e.esm.js
+index 0363854..e5ef824 100644
+--- a/node_modules/@keystone-6/core/dist/PageContainer-0d8d0d38.esm.js
++++ b/node_modules/@keystone-6/core/dist/PageContainer-57a4d68e.esm.js
+@@ -1,6 +1,7 @@
+ import _extends from '@babel/runtime/helpers/esm/extends';
+ import { useTheme, jsx, H3, Text, Stack } from '@keystone-ui/core';
+-import { Fragment } from 'react';
++import { Fragment, useState } from 'react';
++import { MenuIcon, XCircleIcon } from '@keystone-ui/icons';
+ import { useRouter } from 'next/router';
+ import { Button } from '@keystone-ui/button';
+ import { Popover } from '@keystone-ui/popover';
+@@ -291,25 +292,57 @@ const PageWrapper = props => {
+     css: {
+       // background: colors.background,
+       display: 'grid',
+-      gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
+-      gridTemplateRows: `${HEADER_HEIGHT}px auto`,
++      gridTemplateColumns: `minmax(300px, 1fr)`,
++      gridTemplateRows: `repeat(2,${HEADER_HEIGHT}px) auto`,
+       height: '100vh',
+-      isolation: 'isolate'
++      isolation: 'isolate',
++      '@media (min-width: 576px)': {
++        gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
++        gridTemplateRows: `${HEADER_HEIGHT}px auto`
++      }
+     }
+   }, props)));
+ };
+-const Sidebar = props => {
++const Sidebar = _ref => {
++  let {
++    isSidebarOpen,
++    ...props
++  } = _ref;
+   // const { colors } = useTheme();
+ 
+-  return jsx("aside", _extends({
++  return jsx("div", {
++    css: {
++      gridColumn: '1/2',
++      gridRow: '1/4',
++      display: isSidebarOpen ? 'block' : 'none',
++      height: '100vh',
++      '@media (min-width: 576px)': {
++        gridColumn: '1/2',
++        gridRow: '2/3',
++        display: 'block',
++        height: '100%'
++      }
++    }
++  }, jsx("div", {
++    onClick: () => {
++      props.setIsSidebarOpen(!isSidebarOpen);
++    },
++    css: {
++      float: 'right',
++      padding: '10px',
++      display: 'block',
++      '@media (min-width: 576px)': {
++        display: 'none'
++      }
++    }
++  }, jsx(XCircleIcon, null)), jsx("aside", _extends({
+     css: {
+       // borderRight: `1px solid ${colors.border}`,
+       minWidth: 0,
+       // resolves collapsing issues in children
+-      overflowY: 'auto',
+       WebkitOverflowScrolling: 'touch'
+     }
+-  }, props));
++  }, props)));
+ };
+ const Content = props => {
+   const {
+@@ -330,16 +363,17 @@ const Content = props => {
+     }
+   }, props));
+ };
+-const PageContainer = _ref => {
++const PageContainer = _ref2 => {
+   let {
+     children,
+     header,
+     title
+-  } = _ref;
++  } = _ref2;
+   const {
+     colors,
+     spacing
+   } = useTheme();
++  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+   return jsx(PageWrapper, null, jsx("div", {
+     css: {
+       alignItems: 'center',
+@@ -350,7 +384,17 @@ const PageContainer = _ref => {
+       paddingLeft: spacing.xlarge,
+       paddingRight: spacing.xlarge
+     }
+-  }, jsx(Logo, null)), jsx("header", {
++  }, jsx(Logo, null), jsx("div", {
++    onClick: () => {
++      setIsSidebarOpen(!isSidebarOpen);
++    },
++    css: {
++      display: 'block',
++      '@media (min-width: 576px)': {
++        display: 'none'
++      }
++    }
++  }, jsx(MenuIcon, null))), jsx("header", {
+     css: {
+       alignItems: 'center',
+       backgroundColor: colors.background,
+@@ -362,7 +406,13 @@ const PageContainer = _ref => {
+       paddingLeft: spacing.xlarge,
+       paddingRight: spacing.xlarge
+     }
+-  }, jsx("title", null, title ? `Keystone - ${title}` : 'Keystone'), header), jsx(Sidebar, null, jsx(Navigation, null)), jsx(Content, null, children));
++  }, jsx("title", null, title ? `Keystone - ${title}` : 'Keystone'), jsx("meta", {
++    name: "viewport",
++    content: "width=device-width, initial-scale=1.0"
++  }), header), jsx(Sidebar, {
++    isSidebarOpen: isSidebarOpen,
++    setIsSidebarOpen: setIsSidebarOpen
++  }, jsx(Navigation, null)), jsx(Content, null, children));
+ };
+ 
+ export { HEADER_HEIGHT as H, Logo as L, Navigation as N, PageContainer as P, NavigationContainer as a, NavItem as b, ListNavItems as c, ListNavItem as d };
+diff --git a/node_modules/@keystone-6/core/dist/PageContainer-5378c41c.cjs.prod.js b/node_modules/@keystone-6/core/dist/PageContainer-646b7c93.cjs.prod.js
+similarity index 84%
+rename from node_modules/@keystone-6/core/dist/PageContainer-5378c41c.cjs.prod.js
+rename to node_modules/@keystone-6/core/dist/PageContainer-646b7c93.cjs.prod.js
+index 1ac312e..fc7a95f 100644
+--- a/node_modules/@keystone-6/core/dist/PageContainer-5378c41c.cjs.prod.js
++++ b/node_modules/@keystone-6/core/dist/PageContainer-646b7c93.cjs.prod.js
+@@ -3,6 +3,7 @@
+ var _extends = require('@babel/runtime/helpers/extends');
+ var core = require('@keystone-ui/core');
+ var React = require('react');
++var icons = require('@keystone-ui/icons');
+ var router = require('next/router');
+ require('@keystone-ui/button');
+ require('@keystone-ui/popover');
+@@ -244,25 +245,57 @@ const PageWrapper = props => {
+     css: {
+       // background: colors.background,
+       display: 'grid',
+-      gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
+-      gridTemplateRows: `${HEADER_HEIGHT}px auto`,
++      gridTemplateColumns: `minmax(300px, 1fr)`,
++      gridTemplateRows: `repeat(2,${HEADER_HEIGHT}px) auto`,
+       height: '100vh',
+-      isolation: 'isolate'
++      isolation: 'isolate',
++      '@media (min-width: 576px)': {
++        gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
++        gridTemplateRows: `${HEADER_HEIGHT}px auto`
++      }
+     }
+   }, props)));
+ };
+-const Sidebar = props => {
++const Sidebar = _ref => {
++  let {
++    isSidebarOpen,
++    ...props
++  } = _ref;
+   // const { colors } = useTheme();
+ 
+-  return core.jsx("aside", _extends({
++  return core.jsx("div", {
++    css: {
++      gridColumn: '1/2',
++      gridRow: '1/4',
++      display: isSidebarOpen ? 'block' : 'none',
++      height: '100vh',
++      '@media (min-width: 576px)': {
++        gridColumn: '1/2',
++        gridRow: '2/3',
++        display: 'block',
++        height: '100%'
++      }
++    }
++  }, core.jsx("div", {
++    onClick: () => {
++      props.setIsSidebarOpen(!isSidebarOpen);
++    },
++    css: {
++      float: 'right',
++      padding: '10px',
++      display: 'block',
++      '@media (min-width: 576px)': {
++        display: 'none'
++      }
++    }
++  }, core.jsx(icons.XCircleIcon, null)), core.jsx("aside", _extends({
+     css: {
+       // borderRight: `1px solid ${colors.border}`,
+       minWidth: 0,
+       // resolves collapsing issues in children
+-      overflowY: 'auto',
+       WebkitOverflowScrolling: 'touch'
+     }
+-  }, props));
++  }, props)));
+ };
+ const Content = props => {
+   const {
+@@ -283,16 +316,17 @@ const Content = props => {
+     }
+   }, props));
+ };
+-const PageContainer = _ref => {
++const PageContainer = _ref2 => {
+   let {
+     children,
+     header,
+     title
+-  } = _ref;
++  } = _ref2;
+   const {
+     colors,
+     spacing
+   } = core.useTheme();
++  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+   return core.jsx(PageWrapper, null, core.jsx("div", {
+     css: {
+       alignItems: 'center',
+@@ -303,7 +337,17 @@ const PageContainer = _ref => {
+       paddingLeft: spacing.xlarge,
+       paddingRight: spacing.xlarge
+     }
+-  }, core.jsx(Logo, null)), core.jsx("header", {
++  }, core.jsx(Logo, null), core.jsx("div", {
++    onClick: () => {
++      setIsSidebarOpen(!isSidebarOpen);
++    },
++    css: {
++      display: 'block',
++      '@media (min-width: 576px)': {
++        display: 'none'
++      }
++    }
++  }, core.jsx(icons.MenuIcon, null))), core.jsx("header", {
+     css: {
+       alignItems: 'center',
+       backgroundColor: colors.background,
+@@ -315,7 +359,13 @@ const PageContainer = _ref => {
+       paddingLeft: spacing.xlarge,
+       paddingRight: spacing.xlarge
+     }
+-  }, core.jsx("title", null, title ? `Keystone - ${title}` : 'Keystone'), header), core.jsx(Sidebar, null, core.jsx(Navigation, null)), core.jsx(Content, null, children));
++  }, core.jsx("title", null, title ? `Keystone - ${title}` : 'Keystone'), core.jsx("meta", {
++    name: "viewport",
++    content: "width=device-width, initial-scale=1.0"
++  }), header), core.jsx(Sidebar, {
++    isSidebarOpen: isSidebarOpen,
++    setIsSidebarOpen: setIsSidebarOpen
++  }, core.jsx(Navigation, null)), core.jsx(Content, null, children));
+ };
+ 
+ exports.HEADER_HEIGHT = HEADER_HEIGHT;
+diff --git a/node_modules/@keystone-6/core/dist/PageContainer-6e3879ad.cjs.dev.js b/node_modules/@keystone-6/core/dist/PageContainer-f2212b3d.cjs.dev.js
+similarity index 86%
+rename from node_modules/@keystone-6/core/dist/PageContainer-6e3879ad.cjs.dev.js
+rename to node_modules/@keystone-6/core/dist/PageContainer-f2212b3d.cjs.dev.js
+index 14c4d56..9ff20b2 100644
+--- a/node_modules/@keystone-6/core/dist/PageContainer-6e3879ad.cjs.dev.js
++++ b/node_modules/@keystone-6/core/dist/PageContainer-f2212b3d.cjs.dev.js
+@@ -3,6 +3,7 @@
+ var _extends = require('@babel/runtime/helpers/extends');
+ var core = require('@keystone-ui/core');
+ var React = require('react');
++var icons = require('@keystone-ui/icons');
+ var router = require('next/router');
+ var button = require('@keystone-ui/button');
+ var popover = require('@keystone-ui/popover');
+@@ -297,25 +298,57 @@ const PageWrapper = props => {
+     css: {
+       // background: colors.background,
+       display: 'grid',
+-      gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
+-      gridTemplateRows: `${HEADER_HEIGHT}px auto`,
++      gridTemplateColumns: `minmax(300px, 1fr)`,
++      gridTemplateRows: `repeat(2,${HEADER_HEIGHT}px) auto`,
+       height: '100vh',
+-      isolation: 'isolate'
++      isolation: 'isolate',
++      '@media (min-width: 576px)': {
++        gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
++        gridTemplateRows: `${HEADER_HEIGHT}px auto`
++      }
+     }
+   }, props)));
+ };
+-const Sidebar = props => {
++const Sidebar = _ref => {
++  let {
++    isSidebarOpen,
++    ...props
++  } = _ref;
+   // const { colors } = useTheme();
+ 
+-  return core.jsx("aside", _extends({
++  return core.jsx("div", {
++    css: {
++      gridColumn: '1/2',
++      gridRow: '1/4',
++      display: isSidebarOpen ? 'block' : 'none',
++      height: '100vh',
++      '@media (min-width: 576px)': {
++        gridColumn: '1/2',
++        gridRow: '2/3',
++        display: 'block',
++        height: '100%'
++      }
++    }
++  }, core.jsx("div", {
++    onClick: () => {
++      props.setIsSidebarOpen(!isSidebarOpen);
++    },
++    css: {
++      float: 'right',
++      padding: '10px',
++      display: 'block',
++      '@media (min-width: 576px)': {
++        display: 'none'
++      }
++    }
++  }, core.jsx(icons.XCircleIcon, null)), core.jsx("aside", _extends({
+     css: {
+       // borderRight: `1px solid ${colors.border}`,
+       minWidth: 0,
+       // resolves collapsing issues in children
+-      overflowY: 'auto',
+       WebkitOverflowScrolling: 'touch'
+     }
+-  }, props));
++  }, props)));
+ };
+ const Content = props => {
+   const {
+@@ -336,16 +369,17 @@ const Content = props => {
+     }
+   }, props));
+ };
+-const PageContainer = _ref => {
++const PageContainer = _ref2 => {
+   let {
+     children,
+     header,
+     title
+-  } = _ref;
++  } = _ref2;
+   const {
+     colors,
+     spacing
+   } = core.useTheme();
++  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+   return core.jsx(PageWrapper, null, core.jsx("div", {
+     css: {
+       alignItems: 'center',
+@@ -356,7 +390,17 @@ const PageContainer = _ref => {
+       paddingLeft: spacing.xlarge,
+       paddingRight: spacing.xlarge
+     }
+-  }, core.jsx(Logo, null)), core.jsx("header", {
++  }, core.jsx(Logo, null), core.jsx("div", {
++    onClick: () => {
++      setIsSidebarOpen(!isSidebarOpen);
++    },
++    css: {
++      display: 'block',
++      '@media (min-width: 576px)': {
++        display: 'none'
++      }
++    }
++  }, core.jsx(icons.MenuIcon, null))), core.jsx("header", {
+     css: {
+       alignItems: 'center',
+       backgroundColor: colors.background,
+@@ -368,7 +412,13 @@ const PageContainer = _ref => {
+       paddingLeft: spacing.xlarge,
+       paddingRight: spacing.xlarge
+     }
+-  }, core.jsx("title", null, title ? `Keystone - ${title}` : 'Keystone'), header), core.jsx(Sidebar, null, core.jsx(Navigation, null)), core.jsx(Content, null, children));
++  }, core.jsx("title", null, title ? `Keystone - ${title}` : 'Keystone'), core.jsx("meta", {
++    name: "viewport",
++    content: "width=device-width, initial-scale=1.0"
++  }), header), core.jsx(Sidebar, {
++    isSidebarOpen: isSidebarOpen,
++    setIsSidebarOpen: setIsSidebarOpen
++  }, core.jsx(Navigation, null)), core.jsx(Content, null, children));
+ };
+ 
+ exports.HEADER_HEIGHT = HEADER_HEIGHT;
+diff --git a/node_modules/@keystone-6/core/dist/common-7c5b6ab2.cjs.dev.js b/node_modules/@keystone-6/core/dist/common-3d7651ec.cjs.dev.js
+similarity index 93%
+rename from node_modules/@keystone-6/core/dist/common-7c5b6ab2.cjs.dev.js
+rename to node_modules/@keystone-6/core/dist/common-3d7651ec.cjs.dev.js
+index a304067..b9c0264 100644
+--- a/node_modules/@keystone-6/core/dist/common-7c5b6ab2.cjs.dev.js
++++ b/node_modules/@keystone-6/core/dist/common-3d7651ec.cjs.dev.js
+@@ -89,8 +89,12 @@ function ColumnLayout(props) {
+       css: {
+         alignItems: 'start',
+         display: 'grid',
+-        gap: spacing.xlarge,
+-        gridTemplateColumns: `2fr 1fr`
++        gap: spacing.none,
++        gridTemplateColumns: `100vw`,
++        '@media (min-width: 576px)': {
++          gridTemplateColumns: `2fr 1fr`,
++          gap: spacing.xlarge
++        }
+       }
+     }, props)))
+   );
+diff --git a/node_modules/@keystone-6/core/dist/common-e0ed4d13.esm.js b/node_modules/@keystone-6/core/dist/common-8a24f94d.esm.js
+similarity index 93%
+rename from node_modules/@keystone-6/core/dist/common-e0ed4d13.esm.js
+rename to node_modules/@keystone-6/core/dist/common-8a24f94d.esm.js
+index 94011de..c4dd106 100644
+--- a/node_modules/@keystone-6/core/dist/common-e0ed4d13.esm.js
++++ b/node_modules/@keystone-6/core/dist/common-8a24f94d.esm.js
+@@ -87,8 +87,12 @@ function ColumnLayout(props) {
+       css: {
+         alignItems: 'start',
+         display: 'grid',
+-        gap: spacing.xlarge,
+-        gridTemplateColumns: `2fr 1fr`
++        gap: spacing.none,
++        gridTemplateColumns: `100vw`,
++        '@media (min-width: 576px)': {
++          gridTemplateColumns: `2fr 1fr`,
++          gap: spacing.xlarge
++        }
+       }
+     }, props)))
+   );
+diff --git a/node_modules/@keystone-6/core/dist/common-8ddbd01c.cjs.prod.js b/node_modules/@keystone-6/core/dist/common-99de1d1f.cjs.prod.js
+similarity index 93%
+rename from node_modules/@keystone-6/core/dist/common-8ddbd01c.cjs.prod.js
+rename to node_modules/@keystone-6/core/dist/common-99de1d1f.cjs.prod.js
+index c947d21..6e869ee 100644
+--- a/node_modules/@keystone-6/core/dist/common-8ddbd01c.cjs.prod.js
++++ b/node_modules/@keystone-6/core/dist/common-99de1d1f.cjs.prod.js
+@@ -89,8 +89,12 @@ function ColumnLayout(props) {
+       css: {
+         alignItems: 'start',
+         display: 'grid',
+-        gap: spacing.xlarge,
+-        gridTemplateColumns: `2fr 1fr`
++        gap: spacing.none,
++        gridTemplateColumns: `100vw`,
++        '@media (min-width: 576px)': {
++          gridTemplateColumns: `2fr 1fr`,
++          gap: spacing.xlarge
++        }
+       }
+     }, props)))
+   );
+diff --git a/node_modules/@keystone-6/core/dist/declarations/src/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/common.d.ts.map b/node_modules/@keystone-6/core/dist/declarations/src/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/common.d.ts.map
+index 7583a32..a547524 100644
+--- a/node_modules/@keystone-6/core/dist/declarations/src/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/common.d.ts.map
++++ b/node_modules/@keystone-6/core/dist/declarations/src/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/common.d.ts.map
+@@ -1 +1 @@
+-{"version":3,"file":"common.d.ts","sourceRoot":"../../../../../../../src/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage","sources":["common.tsx"],"names":[],"mappings":"AAAA,0BAA0B;AAC1B,eAAe;AAEf,OAAO,EAAW,GAAG,EAAY,MAAM,mBAAmB,CAAC;AAE3D,OAAO,EAAY,cAAc,EAAE,SAAS,EAAE,MAAM,OAAO,CAAC;AAG5D,OAAO,EAAE,QAAQ,EAAE,MAAM,mBAAmB,CAAC;AAE7C,wBAAgB,cAAc,CAAC,KAAK,EAAE;IAAE,IAAI,EAAE,QAAQ,CAAC;IAAC,KAAK,EAAE,MAAM,CAAA;CAAE,mBAyDtE;AAED,wBAAgB,YAAY,CAAC,KAAK,EAAE,cAAc,CAAC,cAAc,CAAC,mBAkBjE;AAED,wBAAgB,WAAW,CAAC,KAAK,EAAE;IAAE,QAAQ,EAAE,SAAS,CAAA;CAAE,mBAqBzD"}
+\ No newline at end of file
++{"version":3,"file":"common.d.ts","sourceRoot":"../../../../../../../src/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage","sources":["common.tsx"],"names":[],"mappings":"AAAA,0BAA0B;AAC1B,eAAe;AAEf,OAAO,EAAW,GAAG,EAAY,MAAM,mBAAmB,CAAC;AAE3D,OAAO,EAAY,cAAc,EAAE,SAAS,EAAE,MAAM,OAAO,CAAC;AAG5D,OAAO,EAAE,QAAQ,EAAE,MAAM,mBAAmB,CAAC;AAE7C,wBAAgB,cAAc,CAAC,KAAK,EAAE;IAAE,IAAI,EAAE,QAAQ,CAAC;IAAC,KAAK,EAAE,MAAM,CAAA;CAAE,mBAyDtE;AAED,wBAAgB,YAAY,CAAC,KAAK,EAAE,cAAc,CAAC,cAAc,CAAC,mBAsBjE;AAED,wBAAgB,WAAW,CAAC,KAAK,EAAE;IAAE,QAAQ,EAAE,SAAS,CAAA;CAAE,mBAqBzD"}
+\ No newline at end of file
+diff --git a/node_modules/@keystone-6/core/dist/declarations/src/admin-ui/components/PageContainer.d.ts.map b/node_modules/@keystone-6/core/dist/declarations/src/admin-ui/components/PageContainer.d.ts.map
+index ed65e4e..c6ffefe 100644
+--- a/node_modules/@keystone-6/core/dist/declarations/src/admin-ui/components/PageContainer.d.ts.map
++++ b/node_modules/@keystone-6/core/dist/declarations/src/admin-ui/components/PageContainer.d.ts.map
+@@ -1 +1 @@
+-{"version":3,"file":"PageContainer.d.ts","sourceRoot":"../../../../../src/admin-ui/components","sources":["PageContainer.tsx"],"names":[],"mappings":"AAAA,0BAA0B;AAC1B,eAAe;AAEf,OAAO,EAAE,GAAG,EAAY,MAAM,mBAAmB,CAAC;AAClD,OAAO,EAA4B,SAAS,EAAE,MAAM,OAAO,CAAC;AAK5D,KAAK,kBAAkB,GAAG;IACxB,QAAQ,EAAE,SAAS,CAAC;IACpB,MAAM,EAAE,SAAS,CAAC;IAClB,KAAK,CAAC,EAAE,MAAM,CAAC;CAChB,CAAC;AAEF,eAAO,MAAM,aAAa,KAAK,CAAC;AA2DhC,eAAO,MAAM,aAAa,gCAAiC,kBAAkB,oBAsC5E,CAAC"}
+\ No newline at end of file
++{"version":3,"file":"PageContainer.d.ts","sourceRoot":"../../../../../src/admin-ui/components","sources":["PageContainer.tsx"],"names":[],"mappings":"AAAA,0BAA0B;AAC1B,eAAe;AAEf,OAAO,EAAE,GAAG,EAAY,MAAM,mBAAmB,CAAC;AAClD,OAAO,EAAsC,SAAS,EAA4B,MAAM,OAAO,CAAC;AAMhG,KAAK,kBAAkB,GAAG;IACxB,QAAQ,EAAE,SAAS,CAAC;IACpB,MAAM,EAAE,SAAS,CAAC;IAClB,KAAK,CAAC,EAAE,MAAM,CAAC;CAChB,CAAC;AAEF,eAAO,MAAM,aAAa,KAAK,CAAC;AAgGhC,eAAO,MAAM,aAAa,gCAAiC,kBAAkB,oBAgD5E,CAAC"}
+\ No newline at end of file
+diff --git a/node_modules/@keystone-6/core/fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.cjs.dev.js b/node_modules/@keystone-6/core/fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.cjs.dev.js
+index 0156cd6..94b29ac 100644
+--- a/node_modules/@keystone-6/core/fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.cjs.dev.js
++++ b/node_modules/@keystone-6/core/fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.cjs.dev.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.cjs.prod.js b/node_modules/@keystone-6/core/fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.cjs.prod.js
+index 89ab41d..89cfb7f 100644
+--- a/node_modules/@keystone-6/core/fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.cjs.prod.js
++++ b/node_modules/@keystone-6/core/fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.cjs.prod.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.esm.js b/node_modules/@keystone-6/core/fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.esm.js
+index eeab58f..1e9977e 100644
+--- a/node_modules/@keystone-6/core/fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.esm.js
++++ b/node_modules/@keystone-6/core/fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.esm.js
+@@ -23,6 +23,7 @@ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import 'next/head';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+ import 'fast-deep-equal';
+ import '@keystone-ui/notice';
+diff --git a/node_modules/@keystone-6/core/fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.cjs.dev.js b/node_modules/@keystone-6/core/fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.cjs.dev.js
+index 54454d6..fabe74d 100644
+--- a/node_modules/@keystone-6/core/fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.cjs.dev.js
++++ b/node_modules/@keystone-6/core/fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.cjs.dev.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.cjs.prod.js b/node_modules/@keystone-6/core/fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.cjs.prod.js
+index 00fbe18..8731cfd 100644
+--- a/node_modules/@keystone-6/core/fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.cjs.prod.js
++++ b/node_modules/@keystone-6/core/fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.cjs.prod.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.esm.js b/node_modules/@keystone-6/core/fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.esm.js
+index ec85457..d37795b 100644
+--- a/node_modules/@keystone-6/core/fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.esm.js
++++ b/node_modules/@keystone-6/core/fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.esm.js
+@@ -23,6 +23,7 @@ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import 'next/head';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+ import 'fast-deep-equal';
+ import '@keystone-ui/notice';
+diff --git a/node_modules/@keystone-6/core/fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.cjs.dev.js b/node_modules/@keystone-6/core/fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.cjs.dev.js
+index 365766b..887fd11 100644
+--- a/node_modules/@keystone-6/core/fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.cjs.dev.js
++++ b/node_modules/@keystone-6/core/fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.cjs.dev.js
+@@ -26,6 +26,7 @@ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.cjs.prod.js b/node_modules/@keystone-6/core/fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.cjs.prod.js
+index be80093..2035d2c 100644
+--- a/node_modules/@keystone-6/core/fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.cjs.prod.js
++++ b/node_modules/@keystone-6/core/fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.cjs.prod.js
+@@ -26,6 +26,7 @@ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.esm.js b/node_modules/@keystone-6/core/fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.esm.js
+index 293aa89..19e8a1d 100644
+--- a/node_modules/@keystone-6/core/fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.esm.js
++++ b/node_modules/@keystone-6/core/fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.esm.js
+@@ -22,6 +22,7 @@ import '@keystone-ui/popover';
+ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+ import 'fast-deep-equal';
+ import '@keystone-ui/notice';
+diff --git a/node_modules/@keystone-6/core/fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.cjs.dev.js b/node_modules/@keystone-6/core/fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.cjs.dev.js
+index 0da5c9f..753bd17 100644
+--- a/node_modules/@keystone-6/core/fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.cjs.dev.js
++++ b/node_modules/@keystone-6/core/fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.cjs.dev.js
+@@ -28,6 +28,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.cjs.prod.js b/node_modules/@keystone-6/core/fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.cjs.prod.js
+index b67f62d..c5d09e3 100644
+--- a/node_modules/@keystone-6/core/fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.cjs.prod.js
++++ b/node_modules/@keystone-6/core/fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.cjs.prod.js
+@@ -28,6 +28,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.esm.js b/node_modules/@keystone-6/core/fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.esm.js
+index 450e229..bb7c9f1 100644
+--- a/node_modules/@keystone-6/core/fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.esm.js
++++ b/node_modules/@keystone-6/core/fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.esm.js
+@@ -24,6 +24,7 @@ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import 'next/head';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+ import 'fast-deep-equal';
+ import '@keystone-ui/notice';
+diff --git a/node_modules/@keystone-6/core/fields/types/float/views/dist/keystone-6-core-fields-types-float-views.cjs.dev.js b/node_modules/@keystone-6/core/fields/types/float/views/dist/keystone-6-core-fields-types-float-views.cjs.dev.js
+index d2c2834..dfef1f0 100644
+--- a/node_modules/@keystone-6/core/fields/types/float/views/dist/keystone-6-core-fields-types-float-views.cjs.dev.js
++++ b/node_modules/@keystone-6/core/fields/types/float/views/dist/keystone-6-core-fields-types-float-views.cjs.dev.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/float/views/dist/keystone-6-core-fields-types-float-views.cjs.prod.js b/node_modules/@keystone-6/core/fields/types/float/views/dist/keystone-6-core-fields-types-float-views.cjs.prod.js
+index 57ab2ed..13acd3d 100644
+--- a/node_modules/@keystone-6/core/fields/types/float/views/dist/keystone-6-core-fields-types-float-views.cjs.prod.js
++++ b/node_modules/@keystone-6/core/fields/types/float/views/dist/keystone-6-core-fields-types-float-views.cjs.prod.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/float/views/dist/keystone-6-core-fields-types-float-views.esm.js b/node_modules/@keystone-6/core/fields/types/float/views/dist/keystone-6-core-fields-types-float-views.esm.js
+index ecd0577..7d7de53 100644
+--- a/node_modules/@keystone-6/core/fields/types/float/views/dist/keystone-6-core-fields-types-float-views.esm.js
++++ b/node_modules/@keystone-6/core/fields/types/float/views/dist/keystone-6-core-fields-types-float-views.esm.js
+@@ -23,6 +23,7 @@ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import 'next/head';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+ import 'fast-deep-equal';
+ import '@keystone-ui/notice';
+diff --git a/node_modules/@keystone-6/core/fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.cjs.dev.js b/node_modules/@keystone-6/core/fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.cjs.dev.js
+index 22739cd..6d82c99 100644
+--- a/node_modules/@keystone-6/core/fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.cjs.dev.js
++++ b/node_modules/@keystone-6/core/fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.cjs.dev.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.cjs.prod.js b/node_modules/@keystone-6/core/fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.cjs.prod.js
+index b6804ad..af72922 100644
+--- a/node_modules/@keystone-6/core/fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.cjs.prod.js
++++ b/node_modules/@keystone-6/core/fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.cjs.prod.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.esm.js b/node_modules/@keystone-6/core/fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.esm.js
+index 4c6314e..0182580 100644
+--- a/node_modules/@keystone-6/core/fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.esm.js
++++ b/node_modules/@keystone-6/core/fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.esm.js
+@@ -23,6 +23,7 @@ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import 'next/head';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+ import 'fast-deep-equal';
+ import '@keystone-ui/notice';
+diff --git a/node_modules/@keystone-6/core/fields/types/json/views/dist/keystone-6-core-fields-types-json-views.cjs.dev.js b/node_modules/@keystone-6/core/fields/types/json/views/dist/keystone-6-core-fields-types-json-views.cjs.dev.js
+index 786792d..b4f801a 100644
+--- a/node_modules/@keystone-6/core/fields/types/json/views/dist/keystone-6-core-fields-types-json-views.cjs.dev.js
++++ b/node_modules/@keystone-6/core/fields/types/json/views/dist/keystone-6-core-fields-types-json-views.cjs.dev.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/json/views/dist/keystone-6-core-fields-types-json-views.cjs.prod.js b/node_modules/@keystone-6/core/fields/types/json/views/dist/keystone-6-core-fields-types-json-views.cjs.prod.js
+index a1982ae..65f0225 100644
+--- a/node_modules/@keystone-6/core/fields/types/json/views/dist/keystone-6-core-fields-types-json-views.cjs.prod.js
++++ b/node_modules/@keystone-6/core/fields/types/json/views/dist/keystone-6-core-fields-types-json-views.cjs.prod.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/json/views/dist/keystone-6-core-fields-types-json-views.esm.js b/node_modules/@keystone-6/core/fields/types/json/views/dist/keystone-6-core-fields-types-json-views.esm.js
+index 6762d61..ab9dce2 100644
+--- a/node_modules/@keystone-6/core/fields/types/json/views/dist/keystone-6-core-fields-types-json-views.esm.js
++++ b/node_modules/@keystone-6/core/fields/types/json/views/dist/keystone-6-core-fields-types-json-views.esm.js
+@@ -23,6 +23,7 @@ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import 'next/head';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+ import 'fast-deep-equal';
+ import '@keystone-ui/notice';
+diff --git a/node_modules/@keystone-6/core/fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.cjs.dev.js b/node_modules/@keystone-6/core/fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.cjs.dev.js
+index 24357d9..8c74678 100644
+--- a/node_modules/@keystone-6/core/fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.cjs.dev.js
++++ b/node_modules/@keystone-6/core/fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.cjs.dev.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.cjs.prod.js b/node_modules/@keystone-6/core/fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.cjs.prod.js
+index 99fb1f0..57b9f0a 100644
+--- a/node_modules/@keystone-6/core/fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.cjs.prod.js
++++ b/node_modules/@keystone-6/core/fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.cjs.prod.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.esm.js b/node_modules/@keystone-6/core/fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.esm.js
+index 662fa97..bccbd59 100644
+--- a/node_modules/@keystone-6/core/fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.esm.js
++++ b/node_modules/@keystone-6/core/fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.esm.js
+@@ -23,6 +23,7 @@ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import 'next/head';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+ import 'fast-deep-equal';
+ import '@keystone-ui/notice';
+diff --git a/node_modules/@keystone-6/core/fields/types/password/views/dist/keystone-6-core-fields-types-password-views.cjs.dev.js b/node_modules/@keystone-6/core/fields/types/password/views/dist/keystone-6-core-fields-types-password-views.cjs.dev.js
+index 9daa01b..0bc6f74 100644
+--- a/node_modules/@keystone-6/core/fields/types/password/views/dist/keystone-6-core-fields-types-password-views.cjs.dev.js
++++ b/node_modules/@keystone-6/core/fields/types/password/views/dist/keystone-6-core-fields-types-password-views.cjs.dev.js
+@@ -31,6 +31,7 @@ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/password/views/dist/keystone-6-core-fields-types-password-views.cjs.prod.js b/node_modules/@keystone-6/core/fields/types/password/views/dist/keystone-6-core-fields-types-password-views.cjs.prod.js
+index c636dac..c33156b 100644
+--- a/node_modules/@keystone-6/core/fields/types/password/views/dist/keystone-6-core-fields-types-password-views.cjs.prod.js
++++ b/node_modules/@keystone-6/core/fields/types/password/views/dist/keystone-6-core-fields-types-password-views.cjs.prod.js
+@@ -31,6 +31,7 @@ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/password/views/dist/keystone-6-core-fields-types-password-views.esm.js b/node_modules/@keystone-6/core/fields/types/password/views/dist/keystone-6-core-fields-types-password-views.esm.js
+index 058bf3c..b39abfe 100644
+--- a/node_modules/@keystone-6/core/fields/types/password/views/dist/keystone-6-core-fields-types-password-views.esm.js
++++ b/node_modules/@keystone-6/core/fields/types/password/views/dist/keystone-6-core-fields-types-password-views.esm.js
+@@ -27,6 +27,7 @@ import '@keystone-ui/popover';
+ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+ import 'fast-deep-equal';
+ import '@keystone-ui/notice';
+diff --git a/node_modules/@keystone-6/core/fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.cjs.dev.js b/node_modules/@keystone-6/core/fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.cjs.dev.js
+index 5269ecc..db68dd5 100644
+--- a/node_modules/@keystone-6/core/fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.cjs.dev.js
++++ b/node_modules/@keystone-6/core/fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.cjs.dev.js
+@@ -20,6 +20,7 @@ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ var CreateItemDrawer = require('../../../../../dist/CreateItemDrawer-6e294d8a.cjs.dev.js');
+ require('@keystone-ui/notice');
+ var tooltip = require('@keystone-ui/tooltip');
+diff --git a/node_modules/@keystone-6/core/fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.cjs.prod.js b/node_modules/@keystone-6/core/fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.cjs.prod.js
+index c7044cb..6f3a030 100644
+--- a/node_modules/@keystone-6/core/fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.cjs.prod.js
++++ b/node_modules/@keystone-6/core/fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.cjs.prod.js
+@@ -20,6 +20,7 @@ require('@keystone-ui/popover');
+ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ var CreateItemDrawer = require('../../../../../dist/CreateItemDrawer-aa66f086.cjs.prod.js');
+ require('@keystone-ui/notice');
+ var tooltip = require('@keystone-ui/tooltip');
+diff --git a/node_modules/@keystone-6/core/fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.esm.js b/node_modules/@keystone-6/core/fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.esm.js
+index 9dfdce4..2cdee5d 100644
+--- a/node_modules/@keystone-6/core/fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.esm.js
++++ b/node_modules/@keystone-6/core/fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.esm.js
+@@ -16,6 +16,7 @@ import '@keystone-ui/popover';
+ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import { C as CreateItemDrawer } from '../../../../../dist/CreateItemDrawer-7a696da3.esm.js';
+ import '@keystone-ui/notice';
+ import { Tooltip } from '@keystone-ui/tooltip';
+diff --git a/node_modules/@keystone-6/core/fields/types/select/views/dist/keystone-6-core-fields-types-select-views.cjs.dev.js b/node_modules/@keystone-6/core/fields/types/select/views/dist/keystone-6-core-fields-types-select-views.cjs.dev.js
+index a8490f9..bf3cdda 100644
+--- a/node_modules/@keystone-6/core/fields/types/select/views/dist/keystone-6-core-fields-types-select-views.cjs.dev.js
++++ b/node_modules/@keystone-6/core/fields/types/select/views/dist/keystone-6-core-fields-types-select-views.cjs.dev.js
+@@ -28,6 +28,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/select/views/dist/keystone-6-core-fields-types-select-views.cjs.prod.js b/node_modules/@keystone-6/core/fields/types/select/views/dist/keystone-6-core-fields-types-select-views.cjs.prod.js
+index 05be5fd..f645576 100644
+--- a/node_modules/@keystone-6/core/fields/types/select/views/dist/keystone-6-core-fields-types-select-views.cjs.prod.js
++++ b/node_modules/@keystone-6/core/fields/types/select/views/dist/keystone-6-core-fields-types-select-views.cjs.prod.js
+@@ -28,6 +28,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/select/views/dist/keystone-6-core-fields-types-select-views.esm.js b/node_modules/@keystone-6/core/fields/types/select/views/dist/keystone-6-core-fields-types-select-views.esm.js
+index 8622399..9c0b824 100644
+--- a/node_modules/@keystone-6/core/fields/types/select/views/dist/keystone-6-core-fields-types-select-views.esm.js
++++ b/node_modules/@keystone-6/core/fields/types/select/views/dist/keystone-6-core-fields-types-select-views.esm.js
+@@ -24,6 +24,7 @@ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import 'next/head';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+ import 'fast-deep-equal';
+ import '@keystone-ui/notice';
+diff --git a/node_modules/@keystone-6/core/fields/types/text/views/dist/keystone-6-core-fields-types-text-views.cjs.dev.js b/node_modules/@keystone-6/core/fields/types/text/views/dist/keystone-6-core-fields-types-text-views.cjs.dev.js
+index d2705f9..caa2101 100644
+--- a/node_modules/@keystone-6/core/fields/types/text/views/dist/keystone-6-core-fields-types-text-views.cjs.dev.js
++++ b/node_modules/@keystone-6/core/fields/types/text/views/dist/keystone-6-core-fields-types-text-views.cjs.dev.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/text/views/dist/keystone-6-core-fields-types-text-views.cjs.prod.js b/node_modules/@keystone-6/core/fields/types/text/views/dist/keystone-6-core-fields-types-text-views.cjs.prod.js
+index 725ed79..c33c0a9 100644
+--- a/node_modules/@keystone-6/core/fields/types/text/views/dist/keystone-6-core-fields-types-text-views.cjs.prod.js
++++ b/node_modules/@keystone-6/core/fields/types/text/views/dist/keystone-6-core-fields-types-text-views.cjs.prod.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/text/views/dist/keystone-6-core-fields-types-text-views.esm.js b/node_modules/@keystone-6/core/fields/types/text/views/dist/keystone-6-core-fields-types-text-views.esm.js
+index 9398869..839e569 100644
+--- a/node_modules/@keystone-6/core/fields/types/text/views/dist/keystone-6-core-fields-types-text-views.esm.js
++++ b/node_modules/@keystone-6/core/fields/types/text/views/dist/keystone-6-core-fields-types-text-views.esm.js
+@@ -23,6 +23,7 @@ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import 'next/head';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+ import 'fast-deep-equal';
+ import '@keystone-ui/notice';
+diff --git a/node_modules/@keystone-6/core/fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.cjs.dev.js b/node_modules/@keystone-6/core/fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.cjs.dev.js
+index fbd53da..0f10862 100644
+--- a/node_modules/@keystone-6/core/fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.cjs.dev.js
++++ b/node_modules/@keystone-6/core/fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.cjs.dev.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-94652c56.cjs.dev.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-b4278943.cjs.dev.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.cjs.prod.js b/node_modules/@keystone-6/core/fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.cjs.prod.js
+index 12aa110..439321d 100644
+--- a/node_modules/@keystone-6/core/fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.cjs.prod.js
++++ b/node_modules/@keystone-6/core/fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.cjs.prod.js
+@@ -27,6 +27,7 @@ require('@keystone-ui/icons/icons/MoreHorizontalIcon');
+ require('@keystone-ui/icons/icons/ChevronRightIcon');
+ require('next/head');
+ require('../../../../../dist/SignoutButton-9832e663.cjs.prod.js');
++require('@keystone-ui/icons');
+ require('../../../../../dist/Fields-ec4f4464.cjs.prod.js');
+ require('fast-deep-equal');
+ require('@keystone-ui/notice');
+diff --git a/node_modules/@keystone-6/core/fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.esm.js b/node_modules/@keystone-6/core/fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.esm.js
+index 0615685..5ea59a7 100644
+--- a/node_modules/@keystone-6/core/fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.esm.js
++++ b/node_modules/@keystone-6/core/fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.esm.js
+@@ -23,6 +23,7 @@ import '@keystone-ui/icons/icons/MoreHorizontalIcon';
+ import '@keystone-ui/icons/icons/ChevronRightIcon';
+ import 'next/head';
+ import '../../../../../dist/SignoutButton-ef277bf5.esm.js';
++import '@keystone-ui/icons';
+ import '../../../../../dist/Fields-ff30179b.esm.js';
+ import 'fast-deep-equal';
+ import '@keystone-ui/notice';
+diff --git a/node_modules/@keystone-6/core/src/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/common.tsx b/node_modules/@keystone-6/core/src/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/common.tsx
+index f7b3b56..b7b5bc5 100644
+--- a/node_modules/@keystone-6/core/src/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/common.tsx
++++ b/node_modules/@keystone-6/core/src/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/common.tsx
+@@ -78,8 +78,12 @@ export function ColumnLayout(props: HTMLAttributes<HTMLDivElement>) {
+         css={{
+           alignItems: 'start',
+           display: 'grid',
+-          gap: spacing.xlarge,
+-          gridTemplateColumns: `2fr 1fr`,
++          gap: spacing.none,
++          gridTemplateColumns: `100vw`,
++          '@media (min-width: 576px)': {
++            gridTemplateColumns: `2fr 1fr`,
++            gap: spacing.xlarge,
++          },
+         }}
+         {...props}
+       />
+diff --git a/node_modules/@keystone-6/core/src/admin-ui/components/PageContainer.tsx b/node_modules/@keystone-6/core/src/admin-ui/components/PageContainer.tsx
+index a29cac8..153de7e 100644
+--- a/node_modules/@keystone-6/core/src/admin-ui/components/PageContainer.tsx
++++ b/node_modules/@keystone-6/core/src/admin-ui/components/PageContainer.tsx
+@@ -2,7 +2,8 @@
+ /** @jsx jsx */
+ 
+ import { jsx, useTheme } from '@keystone-ui/core';
+-import { Fragment, HTMLAttributes, ReactNode } from 'react';
++import { Dispatch, Fragment, HTMLAttributes, ReactNode, SetStateAction, useState } from 'react';
++import { MenuIcon, XCircleIcon } from '@keystone-ui/icons';
+ 
+ import { Navigation } from './Navigation';
+ import { Logo } from './Logo';
+@@ -25,10 +26,14 @@ const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
+         css={{
+           // background: colors.background,
+           display: 'grid',
+-          gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
+-          gridTemplateRows: `${HEADER_HEIGHT}px auto`,
++          gridTemplateColumns: `minmax(300px, 1fr)`,
++          gridTemplateRows: `repeat(2,${HEADER_HEIGHT}px) auto`,
+           height: '100vh',
+           isolation: 'isolate',
++          '@media (min-width: 576px)': {
++            gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
++            gridTemplateRows: `${HEADER_HEIGHT}px auto`,
++          },
+         }}
+         {...props}
+       />
+@@ -36,19 +41,52 @@ const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
+   );
+ };
+ 
+-const Sidebar = (props: HTMLAttributes<HTMLElement>) => {
++const Sidebar = ({
++  isSidebarOpen,
++  ...props
++}: HTMLAttributes<HTMLElement> & {
++  isSidebarOpen: boolean;
++  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
++}) => {
+   // const { colors } = useTheme();
+ 
+   return (
+-    <aside
++    <div
+       css={{
+-        // borderRight: `1px solid ${colors.border}`,
+-        minWidth: 0, // resolves collapsing issues in children
+-        overflowY: 'auto',
+-        WebkitOverflowScrolling: 'touch',
++        gridColumn: '1/2',
++        gridRow: '1/4',
++        display: isSidebarOpen ? 'block' : 'none',
++        height: '100vh',
++        '@media (min-width: 576px)': {
++          gridColumn: '1/2',
++          gridRow: '2/3',
++          display: 'block',
++          height: '100%',
++        },
+       }}
+-      {...props}
+-    />
++    >
++      <div
++        onClick={() => {
++          props.setIsSidebarOpen(!isSidebarOpen);
++        }}
++        css={{
++          float: 'right',
++          padding: '10px',
++          display: 'block',
++          '@media (min-width: 576px)': { display: 'none' },
++        }}
++      >
++        <XCircleIcon />
++      </div>
++      <aside
++        css={{
++          // borderRight: `1px solid ${colors.border}`,
++          minWidth: 0, // resolves collapsing issues in children
++          WebkitOverflowScrolling: 'touch',
++        }}
++        {...props}
++      />
++    </div>
+   );
+ };
+ 
+@@ -74,6 +112,7 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
+ 
+ export const PageContainer = ({ children, header, title }: PageContainerProps) => {
+   const { colors, spacing } = useTheme();
++  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+   return (
+     <PageWrapper>
+       <div
+@@ -88,6 +127,14 @@ export const PageContainer = ({ children, header, title }: PageContainerProps) =
+         }}
+       >
+         <Logo />
++        <div
++          onClick={() => {
++            setIsSidebarOpen(!isSidebarOpen);
++          }}
++          css={{ display: 'block', '@media (min-width: 576px)': { display: 'none' } }}
++        >
++          <MenuIcon />
++        </div>
+       </div>
+       <header
+         css={{
+@@ -102,10 +149,11 @@ export const PageContainer = ({ children, header, title }: PageContainerProps) =
+         }}
+       >
+         <title>{title ? `Keystone - ${title}` : 'Keystone'}</title>
++        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+         {header}
+       </header>
+-      <Sidebar>
+-        <Navigation />
++      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}>
++      <Navigation />
+       </Sidebar>
+       <Content>{children}</Content>
+     </PageWrapper>
