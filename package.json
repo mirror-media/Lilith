@@ -6,7 +6,6 @@
     "packages/draft-renderer",
     "packages/editools",
     "packages/readr",
-    "packages/mirrormedia",
     "packages/openrelationship"
   ],
   "scripts": {
