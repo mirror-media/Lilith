@@ -1,0 +1,451 @@
+diff --git a/node_modules/@keystone-6/core/dist/PageContainer-0d8d0d38.esm.js b/node_modules/@keystone-6/core/dist/PageContainer-0d8d0d38.esm.js
+index 0363854..e5ef824 100644
+--- a/node_modules/@keystone-6/core/dist/PageContainer-0d8d0d38.esm.js
++++ b/node_modules/@keystone-6/core/dist/PageContainer-0d8d0d38.esm.js
+@@ -1,6 +1,7 @@
+ import _extends from '@babel/runtime/helpers/esm/extends';
+ import { useTheme, jsx, H3, Text, Stack } from '@keystone-ui/core';
+-import { Fragment } from 'react';
++import { Fragment, useState } from 'react';
++import { MenuIcon, XCircleIcon } from '@keystone-ui/icons';
+ import { useRouter } from 'next/router';
+ import { Button } from '@keystone-ui/button';
+ import { Popover } from '@keystone-ui/popover';
+@@ -291,25 +292,57 @@ const PageWrapper = props => {
+     css: {
+       // background: colors.background,
+       display: 'grid',
+-      gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
+-      gridTemplateRows: `${HEADER_HEIGHT}px auto`,
++      gridTemplateColumns: `minmax(300px, 1fr)`,
++      gridTemplateRows: `repeat(2,${HEADER_HEIGHT}px) auto`,
+       height: '100vh',
+-      isolation: 'isolate'
++      isolation: 'isolate',
++      '@media (min-width: 576px)': {
++        gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
++        gridTemplateRows: `${HEADER_HEIGHT}px auto`
++      }
+     }
+   }, props)));
+ };
+-const Sidebar = props => {
++const Sidebar = _ref => {
++  let {
++    isSidebarOpen,
++    ...props
++  } = _ref;
+   // const { colors } = useTheme();
+ 
+-  return jsx("aside", _extends({
++  return jsx("div", {
++    css: {
++      gridColumn: '1/2',
++      gridRow: '1/4',
++      display: isSidebarOpen ? 'block' : 'none',
++      height: '100vh',
++      '@media (min-width: 576px)': {
++        gridColumn: '1/2',
++        gridRow: '2/3',
++        display: 'block',
++        height: '100%'
++      }
++    }
++  }, jsx("div", {
++    onClick: () => {
++      props.setIsSidebarOpen(!isSidebarOpen);
++    },
++    css: {
++      float: 'right',
++      padding: '10px',
++      display: 'block',
++      '@media (min-width: 576px)': {
++        display: 'none'
++      }
++    }
++  }, jsx(XCircleIcon, null)), jsx("aside", _extends({
+     css: {
+       // borderRight: `1px solid ${colors.border}`,
+       minWidth: 0,
+       // resolves collapsing issues in children
+-      overflowY: 'auto',
+       WebkitOverflowScrolling: 'touch'
+     }
+-  }, props));
++  }, props)));
+ };
+ const Content = props => {
+   const {
+@@ -330,16 +363,17 @@ const Content = props => {
+     }
+   }, props));
+ };
+-const PageContainer = _ref => {
++const PageContainer = _ref2 => {
+   let {
+     children,
+     header,
+     title
+-  } = _ref;
++  } = _ref2;
+   const {
+     colors,
+     spacing
+   } = useTheme();
++  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+   return jsx(PageWrapper, null, jsx("div", {
+     css: {
+       alignItems: 'center',
+@@ -350,7 +384,17 @@ const PageContainer = _ref => {
+       paddingLeft: spacing.xlarge,
+       paddingRight: spacing.xlarge
+     }
+-  }, jsx(Logo, null)), jsx("header", {
++  }, jsx(Logo, null), jsx("div", {
++    onClick: () => {
++      setIsSidebarOpen(!isSidebarOpen);
++    },
++    css: {
++      display: 'block',
++      '@media (min-width: 576px)': {
++        display: 'none'
++      }
++    }
++  }, jsx(MenuIcon, null))), jsx("header", {
+     css: {
+       alignItems: 'center',
+       backgroundColor: colors.background,
+@@ -362,7 +406,13 @@ const PageContainer = _ref => {
+       paddingLeft: spacing.xlarge,
+       paddingRight: spacing.xlarge
+     }
+-  }, jsx("title", null, title ? `Keystone - ${title}` : 'Keystone'), header), jsx(Sidebar, null, jsx(Navigation, null)), jsx(Content, null, children));
++  }, jsx("title", null, title ? `Keystone - ${title}` : 'Keystone'), jsx("meta", {
++    name: "viewport",
++    content: "width=device-width, initial-scale=1.0"
++  }), header), jsx(Sidebar, {
++    isSidebarOpen: isSidebarOpen,
++    setIsSidebarOpen: setIsSidebarOpen
++  }, jsx(Navigation, null)), jsx(Content, null, children));
+ };
+ 
+ export { HEADER_HEIGHT as H, Logo as L, Navigation as N, PageContainer as P, NavigationContainer as a, NavItem as b, ListNavItems as c, ListNavItem as d };
+diff --git a/node_modules/@keystone-6/core/dist/PageContainer-5378c41c.cjs.prod.js b/node_modules/@keystone-6/core/dist/PageContainer-5378c41c.cjs.prod.js
+index 1ac312e..fc7a95f 100644
+--- a/node_modules/@keystone-6/core/dist/PageContainer-5378c41c.cjs.prod.js
++++ b/node_modules/@keystone-6/core/dist/PageContainer-5378c41c.cjs.prod.js
+@@ -3,6 +3,7 @@
+ var _extends = require('@babel/runtime/helpers/extends');
+ var core = require('@keystone-ui/core');
+ var React = require('react');
++var icons = require('@keystone-ui/icons');
+ var router = require('next/router');
+ require('@keystone-ui/button');
+ require('@keystone-ui/popover');
+@@ -244,25 +245,57 @@ const PageWrapper = props => {
+     css: {
+       // background: colors.background,
+       display: 'grid',
+-      gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
+-      gridTemplateRows: `${HEADER_HEIGHT}px auto`,
++      gridTemplateColumns: `minmax(300px, 1fr)`,
++      gridTemplateRows: `repeat(2,${HEADER_HEIGHT}px) auto`,
+       height: '100vh',
+-      isolation: 'isolate'
++      isolation: 'isolate',
++      '@media (min-width: 576px)': {
++        gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
++        gridTemplateRows: `${HEADER_HEIGHT}px auto`
++      }
+     }
+   }, props)));
+ };
+-const Sidebar = props => {
++const Sidebar = _ref => {
++  let {
++    isSidebarOpen,
++    ...props
++  } = _ref;
+   // const { colors } = useTheme();
+ 
+-  return core.jsx("aside", _extends({
++  return core.jsx("div", {
++    css: {
++      gridColumn: '1/2',
++      gridRow: '1/4',
++      display: isSidebarOpen ? 'block' : 'none',
++      height: '100vh',
++      '@media (min-width: 576px)': {
++        gridColumn: '1/2',
++        gridRow: '2/3',
++        display: 'block',
++        height: '100%'
++      }
++    }
++  }, core.jsx("div", {
++    onClick: () => {
++      props.setIsSidebarOpen(!isSidebarOpen);
++    },
++    css: {
++      float: 'right',
++      padding: '10px',
++      display: 'block',
++      '@media (min-width: 576px)': {
++        display: 'none'
++      }
++    }
++  }, core.jsx(icons.XCircleIcon, null)), core.jsx("aside", _extends({
+     css: {
+       // borderRight: `1px solid ${colors.border}`,
+       minWidth: 0,
+       // resolves collapsing issues in children
+-      overflowY: 'auto',
+       WebkitOverflowScrolling: 'touch'
+     }
+-  }, props));
++  }, props)));
+ };
+ const Content = props => {
+   const {
+@@ -283,16 +316,17 @@ const Content = props => {
+     }
+   }, props));
+ };
+-const PageContainer = _ref => {
++const PageContainer = _ref2 => {
+   let {
+     children,
+     header,
+     title
+-  } = _ref;
++  } = _ref2;
+   const {
+     colors,
+     spacing
+   } = core.useTheme();
++  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+   return core.jsx(PageWrapper, null, core.jsx("div", {
+     css: {
+       alignItems: 'center',
+@@ -303,7 +337,17 @@ const PageContainer = _ref => {
+       paddingLeft: spacing.xlarge,
+       paddingRight: spacing.xlarge
+     }
+-  }, core.jsx(Logo, null)), core.jsx("header", {
++  }, core.jsx(Logo, null), core.jsx("div", {
++    onClick: () => {
++      setIsSidebarOpen(!isSidebarOpen);
++    },
++    css: {
++      display: 'block',
++      '@media (min-width: 576px)': {
++        display: 'none'
++      }
++    }
++  }, core.jsx(icons.MenuIcon, null))), core.jsx("header", {
+     css: {
+       alignItems: 'center',
+       backgroundColor: colors.background,
+@@ -315,7 +359,13 @@ const PageContainer = _ref => {
+       paddingLeft: spacing.xlarge,
+       paddingRight: spacing.xlarge
+     }
+-  }, core.jsx("title", null, title ? `Keystone - ${title}` : 'Keystone'), header), core.jsx(Sidebar, null, core.jsx(Navigation, null)), core.jsx(Content, null, children));
++  }, core.jsx("title", null, title ? `Keystone - ${title}` : 'Keystone'), core.jsx("meta", {
++    name: "viewport",
++    content: "width=device-width, initial-scale=1.0"
++  }), header), core.jsx(Sidebar, {
++    isSidebarOpen: isSidebarOpen,
++    setIsSidebarOpen: setIsSidebarOpen
++  }, core.jsx(Navigation, null)), core.jsx(Content, null, children));
+ };
+ 
+ exports.HEADER_HEIGHT = HEADER_HEIGHT;
+diff --git a/node_modules/@keystone-6/core/dist/PageContainer-6e3879ad.cjs.dev.js b/node_modules/@keystone-6/core/dist/PageContainer-6e3879ad.cjs.dev.js
+index 14c4d56..9ff20b2 100644
+--- a/node_modules/@keystone-6/core/dist/PageContainer-6e3879ad.cjs.dev.js
++++ b/node_modules/@keystone-6/core/dist/PageContainer-6e3879ad.cjs.dev.js
+@@ -3,6 +3,7 @@
+ var _extends = require('@babel/runtime/helpers/extends');
+ var core = require('@keystone-ui/core');
+ var React = require('react');
++var icons = require('@keystone-ui/icons');
+ var router = require('next/router');
+ var button = require('@keystone-ui/button');
+ var popover = require('@keystone-ui/popover');
+@@ -297,25 +298,57 @@ const PageWrapper = props => {
+     css: {
+       // background: colors.background,
+       display: 'grid',
+-      gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
+-      gridTemplateRows: `${HEADER_HEIGHT}px auto`,
++      gridTemplateColumns: `minmax(300px, 1fr)`,
++      gridTemplateRows: `repeat(2,${HEADER_HEIGHT}px) auto`,
+       height: '100vh',
+-      isolation: 'isolate'
++      isolation: 'isolate',
++      '@media (min-width: 576px)': {
++        gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
++        gridTemplateRows: `${HEADER_HEIGHT}px auto`
++      }
+     }
+   }, props)));
+ };
+-const Sidebar = props => {
++const Sidebar = _ref => {
++  let {
++    isSidebarOpen,
++    ...props
++  } = _ref;
+   // const { colors } = useTheme();
+ 
+-  return core.jsx("aside", _extends({
++  return core.jsx("div", {
++    css: {
++      gridColumn: '1/2',
++      gridRow: '1/4',
++      display: isSidebarOpen ? 'block' : 'none',
++      height: '100vh',
++      '@media (min-width: 576px)': {
++        gridColumn: '1/2',
++        gridRow: '2/3',
++        display: 'block',
++        height: '100%'
++      }
++    }
++  }, core.jsx("div", {
++    onClick: () => {
++      props.setIsSidebarOpen(!isSidebarOpen);
++    },
++    css: {
++      float: 'right',
++      padding: '10px',
++      display: 'block',
++      '@media (min-width: 576px)': {
++        display: 'none'
++      }
++    }
++  }, core.jsx(icons.XCircleIcon, null)), core.jsx("aside", _extends({
+     css: {
+       // borderRight: `1px solid ${colors.border}`,
+       minWidth: 0,
+       // resolves collapsing issues in children
+-      overflowY: 'auto',
+       WebkitOverflowScrolling: 'touch'
+     }
+-  }, props));
++  }, props)));
+ };
+ const Content = props => {
+   const {
+@@ -336,16 +369,17 @@ const Content = props => {
+     }
+   }, props));
+ };
+-const PageContainer = _ref => {
++const PageContainer = _ref2 => {
+   let {
+     children,
+     header,
+     title
+-  } = _ref;
++  } = _ref2;
+   const {
+     colors,
+     spacing
+   } = core.useTheme();
++  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+   return core.jsx(PageWrapper, null, core.jsx("div", {
+     css: {
+       alignItems: 'center',
+@@ -356,7 +390,17 @@ const PageContainer = _ref => {
+       paddingLeft: spacing.xlarge,
+       paddingRight: spacing.xlarge
+     }
+-  }, core.jsx(Logo, null)), core.jsx("header", {
++  }, core.jsx(Logo, null), core.jsx("div", {
++    onClick: () => {
++      setIsSidebarOpen(!isSidebarOpen);
++    },
++    css: {
++      display: 'block',
++      '@media (min-width: 576px)': {
++        display: 'none'
++      }
++    }
++  }, core.jsx(icons.MenuIcon, null))), core.jsx("header", {
+     css: {
+       alignItems: 'center',
+       backgroundColor: colors.background,
+@@ -368,7 +412,13 @@ const PageContainer = _ref => {
+       paddingLeft: spacing.xlarge,
+       paddingRight: spacing.xlarge
+     }
+-  }, core.jsx("title", null, title ? `Keystone - ${title}` : 'Keystone'), header), core.jsx(Sidebar, null, core.jsx(Navigation, null)), core.jsx(Content, null, children));
++  }, core.jsx("title", null, title ? `Keystone - ${title}` : 'Keystone'), core.jsx("meta", {
++    name: "viewport",
++    content: "width=device-width, initial-scale=1.0"
++  }), header), core.jsx(Sidebar, {
++    isSidebarOpen: isSidebarOpen,
++    setIsSidebarOpen: setIsSidebarOpen
++  }, core.jsx(Navigation, null)), core.jsx(Content, null, children));
+ };
+ 
+ exports.HEADER_HEIGHT = HEADER_HEIGHT;
+diff --git a/node_modules/@keystone-6/core/dist/common-7c5b6ab2.cjs.dev.js b/node_modules/@keystone-6/core/dist/common-7c5b6ab2.cjs.dev.js
+index a304067..b9c0264 100644
+--- a/node_modules/@keystone-6/core/dist/common-7c5b6ab2.cjs.dev.js
++++ b/node_modules/@keystone-6/core/dist/common-7c5b6ab2.cjs.dev.js
+@@ -89,8 +89,12 @@ function ColumnLayout(props) {
+       css: {
+         alignItems: 'start',
+         display: 'grid',
+-        gap: spacing.xlarge,
+-        gridTemplateColumns: `2fr 1fr`
++        gap: spacing.none,
++        gridTemplateColumns: `100vw`,
++        '@media (min-width: 576px)': {
++          gridTemplateColumns: `2fr 1fr`,
++          gap: spacing.xlarge
++        }
+       }
+     }, props)))
+   );
+diff --git a/node_modules/@keystone-6/core/dist/common-8ddbd01c.cjs.prod.js b/node_modules/@keystone-6/core/dist/common-8ddbd01c.cjs.prod.js
+index c947d21..6e869ee 100644
+--- a/node_modules/@keystone-6/core/dist/common-8ddbd01c.cjs.prod.js
++++ b/node_modules/@keystone-6/core/dist/common-8ddbd01c.cjs.prod.js
+@@ -89,8 +89,12 @@ function ColumnLayout(props) {
+       css: {
+         alignItems: 'start',
+         display: 'grid',
+-        gap: spacing.xlarge,
+-        gridTemplateColumns: `2fr 1fr`
++        gap: spacing.none,
++        gridTemplateColumns: `100vw`,
++        '@media (min-width: 576px)': {
++          gridTemplateColumns: `2fr 1fr`,
++          gap: spacing.xlarge
++        }
+       }
+     }, props)))
+   );
+diff --git a/node_modules/@keystone-6/core/dist/common-e0ed4d13.esm.js b/node_modules/@keystone-6/core/dist/common-e0ed4d13.esm.js
+index 94011de..c4dd106 100644
+--- a/node_modules/@keystone-6/core/dist/common-e0ed4d13.esm.js
++++ b/node_modules/@keystone-6/core/dist/common-e0ed4d13.esm.js
+@@ -87,8 +87,12 @@ function ColumnLayout(props) {
+       css: {
+         alignItems: 'start',
+         display: 'grid',
+-        gap: spacing.xlarge,
+-        gridTemplateColumns: `2fr 1fr`
++        gap: spacing.none,
++        gridTemplateColumns: `100vw`,
++        '@media (min-width: 576px)': {
++          gridTemplateColumns: `2fr 1fr`,
++          gap: spacing.xlarge
++        }
+       }
+     }, props)))
+   );

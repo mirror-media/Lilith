@@ -17,6 +17,7 @@ const {
   MEMBER_API_URL,
   CORS_ALLOW_ORIGINS,
   LOCK_DURATION,
+  IS_CACHE_ENABLED,
   REDIS_SERVER,
   CACHE_IDENTIFIER,
   CACHE_CONNECT_TIMEOUT,
@@ -82,6 +83,7 @@ export default {
   lockDuration:
     (typeof LOCK_DURATION === 'string' && parseInt(LOCK_DURATION)) || 30,
   cache: {
+    isEnabled: IS_CACHE_ENABLED === 'true',
     identifier: CACHE_IDENTIFIER ?? 'weekly-cms',
     url: REDIS_SERVER ?? '',
     connectTimeOut: Number.isNaN(cacheConnectTimeout)

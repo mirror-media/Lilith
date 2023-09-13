@@ -290,11 +290,16 @@ const DraftEditorWrapper = styled.div`
   background: rgb(255, 255, 255);
   border-radius: 6px;
   padding: 0 1rem 1rem;
-
+  font-size: 18px;
+  line-height: 2;
   /* Draft built-in buttons' style */
   .public-DraftStyleDefault-header-two {
+    font-size: 36px;
+    line-height: 1.5;
   }
   .public-DraftStyleDefault-header-three {
+    font-size: 30px;
+    line-height: 1.5;
   }
   .public-DraftStyleDefault-header-four {
   }

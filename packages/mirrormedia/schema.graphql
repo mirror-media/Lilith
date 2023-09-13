@@ -435,7 +435,21 @@ input StringNullableFilter {
   startsWith: String
   endsWith: String
   mode: QueryMode
-  not: StringNullableFilter
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
 }
 
 input EditorChoiceOrderByInput {
@@ -1079,6 +1093,7 @@ type Post {
   manualOrderOfSections: JSON
   categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   categoriesCount(where: CategoryWhereInput! = {}): Int
+  manualOrderOfCategories: JSON
   writers(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   writersCount(where: ContactWhereInput! = {}): Int
   manualOrderOfWriters: JSON
@@ -1129,6 +1144,7 @@ type Post {
   updatedBy: User
   writersInInputOrder: [Contact]
   sectionsInInputOrder: [Section]
+  categoriesInInputOrder: [Category]
   relatedsInInputOrder: [Post]
   related_videosInInputOrder: [Video]
 }
@@ -1235,6 +1251,7 @@ input PostUpdateInput {
   sections: SectionRelateToManyForUpdateInput
   manualOrderOfSections: JSON
   categories: CategoryRelateToManyForUpdateInput
+  manualOrderOfCategories: JSON
   writers: ContactRelateToManyForUpdateInput
   manualOrderOfWriters: JSON
   photographers: ContactRelateToManyForUpdateInput
@@ -1322,6 +1339,7 @@ input PostCreateInput {
   sections: SectionRelateToManyForCreateInput
   manualOrderOfSections: JSON
   categories: CategoryRelateToManyForCreateInput
+  manualOrderOfCategories: JSON
   writers: ContactRelateToManyForCreateInput
   manualOrderOfWriters: JSON
   photographers: ContactRelateToManyForCreateInput
