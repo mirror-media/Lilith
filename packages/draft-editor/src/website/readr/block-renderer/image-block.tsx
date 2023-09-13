@@ -13,7 +13,12 @@ import {
 
 const { ImageBlock } = ReadrMedia.blockRenderers
 
-const StyledImageBlock = styled(ImageBlock)``
+const ImageBlockWrapper = styled.div`
+  img {
+    min-width: 300px;
+    max-width: 600px;
+  }
+`
 
 const ImageEditButton = styled.span`
   cursor: pointer;
@@ -97,7 +102,9 @@ export function ImageEditorBlock(props: ImageBlockProps) {
           initialSelected={[imageWithMeta]}
         />
       )}
-      <StyledImageBlock {...props} />
+      <ImageBlockWrapper>
+        <ImageBlock {...props} />
+      </ImageBlockWrapper>
       <ImageEditButton
         onClick={() => {
           // call `onEditStart` prop as we are trying to update the BGImage entity
