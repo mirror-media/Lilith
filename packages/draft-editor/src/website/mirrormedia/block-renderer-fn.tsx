@@ -7,11 +7,11 @@ import { SideIndexEditorBlock as SideIndexBlock } from './block-renderer/side-in
 import { EmbeddedCodeEditorBlock as EmbeddedCodeBlock } from './block-renderer/embedded-code-block'
 import { SlideshowEditBlock as SlideshowBlock } from './block-renderer/slideshow-block'
 import { SlideshowEditBlockV2 as SlideshowBlockV2 } from './block-renderer/slideshow-block'
+import { ImageEditorBlock as ImageBlock } from './block-renderer/image-block'
 import MirrorMedia from '@mirrormedia/lilith-draft-renderer/lib/website/mirrormedia'
 
 const {
   MediaBlock,
-  ImageBlock,
   DividerBlock,
   RelatedPostBlock,
   VideoBlock,
