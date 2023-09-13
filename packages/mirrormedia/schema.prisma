@@ -274,6 +274,7 @@ model Post {
   sections                   Section[]      @relation("Post_sections")
   manualOrderOfSections      Json?
   categories                 Category[]     @relation("Category_posts")
+  manualOrderOfCategories    Json?
   writers                    Contact[]      @relation("Post_writers")
   manualOrderOfWriters       Json?
   photographers              Contact[]      @relation("Post_photographers")
