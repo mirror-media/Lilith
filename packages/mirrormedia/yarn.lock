@@ -1949,16 +1949,16 @@
   dependencies:
     ioredis "^5.3.2"
 
-"@mirrormedia/lilith-core@2.0.0-alpha.10":
-  version "2.0.0-alpha.10"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-2.0.0-alpha.10.tgz#555bc6cd9edd06f11863e9b127dad824fbf5826f"
-  integrity sha512-99AaXeV+EFxYulshzZFxe4LhgYJPKm0peTIW+8K1WHU7J7hH9XovvinsFLEZSuThfSE3jyDVVXLljrzVsnj6wQ==
+"@mirrormedia/lilith-core@2.0.0-alpha.11":
+  version "2.0.0-alpha.11"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-2.0.0-alpha.11.tgz#5bc06ac47e8aac68e97ff1a57c97ee3a81660788"
+  integrity sha512-3kevSMPW+9ahfouETvONSCC73RRjSjs+3Ywqm39inmOwbFEJNoAIf8uV7rgpD/0kykUEidH4PqPAnw3rFu/VRg==
   dependencies:
     "@google-cloud/storage" "^5.18.0"
     "@keystone-ui/button" "^7.0.2"
     "@keystone-ui/fields" "^7.2.0"
     "@keystone-ui/modals" "^6.0.3"
-    "@mirrormedia/lilith-draft-editor" "1.1.0-alpha.18"
+    "@mirrormedia/lilith-draft-editor" "1.1.0-alpha.19"
     "@twreporter/errors" "^1.1.1"
     axios "^0.26.0"
     draft-convert "^2.1.12"
@@ -1970,20 +1970,20 @@
     styled-components "5.3.5"
     zlib "^1.0.5"
 
-"@mirrormedia/lilith-draft-editor@1.1.0-alpha.18":
-  version "1.1.0-alpha.18"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-editor/-/lilith-draft-editor-1.1.0-alpha.18.tgz#ca77f9eb7da1cea0658cf712f379e1ae0c3ab2f6"
-  integrity sha512-KQuBX9AzSGjlaCp6EdfwqSppw6WGR0huEv3FUgG7JM8CwwhzKIFB/DpWlmORd69ngzApB/EK2FJt9o/Q7W1vLw==
+"@mirrormedia/lilith-draft-editor@1.1.0-alpha.19":
+  version "1.1.0-alpha.19"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-editor/-/lilith-draft-editor-1.1.0-alpha.19.tgz#9063ab97094c35d42494e6236731734c8cc13b92"
+  integrity sha512-opHG0b1eFHe95IqpVT2Gp++mSr54oXRYPIoN0uGdt1dTgg11zK6Jd2ad1hr5G7JsKNSq1NT6i5J1J+CAbuyt9Q==
   dependencies:
-    "@mirrormedia/lilith-draft-renderer" "1.2.0-alpha.31"
+    "@mirrormedia/lilith-draft-renderer" "1.3.0-alpha.2"
     draft-js "^0.11.7"
 
-"@mirrormedia/lilith-draft-renderer@1.2.0-alpha.31":
-  version "1.2.0-alpha.31"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.2.0-alpha.31.tgz#89f4daf844630e7b66bd291cc65d4b646a6c70ad"
-  integrity sha512-dqPLgpTB6W2NP68mksbokbutfOB2s02/SzkpivFtjcV6YCmlWoXVV1DP3IF0nogF0YJU3E2juWeH9W2OGsLdiA==
+"@mirrormedia/lilith-draft-renderer@1.3.0-alpha.2":
+  version "1.3.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.3.0-alpha.2.tgz#7817063bb1aa61fff5927feab643d82a4dff837b"
+  integrity sha512-Xank+tbnDF1YcHWTjiY9gxaN98WI+N9dKxlTNhL7HzBmBkyVYVI7u7OkK4s/VVEclGau89pb9stFug4sZiqLqQ==
   dependencies:
-    "@readr-media/react-image" "^1.5.1"
+    "@readr-media/react-image" "2.1.3"
     body-scroll-lock "3.1.5"
     draft-js "^0.11.7"
     node-html-parser "^6.1.5"
@@ -2343,10 +2343,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@readr-media/react-image@^1.5.1":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-image/-/react-image-1.6.0.tgz#1bff81cdaa8b14f255c22b2504df1d09fc783223"
-  integrity sha512-k4FOxVlAdvsFY5zP7nczs11LrJ3mA2T6Y7rwoTjpA9GMhlf3wtLWD84/XwcsGXNvHg0gbxQtmOcNvKE1LsZxwg==
+"@readr-media/react-image@2.1.3":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-image/-/react-image-2.1.3.tgz#97834255b39f42d15b93449637131d28a3aca168"
+  integrity sha512-XAuKKSqRNSvH/CJAfbBhVE7Ezkaetc0pM3AEKUPydYJP51N6fp8mWfPR0HUSw/7QLElHSGXVKCvyuOpVIXa5eQ==
 
 "@sindresorhus/slugify@1.1.2", "@sindresorhus/slugify@^1.1.2":
   version "1.1.2"
