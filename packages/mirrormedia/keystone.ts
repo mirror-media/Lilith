@@ -28,7 +28,7 @@ const session = statelessSessions(appConfig.session)
 
 const graphqlConfig: GraphQLConfig = {
   apolloConfig:
-    envVar.accessControlStrategy === 'gql'
+    envVar.accessControlStrategy === 'gql' && envVar.cache.isEnabled
       ? {
           plugins: [
             responseCachePlugin(),
