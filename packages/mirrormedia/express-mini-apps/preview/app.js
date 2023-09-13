@@ -41,13 +41,13 @@ export function createPreviewMiniApp({ previewServerOrigin, keystoneContext }) {
   })
 
   // Proxy requests with `/story/id` url path to preview nuxt server
-  router.get('/story/:id', authenticationMw, previewProxyMiddleware)
+  router.get('/story/:slug', authenticationMw, previewProxyMiddleware)
 
   // Proxy requests with `/event/:slug` url path to preview nuxt server
-  router.get('/event/:slug', authenticationMw, previewProxyMiddleware)
+  //router.get('/event/:slug', authenticationMw, previewProxyMiddleware)
 
   // Proxy requests with `/news/:id` url path to preview nuxt server
-  router.get('/news/:id', authenticationMw, previewProxyMiddleware)
+  router.get('/projects/:slug', authenticationMw, previewProxyMiddleware)
 
   // Proxy requests with `/_nuxt/*` url path to preview nuxt server
   router.use(

@@ -420,6 +420,24 @@ const listConfigurations = list({
       label: '會員文章',
       defaultValue: false,
     }),
+    preview: virtual({
+      field: graphql.field({
+        type: graphql.JSON,
+        resolve(item: Record<string, unknown>): Record<string, string> {
+          return {
+            href: `/story/${item?.slug}`,
+            label: 'Preview',
+          }
+        },
+      }),
+      ui: {
+        // A module path that is resolved from where `keystone start` is run
+        views: './lists/views/link-button',
+        createView: {
+          fieldMode: 'hidden',
+        },
+      },
+    }),
     isFeatured: checkbox({
       label: '置頂',
       defaultValue: false,

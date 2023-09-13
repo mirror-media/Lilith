@@ -1128,6 +1128,7 @@ type Post {
   related_videosCount(where: VideoWhereInput! = {}): Int
   manualOrderOfRelatedVideos: JSON
   isMember: Boolean
+  preview: JSON
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
