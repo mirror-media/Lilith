@@ -1082,6 +1082,8 @@ input PhotoCreateInput {
 
 type Post {
   id: ID!
+  lockBy: User
+  lockExpireAt: DateTime
   slug: String
   title: String
   state: String
@@ -1091,6 +1093,7 @@ type Post {
   manualOrderOfSections: JSON
   categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   categoriesCount(where: CategoryWhereInput! = {}): Int
+  manualOrderOfCategories: JSON
   writers(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   writersCount(where: ContactWhereInput! = {}): Int
   manualOrderOfWriters: JSON
@@ -1141,6 +1144,7 @@ type Post {
   updatedBy: User
   writersInInputOrder: [Contact]
   sectionsInInputOrder: [Section]
+  categoriesInInputOrder: [Category]
   relatedsInInputOrder: [Post]
   related_videosInInputOrder: [Video]
 }
@@ -1155,6 +1159,8 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
+  lockBy: UserWhereInput
+  lockExpireAt: DateTimeNullableFilter
   slug: StringFilter
   title: StringFilter
   state: StringNullableFilter
@@ -1213,6 +1219,7 @@ input VideoManyRelationFilter {
 
 input PostOrderByInput {
   id: OrderDirection
+  lockExpireAt: OrderDirection
   slug: OrderDirection
   title: OrderDirection
   state: OrderDirection
@@ -1235,6 +1242,8 @@ input PostOrderByInput {
 }
 
 input PostUpdateInput {
+  lockBy: UserRelateToOneForUpdateInput
+  lockExpireAt: DateTime
   slug: String
   title: String
   state: String
@@ -1242,6 +1251,7 @@ input PostUpdateInput {
   sections: SectionRelateToManyForUpdateInput
   manualOrderOfSections: JSON
   categories: CategoryRelateToManyForUpdateInput
+  manualOrderOfCategories: JSON
   writers: ContactRelateToManyForUpdateInput
   manualOrderOfWriters: JSON
   photographers: ContactRelateToManyForUpdateInput
@@ -1320,6 +1330,8 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
+  lockBy: UserRelateToOneForCreateInput
+  lockExpireAt: DateTime
   slug: String
   title: String
   state: String
@@ -1327,6 +1339,7 @@ input PostCreateInput {
   sections: SectionRelateToManyForCreateInput
   manualOrderOfSections: JSON
   categories: CategoryRelateToManyForCreateInput
+  manualOrderOfCategories: JSON
   writers: ContactRelateToManyForCreateInput
   manualOrderOfWriters: JSON
   photographers: ContactRelateToManyForCreateInput

@@ -58,8 +58,78 @@ function filterPosts(roles: string[]) {
   }
 }
 
+type FieldMode = 'edit' | 'read' | 'hidden'
+
+type ListTypeInfo = {
+  session: Session
+  context: KeystoneContext
+  item: Record<string, any>
+}
+
+type MaybeItemFunction<T extends FieldMode, ListTypeInfo> =
+  | T
+  | ((args: ListTypeInfo) => Promise<T>)
+
+const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
+  session,
+  context,
+  item,
+}) => {
+  if (session.data?.role == UserRole.Editor) {
+    const { lockBy } = await context.query.Post.findOne({
+      where: { id: item.id },
+      query: 'lockBy { id }',
+    })
+
+    if (!lockBy) {
+      const lockExpireAt = new Date(
+        new Date().setMinutes(
+          new Date().getMinutes() + envVar.lockDuration,
+          0,
+          0
+        )
+      ).toISOString()
+      const updatedPost = await context.query.Post.updateOne({
+        where: { id: item.id },
+        data: {
+          lockBy: { connect: { id: session.data?.id } },
+          lockExpireAt: lockExpireAt,
+        },
+        query: 'lockBy { id }',
+      })
+      return updatedPost.lockBy?.id === session.data?.id ? 'edit' : 'read'
+    } else if (lockBy.id == session.data?.id) {
+      return 'edit'
+    }
+    return 'read'
+  }
+
+  return 'edit'
+}
+
 const listConfigurations = list({
   fields: {
+    lockBy: relationship({
+      ref: 'User',
+      label: '誰正在編輯',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+        displayMode: 'cards',
+        cardFields: ['name'],
+      },
+    }),
+    lockExpireAt: timestamp({
+      isIndexed: true,
+      db: {
+        isNullable: true,
+      },
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
     slug: text({
       label: 'slug網址名稱（英文）',
       isIndexed: 'unique',
@@ -90,9 +160,6 @@ const listConfigurations = list({
       label: '大分類',
       ref: 'Section.posts',
       many: true,
-      ui: {
-        labelField: 'slug',
-      },
     }),
     manualOrderOfSections: json({
       label: '大分類手動排序結果',
@@ -101,9 +168,9 @@ const listConfigurations = list({
       label: '小分類',
       ref: 'Category.posts',
       many: true,
-      ui: {
-        labelField: 'slug',
-      },
+    }),
+    manualOrderOfCategories: json({
+      label: '小分類手動排序結果',
     }),
     writers: relationship({
       label: '作者',
@@ -285,9 +352,6 @@ const listConfigurations = list({
       label: '相關文章',
       ref: 'Post',
       many: true,
-      ui: {
-        labelField: 'slug',
-      },
     }),
     manualOrderOfRelateds: json({
       label: '相關文章手動排序結果',
@@ -361,6 +425,54 @@ const listConfigurations = list({
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
       },
+      access: {
+        read: ({
+          context,
+          item,
+        }: {
+          context: KeystoneContext
+          item: Record<string, unknown>
+        }) => {
+          if (envVar.accessControlStrategy === 'gql') {
+            // Post is not member only,
+            // every request could access content field
+            if (item?.isMember === false) {
+              return true
+            }
+
+            // Post is member only.
+            // Check request permission.
+            const scope = context.req?.headers?.['x-access-token-scope']
+
+            // get acl from scope
+            const acl =
+              typeof scope === 'string'
+                ? scope.match(/read:member-posts:([^\s]*)/i)?.[1]
+                : ''
+
+            if (typeof acl !== 'string') {
+              return false
+            } else if (acl === 'all') {
+              // scope contains 'read:memeber-posts:all'
+              // the request has the permission to read this field
+              return true
+            } else {
+              // scope contains 'read:member-posts:${postId1},${postId2},...,${postIdN}'
+              const postIdArr = acl.split(',')
+
+              // check the request has the permission to read this field
+              if (postIdArr.indexOf(`${item.id}`) > -1) {
+                return true
+              }
+            }
+
+            return false
+          }
+
+          // the request has permission to read this field
+          return true
+        },
+      },
     }),
     trimmedApiData: virtual({
       label: '擷取apiData中的前五段內容',
@@ -384,11 +496,14 @@ const listConfigurations = list({
     }),
   },
   ui: {
-    labelField: 'title',
+    labelField: 'slug',
     listView: {
       initialColumns: ['title', 'slug', 'state', 'publishedDate'],
       initialSort: { field: 'publishedDate', direction: 'DESC' },
       pageSize: 50,
+    },
+    itemView: {
+      defaultFieldMode: itemViewFunction,
     },
   },
   access: {
@@ -402,6 +517,20 @@ const listConfigurations = list({
     },
   },
   hooks: {
+    validateInput: async ({ operation, item, context, addValidationError }) => {
+      if (context.session?.data?.role !== UserRole.Admin) {
+        if (operation === 'update') {
+          const { lockBy } = await context.query.Post.findOne({
+            where: { id: item.id.toString() },
+            query: 'lockBy { id }',
+          })
+
+          if (lockBy?.id && lockBy?.id !== context.session?.data?.id) {
+            addValidationError('可能有其他人正在編輯，請重新整理頁面。')
+          }
+        }
+      }
+    },
     resolveInput: async ({ operation, resolvedData }) => {
       const { publishedDate, content, brief } = resolvedData
       if (operation === 'create') {
@@ -419,6 +548,27 @@ const listConfigurations = list({
       }
       return resolvedData
     },
+    afterOperation: async ({ operation, inputData, item, context }) => {
+      if (operation === 'update') {
+        // If the operation is to update lockBy and lockExpireAt, then no need to do anything further.
+        // inputDate example:
+        // { lockBy: { connect: { id: '1' } }, lockExpireAt: 2023-09-01T09:37:00.000Z }
+        // { lockBy: { disconnect: true }, lockExpireAt: null }
+        if (Object.keys(inputData).length === 2 && inputData.lockBy) {
+          return
+        }
+
+        // The user saved changes, release the lock.
+        // This will trigger `afterOperation` again, so the above condition check is necessary.
+        await context.query.Post.updateOne({
+          where: { id: item.id.toString() },
+          data: {
+            lockBy: { disconnect: true },
+            lockExpireAt: null,
+          },
+        })
+      }
+    },
   },
 })
 export default utils.addManualOrderRelationshipFields(
@@ -433,6 +583,12 @@ export default utils.addManualOrderRelationshipFields(
       fieldName: 'manualOrderOfSections',
       targetFieldName: 'sections',
       targetListName: 'Section',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfCategories',
+      targetFieldName: 'categories',
+      targetListName: 'Category',
       targetListLabelField: 'name',
     },
     {

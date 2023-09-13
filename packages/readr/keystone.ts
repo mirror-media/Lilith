@@ -6,7 +6,6 @@ import envVar from './environment-variables'
 import express, { Request, Response, NextFunction } from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
-import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -57,17 +56,6 @@ export default withAuth(
           path: '/images',
         },
         generateUrl: (path) => `/images${path}`,
-      },
-    },
-    graphql: {
-      cacheHint: { maxAge: 30, scope: 'PUBLIC' },
-      apolloConfig: {
-        cache: new InMemoryLRUCache({
-          // ~100MiB
-          maxSize: Math.pow(2, 20) * envVar.memoryCacheSize,
-          // 5 minutes (in milliseconds)
-          ttl: envVar.memoryCacheTtl,
-        }),
       },
     },
     server: {

@@ -16,12 +16,21 @@ const {
   FIREBASE_PROJECT_ID,
   MEMBER_API_URL,
   CORS_ALLOW_ORIGINS,
+  LOCK_DURATION,
+  IS_CACHE_ENABLED,
+  REDIS_SERVER,
+  CACHE_IDENTIFIER,
+  CACHE_CONNECT_TIMEOUT,
+  CACHE_MAXAGE,
 } = process.env
 
 enum DatabaseProvider {
   Sqlite = 'sqlite',
   Postgres = 'postgresql',
 }
+
+const cacheMaxAge = Number(CACHE_MAXAGE)
+const cacheConnectTimeout = Number(CACHE_CONNECT_TIMEOUT)
 
 export default {
   isUIDisabled: IS_UI_DISABLED === 'true',
@@ -32,7 +41,8 @@ export default {
       DATABASE_PROVIDER === 'sqlite'
         ? DatabaseProvider.Sqlite
         : DatabaseProvider.Postgres,
-    url: DATABASE_URL || 'postgres://user:password@localhost:5432/mirrormedia',
+    url:
+      DATABASE_URL || 'postgres://username:password@localhost:5432/mirrormedia',
   },
   session: {
     secret:
@@ -69,5 +79,16 @@ export default {
       typeof CORS_ALLOW_ORIGINS === 'string'
         ? CORS_ALLOW_ORIGINS.split(',')
         : ['https://www.mirrormedia.mg', 'https://mirrormedia.mg'],
+  },
+  lockDuration:
+    (typeof LOCK_DURATION === 'string' && parseInt(LOCK_DURATION)) || 30,
+  cache: {
+    isEnabled: IS_CACHE_ENABLED === 'true',
+    identifier: CACHE_IDENTIFIER ?? 'weekly-cms',
+    url: REDIS_SERVER ?? '',
+    connectTimeOut: Number.isNaN(cacheConnectTimeout)
+      ? 1000 * 10
+      : cacheConnectTimeout, // unit: millisecond
+    maxAge: Number.isNaN(cacheMaxAge) ? 60 : cacheMaxAge, // unit: second
   },
 }

@@ -52,6 +52,9 @@ const listConfigurations = list({
       label: '連結',
     }),
   },
+  graphql: {
+    cacheHint: { maxAge: 3600, scope: 'PUBLIC' }
+  },
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),

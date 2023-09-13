@@ -181,7 +181,8 @@ export function ImageBlock(
   const isAmp = contentLayout === 'amp'
 
   const [shouldOpenLightBox, setShouldOpenLightBox] = useState(false)
-  const { name, desc, resized, url } = entity.getData()
+  const { name, desc, resized, url, resizedWebp = null } = entity.getData()
+
   const hasDescription = Boolean(desc)
   useEffect(() => {
     if (lightBoxRef && lightBoxRef.current) {
@@ -213,6 +214,7 @@ export function ImageBlock(
   ) : (
     <CustomImage
       images={resized}
+      imagesWebP={resizedWebp}
       defaultImage={defaultImage}
       loadingImage={loadingImage}
       width={''}
@@ -247,6 +249,7 @@ export function ImageBlock(
       <Figure ref={lightBoxRef} onClick={(e) => e.stopPropagation()}>
         <CustomImage
           images={resized}
+          imagesWebP={resizedWebp}
           defaultImage={defaultImage}
           loadingImage={loadingImage}
           alt={name}

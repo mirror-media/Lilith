@@ -5,9 +5,10 @@
   "scripts": {
     "dev": "keystone dev",
     "start": "keystone start",
+    "start-http2-proxy-server": "node http2-proxy-server",
     "db-migrate": "keystone prisma migrate deploy",
     "build": "keystone build",
-    "postinstall": "test -n \"$WINDOWS_ONLY\" || test -n \"$SKIP_POSTINSTALL\" || (patch-package && keystone postinstall --fix)"
+    "postinstall": "test -n \"$WINDOWS_ONLY\" || patch-package && keystone postinstall --fix"
   },
   "repository": {
     "type": "git",
@@ -16,16 +17,24 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@apollo/server-plugin-response-cache": "^4.1.3",
+    "@apollo/utils.keyvadapter": "^3.0.0",
     "@keystone-6/auth": "7.0.0",
     "@keystone-6/core": "5.2.0",
-    "@mirrormedia/lilith-core": "2.0.0-alpha.9",
+    "@keyv/redis": "^2.7.0",
+    "@mirrormedia/lilith-core": "2.0.0-alpha.11",
     "@twreporter/errors": "^1.1.2",
-    "cors": "^2.8.5",
     "express": "^4.17.1",
     "firebase-admin": "^11.4.1",
     "http-proxy-middleware": "^2.0.3",
+    "http2-proxy": "^5.0.53",
+    "ioredis": "^5.3.2",
     "jsonwebtoken": "^9.0.0",
-    "patch-package": "^6.4.7"
+    "keyv": "^4.5.3",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
+    "redis-errors": "^1.2.0",
+    "redis-parser": "^3.0.0"
   },
   "resolutions": {
     "**/next": "13.3.4",
