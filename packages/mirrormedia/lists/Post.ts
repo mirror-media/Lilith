@@ -169,6 +169,9 @@ const listConfigurations = list({
       ref: 'Category.posts',
       many: true,
     }),
+    manualOrderOfCategories: json({
+      label: '小分類手動排序結果',
+    }),
     writers: relationship({
       label: '作者',
       ref: 'Contact',
@@ -580,6 +583,12 @@ export default utils.addManualOrderRelationshipFields(
       fieldName: 'manualOrderOfSections',
       targetFieldName: 'sections',
       targetListName: 'Section',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfCategories',
+      targetFieldName: 'categories',
+      targetListName: 'Category',
       targetListLabelField: 'name',
     },
     {
