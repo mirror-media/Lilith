@@ -219,9 +219,7 @@ export function ImageBlock(props: ImageBlockProps) {
 
   const imageJsx = isAmp ? (
     <AmpImgWrapper>
-      <amp-img src={resized?.original} alt={name} layout="fill">
-        <amp-img src={defaultImage} alt={name} layout="fill"></amp-img>
-      </amp-img>
+      <amp-img src={resized?.original} alt={name} layout="fill"></amp-img>
     </AmpImgWrapper>
   ) : (
     <CustomImage
