@@ -156,37 +156,6 @@ const listConfigurations = list({
       validation: { isRequired: true },
       defaultValue: { kind: 'now' },
     }),
-    updateTimeStamp: checkbox({
-      label: '下次存檔時自動更改成「現在時間」',
-      defaultValue: false,
-    }),
-    now: virtual({
-      field: graphql.field({
-        type: graphql.JSON,
-        resolve(item: Record<string, unknown>): Record<string, string | any> {
-          const now = new Date()
-          const time = new Date(now.setSeconds(0, 0))
-          return {
-            listKey: 'publishedDate',
-            mutation: `
-            mutation UpdatePost($time: DateTime!) {
-              updatePost(where: {id: ${item.id}}, data: {publishedDate: $time}) {
-                id
-              }
-            }
-            `,
-            time,
-          }
-        },
-      }),
-      ui: {
-        // A module path that is resolved from where `keystone start` is run
-        views: './lists/views/now-button',
-        createView: {
-          fieldMode: 'hidden',
-        },
-      },
-    }),
     sections: relationship({
       label: '大分類',
       ref: 'Section.posts',
@@ -617,7 +586,7 @@ const listConfigurations = list({
       }
     },
     resolveInput: async ({ operation, resolvedData }) => {
-      const { publishedDate, content, brief, updateTimeStamp } = resolvedData
+      const { publishedDate, content, brief } = resolvedData
       if (operation === 'create') {
         resolvedData.publishedDate = new Date(publishedDate.setSeconds(0, 0))
       }
@@ -631,14 +600,6 @@ const listConfigurations = list({
           .convertToApiData(brief)
           .toJS()
       }
-
-      if (updateTimeStamp) {
-        const now = new Date()
-        resolvedData.publishedDate = new Date(now.setSeconds(0, 0))
-        console.log(new Date(now.setSeconds(0, 0)))
-        resolvedData.updateTimeStamp = false
-      }
-
       return resolvedData
     },
     afterOperation: async ({ operation, inputData, item, context }) => {
