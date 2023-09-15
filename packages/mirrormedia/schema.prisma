@@ -292,6 +292,7 @@ model Post {
   style                      String?        @default("article")
   brief                      Json?
   content                    Json?
+  isMember                   Boolean        @default(false)
   topics                     Topic?         @relation("Post_topics", fields: [topicsId], references: [id])
   topicsId                   Int?           @map("topics")
   relateds                   Post[]         @relation("Post_relateds")
@@ -303,7 +304,6 @@ model Post {
   og_imageId                 Int?           @map("og_image")
   related_videos             Video[]        @relation("Post_related_videos")
   manualOrderOfRelatedVideos Json?
-  isMember                   Boolean        @default(false)
   isFeatured                 Boolean        @default(false)
   isAdvertised               Boolean        @default(false)
   hiddenAdvertised           Boolean        @default(false)

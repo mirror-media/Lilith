@@ -410,6 +410,10 @@ const listConfigurations = list({
         },
       },
     }),
+    isMember: checkbox({
+      label: '會員文章',
+      defaultValue: false,
+    }),
     topics: relationship({
       label: '專題',
       ref: 'Topic.posts',
@@ -447,10 +451,7 @@ const listConfigurations = list({
     manualOrderOfRelatedVideos: json({
       label: '相關影片手動排序結果',
     }),
-    isMember: checkbox({
-      label: '會員文章',
-      defaultValue: false,
-    }),
+
     preview: virtual({
       field: graphql.field({
         type: graphql.JSON,

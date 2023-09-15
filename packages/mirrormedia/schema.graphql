@@ -1117,6 +1117,7 @@ type Post {
   brief: JSON
   trimmedContent: JSON
   content: JSON
+  isMember: Boolean
   topics: Topic
   relateds(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedsCount(where: PostWhereInput! = {}): Int
@@ -1129,7 +1130,6 @@ type Post {
   related_videos(where: VideoWhereInput! = {}, orderBy: [VideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoWhereUniqueInput): [Video!]
   related_videosCount(where: VideoWhereInput! = {}): Int
   manualOrderOfRelatedVideos: JSON
-  isMember: Boolean
   preview: JSON
   isFeatured: Boolean
   isAdvertised: Boolean
@@ -1182,6 +1182,7 @@ input PostWhereInput {
   heroImage: PhotoWhereInput
   heroCaption: StringFilter
   style: StringNullableFilter
+  isMember: BooleanFilter
   topics: TopicWhereInput
   relateds: PostManyRelationFilter
   tags: TagManyRelationFilter
@@ -1189,7 +1190,6 @@ input PostWhereInput {
   og_description: StringFilter
   og_image: PhotoWhereInput
   related_videos: VideoManyRelationFilter
-  isMember: BooleanFilter
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
   hiddenAdvertised: BooleanFilter
@@ -1232,9 +1232,9 @@ input PostOrderByInput {
   extend_byline: OrderDirection
   heroCaption: OrderDirection
   style: OrderDirection
+  isMember: OrderDirection
   og_title: OrderDirection
   og_description: OrderDirection
-  isMember: OrderDirection
   isFeatured: OrderDirection
   isAdvertised: OrderDirection
   hiddenAdvertised: OrderDirection
@@ -1272,6 +1272,7 @@ input PostUpdateInput {
   style: String
   brief: JSON
   content: JSON
+  isMember: Boolean
   topics: TopicRelateToOneForUpdateInput
   relateds: PostRelateToManyForUpdateInput
   manualOrderOfRelateds: JSON
@@ -1281,7 +1282,6 @@ input PostUpdateInput {
   og_image: PhotoRelateToOneForUpdateInput
   related_videos: VideoRelateToManyForUpdateInput
   manualOrderOfRelatedVideos: JSON
-  isMember: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
@@ -1361,6 +1361,7 @@ input PostCreateInput {
   style: String
   brief: JSON
   content: JSON
+  isMember: Boolean
   topics: TopicRelateToOneForCreateInput
   relateds: PostRelateToManyForCreateInput
   manualOrderOfRelateds: JSON
@@ -1370,7 +1371,6 @@ input PostCreateInput {
   og_image: PhotoRelateToOneForCreateInput
   related_videos: VideoRelateToManyForCreateInput
   manualOrderOfRelatedVideos: JSON
-  isMember: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
