@@ -4,12 +4,12 @@ import { ColorBoxEditorBlock as ColorBoxBlock } from './block-renderer/color-box
 import { BGImageEditorBlock as BGImageBlock } from './block-renderer/background-image-block'
 import { BGVideoEditorBlock as BGVideoBlock } from './block-renderer/background-video-block'
 import { SideIndexEditorBlock as SideIndexBlock } from './block-renderer/side-index-block'
+import { ImageEditorBlock as ImageBlock } from './block-renderer/image-block'
 import Readr from '@mirrormedia/lilith-draft-renderer/lib/website/readr'
 
 const {
   EmbeddedCodeBlock,
   MediaBlock,
-  ImageBlock,
   SlideshowBlock,
   SlideshowBlockV2,
   DividerBlock,
@@ -30,7 +30,7 @@ const AtomicBlock = (props) => {
       return MediaBlock(entity)
     }
     case 'image': {
-      return ImageBlock(entity)
+      return ImageBlock(props)
     }
     case 'slideshow': {
       return SlideshowBlock(entity)

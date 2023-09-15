@@ -35,7 +35,7 @@ const listConfigurations = list({
       isIndexed: true
     }),
     sections: relationship({
-      label: '大分類',
+      label: '分區',
       ref: 'Section',
       many: true,
     }),

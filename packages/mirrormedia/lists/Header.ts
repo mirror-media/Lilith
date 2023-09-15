@@ -16,7 +16,7 @@ const listConfigurations = list({
     }),
     section: relationship({
       ref: 'Section',
-      label: '大分類',
+      label: '分區',
     }),
     category: relationship({
       ref: 'Category',

@@ -1,4 +1,4 @@
-import { EntityInstance } from 'draft-js'
+import { ContentBlock, ContentState } from 'draft-js'
 import React from 'react'
 import styled from 'styled-components'
 import CustomImage from '@readr-media/react-image'
@@ -28,7 +28,16 @@ const Anchor = styled.a`
   text-decoration: none;
 `
 
-export function ImageBlock(entity: EntityInstance) {
+type ImageBlockProps = {
+  block: ContentBlock
+  contentState: ContentState
+}
+
+export function ImageBlock(props: ImageBlockProps) {
+  const { block, contentState } = props
+  const entityKey = block.getEntityAt(0)
+
+  const entity = contentState.getEntity(entityKey)
   const { desc, name, resized, url } = entity.getData()
 
   let imgBlock = (
