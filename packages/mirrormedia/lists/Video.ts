@@ -110,6 +110,14 @@ const listConfigurations = list({
       },
     }),
   },
+  ui: {
+    labelField: 'name',
+    listView: {
+      initialColumns: ['id', 'name', 'file', 'urlOriginal'],
+      initialSort: { field: 'id', direction: 'DESC' },
+      pageSize: 50,
+    },
+  },
   access: {
     operation: {
       query: () => true,

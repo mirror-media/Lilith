@@ -552,8 +552,8 @@ const listConfigurations = list({
   ui: {
     labelField: 'slug',
     listView: {
-      initialColumns: ['title', 'slug', 'state', 'publishedDate'],
-      initialSort: { field: 'publishedDate', direction: 'DESC' },
+      initialColumns: ['id', 'title', 'slug', 'state', 'publishedDate'],
+      initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
     itemView: {
