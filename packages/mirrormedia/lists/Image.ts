@@ -196,9 +196,10 @@ const listConfigurations = list({
     }),
   },
   ui: {
+    labelField: 'name',
     listView: {
-      initialColumns: ['name', 'imageFile'],
-      initialSort: { field: 'updatedAt', direction: 'ASC' },
+      initialColumns: ['id', 'name', 'imageFile'],
+      initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
   },

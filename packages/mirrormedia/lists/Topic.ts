@@ -146,6 +146,14 @@ const listConfigurations = list({
       label: 'Mobile DFP code',
     }),
   },
+  ui: {
+    labelField: 'name',
+    listView: {
+      initialColumns: ['id', 'name', 'slug', 'sortOrder'],
+      initialSort: { field: 'id', direction: 'DESC' },
+      pageSize: 50,
+    },
+  },
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),

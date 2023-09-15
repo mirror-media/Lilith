@@ -60,6 +60,11 @@ const listConfigurations = list({
   },
   ui: {
     labelField: 'slug',
+    listView: {
+      initialColumns: ['id', 'slug', 'name', 'order'],
+      initialSort: { field: 'id', direction: 'DESC' },
+      pageSize: 50,
+    },
   },
   access: {
     operation: {
