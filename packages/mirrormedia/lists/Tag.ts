@@ -9,7 +9,6 @@ const listConfigurations = list({
     slug: text({
       label: 'slug',
       isIndexed: 'unique',
-      validation: { isRequired: true },
     }),
     name: text({
       isIndexed: 'unique',
@@ -41,6 +40,39 @@ const listConfigurations = list({
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
+    },
+  },
+  hooks: {
+    resolveInput: ({ resolvedData }) => {
+      const { slug } = resolvedData
+      if (!slug || !slug.trim()) {
+        /**
+         * @see https://www.mongodb.com/docs/manual/reference/method/ObjectId/
+         */
+        const getMongoObjectId = () => {
+          const timestamp = ((new Date().getTime() / 1000) | 0).toString(16)
+          return (
+            timestamp +
+            'xxxxxxxxxxxxxxxx'
+              .replace(/[x]/g, () => {
+                return ((Math.random() * 16) | 0).toString(16)
+              })
+              .toLowerCase()
+          )
+        }
+
+        return {
+          ...resolvedData,
+          slug: getMongoObjectId(),
+        }
+      }
+      return resolvedData
+    },
+    validateInput: ({ resolvedData, addValidationError }) => {
+      const { slug } = resolvedData
+      if (slug === '') {
+        addValidationError('slug 不得為空值')
+      }
     },
   },
 })
