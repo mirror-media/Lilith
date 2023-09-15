@@ -1,8 +1,8 @@
 //REMINDER: DO NOT REMOVE className which has prefix `GTM-`, since it is used for collecting data of Google Analytics event.
 
 import React, { useState, useEffect, useRef } from 'react'
+import { ContentBlock, ContentState } from 'draft-js'
 import styled, { css } from 'styled-components'
-import { DraftEntityInstance } from 'draft-js'
 import defaultImage from '../assets/default-og-img.png'
 import loadingImage from '../assets/loading.gif'
 import CustomImage from '@readr-media/react-image'
@@ -173,10 +173,22 @@ const LightBoxWrapper = styled.div`
     cursor: auto;
   }
 `
-export function ImageBlock(
-  entity: DraftEntityInstance,
-  contentLayout = 'normal'
-) {
+
+type ImageBlockProps = {
+  block: ContentBlock
+  blockProps: {
+    contentLayout: string
+  }
+  contentState: ContentState
+}
+
+export function ImageBlock(props: ImageBlockProps) {
+  const { block, contentState, blockProps } = props
+  const entityKey = block.getEntityAt(0)
+
+  const entity = contentState.getEntity(entityKey)
+  const { contentLayout = 'normal' } = blockProps
+
   const lightBoxRef = useRef(null)
   const isAmp = contentLayout === 'amp'
 
@@ -207,9 +219,7 @@ export function ImageBlock(
 
   const imageJsx = isAmp ? (
     <AmpImgWrapper>
-      <amp-img src={resized?.original} alt={name} layout="fill">
-        <amp-img src={defaultImage} alt={name} layout="fill"></amp-img>
-      </amp-img>
+      <amp-img src={resized?.original} alt={name} layout="fill"></amp-img>
     </AmpImgWrapper>
   ) : (
     <CustomImage

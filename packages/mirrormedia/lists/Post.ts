@@ -241,7 +241,32 @@ const listConfigurations = list({
     }),
     brief: customFields.richTextEditor({
       label: '前言',
-      disabledButtons: ['header-four', 'background-video'],
+      disabledButtons: [
+        'code',
+        'header-four',
+        'blockquote',
+        'unordered-list-item',
+        'ordered-list-item',
+        'code-block',
+        'annotation',
+        'divider',
+        'embed',
+        'font-color',
+        'image',
+        'info-box',
+        'slideshow',
+        'table',
+        'text-align',
+        'color-box',
+        'background-color',
+        'background-image',
+        'background-video',
+        'related-post',
+        'side-index',
+        'video',
+        'audio',
+        'youtube',
+      ],
       website: 'mirrormedia',
     }),
     trimmedContent: virtual({
@@ -293,7 +318,17 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
-      disabledButtons: ['header-four', 'background-video'],
+      disabledButtons: [
+        'header-four',
+        'font-color',
+        'text-align',
+        'color-box',
+        'background-color',
+        'background-image',
+        'background-video',
+        'related-post',
+        'side-index',
+      ],
       website: 'mirrormedia',
       access: {
         read: ({
@@ -344,6 +379,10 @@ const listConfigurations = list({
         },
       },
     }),
+    isMember: checkbox({
+      label: '會員文章',
+      defaultValue: false,
+    }),
     topics: relationship({
       label: '專題',
       ref: 'Topic.posts',
@@ -381,9 +420,24 @@ const listConfigurations = list({
     manualOrderOfRelatedVideos: json({
       label: '相關影片手動排序結果',
     }),
-    isMember: checkbox({
-      label: '會員文章',
-      defaultValue: false,
+
+    preview: virtual({
+      field: graphql.field({
+        type: graphql.JSON,
+        resolve(item: Record<string, unknown>): Record<string, string> {
+          return {
+            href: `/story/${item?.slug}`,
+            label: 'Preview',
+          }
+        },
+      }),
+      ui: {
+        // A module path that is resolved from where `keystone start` is run
+        views: './lists/views/link-button',
+        createView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     isFeatured: checkbox({
       label: '置頂',

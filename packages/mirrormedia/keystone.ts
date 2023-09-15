@@ -94,6 +94,20 @@ export default withAuth(
       extendExpressApp: (app, context) => {
         // This middleware is available in Express v4.16.0 onwards
         // Set to 50mb because DraftJS Editor playload could be really large
+        // @ts-ignore
+        // Check if the request is sent by an authenticated user
+        const authenticationMw = async (req, res, next) => {
+          const context = await commonContext.withRequest(req, res)
+
+          // User has been logged in
+          if (context?.session?.data?.role) {
+            return next()
+          }
+
+          // Otherwise, redirect them to login page
+          res.redirect('/signin')
+        }
+
         const jsonBodyParser = express.json({ limit: '500mb' })
         app.use(jsonBodyParser)
 

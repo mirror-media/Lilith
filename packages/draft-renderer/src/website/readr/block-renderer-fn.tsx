@@ -29,7 +29,7 @@ const AtomicBlock = (props: any) => {
       return MediaBlock(entity)
     }
     case 'image': {
-      return ImageBlock(entity)
+      return ImageBlock(props)
     }
     case 'slideshow': {
       return SlideshowBlock(entity)
