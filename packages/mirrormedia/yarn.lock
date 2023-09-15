@@ -1949,16 +1949,16 @@
   dependencies:
     ioredis "^5.3.2"
 
-"@mirrormedia/lilith-core@2.0.0-alpha.12":
-  version "2.0.0-alpha.12"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-2.0.0-alpha.12.tgz#c0c1c5d451c6678fe21a72b6481095e2a042dd82"
-  integrity sha512-aZoUj3LxtJKBWkDrehNvS4pAon8dXuS2HbrNCILLxoDaNT+mDyxCV+hceiFJ/oqEDZgeBcd850rufvGcoXwMog==
+"@mirrormedia/lilith-core@2.0.0-alpha.13":
+  version "2.0.0-alpha.13"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-2.0.0-alpha.13.tgz#fa23f15219e7999e9ae395a2f81dd18a95a23ddc"
+  integrity sha512-AFUT+0RLn+NziM8CUgDpvUJjaSud5lkDK9hxRvsnn8MipnAdU+KKpAkvRC0+k7xqThmmIAgSdcBUsJrWq5T+fA==
   dependencies:
     "@google-cloud/storage" "^5.18.0"
     "@keystone-ui/button" "^7.0.2"
     "@keystone-ui/fields" "^7.2.0"
     "@keystone-ui/modals" "^6.0.3"
-    "@mirrormedia/lilith-draft-editor" "1.1.0-alpha.20"
+    "@mirrormedia/lilith-draft-editor" "1.1.0-alpha.21"
     "@twreporter/errors" "^1.1.1"
     axios "^0.26.0"
     draft-convert "^2.1.12"
@@ -1970,10 +1970,10 @@
     styled-components "5.3.5"
     zlib "^1.0.5"
 
-"@mirrormedia/lilith-draft-editor@1.1.0-alpha.20":
-  version "1.1.0-alpha.20"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-editor/-/lilith-draft-editor-1.1.0-alpha.20.tgz#5cc6fdb9995c7e593ccb799542c649d996df5580"
-  integrity sha512-qpWsTO80m8E7lXHuPL2Pu17z6qx/w0KcXia7GoQPme//hH7T32fWbDh8kVNeFNknEXj5bEjl+Xx1v4kU93WweQ==
+"@mirrormedia/lilith-draft-editor@1.1.0-alpha.21":
+  version "1.1.0-alpha.21"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-editor/-/lilith-draft-editor-1.1.0-alpha.21.tgz#52785d1f040a63ea379cfae432be5141e7a7181d"
+  integrity sha512-wIM6GguGRh8HO6cm2kA6fpBYVeh/LywKR83IstHPIorurcBN6q4AAdMAM7ucECRBTsx7C0mwLGdHp9K1ss9uOw==
   dependencies:
     "@mirrormedia/lilith-draft-renderer" "1.3.0-alpha.3"
     draft-js "^0.11.7"
