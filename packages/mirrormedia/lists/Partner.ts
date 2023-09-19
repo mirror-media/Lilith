@@ -29,6 +29,14 @@ const listConfigurations = list({
       defaultValue: true,
     }),
   },
+  ui: {
+    labelField: 'name',
+    listView: {
+      initialColumns: ['id', 'name', 'slug', 'website'],
+      initialSort: { field: 'id', direction: 'DESC' },
+      pageSize: 50,
+    },
+  },
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),

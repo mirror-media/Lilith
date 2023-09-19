@@ -156,6 +156,10 @@ const listConfigurations = list({
       validation: { isRequired: true },
       defaultValue: { kind: 'now' },
     }),
+    updateTimeStamp: checkbox({
+      label: '下次存檔時自動更改成「現在時間」',
+      defaultValue: false,
+    }),
     sections: relationship({
       label: '大分類',
       ref: 'Section.posts',
@@ -552,8 +556,8 @@ const listConfigurations = list({
   ui: {
     labelField: 'slug',
     listView: {
-      initialColumns: ['title', 'slug', 'state', 'publishedDate'],
-      initialSort: { field: 'publishedDate', direction: 'DESC' },
+      initialColumns: ['id', 'title', 'slug', 'state', 'publishedDate'],
+      initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
     itemView: {
@@ -586,7 +590,7 @@ const listConfigurations = list({
       }
     },
     resolveInput: async ({ operation, resolvedData }) => {
-      const { publishedDate, content, brief } = resolvedData
+      const { publishedDate, content, brief, updateTimeStamp } = resolvedData
       if (operation === 'create') {
         resolvedData.publishedDate = new Date(publishedDate.setSeconds(0, 0))
       }
@@ -599,6 +603,11 @@ const listConfigurations = list({
         resolvedData.apiDataBrief = customFields.draftConverter
           .convertToApiData(brief)
           .toJS()
+      }
+      if (updateTimeStamp) {
+        const now = new Date()
+        resolvedData.publishedDate = new Date(now.setSeconds(0, 0))
+        resolvedData.updateTimeStamp = false
       }
       return resolvedData
     },

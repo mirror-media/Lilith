@@ -83,6 +83,14 @@ const listConfigurations = list({
       delete: allowRoles(admin),
     },
   },
+  ui: {
+    labelField: 'name',
+    listView: {
+      initialColumns: ['id', 'name', 'file', 'urlOriginal'],
+      initialSort: { field: 'id', direction: 'DESC' },
+      pageSize: 50,
+    },
+  },
   hooks: {
     resolveInput: async ({ resolvedData }) => {
       const { content } = resolvedData

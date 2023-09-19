@@ -71,6 +71,11 @@ const listConfigurations = list({
   },
   ui: {
     labelField: 'slug',
+    listView: {
+      initialColumns: ['id', 'slug', 'name', 'description'],
+      initialSort: { field: 'id', direction: 'DESC' },
+      pageSize: 50,
+    },
   },
   access: {
     operation: {
