@@ -159,7 +159,9 @@ function ImageGrids(props: {
         return (
           <ImageGrid
             key={image.id}
-            isSelected={selected?.includes(image)}
+            isSelected={
+              !!selected?.find((selectedImage) => selectedImage.id === image.id)
+            }
             onSelect={() => onSelect(image)}
             image={image}
           />
@@ -308,6 +310,7 @@ export function ImageSelector(props: {
   onChange: ImageSelectorOnChangeFn
   initialSelected?: ImageEntityWithMeta[]
   initialAlign?: string
+  initialDelay?: number
 }) {
   const {
     enableMultiSelect = false,
@@ -318,6 +321,7 @@ export function ImageSelector(props: {
     onChange,
     initialSelected = [],
     initialAlign,
+    initialDelay,
   } = props
 
   const [
@@ -333,7 +337,7 @@ export function ImageSelector(props: {
   const [selected, setSelected] = useState<ImageEntityWithMeta[]>(
     initialSelected
   )
-  const [delay, setDelay] = useState('5')
+  const [delay, setDelay] = useState(initialDelay ?? '5')
   const [align, setAlign] = useState(initialAlign)
   const contentWrapperRef = useRef<HTMLDivElement>()
 

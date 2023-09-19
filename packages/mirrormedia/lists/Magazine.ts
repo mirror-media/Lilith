@@ -69,6 +69,14 @@ const listConfigurations = list({
       label: '發佈日期',
     }),
   },
+  ui: {
+    labelField: 'title',
+    listView: {
+      initialColumns: ['id', 'title', 'slug', 'pdfFile'],
+      initialSort: { field: 'id', direction: 'DESC' },
+      pageSize: 50,
+    },
+  },
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),

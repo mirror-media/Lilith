@@ -34,10 +34,10 @@ const AtomicBlock = (props) => {
       return ImageBlock(props)
     }
     case 'slideshow': {
-      return SlideshowBlock(entity)
+      return SlideshowBlock(props)
     }
     case 'slideshow-v2': {
-      return SlideshowBlockV2(entity)
+      return SlideshowBlockV2(props)
     }
     case 'EMBEDDEDCODE': {
       return EmbeddedCodeBlock(entity)

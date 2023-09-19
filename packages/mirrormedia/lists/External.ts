@@ -104,6 +104,14 @@ const listConfigurations = list({
       validation: { isRequired: false },
     }),
   },
+  ui: {
+    labelField: 'title',
+    listView: {
+      initialColumns: ['id', 'title', 'slug', 'partner'],
+      initialSort: { field: 'id', direction: 'DESC' },
+      pageSize: 50,
+    },
+  },
   access: {
     operation: {
       update: allowRoles(admin, moderator),
