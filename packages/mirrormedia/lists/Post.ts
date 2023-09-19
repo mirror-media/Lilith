@@ -444,6 +444,9 @@ const listConfigurations = list({
         createView: {
           fieldMode: 'hidden',
         },
+        listView: {
+          fieldMode: 'hidden',
+        },
       },
     }),
     isFeatured: checkbox({
@@ -569,6 +572,7 @@ const listConfigurations = list({
   },
   access: {
     operation: {
+      query: allowRoles(admin, moderator, editor),
       update: allowRoles(admin, moderator, editor),
       create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin),
