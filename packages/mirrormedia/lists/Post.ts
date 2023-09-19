@@ -39,7 +39,7 @@ type Session = {
 }
 
 function filterPosts(roles: string[]) {
-  return ({ session }: { session: Session }) => {
+  return ({ session }: { session?: Session }) => {
     switch (envVar.accessControlStrategy) {
       case 'gql': {
         // Expose `published` and `invisible` posts
@@ -52,7 +52,10 @@ function filterPosts(roles: string[]) {
       case 'cms':
       default: {
         // Expose all posts, including `published`, `draft` and `archived` posts if user logged in
-        return roles.indexOf(session?.data?.role) > -1
+        return (
+          session?.data?.role !== undefined &&
+          roles.indexOf(session.data.role) > -1
+        )
       }
     }
   }
@@ -61,9 +64,9 @@ function filterPosts(roles: string[]) {
 type FieldMode = 'edit' | 'read' | 'hidden'
 
 type ListTypeInfo = {
-  session: Session
+  session?: Session
   context: KeystoneContext
-  item: Record<string, any>
+  item: Record<string, unknown>
 }
 
 type MaybeItemFunction<T extends FieldMode, ListTypeInfo> =
@@ -75,9 +78,9 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
   context,
   item,
 }) => {
-  if (session.data?.role == UserRole.Editor) {
+  if (session?.data?.role == UserRole.Editor) {
     const { lockBy } = await context.query.Post.findOne({
-      where: { id: item.id },
+      where: { id: String(item.id) },
       query: 'lockBy { id }',
     })
 
@@ -90,7 +93,7 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
         )
       ).toISOString()
       const updatedPost = await context.query.Post.updateOne({
-        where: { id: item.id },
+        where: { id: String(item.id) },
         data: {
           lockBy: { connect: { id: session.data?.id } },
           lockExpireAt: lockExpireAt,
@@ -441,6 +444,9 @@ const listConfigurations = list({
         createView: {
           fieldMode: 'hidden',
         },
+        listView: {
+          fieldMode: 'hidden',
+        },
       },
     }),
     isFeatured: checkbox({
@@ -566,6 +572,7 @@ const listConfigurations = list({
   },
   access: {
     operation: {
+      query: allowRoles(admin, moderator, editor),
       update: allowRoles(admin, moderator, editor),
       create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin),
