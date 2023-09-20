@@ -13,6 +13,7 @@ const imagesQuery = gql`
     photosCount(where: { name: { contains: $searchText } })
     photos(
       where: { name: { contains: $searchText } }
+      orderBy: { createdAt: desc }
       take: $take
       skip: $skip
     ) {

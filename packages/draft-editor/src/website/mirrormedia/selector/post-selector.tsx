@@ -11,6 +11,7 @@ const postsQuery = gql`
     postsCount(where: { title: { contains: $searchText } })
     posts(
       where: { title: { contains: $searchText } }
+      orderBy: { createdAt: desc }
       take: $take
       skip: $skip
     ) {
