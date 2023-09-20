@@ -38,7 +38,32 @@ const listConfigurations = list({
     content: customFields.richTextEditor({
       label: '敘述',
       website: 'mirrormedia',
-      disabledButtons: ['header-four', 'background-video'],
+      disabledButtons: [
+        'code',
+        'header-four',
+        'blockquote',
+        'unordered-list-item',
+        'ordered-list-item',
+        'code-block',
+        'annotation',
+        'divider',
+        'embed',
+        'font-color',
+        'image',
+        'info-box',
+        'slideshow',
+        'table',
+        'text-align',
+        'color-box',
+        'background-color',
+        'background-image',
+        'background-video',
+        'related-post',
+        'side-index',
+        'video',
+        'audio',
+        'youtube',
+      ],
     }),
     heroImage: relationship({
       label: '首圖',
@@ -84,6 +109,14 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
+  },
+  ui: {
+    labelField: 'name',
+    listView: {
+      initialColumns: ['id', 'name', 'file', 'urlOriginal'],
+      initialSort: { field: 'id', direction: 'DESC' },
+      pageSize: 50,
+    },
   },
   access: {
     operation: {

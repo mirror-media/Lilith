@@ -271,9 +271,11 @@ model Post {
   title                      String         @default("")
   state                      String?        @default("draft")
   publishedDate              DateTime       @default(now())
+  updateTimeStamp            Boolean        @default(false)
   sections                   Section[]      @relation("Post_sections")
   manualOrderOfSections      Json?
   categories                 Category[]     @relation("Category_posts")
+  manualOrderOfCategories    Json?
   writers                    Contact[]      @relation("Post_writers")
   manualOrderOfWriters       Json?
   photographers              Contact[]      @relation("Post_photographers")
@@ -290,6 +292,7 @@ model Post {
   style                      String?        @default("article")
   brief                      Json?
   content                    Json?
+  isMember                   Boolean        @default(false)
   topics                     Topic?         @relation("Post_topics", fields: [topicsId], references: [id])
   topicsId                   Int?           @map("topics")
   relateds                   Post[]         @relation("Post_relateds")
@@ -301,7 +304,6 @@ model Post {
   og_imageId                 Int?           @map("og_image")
   related_videos             Video[]        @relation("Post_related_videos")
   manualOrderOfRelatedVideos Json?
-  isMember                   Boolean        @default(false)
   isFeatured                 Boolean        @default(false)
   isAdvertised               Boolean        @default(false)
   hiddenAdvertised           Boolean        @default(false)

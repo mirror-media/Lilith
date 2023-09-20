@@ -16,7 +16,7 @@ const listConfigurations = list({
     }),
     section: relationship({
       ref: 'Section',
-      label: '大分類',
+      label: '分區',
     }),
     category: relationship({
       ref: 'Category',
@@ -71,6 +71,14 @@ const listConfigurations = list({
         default:
           break
       }
+    },
+  },
+  ui: {
+    labelField: 'id',
+    listView: {
+      initialColumns: ['id', 'order', 'section', 'category'],
+      initialSort: { field: 'id', direction: 'DESC' },
+      pageSize: 50,
     },
   },
   access: {

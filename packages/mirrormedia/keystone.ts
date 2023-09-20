@@ -6,6 +6,11 @@ import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createPreviewMiniApp } from './express-mini-apps/preview/app'
+import Keyv from 'keyv'
+import { KeyvAdapter } from '@apollo/utils.keyvadapter'
+import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
+import responseCachePlugin from '@apollo/server-plugin-response-cache'
+import { GraphQLConfig } from '@keystone-6/core/types'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -20,6 +25,28 @@ const { withAuth } = createAuth({
 })
 
 const session = statelessSessions(appConfig.session)
+
+const graphqlConfig: GraphQLConfig = {
+  apolloConfig:
+    envVar.accessControlStrategy === 'gql' && envVar.cache.isEnabled
+      ? {
+          plugins: [
+            responseCachePlugin(),
+            ApolloServerPluginCacheControl({
+              defaultMaxAge: envVar.cache.maxAge,
+            }),
+          ],
+          cache: new KeyvAdapter(
+            new Keyv(envVar.cache.url, {
+              lazyConnect: true,
+              namespace: envVar.cache.identifier,
+              connectionName: envVar.cache.identifier,
+              connectTimeout: envVar.cache.connectTimeOut,
+            })
+          ),
+        }
+      : undefined,
+}
 
 export default withAuth(
   config({
@@ -36,6 +63,7 @@ export default withAuth(
       // For our starter, we check that someone has session data before letting them see the Admin UI.
       isAccessAllowed: (context) => !!context.session?.data,
     },
+    graphql: graphqlConfig,
     lists,
     session,
     storage: {
@@ -66,6 +94,7 @@ export default withAuth(
       extendExpressApp: (app, context) => {
         // This middleware is available in Express v4.16.0 onwards
         // Set to 50mb because DraftJS Editor playload could be really large
+
         const jsonBodyParser = express.json({ limit: '500mb' })
         app.use(jsonBodyParser)
 

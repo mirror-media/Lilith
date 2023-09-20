@@ -13,6 +13,7 @@ const imagesQuery = gql`
     photosCount(where: { name: { contains: $searchText } })
     photos(
       where: { name: { contains: $searchText } }
+      orderBy: { createdAt: desc }
       take: $take
       skip: $skip
     ) {
@@ -115,28 +116,27 @@ const ImageName = styled.p`
 
 type ID = string
 
+export type ImageEntityImageFile = {
+  url: string
+}
+
+export type ImageEntityResized = {
+  original: string
+  w480: string
+  w800: string
+  w1200: string
+  w1600: string
+  w2400: string
+}
+
 export type ImageEntity = {
   id: ID
   name?: string
   imageFile: {
     url: string
   }
-  resized: {
-    original: string
-    w480: string
-    w800: string
-    w1200: string
-    w1600: string
-    w2400: string
-  }
-  resizedWebp: {
-    original: string
-    w480: string
-    w800: string
-    w1200: string
-    w1600: string
-    w2400: string
-  }
+  resized: ImageEntityResized
+  resizedWebp: ImageEntityResized
 }
 
 export type ImageEntityWithMeta = {
@@ -160,7 +160,9 @@ function ImageGrids(props: {
         return (
           <ImageGrid
             key={image.id}
-            isSelected={selected?.includes(image)}
+            isSelected={
+              !!selected?.find((selectedImage) => selectedImage.id === image.id)
+            }
             onSelect={() => onSelect(image)}
             image={image}
           />
@@ -294,7 +296,7 @@ function DelayInput(props: {
   )
 }
 
-type ImageSelectorOnChangeFn = (
+export type ImageSelectorOnChangeFn = (
   params: ImageEntityWithMeta[],
   align?: string,
   delay?: number
@@ -307,7 +309,22 @@ export function ImageSelector(props: {
   enableAlignment?: boolean
   enableDelay?: boolean
   onChange: ImageSelectorOnChangeFn
+  initialSelected?: ImageEntityWithMeta[]
+  initialAlign?: string
+  initialDelay?: number
 }) {
+  const {
+    enableMultiSelect = false,
+    enableCaption = false,
+    enableUrl = false,
+    enableAlignment = false,
+    enableDelay = false,
+    onChange,
+    initialSelected = [],
+    initialAlign,
+    initialDelay,
+  } = props
+
   const [
     queryImages,
     {
@@ -318,9 +335,11 @@ export function ImageSelector(props: {
   ] = useLazyQuery(imagesQuery, { fetchPolicy: 'no-cache' })
   const [currentPage, setCurrentPage] = useState(0) // page starts with 1, 0 is used to detect initialization
   const [searchText, setSearchText] = useState('')
-  const [selected, setSelected] = useState<ImageEntityWithMeta[]>([])
-  const [delay, setDelay] = useState('5')
-  const [align, setAlign] = useState(undefined)
+  const [selected, setSelected] = useState<ImageEntityWithMeta[]>(
+    initialSelected
+  )
+  const [delay, setDelay] = useState(initialDelay ?? '5')
+  const [align, setAlign] = useState(initialAlign)
   const contentWrapperRef = useRef<HTMLDivElement>()
 
   const pageSize = 6
@@ -330,15 +349,6 @@ export function ImageSelector(props: {
     { value: 'left', label: 'left', isDisabled: false },
     { value: 'right', label: 'right', isDisabled: false },
   ]
-
-  const {
-    enableMultiSelect = false,
-    enableCaption = false,
-    enableUrl = false,
-    enableAlignment = false,
-    enableDelay = false,
-    onChange,
-  } = props
 
   const onSave = () => {
     let adjustedDelay = +delay

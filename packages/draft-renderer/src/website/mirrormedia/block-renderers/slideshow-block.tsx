@@ -72,7 +72,7 @@ const SlidesBox = styled.div`
 
   .readr-media-react-image {
     object-position: center center;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: transparent;
     max-width: ${sliderWidth};
     min-width: ${sliderWidth};
     max-height: 58.75vw;

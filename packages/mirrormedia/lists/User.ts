@@ -50,8 +50,11 @@ const listConfigurations = list({
   },
 
   ui: {
+    labelField: 'name',
     listView: {
-      initialColumns: ['name', 'role'],
+      initialColumns: ['id', 'name', 'role'],
+      initialSort: { field: 'id', direction: 'DESC' },
+      pageSize: 50,
     },
   },
   access: {

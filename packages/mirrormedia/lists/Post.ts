@@ -39,7 +39,7 @@ type Session = {
 }
 
 function filterPosts(roles: string[]) {
-  return ({ session }: { session: Session }) => {
+  return ({ session }: { session?: Session }) => {
     switch (envVar.accessControlStrategy) {
       case 'gql': {
         // Expose `published` and `invisible` posts
@@ -52,7 +52,10 @@ function filterPosts(roles: string[]) {
       case 'cms':
       default: {
         // Expose all posts, including `published`, `draft` and `archived` posts if user logged in
-        return roles.indexOf(session?.data?.role) > -1
+        return (
+          session?.data?.role !== undefined &&
+          roles.indexOf(session.data.role) > -1
+        )
       }
     }
   }
@@ -61,9 +64,9 @@ function filterPosts(roles: string[]) {
 type FieldMode = 'edit' | 'read' | 'hidden'
 
 type ListTypeInfo = {
-  session: Session
+  session?: Session
   context: KeystoneContext
-  item: Record<string, any>
+  item: Record<string, unknown>
 }
 
 type MaybeItemFunction<T extends FieldMode, ListTypeInfo> =
@@ -75,9 +78,9 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
   context,
   item,
 }) => {
-  if (session.data?.role == UserRole.Editor) {
+  if (session?.data?.role == UserRole.Editor) {
     const { lockBy } = await context.query.Post.findOne({
-      where: { id: item.id },
+      where: { id: String(item.id) },
       query: 'lockBy { id }',
     })
 
@@ -90,7 +93,7 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
         )
       ).toISOString()
       const updatedPost = await context.query.Post.updateOne({
-        where: { id: item.id },
+        where: { id: String(item.id) },
         data: {
           lockBy: { connect: { id: session.data?.id } },
           lockExpireAt: lockExpireAt,
@@ -156,6 +159,10 @@ const listConfigurations = list({
       validation: { isRequired: true },
       defaultValue: { kind: 'now' },
     }),
+    updateTimeStamp: checkbox({
+      label: '下次存檔時自動更改成「現在時間」',
+      defaultValue: false,
+    }),
     sections: relationship({
       label: '大分類',
       ref: 'Section.posts',
@@ -168,6 +175,9 @@ const listConfigurations = list({
       label: '小分類',
       ref: 'Category.posts',
       many: true,
+    }),
+    manualOrderOfCategories: json({
+      label: '小分類手動排序結果',
     }),
     writers: relationship({
       label: '作者',
@@ -238,7 +248,32 @@ const listConfigurations = list({
     }),
     brief: customFields.richTextEditor({
       label: '前言',
-      disabledButtons: ['header-four', 'background-video'],
+      disabledButtons: [
+        'code',
+        'header-four',
+        'blockquote',
+        'unordered-list-item',
+        'ordered-list-item',
+        'code-block',
+        'annotation',
+        'divider',
+        'embed',
+        'font-color',
+        'image',
+        'info-box',
+        'slideshow',
+        'table',
+        'text-align',
+        'color-box',
+        'background-color',
+        'background-image',
+        'background-video',
+        'related-post',
+        'side-index',
+        'video',
+        'audio',
+        'youtube',
+      ],
       website: 'mirrormedia',
     }),
     trimmedContent: virtual({
@@ -290,7 +325,17 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
-      disabledButtons: ['header-four', 'background-video'],
+      disabledButtons: [
+        'header-four',
+        'font-color',
+        'text-align',
+        'color-box',
+        'background-color',
+        'background-image',
+        'background-video',
+        'related-post',
+        'side-index',
+      ],
       website: 'mirrormedia',
       access: {
         read: ({
@@ -341,6 +386,10 @@ const listConfigurations = list({
         },
       },
     }),
+    isMember: checkbox({
+      label: '會員文章',
+      defaultValue: false,
+    }),
     topics: relationship({
       label: '專題',
       ref: 'Topic.posts',
@@ -378,9 +427,27 @@ const listConfigurations = list({
     manualOrderOfRelatedVideos: json({
       label: '相關影片手動排序結果',
     }),
-    isMember: checkbox({
-      label: '會員文章',
-      defaultValue: false,
+
+    preview: virtual({
+      field: graphql.field({
+        type: graphql.JSON,
+        resolve(item: Record<string, unknown>): Record<string, string> {
+          return {
+            href: `/story/${item?.slug}`,
+            label: 'Preview',
+          }
+        },
+      }),
+      ui: {
+        // A module path that is resolved from where `keystone start` is run
+        views: './lists/views/link-button',
+        createView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     isFeatured: checkbox({
       label: '置頂',
@@ -422,6 +489,54 @@ const listConfigurations = list({
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
       },
+      access: {
+        read: ({
+          context,
+          item,
+        }: {
+          context: KeystoneContext
+          item: Record<string, unknown>
+        }) => {
+          if (envVar.accessControlStrategy === 'gql') {
+            // Post is not member only,
+            // every request could access content field
+            if (item?.isMember === false) {
+              return true
+            }
+
+            // Post is member only.
+            // Check request permission.
+            const scope = context.req?.headers?.['x-access-token-scope']
+
+            // get acl from scope
+            const acl =
+              typeof scope === 'string'
+                ? scope.match(/read:member-posts:([^\s]*)/i)?.[1]
+                : ''
+
+            if (typeof acl !== 'string') {
+              return false
+            } else if (acl === 'all') {
+              // scope contains 'read:memeber-posts:all'
+              // the request has the permission to read this field
+              return true
+            } else {
+              // scope contains 'read:member-posts:${postId1},${postId2},...,${postIdN}'
+              const postIdArr = acl.split(',')
+
+              // check the request has the permission to read this field
+              if (postIdArr.indexOf(`${item.id}`) > -1) {
+                return true
+              }
+            }
+
+            return false
+          }
+
+          // the request has permission to read this field
+          return true
+        },
+      },
     }),
     trimmedApiData: virtual({
       label: '擷取apiData中的前五段內容',
@@ -447,8 +562,8 @@ const listConfigurations = list({
   ui: {
     labelField: 'slug',
     listView: {
-      initialColumns: ['title', 'slug', 'state', 'publishedDate'],
-      initialSort: { field: 'publishedDate', direction: 'DESC' },
+      initialColumns: ['id', 'title', 'slug', 'state', 'publishedDate'],
+      initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
     itemView: {
@@ -457,6 +572,7 @@ const listConfigurations = list({
   },
   access: {
     operation: {
+      query: allowRoles(admin, moderator, editor),
       update: allowRoles(admin, moderator, editor),
       create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin),
@@ -481,7 +597,7 @@ const listConfigurations = list({
       }
     },
     resolveInput: async ({ operation, resolvedData }) => {
-      const { publishedDate, content, brief } = resolvedData
+      const { publishedDate, content, brief, updateTimeStamp } = resolvedData
       if (operation === 'create') {
         resolvedData.publishedDate = new Date(publishedDate.setSeconds(0, 0))
       }
@@ -494,6 +610,11 @@ const listConfigurations = list({
         resolvedData.apiDataBrief = customFields.draftConverter
           .convertToApiData(brief)
           .toJS()
+      }
+      if (updateTimeStamp) {
+        const now = new Date()
+        resolvedData.publishedDate = new Date(now.setSeconds(0, 0))
+        resolvedData.updateTimeStamp = false
       }
       return resolvedData
     },
@@ -532,6 +653,12 @@ export default utils.addManualOrderRelationshipFields(
       fieldName: 'manualOrderOfSections',
       targetFieldName: 'sections',
       targetListName: 'Section',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfCategories',
+      targetFieldName: 'categories',
+      targetListName: 'Category',
       targetListLabelField: 'name',
     },
     {

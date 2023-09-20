@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import { EntityInstance } from 'draft-js'
 import { defaultMarginTop, defaultMarginBottom } from '../../shared-style'
-import defaultImage from '../../assets/default-og-img.png'
 
 const Wrapper = styled.figure`
   ${defaultMarginTop}
@@ -116,14 +115,7 @@ export default function AmpSlideshowBlockV2({
                   src={slide?.resized?.original}
                   layout="fill"
                   alt={slide?.name || 'slide'}
-                >
-                  <amp-img
-                    class="contain"
-                    src={defaultImage}
-                    layout="fill"
-                    alt={slide?.name || 'slide'}
-                  ></amp-img>
-                </amp-img>
+                ></amp-img>
               </SlideImage>
               <Desc>{slide.desc}</Desc>
             </figure>
