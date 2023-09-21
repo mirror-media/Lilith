@@ -11,7 +11,7 @@ const videosQuery = gql`
     videosCount(where: { name: { contains: $searchText } })
     videos(
       where: { name: { contains: $searchText } }
-      orderBy: { createdAt: desc }
+      orderBy: { id: desc }
       take: $take
       skip: $skip
     ) {
