@@ -20,7 +20,7 @@
     "@ioredis/commands": "^1.2.0",
     "@keystone-6/auth": "7.0.0",
     "@keystone-6/core": "5.2.0",
-    "@mirrormedia/lilith-core": "2.0.0-alpha.13",
+    "@mirrormedia/lilith-core": "2.0.0-alpha.16",
     "express": "^4.17.1",
     "http-proxy-middleware": "^2.0.3",
     "http2-proxy": "^5.0.53",
