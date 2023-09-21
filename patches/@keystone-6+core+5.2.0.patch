@@ -1,5 +1,5 @@
 diff --git a/node_modules/@keystone-6/core/dist/PageContainer-0d8d0d38.esm.js b/node_modules/@keystone-6/core/dist/PageContainer-0d8d0d38.esm.js
-index 0363854..e5ef824 100644
+index 0363854..1a27272 100644
 --- a/node_modules/@keystone-6/core/dist/PageContainer-0d8d0d38.esm.js
 +++ b/node_modules/@keystone-6/core/dist/PageContainer-0d8d0d38.esm.js
 @@ -1,6 +1,7 @@
@@ -11,7 +11,7 @@ index 0363854..e5ef824 100644
  import { useRouter } from 'next/router';
  import { Button } from '@keystone-ui/button';
  import { Popover } from '@keystone-ui/popover';
-@@ -291,25 +292,57 @@ const PageWrapper = props => {
+@@ -291,25 +292,58 @@ const PageWrapper = props => {
      css: {
        // background: colors.background,
        display: 'grid',
@@ -44,6 +44,7 @@ index 0363854..e5ef824 100644
 +      gridRow: '1/4',
 +      display: isSidebarOpen ? 'block' : 'none',
 +      height: '100vh',
++      overflowY: 'auto',
 +      '@media (min-width: 576px)': {
 +        gridColumn: '1/2',
 +        gridRow: '2/3',
@@ -76,7 +77,7 @@ index 0363854..e5ef824 100644
  };
  const Content = props => {
    const {
-@@ -330,16 +363,17 @@ const Content = props => {
+@@ -330,16 +364,17 @@ const Content = props => {
      }
    }, props));
  };
@@ -96,7 +97,7 @@ index 0363854..e5ef824 100644
    return jsx(PageWrapper, null, jsx("div", {
      css: {
        alignItems: 'center',
-@@ -350,7 +384,17 @@ const PageContainer = _ref => {
+@@ -350,7 +385,17 @@ const PageContainer = _ref => {
        paddingLeft: spacing.xlarge,
        paddingRight: spacing.xlarge
      }
@@ -115,7 +116,7 @@ index 0363854..e5ef824 100644
      css: {
        alignItems: 'center',
        backgroundColor: colors.background,
-@@ -362,7 +406,13 @@ const PageContainer = _ref => {
+@@ -362,7 +407,13 @@ const PageContainer = _ref => {
        paddingLeft: spacing.xlarge,
        paddingRight: spacing.xlarge
      }
