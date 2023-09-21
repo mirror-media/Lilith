@@ -4,6 +4,7 @@ import Area from './Area'
 import Event from './Event'
 import Election from './Election'
 import ElectionArea from './ElectionArea'
+import FactcheckPartner from './FactcheckPartner'
 import Person from './Person'
 import Motion from './Motion'
 import Count from './Count'
@@ -22,6 +23,9 @@ import Politic from './Politic'
 //import PoliticProgress from './PoliticProgress'
 import PoliticTimeline from './PoliticTimeline'
 import PoliticExpert from './PoliticExpert'
+import PoliticPositionChange from './PoliticPositionChange'
+import PoliticFactCheck from './PoliticFactCheck'
+import PoliticRepeat from './PoliticRepeat'
 import Lawsuit from './Lawsuit'
 import Tag from './Tag'
 
@@ -33,6 +37,7 @@ export const listDefinition = {
   Event,
   Election,
   ElectionArea,
+  FactcheckPartner,
   Vote,
   Person,
   Motion,
@@ -51,6 +56,9 @@ export const listDefinition = {
   //PoliticProgress,
   PoliticTimeline,
   PoliticExpert,
+  PoliticFactCheck,
+  PoliticPositionChange,
+  PoliticRepeat,
   Lawsuit,
   Tag,
 }
