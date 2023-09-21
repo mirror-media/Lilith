@@ -155,6 +155,7 @@ const AudiosQuery = gql`
     audioFilesCount(where: { name: { contains: $searchText } })
     audioFiles(
       where: { name: { contains: $searchText } }
+      orderBy: { id: desc }
       take: $take
       skip: $skip
     ) {

@@ -49,13 +49,14 @@ export function createPreviewMiniApp({ previewServerOrigin, keystoneContext }) {
   // Proxy requests with `/news/:id` url path to preview nuxt server
   router.get('/projects/:slug', authenticationMw, previewProxyMiddleware)
 
-  // Proxy requests with `/_nuxt/*` url path to preview nuxt server
+  // Proxy requests with `/preview-server/_next/*` url path to preview next server
   router.use(
-    '/_nuxt/*',
+    '/preview-server/_next/*',
     createProxyMiddleware({
       target: previewServerOrigin,
       changeOrigin: true,
     })
   )
+
   return router
 }

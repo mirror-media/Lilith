@@ -3162,27 +3162,6 @@
     "@keystone-ui/popover" "^6.0.2"
     apply-ref "^1.0.0"
 
-"@mirrormedia/lilith-core@2.0.0-alpha.13":
-  version "2.0.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-2.0.0-alpha.13.tgz#fa23f15219e7999e9ae395a2f81dd18a95a23ddc"
-  integrity sha512-AFUT+0RLn+NziM8CUgDpvUJjaSud5lkDK9hxRvsnn8MipnAdU+KKpAkvRC0+k7xqThmmIAgSdcBUsJrWq5T+fA==
-  dependencies:
-    "@google-cloud/storage" "^5.18.0"
-    "@keystone-ui/button" "^7.0.2"
-    "@keystone-ui/fields" "^7.2.0"
-    "@keystone-ui/modals" "^6.0.3"
-    "@mirrormedia/lilith-draft-editor" "1.1.0-alpha.21"
-    "@twreporter/errors" "^1.1.1"
-    axios "^0.26.0"
-    draft-convert "^2.1.12"
-    draft-js "^0.11.7"
-    htmlparser2 "^7.2.0"
-    immutable "^4.0.0"
-    lodash "^4.17.21"
-    shortid "^2.2.16"
-    styled-components "5.3.5"
-    zlib "^1.0.5"
-
 "@mirrormedia/lilith-core@2.0.0-alpha.7":
   version "2.0.0-alpha.7"
   resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-2.0.0-alpha.7.tgz#0dcf5fc73ce3a42725d31be11e9fc85ef1f71965"
@@ -3212,30 +3191,12 @@
     "@mirrormedia/lilith-draft-renderer" "1.2.0-alpha.29"
     draft-js "^0.11.7"
 
-"@mirrormedia/lilith-draft-editor@1.1.0-alpha.21":
-  version "1.1.0-alpha.21"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-editor/-/lilith-draft-editor-1.1.0-alpha.21.tgz#52785d1f040a63ea379cfae432be5141e7a7181d"
-  integrity sha512-wIM6GguGRh8HO6cm2kA6fpBYVeh/LywKR83IstHPIorurcBN6q4AAdMAM7ucECRBTsx7C0mwLGdHp9K1ss9uOw==
-  dependencies:
-    "@mirrormedia/lilith-draft-renderer" "1.3.0-alpha.3"
-    draft-js "^0.11.7"
-
 "@mirrormedia/lilith-draft-renderer@1.2.0-alpha.29":
   version "1.2.0-alpha.29"
   resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.2.0-alpha.29.tgz#2c71dd85bf95bf751e8784ac720a902bd9664b44"
   integrity sha512-E1Y1bBNl9YLTpvJu20zUBJK4zYm483GoluDXc60lZCAZLQ/etqATac1UAcDPXfP4l2Lxr76nFj9KsVnKDsXUqw==
   dependencies:
     "@readr-media/react-image" "^1.5.1"
-    body-scroll-lock "3.1.5"
-    draft-js "^0.11.7"
-    node-html-parser "^6.1.5"
-
-"@mirrormedia/lilith-draft-renderer@1.3.0-alpha.3":
-  version "1.3.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.3.0-alpha.3.tgz#7b3c9790fe7c5bd132c87b9c1ffe8b42e90a6470"
-  integrity sha512-RqfoTZC7dePMUw2xA6SozUshcTpgAVb00OQDJ1T2gfdGagtEuntShsL6FH6cIUFrPeIBovtHbPoEPBG/qp1scw==
-  dependencies:
-    "@readr-media/react-image" "2.1.3"
     body-scroll-lock "3.1.5"
     draft-js "^0.11.7"
     node-html-parser "^6.1.5"
@@ -3593,10 +3554,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@readr-media/react-dropping-text@1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.8.tgz#970fcd6488015327987881ab259db6fee5a8203f"
-  integrity sha512-5YZrTFOL24A8M/GdXczG3IZPwkfrRh95c/m+N9CCDuGY3goqiFYhLHC38+4xR4ipwjmQXGCB/stWKVQdWV99lg==
+"@readr-media/react-dropping-text@1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-dropping-text/-/react-dropping-text-1.0.9.tgz#b0aac6129674ffac0b30d35505fc2f65a60c41ef"
+  integrity sha512-VM+dCxa/bQbGPLxIqpE1XmkNYsumqWwf7XGfHZaoWlPz/jjkJnBapuve7cYNMrdAA+4IHQw0CCAlkbwSqeHR0g==
   dependencies:
     matter-js "^0.19.0"
     react-intersection-observer "^9.3.5"
@@ -3617,12 +3578,12 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.4.3-alpha.3":
-  version "2.4.3-alpha.3"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.3-alpha.3.tgz#a7ec3637ffeb4408f2d01cbab4bf4e1a090d90a6"
-  integrity sha512-SlsAnIFQ4JMcjQvvfKbNNGoO69AcCrY4Adf53PS0fVYOv8joRtynzY9OGWPd5mqsG8CSdAorHryJzlvjAYUo2w==
+"@readr-media/react-embed-code-generator@2.4.3-alpha.5":
+  version "2.4.3-alpha.5"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.3-alpha.5.tgz#a7e0548ad1b6bbfb48268b611de62f85acfccfe1"
+  integrity sha512-CzyBySl/1YIaaXLhu1DHGBMzpSLS8B4wX3P0YcKJ1fzk+I7wbe3sgSmuAmWR2n11NyM8gweRRtxBrsxHjGsHYA==
   dependencies:
-    "@readr-media/react-dropping-text" "1.0.8"
+    "@readr-media/react-dropping-text" "1.0.9"
     "@readr-media/react-dual-slides" "^1.1.0"
     "@readr-media/react-election-widgets" "1.0.2"
     "@readr-media/react-feedback" "^3.0.2"
@@ -3632,7 +3593,7 @@
     "@readr-media/react-qa-list" "2.0.1"
     "@readr-media/react-questionnaire" "2.0.0"
     "@readr-media/react-random-text-selector" "^1.0.2"
-    "@readr-media/react-theatre" "^1.1.0"
+    "@readr-media/react-theatre" "^1.3.0"
     "@readr-media/react-three-story-points" "1.0.2"
     "@readr-media/react-timeline" "1.1.0-alpha.1"
     lodash "^4.17.21"
@@ -3725,10 +3686,10 @@
   dependencies:
     axios "^1.3.5"
 
-"@readr-media/react-theatre@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-theatre/-/react-theatre-1.1.0.tgz#18a8e099f8d22439585403709f67ab5c0301fcbd"
-  integrity sha512-PnFJr81c5h1/TD0C3PjkHCxfXMAQ3xSTqf90HE478pDxjQbuH+RlM0dMCR6jVpQ1m/Z2+i2rTREMyi6CuN2zzA==
+"@readr-media/react-theatre@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-theatre/-/react-theatre-1.3.0.tgz#61f549d6568e6e2447090c36be91a36c9aeea9a8"
+  integrity sha512-W3eqVXKlyyo6ZCsg+Xn8zAGTddzBAnRgD1Ri6kgIA+Xa23kyfyVq/h3DlPhcMKOhfl34P1ia/0oZbwSVmjbhOA==
   dependencies:
     "@theatre/core" "0.6.1"
     react-transition-group "^4.4.5"
