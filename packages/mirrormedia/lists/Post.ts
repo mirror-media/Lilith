@@ -433,7 +433,7 @@ const listConfigurations = list({
         type: graphql.JSON,
         resolve(item: Record<string, unknown>): Record<string, string> {
           return {
-            href: `/story/${item?.slug}`,
+            href: `${envVar.previewServer.path}/story/${item?.slug}`,
             label: 'Preview',
           }
         },

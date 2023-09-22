@@ -1,15 +1,20 @@
 import express from 'express'
-import { KeystoneContext } from '@keystone-6/core/types' // eslint-disable-line
 
 import { createProxyMiddleware } from 'http-proxy-middleware'
 
 /**
+ *  @typedef {import('@keystone-6/core/types').KeystoneContext} KeystoneContext
+ *
+ *  @typedef {Object} PreviewServerConfig
+ *  @property {string} origin
+ *  @property {string} path
+ *
  *  @param {Object} opts
- *  @param {string} opts.previewServerOrigin
+ *  @param {PreviewServerConfig} opts.previewServer
  *  @param {KeystoneContext} opts.keystoneContext
  *  @returns {express.Router}
  */
-export function createPreviewMiniApp({ previewServerOrigin, keystoneContext }) {
+export function createPreviewMiniApp({ previewServer, keystoneContext }) {
   const router = express.Router()
 
   /**
@@ -30,7 +35,7 @@ export function createPreviewMiniApp({ previewServerOrigin, keystoneContext }) {
   }
 
   const previewProxyMiddleware = createProxyMiddleware({
-    target: previewServerOrigin,
+    target: previewServer.origin,
     changeOrigin: true,
     onProxyRes: (proxyRes) => {
       // The response from preview nuxt server might be with Cache-Control header.
@@ -53,7 +58,7 @@ export function createPreviewMiniApp({ previewServerOrigin, keystoneContext }) {
   router.use(
     '/preview-server/_next/*',
     createProxyMiddleware({
-      target: previewServerOrigin,
+      target: previewServer.origin,
       changeOrigin: true,
     })
   )
