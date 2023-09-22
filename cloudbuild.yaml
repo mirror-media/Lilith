@@ -25,7 +25,7 @@ steps:
     args:
       - '-c'
       - >
-        cp yarn.lock packages/$_TARGET_PACKAGE
+        cp -r patches yarn.lock packages/$_TARGET_PACKAGE
 
         cd packages/$_TARGET_PACKAGE
 
