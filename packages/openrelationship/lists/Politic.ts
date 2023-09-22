@@ -44,6 +44,28 @@ const listConfigurations = list ({
       ], 
       label: '政見進度',
     }),
+    positionChangeSummary: text({
+      label: '立場變化（摘要）',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+    }),
+	positionChange: relationship({
+	  label: '立場變化',
+	  many: true,
+	  ref: 'PoliticPositionChange.politic',
+	}),
+    factCheckSummary: text({
+      label: '事實查核（摘要）',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+    }),
+	factCheck: relationship({
+	  label: '事實查核',
+	  many: true,
+	  ref: 'PoliticFactCheck.politic',
+	}),
     dispute: text({
       label: '爭議事件',
 	  ui: {
@@ -67,10 +89,21 @@ const listConfigurations = list ({
       many: true,
       ref: 'PoliticTimeline.politic',
     }),
+    expertPointSummary: text({
+      label: '專家觀點（摘要）',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+    }),
 	expertPoint: relationship({
 	  label: '專家觀點',
 	  many: true,
 	  ref: 'PoliticExpert.politic',
+	}),
+	repeat: relationship({
+	  label: '重複政見',
+	  many: true,
+	  ref: 'PoliticRepeat.politic',
 	}),
 	status: select({
 	  options: [
