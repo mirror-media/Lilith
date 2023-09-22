@@ -45,18 +45,15 @@ export function createPreviewMiniApp({ previewServer, keystoneContext }) {
     },
   })
 
-  // Proxy requests with `/story/id` url path to preview nuxt server
-  router.get('/story/:slug', authenticationMw, previewProxyMiddleware)
+  // proxy preview server traffic to subdirectory to prevent path collision between CMS and preview server
+  router.get(
+    `${previewServer.path}/*`,
+    authenticationMw,
+    previewProxyMiddleware
+  )
 
-  // Proxy requests with `/event/:slug` url path to preview nuxt server
-  //router.get('/event/:slug', authenticationMw, previewProxyMiddleware)
-
-  // Proxy requests with `/news/:id` url path to preview nuxt server
-  router.get('/projects/:slug', authenticationMw, previewProxyMiddleware)
-
-  // Proxy requests with `/preview-server/_next/*` url path to preview next server
   router.use(
-    '/preview-server/_next/*',
+    `${previewServer.path}/_next/*`,
     createProxyMiddleware({
       target: previewServer.origin,
       changeOrigin: true,
