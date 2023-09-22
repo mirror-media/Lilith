@@ -5,11 +5,13 @@
     "packages/draft-editor",
     "packages/draft-renderer",
     "packages/editools",
+    "packages/mirrormedia",
     "packages/readr",
     "packages/openrelationship"
   ],
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.10",
