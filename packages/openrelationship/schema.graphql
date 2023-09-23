@@ -2367,6 +2367,7 @@ type Politic {
   expertPointSummary: String
   expertPoint(where: PoliticExpertWhereInput! = {}, orderBy: [PoliticExpertOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticExpertWhereUniqueInput): [PoliticExpert!]
   expertPointCount(where: PoliticExpertWhereInput! = {}): Int
+  repeatSummary: String
   repeat(where: PoliticRepeatWhereInput! = {}, orderBy: [PoliticRepeatOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticRepeatWhereUniqueInput): [PoliticRepeat!]
   repeatCount(where: PoliticRepeatWhereInput! = {}): Int
   status: String
@@ -2402,6 +2403,7 @@ input PoliticWhereInput {
   timeline: PoliticTimelineManyRelationFilter
   expertPointSummary: StringFilter
   expertPoint: PoliticExpertManyRelationFilter
+  repeatSummary: StringFilter
   repeat: PoliticRepeatManyRelationFilter
   status: StringNullableFilter
   tag: TagWhereInput
@@ -2435,6 +2437,7 @@ input PoliticOrderByInput {
   source: OrderDirection
   contributer: OrderDirection
   expertPointSummary: OrderDirection
+  repeatSummary: OrderDirection
   status: OrderDirection
   reviewed: OrderDirection
   createdAt: OrderDirection
@@ -2457,6 +2460,7 @@ input PoliticUpdateInput {
   timeline: PoliticTimelineRelateToManyForUpdateInput
   expertPointSummary: String
   expertPoint: PoliticExpertRelateToManyForUpdateInput
+  repeatSummary: String
   repeat: PoliticRepeatRelateToManyForUpdateInput
   status: String
   tag: TagRelateToOneForUpdateInput
@@ -2514,6 +2518,7 @@ input PoliticCreateInput {
   timeline: PoliticTimelineRelateToManyForCreateInput
   expertPointSummary: String
   expertPoint: PoliticExpertRelateToManyForCreateInput
+  repeatSummary: String
   repeat: PoliticRepeatRelateToManyForCreateInput
   status: String
   tag: TagRelateToOneForCreateInput
@@ -2879,6 +2884,7 @@ type PoliticRepeat {
   checkResultType: Boolean
   factcheckPartner: FactcheckPartner
   link: String
+  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2900,6 +2906,7 @@ input PoliticRepeatWhereInput {
   checkResultType: BooleanFilter
   factcheckPartner: FactcheckPartnerWhereInput
   link: StringFilter
+  contributer: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2912,6 +2919,7 @@ input PoliticRepeatOrderByInput {
   content: OrderDirection
   checkResultType: OrderDirection
   link: OrderDirection
+  contributer: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2923,6 +2931,7 @@ input PoliticRepeatUpdateInput {
   checkResultType: Boolean
   factcheckPartner: FactcheckPartnerRelateToOneForUpdateInput
   link: String
+  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2941,6 +2950,7 @@ input PoliticRepeatCreateInput {
   checkResultType: Boolean
   factcheckPartner: FactcheckPartnerRelateToOneForCreateInput
   link: String
+  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

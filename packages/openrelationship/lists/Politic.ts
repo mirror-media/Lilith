@@ -100,6 +100,12 @@ const listConfigurations = list ({
 	  many: true,
 	  ref: 'PoliticExpert.politic',
 	}),
+    repeatSummary: text({
+      label: '專家觀點（摘要）',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+    }),
 	repeat: relationship({
 	  label: '重複政見',
 	  many: true,

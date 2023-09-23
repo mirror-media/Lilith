@@ -628,6 +628,7 @@ model Politic {
   timeline                     PoliticTimeline[]       @relation("PoliticTimeline_politic")
   expertPointSummary           String                  @default("")
   expertPoint                  PoliticExpert[]         @relation("PoliticExpert_politic")
+  repeatSummary                String                  @default("")
   repeat                       PoliticRepeat[]         @relation("PoliticRepeat_politic")
   status                       String?                 @default("notverified")
   tag                          Tag?                    @relation("Politic_tag", fields: [tagId], references: [id])
@@ -749,6 +750,7 @@ model PoliticRepeat {
   factcheckPartner   FactcheckPartner? @relation("PoliticRepeat_factcheckPartner", fields: [factcheckPartnerId], references: [id])
   factcheckPartnerId Int?              @map("factcheckPartner")
   link               String            @default("")
+  contributer        String            @default("")
   createdAt          DateTime?
   updatedAt          DateTime?
   createdBy          User?             @relation("PoliticRepeat_createdBy", fields: [createdById], references: [id])
