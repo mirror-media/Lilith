@@ -101,7 +101,7 @@ const listConfigurations = list ({
 	  ref: 'PoliticExpert.politic',
 	}),
     repeatSummary: text({
-      label: '專家觀點（摘要）',
+      label: '重複政見（摘要）',
 	  ui: {
 		displayMode: 'textarea',
 	  },
