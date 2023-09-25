@@ -219,6 +219,9 @@ const listConfigurations = list({
     heroVideo: relationship({
       label: '首圖影片（Leading Video）',
       ref: 'Video',
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     heroImage: relationship({
       label: '首圖',
@@ -227,6 +230,7 @@ const listConfigurations = list({
         displayMode: 'cards',
         cardFields: ['imageFile'],
         inlineConnect: true,
+        views: './lists/views/sorted-relationship/index',
       },
     }),
     heroCaption: text({
@@ -393,11 +397,17 @@ const listConfigurations = list({
     topics: relationship({
       label: '專題',
       ref: 'Topic.posts',
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     relateds: relationship({
       label: '相關文章',
       ref: 'Post',
       many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     manualOrderOfRelateds: json({
       label: '相關文章手動排序結果',
@@ -406,6 +416,9 @@ const listConfigurations = list({
       label: '標籤',
       ref: 'Tag.posts',
       many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     og_title: text({
       label: 'FB分享標題',
@@ -418,11 +431,17 @@ const listConfigurations = list({
     og_image: relationship({
       label: 'FB分享縮圖',
       ref: 'Photo',
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     related_videos: relationship({
       label: '相關影片',
       ref: 'Video.related_posts',
       many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     manualOrderOfRelatedVideos: json({
       label: '相關影片手動排序結果',
