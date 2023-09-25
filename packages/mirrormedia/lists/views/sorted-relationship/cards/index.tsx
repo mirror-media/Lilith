@@ -373,6 +373,7 @@ export function Cards({
                   return options
                 })(),
               }}
+              orderBy={[{ id: 'desc' }]}
             />
             <Button onClick={() => setShowConnectItems(false)}>
               {hideConnectItemsLabel}

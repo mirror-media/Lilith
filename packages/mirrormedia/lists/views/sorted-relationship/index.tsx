@@ -179,6 +179,7 @@ export const Field = ({
                     },
                   }
             }
+            orderBy={[{ id: 'desc' }]}
           />
           <Stack across gap="small">
             {onChange !== undefined && !field.hideCreate && (
@@ -550,6 +551,7 @@ export const controller = (
             isLoading={loading}
             isDisabled={onChange === undefined}
             state={state}
+            orderBy={[{ id: 'desc' }]}
           />
         )
       },

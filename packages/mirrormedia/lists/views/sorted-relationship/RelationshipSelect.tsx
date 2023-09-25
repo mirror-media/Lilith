@@ -127,6 +127,7 @@ export const RelationshipSelect = ({
   portalMenu,
   state,
   extraSelection = '',
+  orderBy,
 }: {
   autoFocus?: boolean
   controlShouldRenderValue: boolean
@@ -153,6 +154,7 @@ export const RelationshipSelect = ({
         ): void
       }
   extraSelection?: string
+  orderBy: Record<string, any>[]
 }) => {
   const [search, setSearch] = useState('')
   // note it's important that this is in state rather than a ref
@@ -173,10 +175,11 @@ export const RelationshipSelect = ({
       where: Record<string, any>
       take: number
       skip: number
+      orderBy: Record<string, any>[]
     }
   > = gql`
-    query RelationshipSelect($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
-      items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
+    query RelationshipSelect($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!, $orderBy: [${list.gqlNames.listOrderName}!]!) {
+      items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
         ${idFieldAlias}: id
         ${labelFieldAlias}: ${labelField}
         ${extraSelection}
@@ -226,7 +229,7 @@ export const RelationshipSelect = ({
   const subsequentItemsToLoad = Math.min(list.pageSize, 50)
   const { data, error, loading, fetchMore } = useQuery(QUERY, {
     fetchPolicy: 'network-only',
-    variables: { where, take: initialItemsToLoad, skip: 0 },
+    variables: { where, take: initialItemsToLoad, skip: 0, orderBy },
     client: apolloClient,
   })
 
@@ -282,10 +285,11 @@ export const RelationshipSelect = ({
             where: Record<string, any>
             take: number
             skip: number
+            orderBy: Record<string, any>[]
           }
         > = gql`
-              query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
-                items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
+              query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!, $orderBy: [${list.gqlNames.listOrderName}!]!) {
+                items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
                   ${labelFieldAlias}: ${labelField}
                   ${idFieldAlias}: id
                   ${extraSelection}
@@ -299,6 +303,7 @@ export const RelationshipSelect = ({
             where,
             take: subsequentItemsToLoad,
             skip,
+            orderBy,
           },
         })
           .then(() => {
