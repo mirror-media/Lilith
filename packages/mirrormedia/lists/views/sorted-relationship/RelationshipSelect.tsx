@@ -1,5 +1,7 @@
+/** @jsxRuntime classic */
+/** @jsx jsx */
+
 import 'intersection-observer'
-import React from 'react'
 import {
   RefObject,
   useEffect,
@@ -10,6 +12,8 @@ import {
   useRef,
 } from 'react'
 
+// eslint-disable-next-line
+import { jsx } from '@keystone-ui/core';
 import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields'
 import { validate as validateUUID } from 'uuid'
 import { IdFieldConfig, ListMeta } from '@keystone-6/core/types'

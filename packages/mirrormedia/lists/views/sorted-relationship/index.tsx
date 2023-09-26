@@ -1,7 +1,11 @@
-import React, { Fragment, useState } from 'react'
+/** @jsxRuntime classic */
+/** @jsx jsx */
+
+import { Fragment, useState } from 'react'
 
 import { Button } from '@keystone-ui/button'
-import { Stack, useTheme } from '@keystone-ui/core'
+// eslint-disable-next-line
+import { jsx, Stack, useTheme } from '@keystone-ui/core';
 import {
   FieldContainer,
   FieldDescription,

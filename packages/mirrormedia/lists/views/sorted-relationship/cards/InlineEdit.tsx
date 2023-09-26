@@ -1,7 +1,11 @@
+/** @jsxRuntime classic */
+/** @jsx jsx */
+
 import { Button } from '@keystone-ui/button'
-import { Stack } from '@keystone-ui/core'
+// eslint-disable-next-line
+import { jsx, Stack } from '@keystone-ui/core';
 import { useToasts } from '@keystone-ui/toast'
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { ListMeta } from '@keystone-6/core/types'
 import {
   deserializeValue,
