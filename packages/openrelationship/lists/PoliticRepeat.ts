@@ -20,6 +20,12 @@ const listConfigurations = list ({
     checkDate: timestamp({
       label: '日期',
     }),
+    repeatSummary: text({
+      label: '重複政見（摘要）',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+    }),
     content: text({ 
 	  label: '重複內容',
 	  ui: {
