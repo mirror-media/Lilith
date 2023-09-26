@@ -354,8 +354,8 @@ export const ImageWrapper = ({
           backgroundColor: '#fafbfc',
           borderRadius: '6px',
           textAlign: 'center',
-          width: '120px', // 120px image + chrome
-          height: '120px',
+          width: '240px', // 120px image + chrome
+          height: 'unset',
           border: '1px solid #e1e5e9',
         }}
         target="_blank"
@@ -375,8 +375,8 @@ export const ImageWrapper = ({
         backgroundColor: '#fafbfc',
         borderRadius: '6px',
         textAlign: 'center',
-        width: '120px', // 120px image + chrome
-        height: '120px',
+        width: '240px', // 120px image + chrome
+        height: 'unset',
         border: '1px solid #e1e5e9',
       }}
     >

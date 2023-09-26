@@ -22,9 +22,9 @@ export const Cell: CellComponent = ({ item, field }) => {
       css={{
         alignItems: 'center',
         display: 'flex',
-        height: 24,
+        height: 150,
         lineHeight: 0,
-        width: 24,
+        width: 200,
       }}
     >
       <img

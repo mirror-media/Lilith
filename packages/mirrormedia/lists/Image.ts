@@ -16,6 +16,7 @@ const listConfigurations = list({
     }),
     imageFile: image({
       storage: 'images',
+      ui: { views: './lists/views/custom-image/index' },
     }),
     waterMark: checkbox({
       label: '浮水印',
