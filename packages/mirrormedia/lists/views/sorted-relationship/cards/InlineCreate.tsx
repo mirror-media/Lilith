@@ -1,5 +1,9 @@
-import React, { FormEvent, useState } from 'react'
-import { Stack } from '@keystone-ui/core'
+/** @jsxRuntime classic */
+/** @jsx jsx */
+
+import { FormEvent, useState } from 'react'
+// eslint-disable-next-line
+import { jsx, Stack } from '@keystone-ui/core';
 import isDeepEqual from 'fast-deep-equal'
 import { useToasts } from '@keystone-ui/toast'
 import { Button } from '@keystone-ui/button'

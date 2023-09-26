@@ -1,4 +1,9 @@
-import React, { ReactNode } from 'react'
+/** @jsxRuntime classic */
+/** @jsx jsx */
+
+import { ReactNode } from 'react'
+// eslint-disable-next-line
+import { jsx } from '@keystone-ui/core';
 import {
   Box,
   BoxProps,
