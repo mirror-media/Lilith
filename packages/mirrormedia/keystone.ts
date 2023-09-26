@@ -101,7 +101,7 @@ export default withAuth(
         if (envVar.accessControlStrategy === 'cms') {
           app.use(
             createPreviewMiniApp({
-              previewServerOrigin: envVar.previewServerOrigin,
+              previewServer: envVar.previewServer,
               keystoneContext: context,
             })
           )

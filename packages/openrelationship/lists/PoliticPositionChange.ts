@@ -25,6 +25,12 @@ const listConfigurations = list ({
     checkDate: timestamp({
       label: '日期',
     }),
+    positionChangeSummary: text({
+      label: '立場變化（摘要）',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+    }),
     content: text({ 
 	  label: '查核內容',
 	  ui: {

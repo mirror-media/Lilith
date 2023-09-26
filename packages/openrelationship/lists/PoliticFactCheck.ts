@@ -20,6 +20,12 @@ const listConfigurations = list ({
     checkDate: timestamp({
       label: '日期',
     }),
+    factCheckSummary: text({
+      label: '事實查核（摘要）',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+    }),
     content: text({ 
 	  label: '查核內容',
 	  ui: {

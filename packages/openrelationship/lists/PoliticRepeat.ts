@@ -20,6 +20,12 @@ const listConfigurations = list ({
     checkDate: timestamp({
       label: '日期',
     }),
+    repeatSummary: text({
+      label: '重複政見（摘要）',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+    }),
     content: text({ 
 	  label: '重複內容',
 	  ui: {
@@ -38,6 +44,12 @@ const listConfigurations = list ({
 	  label: '相關連結',
 	  ui: {
 	    displayMode: 'textarea',
+	  },
+	}),
+    contributer: text({ 
+	  label: '資料提供',
+	  ui: {
+		displayMode: 'textarea',
 	  },
 	}),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },

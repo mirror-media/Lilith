@@ -618,9 +618,7 @@ model Politic {
   desc                         String                  @default("")
   content                      String                  @default("")
   current_progress             String?                 @default("no-progress")
-  positionChangeSummary        String                  @default("")
   positionChange               PoliticPositionChange[] @relation("PoliticPositionChange_politic")
-  factCheckSummary             String                  @default("")
   factCheck                    PoliticFactCheck[]      @relation("PoliticFactCheck_politic")
   dispute                      String                  @default("")
   source                       String                  @default("")
@@ -632,6 +630,7 @@ model Politic {
   status                       String?                 @default("notverified")
   tag                          Tag?                    @relation("Politic_tag", fields: [tagId], references: [id])
   tagId                        Int?                    @map("tag")
+  checked                      Boolean                 @default(false)
   reviewed                     Boolean                 @default(false)
   createdAt                    DateTime?
   updatedAt                    DateTime?
@@ -698,6 +697,7 @@ model PoliticFactCheck {
   politic            Politic?          @relation("PoliticFactCheck_politic", fields: [politicId], references: [id])
   politicId          Int?              @map("politic")
   checkDate          DateTime?
+  factCheckSummary   String            @default("")
   content            String            @default("")
   checkResultType    String?           @default("correct")
   link               String            @default("")
@@ -717,21 +717,22 @@ model PoliticFactCheck {
 }
 
 model PoliticPositionChange {
-  id                 Int               @id @default(autoincrement())
-  politic            Politic?          @relation("PoliticPositionChange_politic", fields: [politicId], references: [id])
-  politicId          Int?              @map("politic")
-  factcheckPartner   FactcheckPartner? @relation("PoliticPositionChange_factcheckPartner", fields: [factcheckPartnerId], references: [id])
-  factcheckPartnerId Int?              @map("factcheckPartner")
-  checkDate          DateTime?
-  content            String            @default("")
-  isChanged          Boolean           @default(false)
-  link               String            @default("")
-  createdAt          DateTime?
-  updatedAt          DateTime?
-  createdBy          User?             @relation("PoliticPositionChange_createdBy", fields: [createdById], references: [id])
-  createdById        Int?              @map("createdBy")
-  updatedBy          User?             @relation("PoliticPositionChange_updatedBy", fields: [updatedById], references: [id])
-  updatedById        Int?              @map("updatedBy")
+  id                    Int               @id @default(autoincrement())
+  politic               Politic?          @relation("PoliticPositionChange_politic", fields: [politicId], references: [id])
+  politicId             Int?              @map("politic")
+  factcheckPartner      FactcheckPartner? @relation("PoliticPositionChange_factcheckPartner", fields: [factcheckPartnerId], references: [id])
+  factcheckPartnerId    Int?              @map("factcheckPartner")
+  checkDate             DateTime?
+  positionChangeSummary String            @default("")
+  content               String            @default("")
+  isChanged             Boolean           @default(false)
+  link                  String            @default("")
+  createdAt             DateTime?
+  updatedAt             DateTime?
+  createdBy             User?             @relation("PoliticPositionChange_createdBy", fields: [createdById], references: [id])
+  createdById           Int?              @map("createdBy")
+  updatedBy             User?             @relation("PoliticPositionChange_updatedBy", fields: [updatedById], references: [id])
+  updatedById           Int?              @map("updatedBy")
 
   @@index([politicId])
   @@index([factcheckPartnerId])
@@ -744,11 +745,13 @@ model PoliticRepeat {
   politic            Politic?          @relation("PoliticRepeat_politic", fields: [politicId], references: [id])
   politicId          Int?              @map("politic")
   checkDate          DateTime?
+  repeatSummary      String            @default("")
   content            String            @default("")
   checkResultType    Boolean           @default(false)
   factcheckPartner   FactcheckPartner? @relation("PoliticRepeat_factcheckPartner", fields: [factcheckPartnerId], references: [id])
   factcheckPartnerId Int?              @map("factcheckPartner")
   link               String            @default("")
+  contributer        String            @default("")
   createdAt          DateTime?
   updatedAt          DateTime?
   createdBy          User?             @relation("PoliticRepeat_createdBy", fields: [createdById], references: [id])
