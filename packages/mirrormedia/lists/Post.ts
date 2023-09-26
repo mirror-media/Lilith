@@ -229,6 +229,7 @@ const listConfigurations = list({
       ui: {
         displayMode: 'cards',
         cardFields: ['imageFile'],
+        linkToItem: true,
         inlineConnect: true,
         views: './lists/views/sorted-relationship/index',
       },
@@ -432,6 +433,10 @@ const listConfigurations = list({
       label: 'FB分享縮圖',
       ref: 'Photo',
       ui: {
+        displayMode: 'cards',
+        cardFields: ['imageFile'],
+        linkToItem: true,
+        inlineConnect: true,
         views: './lists/views/sorted-relationship/index',
       },
     }),
