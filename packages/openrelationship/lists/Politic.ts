@@ -54,6 +54,50 @@ const listConfigurations = list ({
 	  many: true,
 	  ref: 'PoliticFactCheck.politic',
 	}),
+	expertPoint: relationship({
+	  label: '專家觀點',
+	  many: true,
+	  ref: 'PoliticExpert.politic',
+	  ui: {
+		displayMode: 'cards',
+	    cardFields: ['content', 'expert', 'avatar', 'title', 'reviewDate', 'expertPointSummary', 'link', 'contributer'],
+	    inlineCreate: ['content', 'expert', 'avatar', 'title', 'reviewDate', 'expertPointSummary', 'link', 'contributer'],
+	    inlineEdit: ['content', 'expert', 'avatar', 'title', 'reviewDate', 'expertPointSummary', 'link', 'contributer'],
+	  },
+	}),
+	repeat: relationship({
+	  label: '重複政見',
+	  many: true,
+	  ref: 'PoliticRepeat.politic',
+	  ui: {
+		displayMode: 'cards',
+	    cardFields: ['content', 'checkDate', 'checkResultType', 'factcheckPartner', 'link'],
+	    inlineCreate: ['content', 'checkDate', 'checkResultType', 'factcheckPartner', 'link'],
+	    inlineEdit: ['content', 'checkDate', 'checkResultType', 'factcheckPartner', 'link'],
+	  },
+	}),
+	controversies: relationship({
+	  label: '爭議內容',
+	  many: true,
+	  ref: 'PoliticControversie.politic',
+	  ui: {
+		displayMode: 'cards',
+	    cardFields: ['content', 'checkDate', 'controversiesSummary', 'link', 'contributer'],
+	    inloineCreate: ['content', 'checkDate', 'controversiesSummary', 'link', 'contributer'],
+	    inlineEdit: ['content', 'checkDate', 'controversiesSummary', 'link', 'contributer'],
+	  },
+	}),
+	response: relationship({
+	  label: '爭議內容',
+	  many: true,
+	  ref: 'PoliticResponse.politic',
+	  ui: {
+		displayMode: 'cards',
+	    cardFields: ['checkDate', 'content', 'responseName', 'responsePic', 'responseTitle', 'link', 'contributer'],
+	    inlineCreate: ['checkDate', 'content', 'responseName', 'responsePic', 'responseTitle', 'link', 'contributer'],
+	    inlineEdit: ['checkDate', 'content', 'responseName', 'responsePic', 'responseTitle', 'link', 'contributer'],
+	  },
+	}),
     dispute: text({
       label: '爭議事件',
 	  ui: {
@@ -77,22 +121,6 @@ const listConfigurations = list ({
       many: true,
       ref: 'PoliticTimeline.politic',
     }),
-    expertPointSummary: text({
-      label: '專家觀點（摘要）',
-	  ui: {
-		displayMode: 'textarea',
-	  },
-    }),
-	expertPoint: relationship({
-	  label: '專家觀點',
-	  many: true,
-	  ref: 'PoliticExpert.politic',
-	}),
-	repeat: relationship({
-	  label: '重複政見',
-	  many: true,
-	  ref: 'PoliticRepeat.politic',
-	}),
 	status: select({
 	  options: [
 	    { label: '已確認', value: 'verified' },

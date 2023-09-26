@@ -27,6 +27,8 @@ const listConfigurations = list ({
     }),
     positionChangeSummary: text({
       label: '立場變化（摘要）',
+	  isRequired: true,
+	  defaultValue: '',
 	  ui: {
 		displayMode: 'textarea',
 	  },

@@ -26,6 +26,8 @@ import PoliticExpert from './PoliticExpert'
 import PoliticPositionChange from './PoliticPositionChange'
 import PoliticFactCheck from './PoliticFactCheck'
 import PoliticRepeat from './PoliticRepeat'
+import PoliticResponse from './PoliticResponse'
+import PoliticControversie from './PoliticControversie'
 import Lawsuit from './Lawsuit'
 import Tag from './Tag'
 
@@ -59,6 +61,8 @@ export const listDefinition = {
   PoliticFactCheck,
   PoliticPositionChange,
   PoliticRepeat,
+  PoliticResponse,
+  PoliticControversie,
   Lawsuit,
   Tag,
 }
