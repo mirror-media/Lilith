@@ -2353,10 +2353,8 @@ type Politic {
   desc: String
   content: String
   current_progress: String
-  positionChangeSummary: String
   positionChange(where: PoliticPositionChangeWhereInput! = {}, orderBy: [PoliticPositionChangeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticPositionChangeWhereUniqueInput): [PoliticPositionChange!]
   positionChangeCount(where: PoliticPositionChangeWhereInput! = {}): Int
-  factCheckSummary: String
   factCheck(where: PoliticFactCheckWhereInput! = {}, orderBy: [PoliticFactCheckOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticFactCheckWhereUniqueInput): [PoliticFactCheck!]
   factCheckCount(where: PoliticFactCheckWhereInput! = {}): Int
   dispute: String
@@ -2371,6 +2369,7 @@ type Politic {
   repeatCount(where: PoliticRepeatWhereInput! = {}): Int
   status: String
   tag: Tag
+  checked: Boolean
   reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -2392,9 +2391,7 @@ input PoliticWhereInput {
   desc: StringFilter
   content: StringFilter
   current_progress: StringNullableFilter
-  positionChangeSummary: StringFilter
   positionChange: PoliticPositionChangeManyRelationFilter
-  factCheckSummary: StringFilter
   factCheck: PoliticFactCheckManyRelationFilter
   dispute: StringFilter
   source: StringFilter
@@ -2405,6 +2402,7 @@ input PoliticWhereInput {
   repeat: PoliticRepeatManyRelationFilter
   status: StringNullableFilter
   tag: TagWhereInput
+  checked: BooleanFilter
   reviewed: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2429,13 +2427,12 @@ input PoliticOrderByInput {
   desc: OrderDirection
   content: OrderDirection
   current_progress: OrderDirection
-  positionChangeSummary: OrderDirection
-  factCheckSummary: OrderDirection
   dispute: OrderDirection
   source: OrderDirection
   contributer: OrderDirection
   expertPointSummary: OrderDirection
   status: OrderDirection
+  checked: OrderDirection
   reviewed: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -2447,9 +2444,7 @@ input PoliticUpdateInput {
   desc: String
   content: String
   current_progress: String
-  positionChangeSummary: String
   positionChange: PoliticPositionChangeRelateToManyForUpdateInput
-  factCheckSummary: String
   factCheck: PoliticFactCheckRelateToManyForUpdateInput
   dispute: String
   source: String
@@ -2460,6 +2455,7 @@ input PoliticUpdateInput {
   repeat: PoliticRepeatRelateToManyForUpdateInput
   status: String
   tag: TagRelateToOneForUpdateInput
+  checked: Boolean
   reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -2504,9 +2500,7 @@ input PoliticCreateInput {
   desc: String
   content: String
   current_progress: String
-  positionChangeSummary: String
   positionChange: PoliticPositionChangeRelateToManyForCreateInput
-  factCheckSummary: String
   factCheck: PoliticFactCheckRelateToManyForCreateInput
   dispute: String
   source: String
@@ -2517,6 +2511,7 @@ input PoliticCreateInput {
   repeat: PoliticRepeatRelateToManyForCreateInput
   status: String
   tag: TagRelateToOneForCreateInput
+  checked: Boolean
   reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -2712,6 +2707,7 @@ type PoliticFactCheck {
   id: ID!
   politic: Politic
   checkDate: DateTime
+  factCheckSummary: String
   content: String
   checkResultType: String
   link: String
@@ -2733,6 +2729,7 @@ input PoliticFactCheckWhereInput {
   id: IDFilter
   politic: PoliticWhereInput
   checkDate: DateTimeNullableFilter
+  factCheckSummary: StringFilter
   content: StringFilter
   checkResultType: StringNullableFilter
   link: StringFilter
@@ -2746,6 +2743,7 @@ input PoliticFactCheckWhereInput {
 input PoliticFactCheckOrderByInput {
   id: OrderDirection
   checkDate: OrderDirection
+  factCheckSummary: OrderDirection
   content: OrderDirection
   checkResultType: OrderDirection
   link: OrderDirection
@@ -2756,6 +2754,7 @@ input PoliticFactCheckOrderByInput {
 input PoliticFactCheckUpdateInput {
   politic: PoliticRelateToOneForUpdateInput
   checkDate: DateTime
+  factCheckSummary: String
   content: String
   checkResultType: String
   link: String
@@ -2780,6 +2779,7 @@ input PoliticFactCheckUpdateArgs {
 input PoliticFactCheckCreateInput {
   politic: PoliticRelateToOneForCreateInput
   checkDate: DateTime
+  factCheckSummary: String
   content: String
   checkResultType: String
   link: String
@@ -2800,6 +2800,7 @@ type PoliticPositionChange {
   politic: Politic
   factcheckPartner: FactcheckPartner
   checkDate: DateTime
+  positionChangeSummary: String
   content: String
   isChanged: Boolean
   link: String
@@ -2821,6 +2822,7 @@ input PoliticPositionChangeWhereInput {
   politic: PoliticWhereInput
   factcheckPartner: FactcheckPartnerWhereInput
   checkDate: DateTimeNullableFilter
+  positionChangeSummary: StringFilter
   content: StringFilter
   isChanged: BooleanFilter
   link: StringFilter
@@ -2833,6 +2835,7 @@ input PoliticPositionChangeWhereInput {
 input PoliticPositionChangeOrderByInput {
   id: OrderDirection
   checkDate: OrderDirection
+  positionChangeSummary: OrderDirection
   content: OrderDirection
   isChanged: OrderDirection
   link: OrderDirection
@@ -2844,6 +2847,7 @@ input PoliticPositionChangeUpdateInput {
   politic: PoliticRelateToOneForUpdateInput
   factcheckPartner: FactcheckPartnerRelateToOneForUpdateInput
   checkDate: DateTime
+  positionChangeSummary: String
   content: String
   isChanged: Boolean
   link: String
@@ -2862,6 +2866,7 @@ input PoliticPositionChangeCreateInput {
   politic: PoliticRelateToOneForCreateInput
   factcheckPartner: FactcheckPartnerRelateToOneForCreateInput
   checkDate: DateTime
+  positionChangeSummary: String
   content: String
   isChanged: Boolean
   link: String
@@ -2875,10 +2880,12 @@ type PoliticRepeat {
   id: ID!
   politic: Politic
   checkDate: DateTime
+  repeatSummary: String
   content: String
   checkResultType: Boolean
   factcheckPartner: FactcheckPartner
   link: String
+  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2896,10 +2903,12 @@ input PoliticRepeatWhereInput {
   id: IDFilter
   politic: PoliticWhereInput
   checkDate: DateTimeNullableFilter
+  repeatSummary: StringFilter
   content: StringFilter
   checkResultType: BooleanFilter
   factcheckPartner: FactcheckPartnerWhereInput
   link: StringFilter
+  contributer: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2909,9 +2918,11 @@ input PoliticRepeatWhereInput {
 input PoliticRepeatOrderByInput {
   id: OrderDirection
   checkDate: OrderDirection
+  repeatSummary: OrderDirection
   content: OrderDirection
   checkResultType: OrderDirection
   link: OrderDirection
+  contributer: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2919,10 +2930,12 @@ input PoliticRepeatOrderByInput {
 input PoliticRepeatUpdateInput {
   politic: PoliticRelateToOneForUpdateInput
   checkDate: DateTime
+  repeatSummary: String
   content: String
   checkResultType: Boolean
   factcheckPartner: FactcheckPartnerRelateToOneForUpdateInput
   link: String
+  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2937,10 +2950,12 @@ input PoliticRepeatUpdateArgs {
 input PoliticRepeatCreateInput {
   politic: PoliticRelateToOneForCreateInput
   checkDate: DateTime
+  repeatSummary: String
   content: String
   checkResultType: Boolean
   factcheckPartner: FactcheckPartnerRelateToOneForCreateInput
   link: String
+  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

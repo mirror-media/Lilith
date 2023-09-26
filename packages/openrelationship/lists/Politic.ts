@@ -44,23 +44,11 @@ const listConfigurations = list ({
       ], 
       label: '政見進度',
     }),
-    positionChangeSummary: text({
-      label: '立場變化（摘要）',
-	  ui: {
-		displayMode: 'textarea',
-	  },
-    }),
 	positionChange: relationship({
 	  label: '立場變化',
 	  many: true,
 	  ref: 'PoliticPositionChange.politic',
 	}),
-    factCheckSummary: text({
-      label: '事實查核（摘要）',
-	  ui: {
-		displayMode: 'textarea',
-	  },
-    }),
 	factCheck: relationship({
 	  label: '事實查核',
 	  many: true,
@@ -118,6 +106,10 @@ const listConfigurations = list ({
       many: false,
       ref: 'Tag',
     }),
+	checked: checkbox({
+	  defaultValue: false,
+	  label: '已查核',
+	}),
 	reviewed: checkbox({
 	  defaultValue: false,
 	  label: '檢閱',
