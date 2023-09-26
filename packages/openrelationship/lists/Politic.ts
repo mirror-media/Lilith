@@ -47,11 +47,23 @@ const listConfigurations = list ({
 	positionChange: relationship({
 	  label: '立場變化',
 	  many: true,
+	  ui: {
+		displayMode: 'cards',
+	    cardFields: ['checkDate', 'positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'],
+	    inlineCreate: ['checkDate', 'positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'],
+	    inlineEdit: ['checkDate', 'positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'],
+	  },
 	  ref: 'PoliticPositionChange.politic',
 	}),
 	factCheck: relationship({
 	  label: '事實查核',
 	  many: true,
+	  ui: {
+		displayMode: 'cards',
+	    cardFields: ['checkDate', 'factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'],
+	    inlineCreate: ['checkDate', 'factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'],
+	    inlineEdit: ['checkDate', 'factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'],
+	  },
 	  ref: 'PoliticFactCheck.politic',
 	}),
 	expertPoint: relationship({
@@ -88,7 +100,7 @@ const listConfigurations = list ({
 	  },
 	}),
 	response: relationship({
-	  label: '爭議內容',
+	  label: '政見回應',
 	  many: true,
 	  ref: 'PoliticResponse.politic',
 	  ui: {
@@ -157,12 +169,26 @@ const listConfigurations = list ({
 	  operation,
 	  resolvedData,
 	  context,
+	  item
 	}) => { /* ... */ 
+	  var checked = item?.checked || false
 	  if (operation === 'create' && context.session?.data?.role === 'admin') {
 		resolvedData.status = 'verified'
 		resolvedData.reviewed = true
-
 	  }
+	  if (operation === 'create' || operation === 'update') {
+		if (resolvedData.factCheck || resolvedData.positionChange || resolvedData.repeat) {
+			checked = true
+		}
+	  }
+	  if (operation === 'update') {
+		if (item.checked === true && !resolvedData.checked) {
+		  checked = false
+		} else if (!item.checked && resolvedData.checked === true) {
+		  checked = true
+		}
+	  }
+	  resolvedData.checked = checked
 	},
   },
 })
