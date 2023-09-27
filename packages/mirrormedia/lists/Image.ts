@@ -20,7 +20,7 @@ const listConfigurations = list({
     }),
     waterMark: checkbox({
       label: '浮水印',
-      defaultValue: true,
+      defaultValue: false,
     }),
     resized: virtual({
       field: graphql.field({
