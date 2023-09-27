@@ -47,6 +47,14 @@ export function createPreviewMiniApp({ previewServer, keystoneContext }) {
 
   // proxy preview server traffic to subdirectory to prevent path collision between CMS and preview server
   router.get(
+    '/images-next/*',
+    createProxyMiddleware({
+      target: previewServer.origin,
+      changeOrigin: true,
+    })
+  )
+
+  router.get(
     `${previewServer.path}/*`,
     authenticationMw,
     previewProxyMiddleware
