@@ -15,10 +15,12 @@ const listConfigurations = list({
   fields: {
     name: text({
       validation: { isRequired: true },
+      isIndexed: 'unique',
       label: '標題',
     }),
     slug: text({
       label: '原ID',
+      isIndexed: 'unique',
     }),
     sortOrder: integer(),
     state: select({
