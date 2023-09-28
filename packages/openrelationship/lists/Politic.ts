@@ -47,12 +47,68 @@ const listConfigurations = list ({
 	positionChange: relationship({
 	  label: '立場變化',
 	  many: true,
+	  ui: {
+		displayMode: 'cards',
+	    cardFields: ['checkDate', 'positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'],
+	    inlineCreate: ['checkDate', 'positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'],
+	    inlineEdit: ['checkDate', 'positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'],
+	  },
 	  ref: 'PoliticPositionChange.politic',
 	}),
 	factCheck: relationship({
 	  label: '事實查核',
 	  many: true,
+	  ui: {
+		displayMode: 'cards',
+	    cardFields: ['checkDate', 'factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'],
+	    inlineCreate: ['checkDate', 'factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'],
+	    inlineEdit: ['checkDate', 'factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'],
+	  },
 	  ref: 'PoliticFactCheck.politic',
+	}),
+	expertPoint: relationship({
+	  label: '專家觀點',
+	  many: true,
+	  ref: 'PoliticExpert.politic',
+	  ui: {
+		displayMode: 'cards',
+	    cardFields: ['content', 'expert', 'avatar', 'title', 'reviewDate', 'expertPointSummary', 'link', 'contributer'],
+	    inlineCreate: ['content', 'expert', 'avatar', 'title', 'reviewDate', 'expertPointSummary', 'link', 'contributer'],
+	    inlineEdit: ['content', 'expert', 'avatar', 'title', 'reviewDate', 'expertPointSummary', 'link', 'contributer'],
+	  },
+	}),
+	repeat: relationship({
+	  label: '重複政見',
+	  many: true,
+	  ref: 'PoliticRepeat.politic',
+	  ui: {
+		displayMode: 'cards',
+	    cardFields: ['content', 'checkDate', 'checkResultType', 'factcheckPartner', 'link'],
+	    inlineCreate: ['content', 'checkDate', 'checkResultType', 'factcheckPartner', 'link'],
+	    inlineEdit: ['content', 'checkDate', 'checkResultType', 'factcheckPartner', 'link'],
+	  },
+	}),
+	controversies: relationship({
+	  label: '爭議內容',
+	  many: true,
+	  ref: 'PoliticControversie.politic',
+	  ui: {
+		displayMode: 'cards',
+	    cardFields: ['content', 'checkDate', 'controversiesSummary', 'link', 'contributer'],
+	    inloineCreate: ['content', 'checkDate', 'controversiesSummary', 'link', 'contributer'],
+	    inlineEdit: ['content', 'checkDate', 'controversiesSummary', 'link', 'contributer'],
+	  },
+	}),
+	response: relationship({
+	  label: '政見回應',
+	  many: true,
+	  ref: 'PoliticResponse.politic',
+	  ui: {
+		displayMode: 'cards',
+	    cardFields: ['checkDate', 'content', 'responseName', 'responsePic', 'responseTitle', 'link', 'contributer'],
+	    inlineCreate: ['checkDate', 'content', 'responseName', 'responsePic', 'responseTitle', 'link', 'contributer'],
+	    inlineEdit: ['checkDate', 'content', 'responseName', 'responsePic', 'responseTitle', 'link', 'contributer'],
+	  },
 	}),
     dispute: text({
       label: '爭議事件',
@@ -77,22 +133,6 @@ const listConfigurations = list ({
       many: true,
       ref: 'PoliticTimeline.politic',
     }),
-    expertPointSummary: text({
-      label: '專家觀點（摘要）',
-	  ui: {
-		displayMode: 'textarea',
-	  },
-    }),
-	expertPoint: relationship({
-	  label: '專家觀點',
-	  many: true,
-	  ref: 'PoliticExpert.politic',
-	}),
-	repeat: relationship({
-	  label: '重複政見',
-	  many: true,
-	  ref: 'PoliticRepeat.politic',
-	}),
 	status: select({
 	  options: [
 	    { label: '已確認', value: 'verified' },
@@ -129,12 +169,26 @@ const listConfigurations = list ({
 	  operation,
 	  resolvedData,
 	  context,
+	  item
 	}) => { /* ... */ 
+	  var checked = item?.checked || false
 	  if (operation === 'create' && context.session?.data?.role === 'admin') {
 		resolvedData.status = 'verified'
 		resolvedData.reviewed = true
-
 	  }
+	  if (operation === 'create' || operation === 'update') {
+		if (resolvedData.factCheck || resolvedData.positionChange || resolvedData.repeat) {
+			checked = true
+		}
+	  }
+	  if (operation === 'update') {
+		if (item.checked === true && !resolvedData.checked) {
+		  checked = false
+		} else if (!item.checked && resolvedData.checked === true) {
+		  checked = true
+		}
+	  }
+	  resolvedData.checked = checked
 	},
   },
 })

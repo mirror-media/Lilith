@@ -22,6 +22,8 @@ const listConfigurations = list ({
     }),
     repeatSummary: text({
       label: '重複政見（摘要）',
+	  isRequired: true,
+	  defaultValue: '',
 	  ui: {
 		displayMode: 'textarea',
 	  },
@@ -33,7 +35,7 @@ const listConfigurations = list ({
 	  },
 	}),
 	checkResultType: checkbox({
-	  label: '重複政見',
+	  label: '是否為重複政見',
 	}),
     factcheckPartner: relationship({
       label: '查核單位',

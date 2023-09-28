@@ -14,6 +14,7 @@ const listConfigurations = list({
   fields: {
     name: text({
       label: '名稱',
+      isIndexed: 'unique',
       validation: { isRequired: true },
     }),
     slug: text({
@@ -33,6 +34,7 @@ const listConfigurations = list({
         { label: 'active', value: 'active' },
         { label: 'inactive', value: 'inactive' },
       ],
+	  isIndexed: true,
       validation: { isRequired: true },
       ui: { displayMode: 'segmented-control' },
       defaultValue: 'active',

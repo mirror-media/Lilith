@@ -1,6 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
-import { relationship, integer, select, text } from '@keystone-6/core/fields';
+import { checkbox, relationship, integer, select, text } from '@keystone-6/core/fields';
 
 const {
 	allowRoles,
@@ -61,6 +61,10 @@ const listConfigurations = list({
           many: true,
           ref: 'Tag',
         }),
+		addComments: checkbox({
+		  label: '開放留言（心情）',
+		  defaultValue: false,
+		}),
 	},
 	access: {
 		operation: {

@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core';
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { relationship, timestamp, text } from '@keystone-6/core/fields';
+import { select, relationship, timestamp, text } from '@keystone-6/core/fields';
 	  
 const {
   allowRoles,
@@ -15,28 +15,27 @@ const listConfigurations = list ({
     politic: relationship({
       label: '政見',
       many: false,
-      ref: 'Politic.expertPoint',
+      ref: 'Politic.response',
     }),
-    expert: text({ 
-	  label: '專家姓名',
-	  db: {
-	    isNullable: true,
-	  }
-	}),
-    avatar: text({ 
-	  label: '頭像連結',
-	}),
-    title: text({ 
-	  label: '職稱',
-	  ui: {
-	    displayMode: 'textarea',
-	  },
-	}),
-    reviewDate: timestamp({
+    checkDate: timestamp({
       label: '日期',
     }),
-    expertPointSummary: text({
-      label: '專家觀點（摘要）',
+    responseName: text({
+      label: '回應者姓名',
+	  isRequired: true,
+	  defaultValue: '',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+    }),
+    responsePic: text({
+      label: '回應者頭像',
+	  ui: {
+		displayMode: 'textarea',
+	  },
+    }),
+    responseTitle: text({
+      label: '回應者身分',
 	  isRequired: true,
 	  defaultValue: '',
 	  ui: {
@@ -44,13 +43,15 @@ const listConfigurations = list ({
 	  },
     }),
     content: text({ 
-	  label: '意見內容',
+	  label: '回應內容',
+	  isRequired: true,
+	  defaultValue: '',
 	  ui: {
 	    displayMode: 'textarea',
 	  },
 	}),
     link: text({ 
-	  label: '連結',
+	  label: '相關連結',
 	  ui: {
 	    displayMode: 'textarea',
 	  },
@@ -58,8 +59,8 @@ const listConfigurations = list ({
     contributer: text({ 
 	  label: '資料提供',
 	  ui: {
-	    displayMode: 'textarea'
-	  }
+		displayMode: 'textarea',
+	  },
 	}),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
   },

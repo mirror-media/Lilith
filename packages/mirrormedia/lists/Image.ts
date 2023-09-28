@@ -16,10 +16,11 @@ const listConfigurations = list({
     }),
     imageFile: image({
       storage: 'images',
+      ui: { views: './lists/views/custom-image/index' },
     }),
     waterMark: checkbox({
       label: '浮水印',
-      defaultValue: true,
+      defaultValue: false,
     }),
     resized: virtual({
       field: graphql.field({

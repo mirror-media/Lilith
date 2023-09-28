@@ -35,6 +35,11 @@ const listConfigurations = list ({
       many: true,
       ref: 'PoliticRepeat.factcheckPartner',
     }),
+    controversies: relationship({
+      label: '查核「爭議事件」',
+      many: true,
+      ref: 'PoliticControversie.factcheckPartner',
+    }),
     // identifiers: { label: "identifiers", type: Relationship, many: false, ref: 'User',  isRequired: true},
   },
   access: {

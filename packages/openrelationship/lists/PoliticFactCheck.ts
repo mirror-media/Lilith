@@ -22,6 +22,8 @@ const listConfigurations = list ({
     }),
     factCheckSummary: text({
       label: '事實查核（摘要）',
+	  isRequired: true,
+	  defaultValue: '',
 	  ui: {
 		displayMode: 'textarea',
 	  },

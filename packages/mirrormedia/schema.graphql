@@ -213,6 +213,7 @@ type Category {
 
 input CategoryWhereUniqueInput {
   id: ID
+  name: String
   slug: String
 }
 
@@ -1433,6 +1434,7 @@ type Section {
 
 input SectionWhereUniqueInput {
   id: ID
+  name: String
   slug: String
 }
 
@@ -1633,6 +1635,8 @@ type Topic {
 
 input TopicWhereUniqueInput {
   id: ID
+  name: String
+  slug: String
 }
 
 input TopicWhereInput {
