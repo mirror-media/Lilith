@@ -30,9 +30,6 @@ const listConfigurations = list ({
     }),
     responsePic: text({
       label: '回應者頭像',
-	  ui: {
-		displayMode: 'textarea',
-	  },
     }),
     responseTitle: text({
       label: '回應者身分',
