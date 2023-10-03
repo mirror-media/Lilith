@@ -23,6 +23,9 @@ const listConfigurations = list({
       label: '精選文章',
       ref: 'Post',
       many: false,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     state: select({
       label: '狀態',
