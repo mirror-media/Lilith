@@ -21,6 +21,9 @@ const listConfigurations = list({
     waterMark: checkbox({
       label: '浮水印',
       defaultValue: false,
+      ui: {
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     resized: virtual({
       field: graphql.field({
@@ -210,7 +213,7 @@ const listConfigurations = list({
       query: () => true,
       update: allowRoles(admin, moderator, editor),
       create: allowRoles(admin, moderator, editor),
-      delete: allowRoles(admin),
+      delete: allowRoles(admin, editor),
     },
   },
 })
