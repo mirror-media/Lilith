@@ -1087,6 +1087,7 @@ type Post {
   lockExpireAt: DateTime
   slug: String
   title: String
+  subtitle: String
   state: String
   publishedDate: DateTime
   updateTimeStamp: Boolean
@@ -1166,6 +1167,7 @@ input PostWhereInput {
   lockExpireAt: DateTimeNullableFilter
   slug: StringFilter
   title: StringFilter
+  subtitle: StringFilter
   state: StringNullableFilter
   publishedDate: DateTimeFilter
   updateTimeStamp: BooleanFilter
@@ -1226,6 +1228,7 @@ input PostOrderByInput {
   lockExpireAt: OrderDirection
   slug: OrderDirection
   title: OrderDirection
+  subtitle: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
   updateTimeStamp: OrderDirection
@@ -1251,6 +1254,7 @@ input PostUpdateInput {
   lockExpireAt: DateTime
   slug: String
   title: String
+  subtitle: String
   state: String
   publishedDate: DateTime
   updateTimeStamp: Boolean
@@ -1340,6 +1344,7 @@ input PostCreateInput {
   lockExpireAt: DateTime
   slug: String
   title: String
+  subtitle: String
   state: String
   publishedDate: DateTime
   updateTimeStamp: Boolean

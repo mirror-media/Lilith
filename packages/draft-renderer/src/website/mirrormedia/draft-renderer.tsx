@@ -62,7 +62,8 @@ const draftEditorCssNormal = css`
 `
 const draftEditorCssWide = css`
   color: rgba(64, 64, 64, 0.87);
-  font-family: 'Noto Serif TC', serif;
+  font-family: 'Noto Serif TC', source-han-serif-tc, 'Songti TC', serif,
+    PMingLiU;
   font-weight: 600;
   font-size: 18px;
   line-height: 2;
