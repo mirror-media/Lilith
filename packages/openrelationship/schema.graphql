@@ -759,6 +759,10 @@ type FactcheckPartner {
   id: ID!
   name: String
   logo: String
+  sLogo: String
+  year: String
+  type: String
+  webUrl: String
   positionChange(where: PoliticPositionChangeWhereInput! = {}, orderBy: [PoliticPositionChangeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticPositionChangeWhereUniqueInput): [PoliticPositionChange!]
   positionChangeCount(where: PoliticPositionChangeWhereInput! = {}): Int
   factCheck(where: PoliticFactCheckWhereInput! = {}, orderBy: [PoliticFactCheckOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticFactCheckWhereUniqueInput): [PoliticFactCheck!]
@@ -784,6 +788,10 @@ input FactcheckPartnerWhereInput {
   id: IDFilter
   name: StringFilter
   logo: StringFilter
+  sLogo: StringFilter
+  year: StringNullableFilter
+  type: StringNullableFilter
+  webUrl: StringFilter
   positionChange: PoliticPositionChangeManyRelationFilter
   factCheck: PoliticFactCheckManyRelationFilter
   repeat: PoliticRepeatManyRelationFilter
@@ -822,6 +830,10 @@ input FactcheckPartnerOrderByInput {
   id: OrderDirection
   name: OrderDirection
   logo: OrderDirection
+  sLogo: OrderDirection
+  year: OrderDirection
+  type: OrderDirection
+  webUrl: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -829,6 +841,10 @@ input FactcheckPartnerOrderByInput {
 input FactcheckPartnerUpdateInput {
   name: String
   logo: String
+  sLogo: String
+  year: String
+  type: String
+  webUrl: String
   positionChange: PoliticPositionChangeRelateToManyForUpdateInput
   factCheck: PoliticFactCheckRelateToManyForUpdateInput
   repeat: PoliticRepeatRelateToManyForUpdateInput
@@ -875,6 +891,10 @@ input FactcheckPartnerUpdateArgs {
 input FactcheckPartnerCreateInput {
   name: String
   logo: String
+  sLogo: String
+  year: String
+  type: String
+  webUrl: String
   positionChange: PoliticPositionChangeRelateToManyForCreateInput
   factCheck: PoliticFactCheckRelateToManyForCreateInput
   repeat: PoliticRepeatRelateToManyForCreateInput

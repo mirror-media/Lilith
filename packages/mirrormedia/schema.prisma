@@ -270,6 +270,7 @@ model Post {
   lockExpireAt               DateTime?
   slug                       String         @unique @default("")
   title                      String         @default("")
+  subtitle                   String         @default("")
   state                      String?        @default("draft")
   publishedDate              DateTime       @default(now())
   updateTimeStamp            Boolean        @default(false)
