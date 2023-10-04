@@ -97,6 +97,8 @@ export default withAuth(
 
         const jsonBodyParser = express.json({ limit: '500mb' })
         app.use(jsonBodyParser)
+		app.use(bodyParser.urlencoded({ extended: true, limit: '2000mb' }));
+
 
         if (envVar.accessControlStrategy === 'cms') {
           app.use(
