@@ -33,6 +33,8 @@ const listConfigurations = list({
 			options: [
 				{ value: '總統', label: '總統' },
 				{ value: '立法委員', label: '立法委員' },
+				{ value: '不分區立委', label: '不分區立委' },
+				{ value: '原住民立委', label: '原住民立委' },
 				{ value: '縣市首長', label: '縣市首長' },
 				{ value: '縣市議員', label: '縣市議員' },
 				{ value: '鄉鎮市區長', label: '鄉鎮市區長' },
