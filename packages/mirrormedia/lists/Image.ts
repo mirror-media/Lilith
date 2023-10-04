@@ -22,7 +22,7 @@ const listConfigurations = list({
       label: '浮水印',
       defaultValue: false,
       ui: {
-        itemView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
       },
     }),
     resized: virtual({
