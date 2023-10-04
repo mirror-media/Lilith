@@ -1838,6 +1838,7 @@ type Video {
   id: ID!
   name: String
   file: FileFieldOutput
+  videoSrc: String
   urlOriginal: String
   content: JSON
   heroImage: Photo

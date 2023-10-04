@@ -1,3 +1,5 @@
+import config from '../config'
+import { graphql } from '@graphql-ts/schema'
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import {
@@ -8,6 +10,7 @@ import {
   checkbox,
   timestamp,
   json,
+  virtual
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -21,6 +24,18 @@ const listConfigurations = list({
     file: file({
       label: '檔案',
       storage: 'files',
+    }),
+    videoSrc: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, string>) {
+          const filename = item?.file_filename
+          if (!filename) {
+            return ''
+          }
+          return `https://${config.googleCloudStorage.bucket}/files/${filename}`
+        },
+      }),
     }),
     urlOriginal: text({
       ui: {
@@ -113,7 +128,7 @@ const listConfigurations = list({
   ui: {
     labelField: 'name',
     listView: {
-      initialColumns: ['id', 'name', 'file', 'urlOriginal'],
+      initialColumns: ['id', 'name', 'videoSrc'],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
