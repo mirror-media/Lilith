@@ -141,6 +141,9 @@ const listConfigurations = list({
     title: text({
       label: '標題',
     }),
+    subtitle: text({
+      label: '副標',
+    }),
     state: select({
       label: '狀態',
       options: [
