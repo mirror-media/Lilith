@@ -20,7 +20,7 @@ type ImageEntity = {
 type VideoEntity = {
   id: string
   name?: string
-  urlOriginal: string
+  videoSrc: string
   youtubeUrl?: string
   file: {
     filename?: string
@@ -29,12 +29,11 @@ type VideoEntity = {
   }
   heroImage: ImageEntity
 }
-
 /**
- * Before 202310, video which contain property `urlOriginal` and not contain property `videoSrc`.
+ * //After 202310, video which only contain property `videoSrc`, and property `urlOriginal` is an empty string.
  */
-export default function AmpVideoBlock({ video }: { video: VideoEntity }) {
-  const urlOriginalType = extractFileExtension(video?.urlOriginal)
+export default function AmpVideoBlockV2({ video }: { video: VideoEntity }) {
+  const videoSrcType = extractFileExtension(video?.videoSrc)
   const fileUrlType = extractFileExtension(video?.file?.url)
 
   return (
@@ -47,8 +46,8 @@ export default function AmpVideoBlock({ video }: { video: VideoEntity }) {
         width="100vw"
         height="50vw"
       >
-        {urlOriginalType && (
-          <source src={video?.urlOriginal} type={`video/${urlOriginalType}`} />
+        {videoSrcType && (
+          <source src={video?.videoSrc} type={`video/${videoSrcType}`} />
         )}
         {fileUrlType && (
           <source src={video?.file?.url} type={`video/${fileUrlType}`} />
