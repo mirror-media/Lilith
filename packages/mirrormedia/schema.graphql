@@ -1611,6 +1611,7 @@ type Topic {
   state: String
   brief: JSON
   heroImage: Photo
+  heroUrl: String
   leading: String
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
@@ -1654,6 +1655,7 @@ input TopicWhereInput {
   sortOrder: IntNullableFilter
   state: StringNullableFilter
   heroImage: PhotoWhereInput
+  heroUrl: StringNullableFilter
   leading: StringNullableFilter
   sections: SectionManyRelationFilter
   og_title: StringFilter
@@ -1687,6 +1689,7 @@ input TopicOrderByInput {
   slug: OrderDirection
   sortOrder: OrderDirection
   state: OrderDirection
+  heroUrl: OrderDirection
   leading: OrderDirection
   og_title: OrderDirection
   og_description: OrderDirection
@@ -1708,6 +1711,7 @@ input TopicUpdateInput {
   state: String
   brief: JSON
   heroImage: PhotoRelateToOneForUpdateInput
+  heroUrl: String
   leading: String
   sections: SectionRelateToManyForUpdateInput
   og_title: String
@@ -1749,6 +1753,7 @@ input TopicCreateInput {
   state: String
   brief: JSON
   heroImage: PhotoRelateToOneForCreateInput
+  heroUrl: String
   leading: String
   sections: SectionRelateToManyForCreateInput
   og_title: String

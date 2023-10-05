@@ -393,6 +393,7 @@ model Topic {
   brief                        Json?
   heroImage                    Photo?    @relation("Topic_heroImage", fields: [heroImageId], references: [id])
   heroImageId                  Int?      @map("heroImage")
+  heroUrl                      String?
   leading                      String?
   sections                     Section[] @relation("Section_topics")
   og_title                     String    @default("")
