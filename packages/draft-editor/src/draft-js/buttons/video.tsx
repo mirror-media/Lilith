@@ -35,8 +35,10 @@ export function VideoButton(props: {
     }
 
     const contentState = editorState.getCurrentContent()
+
+    // since 202310, only VIDEO-V2 will be created
     const contentStateWithEntity = contentState.createEntity(
-      'VIDEO',
+      'VIDEO-V2',
       'IMMUTABLE',
       {
         video,
