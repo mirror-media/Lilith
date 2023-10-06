@@ -496,6 +496,7 @@ type Election {
   electionArea(where: ElectionAreaWhereInput! = {}, orderBy: [ElectionAreaOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ElectionAreaWhereUniqueInput): [ElectionArea!]
   electionAreaCount(where: ElectionAreaWhereInput! = {}): Int
   status: String
+  hidePoliticDetail: Boolean
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   addComments: Boolean
@@ -525,6 +526,7 @@ input ElectionWhereInput {
   location: StringFilter
   electionArea: ElectionAreaManyRelationFilter
   status: StringNullableFilter
+  hidePoliticDetail: BooleanFilter
   tags: TagManyRelationFilter
   addComments: BooleanFilter
   createdAt: DateTimeNullableFilter
@@ -597,6 +599,7 @@ input ElectionOrderByInput {
   register_date: OrderDirection
   location: OrderDirection
   status: OrderDirection
+  hidePoliticDetail: OrderDirection
   addComments: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -614,6 +617,7 @@ input ElectionUpdateInput {
   location: String
   electionArea: ElectionAreaRelateToManyForUpdateInput
   status: String
+  hidePoliticDetail: Boolean
   tags: TagRelateToManyForUpdateInput
   addComments: Boolean
   createdAt: DateTime
@@ -653,6 +657,7 @@ input ElectionCreateInput {
   location: String
   electionArea: ElectionAreaRelateToManyForCreateInput
   status: String
+  hidePoliticDetail: Boolean
   tags: TagRelateToManyForCreateInput
   addComments: Boolean
   createdAt: DateTime

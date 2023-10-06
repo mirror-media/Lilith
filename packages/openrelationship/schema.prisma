@@ -172,6 +172,7 @@ model Election {
   location                     String           @default("")
   electionArea                 ElectionArea[]   @relation("ElectionArea_election")
   status                       String?
+  hidePoliticDetail            Boolean          @default(true)
   tags                         Tag[]            @relation("Election_tags")
   addComments                  Boolean          @default(false)
   createdAt                    DateTime?

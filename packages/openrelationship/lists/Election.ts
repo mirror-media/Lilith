@@ -58,6 +58,10 @@ const listConfigurations = list({
 				{ value: 'deactive', label: '失效' },
 			],
 		}),
+		hidePoliticDetail: checkbox({
+		  label: '隱藏政見細節',
+		  defaultValue: true,
+	    }),
         tags: relationship({
           label: '標籤',
           many: true,
