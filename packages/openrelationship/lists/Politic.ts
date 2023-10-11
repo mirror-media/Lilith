@@ -58,6 +58,7 @@ const listConfigurations = list ({
 	    cardFields: ['positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'],
 	    inlineCreate: { 'fields': ['positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'] },
 	    inlineEdit: { 'fields': ['positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'] },
+	    inlineConnect: true,
 	  },
 	  ref: 'PoliticPositionChange.politic',
 	}),
@@ -70,6 +71,7 @@ const listConfigurations = list ({
 	    cardFields: ['factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'],
 	    inlineCreate: { 'fields': ['factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'] },
 	    inlineEdit: { 'fields': ['factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'] },
+	    inlineConnect: true,
 	  },
 	  ref: 'PoliticFactCheck.politic',
 	}),
@@ -83,6 +85,7 @@ const listConfigurations = list ({
 	    cardFields: ['content', 'expert', 'avatar', 'title', 'expertPointSummary', 'link', 'contributer'],
 	    inlineCreate: { 'fields': ['content', 'expert', 'avatar', 'title', 'expertPointSummary', 'link', 'contributer']},
 	    inlineEdit: {'fields': ['content', 'expert', 'avatar', 'title', 'expertPointSummary', 'link', 'contributer']},
+	    inlineConnect: true,
 	  },
 	}),
 	repeat: relationship({
@@ -95,6 +98,7 @@ const listConfigurations = list ({
 	    cardFields: ['content', 'repeatSummary', 'factcheckPartner', 'link'],
 	    inlineCreate: { 'fields': ['content', 'repeatSummary', 'factcheckPartner', 'link']},
 	    inlineEdit: { 'fields': ['content', 'repeatSummary', 'factcheckPartner', 'link']},
+	    inlineConnect: true,
 	  },
 	}),
 	controversies: relationship({
@@ -105,8 +109,9 @@ const listConfigurations = list ({
 		displayMode: 'cards',
 		linkToItem: true,
 	    cardFields: ['content', 'link'],
-	    inloineCreate: { 'fields': ['content', 'link']},
+	    inlineCreate: { 'fields': ['content', 'link']},
 	    inlineEdit: { 'fields': ['content', 'link']},
+	    inlineConnect: true,
 	  },
 	}),
 	response: relationship({
@@ -119,6 +124,7 @@ const listConfigurations = list ({
 	    cardFields: ['content', 'responseName', 'responsePic', 'responseTitle', 'link'],
 	    inlineCreate: { 'fields': ['content', 'responseName', 'responsePic', 'responseTitle', 'link']},
 	    inlineEdit: {'fields': ['content', 'responseName', 'responsePic', 'responseTitle', 'link']},
+	    inlineConnect: true,
 	  },
 	}),
     dispute: text({
