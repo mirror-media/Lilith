@@ -17,17 +17,9 @@ const listConfigurations = list ({
       many: false,
       ref: 'Politic.controversies',
     }),
-    checkDate: timestamp({
-      label: '日期',
-    }),
-    controversiesSummary: text({
-      label: '爭議內容（摘要）',
-	  ui: {
-		displayMode: 'textarea',
-	  },
-    }),
     content: text({ 
 	  label: '爭議內容',
+	  validation: { isRequired: true },
 	  ui: {
 	    displayMode: 'textarea',
 	  },
@@ -41,12 +33,6 @@ const listConfigurations = list ({
 	  label: '相關連結',
 	  ui: {
 	    displayMode: 'textarea',
-	  },
-	}),
-    contributer: text({ 
-	  label: '資料提供',
-	  ui: {
-		displayMode: 'textarea',
 	  },
 	}),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },

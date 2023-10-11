@@ -17,12 +17,9 @@ const listConfigurations = list ({
       many: false,
       ref: 'Politic.response',
     }),
-    checkDate: timestamp({
-      label: '日期',
-    }),
     responseName: text({
       label: '回應者姓名',
-	  isRequired: true,
+	  validation: { isRequired: true },
 	  defaultValue: '',
 	  ui: {
 		displayMode: 'textarea',
@@ -33,7 +30,7 @@ const listConfigurations = list ({
     }),
     responseTitle: text({
       label: '回應者身分',
-	  isRequired: true,
+	  validation: { isRequired: true },
 	  defaultValue: '',
 	  ui: {
 		displayMode: 'textarea',
@@ -41,8 +38,8 @@ const listConfigurations = list ({
     }),
     content: text({ 
 	  label: '回應內容',
-	  isRequired: true,
 	  defaultValue: '',
+	  validation: { isRequired: true },
 	  ui: {
 	    displayMode: 'textarea',
 	  },
@@ -51,12 +48,6 @@ const listConfigurations = list ({
 	  label: '相關連結',
 	  ui: {
 	    displayMode: 'textarea',
-	  },
-	}),
-    contributer: text({ 
-	  label: '資料提供',
-	  ui: {
-		displayMode: 'textarea',
 	  },
 	}),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },

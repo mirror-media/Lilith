@@ -2718,7 +2718,6 @@ type PoliticExpert {
   expert: String
   avatar: String
   title: String
-  reviewDate: DateTime
   expertPointSummary: String
   content: String
   link: String
@@ -2742,7 +2741,6 @@ input PoliticExpertWhereInput {
   expert: StringNullableFilter
   avatar: StringFilter
   title: StringFilter
-  reviewDate: DateTimeNullableFilter
   expertPointSummary: StringFilter
   content: StringFilter
   link: StringFilter
@@ -2758,7 +2756,6 @@ input PoliticExpertOrderByInput {
   expert: OrderDirection
   avatar: OrderDirection
   title: OrderDirection
-  reviewDate: OrderDirection
   expertPointSummary: OrderDirection
   content: OrderDirection
   link: OrderDirection
@@ -2772,7 +2769,6 @@ input PoliticExpertUpdateInput {
   expert: String
   avatar: String
   title: String
-  reviewDate: DateTime
   expertPointSummary: String
   content: String
   link: String
@@ -2793,7 +2789,6 @@ input PoliticExpertCreateInput {
   expert: String
   avatar: String
   title: String
-  reviewDate: DateTime
   expertPointSummary: String
   content: String
   link: String
@@ -2807,7 +2802,6 @@ input PoliticExpertCreateInput {
 type PoliticFactCheck {
   id: ID!
   politic: Politic
-  checkDate: DateTime
   factCheckSummary: String
   content: String
   checkResultType: String
@@ -2829,7 +2823,6 @@ input PoliticFactCheckWhereInput {
   NOT: [PoliticFactCheckWhereInput!]
   id: IDFilter
   politic: PoliticWhereInput
-  checkDate: DateTimeNullableFilter
   factCheckSummary: StringFilter
   content: StringFilter
   checkResultType: StringNullableFilter
@@ -2843,7 +2836,6 @@ input PoliticFactCheckWhereInput {
 
 input PoliticFactCheckOrderByInput {
   id: OrderDirection
-  checkDate: OrderDirection
   factCheckSummary: OrderDirection
   content: OrderDirection
   checkResultType: OrderDirection
@@ -2854,7 +2846,6 @@ input PoliticFactCheckOrderByInput {
 
 input PoliticFactCheckUpdateInput {
   politic: PoliticRelateToOneForUpdateInput
-  checkDate: DateTime
   factCheckSummary: String
   content: String
   checkResultType: String
@@ -2879,7 +2870,6 @@ input PoliticFactCheckUpdateArgs {
 
 input PoliticFactCheckCreateInput {
   politic: PoliticRelateToOneForCreateInput
-  checkDate: DateTime
   factCheckSummary: String
   content: String
   checkResultType: String
@@ -2922,7 +2912,7 @@ input PoliticPositionChangeWhereInput {
   id: IDFilter
   politic: PoliticWhereInput
   factcheckPartner: FactcheckPartnerWhereInput
-  checkDate: DateTimeNullableFilter
+  checkDate: DateTimeFilter
   positionChangeSummary: StringFilter
   content: StringFilter
   isChanged: BooleanFilter
@@ -2931,6 +2921,17 @@ input PoliticPositionChangeWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeFilter
 }
 
 input PoliticPositionChangeOrderByInput {
@@ -2980,10 +2981,8 @@ input PoliticPositionChangeCreateInput {
 type PoliticRepeat {
   id: ID!
   politic: Politic
-  checkDate: DateTime
   repeatSummary: String
   content: String
-  checkResultType: Boolean
   factcheckPartner: FactcheckPartner
   link: String
   contributer: String
@@ -3003,10 +3002,8 @@ input PoliticRepeatWhereInput {
   NOT: [PoliticRepeatWhereInput!]
   id: IDFilter
   politic: PoliticWhereInput
-  checkDate: DateTimeNullableFilter
   repeatSummary: StringFilter
   content: StringFilter
-  checkResultType: BooleanFilter
   factcheckPartner: FactcheckPartnerWhereInput
   link: StringFilter
   contributer: StringFilter
@@ -3018,10 +3015,8 @@ input PoliticRepeatWhereInput {
 
 input PoliticRepeatOrderByInput {
   id: OrderDirection
-  checkDate: OrderDirection
   repeatSummary: OrderDirection
   content: OrderDirection
-  checkResultType: OrderDirection
   link: OrderDirection
   contributer: OrderDirection
   createdAt: OrderDirection
@@ -3030,10 +3025,8 @@ input PoliticRepeatOrderByInput {
 
 input PoliticRepeatUpdateInput {
   politic: PoliticRelateToOneForUpdateInput
-  checkDate: DateTime
   repeatSummary: String
   content: String
-  checkResultType: Boolean
   factcheckPartner: FactcheckPartnerRelateToOneForUpdateInput
   link: String
   contributer: String
@@ -3050,10 +3043,8 @@ input PoliticRepeatUpdateArgs {
 
 input PoliticRepeatCreateInput {
   politic: PoliticRelateToOneForCreateInput
-  checkDate: DateTime
   repeatSummary: String
   content: String
-  checkResultType: Boolean
   factcheckPartner: FactcheckPartnerRelateToOneForCreateInput
   link: String
   contributer: String
@@ -3066,13 +3057,11 @@ input PoliticRepeatCreateInput {
 type PoliticResponse {
   id: ID!
   politic: Politic
-  checkDate: DateTime
   responseName: String
   responsePic: String
   responseTitle: String
   content: String
   link: String
-  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -3089,13 +3078,11 @@ input PoliticResponseWhereInput {
   NOT: [PoliticResponseWhereInput!]
   id: IDFilter
   politic: PoliticWhereInput
-  checkDate: DateTimeNullableFilter
   responseName: StringFilter
   responsePic: StringFilter
   responseTitle: StringFilter
   content: StringFilter
   link: StringFilter
-  contributer: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -3104,26 +3091,22 @@ input PoliticResponseWhereInput {
 
 input PoliticResponseOrderByInput {
   id: OrderDirection
-  checkDate: OrderDirection
   responseName: OrderDirection
   responsePic: OrderDirection
   responseTitle: OrderDirection
   content: OrderDirection
   link: OrderDirection
-  contributer: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input PoliticResponseUpdateInput {
   politic: PoliticRelateToOneForUpdateInput
-  checkDate: DateTime
   responseName: String
   responsePic: String
   responseTitle: String
   content: String
   link: String
-  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -3137,13 +3120,11 @@ input PoliticResponseUpdateArgs {
 
 input PoliticResponseCreateInput {
   politic: PoliticRelateToOneForCreateInput
-  checkDate: DateTime
   responseName: String
   responsePic: String
   responseTitle: String
   content: String
   link: String
-  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -3153,12 +3134,9 @@ input PoliticResponseCreateInput {
 type PoliticControversie {
   id: ID!
   politic: Politic
-  checkDate: DateTime
-  controversiesSummary: String
   content: String
   factcheckPartner: FactcheckPartner
   link: String
-  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -3175,12 +3153,9 @@ input PoliticControversieWhereInput {
   NOT: [PoliticControversieWhereInput!]
   id: IDFilter
   politic: PoliticWhereInput
-  checkDate: DateTimeNullableFilter
-  controversiesSummary: StringFilter
   content: StringFilter
   factcheckPartner: FactcheckPartnerWhereInput
   link: StringFilter
-  contributer: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -3189,23 +3164,17 @@ input PoliticControversieWhereInput {
 
 input PoliticControversieOrderByInput {
   id: OrderDirection
-  checkDate: OrderDirection
-  controversiesSummary: OrderDirection
   content: OrderDirection
   link: OrderDirection
-  contributer: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input PoliticControversieUpdateInput {
   politic: PoliticRelateToOneForUpdateInput
-  checkDate: DateTime
-  controversiesSummary: String
   content: String
   factcheckPartner: FactcheckPartnerRelateToOneForUpdateInput
   link: String
-  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -3219,12 +3188,9 @@ input PoliticControversieUpdateArgs {
 
 input PoliticControversieCreateInput {
   politic: PoliticRelateToOneForCreateInput
-  checkDate: DateTime
-  controversiesSummary: String
   content: String
   factcheckPartner: FactcheckPartnerRelateToOneForCreateInput
   link: String
-  contributer: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

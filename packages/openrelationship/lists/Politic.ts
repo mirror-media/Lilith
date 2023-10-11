@@ -55,9 +55,9 @@ const listConfigurations = list ({
 	  ui: {
 		displayMode: 'cards',
 		linkToItem: true,
-	    cardFields: ['checkDate', 'positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'],
-	    inlineCreate: { 'fields': ['checkDate', 'positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'] },
-	    inlineEdit: { 'fields': ['checkDate', 'positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'] },
+	    cardFields: ['positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'],
+	    inlineCreate: { 'fields': ['positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'] },
+	    inlineEdit: { 'fields': ['positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'] },
 	  },
 	  ref: 'PoliticPositionChange.politic',
 	}),
@@ -67,9 +67,9 @@ const listConfigurations = list ({
 	  ui: {
 		displayMode: 'cards',
 		linkToItem: true,
-	    cardFields: ['checkDate', 'factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'],
-	    inlineCreate: { 'fields': ['checkDate', 'factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'] },
-	    inlineEdit: { 'fields': ['checkDate', 'factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'] },
+	    cardFields: ['factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'],
+	    inlineCreate: { 'fields': ['factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'] },
+	    inlineEdit: { 'fields': ['factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'] },
 	  },
 	  ref: 'PoliticFactCheck.politic',
 	}),
@@ -80,9 +80,9 @@ const listConfigurations = list ({
 	  ui: {
 		displayMode: 'cards',
 		linkToItem: true,
-	    cardFields: ['content', 'expert', 'avatar', 'title', 'reviewDate', 'expertPointSummary', 'link', 'contributer'],
-	    inlineCreate: { 'fields': ['content', 'expert', 'avatar', 'title', 'reviewDate', 'expertPointSummary', 'link', 'contributer']},
-	    inlineEdit: {'fields': ['content', 'expert', 'avatar', 'title', 'reviewDate', 'expertPointSummary', 'link', 'contributer']},
+	    cardFields: ['content', 'expert', 'avatar', 'title', 'expertPointSummary', 'link', 'contributer'],
+	    inlineCreate: { 'fields': ['content', 'expert', 'avatar', 'title', 'expertPointSummary', 'link', 'contributer']},
+	    inlineEdit: {'fields': ['content', 'expert', 'avatar', 'title', 'expertPointSummary', 'link', 'contributer']},
 	  },
 	}),
 	repeat: relationship({
@@ -92,9 +92,9 @@ const listConfigurations = list ({
 	  ui: {
 		displayMode: 'cards',
 		linkToItem: true,
-	    cardFields: ['content', 'checkDate', 'checkResultType', 'repeatSummary', 'factcheckPartner', 'link'],
-	    inlineCreate: { 'fields': ['content', 'checkDate', 'checkResultType', 'repeatSummary', 'factcheckPartner', 'link']},
-	    inlineEdit: { 'fields': ['content', 'checkDate', 'checkResultType', 'repeatSummary', 'factcheckPartner', 'link']},
+	    cardFields: ['content', 'repeatSummary', 'factcheckPartner', 'link'],
+	    inlineCreate: { 'fields': ['content', 'repeatSummary', 'factcheckPartner', 'link']},
+	    inlineEdit: { 'fields': ['content', 'repeatSummary', 'factcheckPartner', 'link']},
 	  },
 	}),
 	controversies: relationship({
@@ -104,9 +104,9 @@ const listConfigurations = list ({
 	  ui: {
 		displayMode: 'cards',
 		linkToItem: true,
-	    cardFields: ['content', 'checkDate', 'controversiesSummary', 'link', 'contributer'],
-	    inloineCreate: { 'fields': ['content', 'checkDate', 'controversiesSummary', 'link', 'contributer']},
-	    inlineEdit: { 'fields': ['content', 'checkDate', 'controversiesSummary', 'link', 'contributer']},
+	    cardFields: ['content', 'link'],
+	    inloineCreate: { 'fields': ['content', 'link']},
+	    inlineEdit: { 'fields': ['content', 'link']},
 	  },
 	}),
 	response: relationship({
@@ -116,9 +116,9 @@ const listConfigurations = list ({
 	  ui: {
 		displayMode: 'cards',
 		linkToItem: true,
-	    cardFields: ['checkDate', 'content', 'responseName', 'responsePic', 'responseTitle', 'link', 'contributer'],
-	    inlineCreate: { 'fields': ['checkDate', 'content', 'responseName', 'responsePic', 'responseTitle', 'link', 'contributer']},
-	    inlineEdit: {'fields': ['checkDate', 'content', 'responseName', 'responsePic', 'responseTitle', 'link', 'contributer']},
+	    cardFields: ['content', 'responseName', 'responsePic', 'responseTitle', 'link'],
+	    inlineCreate: { 'fields': ['content', 'responseName', 'responsePic', 'responseTitle', 'link']},
+	    inlineEdit: {'fields': ['content', 'responseName', 'responsePic', 'responseTitle', 'link']},
 	  },
 	}),
     dispute: text({
