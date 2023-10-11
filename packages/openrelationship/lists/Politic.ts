@@ -17,6 +17,11 @@ const listConfigurations = list ({
       many: false,
       ref: 'PersonElection',
     }),
+    organization: relationship({
+      label: '政黨-選舉',
+      many: false,
+      ref: 'OrganizationsElection',
+    }),
     thread_parent: relationship({
       label: 'Thread',
       many: false,
@@ -87,9 +92,9 @@ const listConfigurations = list ({
 	  ui: {
 		displayMode: 'cards',
 		linkToItem: true,
-	    cardFields: ['content', 'checkDate', 'checkResultType', 'factcheckPartner', 'link'],
-	    inlineCreate: { 'fields': ['content', 'checkDate', 'checkResultType', 'factcheckPartner', 'link']},
-	    inlineEdit: { 'fields': ['content', 'checkDate', 'checkResultType', 'factcheckPartner', 'link']},
+	    cardFields: ['content', 'checkDate', 'checkResultType', 'repeatSummary', 'factcheckPartner', 'link'],
+	    inlineCreate: { 'fields': ['content', 'checkDate', 'checkResultType', 'repeatSummary', 'factcheckPartner', 'link']},
+	    inlineEdit: { 'fields': ['content', 'checkDate', 'checkResultType', 'repeatSummary', 'factcheckPartner', 'link']},
 	  },
 	}),
 	controversies: relationship({

@@ -26,6 +26,22 @@ const listConfigurations = list ({
     votes_obtained_number: text({ label: '得票數' }),
     seats: text({ label: '分配席次' }),
     source: text({ label: '資料來源' }),
+	politics: relationship({ 
+	  label: '政見',
+	  many: true,
+	  ref: 'Politic',
+	  ui: {
+		displayMode: 'cards',
+		cardFields: [ 'desc', 'content', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
+		inlineCreate: {
+		  fields: [ 'desc', 'content', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
+	    },
+		inlineEdit: {
+		  fields: [ 'desc', 'content', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
+	    },
+	    linkToItem: true,
+	  },
+	 }),
   },
   access: {
 	operation: {
