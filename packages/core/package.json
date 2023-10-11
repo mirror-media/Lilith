@@ -1,6 +1,6 @@
 {
   "name": "@mirrormedia/lilith-core",
-  "version": "2.0.0-alpha.17",
+  "version": "2.0.0-alpha.18",
   "description": "",
   "main": "lib/index.js",
   "types": "src/index.ts",
@@ -33,7 +33,7 @@
     "@keystone-ui/fields": "^7.2.0",
     "@keystone-ui/modals": "^6.0.3",
     "@twreporter/errors": "^1.1.1",
-    "@mirrormedia/lilith-draft-editor": "1.1.0-alpha.25",
+    "@mirrormedia/lilith-draft-editor": "1.1.0-alpha.26",
     "axios": "^0.26.0",
     "draft-convert": "^2.1.12",
     "draft-js": "^0.11.7",
