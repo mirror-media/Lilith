@@ -763,8 +763,8 @@ input ElectionRelateToOneForCreateInput {
 type FactcheckPartner {
   id: ID!
   name: String
-  logo: String
-  sLogo: String
+  logo: Photo
+  slogo: Photo
   year: String
   type: String
   webUrl: String
@@ -792,8 +792,8 @@ input FactcheckPartnerWhereInput {
   NOT: [FactcheckPartnerWhereInput!]
   id: IDFilter
   name: StringFilter
-  logo: StringFilter
-  sLogo: StringFilter
+  logo: PhotoWhereInput
+  slogo: PhotoWhereInput
   year: StringNullableFilter
   type: StringNullableFilter
   webUrl: StringFilter
@@ -834,8 +834,6 @@ input PoliticControversieManyRelationFilter {
 input FactcheckPartnerOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  logo: OrderDirection
-  sLogo: OrderDirection
   year: OrderDirection
   type: OrderDirection
   webUrl: OrderDirection
@@ -845,8 +843,8 @@ input FactcheckPartnerOrderByInput {
 
 input FactcheckPartnerUpdateInput {
   name: String
-  logo: String
-  sLogo: String
+  logo: PhotoRelateToOneForUpdateInput
+  slogo: PhotoRelateToOneForUpdateInput
   year: String
   type: String
   webUrl: String
@@ -858,6 +856,12 @@ input FactcheckPartnerUpdateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PhotoRelateToOneForUpdateInput {
+  create: PhotoCreateInput
+  connect: PhotoWhereUniqueInput
+  disconnect: Boolean
 }
 
 input PoliticPositionChangeRelateToManyForUpdateInput {
@@ -895,8 +899,8 @@ input FactcheckPartnerUpdateArgs {
 
 input FactcheckPartnerCreateInput {
   name: String
-  logo: String
-  sLogo: String
+  logo: PhotoRelateToOneForCreateInput
+  slogo: PhotoRelateToOneForCreateInput
   year: String
   type: String
   webUrl: String
@@ -908,6 +912,11 @@ input FactcheckPartnerCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input PhotoRelateToOneForCreateInput {
+  create: PhotoCreateInput
+  connect: PhotoWhereUniqueInput
 }
 
 input PoliticPositionChangeRelateToManyForCreateInput {
@@ -3368,6 +3377,123 @@ input TagCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Photo {
+  id: ID!
+  name: String
+  imageFile: ImageFieldOutput
+  resized: ResizedImages
+  resizedWebp: ResizedWebPImages
+  file: FileFieldOutput
+  urlOriginal: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+type ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  url: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
+}
+
+type ResizedImages {
+  original: String
+  w480: String
+  w800: String
+  w1200: String
+  w1600: String
+  w2400: String
+}
+
+type ResizedWebPImages {
+  original: String
+  w480: String
+  w800: String
+  w1200: String
+  w1600: String
+  w2400: String
+}
+
+type FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  url: String!
+}
+
+input PhotoWhereUniqueInput {
+  id: ID
+}
+
+input PhotoWhereInput {
+  AND: [PhotoWhereInput!]
+  OR: [PhotoWhereInput!]
+  NOT: [PhotoWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  urlOriginal: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PhotoOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  urlOriginal: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PhotoUpdateInput {
+  name: String
+  imageFile: ImageFieldInput
+  file: FileFieldInput
+  urlOriginal: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ImageFieldInput {
+  upload: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input FileFieldInput {
+  upload: Upload!
+}
+
+input PhotoUpdateArgs {
+  where: PhotoWhereUniqueInput!
+  data: PhotoUpdateInput!
+}
+
+input PhotoCreateInput {
+  name: String
+  imageFile: ImageFieldInput
+  file: FileFieldInput
+  urlOriginal: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -3560,6 +3686,12 @@ type Mutation {
   updateTags(data: [TagUpdateArgs!]!): [Tag]
   deleteTag(where: TagWhereUniqueInput!): Tag
   deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
+  createPhoto(data: PhotoCreateInput!): Photo
+  createPhotos(data: [PhotoCreateInput!]!): [Photo]
+  updatePhoto(where: PhotoWhereUniqueInput!, data: PhotoUpdateInput!): Photo
+  updatePhotos(data: [PhotoUpdateArgs!]!): [Photo]
+  deletePhoto(where: PhotoWhereUniqueInput!): Photo
+  deletePhotos(where: [PhotoWhereUniqueInput!]!): [Photo]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -3677,6 +3809,9 @@ type Query {
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tag(where: TagWhereUniqueInput!): Tag
   tagsCount(where: TagWhereInput! = {}): Int
+  photos(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
+  photo(where: PhotoWhereUniqueInput!): Photo
+  photosCount(where: PhotoWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

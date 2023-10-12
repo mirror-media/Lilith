@@ -78,6 +78,8 @@ model User {
   from_Lawsuit_updatedBy                   Lawsuit[]                   @relation("Lawsuit_updatedBy")
   from_Tag_createdBy                       Tag[]                       @relation("Tag_createdBy")
   from_Tag_updatedBy                       Tag[]                       @relation("Tag_updatedBy")
+  from_Photo_createdBy                     Photo[]                     @relation("Photo_createdBy")
+  from_Photo_updatedBy                     Photo[]                     @relation("Photo_updatedBy")
 }
 
 model Post {
@@ -211,8 +213,10 @@ model ElectionArea {
 model FactcheckPartner {
   id             Int                     @id @default(autoincrement())
   name           String                  @default("")
-  logo           String                  @default("")
-  sLogo          String                  @default("")
+  logo           Photo?                  @relation("FactcheckPartner_logo", fields: [logoId], references: [id])
+  logoId         Int?                    @map("logo")
+  slogo          Photo?                  @relation("FactcheckPartner_slogo", fields: [slogoId], references: [id])
+  slogoId        Int?                    @map("slogo")
   year           String?                 @default("2023")
   type           String?                 @default("合作媒體")
   webUrl         String                  @default("")
@@ -227,6 +231,8 @@ model FactcheckPartner {
   updatedBy      User?                   @relation("FactcheckPartner_updatedBy", fields: [updatedById], references: [id])
   updatedById    Int?                    @map("updatedBy")
 
+  @@index([logoId])
+  @@index([slogoId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -867,4 +873,29 @@ model Tag {
 
   @@index([createdById])
   @@index([updatedById])
+}
+
+model Photo {
+  id                          Int                @id @default(autoincrement())
+  name                        String             @default("")
+  imageFile_filesize          Int?
+  imageFile_extension         String?
+  imageFile_width             Int?
+  imageFile_height            Int?
+  imageFile_id                String?
+  file_filesize               Int?
+  file_filename               String?
+  urlOriginal                 String             @default("")
+  createdAt                   DateTime?
+  updatedAt                   DateTime?
+  createdBy                   User?              @relation("Photo_createdBy", fields: [createdById], references: [id])
+  createdById                 Int?               @map("createdBy")
+  updatedBy                   User?              @relation("Photo_updatedBy", fields: [updatedById], references: [id])
+  updatedById                 Int?               @map("updatedBy")
+  from_FactcheckPartner_logo  FactcheckPartner[] @relation("FactcheckPartner_logo")
+  from_FactcheckPartner_slogo FactcheckPartner[] @relation("FactcheckPartner_slogo")
+
+  @@index([createdById])
+  @@index([updatedById])
+  @@map("Image")
 }
