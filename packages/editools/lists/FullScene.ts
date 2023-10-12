@@ -9,6 +9,7 @@ import {
   select,
   image,
   file,
+  json,
   virtual,
 } from '@keystone-6/core/fields'
 
@@ -65,6 +66,20 @@ const listConfigurations = list({
       // fields also have the ability to configure their appearance in the Admin UI
       ui: {
         displayMode: 'segmented-control',
+      },
+    }),
+    hotspotJson: json({
+      label: '熱點 json',
+      //ui: {
+      //  createView: { fieldMode: 'hidden' },
+      //},
+      access: {
+        operation: {
+          query: allowRoles(admin, moderator, editor, contributor),
+          update: allowRoles(admin),
+          create: allowRoles(admin),
+          delete: allowRoles(admin),
+        },
       },
     }),
     embedCode: virtual({
