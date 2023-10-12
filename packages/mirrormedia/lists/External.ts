@@ -82,6 +82,17 @@ const listConfigurations = list({
       label: '發佈日期',
       isIndexed: true,
     }),
+	publishedDateString: text({
+	  label: '發布日期',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+	}),
     extend_byline: text({
       label: '作者',
       validation: { isRequired: false },

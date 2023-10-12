@@ -621,6 +621,7 @@ type External {
   title: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
   extend_byline: String
   thumb: String
   brief: String
@@ -647,6 +648,7 @@ input ExternalWhereInput {
   title: StringFilter
   state: StringNullableFilter
   publishedDate: DateTimeNullableFilter
+  publishedDateString: StringFilter
   extend_byline: StringFilter
   thumb: StringFilter
   brief: StringFilter
@@ -664,6 +666,7 @@ input ExternalOrderByInput {
   title: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
+  publishedDateString: OrderDirection
   extend_byline: OrderDirection
   thumb: OrderDirection
   brief: OrderDirection
@@ -679,6 +682,7 @@ input ExternalUpdateInput {
   title: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
   extend_byline: String
   thumb: String
   brief: String
@@ -707,6 +711,7 @@ input ExternalCreateInput {
   title: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
   extend_byline: String
   thumb: String
   brief: String
@@ -1090,6 +1095,7 @@ type Post {
   subtitle: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
   updateTimeStamp: Boolean
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
@@ -1163,14 +1169,13 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
-  lockBy: UserWhereInput
   lockExpireAt: DateTimeNullableFilter
   slug: StringFilter
   title: StringFilter
   subtitle: StringFilter
   state: StringNullableFilter
   publishedDate: DateTimeFilter
-  updateTimeStamp: BooleanFilter
+  publishedDateString: StringFilter
   sections: SectionManyRelationFilter
   categories: CategoryManyRelationFilter
   writers: ContactManyRelationFilter
@@ -1182,16 +1187,12 @@ input PostWhereInput {
   extend_byline: StringFilter
   heroVideo: VideoWhereInput
   heroImage: PhotoWhereInput
-  heroCaption: StringFilter
   style: StringNullableFilter
   isMember: BooleanFilter
   topics: TopicWhereInput
   relateds: PostManyRelationFilter
   tags: TagManyRelationFilter
   og_title: StringFilter
-  og_description: StringFilter
-  og_image: PhotoWhereInput
-  related_videos: VideoManyRelationFilter
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
   hiddenAdvertised: BooleanFilter
@@ -1217,12 +1218,6 @@ input ContactManyRelationFilter {
   none: ContactWhereInput
 }
 
-input VideoManyRelationFilter {
-  every: VideoWhereInput
-  some: VideoWhereInput
-  none: VideoWhereInput
-}
-
 input PostOrderByInput {
   id: OrderDirection
   lockExpireAt: OrderDirection
@@ -1231,6 +1226,7 @@ input PostOrderByInput {
   subtitle: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
+  publishedDateString: OrderDirection
   updateTimeStamp: OrderDirection
   extend_byline: OrderDirection
   heroCaption: OrderDirection
@@ -1257,6 +1253,7 @@ input PostUpdateInput {
   subtitle: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
   updateTimeStamp: Boolean
   sections: SectionRelateToManyForUpdateInput
   manualOrderOfSections: JSON
@@ -1347,6 +1344,7 @@ input PostCreateInput {
   subtitle: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
   updateTimeStamp: Boolean
   sections: SectionRelateToManyForCreateInput
   manualOrderOfSections: JSON
