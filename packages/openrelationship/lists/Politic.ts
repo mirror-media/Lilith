@@ -55,9 +55,9 @@ const listConfigurations = list ({
 	  ui: {
 		displayMode: 'cards',
 		linkToItem: true,
-	    cardFields: ['positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'],
-	    inlineCreate: { 'fields': ['positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'] },
-	    inlineEdit: { 'fields': ['positionChangeSummary', 'content', 'isChanged', 'link', 'factcheckPartner'] },
+	    cardFields: ['positionChangeSummary', 'checkDate', 'content', 'isChanged', 'link', 'factcheckPartner'],
+	    inlineCreate: { 'fields': ['positionChangeSummary', 'checkDate', 'content', 'isChanged', 'link', 'factcheckPartner'] },
+	    inlineEdit: { 'fields': ['positionChangeSummary', 'checkDate', 'content', 'isChanged', 'link', 'factcheckPartner'] },
 	    inlineConnect: true,
 	  },
 	  ref: 'PoliticPositionChange.politic',

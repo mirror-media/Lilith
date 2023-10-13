@@ -14,7 +14,7 @@ const listConfigurations = list ({
   fields: {
     politic: relationship({
       label: '政見',
-      many: false,
+      many: true,
       ref: 'Politic.response',
     }),
     responseName: text({

@@ -639,12 +639,12 @@ model Politic {
   desc                                String                  @default("")
   content                             String                  @default("")
   current_progress                    String?                 @default("no-progress")
-  positionChange                      PoliticPositionChange[] @relation("PoliticPositionChange_politic")
-  factCheck                           PoliticFactCheck[]      @relation("PoliticFactCheck_politic")
-  expertPoint                         PoliticExpert[]         @relation("PoliticExpert_politic")
-  repeat                              PoliticRepeat[]         @relation("PoliticRepeat_politic")
-  controversies                       PoliticControversie[]   @relation("PoliticControversie_politic")
-  response                            PoliticResponse[]       @relation("PoliticResponse_politic")
+  positionChange                      PoliticPositionChange[] @relation("Politic_positionChange")
+  factCheck                           PoliticFactCheck[]      @relation("Politic_factCheck")
+  expertPoint                         PoliticExpert[]         @relation("Politic_expertPoint")
+  repeat                              PoliticRepeat[]         @relation("Politic_repeat")
+  controversies                       PoliticControversie[]   @relation("Politic_controversies")
+  response                            PoliticResponse[]       @relation("Politic_response")
   dispute                             String                  @default("")
   source                              String                  @default("")
   contributer                         String                  @default("")
@@ -695,8 +695,7 @@ model PoliticTimeline {
 
 model PoliticExpert {
   id                 Int       @id @default(autoincrement())
-  politic            Politic?  @relation("PoliticExpert_politic", fields: [politicId], references: [id])
-  politicId          Int?      @map("politic")
+  politic            Politic[] @relation("Politic_expertPoint")
   expert             String?
   avatar             String    @default("")
   title              String    @default("")
@@ -711,15 +710,13 @@ model PoliticExpert {
   updatedBy          User?     @relation("PoliticExpert_updatedBy", fields: [updatedById], references: [id])
   updatedById        Int?      @map("updatedBy")
 
-  @@index([politicId])
   @@index([createdById])
   @@index([updatedById])
 }
 
 model PoliticFactCheck {
   id                 Int               @id @default(autoincrement())
-  politic            Politic?          @relation("PoliticFactCheck_politic", fields: [politicId], references: [id])
-  politicId          Int?              @map("politic")
+  politic            Politic[]         @relation("Politic_factCheck")
   factCheckSummary   String            @default("")
   content            String            @default("")
   checkResultType    String?           @default("correct")
@@ -733,7 +730,6 @@ model PoliticFactCheck {
   updatedBy          User?             @relation("PoliticFactCheck_updatedBy", fields: [updatedById], references: [id])
   updatedById        Int?              @map("updatedBy")
 
-  @@index([politicId])
   @@index([factcheckPartnerId])
   @@index([createdById])
   @@index([updatedById])
@@ -741,8 +737,7 @@ model PoliticFactCheck {
 
 model PoliticPositionChange {
   id                    Int               @id @default(autoincrement())
-  politic               Politic?          @relation("PoliticPositionChange_politic", fields: [politicId], references: [id])
-  politicId             Int?              @map("politic")
+  politic               Politic[]         @relation("Politic_positionChange")
   factcheckPartner      FactcheckPartner? @relation("PoliticPositionChange_factcheckPartner", fields: [factcheckPartnerId], references: [id])
   factcheckPartnerId    Int?              @map("factcheckPartner")
   checkDate             DateTime
@@ -757,7 +752,6 @@ model PoliticPositionChange {
   updatedBy             User?             @relation("PoliticPositionChange_updatedBy", fields: [updatedById], references: [id])
   updatedById           Int?              @map("updatedBy")
 
-  @@index([politicId])
   @@index([factcheckPartnerId])
   @@index([createdById])
   @@index([updatedById])
@@ -765,8 +759,7 @@ model PoliticPositionChange {
 
 model PoliticRepeat {
   id                 Int               @id @default(autoincrement())
-  politic            Politic?          @relation("PoliticRepeat_politic", fields: [politicId], references: [id])
-  politicId          Int?              @map("politic")
+  politic            Politic[]         @relation("Politic_repeat")
   repeatSummary      String            @default("")
   content            String            @default("")
   factcheckPartner   FactcheckPartner? @relation("PoliticRepeat_factcheckPartner", fields: [factcheckPartnerId], references: [id])
@@ -780,7 +773,6 @@ model PoliticRepeat {
   updatedBy          User?             @relation("PoliticRepeat_updatedBy", fields: [updatedById], references: [id])
   updatedById        Int?              @map("updatedBy")
 
-  @@index([politicId])
   @@index([factcheckPartnerId])
   @@index([createdById])
   @@index([updatedById])
@@ -788,8 +780,7 @@ model PoliticRepeat {
 
 model PoliticResponse {
   id            Int       @id @default(autoincrement())
-  politic       Politic?  @relation("PoliticResponse_politic", fields: [politicId], references: [id])
-  politicId     Int?      @map("politic")
+  politic       Politic[] @relation("Politic_response")
   responseName  String    @default("")
   responsePic   String    @default("")
   responseTitle String    @default("")
@@ -802,15 +793,13 @@ model PoliticResponse {
   updatedBy     User?     @relation("PoliticResponse_updatedBy", fields: [updatedById], references: [id])
   updatedById   Int?      @map("updatedBy")
 
-  @@index([politicId])
   @@index([createdById])
   @@index([updatedById])
 }
 
 model PoliticControversie {
   id                 Int               @id @default(autoincrement())
-  politic            Politic?          @relation("PoliticControversie_politic", fields: [politicId], references: [id])
-  politicId          Int?              @map("politic")
+  politic            Politic[]         @relation("Politic_controversies")
   content            String            @default("")
   factcheckPartner   FactcheckPartner? @relation("PoliticControversie_factcheckPartner", fields: [factcheckPartnerId], references: [id])
   factcheckPartnerId Int?              @map("factcheckPartner")
@@ -822,7 +811,6 @@ model PoliticControversie {
   updatedBy          User?             @relation("PoliticControversie_updatedBy", fields: [updatedById], references: [id])
   updatedById        Int?              @map("updatedBy")
 
-  @@index([politicId])
   @@index([factcheckPartnerId])
   @@index([createdById])
   @@index([updatedById])

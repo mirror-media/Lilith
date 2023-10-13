@@ -2723,7 +2723,8 @@ input PoliticTimelineCreateInput {
 
 type PoliticExpert {
   id: ID!
-  politic: Politic
+  politic(where: PoliticWhereInput! = {}, orderBy: [PoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticWhereUniqueInput): [Politic!]
+  politicCount(where: PoliticWhereInput! = {}): Int
   expert: String
   avatar: String
   title: String
@@ -2746,7 +2747,7 @@ input PoliticExpertWhereInput {
   OR: [PoliticExpertWhereInput!]
   NOT: [PoliticExpertWhereInput!]
   id: IDFilter
-  politic: PoliticWhereInput
+  politic: PoliticManyRelationFilter
   expert: StringNullableFilter
   avatar: StringFilter
   title: StringFilter
@@ -2774,7 +2775,7 @@ input PoliticExpertOrderByInput {
 }
 
 input PoliticExpertUpdateInput {
-  politic: PoliticRelateToOneForUpdateInput
+  politic: PoliticRelateToManyForUpdateInput
   expert: String
   avatar: String
   title: String
@@ -2794,7 +2795,7 @@ input PoliticExpertUpdateArgs {
 }
 
 input PoliticExpertCreateInput {
-  politic: PoliticRelateToOneForCreateInput
+  politic: PoliticRelateToManyForCreateInput
   expert: String
   avatar: String
   title: String
@@ -2810,7 +2811,8 @@ input PoliticExpertCreateInput {
 
 type PoliticFactCheck {
   id: ID!
-  politic: Politic
+  politic(where: PoliticWhereInput! = {}, orderBy: [PoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticWhereUniqueInput): [Politic!]
+  politicCount(where: PoliticWhereInput! = {}): Int
   factCheckSummary: String
   content: String
   checkResultType: String
@@ -2831,7 +2833,7 @@ input PoliticFactCheckWhereInput {
   OR: [PoliticFactCheckWhereInput!]
   NOT: [PoliticFactCheckWhereInput!]
   id: IDFilter
-  politic: PoliticWhereInput
+  politic: PoliticManyRelationFilter
   factCheckSummary: StringFilter
   content: StringFilter
   checkResultType: StringNullableFilter
@@ -2854,7 +2856,7 @@ input PoliticFactCheckOrderByInput {
 }
 
 input PoliticFactCheckUpdateInput {
-  politic: PoliticRelateToOneForUpdateInput
+  politic: PoliticRelateToManyForUpdateInput
   factCheckSummary: String
   content: String
   checkResultType: String
@@ -2878,7 +2880,7 @@ input PoliticFactCheckUpdateArgs {
 }
 
 input PoliticFactCheckCreateInput {
-  politic: PoliticRelateToOneForCreateInput
+  politic: PoliticRelateToManyForCreateInput
   factCheckSummary: String
   content: String
   checkResultType: String
@@ -2897,7 +2899,8 @@ input FactcheckPartnerRelateToOneForCreateInput {
 
 type PoliticPositionChange {
   id: ID!
-  politic: Politic
+  politic(where: PoliticWhereInput! = {}, orderBy: [PoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticWhereUniqueInput): [Politic!]
+  politicCount(where: PoliticWhereInput! = {}): Int
   factcheckPartner: FactcheckPartner
   checkDate: DateTime
   positionChangeSummary: String
@@ -2919,7 +2922,7 @@ input PoliticPositionChangeWhereInput {
   OR: [PoliticPositionChangeWhereInput!]
   NOT: [PoliticPositionChangeWhereInput!]
   id: IDFilter
-  politic: PoliticWhereInput
+  politic: PoliticManyRelationFilter
   factcheckPartner: FactcheckPartnerWhereInput
   checkDate: DateTimeFilter
   positionChangeSummary: StringFilter
@@ -2955,7 +2958,7 @@ input PoliticPositionChangeOrderByInput {
 }
 
 input PoliticPositionChangeUpdateInput {
-  politic: PoliticRelateToOneForUpdateInput
+  politic: PoliticRelateToManyForUpdateInput
   factcheckPartner: FactcheckPartnerRelateToOneForUpdateInput
   checkDate: DateTime
   positionChangeSummary: String
@@ -2974,7 +2977,7 @@ input PoliticPositionChangeUpdateArgs {
 }
 
 input PoliticPositionChangeCreateInput {
-  politic: PoliticRelateToOneForCreateInput
+  politic: PoliticRelateToManyForCreateInput
   factcheckPartner: FactcheckPartnerRelateToOneForCreateInput
   checkDate: DateTime
   positionChangeSummary: String
@@ -2989,7 +2992,8 @@ input PoliticPositionChangeCreateInput {
 
 type PoliticRepeat {
   id: ID!
-  politic: Politic
+  politic(where: PoliticWhereInput! = {}, orderBy: [PoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticWhereUniqueInput): [Politic!]
+  politicCount(where: PoliticWhereInput! = {}): Int
   repeatSummary: String
   content: String
   factcheckPartner: FactcheckPartner
@@ -3010,7 +3014,7 @@ input PoliticRepeatWhereInput {
   OR: [PoliticRepeatWhereInput!]
   NOT: [PoliticRepeatWhereInput!]
   id: IDFilter
-  politic: PoliticWhereInput
+  politic: PoliticManyRelationFilter
   repeatSummary: StringFilter
   content: StringFilter
   factcheckPartner: FactcheckPartnerWhereInput
@@ -3033,7 +3037,7 @@ input PoliticRepeatOrderByInput {
 }
 
 input PoliticRepeatUpdateInput {
-  politic: PoliticRelateToOneForUpdateInput
+  politic: PoliticRelateToManyForUpdateInput
   repeatSummary: String
   content: String
   factcheckPartner: FactcheckPartnerRelateToOneForUpdateInput
@@ -3051,7 +3055,7 @@ input PoliticRepeatUpdateArgs {
 }
 
 input PoliticRepeatCreateInput {
-  politic: PoliticRelateToOneForCreateInput
+  politic: PoliticRelateToManyForCreateInput
   repeatSummary: String
   content: String
   factcheckPartner: FactcheckPartnerRelateToOneForCreateInput
@@ -3065,7 +3069,8 @@ input PoliticRepeatCreateInput {
 
 type PoliticResponse {
   id: ID!
-  politic: Politic
+  politic(where: PoliticWhereInput! = {}, orderBy: [PoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticWhereUniqueInput): [Politic!]
+  politicCount(where: PoliticWhereInput! = {}): Int
   responseName: String
   responsePic: String
   responseTitle: String
@@ -3086,7 +3091,7 @@ input PoliticResponseWhereInput {
   OR: [PoliticResponseWhereInput!]
   NOT: [PoliticResponseWhereInput!]
   id: IDFilter
-  politic: PoliticWhereInput
+  politic: PoliticManyRelationFilter
   responseName: StringFilter
   responsePic: StringFilter
   responseTitle: StringFilter
@@ -3110,7 +3115,7 @@ input PoliticResponseOrderByInput {
 }
 
 input PoliticResponseUpdateInput {
-  politic: PoliticRelateToOneForUpdateInput
+  politic: PoliticRelateToManyForUpdateInput
   responseName: String
   responsePic: String
   responseTitle: String
@@ -3128,7 +3133,7 @@ input PoliticResponseUpdateArgs {
 }
 
 input PoliticResponseCreateInput {
-  politic: PoliticRelateToOneForCreateInput
+  politic: PoliticRelateToManyForCreateInput
   responseName: String
   responsePic: String
   responseTitle: String
@@ -3142,7 +3147,8 @@ input PoliticResponseCreateInput {
 
 type PoliticControversie {
   id: ID!
-  politic: Politic
+  politic(where: PoliticWhereInput! = {}, orderBy: [PoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticWhereUniqueInput): [Politic!]
+  politicCount(where: PoliticWhereInput! = {}): Int
   content: String
   factcheckPartner: FactcheckPartner
   link: String
@@ -3161,7 +3167,7 @@ input PoliticControversieWhereInput {
   OR: [PoliticControversieWhereInput!]
   NOT: [PoliticControversieWhereInput!]
   id: IDFilter
-  politic: PoliticWhereInput
+  politic: PoliticManyRelationFilter
   content: StringFilter
   factcheckPartner: FactcheckPartnerWhereInput
   link: StringFilter
@@ -3180,7 +3186,7 @@ input PoliticControversieOrderByInput {
 }
 
 input PoliticControversieUpdateInput {
-  politic: PoliticRelateToOneForUpdateInput
+  politic: PoliticRelateToManyForUpdateInput
   content: String
   factcheckPartner: FactcheckPartnerRelateToOneForUpdateInput
   link: String
@@ -3196,7 +3202,7 @@ input PoliticControversieUpdateArgs {
 }
 
 input PoliticControversieCreateInput {
-  politic: PoliticRelateToOneForCreateInput
+  politic: PoliticRelateToManyForCreateInput
   content: String
   factcheckPartner: FactcheckPartnerRelateToOneForCreateInput
   link: String
