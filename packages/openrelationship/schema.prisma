@@ -636,6 +636,7 @@ model Politic {
   organizationId                      Int?                    @map("organization")
   thread_parent                       Politic?                @relation("Politic_thread_parent", fields: [thread_parentId], references: [id])
   thread_parentId                     Int?                    @map("thread_parent")
+  changeLog                           String                  @default("")
   desc                                String                  @default("")
   content                             String                  @default("")
   current_progress                    String?                 @default("no-progress")

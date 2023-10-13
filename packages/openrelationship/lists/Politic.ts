@@ -27,6 +27,12 @@ const listConfigurations = list ({
       many: false,
       ref: 'Politic',
     }),
+    changeLog: text({ 
+	  label: '修改備註', 
+	  ui: {
+		displayMode: 'textarea',
+	  },
+	}),
     desc: text({ 
 	  label: '政見', 
 	  ui: {
