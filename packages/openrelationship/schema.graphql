@@ -497,8 +497,6 @@ type Election {
   electionAreaCount(where: ElectionAreaWhereInput! = {}): Int
   status: String
   hidePoliticDetail: DateTime
-  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
-  tagsCount(where: TagWhereInput! = {}): Int
   addComments: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -527,7 +525,6 @@ input ElectionWhereInput {
   electionArea: ElectionAreaManyRelationFilter
   status: StringNullableFilter
   hidePoliticDetail: DateTimeNullableFilter
-  tags: TagManyRelationFilter
   addComments: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -581,12 +578,6 @@ input ElectionAreaManyRelationFilter {
   none: ElectionAreaWhereInput
 }
 
-input TagManyRelationFilter {
-  every: TagWhereInput
-  some: TagWhereInput
-  none: TagWhereInput
-}
-
 input ElectionOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -618,7 +609,6 @@ input ElectionUpdateInput {
   electionArea: ElectionAreaRelateToManyForUpdateInput
   status: String
   hidePoliticDetail: DateTime
-  tags: TagRelateToManyForUpdateInput
   addComments: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -631,13 +621,6 @@ input ElectionAreaRelateToManyForUpdateInput {
   set: [ElectionAreaWhereUniqueInput!]
   create: [ElectionAreaCreateInput!]
   connect: [ElectionAreaWhereUniqueInput!]
-}
-
-input TagRelateToManyForUpdateInput {
-  disconnect: [TagWhereUniqueInput!]
-  set: [TagWhereUniqueInput!]
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
 }
 
 input ElectionUpdateArgs {
@@ -658,7 +641,6 @@ input ElectionCreateInput {
   electionArea: ElectionAreaRelateToManyForCreateInput
   status: String
   hidePoliticDetail: DateTime
-  tags: TagRelateToManyForCreateInput
   addComments: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -669,11 +651,6 @@ input ElectionCreateInput {
 input ElectionAreaRelateToManyForCreateInput {
   create: [ElectionAreaCreateInput!]
   connect: [ElectionAreaWhereUniqueInput!]
-}
-
-input TagRelateToManyForCreateInput {
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
 }
 
 type ElectionArea {
@@ -1057,8 +1034,6 @@ type Person {
   source: String
   status: String
   thread_parent: Person
-  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
-  tagsCount(where: TagWhereInput! = {}): Int
   reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -1098,7 +1073,6 @@ input PersonWhereInput {
   source: StringNullableFilter
   status: StringNullableFilter
   thread_parent: PersonWhereInput
-  tags: TagManyRelationFilter
   reviewed: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1159,7 +1133,6 @@ input PersonUpdateInput {
   source: String
   status: String
   thread_parent: PersonRelateToOneForUpdateInput
-  tags: TagRelateToManyForUpdateInput
   reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -1196,7 +1169,6 @@ input PersonCreateInput {
   source: String
   status: String
   thread_parent: PersonRelateToOneForCreateInput
-  tags: TagRelateToManyForCreateInput
   reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -1323,8 +1295,6 @@ type Organization {
   address: String
   source: String
   status: String
-  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
-  tagsCount(where: TagWhereInput! = {}): Int
   reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -1360,7 +1330,6 @@ input OrganizationWhereInput {
   address: StringNullableFilter
   source: StringNullableFilter
   status: StringNullableFilter
-  tags: TagManyRelationFilter
   reviewed: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1414,7 +1383,6 @@ input OrganizationUpdateInput {
   address: String
   source: String
   status: String
-  tags: TagRelateToManyForUpdateInput
   reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -1447,7 +1415,6 @@ input OrganizationCreateInput {
   address: String
   source: String
   status: String
-  tags: TagRelateToManyForCreateInput
   reviewed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -2646,7 +2613,8 @@ input TagRelateToOneForCreateInput {
 
 type PoliticTimeline {
   id: ID!
-  politic: Politic
+  politic(where: PoliticWhereInput! = {}, orderBy: [PoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticWhereUniqueInput): [Politic!]
+  politicCount(where: PoliticWhereInput! = {}): Int
   eventDate: DateTime
   sortOrder: Int
   content: String
@@ -2667,7 +2635,7 @@ input PoliticTimelineWhereInput {
   OR: [PoliticTimelineWhereInput!]
   NOT: [PoliticTimelineWhereInput!]
   id: IDFilter
-  politic: PoliticWhereInput
+  politic: PoliticManyRelationFilter
   eventDate: DateTimeNullableFilter
   sortOrder: IntNullableFilter
   content: StringFilter
@@ -2691,7 +2659,7 @@ input PoliticTimelineOrderByInput {
 }
 
 input PoliticTimelineUpdateInput {
-  politic: PoliticRelateToOneForUpdateInput
+  politic: PoliticRelateToManyForUpdateInput
   eventDate: DateTime
   sortOrder: Int
   content: String
@@ -2709,7 +2677,7 @@ input PoliticTimelineUpdateArgs {
 }
 
 input PoliticTimelineCreateInput {
-  politic: PoliticRelateToOneForCreateInput
+  politic: PoliticRelateToManyForCreateInput
   eventDate: DateTime
   sortOrder: Int
   content: String
