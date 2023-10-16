@@ -15,11 +15,13 @@ const listConfigurations = list({
     title: text({
       label: '中文名稱',
       validation: { isRequired: true },
+      isIndexed: true,
     }),
     isFeatured: checkbox({
       label: '置頂',
     }),
     state: select({
+      isIndexed: true,
       options: [
         { label: 'inactive', value: 'inactive' },
         { label: 'active', value: 'active' },
@@ -27,6 +29,7 @@ const listConfigurations = list({
       ],
     }),
     style: select({
+      isIndexed: true,
       options: [
         { label: 'feature', value: 'feature' },
         { label: 'listing', value: 'listing' },

@@ -1307,6 +1307,7 @@ type Post {
 
 input PostWhereUniqueInput {
   id: ID
+  name: String
 }
 
 input PostWhereInput {
@@ -1980,6 +1981,7 @@ type Project {
 
 input ProjectWhereUniqueInput {
   id: ID
+  name: String
 }
 
 input ProjectWhereInput {

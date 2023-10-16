@@ -15,6 +15,7 @@ const { allowRoles, admin, moderator, editor } = utils.accessControl
 const listConfigurations = list({
   fields: {
     name: text({
+      isIndexed: 'unique',
       validation: { isRequired: true },
       label: '專題名稱',
     }),

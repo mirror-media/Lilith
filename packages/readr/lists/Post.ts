@@ -23,6 +23,7 @@ const listConfigurations = list({
     }),
     name: text({
       label: '標題',
+      isIndexed: 'unique',
       validation: { isRequired: true },
     }),
     subtitle: text({
@@ -214,6 +215,7 @@ const listConfigurations = list({
       ref: 'Photo',
     }),
     isFeatured: checkbox({
+      isIndexed: true,
       label: '置頂',
     }),
     note: relationship({
