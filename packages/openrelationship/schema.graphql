@@ -2434,7 +2434,6 @@ type Politic {
   controversiesCount(where: PoliticControversieWhereInput! = {}): Int
   response(where: PoliticResponseWhereInput! = {}, orderBy: [PoliticResponseOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticResponseWhereUniqueInput): [PoliticResponse!]
   responseCount(where: PoliticResponseWhereInput! = {}): Int
-  dispute: String
   source: String
   contributer: String
   timeline(where: PoliticTimelineWhereInput! = {}, orderBy: [PoliticTimelineOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticTimelineWhereUniqueInput): [PoliticTimeline!]
@@ -2471,7 +2470,6 @@ input PoliticWhereInput {
   repeat: PoliticRepeatManyRelationFilter
   controversies: PoliticControversieManyRelationFilter
   response: PoliticResponseManyRelationFilter
-  dispute: StringFilter
   source: StringFilter
   contributer: StringFilter
   timeline: PoliticTimelineManyRelationFilter
@@ -2509,7 +2507,6 @@ input PoliticOrderByInput {
   desc: OrderDirection
   content: OrderDirection
   current_progress: OrderDirection
-  dispute: OrderDirection
   source: OrderDirection
   contributer: OrderDirection
   status: OrderDirection
@@ -2533,7 +2530,6 @@ input PoliticUpdateInput {
   repeat: PoliticRepeatRelateToManyForUpdateInput
   controversies: PoliticControversieRelateToManyForUpdateInput
   response: PoliticResponseRelateToManyForUpdateInput
-  dispute: String
   source: String
   contributer: String
   timeline: PoliticTimelineRelateToManyForUpdateInput
@@ -2605,7 +2601,6 @@ input PoliticCreateInput {
   repeat: PoliticRepeatRelateToManyForCreateInput
   controversies: PoliticControversieRelateToManyForCreateInput
   response: PoliticResponseRelateToManyForCreateInput
-  dispute: String
   source: String
   contributer: String
   timeline: PoliticTimelineRelateToManyForCreateInput

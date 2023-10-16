@@ -54,6 +54,7 @@ const listConfigurations = list ({
         { label: '已完成', value: 'complete' },
       ], 
       label: '政見進度',
+	  isIndexed: true,
     }),
 	positionChange: relationship({
 	  label: '立場變化',
@@ -133,12 +134,6 @@ const listConfigurations = list ({
 	    inlineConnect: true,
 	  },
 	}),
-    dispute: text({
-      label: '爭議事件',
-	  ui: {
-		displayMode: 'textarea',
-	  },
-    }),
     source: text({ 
 	  label: '資料來源',
 	  ui: {
@@ -163,6 +158,7 @@ const listConfigurations = list ({
 	  ],
 	  defaultValue: 'notverified',
 	  label: '狀態',
+	  isIndexed: true,
 	}),
     tag: relationship({
       label: '標籤',

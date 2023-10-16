@@ -75,17 +75,6 @@ const listConfigurations = list ({
 	  label: '政見',
 	  many: true,
 	  ref: 'Politic',
-	  ui: {
-		displayMode: 'cards',
-		cardFields: [ 'desc', 'content', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
-		inlineCreate: {
-		  fields: [ 'desc', 'content', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
-	    },
-		inlineEdit: {
-		  fields: [ 'desc', 'content', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
-	    },
-	    linkToItem: true,
-	  },
 	 }),
 
   },
