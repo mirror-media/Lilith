@@ -15,7 +15,6 @@ const listConfigurations = list({
     title: text({
       label: '中文名稱',
       validation: { isRequired: true },
-      isIndexed: true,
     }),
     isFeatured: checkbox({
       label: '置頂',

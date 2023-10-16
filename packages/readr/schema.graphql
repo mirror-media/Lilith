@@ -1307,7 +1307,6 @@ type Post {
 
 input PostWhereUniqueInput {
   id: ID
-  name: String
 }
 
 input PostWhereInput {

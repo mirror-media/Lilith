@@ -23,7 +23,6 @@ const listConfigurations = list({
     }),
     name: text({
       label: '標題',
-      isIndexed: 'unique',
       validation: { isRequired: true },
     }),
     subtitle: text({
