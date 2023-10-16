@@ -177,8 +177,7 @@ model Election {
   electionArea                 ElectionArea[]   @relation("ElectionArea_election")
   status                       String?
   hidePoliticDetail            DateTime?
-  tags                         Tag?             @relation("Election_tags", fields: [tagsId], references: [id])
-  tagsId                       Int?             @map("tags")
+  tags                         Tag[]            @relation("Election_tags")
   addComments                  Boolean          @default(false)
   createdAt                    DateTime?
   updatedAt                    DateTime?
@@ -188,7 +187,6 @@ model Election {
   updatedById                  Int?             @map("updatedBy")
   from_PersonElection_election PersonElection[] @relation("PersonElection_election")
 
-  @@index([tagsId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -269,8 +267,7 @@ model Person {
   alternative                               String?
   other_names                               String?
   email                                     String?
-  tags                                      Tag?                 @relation("Person_tags", fields: [tagsId], references: [id])
-  tagsId                                    Int?                 @map("tags")
+  tags                                      Tag[]                @relation("Person_tags")
   facebook                                  String?
   ig                                        String?
   twitter                                   String?
@@ -308,7 +305,6 @@ model Person {
   from_PersonRelationship_related_person_id PersonRelationship[] @relation("PersonRelationship_related_person_id")
   from_Lawsuit_person                       Lawsuit[]            @relation("Lawsuit_person")
 
-  @@index([tagsId])
   @@index([thread_parentId])
   @@index([createdById])
   @@index([updatedById])
@@ -358,8 +354,7 @@ model Organization {
   address                                                String?
   source                                                 String?
   status                                                 String?
-  tags                                                   Tag?                        @relation("Organization_tags", fields: [tagsId], references: [id])
-  tagsId                                                 Int?                        @map("tags")
+  tags                                                   Tag[]                       @relation("Organization_tags")
   reviewed                                               Boolean                     @default(false)
   createdAt                                              DateTime?
   updatedAt                                              DateTime?
@@ -377,7 +372,6 @@ model Organization {
   from_PersonOrganization_organization_id                PersonOrganization[]        @relation("PersonOrganization_organization_id")
   from_PersonPublication_organization_id                 PersonPublication[]         @relation("PersonPublication_organization_id")
 
-  @@index([tagsId])
   @@index([createdById])
   @@index([updatedById])
 }

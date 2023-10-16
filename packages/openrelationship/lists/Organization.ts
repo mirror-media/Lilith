@@ -141,7 +141,7 @@ const listConfigurations = list({
 		}),
         tags: relationship({
           label: '標籤',
-          many: false,
+          many: true,
           ref: 'Tag',
         }),
         reviewed: checkbox({
