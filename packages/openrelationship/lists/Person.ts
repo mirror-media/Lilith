@@ -43,6 +43,11 @@ const listConfigurations = list ({
 		displayMode: 'textarea',
 	  }
 	}),
+    tags: relationship({
+      label: '標籤',
+      many: true,
+      ref: 'Tag',
+    }),
     facebook: text({ 
 	  db: {
 		isNullable: true,

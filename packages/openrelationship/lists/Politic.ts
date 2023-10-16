@@ -165,6 +165,11 @@ const listConfigurations = list ({
       many: false,
       ref: 'Tag',
     }),
+    politicCategory: relationship({
+      label: '類別',
+      many: false,
+      ref: 'PoliticCategory',
+    }),
 	checked: checkbox({
 	  defaultValue: false,
 	  label: '已查核',

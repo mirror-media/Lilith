@@ -139,6 +139,11 @@ const listConfigurations = list({
 			],
 			label: '狀態',
 		}),
+        tags: relationship({
+          label: '標籤',
+          many: true,
+          ref: 'Tag',
+        }),
         reviewed: checkbox({
           defaultValue: false,
           label: '檢閱',

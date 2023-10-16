@@ -78,6 +78,8 @@ model User {
   from_Lawsuit_updatedBy                   Lawsuit[]                   @relation("Lawsuit_updatedBy")
   from_Tag_createdBy                       Tag[]                       @relation("Tag_createdBy")
   from_Tag_updatedBy                       Tag[]                       @relation("Tag_updatedBy")
+  from_PoliticCategory_createdBy           PoliticCategory[]           @relation("PoliticCategory_createdBy")
+  from_PoliticCategory_updatedBy           PoliticCategory[]           @relation("PoliticCategory_updatedBy")
   from_Photo_createdBy                     Photo[]                     @relation("Photo_createdBy")
   from_Photo_updatedBy                     Photo[]                     @relation("Photo_updatedBy")
 }
@@ -175,6 +177,7 @@ model Election {
   electionArea                 ElectionArea[]   @relation("ElectionArea_election")
   status                       String?
   hidePoliticDetail            DateTime?
+  tags                         Tag[]            @relation("Election_tags")
   addComments                  Boolean          @default(false)
   createdAt                    DateTime?
   updatedAt                    DateTime?
@@ -264,6 +267,7 @@ model Person {
   alternative                               String?
   other_names                               String?
   email                                     String?
+  tags                                      Tag[]                @relation("Person_tags")
   facebook                                  String?
   ig                                        String?
   twitter                                   String?
@@ -350,6 +354,7 @@ model Organization {
   address                                                String?
   source                                                 String?
   status                                                 String?
+  tags                                                   Tag[]                       @relation("Organization_tags")
   reviewed                                               Boolean                     @default(false)
   createdAt                                              DateTime?
   updatedAt                                              DateTime?
@@ -649,6 +654,8 @@ model Politic {
   status                              String?                 @default("notverified")
   tag                                 Tag?                    @relation("Politic_tag", fields: [tagId], references: [id])
   tagId                               Int?                    @map("tag")
+  politicCategory                     PoliticCategory?        @relation("Politic_politicCategory", fields: [politicCategoryId], references: [id])
+  politicCategoryId                   Int?                    @map("politicCategory")
   checked                             Boolean                 @default(false)
   reviewed                            Boolean                 @default(false)
   createdAt                           DateTime?
@@ -667,6 +674,7 @@ model Politic {
   @@index([current_progress])
   @@index([status])
   @@index([tagId])
+  @@index([politicCategoryId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -838,20 +846,43 @@ model Lawsuit {
 }
 
 model Tag {
-  id               Int       @id @default(autoincrement())
-  name             String    @unique @default("")
-  brief            String    @default("")
-  state            String?   @default("active")
-  ogTitle          String    @default("")
-  ogDescription    String    @default("")
-  isFeatured       Boolean   @default(false)
-  createdAt        DateTime?
-  updatedAt        DateTime?
-  createdBy        User?     @relation("Tag_createdBy", fields: [createdById], references: [id])
-  createdById      Int?      @map("createdBy")
-  updatedBy        User?     @relation("Tag_updatedBy", fields: [updatedById], references: [id])
-  updatedById      Int?      @map("updatedBy")
-  from_Politic_tag Politic[] @relation("Politic_tag")
+  id                     Int            @id @default(autoincrement())
+  name                   String         @unique @default("")
+  brief                  String         @default("")
+  state                  String?        @default("active")
+  ogTitle                String         @default("")
+  ogDescription          String         @default("")
+  isFeatured             Boolean        @default(false)
+  createdAt              DateTime?
+  updatedAt              DateTime?
+  createdBy              User?          @relation("Tag_createdBy", fields: [createdById], references: [id])
+  createdById            Int?           @map("createdBy")
+  updatedBy              User?          @relation("Tag_updatedBy", fields: [updatedById], references: [id])
+  updatedById            Int?           @map("updatedBy")
+  from_Election_tags     Election[]     @relation("Election_tags")
+  from_Person_tags       Person[]       @relation("Person_tags")
+  from_Organization_tags Organization[] @relation("Organization_tags")
+  from_Politic_tag       Politic[]      @relation("Politic_tag")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model PoliticCategory {
+  id                           Int       @id @default(autoincrement())
+  name                         String    @unique @default("")
+  brief                        String    @default("")
+  state                        String?   @default("active")
+  ogTitle                      String    @default("")
+  ogDescription                String    @default("")
+  isFeatured                   Boolean   @default(false)
+  createdAt                    DateTime?
+  updatedAt                    DateTime?
+  createdBy                    User?     @relation("PoliticCategory_createdBy", fields: [createdById], references: [id])
+  createdById                  Int?      @map("createdBy")
+  updatedBy                    User?     @relation("PoliticCategory_updatedBy", fields: [updatedById], references: [id])
+  updatedById                  Int?      @map("updatedBy")
+  from_Politic_politicCategory Politic[] @relation("Politic_politicCategory")
 
   @@index([createdById])
   @@index([updatedById])
