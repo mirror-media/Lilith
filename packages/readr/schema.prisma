@@ -260,6 +260,8 @@ model Category {
   updatedById             Int?      @map("updatedBy")
   from_Project_categories Project[] @relation("Project_categories")
 
+  @@index([state])
+  @@index([style])
   @@index([heroImageId])
   @@index([ogImageId])
   @@index([createdById])
@@ -491,7 +493,7 @@ model Gallery {
 
 model Project {
   id            Int        @id @default(autoincrement())
-  name          String     @default("")
+  name          String     @unique @default("")
   subtitle      String     @default("")
   sortOrder     Int?
   state         String?    @default("draft")

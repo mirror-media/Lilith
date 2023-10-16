@@ -28,6 +28,9 @@ const ENTITY = {
   VIDEO: {
     type: 'VIDEO',
   },
+  ['VIDEO-V2']: {
+    type: 'VIDEO-V2',
+  },
   IMAGE: {
     type: 'IMAGE',
   },

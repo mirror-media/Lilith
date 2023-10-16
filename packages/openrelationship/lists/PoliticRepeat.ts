@@ -14,28 +14,23 @@ const listConfigurations = list ({
   fields: {
     politic: relationship({
       label: '政見',
-      many: false,
+      many: true,
       ref: 'Politic.repeat',
-    }),
-    checkDate: timestamp({
-      label: '日期',
     }),
     repeatSummary: text({
       label: '重複政見（摘要）',
-	  isRequired: true,
 	  defaultValue: '',
+	  validation: { isRequired: true },
 	  ui: {
 		displayMode: 'textarea',
 	  },
     }),
     content: text({ 
 	  label: '重複內容',
+	  validation: { isRequired: true },
 	  ui: {
 	    displayMode: 'textarea',
 	  },
-	}),
-	checkResultType: checkbox({
-	  label: '是否為重複政見',
 	}),
     factcheckPartner: relationship({
       label: '查核單位',

@@ -14,11 +14,12 @@ const listConfigurations = list ({
   fields: {
     politic: relationship({
       label: '政見',
-      many: false,
+      many: true,
       ref: 'Politic.expertPoint',
     }),
     expert: text({ 
 	  label: '專家姓名',
+	  validation: { isRequired: true },
 	  db: {
 	    isNullable: true,
 	  }
@@ -28,16 +29,14 @@ const listConfigurations = list ({
 	}),
     title: text({ 
 	  label: '職稱',
+	  validation: { isRequired: true },
 	  ui: {
 	    displayMode: 'textarea',
 	  },
 	}),
-    reviewDate: timestamp({
-      label: '日期',
-    }),
     expertPointSummary: text({
       label: '專家觀點（摘要）',
-	  isRequired: true,
+	  validation: { isRequired: true },
 	  defaultValue: '',
 	  ui: {
 		displayMode: 'textarea',

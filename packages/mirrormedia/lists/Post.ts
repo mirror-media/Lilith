@@ -115,6 +115,7 @@ const listConfigurations = list({
     lockBy: relationship({
       ref: 'User',
       label: '誰正在編輯',
+	  isFilterable: false,
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
@@ -158,12 +159,25 @@ const listConfigurations = list({
     }),
     publishedDate: timestamp({
       isIndexed: true,
+	  isFilterable: true,
       label: '發佈日期',
       validation: { isRequired: true },
       defaultValue: { kind: 'now' },
     }),
+	publishedDateString: text({
+	  label: '發布日期',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+	}),
     updateTimeStamp: checkbox({
       label: '下次存檔時自動更改成「現在時間」',
+	  isFilterable: false,
       defaultValue: false,
     }),
     sections: relationship({
@@ -172,6 +186,7 @@ const listConfigurations = list({
       many: true,
     }),
     manualOrderOfSections: json({
+	  isFilterable: false,
       label: '大分類手動排序結果',
     }),
     categories: relationship({
@@ -180,6 +195,7 @@ const listConfigurations = list({
       many: true,
     }),
     manualOrderOfCategories: json({
+	  isFilterable: false,
       label: '小分類手動排序結果',
     }),
     writers: relationship({
@@ -189,6 +205,7 @@ const listConfigurations = list({
     }),
     manualOrderOfWriters: json({
       label: '作者手動排序結果',
+	  isFilterable: false,
     }),
     photographers: relationship({
       label: '攝影',
@@ -239,6 +256,7 @@ const listConfigurations = list({
     }),
     heroCaption: text({
       label: '首圖圖說',
+	  isFilterable: false,
       validation: { isRequired: false },
     }),
     style: select({
@@ -415,6 +433,7 @@ const listConfigurations = list({
     }),
     manualOrderOfRelateds: json({
       label: '相關文章手動排序結果',
+	  isFilterable: false,
     }),
     tags: relationship({
       label: '標籤',
@@ -430,10 +449,12 @@ const listConfigurations = list({
     }),
     og_description: text({
       label: 'FB分享說明',
+	  isFilterable: false,
       validation: { isRequired: false },
     }),
     og_image: relationship({
       label: 'FB分享縮圖',
+	  isFilterable: false,
       ref: 'Photo',
       ui: {
         displayMode: 'cards',
@@ -445,6 +466,7 @@ const listConfigurations = list({
     }),
     related_videos: relationship({
       label: '相關影片',
+	  isFilterable: false,
       ref: 'Video.related_posts',
       many: true,
       ui: {
@@ -453,6 +475,7 @@ const listConfigurations = list({
     }),
     manualOrderOfRelatedVideos: json({
       label: '相關影片手動排序結果',
+	  isFilterable: false,
     }),
 
     preview: virtual({
@@ -505,6 +528,7 @@ const listConfigurations = list({
     }),
     apiDataBrief: json({
       label: 'Brief資料庫使用',
+	  isFilterable: false,
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
@@ -512,6 +536,7 @@ const listConfigurations = list({
     }),
     apiData: json({
       label: '資料庫使用',
+	  isFilterable: false,
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
@@ -567,6 +592,7 @@ const listConfigurations = list({
     }),
     trimmedApiData: virtual({
       label: '擷取apiData中的前五段內容',
+	  isFilterable: false,
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
@@ -644,6 +670,20 @@ const listConfigurations = list({
         resolvedData.updateTimeStamp = false
       }
       return resolvedData
+    },
+    beforeOperation: async ({
+      operation,
+      resolvedData,
+      context,
+      item
+    }) => { /* ... */ 
+	  if (operation === 'create' || operation === 'update') {
+        if (resolvedData.publishedDate) {
+      	  resolvedData.publishedDateString = resolvedData.publishedDate.toISOString().slice(0,10).replace(/-/g,"/")
+		  return 
+        }
+      }
+	  return 0
     },
     afterOperation: async ({ operation, inputData, item, context }) => {
       if (operation === 'update') {

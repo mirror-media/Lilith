@@ -14,7 +14,7 @@ const listConfigurations = list ({
   fields: {
     politic: relationship({
       label: '政見',
-      many: false,
+      many: true,
       ref: 'Politic.positionChange',
     }),
     factcheckPartner: relationship({
@@ -24,10 +24,11 @@ const listConfigurations = list ({
     }),
     checkDate: timestamp({
       label: '日期',
+	  validation: { isRequired: true },
     }),
     positionChangeSummary: text({
       label: '立場變化（摘要）',
-	  isRequired: true,
+	  validation: { isRequired: true },
 	  defaultValue: '',
 	  ui: {
 		displayMode: 'textarea',
@@ -35,15 +36,18 @@ const listConfigurations = list ({
     }),
     content: text({ 
 	  label: '查核內容',
+	  validation: { isRequired: true },
 	  ui: {
 	    displayMode: 'textarea',
 	  },
 	}),
 	isChanged: checkbox({
 	  label: '立場改變',
+	  validation: { isRequired: true },
 	}),
     link: text({ 
 	  label: '相關連結',
+	  validation: { isRequired: true },
 	  ui: {
 	    displayMode: 'textarea',
 	  },

@@ -1980,6 +1980,7 @@ type Project {
 
 input ProjectWhereUniqueInput {
   id: ID
+  name: String
 }
 
 input ProjectWhereInput {

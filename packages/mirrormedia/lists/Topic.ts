@@ -66,6 +66,12 @@ const listConfigurations = list({
       ref: 'Photo',
       label: '首圖',
     }),
+    heroUrl: text({
+      label: '首圖連結 URL',
+	  db: {
+		isNullable: true,
+	  },
+    }),
     leading: select({
       label: '標頭樣式',
       options: [

@@ -76,6 +76,8 @@ model User {
   from_DroppingText_updatedBy        DroppingText[]        @relation("DroppingText_updatedBy")
   from_Theatre_createdBy             Theatre[]             @relation("Theatre_createdBy")
   from_Theatre_updatedBy             Theatre[]             @relation("Theatre_updatedBy")
+  from_FullScene_createdBy           FullScene[]           @relation("FullScene_createdBy")
+  from_FullScene_updatedBy           FullScene[]           @relation("FullScene_updatedBy")
 }
 
 model LiveblogItem {
@@ -803,6 +805,28 @@ model Theatre {
   createdBy           User?     @relation("Theatre_createdBy", fields: [createdById], references: [id])
   createdById         Int?      @map("createdBy")
   updatedBy           User?     @relation("Theatre_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model FullScene {
+  id                  Int       @id @default(autoincrement())
+  name                String    @default("")
+  desc                String    @default("")
+  imageFile_filesize  Int?
+  imageFile_extension String?
+  imageFile_width     Int?
+  imageFile_height    Int?
+  imageFile_id        String?
+  displayMode         String?   @default("container")
+  hotspotJson         Json?
+  createdAt           DateTime?
+  updatedAt           DateTime?
+  createdBy           User?     @relation("FullScene_createdBy", fields: [createdById], references: [id])
+  createdById         Int?      @map("createdBy")
+  updatedBy           User?     @relation("FullScene_updatedBy", fields: [updatedById], references: [id])
   updatedById         Int?      @map("updatedBy")
 
   @@index([createdById])

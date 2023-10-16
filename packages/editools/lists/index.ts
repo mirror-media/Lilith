@@ -28,6 +28,7 @@ import ComponentHelp from './ComponentHelp'
 import RandomTextSelector from './RandomTextSelector'
 import DroppingText from './DroppingText'
 import Theatre from './Theatre'
+import FullScene from './FullScene'
 
 export const listDefinition = {
   User,
@@ -60,4 +61,5 @@ export const listDefinition = {
   ComponentHelp,
   DroppingText,
   Theatre,
+  FullScene,
 }

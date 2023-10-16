@@ -30,6 +30,7 @@ import PoliticResponse from './PoliticResponse'
 import PoliticControversie from './PoliticControversie'
 import Lawsuit from './Lawsuit'
 import Tag from './Tag'
+import Image from './Image'
 
 
 export const listDefinition = {
@@ -65,4 +66,5 @@ export const listDefinition = {
   PoliticControversie,
   Lawsuit,
   Tag,
+  Photo: Image,
 }
