@@ -61,6 +61,11 @@ const listConfigurations = list({
 		hidePoliticDetail: timestamp({
 		  label: '隱藏政見細節',
 	    }),
+        tags: relationship({
+          label: '標籤',
+          many: true,
+          ref: 'Tag',
+        }),
 		addComments: checkbox({
 		  label: '開放留言（心情）',
 		  defaultValue: false,
