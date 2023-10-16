@@ -14,15 +14,12 @@ const listConfigurations = list ({
   fields: {
     politic: relationship({
       label: '政見',
-      many: false,
+      many: true,
       ref: 'Politic.factCheck',
-    }),
-    checkDate: timestamp({
-      label: '日期',
     }),
     factCheckSummary: text({
       label: '事實查核（摘要）',
-	  isRequired: true,
+	  validation: { isRequired: true },
 	  defaultValue: '',
 	  ui: {
 		displayMode: 'textarea',
@@ -30,6 +27,7 @@ const listConfigurations = list ({
     }),
     content: text({ 
 	  label: '查核內容',
+	  validation: { isRequired: true },
 	  ui: {
 	    displayMode: 'textarea',
 	  },
@@ -45,6 +43,7 @@ const listConfigurations = list ({
 	}),
     link: text({ 
 	  label: '相關連結',
+	  validation: { isRequired: true },
 	  ui: {
 	    displayMode: 'textarea',
 	  },

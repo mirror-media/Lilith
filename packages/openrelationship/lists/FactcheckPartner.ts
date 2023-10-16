@@ -17,12 +17,14 @@ const listConfigurations = list ({
 	  isRequired: true 
 	}),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
-    logo: text({ 
-	  label: '大 Logo 網址（for landing page）' 
-	}),
-    sLogo: text({ 
-	  label: '小 Logo 網址（for politic page）' 
-	}),
+    logo: relationship({
+	  label: '大 Logo 網址（for landing page）',
+      ref: 'Photo',
+    }),
+    slogo: relationship({
+	  label: '小 Logo 網址（for politic page）', 
+      ref: 'Photo',
+    }),
 	year: select({
 		label: '年份',
 		options: [

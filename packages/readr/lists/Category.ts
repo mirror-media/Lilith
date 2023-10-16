@@ -20,6 +20,7 @@ const listConfigurations = list({
       label: '置頂',
     }),
     state: select({
+      isIndexed: true,
       options: [
         { label: 'inactive', value: 'inactive' },
         { label: 'active', value: 'active' },
@@ -27,6 +28,7 @@ const listConfigurations = list({
       ],
     }),
     style: select({
+      isIndexed: true,
       options: [
         { label: 'feature', value: 'feature' },
         { label: 'listing', value: 'listing' },

@@ -1,6 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
-import { checkbox, relationship, integer, select, text } from '@keystone-6/core/fields';
+import { checkbox, relationship, integer, timestamp, select, text } from '@keystone-6/core/fields';
 
 const {
 	allowRoles,
@@ -58,6 +58,9 @@ const listConfigurations = list({
 				{ value: 'deactive', label: '失效' },
 			],
 		}),
+		hidePoliticDetail: timestamp({
+		  label: '隱藏政見細節',
+	    }),
         tags: relationship({
           label: '標籤',
           many: true,

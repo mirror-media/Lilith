@@ -111,6 +111,7 @@ const processor = {
       case ENTITY.SLIDESHOW.type:
       case ENTITY['SLIDESHOW-V2'].type:
       case ENTITY.VIDEO.type:
+      case ENTITY['VIDEO-V2'].type:
       case ENTITY.YOUTUBE.type:
       case ENTITY.BACKGROUNDIMAGE.type:
       case ENTITY.BACKGROUNDVIDEO.type:

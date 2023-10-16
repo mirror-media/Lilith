@@ -133,24 +133,25 @@ model Event {
 }
 
 model External {
-  id            Int       @id @default(autoincrement())
-  slug          String    @unique @default("")
-  partner       Partner?  @relation("External_partner", fields: [partnerId], references: [id])
-  partnerId     Int?      @map("partner")
-  title         String    @default("")
-  state         String?   @default("draft")
-  publishedDate DateTime?
-  extend_byline String    @default("")
-  thumb         String    @default("")
-  brief         String    @default("")
-  content       String    @default("")
-  source        String    @default("")
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?     @relation("External_createdBy", fields: [createdById], references: [id])
-  createdById   Int?      @map("createdBy")
-  updatedBy     User?     @relation("External_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?      @map("updatedBy")
+  id                  Int       @id @default(autoincrement())
+  slug                String    @unique @default("")
+  partner             Partner?  @relation("External_partner", fields: [partnerId], references: [id])
+  partnerId           Int?      @map("partner")
+  title               String    @default("")
+  state               String?   @default("draft")
+  publishedDate       DateTime?
+  publishedDateString String    @default("")
+  extend_byline       String    @default("")
+  thumb               String    @default("")
+  brief               String    @default("")
+  content             String    @default("")
+  source              String    @default("")
+  createdAt           DateTime?
+  updatedAt           DateTime?
+  createdBy           User?     @relation("External_createdBy", fields: [createdById], references: [id])
+  createdById         Int?      @map("createdBy")
+  updatedBy           User?     @relation("External_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?      @map("updatedBy")
 
   @@index([partnerId])
   @@index([state])
@@ -273,6 +274,7 @@ model Post {
   subtitle                   String         @default("")
   state                      String?        @default("draft")
   publishedDate              DateTime       @default(now())
+  publishedDateString        String         @default("")
   updateTimeStamp            Boolean        @default(false)
   sections                   Section[]      @relation("Post_sections")
   manualOrderOfSections      Json?
@@ -393,6 +395,7 @@ model Topic {
   brief                        Json?
   heroImage                    Photo?    @relation("Topic_heroImage", fields: [heroImageId], references: [id])
   heroImageId                  Int?      @map("heroImage")
+  heroUrl                      String?
   leading                      String?
   sections                     Section[] @relation("Section_topics")
   og_title                     String    @default("")
