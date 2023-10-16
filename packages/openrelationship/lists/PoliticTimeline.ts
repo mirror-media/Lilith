@@ -14,7 +14,7 @@ const listConfigurations = list ({
   fields: {
     politic: relationship({
       label: '候選人政見',
-      many: false,
+      many: true,
       ref: 'Politic.timeline',
     }),
     eventDate: timestamp({
