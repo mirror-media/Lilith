@@ -884,6 +884,7 @@ model PoliticCategory {
   updatedById                  Int?      @map("updatedBy")
   from_Politic_politicCategory Politic[] @relation("Politic_politicCategory")
 
+  @@index([state])
   @@index([createdById])
   @@index([updatedById])
 }

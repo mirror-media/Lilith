@@ -23,6 +23,8 @@ const listConfigurations = list ({
     }),
     state: select({
       defaultValue: 'active', 
+	  isIndexed: true,
+	  isFilterable: true,
       options: [ 
         { label: 'inactive', value: 'inactive' }, 
         { label: 'active', value: 'active' }, 
