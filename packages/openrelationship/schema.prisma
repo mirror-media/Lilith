@@ -864,6 +864,7 @@ model Tag {
   from_Organization_tags Organization[] @relation("Organization_tags")
   from_Politic_tag       Politic[]      @relation("Politic_tag")
 
+  @@index([state])
   @@index([createdById])
   @@index([updatedById])
 }

@@ -201,7 +201,16 @@ const listConfigurations = list ({
 		resolvedData.reviewed = true
 	  }
 	  if (operation === 'create' || operation === 'update') {
-		if (resolvedData.factCheck || resolvedData.positionChange || resolvedData.repeat) {
+		if (resolvedData.thread_parent) {
+			const { parent_status } = await context.query.Politic.findOne({
+			  where: { id: resolvedData.thread_parent.connect.id },
+              query: 'checked',
+			})
+			if (parent_status === true) {
+			  checked = true
+			}
+		}
+		if (resolvedData.factCheck || resolvedData.positionChange || resolvedData.repeat || resolvedData.expertPoint) {
 			checked = true
 		}
 	  }
