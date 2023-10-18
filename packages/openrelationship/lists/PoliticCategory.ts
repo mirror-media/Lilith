@@ -21,6 +21,10 @@ const listConfigurations = list ({
       label: '前言',  
       ui: { displayMode: 'textarea' } 
     }),
+    displayColor: text({
+      label: '頁面色碼',  
+	  defaultValue: '#000000',
+    }),
     state: select({
       defaultValue: 'active', 
 	  isIndexed: true,

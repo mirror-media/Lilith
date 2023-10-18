@@ -873,6 +873,7 @@ model PoliticCategory {
   id                           Int       @id @default(autoincrement())
   name                         String    @unique @default("")
   brief                        String    @default("")
+  displayColor                 String    @default("#000000")
   state                        String?   @default("active")
   ogTitle                      String    @default("")
   ogDescription                String    @default("")

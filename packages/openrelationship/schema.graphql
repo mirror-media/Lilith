@@ -3403,6 +3403,7 @@ type PoliticCategory {
   id: ID!
   name: String
   brief: String
+  displayColor: String
   state: String
   ogTitle: String
   ogDescription: String
@@ -3425,6 +3426,7 @@ input PoliticCategoryWhereInput {
   id: IDFilter
   name: StringFilter
   brief: StringFilter
+  displayColor: StringFilter
   state: StringNullableFilter
   ogTitle: StringFilter
   ogDescription: StringFilter
@@ -3439,6 +3441,7 @@ input PoliticCategoryOrderByInput {
   id: OrderDirection
   name: OrderDirection
   brief: OrderDirection
+  displayColor: OrderDirection
   state: OrderDirection
   ogTitle: OrderDirection
   ogDescription: OrderDirection
@@ -3450,6 +3453,7 @@ input PoliticCategoryOrderByInput {
 input PoliticCategoryUpdateInput {
   name: String
   brief: String
+  displayColor: String
   state: String
   ogTitle: String
   ogDescription: String
@@ -3468,6 +3472,7 @@ input PoliticCategoryUpdateArgs {
 input PoliticCategoryCreateInput {
   name: String
   brief: String
+  displayColor: String
   state: String
   ogTitle: String
   ogDescription: String
