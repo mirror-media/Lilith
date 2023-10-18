@@ -164,6 +164,11 @@ const listConfigurations = list ({
       label: '標籤',
       many: false,
       ref: 'Tag',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
     politicCategory: relationship({
       label: '類別',

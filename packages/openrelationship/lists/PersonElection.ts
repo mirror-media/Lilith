@@ -1,6 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core';
-import { virtual, checkbox, relationship, json, timestamp, text } from '@keystone-6/core/fields';
+import { virtual, checkbox, select, relationship, json, timestamp, text } from '@keystone-6/core/fields';
 	  
 const {
   allowRoles,
@@ -20,6 +20,10 @@ const listConfigurations = list ({
     election: relationship({
       label: '選舉',
       ref: 'Election',
+    }),
+    mainCandidate: relationship({
+      label: '搭配主要候選人',
+      ref: 'PersonElection',
     }),
     /*
     name: virtual({
@@ -76,6 +80,14 @@ const listConfigurations = list ({
 	  many: true,
 	  ref: 'Politic',
 	 }),
+	status: select({
+	  options: [
+	    { label: '正常', value: 'regular' },
+	    { label: '資料存檔', value: 'archive' },
+	  ],
+	  defaultValue: 'notverified',
+	  label: '狀態',
+	}),
 
   },
   access: {

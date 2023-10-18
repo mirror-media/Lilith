@@ -25,17 +25,6 @@ const listConfigurations = list ({
       label: '頁面色碼',  
 	  defaultValue: '#000000',
     }),
-    state: select({
-      defaultValue: 'active', 
-	  isIndexed: true,
-	  isFilterable: true,
-      options: [ 
-        { label: 'inactive', value: 'inactive' }, 
-        { label: 'active', value: 'active' }, 
-        { label: 'archived', value: 'archived' }
-      ], 
-      label: '狀態',
-    }),
     ogTitle: text({
       validation: { isRequired: false}, 
       label: 'FB分享標題' 

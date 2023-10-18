@@ -21,17 +21,6 @@ const listConfigurations = list ({
       label: '前言',  
       ui: { displayMode: 'textarea' } 
     }),
-    state: select({
-      defaultValue: 'active', 
-	  isIndexed: true,
-	  isFilterable: true,
-      options: [ 
-        { label: 'inactive', value: 'inactive' }, 
-        { label: 'active', value: 'active' }, 
-        { label: 'archived', value: 'archived' }
-      ], 
-      label: '狀態',
-    }),
     ogTitle: text({
       validation: { isRequired: false}, 
       label: 'FB分享標題' 
