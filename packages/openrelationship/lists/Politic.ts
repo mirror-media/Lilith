@@ -209,8 +209,7 @@ const listConfigurations = list ({
 			if (parent_status === true) {
 			  checked = true
 			}
-		}
-		if (resolvedData.factCheck || resolvedData.positionChange || resolvedData.repeat || resolvedData.expertPoint) {
+		} else if (resolvedData.factCheck || resolvedData.positionChange || resolvedData.repeat || resolvedData.expertPoint) {
 			checked = true
 		}
 	  }
