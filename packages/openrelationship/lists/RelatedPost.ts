@@ -13,34 +13,31 @@ const {
 const listConfigurations = list ({
   fields: {
 	name: text({
-      isIndexed: 'unique', 
-      label: '標籤名稱', 
+      label: '文章標題', 
       validation: { isRequired: true} 
     }),
     brief: text({
       label: '前言',  
       ui: { displayMode: 'textarea' } 
     }),
-    displayColor: text({
-      label: '頁面色碼',  
-	  defaultValue: '#000000',
+    url: text({
+      validation: { isRequired: true}, 
+      label: '文章網址' 
     }),
-    ogTitle: text({
-      validation: { isRequired: false}, 
-      label: 'FB分享標題' 
+    ogIMage: text({
+      validation: { isRequired: true}, 
+      label: '文章 og 圖片',  
     }),
-    ogDescription: text({
-      validation: { isRequired: false}, 
-      label: 'FB分享說明',  
-    }),
-    isFeatured: checkbox({
-      label: '置頂', isIndexed: true 
-    }),
-	politics: relationship({
-	  label: '政見',
+    partner: relationship({
+      label: '合作夥伴',
+	  ref: 'FactcheckPartner.posts',
 	  many: true,
-	  ref: 'Politic',
-	}),
+    }),
+    election: relationship({
+      label: '相關選舉',
+	  ref: 'Election',
+	  many: false,
+    }),
   },
   access: {
 	operation: {

@@ -28,6 +28,7 @@ import PoliticFactCheck from './PoliticFactCheck'
 import PoliticRepeat from './PoliticRepeat'
 import PoliticResponse from './PoliticResponse'
 import PoliticControversie from './PoliticControversie'
+import RelatedPost from './RelatedPost'
 import Lawsuit from './Lawsuit'
 import Tag from './Tag'
 import PoliticCategory from './PoliticCategory'
@@ -41,6 +42,16 @@ export const listDefinition = {
   Event,
   Election,
   ElectionArea,
+  Politic,
+  //PoliticProgress,
+  PoliticTimeline,
+  PoliticExpert,
+  PoliticFactCheck,
+  PoliticPositionChange,
+  PoliticRepeat,
+  PoliticResponse,
+  PoliticControversie,
+  RelatedPost,
   FactcheckPartner,
   Vote,
   Person,
@@ -56,15 +67,6 @@ export const listDefinition = {
   PersonOrganization,
   PersonPublication,
   PersonRelationship,
-  Politic,
-  //PoliticProgress,
-  PoliticTimeline,
-  PoliticExpert,
-  PoliticFactCheck,
-  PoliticPositionChange,
-  PoliticRepeat,
-  PoliticResponse,
-  PoliticControversie,
   Lawsuit,
   Tag,
   PoliticCategory,

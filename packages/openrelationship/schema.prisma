@@ -28,6 +28,24 @@ model User {
   from_Election_updatedBy                  Election[]                  @relation("Election_updatedBy")
   from_ElectionArea_createdBy              ElectionArea[]              @relation("ElectionArea_createdBy")
   from_ElectionArea_updatedBy              ElectionArea[]              @relation("ElectionArea_updatedBy")
+  from_Politic_createdBy                   Politic[]                   @relation("Politic_createdBy")
+  from_Politic_updatedBy                   Politic[]                   @relation("Politic_updatedBy")
+  from_PoliticTimeline_createdBy           PoliticTimeline[]           @relation("PoliticTimeline_createdBy")
+  from_PoliticTimeline_updatedBy           PoliticTimeline[]           @relation("PoliticTimeline_updatedBy")
+  from_PoliticExpert_createdBy             PoliticExpert[]             @relation("PoliticExpert_createdBy")
+  from_PoliticExpert_updatedBy             PoliticExpert[]             @relation("PoliticExpert_updatedBy")
+  from_PoliticFactCheck_createdBy          PoliticFactCheck[]          @relation("PoliticFactCheck_createdBy")
+  from_PoliticFactCheck_updatedBy          PoliticFactCheck[]          @relation("PoliticFactCheck_updatedBy")
+  from_PoliticPositionChange_createdBy     PoliticPositionChange[]     @relation("PoliticPositionChange_createdBy")
+  from_PoliticPositionChange_updatedBy     PoliticPositionChange[]     @relation("PoliticPositionChange_updatedBy")
+  from_PoliticRepeat_createdBy             PoliticRepeat[]             @relation("PoliticRepeat_createdBy")
+  from_PoliticRepeat_updatedBy             PoliticRepeat[]             @relation("PoliticRepeat_updatedBy")
+  from_PoliticResponse_createdBy           PoliticResponse[]           @relation("PoliticResponse_createdBy")
+  from_PoliticResponse_updatedBy           PoliticResponse[]           @relation("PoliticResponse_updatedBy")
+  from_PoliticControversie_createdBy       PoliticControversie[]       @relation("PoliticControversie_createdBy")
+  from_PoliticControversie_updatedBy       PoliticControversie[]       @relation("PoliticControversie_updatedBy")
+  from_RelatedPost_createdBy               RelatedPost[]               @relation("RelatedPost_createdBy")
+  from_RelatedPost_updatedBy               RelatedPost[]               @relation("RelatedPost_updatedBy")
   from_FactcheckPartner_createdBy          FactcheckPartner[]          @relation("FactcheckPartner_createdBy")
   from_FactcheckPartner_updatedBy          FactcheckPartner[]          @relation("FactcheckPartner_updatedBy")
   from_Vote_createdBy                      Vote[]                      @relation("Vote_createdBy")
@@ -58,22 +76,6 @@ model User {
   from_PersonPublication_updatedBy         PersonPublication[]         @relation("PersonPublication_updatedBy")
   from_PersonRelationship_createdBy        PersonRelationship[]        @relation("PersonRelationship_createdBy")
   from_PersonRelationship_updatedBy        PersonRelationship[]        @relation("PersonRelationship_updatedBy")
-  from_Politic_createdBy                   Politic[]                   @relation("Politic_createdBy")
-  from_Politic_updatedBy                   Politic[]                   @relation("Politic_updatedBy")
-  from_PoliticTimeline_createdBy           PoliticTimeline[]           @relation("PoliticTimeline_createdBy")
-  from_PoliticTimeline_updatedBy           PoliticTimeline[]           @relation("PoliticTimeline_updatedBy")
-  from_PoliticExpert_createdBy             PoliticExpert[]             @relation("PoliticExpert_createdBy")
-  from_PoliticExpert_updatedBy             PoliticExpert[]             @relation("PoliticExpert_updatedBy")
-  from_PoliticFactCheck_createdBy          PoliticFactCheck[]          @relation("PoliticFactCheck_createdBy")
-  from_PoliticFactCheck_updatedBy          PoliticFactCheck[]          @relation("PoliticFactCheck_updatedBy")
-  from_PoliticPositionChange_createdBy     PoliticPositionChange[]     @relation("PoliticPositionChange_createdBy")
-  from_PoliticPositionChange_updatedBy     PoliticPositionChange[]     @relation("PoliticPositionChange_updatedBy")
-  from_PoliticRepeat_createdBy             PoliticRepeat[]             @relation("PoliticRepeat_createdBy")
-  from_PoliticRepeat_updatedBy             PoliticRepeat[]             @relation("PoliticRepeat_updatedBy")
-  from_PoliticResponse_createdBy           PoliticResponse[]           @relation("PoliticResponse_createdBy")
-  from_PoliticResponse_updatedBy           PoliticResponse[]           @relation("PoliticResponse_updatedBy")
-  from_PoliticControversie_createdBy       PoliticControversie[]       @relation("PoliticControversie_createdBy")
-  from_PoliticControversie_updatedBy       PoliticControversie[]       @relation("PoliticControversie_updatedBy")
   from_Lawsuit_createdBy                   Lawsuit[]                   @relation("Lawsuit_createdBy")
   from_Lawsuit_updatedBy                   Lawsuit[]                   @relation("Lawsuit_updatedBy")
   from_Tag_createdBy                       Tag[]                       @relation("Tag_createdBy")
@@ -164,29 +166,34 @@ model Event {
 }
 
 model Election {
-  id                           Int              @id @default(autoincrement())
-  name                         String           @default("")
-  description                  String           @default("")
-  election_year_year           Int?
-  election_year_month          Int?
-  election_year_day            Int?
-  level                        String?          @default("local")
-  type                         String?
-  register_date                String           @default("")
-  location                     String           @default("")
-  electionArea                 ElectionArea[]   @relation("ElectionArea_election")
-  status                       String?
-  hidePoliticDetail            DateTime?
-  tags                         Tag[]            @relation("Election_tags")
-  addComments                  Boolean          @default(false)
-  createdAt                    DateTime?
-  updatedAt                    DateTime?
-  createdBy                    User?            @relation("Election_createdBy", fields: [createdById], references: [id])
-  createdById                  Int?             @map("createdBy")
-  updatedBy                    User?            @relation("Election_updatedBy", fields: [updatedById], references: [id])
-  updatedById                  Int?             @map("updatedBy")
-  from_PersonElection_election PersonElection[] @relation("PersonElection_election")
+  id                                   Int                     @id @default(autoincrement())
+  name                                 String                  @default("")
+  description                          String                  @default("")
+  election_year_year                   Int?
+  election_year_month                  Int?
+  election_year_day                    Int?
+  level                                String?                 @default("local")
+  type                                 String?
+  register_date                        String                  @default("")
+  location                             String                  @default("")
+  electionArea                         ElectionArea[]          @relation("ElectionArea_election")
+  status                               String?
+  hidePoliticDetail                    DateTime?
+  tags                                 Tag[]                   @relation("Election_tags")
+  addComments                          Boolean                 @default(false)
+  organizationsElection                OrganizationsElection?  @relation("Election_organizationsElection", fields: [organizationsElectionId], references: [id])
+  organizationsElectionId              Int?                    @map("organizationsElection")
+  createdAt                            DateTime?
+  updatedAt                            DateTime?
+  createdBy                            User?                   @relation("Election_createdBy", fields: [createdById], references: [id])
+  createdById                          Int?                    @map("createdBy")
+  updatedBy                            User?                   @relation("Election_updatedBy", fields: [updatedById], references: [id])
+  updatedById                          Int?                    @map("updatedBy")
+  from_RelatedPost_election            RelatedPost[]           @relation("RelatedPost_election")
+  from_OrganizationsElection_elections OrganizationsElection[] @relation("OrganizationsElection_elections")
+  from_PersonElection_election         PersonElection[]        @relation("PersonElection_election")
 
+  @@index([organizationsElectionId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -212,6 +219,217 @@ model ElectionArea {
   @@index([updatedById])
 }
 
+model Politic {
+  id                                  Int                     @id @default(autoincrement())
+  person                              PersonElection[]        @relation("PersonElection_politics")
+  organization                        OrganizationsElection?  @relation("Politic_organization", fields: [organizationId], references: [id])
+  organizationId                      Int?                    @map("organization")
+  thread_parent                       Politic?                @relation("Politic_thread_parent", fields: [thread_parentId], references: [id])
+  thread_parentId                     Int?                    @map("thread_parent")
+  changeLog                           String                  @default("")
+  desc                                String                  @default("")
+  content                             String                  @default("")
+  current_progress                    String?                 @default("no-progress")
+  positionChange                      PoliticPositionChange[] @relation("Politic_positionChange")
+  factCheck                           PoliticFactCheck[]      @relation("Politic_factCheck")
+  expertPoint                         PoliticExpert[]         @relation("Politic_expertPoint")
+  repeat                              PoliticRepeat[]         @relation("Politic_repeat")
+  controversies                       PoliticControversie[]   @relation("Politic_controversies")
+  response                            PoliticResponse[]       @relation("Politic_response")
+  source                              String                  @default("")
+  contributer                         String                  @default("")
+  timeline                            PoliticTimeline[]       @relation("Politic_timeline")
+  status                              String?                 @default("notverified")
+  tag                                 Tag?                    @relation("Politic_tag", fields: [tagId], references: [id])
+  tagId                               Int?                    @map("tag")
+  politicCategory                     PoliticCategory?        @relation("Politic_politicCategory", fields: [politicCategoryId], references: [id])
+  politicCategoryId                   Int?                    @map("politicCategory")
+  checked                             Boolean                 @default(false)
+  reviewed                            Boolean                 @default(false)
+  createdAt                           DateTime?
+  updatedAt                           DateTime?
+  createdBy                           User?                   @relation("Politic_createdBy", fields: [createdById], references: [id])
+  createdById                         Int?                    @map("createdBy")
+  updatedBy                           User?                   @relation("Politic_updatedBy", fields: [updatedById], references: [id])
+  updatedById                         Int?                    @map("updatedBy")
+  from_Politic_thread_parent          Politic[]               @relation("Politic_thread_parent")
+  from_OrganizationsElection_politics OrganizationsElection[] @relation("OrganizationsElection_politics")
+  from_PoliticCategory_politics       PoliticCategory[]       @relation("PoliticCategory_politics")
+
+  @@index([organizationId])
+  @@index([thread_parentId])
+  @@index([current_progress])
+  @@index([status])
+  @@index([tagId])
+  @@index([politicCategoryId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model PoliticTimeline {
+  id          Int       @id @default(autoincrement())
+  politic     Politic[] @relation("Politic_timeline")
+  eventDate   DateTime?
+  sortOrder   Int?
+  content     String    @default("")
+  link        String    @default("")
+  contributer String    @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("PoliticTimeline_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("PoliticTimeline_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model PoliticExpert {
+  id                 Int       @id @default(autoincrement())
+  politic            Politic[] @relation("Politic_expertPoint")
+  expert             String?
+  avatar             String    @default("")
+  title              String    @default("")
+  expertPointSummary String    @default("")
+  content            String    @default("")
+  link               String    @default("")
+  contributer        String    @default("")
+  createdAt          DateTime?
+  updatedAt          DateTime?
+  createdBy          User?     @relation("PoliticExpert_createdBy", fields: [createdById], references: [id])
+  createdById        Int?      @map("createdBy")
+  updatedBy          User?     @relation("PoliticExpert_updatedBy", fields: [updatedById], references: [id])
+  updatedById        Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model PoliticFactCheck {
+  id                 Int               @id @default(autoincrement())
+  politic            Politic[]         @relation("Politic_factCheck")
+  factCheckSummary   String            @default("")
+  content            String            @default("")
+  checkResultType    String?           @default("1")
+  checkResultOther   String            @default("")
+  link               String            @default("")
+  factcheckPartner   FactcheckPartner? @relation("PoliticFactCheck_factcheckPartner", fields: [factcheckPartnerId], references: [id])
+  factcheckPartnerId Int?              @map("factcheckPartner")
+  createdAt          DateTime?
+  updatedAt          DateTime?
+  createdBy          User?             @relation("PoliticFactCheck_createdBy", fields: [createdById], references: [id])
+  createdById        Int?              @map("createdBy")
+  updatedBy          User?             @relation("PoliticFactCheck_updatedBy", fields: [updatedById], references: [id])
+  updatedById        Int?              @map("updatedBy")
+
+  @@index([factcheckPartnerId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model PoliticPositionChange {
+  id                    Int               @id @default(autoincrement())
+  politic               Politic[]         @relation("Politic_positionChange")
+  factcheckPartner      FactcheckPartner? @relation("PoliticPositionChange_factcheckPartner", fields: [factcheckPartnerId], references: [id])
+  factcheckPartnerId    Int?              @map("factcheckPartner")
+  checkDate             DateTime
+  positionChangeSummary String            @default("")
+  content               String            @default("")
+  isChanged             Boolean           @default(false)
+  link                  String            @default("")
+  createdAt             DateTime?
+  updatedAt             DateTime?
+  createdBy             User?             @relation("PoliticPositionChange_createdBy", fields: [createdById], references: [id])
+  createdById           Int?              @map("createdBy")
+  updatedBy             User?             @relation("PoliticPositionChange_updatedBy", fields: [updatedById], references: [id])
+  updatedById           Int?              @map("updatedBy")
+
+  @@index([factcheckPartnerId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model PoliticRepeat {
+  id                 Int               @id @default(autoincrement())
+  politic            Politic[]         @relation("Politic_repeat")
+  repeatSummary      String            @default("")
+  content            String            @default("")
+  factcheckPartner   FactcheckPartner? @relation("PoliticRepeat_factcheckPartner", fields: [factcheckPartnerId], references: [id])
+  factcheckPartnerId Int?              @map("factcheckPartner")
+  link               String            @default("")
+  contributer        String            @default("")
+  createdAt          DateTime?
+  updatedAt          DateTime?
+  createdBy          User?             @relation("PoliticRepeat_createdBy", fields: [createdById], references: [id])
+  createdById        Int?              @map("createdBy")
+  updatedBy          User?             @relation("PoliticRepeat_updatedBy", fields: [updatedById], references: [id])
+  updatedById        Int?              @map("updatedBy")
+
+  @@index([factcheckPartnerId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model PoliticResponse {
+  id            Int       @id @default(autoincrement())
+  politic       Politic[] @relation("Politic_response")
+  responseName  String    @default("")
+  responsePic   String    @default("")
+  responseTitle String    @default("")
+  content       String    @default("")
+  link          String    @default("")
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("PoliticResponse_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("PoliticResponse_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model PoliticControversie {
+  id                 Int               @id @default(autoincrement())
+  politic            Politic[]         @relation("Politic_controversies")
+  content            String            @default("")
+  factcheckPartner   FactcheckPartner? @relation("PoliticControversie_factcheckPartner", fields: [factcheckPartnerId], references: [id])
+  factcheckPartnerId Int?              @map("factcheckPartner")
+  link               String            @default("")
+  createdAt          DateTime?
+  updatedAt          DateTime?
+  createdBy          User?             @relation("PoliticControversie_createdBy", fields: [createdById], references: [id])
+  createdById        Int?              @map("createdBy")
+  updatedBy          User?             @relation("PoliticControversie_updatedBy", fields: [updatedById], references: [id])
+  updatedById        Int?              @map("updatedBy")
+
+  @@index([factcheckPartnerId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model RelatedPost {
+  id          Int                @id @default(autoincrement())
+  name        String             @default("")
+  brief       String             @default("")
+  url         String             @default("")
+  ogIMage     String             @default("")
+  partner     FactcheckPartner[] @relation("FactcheckPartner_posts")
+  election    Election?          @relation("RelatedPost_election", fields: [electionId], references: [id])
+  electionId  Int?               @map("election")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?              @relation("RelatedPost_createdBy", fields: [createdById], references: [id])
+  createdById Int?               @map("createdBy")
+  updatedBy   User?              @relation("RelatedPost_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?               @map("updatedBy")
+
+  @@index([electionId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model FactcheckPartner {
   id             Int                     @id @default(autoincrement())
   name           String                  @default("")
@@ -222,6 +440,7 @@ model FactcheckPartner {
   year           String?                 @default("2023")
   type           String?                 @default("合作媒體")
   webUrl         String                  @default("")
+  posts          RelatedPost[]           @relation("FactcheckPartner_posts")
   positionChange PoliticPositionChange[] @relation("PoliticPositionChange_factcheckPartner")
   factCheck      PoliticFactCheck[]      @relation("PoliticFactCheck_factcheckPartner")
   repeat         PoliticRepeat[]         @relation("PoliticRepeat_factcheckPartner")
@@ -460,26 +679,30 @@ model Count {
 }
 
 model OrganizationsElection {
-  id                        Int           @id @default(autoincrement())
-  organization_id           Organization? @relation("OrganizationsElection_organization_id", fields: [organization_idId], references: [id])
-  organization_idId         Int?          @map("organization_id")
-  election_year_year        Int?
-  election_year_month       Int?
-  election_year_day         Int?
-  number                    String        @default("")
-  votes_obtained_number     String        @default("")
-  seats                     String        @default("")
-  source                    String        @default("")
-  politics                  Politic[]     @relation("OrganizationsElection_politics")
-  createdAt                 DateTime?
-  updatedAt                 DateTime?
-  createdBy                 User?         @relation("OrganizationsElection_createdBy", fields: [createdById], references: [id])
-  createdById               Int?          @map("createdBy")
-  updatedBy                 User?         @relation("OrganizationsElection_updatedBy", fields: [updatedById], references: [id])
-  updatedById               Int?          @map("updatedBy")
-  from_Politic_organization Politic[]     @relation("Politic_organization")
+  id                                  Int           @id @default(autoincrement())
+  organization_id                     Organization? @relation("OrganizationsElection_organization_id", fields: [organization_idId], references: [id])
+  organization_idId                   Int?          @map("organization_id")
+  election_year_year                  Int?
+  election_year_month                 Int?
+  election_year_day                   Int?
+  number                              String        @default("")
+  votes_obtained_number               String        @default("")
+  seats                               String        @default("")
+  source                              String        @default("")
+  elections                           Election?     @relation("OrganizationsElection_elections", fields: [electionsId], references: [id])
+  electionsId                         Int?          @map("elections")
+  politics                            Politic[]     @relation("OrganizationsElection_politics")
+  createdAt                           DateTime?
+  updatedAt                           DateTime?
+  createdBy                           User?         @relation("OrganizationsElection_createdBy", fields: [createdById], references: [id])
+  createdById                         Int?          @map("createdBy")
+  updatedBy                           User?         @relation("OrganizationsElection_updatedBy", fields: [updatedById], references: [id])
+  updatedById                         Int?          @map("updatedBy")
+  from_Election_organizationsElection Election[]    @relation("Election_organizationsElection")
+  from_Politic_organization           Politic[]     @relation("Politic_organization")
 
   @@index([organization_idId])
+  @@index([electionsId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -512,36 +735,40 @@ model OrganizationsRelationship {
 }
 
 model PersonElection {
-  id                        Int                 @id @default(autoincrement())
-  person_id                 Person?             @relation("PersonElection_person_id", fields: [person_idId], references: [id])
-  person_idId               Int?                @map("person_id")
-  election                  Election?           @relation("PersonElection_election", fields: [electionId], references: [id])
-  electionId                Int?                @map("election")
-  party                     Organization?       @relation("PersonElection_party", fields: [partyId], references: [id])
-  partyId                   Int?                @map("party")
-  legislatoratlarge_number  String              @default("")
-  number                    String              @default("")
-  electoral_district        ElectionArea?       @relation("PersonElection_electoral_district", fields: [electoral_districtId], references: [id])
-  electoral_districtId      Int?                @map("electoral_district")
-  votes_obtained_number     String              @default("")
-  votes_obtained_percentage String              @default("")
-  elected                   Boolean             @default(false)
-  incumbent                 Boolean             @default(false)
-  source                    String              @default("")
-  politicSource             String              @default("")
-  organization              PersonOrganization? @relation("PersonElection_organization", fields: [organizationId], references: [id])
-  organizationId            Int?                @unique @map("organization")
-  politics                  Politic[]           @relation("PersonElection_politics")
-  createdAt                 DateTime?
-  updatedAt                 DateTime?
-  createdBy                 User?               @relation("PersonElection_createdBy", fields: [createdById], references: [id])
-  createdById               Int?                @map("createdBy")
-  updatedBy                 User?               @relation("PersonElection_updatedBy", fields: [updatedById], references: [id])
-  updatedById               Int?                @map("updatedBy")
-  from_Politic_person       Politic[]           @relation("Politic_person")
+  id                                Int                 @id @default(autoincrement())
+  person_id                         Person?             @relation("PersonElection_person_id", fields: [person_idId], references: [id])
+  person_idId                       Int?                @map("person_id")
+  election                          Election?           @relation("PersonElection_election", fields: [electionId], references: [id])
+  electionId                        Int?                @map("election")
+  mainCandidate                     PersonElection?     @relation("PersonElection_mainCandidate", fields: [mainCandidateId], references: [id])
+  mainCandidateId                   Int?                @map("mainCandidate")
+  party                             Organization?       @relation("PersonElection_party", fields: [partyId], references: [id])
+  partyId                           Int?                @map("party")
+  legislatoratlarge_number          String              @default("")
+  number                            String              @default("")
+  electoral_district                ElectionArea?       @relation("PersonElection_electoral_district", fields: [electoral_districtId], references: [id])
+  electoral_districtId              Int?                @map("electoral_district")
+  votes_obtained_number             String              @default("")
+  votes_obtained_percentage         String              @default("")
+  elected                           Boolean             @default(false)
+  incumbent                         Boolean             @default(false)
+  source                            String              @default("")
+  politicSource                     String              @default("")
+  organization                      PersonOrganization? @relation("PersonElection_organization", fields: [organizationId], references: [id])
+  organizationId                    Int?                @unique @map("organization")
+  politics                          Politic[]           @relation("PersonElection_politics")
+  status                            String?             @default("notverified")
+  createdAt                         DateTime?
+  updatedAt                         DateTime?
+  createdBy                         User?               @relation("PersonElection_createdBy", fields: [createdById], references: [id])
+  createdById                       Int?                @map("createdBy")
+  updatedBy                         User?               @relation("PersonElection_updatedBy", fields: [updatedById], references: [id])
+  updatedById                       Int?                @map("updatedBy")
+  from_PersonElection_mainCandidate PersonElection[]    @relation("PersonElection_mainCandidate")
 
   @@index([person_idId])
   @@index([electionId])
+  @@index([mainCandidateId])
   @@index([partyId])
   @@index([electoral_districtId])
   @@index([createdById])
@@ -630,197 +857,6 @@ model PersonRelationship {
   @@index([updatedById])
 }
 
-model Politic {
-  id                                  Int                     @id @default(autoincrement())
-  person                              PersonElection?         @relation("Politic_person", fields: [personId], references: [id])
-  personId                            Int?                    @map("person")
-  organization                        OrganizationsElection?  @relation("Politic_organization", fields: [organizationId], references: [id])
-  organizationId                      Int?                    @map("organization")
-  thread_parent                       Politic?                @relation("Politic_thread_parent", fields: [thread_parentId], references: [id])
-  thread_parentId                     Int?                    @map("thread_parent")
-  changeLog                           String                  @default("")
-  desc                                String                  @default("")
-  content                             String                  @default("")
-  current_progress                    String?                 @default("no-progress")
-  positionChange                      PoliticPositionChange[] @relation("Politic_positionChange")
-  factCheck                           PoliticFactCheck[]      @relation("Politic_factCheck")
-  expertPoint                         PoliticExpert[]         @relation("Politic_expertPoint")
-  repeat                              PoliticRepeat[]         @relation("Politic_repeat")
-  controversies                       PoliticControversie[]   @relation("Politic_controversies")
-  response                            PoliticResponse[]       @relation("Politic_response")
-  source                              String                  @default("")
-  contributer                         String                  @default("")
-  timeline                            PoliticTimeline[]       @relation("Politic_timeline")
-  status                              String?                 @default("notverified")
-  tag                                 Tag?                    @relation("Politic_tag", fields: [tagId], references: [id])
-  tagId                               Int?                    @map("tag")
-  politicCategory                     PoliticCategory?        @relation("Politic_politicCategory", fields: [politicCategoryId], references: [id])
-  politicCategoryId                   Int?                    @map("politicCategory")
-  checked                             Boolean                 @default(false)
-  reviewed                            Boolean                 @default(false)
-  createdAt                           DateTime?
-  updatedAt                           DateTime?
-  createdBy                           User?                   @relation("Politic_createdBy", fields: [createdById], references: [id])
-  createdById                         Int?                    @map("createdBy")
-  updatedBy                           User?                   @relation("Politic_updatedBy", fields: [updatedById], references: [id])
-  updatedById                         Int?                    @map("updatedBy")
-  from_OrganizationsElection_politics OrganizationsElection[] @relation("OrganizationsElection_politics")
-  from_PersonElection_politics        PersonElection[]        @relation("PersonElection_politics")
-  from_Politic_thread_parent          Politic[]               @relation("Politic_thread_parent")
-
-  @@index([personId])
-  @@index([organizationId])
-  @@index([thread_parentId])
-  @@index([current_progress])
-  @@index([status])
-  @@index([tagId])
-  @@index([politicCategoryId])
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model PoliticTimeline {
-  id          Int       @id @default(autoincrement())
-  politic     Politic[] @relation("Politic_timeline")
-  eventDate   DateTime?
-  sortOrder   Int?
-  content     String    @default("")
-  link        String    @default("")
-  contributer String    @default("")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("PoliticTimeline_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("PoliticTimeline_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
-
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model PoliticExpert {
-  id                 Int       @id @default(autoincrement())
-  politic            Politic[] @relation("Politic_expertPoint")
-  expert             String?
-  avatar             String    @default("")
-  title              String    @default("")
-  expertPointSummary String    @default("")
-  content            String    @default("")
-  link               String    @default("")
-  contributer        String    @default("")
-  createdAt          DateTime?
-  updatedAt          DateTime?
-  createdBy          User?     @relation("PoliticExpert_createdBy", fields: [createdById], references: [id])
-  createdById        Int?      @map("createdBy")
-  updatedBy          User?     @relation("PoliticExpert_updatedBy", fields: [updatedById], references: [id])
-  updatedById        Int?      @map("updatedBy")
-
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model PoliticFactCheck {
-  id                 Int               @id @default(autoincrement())
-  politic            Politic[]         @relation("Politic_factCheck")
-  factCheckSummary   String            @default("")
-  content            String            @default("")
-  checkResultType    String?           @default("correct")
-  link               String            @default("")
-  factcheckPartner   FactcheckPartner? @relation("PoliticFactCheck_factcheckPartner", fields: [factcheckPartnerId], references: [id])
-  factcheckPartnerId Int?              @map("factcheckPartner")
-  createdAt          DateTime?
-  updatedAt          DateTime?
-  createdBy          User?             @relation("PoliticFactCheck_createdBy", fields: [createdById], references: [id])
-  createdById        Int?              @map("createdBy")
-  updatedBy          User?             @relation("PoliticFactCheck_updatedBy", fields: [updatedById], references: [id])
-  updatedById        Int?              @map("updatedBy")
-
-  @@index([factcheckPartnerId])
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model PoliticPositionChange {
-  id                    Int               @id @default(autoincrement())
-  politic               Politic[]         @relation("Politic_positionChange")
-  factcheckPartner      FactcheckPartner? @relation("PoliticPositionChange_factcheckPartner", fields: [factcheckPartnerId], references: [id])
-  factcheckPartnerId    Int?              @map("factcheckPartner")
-  checkDate             DateTime
-  positionChangeSummary String            @default("")
-  content               String            @default("")
-  isChanged             Boolean           @default(false)
-  link                  String            @default("")
-  createdAt             DateTime?
-  updatedAt             DateTime?
-  createdBy             User?             @relation("PoliticPositionChange_createdBy", fields: [createdById], references: [id])
-  createdById           Int?              @map("createdBy")
-  updatedBy             User?             @relation("PoliticPositionChange_updatedBy", fields: [updatedById], references: [id])
-  updatedById           Int?              @map("updatedBy")
-
-  @@index([factcheckPartnerId])
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model PoliticRepeat {
-  id                 Int               @id @default(autoincrement())
-  politic            Politic[]         @relation("Politic_repeat")
-  repeatSummary      String            @default("")
-  content            String            @default("")
-  factcheckPartner   FactcheckPartner? @relation("PoliticRepeat_factcheckPartner", fields: [factcheckPartnerId], references: [id])
-  factcheckPartnerId Int?              @map("factcheckPartner")
-  link               String            @default("")
-  contributer        String            @default("")
-  createdAt          DateTime?
-  updatedAt          DateTime?
-  createdBy          User?             @relation("PoliticRepeat_createdBy", fields: [createdById], references: [id])
-  createdById        Int?              @map("createdBy")
-  updatedBy          User?             @relation("PoliticRepeat_updatedBy", fields: [updatedById], references: [id])
-  updatedById        Int?              @map("updatedBy")
-
-  @@index([factcheckPartnerId])
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model PoliticResponse {
-  id            Int       @id @default(autoincrement())
-  politic       Politic[] @relation("Politic_response")
-  responseName  String    @default("")
-  responsePic   String    @default("")
-  responseTitle String    @default("")
-  content       String    @default("")
-  link          String    @default("")
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?     @relation("PoliticResponse_createdBy", fields: [createdById], references: [id])
-  createdById   Int?      @map("createdBy")
-  updatedBy     User?     @relation("PoliticResponse_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?      @map("updatedBy")
-
-  @@index([createdById])
-  @@index([updatedById])
-}
-
-model PoliticControversie {
-  id                 Int               @id @default(autoincrement())
-  politic            Politic[]         @relation("Politic_controversies")
-  content            String            @default("")
-  factcheckPartner   FactcheckPartner? @relation("PoliticControversie_factcheckPartner", fields: [factcheckPartnerId], references: [id])
-  factcheckPartnerId Int?              @map("factcheckPartner")
-  link               String            @default("")
-  createdAt          DateTime?
-  updatedAt          DateTime?
-  createdBy          User?             @relation("PoliticControversie_createdBy", fields: [createdById], references: [id])
-  createdById        Int?              @map("createdBy")
-  updatedBy          User?             @relation("PoliticControversie_updatedBy", fields: [updatedById], references: [id])
-  updatedById        Int?              @map("updatedBy")
-
-  @@index([factcheckPartnerId])
-  @@index([createdById])
-  @@index([updatedById])
-}
-
 model Lawsuit {
   id            Int       @id @default(autoincrement())
   person        Person?   @relation("Lawsuit_person", fields: [personId], references: [id])
@@ -849,7 +885,6 @@ model Tag {
   id                     Int            @id @default(autoincrement())
   name                   String         @unique @default("")
   brief                  String         @default("")
-  state                  String?        @default("active")
   ogTitle                String         @default("")
   ogDescription          String         @default("")
   isFeatured             Boolean        @default(false)
@@ -860,9 +895,9 @@ model Tag {
   updatedBy              User?          @relation("Tag_updatedBy", fields: [updatedById], references: [id])
   updatedById            Int?           @map("updatedBy")
   from_Election_tags     Election[]     @relation("Election_tags")
+  from_Politic_tag       Politic[]      @relation("Politic_tag")
   from_Person_tags       Person[]       @relation("Person_tags")
   from_Organization_tags Organization[] @relation("Organization_tags")
-  from_Politic_tag       Politic[]      @relation("Politic_tag")
 
   @@index([createdById])
   @@index([updatedById])
@@ -872,10 +907,11 @@ model PoliticCategory {
   id                           Int       @id @default(autoincrement())
   name                         String    @unique @default("")
   brief                        String    @default("")
-  state                        String?   @default("active")
+  displayColor                 String    @default("#000000")
   ogTitle                      String    @default("")
   ogDescription                String    @default("")
   isFeatured                   Boolean   @default(false)
+  politics                     Politic[] @relation("PoliticCategory_politics")
   createdAt                    DateTime?
   updatedAt                    DateTime?
   createdBy                    User?     @relation("PoliticCategory_createdBy", fields: [createdById], references: [id])

@@ -70,6 +70,10 @@ const listConfigurations = list({
 		  label: '開放留言（心情）',
 		  defaultValue: false,
 		}),
+        organizationsElection: relationship({ 
+          label: '政黨',
+          ref: 'OrganizationsElection',
+        }),
 	},
 	access: {
 		operation: {
