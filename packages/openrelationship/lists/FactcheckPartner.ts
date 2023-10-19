@@ -49,6 +49,11 @@ const listConfigurations = list ({
     webUrl: text({ 
 	  label: '網站網址' 
 	}),
+    posts: relationship({
+      label: '相關報導',
+      many: true,
+      ref: 'RelatedPost.partner',
+    }),
     positionChange: relationship({
       label: '查核「立場改變」',
       many: true,
