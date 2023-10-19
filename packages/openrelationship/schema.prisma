@@ -221,8 +221,7 @@ model ElectionArea {
 
 model Politic {
   id                                  Int                     @id @default(autoincrement())
-  person                              PersonElection?         @relation("Politic_person", fields: [personId], references: [id])
-  personId                            Int?                    @map("person")
+  person                              PersonElection[]        @relation("PersonElection_politics")
   organization                        OrganizationsElection?  @relation("Politic_organization", fields: [organizationId], references: [id])
   organizationId                      Int?                    @map("organization")
   thread_parent                       Politic?                @relation("Politic_thread_parent", fields: [thread_parentId], references: [id])
@@ -255,10 +254,8 @@ model Politic {
   updatedById                         Int?                    @map("updatedBy")
   from_Politic_thread_parent          Politic[]               @relation("Politic_thread_parent")
   from_OrganizationsElection_politics OrganizationsElection[] @relation("OrganizationsElection_politics")
-  from_PersonElection_politics        PersonElection[]        @relation("PersonElection_politics")
   from_PoliticCategory_politics       PoliticCategory[]       @relation("PoliticCategory_politics")
 
-  @@index([personId])
   @@index([organizationId])
   @@index([thread_parentId])
   @@index([current_progress])
@@ -767,7 +764,6 @@ model PersonElection {
   createdById                       Int?                @map("createdBy")
   updatedBy                         User?               @relation("PersonElection_updatedBy", fields: [updatedById], references: [id])
   updatedById                       Int?                @map("updatedBy")
-  from_Politic_person               Politic[]           @relation("Politic_person")
   from_PersonElection_mainCandidate PersonElection[]    @relation("PersonElection_mainCandidate")
 
   @@index([person_idId])
