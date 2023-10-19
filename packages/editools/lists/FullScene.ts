@@ -4,14 +4,7 @@ import embedCodeGen from '@readr-media/react-embed-code-generator'
 // @ts-ignore: no definition
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import {
-  text,
-  select,
-  image,
-  file,
-  json,
-  virtual,
-} from '@keystone-6/core/fields'
+import { text, select, image, json, virtual } from '@keystone-6/core/fields'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
 const {
@@ -70,6 +63,15 @@ const listConfigurations = list({
     }),
     hotspotJson: json({
       label: '熱點 json',
+      defaultValue: [
+        {
+          type: 'info',
+          pitch: 0,
+          yaw: 0,
+          text: 'this is a hotspot example, remove url if no link is needed',
+          url: 'https://www.google.com',
+        },
+      ],
       //ui: {
       //  createView: { fieldMode: 'hidden' },
       //},
@@ -87,12 +89,26 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
+          const {
+            imageFile_id,
+            imageFile_extension,
+            desc,
+            hotspotJson,
+            displayMode,
+          } = item
+
           const imgSrc =
-            (item?.imageLink && `${item.imageLink}`) ||
-            (item?.imageFile_id &&
-              `${config.images.gcsBaseUrl}/images/${item.imageFile_id}.${item.imageFile_extension}`)
+            imageFile_id &&
+            `${config.images.gcsBaseUrl}/images/${imageFile_id}.${imageFile_extension}`
 
           return embedCodeGen.buildEmbeddedCode(
+            'react-360',
+            {
+              imageUrl: imgSrc,
+              hotspotsConfig: hotspotJson,
+              isFullScreenWidth: displayMode === 'full',
+              caption: desc,
+            },
             embedCodeWebpackAssets
           )
         },
