@@ -3411,6 +3411,8 @@ type PoliticCategory {
   ogTitle: String
   ogDescription: String
   isFeatured: Boolean
+  politics(where: PoliticWhereInput! = {}, orderBy: [PoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticWhereUniqueInput): [Politic!]
+  politicsCount(where: PoliticWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -3433,6 +3435,7 @@ input PoliticCategoryWhereInput {
   ogTitle: StringFilter
   ogDescription: StringFilter
   isFeatured: BooleanFilter
+  politics: PoliticManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -3458,6 +3461,7 @@ input PoliticCategoryUpdateInput {
   ogTitle: String
   ogDescription: String
   isFeatured: Boolean
+  politics: PoliticRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -3476,6 +3480,7 @@ input PoliticCategoryCreateInput {
   ogTitle: String
   ogDescription: String
   isFeatured: Boolean
+  politics: PoliticRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

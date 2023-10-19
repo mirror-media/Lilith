@@ -36,6 +36,11 @@ const listConfigurations = list ({
     isFeatured: checkbox({
       label: '置頂', isIndexed: true 
     }),
+	politics: relationship({
+	  label: '政見',
+	  many: true,
+	  ref: 'Politic',
+	}),
   },
   access: {
 	operation: {
