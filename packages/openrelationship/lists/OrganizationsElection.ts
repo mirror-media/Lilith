@@ -26,6 +26,10 @@ const listConfigurations = list ({
     votes_obtained_number: text({ label: '得票數' }),
     seats: text({ label: '分配席次' }),
     source: text({ label: '資料來源' }),
+	elections: relationship({ 
+	  label: '選舉',
+	  ref: 'Election',
+	}),
 	politics: relationship({ 
 	  label: '政見',
 	  many: true,
