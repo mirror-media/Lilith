@@ -105,6 +105,7 @@ const ClickButton = styled.button`
     cursor: pointer;
     display: block;
     position: absolute;
+    filter: drop-shadow(0 0 1.5px #000);
   }
 `
 const ClickButtonPrev = styled(ClickButton)`

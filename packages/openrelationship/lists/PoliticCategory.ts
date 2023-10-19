@@ -21,14 +21,9 @@ const listConfigurations = list ({
       label: '前言',  
       ui: { displayMode: 'textarea' } 
     }),
-    state: select({
-      defaultValue: 'active', 
-      options: [ 
-        { label: 'inactive', value: 'inactive' }, 
-        { label: 'active', value: 'active' }, 
-        { label: 'archived', value: 'archived' }
-      ], 
-      label: '狀態',
+    displayColor: text({
+      label: '頁面色碼',  
+	  defaultValue: '#000000',
     }),
     ogTitle: text({
       validation: { isRequired: false}, 
@@ -41,6 +36,11 @@ const listConfigurations = list ({
     isFeatured: checkbox({
       label: '置頂', isIndexed: true 
     }),
+	politics: relationship({
+	  label: '政見',
+	  many: true,
+	  ref: 'Politic',
+	}),
   },
   access: {
 	operation: {

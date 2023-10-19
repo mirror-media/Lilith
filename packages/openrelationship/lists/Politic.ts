@@ -164,6 +164,11 @@ const listConfigurations = list ({
       label: '標籤',
       many: false,
       ref: 'Tag',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
     politicCategory: relationship({
       label: '類別',
@@ -201,7 +206,15 @@ const listConfigurations = list ({
 		resolvedData.reviewed = true
 	  }
 	  if (operation === 'create' || operation === 'update') {
-		if (resolvedData.factCheck || resolvedData.positionChange || resolvedData.repeat) {
+		if (resolvedData.thread_parent) {
+			const { parent_status } = await context.query.Politic.findOne({
+			  where: { id: resolvedData.thread_parent.connect.id },
+              query: 'checked',
+			})
+			if (parent_status === true) {
+			  checked = true
+			}
+		} else if (resolvedData.factCheck || resolvedData.positionChange || resolvedData.repeat || resolvedData.expertPoint) {
 			checked = true
 		}
 	  }

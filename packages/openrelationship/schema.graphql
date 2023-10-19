@@ -500,6 +500,7 @@ type Election {
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   addComments: Boolean
+  organizationsElection: OrganizationsElection
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -529,6 +530,7 @@ input ElectionWhereInput {
   hidePoliticDetail: DateTimeNullableFilter
   tags: TagManyRelationFilter
   addComments: BooleanFilter
+  organizationsElection: OrganizationsElectionWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -620,6 +622,7 @@ input ElectionUpdateInput {
   hidePoliticDetail: DateTime
   tags: TagRelateToManyForUpdateInput
   addComments: Boolean
+  organizationsElection: OrganizationsElectionRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -638,6 +641,12 @@ input TagRelateToManyForUpdateInput {
   set: [TagWhereUniqueInput!]
   create: [TagCreateInput!]
   connect: [TagWhereUniqueInput!]
+}
+
+input OrganizationsElectionRelateToOneForUpdateInput {
+  create: OrganizationsElectionCreateInput
+  connect: OrganizationsElectionWhereUniqueInput
+  disconnect: Boolean
 }
 
 input ElectionUpdateArgs {
@@ -660,6 +669,7 @@ input ElectionCreateInput {
   hidePoliticDetail: DateTime
   tags: TagRelateToManyForCreateInput
   addComments: Boolean
+  organizationsElection: OrganizationsElectionRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -674,6 +684,11 @@ input ElectionAreaRelateToManyForCreateInput {
 input TagRelateToManyForCreateInput {
   create: [TagCreateInput!]
   connect: [TagWhereUniqueInput!]
+}
+
+input OrganizationsElectionRelateToOneForCreateInput {
+  create: OrganizationsElectionCreateInput
+  connect: OrganizationsElectionWhereUniqueInput
 }
 
 type ElectionArea {
@@ -1779,6 +1794,7 @@ type OrganizationsElection {
   votes_obtained_number: String
   seats: String
   source: String
+  elections: Election
   politics(where: PoliticWhereInput! = {}, orderBy: [PoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticWhereUniqueInput): [Politic!]
   politicsCount(where: PoliticWhereInput! = {}): Int
   createdAt: DateTime
@@ -1804,6 +1820,7 @@ input OrganizationsElectionWhereInput {
   votes_obtained_number: StringFilter
   seats: StringFilter
   source: StringFilter
+  elections: ElectionWhereInput
   politics: PoliticManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1839,6 +1856,7 @@ input OrganizationsElectionUpdateInput {
   votes_obtained_number: String
   seats: String
   source: String
+  elections: ElectionRelateToOneForUpdateInput
   politics: PoliticRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -1867,6 +1885,7 @@ input OrganizationsElectionCreateInput {
   votes_obtained_number: String
   seats: String
   source: String
+  elections: ElectionRelateToOneForCreateInput
   politics: PoliticRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -1979,6 +1998,7 @@ type PersonElection {
   id: ID!
   person_id: Person
   election: Election
+  mainCandidate: PersonElection
   party: Organization
   legislatoratlarge_number: String
   number: String
@@ -1992,6 +2012,7 @@ type PersonElection {
   organization: PersonOrganization
   politics(where: PoliticWhereInput! = {}, orderBy: [PoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticWhereUniqueInput): [Politic!]
   politicsCount(where: PoliticWhereInput! = {}): Int
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2009,6 +2030,7 @@ input PersonElectionWhereInput {
   id: IDFilter
   person_id: PersonWhereInput
   election: ElectionWhereInput
+  mainCandidate: PersonElectionWhereInput
   party: OrganizationWhereInput
   legislatoratlarge_number: StringFilter
   number: StringFilter
@@ -2021,6 +2043,7 @@ input PersonElectionWhereInput {
   politicSource: StringFilter
   organization: PersonOrganizationWhereInput
   politics: PoliticManyRelationFilter
+  status: StringNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2037,6 +2060,7 @@ input PersonElectionOrderByInput {
   incumbent: OrderDirection
   source: OrderDirection
   politicSource: OrderDirection
+  status: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2044,6 +2068,7 @@ input PersonElectionOrderByInput {
 input PersonElectionUpdateInput {
   person_id: PersonRelateToOneForUpdateInput
   election: ElectionRelateToOneForUpdateInput
+  mainCandidate: PersonElectionRelateToOneForUpdateInput
   party: OrganizationRelateToOneForUpdateInput
   legislatoratlarge_number: String
   number: String
@@ -2056,10 +2081,17 @@ input PersonElectionUpdateInput {
   politicSource: String
   organization: PersonOrganizationRelateToOneForUpdateInput
   politics: PoliticRelateToManyForUpdateInput
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PersonElectionRelateToOneForUpdateInput {
+  create: PersonElectionCreateInput
+  connect: PersonElectionWhereUniqueInput
+  disconnect: Boolean
 }
 
 input ElectionAreaRelateToOneForUpdateInput {
@@ -2082,6 +2114,7 @@ input PersonElectionUpdateArgs {
 input PersonElectionCreateInput {
   person_id: PersonRelateToOneForCreateInput
   election: ElectionRelateToOneForCreateInput
+  mainCandidate: PersonElectionRelateToOneForCreateInput
   party: OrganizationRelateToOneForCreateInput
   legislatoratlarge_number: String
   number: String
@@ -2094,10 +2127,16 @@ input PersonElectionCreateInput {
   politicSource: String
   organization: PersonOrganizationRelateToOneForCreateInput
   politics: PoliticRelateToManyForCreateInput
+  status: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input PersonElectionRelateToOneForCreateInput {
+  create: PersonElectionCreateInput
+  connect: PersonElectionWhereUniqueInput
 }
 
 input ElectionAreaRelateToOneForCreateInput {
@@ -2187,12 +2226,6 @@ input PersonOrganizationUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input PersonElectionRelateToOneForUpdateInput {
-  create: PersonElectionCreateInput
-  connect: PersonElectionWhereUniqueInput
-  disconnect: Boolean
-}
-
 input PersonOrganizationUpdateArgs {
   where: PersonOrganizationWhereUniqueInput!
   data: PersonOrganizationUpdateInput!
@@ -2214,11 +2247,6 @@ input PersonOrganizationCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input PersonElectionRelateToOneForCreateInput {
-  create: PersonElectionCreateInput
-  connect: PersonElectionWhereUniqueInput
 }
 
 type PersonPublication {
@@ -2546,12 +2574,6 @@ input PoliticUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input OrganizationsElectionRelateToOneForUpdateInput {
-  create: OrganizationsElectionCreateInput
-  connect: OrganizationsElectionWhereUniqueInput
-  disconnect: Boolean
-}
-
 input PoliticRelateToOneForUpdateInput {
   create: PoliticCreateInput
   connect: PoliticWhereUniqueInput
@@ -2622,11 +2644,6 @@ input PoliticCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input OrganizationsElectionRelateToOneForCreateInput {
-  create: OrganizationsElectionCreateInput
-  connect: OrganizationsElectionWhereUniqueInput
 }
 
 input PoliticRelateToOneForCreateInput {
@@ -2832,6 +2849,7 @@ type PoliticFactCheck {
   factCheckSummary: String
   content: String
   checkResultType: String
+  checkResultOther: String
   link: String
   factcheckPartner: FactcheckPartner
   createdAt: DateTime
@@ -2853,6 +2871,7 @@ input PoliticFactCheckWhereInput {
   factCheckSummary: StringFilter
   content: StringFilter
   checkResultType: StringNullableFilter
+  checkResultOther: StringFilter
   link: StringFilter
   factcheckPartner: FactcheckPartnerWhereInput
   createdAt: DateTimeNullableFilter
@@ -2866,6 +2885,7 @@ input PoliticFactCheckOrderByInput {
   factCheckSummary: OrderDirection
   content: OrderDirection
   checkResultType: OrderDirection
+  checkResultOther: OrderDirection
   link: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -2876,6 +2896,7 @@ input PoliticFactCheckUpdateInput {
   factCheckSummary: String
   content: String
   checkResultType: String
+  checkResultOther: String
   link: String
   factcheckPartner: FactcheckPartnerRelateToOneForUpdateInput
   createdAt: DateTime
@@ -2900,6 +2921,7 @@ input PoliticFactCheckCreateInput {
   factCheckSummary: String
   content: String
   checkResultType: String
+  checkResultOther: String
   link: String
   factcheckPartner: FactcheckPartnerRelateToOneForCreateInput
   createdAt: DateTime
@@ -3324,7 +3346,6 @@ type Tag {
   id: ID!
   name: String
   brief: String
-  state: String
   ogTitle: String
   ogDescription: String
   isFeatured: Boolean
@@ -3346,7 +3367,6 @@ input TagWhereInput {
   id: IDFilter
   name: StringFilter
   brief: StringFilter
-  state: StringNullableFilter
   ogTitle: StringFilter
   ogDescription: StringFilter
   isFeatured: BooleanFilter
@@ -3360,7 +3380,6 @@ input TagOrderByInput {
   id: OrderDirection
   name: OrderDirection
   brief: OrderDirection
-  state: OrderDirection
   ogTitle: OrderDirection
   ogDescription: OrderDirection
   isFeatured: OrderDirection
@@ -3371,7 +3390,6 @@ input TagOrderByInput {
 input TagUpdateInput {
   name: String
   brief: String
-  state: String
   ogTitle: String
   ogDescription: String
   isFeatured: Boolean
@@ -3389,7 +3407,6 @@ input TagUpdateArgs {
 input TagCreateInput {
   name: String
   brief: String
-  state: String
   ogTitle: String
   ogDescription: String
   isFeatured: Boolean
@@ -3403,10 +3420,12 @@ type PoliticCategory {
   id: ID!
   name: String
   brief: String
-  state: String
+  displayColor: String
   ogTitle: String
   ogDescription: String
   isFeatured: Boolean
+  politics(where: PoliticWhereInput! = {}, orderBy: [PoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PoliticWhereUniqueInput): [Politic!]
+  politicsCount(where: PoliticWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -3425,10 +3444,11 @@ input PoliticCategoryWhereInput {
   id: IDFilter
   name: StringFilter
   brief: StringFilter
-  state: StringNullableFilter
+  displayColor: StringFilter
   ogTitle: StringFilter
   ogDescription: StringFilter
   isFeatured: BooleanFilter
+  politics: PoliticManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -3439,7 +3459,7 @@ input PoliticCategoryOrderByInput {
   id: OrderDirection
   name: OrderDirection
   brief: OrderDirection
-  state: OrderDirection
+  displayColor: OrderDirection
   ogTitle: OrderDirection
   ogDescription: OrderDirection
   isFeatured: OrderDirection
@@ -3450,10 +3470,11 @@ input PoliticCategoryOrderByInput {
 input PoliticCategoryUpdateInput {
   name: String
   brief: String
-  state: String
+  displayColor: String
   ogTitle: String
   ogDescription: String
   isFeatured: Boolean
+  politics: PoliticRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -3468,10 +3489,11 @@ input PoliticCategoryUpdateArgs {
 input PoliticCategoryCreateInput {
   name: String
   brief: String
-  state: String
+  displayColor: String
   ogTitle: String
   ogDescription: String
   isFeatured: Boolean
+  politics: PoliticRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -3483,7 +3505,6 @@ type Photo {
   name: String
   imageFile: ImageFieldOutput
   resized: ResizedImages
-  resizedWebp: ResizedWebPImages
   file: FileFieldOutput
   urlOriginal: String
   createdAt: DateTime
@@ -3510,20 +3531,6 @@ enum ImageExtension {
 
 type ResizedImages {
   original: String
-  w480: String
-  w800: String
-  w1200: String
-  w1600: String
-  w2400: String
-}
-
-type ResizedWebPImages {
-  original: String
-  w480: String
-  w800: String
-  w1200: String
-  w1600: String
-  w2400: String
 }
 
 type FileFieldOutput {

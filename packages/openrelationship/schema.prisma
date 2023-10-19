@@ -164,29 +164,33 @@ model Event {
 }
 
 model Election {
-  id                           Int              @id @default(autoincrement())
-  name                         String           @default("")
-  description                  String           @default("")
-  election_year_year           Int?
-  election_year_month          Int?
-  election_year_day            Int?
-  level                        String?          @default("local")
-  type                         String?
-  register_date                String           @default("")
-  location                     String           @default("")
-  electionArea                 ElectionArea[]   @relation("ElectionArea_election")
-  status                       String?
-  hidePoliticDetail            DateTime?
-  tags                         Tag[]            @relation("Election_tags")
-  addComments                  Boolean          @default(false)
-  createdAt                    DateTime?
-  updatedAt                    DateTime?
-  createdBy                    User?            @relation("Election_createdBy", fields: [createdById], references: [id])
-  createdById                  Int?             @map("createdBy")
-  updatedBy                    User?            @relation("Election_updatedBy", fields: [updatedById], references: [id])
-  updatedById                  Int?             @map("updatedBy")
-  from_PersonElection_election PersonElection[] @relation("PersonElection_election")
+  id                                   Int                     @id @default(autoincrement())
+  name                                 String                  @default("")
+  description                          String                  @default("")
+  election_year_year                   Int?
+  election_year_month                  Int?
+  election_year_day                    Int?
+  level                                String?                 @default("local")
+  type                                 String?
+  register_date                        String                  @default("")
+  location                             String                  @default("")
+  electionArea                         ElectionArea[]          @relation("ElectionArea_election")
+  status                               String?
+  hidePoliticDetail                    DateTime?
+  tags                                 Tag[]                   @relation("Election_tags")
+  addComments                          Boolean                 @default(false)
+  organizationsElection                OrganizationsElection?  @relation("Election_organizationsElection", fields: [organizationsElectionId], references: [id])
+  organizationsElectionId              Int?                    @map("organizationsElection")
+  createdAt                            DateTime?
+  updatedAt                            DateTime?
+  createdBy                            User?                   @relation("Election_createdBy", fields: [createdById], references: [id])
+  createdById                          Int?                    @map("createdBy")
+  updatedBy                            User?                   @relation("Election_updatedBy", fields: [updatedById], references: [id])
+  updatedById                          Int?                    @map("updatedBy")
+  from_OrganizationsElection_elections OrganizationsElection[] @relation("OrganizationsElection_elections")
+  from_PersonElection_election         PersonElection[]        @relation("PersonElection_election")
 
+  @@index([organizationsElectionId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -460,26 +464,30 @@ model Count {
 }
 
 model OrganizationsElection {
-  id                        Int           @id @default(autoincrement())
-  organization_id           Organization? @relation("OrganizationsElection_organization_id", fields: [organization_idId], references: [id])
-  organization_idId         Int?          @map("organization_id")
-  election_year_year        Int?
-  election_year_month       Int?
-  election_year_day         Int?
-  number                    String        @default("")
-  votes_obtained_number     String        @default("")
-  seats                     String        @default("")
-  source                    String        @default("")
-  politics                  Politic[]     @relation("OrganizationsElection_politics")
-  createdAt                 DateTime?
-  updatedAt                 DateTime?
-  createdBy                 User?         @relation("OrganizationsElection_createdBy", fields: [createdById], references: [id])
-  createdById               Int?          @map("createdBy")
-  updatedBy                 User?         @relation("OrganizationsElection_updatedBy", fields: [updatedById], references: [id])
-  updatedById               Int?          @map("updatedBy")
-  from_Politic_organization Politic[]     @relation("Politic_organization")
+  id                                  Int           @id @default(autoincrement())
+  organization_id                     Organization? @relation("OrganizationsElection_organization_id", fields: [organization_idId], references: [id])
+  organization_idId                   Int?          @map("organization_id")
+  election_year_year                  Int?
+  election_year_month                 Int?
+  election_year_day                   Int?
+  number                              String        @default("")
+  votes_obtained_number               String        @default("")
+  seats                               String        @default("")
+  source                              String        @default("")
+  elections                           Election?     @relation("OrganizationsElection_elections", fields: [electionsId], references: [id])
+  electionsId                         Int?          @map("elections")
+  politics                            Politic[]     @relation("OrganizationsElection_politics")
+  createdAt                           DateTime?
+  updatedAt                           DateTime?
+  createdBy                           User?         @relation("OrganizationsElection_createdBy", fields: [createdById], references: [id])
+  createdById                         Int?          @map("createdBy")
+  updatedBy                           User?         @relation("OrganizationsElection_updatedBy", fields: [updatedById], references: [id])
+  updatedById                         Int?          @map("updatedBy")
+  from_Election_organizationsElection Election[]    @relation("Election_organizationsElection")
+  from_Politic_organization           Politic[]     @relation("Politic_organization")
 
   @@index([organization_idId])
+  @@index([electionsId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -512,36 +520,41 @@ model OrganizationsRelationship {
 }
 
 model PersonElection {
-  id                        Int                 @id @default(autoincrement())
-  person_id                 Person?             @relation("PersonElection_person_id", fields: [person_idId], references: [id])
-  person_idId               Int?                @map("person_id")
-  election                  Election?           @relation("PersonElection_election", fields: [electionId], references: [id])
-  electionId                Int?                @map("election")
-  party                     Organization?       @relation("PersonElection_party", fields: [partyId], references: [id])
-  partyId                   Int?                @map("party")
-  legislatoratlarge_number  String              @default("")
-  number                    String              @default("")
-  electoral_district        ElectionArea?       @relation("PersonElection_electoral_district", fields: [electoral_districtId], references: [id])
-  electoral_districtId      Int?                @map("electoral_district")
-  votes_obtained_number     String              @default("")
-  votes_obtained_percentage String              @default("")
-  elected                   Boolean             @default(false)
-  incumbent                 Boolean             @default(false)
-  source                    String              @default("")
-  politicSource             String              @default("")
-  organization              PersonOrganization? @relation("PersonElection_organization", fields: [organizationId], references: [id])
-  organizationId            Int?                @unique @map("organization")
-  politics                  Politic[]           @relation("PersonElection_politics")
-  createdAt                 DateTime?
-  updatedAt                 DateTime?
-  createdBy                 User?               @relation("PersonElection_createdBy", fields: [createdById], references: [id])
-  createdById               Int?                @map("createdBy")
-  updatedBy                 User?               @relation("PersonElection_updatedBy", fields: [updatedById], references: [id])
-  updatedById               Int?                @map("updatedBy")
-  from_Politic_person       Politic[]           @relation("Politic_person")
+  id                                Int                 @id @default(autoincrement())
+  person_id                         Person?             @relation("PersonElection_person_id", fields: [person_idId], references: [id])
+  person_idId                       Int?                @map("person_id")
+  election                          Election?           @relation("PersonElection_election", fields: [electionId], references: [id])
+  electionId                        Int?                @map("election")
+  mainCandidate                     PersonElection?     @relation("PersonElection_mainCandidate", fields: [mainCandidateId], references: [id])
+  mainCandidateId                   Int?                @map("mainCandidate")
+  party                             Organization?       @relation("PersonElection_party", fields: [partyId], references: [id])
+  partyId                           Int?                @map("party")
+  legislatoratlarge_number          String              @default("")
+  number                            String              @default("")
+  electoral_district                ElectionArea?       @relation("PersonElection_electoral_district", fields: [electoral_districtId], references: [id])
+  electoral_districtId              Int?                @map("electoral_district")
+  votes_obtained_number             String              @default("")
+  votes_obtained_percentage         String              @default("")
+  elected                           Boolean             @default(false)
+  incumbent                         Boolean             @default(false)
+  source                            String              @default("")
+  politicSource                     String              @default("")
+  organization                      PersonOrganization? @relation("PersonElection_organization", fields: [organizationId], references: [id])
+  organizationId                    Int?                @unique @map("organization")
+  politics                          Politic[]           @relation("PersonElection_politics")
+  status                            String?             @default("notverified")
+  createdAt                         DateTime?
+  updatedAt                         DateTime?
+  createdBy                         User?               @relation("PersonElection_createdBy", fields: [createdById], references: [id])
+  createdById                       Int?                @map("createdBy")
+  updatedBy                         User?               @relation("PersonElection_updatedBy", fields: [updatedById], references: [id])
+  updatedById                       Int?                @map("updatedBy")
+  from_PersonElection_mainCandidate PersonElection[]    @relation("PersonElection_mainCandidate")
+  from_Politic_person               Politic[]           @relation("Politic_person")
 
   @@index([person_idId])
   @@index([electionId])
+  @@index([mainCandidateId])
   @@index([partyId])
   @@index([electoral_districtId])
   @@index([createdById])
@@ -667,6 +680,7 @@ model Politic {
   from_OrganizationsElection_politics OrganizationsElection[] @relation("OrganizationsElection_politics")
   from_PersonElection_politics        PersonElection[]        @relation("PersonElection_politics")
   from_Politic_thread_parent          Politic[]               @relation("Politic_thread_parent")
+  from_PoliticCategory_politics       PoliticCategory[]       @relation("PoliticCategory_politics")
 
   @@index([personId])
   @@index([organizationId])
@@ -724,7 +738,8 @@ model PoliticFactCheck {
   politic            Politic[]         @relation("Politic_factCheck")
   factCheckSummary   String            @default("")
   content            String            @default("")
-  checkResultType    String?           @default("correct")
+  checkResultType    String?           @default("1")
+  checkResultOther   String            @default("")
   link               String            @default("")
   factcheckPartner   FactcheckPartner? @relation("PoliticFactCheck_factcheckPartner", fields: [factcheckPartnerId], references: [id])
   factcheckPartnerId Int?              @map("factcheckPartner")
@@ -849,7 +864,6 @@ model Tag {
   id                     Int            @id @default(autoincrement())
   name                   String         @unique @default("")
   brief                  String         @default("")
-  state                  String?        @default("active")
   ogTitle                String         @default("")
   ogDescription          String         @default("")
   isFeatured             Boolean        @default(false)
@@ -872,10 +886,11 @@ model PoliticCategory {
   id                           Int       @id @default(autoincrement())
   name                         String    @unique @default("")
   brief                        String    @default("")
-  state                        String?   @default("active")
+  displayColor                 String    @default("#000000")
   ogTitle                      String    @default("")
   ogDescription                String    @default("")
   isFeatured                   Boolean   @default(false)
+  politics                     Politic[] @relation("PoliticCategory_politics")
   createdAt                    DateTime?
   updatedAt                    DateTime?
   createdBy                    User?     @relation("PoliticCategory_createdBy", fields: [createdById], references: [id])
