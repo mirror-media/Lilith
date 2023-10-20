@@ -82,10 +82,10 @@ const listConfigurations = list ({
 	 }),
 	status: select({
 	  options: [
-	    { label: '正常', value: 'regular' },
+	    { label: '正常', value: 'active' },
 	    { label: '資料存檔', value: 'archive' },
 	  ],
-	  defaultValue: 'notverified',
+	  defaultValue: 'active',
 	  label: '狀態',
 	}),
 
