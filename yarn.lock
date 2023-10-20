@@ -3807,10 +3807,10 @@
     styled-components "^6.1.0"
     video.js "7.18.1"
 
-"@readr-media/react-360@0.2.7":
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-360/-/react-360-0.2.7.tgz#23178123302e7d3066220dd63c4921d10f9de54c"
-  integrity sha512-uWxIQw02IA+RPsQFBvfaDtSFwgp4/RzfVqsT2qzjpfIG/BhFQgQ7+SkYQayzqeVC/E33cj/WxtWa0dROMFtSog==
+"@readr-media/react-360@0.2.8":
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-360/-/react-360-0.2.8.tgz#19db424c415224d15a37a9dca5bd81fc6f262781"
+  integrity sha512-Uf+vP0ICtM6cWa77gedmoJd6ToMR2TgrWRQS6aj5kHA90Of8LtLXcJYhVuXQOVuzNatIiWgkd08NlaZAFhtQjw==
   dependencies:
     "@readr-media/pannellum-react" "^1.4.1"
 
@@ -3838,12 +3838,12 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.4.3-alpha.6":
-  version "2.4.3-alpha.6"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.3-alpha.6.tgz#a737b87906f0f95c74a5f875ebab565db5b3e39b"
-  integrity sha512-EaEkxxJeuI9awqU3LOCzKC+LiOZtanGfmKYNU6Nl/9sworNAMykwuGT3gvl5eF0YiKOUE+kogS/bz3Q4RKPAeg==
+"@readr-media/react-embed-code-generator@2.4.3-alpha.7":
+  version "2.4.3-alpha.7"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.3-alpha.7.tgz#e3e125a861f22d6cf4e90bafef327269ef0f5bec"
+  integrity sha512-1BtisTZRHWUku1kvCh9DZd1NttyO/FjMX51NLvnMDqp98h+00LJ+ayw+l4uqwIc9hcMmYRu9WJb1uiExe6xCTQ==
   dependencies:
-    "@readr-media/react-360" "0.2.7"
+    "@readr-media/react-360" "0.2.8"
     "@readr-media/react-dropping-text" "1.0.9"
     "@readr-media/react-dual-slides" "^1.1.0"
     "@readr-media/react-election-widgets" "1.0.2"
