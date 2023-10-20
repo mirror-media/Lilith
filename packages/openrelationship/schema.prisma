@@ -221,7 +221,8 @@ model ElectionArea {
 
 model Politic {
   id                                  Int                     @id @default(autoincrement())
-  person                              PersonElection[]        @relation("PersonElection_politics")
+  person                              PersonElection?         @relation("Politic_person", fields: [personId], references: [id])
+  personId                            Int?                    @map("person")
   organization                        OrganizationsElection?  @relation("Politic_organization", fields: [organizationId], references: [id])
   organizationId                      Int?                    @map("organization")
   thread_parent                       Politic?                @relation("Politic_thread_parent", fields: [thread_parentId], references: [id])
@@ -256,6 +257,7 @@ model Politic {
   from_OrganizationsElection_politics OrganizationsElection[] @relation("OrganizationsElection_politics")
   from_PoliticCategory_politics       PoliticCategory[]       @relation("PoliticCategory_politics")
 
+  @@index([personId])
   @@index([organizationId])
   @@index([thread_parentId])
   @@index([current_progress])
@@ -756,8 +758,8 @@ model PersonElection {
   politicSource                     String              @default("")
   organization                      PersonOrganization? @relation("PersonElection_organization", fields: [organizationId], references: [id])
   organizationId                    Int?                @unique @map("organization")
-  politics                          Politic[]           @relation("PersonElection_politics")
-  status                            String?             @default("notverified")
+  politics                          Politic[]           @relation("Politic_person")
+  status                            String?             @default("active")
   createdAt                         DateTime?
   updatedAt                         DateTime?
   createdBy                         User?               @relation("PersonElection_createdBy", fields: [createdById], references: [id])

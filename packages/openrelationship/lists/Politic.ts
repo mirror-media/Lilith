@@ -14,7 +14,7 @@ const listConfigurations = list ({
   fields: {
     person: relationship({
       label: '候選人-選舉',
-      many: true,
+      many: false,
       ref: 'PersonElection.politics',
     }),
     organization: relationship({

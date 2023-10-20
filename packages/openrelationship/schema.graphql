@@ -777,8 +777,7 @@ input ElectionRelateToOneForCreateInput {
 
 type Politic {
   id: ID!
-  person(where: PersonElectionWhereInput! = {}, orderBy: [PersonElectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonElectionWhereUniqueInput): [PersonElection!]
-  personCount(where: PersonElectionWhereInput! = {}): Int
+  person: PersonElection
   organization: OrganizationsElection
   thread_parent: Politic
   changeLog: String
@@ -821,7 +820,7 @@ input PoliticWhereInput {
   OR: [PoliticWhereInput!]
   NOT: [PoliticWhereInput!]
   id: IDFilter
-  person: PersonElectionManyRelationFilter
+  person: PersonElectionWhereInput
   organization: OrganizationsElectionWhereInput
   thread_parent: PoliticWhereInput
   changeLog: StringFilter
@@ -846,12 +845,6 @@ input PoliticWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input PersonElectionManyRelationFilter {
-  every: PersonElectionWhereInput
-  some: PersonElectionWhereInput
-  none: PersonElectionWhereInput
 }
 
 input PoliticPositionChangeManyRelationFilter {
@@ -912,7 +905,7 @@ input PoliticOrderByInput {
 }
 
 input PoliticUpdateInput {
-  person: PersonElectionRelateToManyForUpdateInput
+  person: PersonElectionRelateToOneForUpdateInput
   organization: OrganizationsElectionRelateToOneForUpdateInput
   thread_parent: PoliticRelateToOneForUpdateInput
   changeLog: String
@@ -939,11 +932,10 @@ input PoliticUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input PersonElectionRelateToManyForUpdateInput {
-  disconnect: [PersonElectionWhereUniqueInput!]
-  set: [PersonElectionWhereUniqueInput!]
-  create: [PersonElectionCreateInput!]
-  connect: [PersonElectionWhereUniqueInput!]
+input PersonElectionRelateToOneForUpdateInput {
+  create: PersonElectionCreateInput
+  connect: PersonElectionWhereUniqueInput
+  disconnect: Boolean
 }
 
 input PoliticRelateToOneForUpdateInput {
@@ -1019,7 +1011,7 @@ input PoliticUpdateArgs {
 }
 
 input PoliticCreateInput {
-  person: PersonElectionRelateToManyForCreateInput
+  person: PersonElectionRelateToOneForCreateInput
   organization: OrganizationsElectionRelateToOneForCreateInput
   thread_parent: PoliticRelateToOneForCreateInput
   changeLog: String
@@ -1046,9 +1038,9 @@ input PoliticCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
-input PersonElectionRelateToManyForCreateInput {
-  create: [PersonElectionCreateInput!]
-  connect: [PersonElectionWhereUniqueInput!]
+input PersonElectionRelateToOneForCreateInput {
+  create: PersonElectionCreateInput
+  connect: PersonElectionWhereUniqueInput
 }
 
 input PoliticRelateToOneForCreateInput {
@@ -3034,12 +3026,6 @@ input PersonElectionUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input PersonElectionRelateToOneForUpdateInput {
-  create: PersonElectionCreateInput
-  connect: PersonElectionWhereUniqueInput
-  disconnect: Boolean
-}
-
 input ElectionAreaRelateToOneForUpdateInput {
   create: ElectionAreaCreateInput
   connect: ElectionAreaWhereUniqueInput
@@ -3078,11 +3064,6 @@ input PersonElectionCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input PersonElectionRelateToOneForCreateInput {
-  create: PersonElectionCreateInput
-  connect: PersonElectionWhereUniqueInput
 }
 
 input ElectionAreaRelateToOneForCreateInput {
