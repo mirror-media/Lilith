@@ -5,17 +5,16 @@ import { controller } from '@keystone-6/core/fields/types/json/views'
 import React360 from '@readr-media/react-360'
 
 export const Field = ({ value }: FieldProps<typeof controller>) => {
-  let pcImageUrl, mbImageUrl
+  let imageUrl
   if (typeof value === 'object') {
-    pcImageUrl = value['pcImageUrl']
-    mbImageUrl = value['mbImageUrl']
+    imageUrl = value['imageUrl']
   }
   return (
     <FieldContainer>
       <React360
         imageRwdUrls={{
-          pc: pcImageUrl,
-          mb: mbImageUrl,
+          pc: imageUrl,
+          mb: imageUrl,
         }}
         isFullScreenWidth={false}
         isEditMode={true}

@@ -115,15 +115,14 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.JSON,
         resolve(item: Record<string, unknown>): Record<string, string> {
-          const { imageFile_id } = item
+          const { imageFile_id, imageFile_extension } = item
+
+          const imageUrl = imageFile_id
+            ? `${config.images.gcsBaseUrl}/images/${imageFile_id}.${imageFile_extension}`
+            : ''
 
           return {
-            pcImageUrl: imageFile_id
-              ? `${config.images.gcsBaseUrl}/images/${imageFile_id}.webP`
-              : '',
-            mbImageUrl: imageFile_id
-              ? `${config.images.gcsBaseUrl}/images/${imageFile_id}.webP`
-              : '',
+            imageUrl,
           }
         },
       }),
