@@ -102,7 +102,6 @@ export default function AmpSlideshowBlockV2({
         type="slides"
         autoplay=""
         loop=""
-        control=""
         delay={delay * 1000}
         aria-label="Carousel"
       >
