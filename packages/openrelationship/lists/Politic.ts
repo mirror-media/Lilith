@@ -75,9 +75,9 @@ const listConfigurations = list ({
 	  ui: {
 		displayMode: 'cards',
 		linkToItem: true,
-	    cardFields: ['factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'],
-	    inlineCreate: { 'fields': ['factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'] },
-	    inlineEdit: { 'fields': ['factCheckSummary', 'content', 'checkResultType', 'link', 'factcheckPartner'] },
+	    cardFields: ['factCheckSummary', 'content', 'checkResultType', 'checkResultOther', 'link', 'factcheckPartner'],
+	    inlineCreate: { 'fields': ['factCheckSummary', 'content', 'checkResultType', 'checkResultOther', 'link', 'factcheckPartner'] },
+	    inlineEdit: { 'fields': ['factCheckSummary', 'content', 'checkResultType', 'checkResultOther', 'link', 'factcheckPartner'] },
 	    inlineConnect: true,
 	  },
 	  ref: 'PoliticFactCheck.politic',
