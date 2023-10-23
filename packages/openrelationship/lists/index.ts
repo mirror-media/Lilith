@@ -20,6 +20,7 @@ import PersonOrganization from './PersonOrganization'
 import PersonPublication from './PersonPublication'
 import PersonRelationship from './PersonRelationship'
 import Politic from './Politic'
+import EditingPolitic from './EditingPolitic'
 //import PoliticProgress from './PoliticProgress'
 import PoliticTimeline from './PoliticTimeline'
 import PoliticExpert from './PoliticExpert'
@@ -71,4 +72,5 @@ export const listDefinition = {
   Tag,
   PoliticCategory,
   Photo: Image,
+  EditingPolitic,
 }

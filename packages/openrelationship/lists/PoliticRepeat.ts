@@ -49,6 +49,11 @@ const listConfigurations = list ({
 		displayMode: 'textarea',
 	  },
 	}),
+    editingPolitic: relationship({
+      label: '政見',
+      many: true,
+      ref: 'EditingPolitic.repeat',
+    }),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
   },
   access: {
