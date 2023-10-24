@@ -33,6 +33,11 @@ const listConfigurations = list ({
 	  label: '連結',
 	}),
     contributer: text({ label: '資料提供' }),
+    editingPolitic: relationship({
+      label: '候選人政見（待審核）',
+      many: true,
+      ref: 'EditingPolitic.timeline',
+    }),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
   },
   access: {

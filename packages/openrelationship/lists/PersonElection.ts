@@ -88,6 +88,11 @@ const listConfigurations = list ({
 	  defaultValue: 'active',
 	  label: '狀態',
 	}),
+	editingPolitics: relationship({ 
+	  label: '政見',
+	  many: true,
+	  ref: 'EditingPolitic.person',
+	 }),
 
   },
   access: {

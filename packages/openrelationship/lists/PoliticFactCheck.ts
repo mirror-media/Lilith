@@ -73,6 +73,11 @@ const listConfigurations = list ({
       many: false,
       ref: 'FactcheckPartner.factCheck',
     }),
+    editingPolitic: relationship({
+      label: '政見',
+      many: true,
+      ref: 'EditingPolitic.factCheck',
+    }),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
   },
   access: {

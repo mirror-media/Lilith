@@ -50,6 +50,11 @@ const listConfigurations = list ({
 	    displayMode: 'textarea',
 	  },
 	}),
+    editingPolitic: relationship({
+      label: '政見（待審核）',
+      many: true,
+      ref: 'EditingPolitic.response',
+    }),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
   },
   access: {

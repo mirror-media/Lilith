@@ -2508,13 +2508,6 @@
   dependencies:
     "@emotion/memoize" "^0.8.0"
 
-"@emotion/is-prop-valid@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-1.2.1.tgz#23116cf1ed18bfeac910ec6436561ecb1a3885cc"
-  integrity sha512-61Mf7Ufx4aDxx1xlDeOm8aFFigGHE4z+0sKCa+IHCeZKiyP9RLD0Mmx7m8b9/Cf37f7NAvQOOJAbQQGVr5uERw==
-  dependencies:
-    "@emotion/memoize" "^0.8.1"
-
 "@emotion/memoize@^0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@emotion/memoize/-/memoize-0.8.0.tgz#f580f9beb67176fa57aae70b08ed510e1b18980f"
@@ -3799,20 +3792,20 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@readr-media/pannellum-react@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@readr-media/pannellum-react/-/pannellum-react-1.4.1.tgz#67b0c7e745cf8e1222eb47b523e3a69455f20943"
-  integrity sha512-AiFQACJwtH0kduhf7ySpkf/69iZP9AxMNpeqwKAAHsZ/gV9XxwF3nL/49iGHGSdga/ZJar9BiXQ+CdJuznAo1A==
+"@readr-media/pannellum-react@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/pannellum-react/-/pannellum-react-1.4.2.tgz#c185f8890f6a5e93ced3e9a8caa1d00ea7171d44"
+  integrity sha512-t9Kl1yF4KrYEym18a6hRHxeZ+h276B1s5xWumuBpbZgZj1TRctLPjFpYboCPqc5gdKGe+AD8YzukiDMpYi183A==
   dependencies:
-    styled-components "^6.1.0"
+    styled-components "5.3.5"
     video.js "7.18.1"
 
-"@readr-media/react-360@0.2.7":
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-360/-/react-360-0.2.7.tgz#23178123302e7d3066220dd63c4921d10f9de54c"
-  integrity sha512-uWxIQw02IA+RPsQFBvfaDtSFwgp4/RzfVqsT2qzjpfIG/BhFQgQ7+SkYQayzqeVC/E33cj/WxtWa0dROMFtSog==
+"@readr-media/react-360@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-360/-/react-360-0.3.2.tgz#e3a5ac35ac17660cc5f42cf5c85371b9f19cf008"
+  integrity sha512-iR7fyflXSqbYntkHnxgINdOlPmxqA4fONtlAIZWEEQDO9+Sn4kawb6VmGAS1pUuigW8PO6keIkxBhsGKD8ujkw==
   dependencies:
-    "@readr-media/pannellum-react" "^1.4.1"
+    "@readr-media/pannellum-react" "^1.4.2"
 
 "@readr-media/react-dropping-text@1.0.9":
   version "1.0.9"
@@ -3838,12 +3831,12 @@
     "@twreporter/errors" "^1.1.1"
     axios "^0.27.2"
 
-"@readr-media/react-embed-code-generator@2.4.3-alpha.6":
-  version "2.4.3-alpha.6"
-  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.3-alpha.6.tgz#a737b87906f0f95c74a5f875ebab565db5b3e39b"
-  integrity sha512-EaEkxxJeuI9awqU3LOCzKC+LiOZtanGfmKYNU6Nl/9sworNAMykwuGT3gvl5eF0YiKOUE+kogS/bz3Q4RKPAeg==
+"@readr-media/react-embed-code-generator@2.4.3-alpha.13":
+  version "2.4.3-alpha.13"
+  resolved "https://registry.yarnpkg.com/@readr-media/react-embed-code-generator/-/react-embed-code-generator-2.4.3-alpha.13.tgz#a7d7ddcb6b82cd71807d3d2f3a4116a3abc51717"
+  integrity sha512-7FYrnitTwcM9LVz05tta0xXWOxsLEuSXt9FBrfjV7AOC8jy714kbA297U1v6UfMKXZZYk+MSqOi2lbIyEr16+w==
   dependencies:
-    "@readr-media/react-360" "0.2.7"
+    "@readr-media/react-360" "0.3.2"
     "@readr-media/react-dropping-text" "1.0.9"
     "@readr-media/react-dual-slides" "^1.1.0"
     "@readr-media/react-election-widgets" "1.0.2"
@@ -4436,11 +4429,6 @@
     "@types/hoist-non-react-statics" "*"
     "@types/react" "*"
     csstype "^3.0.2"
-
-"@types/stylis@^4.0.2":
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/@types/stylis/-/stylis-4.2.2.tgz#baabb6b3aa6787e90a6bd6cd75cd8fb9a4f256a3"
-  integrity sha512-Rm17MsTpQQP5Jq4BF7CdrxJsDufoiL/q5IbJZYZmOZAJALyijgF7BzLgobXUqraNcQdqFYLYGeglDp6QzaxPpg==
 
 "@types/uid-safe@^2.1.2":
   version "2.1.2"
@@ -5694,15 +5682,6 @@ css-to-react-native@^3.0.0:
     css-color-keywords "^1.0.0"
     postcss-value-parser "^4.0.2"
 
-css-to-react-native@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/css-to-react-native/-/css-to-react-native-3.2.0.tgz#cdd8099f71024e149e4f6fe17a7d46ecd55f1e32"
-  integrity sha512-e8RKaLXMOFii+02mOlqwjbD00KSEKqblnpO9e++1aXS1fPQOpS1YoqdVHBqPjHNoxeF2mimzVqawm2KCbEdtHQ==
-  dependencies:
-    camelize "^1.0.0"
-    css-color-keywords "^1.0.0"
-    postcss-value-parser "^4.0.2"
-
 css-tree@^1.1.2, css-tree@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/css-tree/-/css-tree-1.1.3.tgz#eb4870fb6fd7707327ec95c2ff2ab09b5e8db91d"
@@ -5727,11 +5706,6 @@ csstype@^3.0.2:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.0.tgz#4ddcac3718d787cf9df0d1b7d15033925c8f29f2"
   integrity sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==
-
-csstype@^3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.2.tgz#1d4bf9d572f11c14031f0436e1c10bc1f571f50b"
-  integrity sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==
 
 cuid@^2.1.8:
   version "2.1.8"
@@ -8590,11 +8564,6 @@ nanoid@^3.3.4:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"
   integrity sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==
 
-nanoid@^3.3.6:
-  version "3.3.6"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.6.tgz#443380c856d6e9f9824267d960b4236ad583ea4c"
-  integrity sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==
-
 native-duplexpair@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/native-duplexpair/-/native-duplexpair-1.0.0.tgz#7899078e64bf3c8a3d732601b3d40ff05db58fa0"
@@ -9214,15 +9183,6 @@ postcss@8.4.14:
   integrity sha512-E398TUmfAYFPBSdzgeieK2Y1+1cpdxJx8yXbK/m57nRhKSmk1GB2tO4lbLBtlkfPQTDKfe4Xqv1ASWPpayPEig==
   dependencies:
     nanoid "^3.3.4"
-    picocolors "^1.0.0"
-    source-map-js "^1.0.2"
-
-postcss@^8.4.31:
-  version "8.4.31"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.31.tgz#92b451050a9f914da6755af352bdc0192508656d"
-  integrity sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==
-  dependencies:
-    nanoid "^3.3.6"
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
@@ -10411,21 +10371,6 @@ styled-components@5.3.5:
     shallowequal "^1.1.0"
     supports-color "^5.5.0"
 
-styled-components@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-6.1.0.tgz#228e3ab9c1ee1daa4b0a06aae30df0ed14fda274"
-  integrity sha512-VWNfYYBuXzuLS/QYEeoPgMErP26WL+dX9//rEh80B2mmlS1yRxRxuL5eax4m6ybYEUoHWlTy2XOU32767mlMkg==
-  dependencies:
-    "@emotion/is-prop-valid" "^1.2.1"
-    "@emotion/unitless" "^0.8.0"
-    "@types/stylis" "^4.0.2"
-    css-to-react-native "^3.2.0"
-    csstype "^3.1.2"
-    postcss "^8.4.31"
-    shallowequal "^1.1.0"
-    stylis "^4.3.0"
-    tslib "^2.5.0"
-
 styled-jsx@5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/styled-jsx/-/styled-jsx-5.1.1.tgz#839a1c3aaacc4e735fed0781b8619ea5d0009d1f"
@@ -10442,11 +10387,6 @@ stylis@4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/stylis/-/stylis-4.2.0.tgz#79daee0208964c8fe695a42fcffcac633a211a51"
   integrity sha512-Orov6g6BB1sDfYgzWfTHDOxamtX1bE/zo104Dh9e6fqJ3PooipYyfJ0pUmrZO2wAvO8YbEyeFrkV91XTsGMSrw==
-
-stylis@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/stylis/-/stylis-4.3.0.tgz#abe305a669fc3d8777e10eefcfc73ad861c5588c"
-  integrity sha512-E87pIogpwUsUwXw7dNyU4QDjdgVMy52m+XEOPEKUn161cCzWjjhPSQhByfd1CcNvrOLnXQ6OnnZDwnJrz/Z4YQ==
 
 supports-color@^5.3.0, supports-color@^5.5.0:
   version "5.5.0"

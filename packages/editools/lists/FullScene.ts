@@ -63,15 +63,7 @@ const listConfigurations = list({
     }),
     hotspotJson: json({
       label: '熱點 json',
-      defaultValue: [
-        {
-          type: 'info',
-          pitch: 0,
-          yaw: 0,
-          text: 'this is a hotspot example, remove url if no link is needed',
-          url: 'https://www.google.com',
-        },
-      ],
+      defaultValue: [],
       //ui: {
       //  createView: { fieldMode: 'hidden' },
       //},
@@ -89,22 +81,21 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
-          const {
-            imageFile_id,
-            imageFile_extension,
-            desc,
-            hotspotJson,
-            displayMode,
-          } = item
+          const { imageFile_id, desc, hotspotJson, displayMode } = item
 
-          const imgSrc =
-            imageFile_id &&
-            `${config.images.gcsBaseUrl}/images/${imageFile_id}.${imageFile_extension}`
+          const imageRwdUrls = {
+            pc: imageFile_id
+              ? `${config.images.gcsBaseUrl}/images/${imageFile_id}.webP`
+              : '',
+            mb: imageFile_id
+              ? `${config.images.gcsBaseUrl}/images/${imageFile_id}-w2400.webP`
+              : '',
+          }
 
           return embedCodeGen.buildEmbeddedCode(
             'react-360',
             {
-              imageUrl: imgSrc,
+              imageRwdUrls,
               hotspotsConfig: hotspotJson,
               isFullScreenWidth: displayMode === 'full',
               caption: desc,
@@ -124,14 +115,19 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.JSON,
         resolve(item: Record<string, unknown>): Record<string, string> {
+          const { imageFile_id, imageFile_extension } = item
+
+          const imageUrl = imageFile_id
+            ? `${config.images.gcsBaseUrl}/images/${imageFile_id}.${imageFile_extension}`
+            : ''
+
           return {
-            href: `/demo/360/${item?.id}`,
-            label: 'Preview',
+            imageUrl,
           }
         },
       }),
       ui: {
-        views: './lists/views/link-button',
+        views: './lists/views/edit-360-hotspot',
         createView: {
           fieldMode: 'hidden',
         },
