@@ -32,8 +32,24 @@ const Caption = styled.div`
   padding: 15px 15px 0 15px;
 `
 
-export function YoutubeBlock(entity: DraftEntityInstance) {
+export function YoutubeBlock(
+  entity: DraftEntityInstance,
+  contentLayout: string
+) {
+  const isAmp = contentLayout === 'amp'
   const { youtubeId, description } = entity.getData()
+
+  const ampYoutubeIframe = youtubeId ? (
+    <IframeWrapper>
+      <amp-youtube data-videoid={youtubeId} layout="fill">
+        <amp-img
+          src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
+          placeholder
+          layout="fill"
+        />
+      </amp-youtube>
+    </IframeWrapper>
+  ) : null
 
   const youtubeIframe = youtubeId ? (
     <IframeWrapper>
@@ -49,7 +65,7 @@ export function YoutubeBlock(entity: DraftEntityInstance) {
 
   return (
     <YoutubeRenderWrapper>
-      {youtubeIframe}
+      {isAmp ? ampYoutubeIframe : youtubeIframe}
       {description && <Caption>{description}</Caption>}
     </YoutubeRenderWrapper>
   )
