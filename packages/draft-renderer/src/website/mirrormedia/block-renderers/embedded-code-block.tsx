@@ -107,7 +107,6 @@ export const EmbeddedCodeBlock = (
   if (contentLayout === 'amp') {
     return (
       <div>
-        i am amp 3
         <AmpEmbeddedCodeBlock
           embeddedCode={convertIframesToAmp(embeddedCode)}
         />
