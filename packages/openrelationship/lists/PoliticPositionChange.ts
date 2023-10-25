@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core';
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { checkbox, relationship, timestamp, text } from '@keystone-6/core/fields';
+import { checkbox, select, relationship, timestamp, text } from '@keystone-6/core/fields';
 	  
 const {
   allowRoles,
@@ -41,10 +41,16 @@ const listConfigurations = list ({
 	    displayMode: 'textarea',
 	  },
 	}),
-	isChanged: checkbox({
-	  label: '立場改變',
-	  validation: { isRequired: true },
-	}),
+    isChanged: select({
+      defaultValue: 'same', 
+      options: [ 
+        { label: '曾持相同意見', value: 'same' }, 
+        { label: '曾持不同意見', value: 'changed' }, 
+        { label: '當時未表態', value: 'noComment' },
+      ], 
+      label: '立場改變',
+	  isIndexed: true,
+    }),
     link: text({ 
 	  label: '相關連結',
 	  validation: { isRequired: true },
