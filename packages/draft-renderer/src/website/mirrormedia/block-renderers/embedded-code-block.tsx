@@ -82,10 +82,35 @@ export const EmbeddedCodeBlock = (
     node.appendChild(fragment)
   }, [embeddedCode])
 
+  function convertIframesToAmp(embeddedCode) {
+    // 使用 regex 拿到 iframe tag，並取得內容和 attribute
+    const iframeRegex = /<iframe([^>]*)><\/iframe>/g
+    const ampEmbeddedCode = embeddedCode.replace(
+      iframeRegex,
+      (match, attributes) => {
+        // 检查 iframe 是否包含 allowfullscreen='true'
+        if (attributes.includes('allowfullscreen="true"')) {
+          // 将 allowfullscreen 替换为 allow
+          attributes = attributes.replace(
+            'allowfullscreen="true"',
+            'allow="fullscreen"'
+          )
+        }
+        // 使用 amp-iframe tag 替換原來的 iframe tag
+        return `<amp-iframe${attributes}></amp-iframe>`
+      }
+    )
+
+    return ampEmbeddedCode
+  }
+
   if (contentLayout === 'amp') {
     return (
       <div>
-        <AmpEmbeddedCodeBlock embeddedCode={embeddedCode} />
+        i am amp 3
+        <AmpEmbeddedCodeBlock
+          embeddedCode={convertIframesToAmp(embeddedCode)}
+        />
         {caption ? <Caption>{caption}</Caption> : null}
       </div>
     )
