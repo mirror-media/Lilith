@@ -1411,7 +1411,7 @@ type PoliticPositionChange {
   checkDate: DateTime
   positionChangeSummary: String
   content: String
-  isChanged: Boolean
+  isChanged: String
   link: String
   editingPolitic(where: EditingPoliticWhereInput! = {}, orderBy: [EditingPoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EditingPoliticWhereUniqueInput): [EditingPolitic!]
   editingPoliticCount(where: EditingPoliticWhereInput! = {}): Int
@@ -1435,7 +1435,7 @@ input PoliticPositionChangeWhereInput {
   checkDate: DateTimeFilter
   positionChangeSummary: StringFilter
   content: StringFilter
-  isChanged: BooleanFilter
+  isChanged: StringNullableFilter
   link: StringFilter
   editingPolitic: EditingPoliticManyRelationFilter
   createdAt: DateTimeNullableFilter
@@ -1472,7 +1472,7 @@ input PoliticPositionChangeUpdateInput {
   checkDate: DateTime
   positionChangeSummary: String
   content: String
-  isChanged: Boolean
+  isChanged: String
   link: String
   editingPolitic: EditingPoliticRelateToManyForUpdateInput
   createdAt: DateTime
@@ -1492,7 +1492,7 @@ input PoliticPositionChangeCreateInput {
   checkDate: DateTime
   positionChangeSummary: String
   content: String
-  isChanged: Boolean
+  isChanged: String
   link: String
   editingPolitic: EditingPoliticRelateToManyForCreateInput
   createdAt: DateTime

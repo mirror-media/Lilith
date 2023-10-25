@@ -344,7 +344,7 @@ model PoliticPositionChange {
   checkDate             DateTime
   positionChangeSummary String            @default("")
   content               String            @default("")
-  isChanged             Boolean           @default(false)
+  isChanged             String?           @default("same")
   link                  String            @default("")
   editingPolitic        EditingPolitic[]  @relation("EditingPolitic_positionChange")
   createdAt             DateTime?
@@ -355,6 +355,7 @@ model PoliticPositionChange {
   updatedById           Int?              @map("updatedBy")
 
   @@index([factcheckPartnerId])
+  @@index([isChanged])
   @@index([createdById])
   @@index([updatedById])
 }
