@@ -80,6 +80,25 @@ const listConfigurations = list ({
     }),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
   },
+  hooks: {
+	validateInput: async ({
+      listKey,
+      operation,
+      inputData,
+      item,
+      resolvedData,
+      context,
+      addValidationError,
+	}) => { /* ... */ 
+	  if (operation === 'create' || operation === 'update') {
+		console.log(inputData.checkResultType )
+		console.log(inputData.checkResultOther)
+		if (inputData.checkResultType === "10" && (inputData.checkResultOther === '' || inputData.checkResultOther === undefined)) {
+			addValidationError("選擇「其他結果」時記得手動填入結果")
+		}
+	  }
+	},
+  },
   access: {
 	operation: {
 	  query: allowRoles(admin, moderator, editor),
