@@ -83,6 +83,7 @@ export const EmbeddedCodeBlock = (
   }, [embeddedCode])
 
   function convertIframesToAmp(embeddedCode) {
+
     // Regular expressions to match iframe and ig embed code
     const iframeRegex = /<iframe([^>]*)><\/iframe>/g
     const igEmbedRegex = /<blockquote class="instagram-media"([^>]*)<\/blockquote>/g
@@ -99,6 +100,7 @@ export const EmbeddedCodeBlock = (
             'allow="fullscreen"'
           )
         }
+
         // Extract width and height from iframe attributes
         const widthMatch = /width="(\d+)"/.exec(attributes)
         const heightMatch = /height="(\d+)"/.exec(attributes)
