@@ -1435,7 +1435,7 @@ input PoliticPositionChangeWhereInput {
   checkDate: DateTimeFilter
   positionChangeSummary: StringFilter
   content: StringFilter
-  isChanged: StringNullableFilter
+  isChanged: StringFilter
   link: StringFilter
   editingPolitic: EditingPoliticManyRelationFilter
   createdAt: DateTimeNullableFilter
@@ -1746,7 +1746,8 @@ type RelatedPost {
   ogIMage: String
   partner(where: FactcheckPartnerWhereInput! = {}, orderBy: [FactcheckPartnerOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FactcheckPartnerWhereUniqueInput): [FactcheckPartner!]
   partnerCount(where: FactcheckPartnerWhereInput! = {}): Int
-  election: Election
+  election(where: ElectionWhereInput! = {}, orderBy: [ElectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ElectionWhereUniqueInput): [Election!]
+  electionCount(where: ElectionWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1767,7 +1768,7 @@ input RelatedPostWhereInput {
   url: StringFilter
   ogIMage: StringFilter
   partner: FactcheckPartnerManyRelationFilter
-  election: ElectionWhereInput
+  election: ElectionManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1778,6 +1779,12 @@ input FactcheckPartnerManyRelationFilter {
   every: FactcheckPartnerWhereInput
   some: FactcheckPartnerWhereInput
   none: FactcheckPartnerWhereInput
+}
+
+input ElectionManyRelationFilter {
+  every: ElectionWhereInput
+  some: ElectionWhereInput
+  none: ElectionWhereInput
 }
 
 input RelatedPostOrderByInput {
@@ -1796,7 +1803,7 @@ input RelatedPostUpdateInput {
   url: String
   ogIMage: String
   partner: FactcheckPartnerRelateToManyForUpdateInput
-  election: ElectionRelateToOneForUpdateInput
+  election: ElectionRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1810,6 +1817,13 @@ input FactcheckPartnerRelateToManyForUpdateInput {
   connect: [FactcheckPartnerWhereUniqueInput!]
 }
 
+input ElectionRelateToManyForUpdateInput {
+  disconnect: [ElectionWhereUniqueInput!]
+  set: [ElectionWhereUniqueInput!]
+  create: [ElectionCreateInput!]
+  connect: [ElectionWhereUniqueInput!]
+}
+
 input RelatedPostUpdateArgs {
   where: RelatedPostWhereUniqueInput!
   data: RelatedPostUpdateInput!
@@ -1821,7 +1835,7 @@ input RelatedPostCreateInput {
   url: String
   ogIMage: String
   partner: FactcheckPartnerRelateToManyForCreateInput
-  election: ElectionRelateToOneForCreateInput
+  election: ElectionRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1831,6 +1845,11 @@ input RelatedPostCreateInput {
 input FactcheckPartnerRelateToManyForCreateInput {
   create: [FactcheckPartnerCreateInput!]
   connect: [FactcheckPartnerWhereUniqueInput!]
+}
+
+input ElectionRelateToManyForCreateInput {
+  create: [ElectionCreateInput!]
+  connect: [ElectionWhereUniqueInput!]
 }
 
 type FactcheckPartner {
@@ -2990,6 +3009,7 @@ type PersonElection {
   person_id: Person
   election: Election
   mainCandidate: PersonElection
+  name: String
   party: Organization
   legislatoratlarge_number: String
   number: String
