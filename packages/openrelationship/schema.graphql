@@ -3009,6 +3009,7 @@ type PersonElection {
   person_id: Person
   election: Election
   mainCandidate: PersonElection
+  name: String
   party: Organization
   legislatoratlarge_number: String
   number: String
