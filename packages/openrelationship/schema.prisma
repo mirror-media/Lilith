@@ -344,7 +344,7 @@ model PoliticPositionChange {
   checkDate             DateTime
   positionChangeSummary String            @default("")
   content               String            @default("")
-  isChanged             String?           @default("same")
+  isChanged             String            @default("same")
   link                  String            @default("")
   editingPolitic        EditingPolitic[]  @relation("EditingPolitic_positionChange")
   createdAt             DateTime?
@@ -429,8 +429,7 @@ model RelatedPost {
   url         String             @default("")
   ogIMage     String             @default("")
   partner     FactcheckPartner[] @relation("FactcheckPartner_posts")
-  election    Election?          @relation("RelatedPost_election", fields: [electionId], references: [id])
-  electionId  Int?               @map("election")
+  election    Election[]         @relation("RelatedPost_election")
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?              @relation("RelatedPost_createdBy", fields: [createdById], references: [id])
@@ -438,7 +437,6 @@ model RelatedPost {
   updatedBy   User?              @relation("RelatedPost_updatedBy", fields: [updatedById], references: [id])
   updatedById Int?               @map("updatedBy")
 
-  @@index([electionId])
   @@index([createdById])
   @@index([updatedById])
 }

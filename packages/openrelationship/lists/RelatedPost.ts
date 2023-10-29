@@ -36,7 +36,7 @@ const listConfigurations = list ({
     election: relationship({
       label: '相關選舉',
 	  ref: 'Election',
-	  many: false,
+	  many: true,
     }),
   },
   access: {

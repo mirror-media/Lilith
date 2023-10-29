@@ -25,7 +25,6 @@ const listConfigurations = list ({
       label: '搭配主要候選人',
       ref: 'PersonElection',
     }),
-    /*
     name: virtual({
 	  field: graphql.field({
 		type: graphql.String,
@@ -34,12 +33,10 @@ const listConfigurations = list ({
             where: { id: item.id.toString() },
             query: 'person_id { name }, election {name}',
           });
-          console.log(election.name);
-          return person_id.name + "-" + election.name;
+          return person_id?.name + "-" + election?.name;
 		},
 	  }),
     }),
-    */
 	party: relationship({ 
 	  label: '推薦政黨',
 	  many: false,
@@ -95,6 +92,7 @@ const listConfigurations = list ({
 	 }),
 
   },
+  labelField: 'name', 
   access: {
 	operation: {
 	  query: allowRoles(admin, moderator, editor),

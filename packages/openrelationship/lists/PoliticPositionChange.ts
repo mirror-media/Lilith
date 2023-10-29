@@ -49,6 +49,7 @@ const listConfigurations = list ({
         { label: '當時未表態', value: 'noComment' },
       ], 
       label: '立場改變',
+	  validation: { isRequired: true },
 	  isIndexed: true,
     }),
     link: text({ 
