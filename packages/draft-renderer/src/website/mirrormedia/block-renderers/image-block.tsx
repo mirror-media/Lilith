@@ -12,6 +12,7 @@ import {
   enableBodyScroll,
   clearAllBodyScrollLocks,
 } from 'body-scroll-lock'
+import { ContentLayout } from '../types'
 
 const imageFigureLayoutNormal = css`
   .readr-media-react-image {
@@ -80,7 +81,9 @@ const Figure = styled.figure`
     cursor: pointer;
   }
 `
-const ImageFigure = styled(Figure)`
+const ImageFigure = styled(Figure)<{
+  contentLayout: ContentLayout
+}>`
   ${({ contentLayout }) => {
     switch (contentLayout) {
       case 'normal':
@@ -94,7 +97,7 @@ const ImageFigure = styled(Figure)`
     }
   }}
 `
-const Figcaption = styled.figcaption`
+const Figcaption = styled.figcaption<{ contentLayout: ContentLayout }>`
   font-size: 14px;
   line-height: 1.8;
   font-weight: 400;
@@ -177,7 +180,7 @@ const LightBoxWrapper = styled.div`
 type ImageBlockProps = {
   block: ContentBlock
   blockProps: {
-    contentLayout: string
+    contentLayout: ContentLayout
   }
   contentState: ContentState
 }

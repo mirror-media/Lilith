@@ -1,5 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
+import { ContentLayout } from '../types'
 
 const linkStyleNormal = css`
   color: #054f77;
@@ -8,7 +9,7 @@ const linkStylePhotography = css`
   color: #61b8c6;
 `
 
-const LinkWrapper = styled.a`
+const LinkWrapper = styled.a<{ contentLayout: ContentLayout }>`
   text-decoration: underline;
   text-underline-offset: 2px;
   &:active {
@@ -36,7 +37,7 @@ function findLinkEntities(contentBlock, callback, contentState) {
   }, callback)
 }
 
-export const linkDecorator = (contentLayout = 'normal') => {
+export const linkDecorator = (contentLayout: ContentLayout = 'normal') => {
   return {
     strategy: findLinkEntities,
     component: Link,

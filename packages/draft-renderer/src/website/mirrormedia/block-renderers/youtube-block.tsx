@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
 import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
+import { ContentLayout } from '../types'
 
 const YoutubeRenderWrapper = styled.div`
   ${defaultMarginTop}
@@ -34,7 +35,7 @@ const Caption = styled.div`
 
 export function YoutubeBlock(
   entity: DraftEntityInstance,
-  contentLayout: string
+  contentLayout: ContentLayout
 ) {
   const isAmp = contentLayout === 'amp'
   const { youtubeId, description } = entity.getData()
