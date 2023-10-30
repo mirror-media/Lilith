@@ -44,6 +44,7 @@ import { ImageSelector } from './selector/image-selector'
 import { VideoSelector } from './selector/video-selector'
 import { PostSelector } from './selector/post-selector'
 import { AudioSelector } from './selector/audio-selector'
+import { defaultMarginBottom } from './shared-style'
 
 export const buttonNames = {
   // inline styles
@@ -292,6 +293,12 @@ const DraftEditorWrapper = styled.div`
   padding: 0 1rem 1rem;
   font-size: 18px;
   line-height: 2;
+  letter-spacing: 0.3px;
+
+  .public-DraftStyleDefault-block {
+    ${defaultMarginBottom}
+  }
+
   /* Draft built-in buttons' style */
   .public-DraftStyleDefault-header-two {
     font-size: 36px;
@@ -306,10 +313,12 @@ const DraftEditorWrapper = styled.div`
   .public-DraftStyleDefault-blockquote {
   }
   .public-DraftStyleDefault-ul {
+    ${defaultMarginBottom}
   }
   .public-DraftStyleDefault-unorderedListItem {
   }
   .public-DraftStyleDefault-ol {
+    ${defaultMarginBottom}
   }
   .public-DraftStyleDefault-orderedListItem {
   }
