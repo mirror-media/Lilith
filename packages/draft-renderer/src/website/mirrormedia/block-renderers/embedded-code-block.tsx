@@ -82,52 +82,87 @@ export const EmbeddedCodeBlock = (
     node.appendChild(fragment)
   }, [embeddedCode])
 
+  // function convertIframesToAmp(embeddedCode) {
+
+  //   // Regular expressions to match iframe and ig embed code
+  //   const iframeRegex = /<iframe([^>]*)><\/iframe>/g
+  //   // const igEmbedRegex = /<blockquote class="instagram-media"([^>]*)<\/blockquote>/g
+
+  //   // Process iframe code
+  //   const ampEmbeddedCode = embeddedCode.replace(
+  //     iframeRegex,
+  //     (iframeMatch, attributes) => {
+  //       // Check if the iframe includes 'allowfullscreen="true"'
+  //       if (attributes.includes('allowfullscreen="true"')) {
+  //         // Replace 'allowfullscreen' with 'allow'
+  //         attributes = attributes.replace(
+  //           'allowfullscreen="true"',
+  //           'allow="fullscreen"'
+  //         )
+  //       }
+
+  //       // Extract width and height from iframe attributes
+  //       const widthMatch = /width="(\d+)"/.exec(attributes)
+  //       const heightMatch = /height="(\d+)"/.exec(attributes)
+  //       const width = widthMatch ? ` width="${widthMatch[1]}"` : '' // Get width
+  //       const height = heightMatch ? ` height="${heightMatch[1]}"` : '' // Get height
+  //       // Replace the original iframe tag with the amp-iframe tag
+  //       return `<amp-iframe${attributes}${width}${height}></amp-iframe>`
+  //     }
+  //   )
+
+  //   // Process ig embed code
+  //   // const ampInstagramCode = ampEmbeddedCode.replace(
+  //   //   igEmbedRegex,
+  //   //   (igEmbedMatch, attributes) => {
+  //   //     // Replace with amp-instagram code and add width and height attributes
+  //   //     return `<amp-instagram width="1" height="1" data-shortcode="${attributes}" data-captioned></amp-instagram>`
+  //   //   }
+  //   // )
+  //   // const ampInstagramCode = transformInstagramToAmp(ampEmbeddedCode?? '') ?? ''
+
+  //   // Use regex to replace <script> tags with <amp-script>
+  //   const scriptRegex = /<script([^>]*)><\/script>/g
+  //   const ampScriptEmbeddedCode = ampEmbeddedCode.replace(
+  //     scriptRegex,
+  //     (match, attributes) => {
+  //       // Get the value of the 'src' attribute
+  //       const srcMatch = /src="([^"]*)"/.exec(attributes)
+  //       if (srcMatch && srcMatch[1]) {
+  //         // Replace <script> with <amp-script> and add an absolute 'src' attribute
+  //         const absoluteSrc = `https:${srcMatch[1]}`
+  //         return `<amp-script src="${absoluteSrc}"></amp-script>`
+  //       }
+  //       // If 'src' attribute is missing, replace <script> with <amp-script>
+  //       return `<amp-script${attributes}></amp-script>`
+  //     }
+  //   )
+
+  //   return ampScriptEmbeddedCode
+  // }
+
   function convertIframesToAmp(embeddedCode) {
-
-    // Regular expressions to match iframe and ig embed code
+    // 使用 regex 拿到 iframe tag，並取得內容和 attribute
     const iframeRegex = /<iframe([^>]*)><\/iframe>/g
-    const igEmbedRegex = /<blockquote class="instagram-media"([^>]*)<\/blockquote>/g
-
-    // Process iframe code
     const ampEmbeddedCode = embeddedCode.replace(
       iframeRegex,
-      (iframeMatch, attributes) => {
-        // Check if the iframe includes 'allowfullscreen="true"'
+      (match, attributes) => {
+        // 检查 iframe 是否包含 allowfullscreen='true'
         if (attributes.includes('allowfullscreen="true"')) {
-          // Replace 'allowfullscreen' with 'allow'
+          // 将 allowfullscreen 替换为 allow
           attributes = attributes.replace(
             'allowfullscreen="true"',
             'allow="fullscreen"'
           )
         }
-
-        // Extract width and height from iframe attributes
-        const widthMatch = /width="(\d+)"/.exec(attributes)
-        const heightMatch = /height="(\d+)"/.exec(attributes)
-        const width = widthMatch ? ` width="${widthMatch[1]}"` : '' // Get width
-        const height = heightMatch ? ` height="${heightMatch[1]}"` : '' // Get height
-        // Replace the original iframe tag with the amp-iframe tag
-        return `<amp-iframe${attributes}${width}${height}></amp-iframe>`
-      }
-    )
-
-    // Process ig embed code
-    const ampInstagramCode = ampEmbeddedCode.replace(
-      igEmbedRegex,
-      (igEmbedMatch, attributes) => {
-        // Extract width and height from ig embed attributes
-        const widthMatch = /width: (\d+)px/.exec(attributes)
-        const heightMatch = /height: (\d+)px/.exec(attributes)
-        const width = widthMatch ? ` width="${widthMatch[1]}"` : '' // Get width
-        const height = heightMatch ? ` height="${heightMatch[1]}"` : '' // Get height
-        // Replace with amp-instagram code and add width and height attributes
-        return `<amp-instagram${width}${height} data-shortcode${attributes} data-captioned</amp-instagram>`
+        // 使用 amp-iframe tag 替換原來的 iframe tag
+        return `<amp-iframe${attributes}></amp-iframe>`
       }
     )
 
     // Use regex to replace <script> tags with <amp-script>
     const scriptRegex = /<script([^>]*)><\/script>/g
-    const ampScriptEmbeddedCode = ampInstagramCode.replace(
+    const ampScriptEmbeddedCode = ampEmbeddedCode.replace(
       scriptRegex,
       (match, attributes) => {
         // Get the value of the 'src' attribute
