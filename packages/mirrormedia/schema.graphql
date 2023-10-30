@@ -5,6 +5,7 @@ type AudioFile {
   id: ID!
   name: String
   file: FileFieldOutput
+  audioSrc: String
   urlOriginal: String
   heroImage: Photo
   content: JSON
