@@ -58,12 +58,28 @@ const listConfigurations = list({
   access: {
     operation: {
       query: allowRolesForUsers(admin, moderator, editor),
-      update: allowRolesForUsers(admin, moderator),
+      update: allowRolesForUsers(admin, moderator, editor),
       create: allowRolesForUsers(admin, moderator),
       delete: allowRolesForUsers(admin),
     },
   },
-  hooks: {},
+  hooks: {
+	validateInput: async ({
+	  listKey,
+	  operation,
+	  inputData,
+	  item,
+	  resolvedData,
+	  context,
+	  addValidationError,
+	}) => { /* ... */ 
+	  if (operation === 'update') {
+		if (context!.session?.data?.name !== item?.name && (context!.session?.data?.role === 'editor')) {
+		  addValidationError("沒有修改權限")
+		}
+	  }
+	},
+  },
 })
 
 export default listConfigurations
