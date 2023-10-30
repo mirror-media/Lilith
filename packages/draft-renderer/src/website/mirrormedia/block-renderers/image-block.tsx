@@ -12,6 +12,7 @@ import {
   enableBodyScroll,
   clearAllBodyScrollLocks,
 } from 'body-scroll-lock'
+import { ContentLayout } from '../types'
 
 const imageFigureLayoutNormal = css`
   .readr-media-react-image {
@@ -71,16 +72,20 @@ const figcaptionLayoutWide = css`
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 `
 
-const Figure = styled.figure`
+const Figure = styled.figure<{ aspectRatio: string }>`
   /* margin-block: unset; */
   /* margin-inline: unset; */
   ${defaultMarginTop}
   ${defaultMarginBottom}
   .readr-media-react-image {
     cursor: pointer;
+    aspect-ratio: ${({ aspectRatio }) =>
+      aspectRatio ? aspectRatio : 'inherit'};
   }
 `
-const ImageFigure = styled(Figure)`
+const ImageFigure = styled(Figure)<{
+  contentLayout: ContentLayout
+}>`
   ${({ contentLayout }) => {
     switch (contentLayout) {
       case 'normal':
@@ -94,7 +99,7 @@ const ImageFigure = styled(Figure)`
     }
   }}
 `
-const Figcaption = styled.figcaption`
+const Figcaption = styled.figcaption<{ contentLayout: ContentLayout }>`
   font-size: 14px;
   line-height: 1.8;
   font-weight: 400;
@@ -177,7 +182,7 @@ const LightBoxWrapper = styled.div`
 type ImageBlockProps = {
   block: ContentBlock
   blockProps: {
-    contentLayout: string
+    contentLayout: ContentLayout
   }
   contentState: ContentState
 }
@@ -193,8 +198,17 @@ export function ImageBlock(props: ImageBlockProps) {
   const isAmp = contentLayout === 'amp'
 
   const [shouldOpenLightBox, setShouldOpenLightBox] = useState(false)
-  const { name, desc, resized, url, resizedWebp = null } = entity.getData()
-
+  const {
+    name,
+    desc,
+    resized,
+    url,
+    resizedWebp = null,
+    imageFile = {},
+  } = entity.getData()
+  const { width = 0, height = 0 } = imageFile
+  const aspectRatio = width && height ? `${width} / ${height}` : 'inherit'
+  console.log(aspectRatio)
   const hasDescription = Boolean(desc)
   useEffect(() => {
     if (lightBoxRef && lightBoxRef.current) {
@@ -240,6 +254,7 @@ export function ImageBlock(props: ImageBlockProps) {
     <ImageFigure
       key={resized.original}
       contentLayout={contentLayout}
+      aspectRatio={aspectRatio}
       onClick={handleOpen}
     >
       {imageJsx}
