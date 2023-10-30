@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
 import AmpAudioBlock from './amp/amp-audio-block'
 import { defaultMarginBottom, defaultMarginTop } from '../shared-style'
+import { ContentLayout } from '../types'
 const AudioWrapper = styled.div`
   display: flex;
   gap: 8px;
@@ -54,7 +55,10 @@ type AudioEntity = {
   heroImage?: ImageEntity
 }
 
-export function AudioBlock(entity: DraftEntityInstance, contentLayout: string) {
+export function AudioBlock(
+  entity: DraftEntityInstance,
+  contentLayout: ContentLayout
+) {
   const isAmp = contentLayout === 'amp'
   const { audio }: { audio: AudioEntity } = entity.getData()
 

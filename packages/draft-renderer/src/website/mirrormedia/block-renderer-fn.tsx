@@ -1,4 +1,5 @@
 import { blockRenderers } from './block-renderers'
+import { ContentLayout } from './types'
 const {
   EmbeddedCodeBlock,
   MediaBlock,
@@ -21,7 +22,7 @@ const {
 
 const AtomicBlock = (props) => {
   const entity = props.contentState.getEntity(props.block.getEntityAt(0))
-  const { contentLayout } = props.blockProps
+  const { contentLayout }: { contentLayout: ContentLayout } = props.blockProps
   const entityType = entity.getType()
 
   switch (entityType) {

@@ -42,7 +42,7 @@ const listConfigurations = list ({
 		label: '合作形式',
 		options: [
 			{ value: '合作媒體', label: '合作媒體' },
-			{ value: '合作單位', label: '合作單位' },
+			{ value: '協作單位', label: '協作單位' },
 		],
 		defaultValue: '合作媒體',
 	}),

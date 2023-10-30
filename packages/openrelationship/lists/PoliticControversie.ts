@@ -50,5 +50,42 @@ const listConfigurations = list ({
 	  delete: allowRoles(admin, moderator, editor),
 	},
   },
+  hooks: {
+    validateInput: async ({
+      listKey,
+      operation,
+      inputData,
+      item,
+      resolvedData,
+      context,
+      addValidationError,
+    }) => { /* ... */ 
+      if (operation === 'update') {
+        const { name } = await context.query.User.findOne({
+          where: { id: item.createdById.toString() },
+          query: 'name',
+        });
+        if (context!.session?.data?.name !== name && context?.session?.data?.role === 'editor') {
+          addValidationError("沒有權限")
+        }
+      }
+    },
+    validateDelete: async ({
+      listKey,
+      fieldKey,
+      operation,
+      item,
+      context,
+      addValidationError,
+    }) => { /* ... */ 
+      const { name } = await context.query.User.findOne({
+        where: { id: item.createdById.toString() },
+        query: 'name',
+      });
+      if (context!.session?.data?.name !== name && context?.session?.data?.role === 'editor') {
+        addValidationError("沒有權限")
+      }
+    },
+  },
 })
 export default utils.addTrackingFields(listConfigurations)

@@ -14,6 +14,7 @@ type ImageType = Record<
 type ImageResized = ImageType
 type ImageResizedWebp = ImageType | null
 import AmpSlideshowBlockV2 from './amp/amp-slideshow-block'
+import { ContentLayout } from '../types'
 
 const Image = styled.img`
   width: 100%;
@@ -164,7 +165,7 @@ export function SlideshowBlock(entity: EntityInstance) {
  */
 export function SlideshowBlockV2(
   entity: EntityInstance,
-  contentLayout: string
+  contentLayout: ContentLayout
 ) {
   const slidesBoxRef = useRef<HTMLDivElement>(null)
   /** Current index of the displayed slide */

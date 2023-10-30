@@ -91,13 +91,32 @@ const listConfigurations = list ({
       addValidationError,
 	}) => { /* ... */ 
 	  if (operation === 'create' || operation === 'update') {
-		console.log(inputData.checkResultType )
-		console.log(inputData.checkResultOther)
+        if (operation === 'update') {
+          if (context!.session?.data?.name !== item?.name && (context!.session?.data.role === 'editor')) {
+            addValidationError("沒有修改權限")
+          }
+        }
 		if (inputData.checkResultType === "10" && (inputData.checkResultOther === '' || inputData.checkResultOther === undefined)) {
 			addValidationError("選擇「其他結果」時記得手動填入結果")
 		}
 	  }
 	},
+    validateDelete: async ({
+      listKey,
+      fieldKey,
+      operation,
+      item,
+      context,
+      addValidationError,
+    }) => { /* ... */ 
+      const { name } = await context.query.User.findOne({
+        where: { id: item.createdById.toString() },
+        query: 'name',
+      });
+      if (context!.session?.data?.name !== name && context?.session?.data?.role === 'editor') {
+        addValidationError("沒有權限")
+      }
+    },
   },
   access: {
 	operation: {

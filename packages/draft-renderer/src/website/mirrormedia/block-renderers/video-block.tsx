@@ -4,6 +4,7 @@ import { DraftEntityInstance } from 'draft-js'
 import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
 import AmpVideoBlock from './amp/amp-video-block'
 import AmpVideoBlockV2 from './amp/amp-video-block-v2'
+import { ContentLayout } from '../types'
 
 const Video = styled.video`
   width: 100%;
@@ -44,7 +45,10 @@ type VideoEntity = {
 /**
  * Before 202310, video which contain property `urlOriginal` and not contain property `videoSrc`.
  */
-export function VideoBlock(entity: DraftEntityInstance, contentLayout: string) {
+export function VideoBlock(
+  entity: DraftEntityInstance,
+  contentLayout: ContentLayout
+) {
   const isAmp = contentLayout === 'amp'
   const { video }: { video: VideoEntity } = entity.getData()
 
