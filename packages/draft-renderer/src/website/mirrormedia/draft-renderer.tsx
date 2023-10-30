@@ -11,7 +11,7 @@ import {
 } from '../../draft-js/const'
 import { defaultMarginBottom } from './shared-style'
 import theme from './theme'
-
+import { ContentLayout } from './types'
 export const draftEditorLineHeight = 2
 /**
  * Due to the data structure from draftjs, each default block contain one HTML element which class name is `public-DraftStyleDefault-block`.
@@ -172,7 +172,7 @@ const draftEditorCssPhotography = css`
   }
 `
 
-const DraftEditorWrapper = styled.div`
+const DraftEditorWrapper = styled.div<{ contentLayout: ContentLayout }>`
   width: 100%;
   height: 100%;
   border: 0;
@@ -348,10 +348,15 @@ const blockStyleFn = (editorState, block) => {
   }
   return result
 }
-
+/**
+ * TODO: add type of params `rawContentBlock`
+ */
 export default function DraftRenderer({
   rawContentBlock,
   contentLayout = 'normal',
+}: {
+  rawContentBlock: any
+  contentLayout: ContentLayout
 }) {
   const contentState = convertFromRaw(rawContentBlock)
   const decorators = decoratorsGenerator(contentLayout)
