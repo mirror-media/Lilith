@@ -1,6 +1,7 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
+import { graphql } from '@graphql-ts/schema'
 import { list } from '@keystone-6/core'
-import { text, relationship, file, json } from '@keystone-6/core/fields'
+import { text, relationship, file, json, virtual } from '@keystone-6/core/fields'
 
 const { admin, allowRoles, moderator } = utils.accessControl
 
@@ -13,6 +14,18 @@ const listConfigurations = list({
     file: file({
       label: '檔案',
       storage: 'files',
+    }),
+    audioSrc: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, string>) {
+          const filename = item?.file_filename
+          if (!filename) {
+            return ''
+          }
+          return `https://${config.googleCloudStorage.bucket}/files/${filename}`
+        },
+      }),
     }),
     urlOriginal: text({
       ui: {

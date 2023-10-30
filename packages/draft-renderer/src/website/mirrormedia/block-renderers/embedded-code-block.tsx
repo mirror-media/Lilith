@@ -83,45 +83,40 @@ export const EmbeddedCodeBlock = (
   }, [embeddedCode])
 
   function convertIframesToAmp(embeddedCode) {
-
-    // Regular expressions to match iframe and ig embed code
+    // 使用 regex 拿到 iframe tag，並取得內容和 attribute
     const iframeRegex = /<iframe([^>]*)><\/iframe>/g
-    const igEmbedRegex = /<blockquote class="instagram-media"([^>]*)<\/blockquote>/g
-
-    // Process iframe code
     const ampEmbeddedCode = embeddedCode.replace(
       iframeRegex,
-      (iframeMatch, attributes) => {
-        // Check if the iframe includes 'allowfullscreen="true"'
+      (match, attributes) => {
+        // 检查 iframe 是否包含 allowfullscreen='true'
         if (attributes.includes('allowfullscreen="true"')) {
-          // Replace 'allowfullscreen' with 'allow'
+          // 将 allowfullscreen 替换为 allow
           attributes = attributes.replace(
             'allowfullscreen="true"',
             'allow="fullscreen"'
           )
         }
-
-        // Extract width and height from iframe attributes
-        const widthMatch = /width="(\d+)"/.exec(attributes)
-        const heightMatch = /height="(\d+)"/.exec(attributes)
-        const width = widthMatch ? ` width="${widthMatch[1]}"` : '' // Get width
-        const height = heightMatch ? ` height="${heightMatch[1]}"` : '' // Get height
-        // Replace the original iframe tag with the amp-iframe tag
-        return `<amp-iframe${attributes}${width}${height}></amp-iframe>`
+        // 使用 amp-iframe tag 替換原來的 iframe tag
+        return `<amp-iframe${attributes}></amp-iframe>`
       }
     )
 
-    // Process ig embed code
+    // use regex to replace instagram embedded code with <amp-instagram>
+    const igEmbedRegex = /<blockquote class="instagram-media"[^>]* data-instgrm-permalink="([^"]+)"[^>]*>[\s\S]*?<\/blockquote>/g
+
     const ampInstagramCode = ampEmbeddedCode.replace(
       igEmbedRegex,
-      (igEmbedMatch, attributes) => {
-        // Extract width and height from ig embed attributes
-        const widthMatch = /width: (\d+)px/.exec(attributes)
-        const heightMatch = /height: (\d+)px/.exec(attributes)
-        const width = widthMatch ? ` width="${widthMatch[1]}"` : '' // Get width
-        const height = heightMatch ? ` height="${heightMatch[1]}"` : '' // Get height
-        // Replace with amp-instagram code and add width and height attributes
-        return `<amp-instagram${width}${height} data-shortcode${attributes} data-captioned</amp-instagram>`
+      (igEmbedMatch, permalink) => {
+        const hasCaptioned = igEmbedMatch.includes('data-instgrm-captioned')
+        // 從 permalink 中提取 shortcode
+        const shortcodeMatch = permalink.match(/\/p\/([^/?]+)/)
+        if (shortcodeMatch) {
+          const shortcode = shortcodeMatch[1]
+          return `<amp-instagram width="1" height="1" data-shortcode="${shortcode}" ${
+            hasCaptioned ? 'data-captioned' : ''
+          } layout="responsive"></amp-instagram>`
+        }
+        return igEmbedMatch // 如果無法提取 shortcode，保持原樣
       }
     )
 
@@ -159,6 +154,7 @@ export const EmbeddedCodeBlock = (
   return (
     <Wrapper>
       <Block ref={embedded} />
+
       {caption ? <Caption>{caption}</Caption> : null}
     </Wrapper>
   )
