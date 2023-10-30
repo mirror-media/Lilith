@@ -293,7 +293,7 @@ const DraftEditorWrapper = styled.div`
   padding: 0 1rem 1rem;
   font-size: 18px;
   line-height: 2;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
 
   .public-DraftStyleDefault-block {
     ${defaultMarginBottom}
