@@ -22,7 +22,7 @@
     "@keystone-6/auth": "7.0.0",
     "@keystone-6/core": "5.2.0",
     "@keyv/redis": "^2.7.0",
-    "@mirrormedia/lilith-core": "2.0.0-alpha.18",
+    "@mirrormedia/lilith-core": "2.0.0-alpha.19",
     "@twreporter/errors": "^1.1.2",
     "express": "^4.17.1",
     "firebase-admin": "^11.4.1",
