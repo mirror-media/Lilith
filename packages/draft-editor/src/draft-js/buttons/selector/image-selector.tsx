@@ -260,6 +260,8 @@ const imagesQuery = gql`
       name
       imageFile {
         url
+        width
+        height
       }
       resized {
         original
