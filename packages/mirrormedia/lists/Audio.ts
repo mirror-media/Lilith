@@ -1,7 +1,14 @@
+import config from '../config'
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { graphql } from '@graphql-ts/schema'
 import { list } from '@keystone-6/core'
-import { text, relationship, file, json, virtual } from '@keystone-6/core/fields'
+import {
+  text,
+  relationship,
+  file,
+  json,
+  virtual,
+} from '@keystone-6/core/fields'
 
 const { admin, allowRoles, moderator } = utils.accessControl
 
@@ -18,7 +25,7 @@ const listConfigurations = list({
     audioSrc: virtual({
       field: graphql.field({
         type: graphql.String,
-        resolve(item: Record<string, string>) {
+        resolve(item: Record<string, unknown>) {
           const filename = item?.file_filename
           if (!filename) {
             return ''
