@@ -158,7 +158,25 @@ export const EmbeddedCodeBlock = (
       }
     )
 
-    return ampScriptEmbeddedCode
+    const audioRegex = /<audio([^>]*)><\/audio>/g
+    const ampAudioCode = ampScriptEmbeddedCode.replace(
+      audioRegex,
+      (match, attributes) => {
+        // 使用 <amp-audio> 标记替换原始的 <audio>
+        return `<amp-audio${attributes}></amp-audio>`
+      }
+    )
+
+    const videoRegex = /<video([^>]*)><\/video>/g
+    const ampVideoCode = ampAudioCode.replace(
+      videoRegex,
+      (match, attributes) => {
+        // 使用 <amp-video> 标记替换原始的 <video>
+        return `<amp-video${attributes}></amp-video>`
+      }
+    )
+
+    return ampVideoCode
   }
 
   if (contentLayout === 'amp') {
