@@ -21,6 +21,8 @@ const imagesQuery = gql`
       name
       imageFile {
         url
+        width
+        height
       }
       resized {
         original
@@ -118,6 +120,8 @@ type ID = string
 
 export type ImageEntityImageFile = {
   url: string
+  width: number
+  height: number
 }
 
 export type ImageEntityResized = {
@@ -134,6 +138,8 @@ export type ImageEntity = {
   name?: string
   imageFile: {
     url: string
+    width: number
+    height: number
   }
   resized: ImageEntityResized
   resizedWebp: ImageEntityResized
