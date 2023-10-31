@@ -121,9 +121,29 @@ export const EmbeddedCodeBlock = (
       }
     )
 
+    // Use regular expression to match Twitter embedded code
+    const twitterRegex = /<blockquote[^>]* class="twitter-tweet"[^>]*>[\s\S]*?<\/blockquote>/g
+    const ampTwitterCode = ampInstagramCode.replace(
+      twitterRegex,
+      (twitterMatch) => {
+        // Use regular expression to extract the value of the data-tweet-id attribute
+        const tweetIdMatch = twitterMatch.match(
+          /twitter\.com\/[^/]+\/status\/(\d+)/i
+        )
+        if (tweetIdMatch && tweetIdMatch[1]) {
+          const tweetId = tweetIdMatch[1]
+          if (tweetIdMatch && tweetId) {
+            // Replace with <amp-twitter> tag
+            return `<amp-twitter width="375" height="472" data-tweetid="${tweetId}"></amp-twitter>`
+          }
+        }
+        return twitterMatch // Keep it as-is if unable to extract the tweet ID
+      }
+    )
+
     // Use regex to replace <script> tags with <amp-script>
     const scriptRegex = /<script([^>]*)><\/script>/g
-    const ampScriptEmbeddedCode = ampInstagramCode.replace(
+    const ampScriptEmbeddedCode = ampTwitterCode.replace(
       scriptRegex,
       (match, attributes) => {
         // Get the value of the 'src' attribute
