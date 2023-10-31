@@ -10,7 +10,7 @@ import {
   checkbox,
   timestamp,
   json,
-  virtual
+  virtual,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -28,7 +28,7 @@ const listConfigurations = list({
     videoSrc: virtual({
       field: graphql.field({
         type: graphql.String,
-        resolve(item: Record<string, string>) {
+        resolve(item: Record<string, unknown>) {
           const filename = item?.file_filename
           if (!filename) {
             return ''
