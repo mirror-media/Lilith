@@ -40,11 +40,28 @@ export function YoutubeBlock(
   const isAmp = contentLayout === 'amp'
   const { youtubeId, description } = entity.getData()
 
+  function handleYoutubeId(urlOrId = '') {
+    // 使用正規表達式檢查可能的 YouTube ID 格式
+    const youtubeIdRegex = /^(?:https?:\/\/(?:www\.)?youtube\.com\/watch\?v=|https?:\/\/youtu.be\/|\/id\/)?([a-zA-Z0-9_-]{11})/i
+
+    const matches = urlOrId.startsWith('/')
+      ? urlOrId.replace('/', '').match(youtubeIdRegex)
+      : urlOrId.match(youtubeIdRegex)
+
+    if (matches && matches[1]) {
+      return matches[1]
+    }
+
+    return ''
+  }
+
   const ampYoutubeIframe = youtubeId ? (
     <IframeWrapper>
-      <amp-youtube data-videoid={youtubeId} layout="fill">
+      <amp-youtube data-videoid={handleYoutubeId(youtubeId)} layout="fill">
         <amp-img
-          src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
+          src={`https://i.ytimg.com/vi/${handleYoutubeId(
+            youtubeId
+          )}/hqdefault.jpg`}
           placeholder
           layout="fill"
         />
