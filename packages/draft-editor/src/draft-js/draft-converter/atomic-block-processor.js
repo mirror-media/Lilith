@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import _ from 'lodash'
+import React from 'react'
 // import sizeOf from 'image-size';
 import ApiDataInstance from './api-data-instance'
 import ENTITY from './entities'
