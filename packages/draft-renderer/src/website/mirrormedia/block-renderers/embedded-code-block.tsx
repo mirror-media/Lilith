@@ -158,8 +158,22 @@ export const EmbeddedCodeBlock = (
       }
     )
 
+    const imgRegex = /<amp-img([^>]*)>/g
+    const ampImgEmbeddedCode = ampScriptEmbeddedCode.replace(
+      imgRegex,
+      (match, attributes) => {
+        // 檢查 img 是否包含 src 屬性
+        if (attributes.includes('src=')) {
+          // 使用 amp-img 代替 img 標籤
+          return `<amp-img${attributes}></amp-img>`
+        }
+        // 如果 img 沒有 src 屬性，則返回空字符串
+        return ''
+      }
+    )
+
     const audioRegex = /<audio([^>]*)><\/audio>/g
-    const ampAudioCode = ampScriptEmbeddedCode.replace(
+    const ampAudioCode = ampImgEmbeddedCode.replace(
       audioRegex,
       (match, attributes) => {
         // 使用 <amp-audio> 标记替换原始的 <audio>
@@ -176,7 +190,11 @@ export const EmbeddedCodeBlock = (
       }
     )
 
-    return ampVideoCode
+    // 使用正則表達式將 <style 轉換為 <style amp-custom
+    const styleRegex = /<style/g
+    const ampStyleCode = ampVideoCode.replace(styleRegex, '<style amp-custom')
+
+    return ampStyleCode
   }
 
   if (contentLayout === 'amp') {
