@@ -31,7 +31,7 @@ const listConfigurations = list({
 		type: select({
 			label: '選舉目的（種類）',
 			options: [
-				{ value: '總統/副總統', label: '總統/副總統' },
+				{ value: '總統（副總統）', label: '總統（副總統）' },
 				{ value: '立法委員', label: '立法委員' },
 				{ value: '不分區立委', label: '不分區立委' },
 				{ value: '原住民立委', label: '原住民立委' },
