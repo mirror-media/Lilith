@@ -1241,7 +1241,7 @@ input PoliticExpertWhereInput {
   NOT: [PoliticExpertWhereInput!]
   id: IDFilter
   politic: PoliticManyRelationFilter
-  expert: StringNullableFilter
+  expert: StringFilter
   avatar: StringFilter
   title: StringFilter
   expertPointSummary: StringFilter

@@ -206,8 +206,11 @@ export function ImageBlock(props: ImageBlockProps) {
     resizedWebp = null,
     imageFile = {},
   } = entity.getData()
-  const { width = 0, height = 0 } = imageFile
-  const aspectRatio = width && height ? `${width} / ${height}` : 'inherit'
+  //imageFile in possibly a `null`
+  const aspectRatio =
+    imageFile && imageFile?.width && imageFile?.height
+      ? `${imageFile.width} / ${imageFile.height}`
+      : 'inherit'
   const hasDescription = Boolean(desc)
   useEffect(() => {
     if (lightBoxRef && lightBoxRef.current) {
