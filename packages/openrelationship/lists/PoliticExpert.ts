@@ -20,9 +20,6 @@ const listConfigurations = list ({
     expert: text({ 
 	  label: '專家姓名',
 	  validation: { isRequired: true },
-	  db: {
-	    isNullable: true,
-	  }
 	}),
     avatar: text({ 
 	  label: '頭像連結',
