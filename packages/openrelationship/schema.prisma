@@ -294,7 +294,7 @@ model PoliticTimeline {
 model PoliticExpert {
   id                 Int              @id @default(autoincrement())
   politic            Politic[]        @relation("Politic_expertPoint")
-  expert             String?
+  expert             String           @default("")
   avatar             String           @default("")
   title              String           @default("")
   expertPointSummary String           @default("")

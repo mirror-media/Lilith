@@ -121,9 +121,29 @@ export const EmbeddedCodeBlock = (
       }
     )
 
+    // Use regular expression to match Twitter embedded code
+    const twitterRegex = /<blockquote[^>]* class="twitter-tweet"[^>]*>[\s\S]*?<\/blockquote>/g
+    const ampTwitterCode = ampInstagramCode.replace(
+      twitterRegex,
+      (twitterMatch) => {
+        // Use regular expression to extract the value of the data-tweet-id attribute
+        const tweetIdMatch = twitterMatch.match(
+          /twitter\.com\/[^/]+\/status\/(\d+)/i
+        )
+        if (tweetIdMatch && tweetIdMatch[1]) {
+          const tweetId = tweetIdMatch[1]
+          if (tweetIdMatch && tweetId) {
+            // Replace with <amp-twitter> tag
+            return `<amp-twitter width="375" height="472" data-tweetid="${tweetId}"></amp-twitter>`
+          }
+        }
+        return twitterMatch // Keep it as-is if unable to extract the tweet ID
+      }
+    )
+
     // Use regex to replace <script> tags with <amp-script>
     const scriptRegex = /<script([^>]*)><\/script>/g
-    const ampScriptEmbeddedCode = ampInstagramCode.replace(
+    const ampScriptEmbeddedCode = ampTwitterCode.replace(
       scriptRegex,
       (match, attributes) => {
         // Get the value of the 'src' attribute
@@ -138,7 +158,43 @@ export const EmbeddedCodeBlock = (
       }
     )
 
-    return ampScriptEmbeddedCode
+    const imgRegex = /<amp-img([^>]*)>/g
+    const ampImgEmbeddedCode = ampScriptEmbeddedCode.replace(
+      imgRegex,
+      (match, attributes) => {
+        // 檢查 img 是否包含 src 屬性
+        if (attributes.includes('src=')) {
+          // 使用 amp-img 代替 img 標籤
+          return `<amp-img${attributes}></amp-img>`
+        }
+        // 如果 img 沒有 src 屬性，則返回空字符串
+        return ''
+      }
+    )
+
+    const audioRegex = /<audio([^>]*)><\/audio>/g
+    const ampAudioCode = ampImgEmbeddedCode.replace(
+      audioRegex,
+      (match, attributes) => {
+        // 使用 <amp-audio> 标记替换原始的 <audio>
+        return `<amp-audio${attributes}></amp-audio>`
+      }
+    )
+
+    const videoRegex = /<video([^>]*)><\/video>/g
+    const ampVideoCode = ampAudioCode.replace(
+      videoRegex,
+      (match, attributes) => {
+        // 使用 <amp-video> 标记替换原始的 <video>
+        return `<amp-video${attributes}></amp-video>`
+      }
+    )
+
+    // 使用正則表達式將 <style 轉換為 <style amp-custom
+    const styleRegex = /<style/g
+    const ampStyleCode = ampVideoCode.replace(styleRegex, '<style amp-custom')
+
+    return ampStyleCode
   }
 
   if (contentLayout === 'amp') {

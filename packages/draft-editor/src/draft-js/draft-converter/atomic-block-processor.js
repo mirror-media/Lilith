@@ -3,7 +3,6 @@ import _ from 'lodash'
 // import sizeOf from 'image-size';
 import ApiDataInstance from './api-data-instance'
 import ENTITY from './entities'
-import ReactDOMServer from 'react-dom/server'
 import { RawDraftContentState, convertFromRaw } from 'draft-js' // eslint-disable-line
 import { convertToHTML } from 'draft-convert'
 
@@ -61,37 +60,17 @@ const processor = {
         // About TABLE atomic block entity data structure,
         // see `../views/editor/table.tsx` for more information.
         content = entity?.data
-        /** @type DraftEditor.TableEntity.TableStyles */
-        const tableStyles = content?.tableStyles
         /** @type DraftEditor.TableEntity.TableData */
+        // since apiData is now only for app,
+        // keep the rows data structure for app to style the table
         const tableData = content?.tableData
-        const rowsJsx = tableData?.map((row, rIndex) => {
-          const colsJsx = row?.map((col, cIndex) => {
-            const colStyle = tableStyles?.columns?.[cIndex]
-            const cellStyle = tableStyles?.cells?.[rIndex]?.[cIndex]
-            return (
-              <td
-                key={`col_${cIndex}`}
-                style={Object.assign({}, colStyle, cellStyle)}
-                dangerouslySetInnerHTML={{
-                  __html: convertToHTML(convertFromRaw(col)),
-                }}
-              />
-            )
+        const rows = tableData?.map((row) => {
+          const cols = row?.map((col) => {
+            return { html: convertToHTML(convertFromRaw(col)) }
           })
-          return (
-            <tr key={`row_${rIndex}`} style={tableStyles?.rows?.[rIndex]}>
-              {colsJsx}
-            </tr>
-          )
+          return cols
         })
-        // Use `React.renderToStsaticMarkup` to generate plain HTML string
-        const html = ReactDOMServer.renderToStaticMarkup(
-          <table>
-            <tbody>{rowsJsx}</tbody>
-          </table>
-        )
-        content = [{ html }]
+        content = rows
         break
       }
       case ENTITY.DIVIDER.type:
