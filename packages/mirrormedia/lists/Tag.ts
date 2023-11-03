@@ -18,7 +18,10 @@ const listConfigurations = list({
     posts: relationship({
       ref: 'Post.tags',
       many: true,
-      ui: { hideCreate: true },
+      ui: {
+        hideCreate: true,
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     topics: relationship({
       ref: 'Topic.tags',
