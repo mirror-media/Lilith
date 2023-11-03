@@ -96,13 +96,13 @@ const listConfigurations = list ({
             addValidationError("沒有修改權限")
           }
         }
-		if (inputData.checkResultType === "10" && (inputData.checkResultOther === '' || inputData.checkResultOther === undefined)) {
-		  if (item.checkResultOther === '' || item.checkResultOther === undefined) {
+		if (inputData?.checkResultType === "10" && (inputData?.checkResultOther === '' || inputData?.checkResultOther === undefined)) {
+		  if (item?.checkResultOther === '' || item?.checkResultOther === undefined) {
 			addValidationError("選擇「其他結果」時記得手動填入結果")
 	 	  }
 		}
-		if ((item.checkResultType === "10" && inputData.checkResultType === undefined) && (inputData.checkResultOther === '' || inputData.checkResultOther === undefined)) {
-		  if (item.checkResultOther === '' || item.checkResultOther === undefined) {
+		if ((item?.checkResultType === "10" && inputData?.checkResultType === undefined) && (inputData?.checkResultOther === '' || inputData?.checkResultOther === undefined)) {
+		  if (item?.checkResultOther === '' || item?.checkResultOther === undefined) {
 		    addValidationError("選擇「其他結果」時記得手動填入結果")
 		  }
 		}
