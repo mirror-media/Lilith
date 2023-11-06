@@ -83,33 +83,43 @@ export const EmbeddedCodeBlock = (
     node.appendChild(fragment)
   }, [embeddedCode])
 
+  function generateRandomCode(length) {
+    const charset =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    let randomCode = ''
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length)
+      randomCode += charset[randomIndex]
+    }
+    return randomCode
+  }
+
   function convertIframesToAmp(embeddedCode) {
-    // 使用 regex 拿到 iframe tag，並取得內容和 attribute
+    // Use regex to find iframe tags and get their content and attributes
     const iframeRegex = /<iframe([^>]*)><\/iframe>/g
     const ampEmbeddedCode = embeddedCode.replace(
       iframeRegex,
       (match, attributes) => {
-        // 检查 iframe 是否包含 allowfullscreen='true'
+        // Check if the iframe includes allowfullscreen='true'
         if (attributes.includes('allowfullscreen="true"')) {
-          // 将 allowfullscreen 替换为 allow
+          // Replace allowfullscreen with allow
           attributes = attributes.replace(
             'allowfullscreen="true"',
             'allow="fullscreen"'
           )
         }
-        // 使用 amp-iframe tag 替換原來的 iframe tag
+        // Replace with <amp-iframe> tag
         return `<amp-iframe${attributes}></amp-iframe>`
       }
     )
 
-    // use regex to replace instagram embedded code with <amp-instagram>
+    // Use regex to replace Instagram embedded code with <amp-instagram>
     const igEmbedRegex = /<blockquote class="instagram-media"[^>]* data-instgrm-permalink="([^"]+)"[^>]*>[\s\S]*?<\/blockquote>/g
-
     const ampInstagramCode = ampEmbeddedCode.replace(
       igEmbedRegex,
       (igEmbedMatch, permalink) => {
         const hasCaptioned = igEmbedMatch.includes('data-instgrm-captioned')
-        // 從 permalink 中提取 shortcode
+        // Extract shortcode from the permalink
         const shortcodeMatch = permalink.match(/\/p\/([^/?]+)/)
         if (shortcodeMatch) {
           const shortcode = shortcodeMatch[1]
@@ -117,16 +127,17 @@ export const EmbeddedCodeBlock = (
             hasCaptioned ? 'data-captioned' : ''
           } layout="responsive"></amp-instagram>`
         }
-        return igEmbedMatch // 如果無法提取 shortcode，保持原樣
+        // Keep it as-is if unable to extract the shortcode
+        return igEmbedMatch
       }
     )
 
-    // Use regular expression to match Twitter embedded code
+    // Use regex to match Twitter embedded code
     const twitterRegex = /<blockquote[^>]* class="twitter-tweet"[^>]*>[\s\S]*?<\/blockquote>/g
     const ampTwitterCode = ampInstagramCode.replace(
       twitterRegex,
       (twitterMatch) => {
-        // Use regular expression to extract the value of the data-tweet-id attribute
+        // Use regex to extract the value of the data-tweet-id attribute
         const tweetIdMatch = twitterMatch.match(
           /twitter\.com\/[^/]+\/status\/(\d+)/i
         )
@@ -137,7 +148,8 @@ export const EmbeddedCodeBlock = (
             return `<amp-twitter width="375" height="472" data-tweetid="${tweetId}"></amp-twitter>`
           }
         }
-        return twitterMatch // Keep it as-is if unable to extract the tweet ID
+        // Keep it as-is if unable to extract the tweet ID
+        return twitterMatch
       }
     )
 
@@ -158,43 +170,73 @@ export const EmbeddedCodeBlock = (
       }
     )
 
+    // Use regex to replace <amp-img> tags with empty string if 'src' attribute is missing
     const imgRegex = /<amp-img([^>]*)>/g
     const ampImgEmbeddedCode = ampScriptEmbeddedCode.replace(
       imgRegex,
       (match, attributes) => {
-        // 檢查 img 是否包含 src 屬性
+        // Check if <amp-img> includes 'src' attribute
         if (attributes.includes('src=')) {
-          // 使用 amp-img 代替 img 標籤
+          // Replace <amp-img> with empty string
           return `<amp-img${attributes}></amp-img>`
         }
-        // 如果 img 沒有 src 屬性，則返回空字符串
+        // If 'src' attribute is missing, return an empty string
         return ''
       }
     )
 
+    // Use regex to replace <audio> tags with <amp-audio>
     const audioRegex = /<audio([^>]*)><\/audio>/g
     const ampAudioCode = ampImgEmbeddedCode.replace(
       audioRegex,
       (match, attributes) => {
-        // 使用 <amp-audio> 标记替换原始的 <audio>
+        // Replace with <amp-audio> tag
         return `<amp-audio${attributes}></amp-audio>`
       }
     )
 
+    // Use regex to replace <video> tags with <amp-video>
     const videoRegex = /<video([^>]*)><\/video>/g
     const ampVideoCode = ampAudioCode.replace(
       videoRegex,
       (match, attributes) => {
-        // 使用 <amp-video> 标记替换原始的 <video>
+        // Replace with <amp-video> tag
         return `<amp-video${attributes}></amp-video>`
       }
     )
 
-    // 使用正則表達式將 <style 轉換為 <style amp-custom
-    const styleRegex = /<style/g
-    const ampStyleCode = ampVideoCode.replace(styleRegex, '<style amp-custom')
+    // Use regex to replace TikTok embedded code with <amp-tiktok>
+    const tiktokRegex = /<blockquote class="tiktok-embed"[^>]* data-video-id="([^"]+)"[^>]*>[\s\S]*?<\/blockquote>/g
+    const ampTikTokCode = ampVideoCode.replace(
+      tiktokRegex,
+      (tiktokMatch, videoId) => {
+        return `<amp-tiktok width="325" height="731" data-src="${videoId}"></amp-tiktok>`
+      }
+    )
 
-    return ampStyleCode
+    // Check for the presence of <script> or <style> tags
+    // 尚未解決的問題：無法取得正確的 window.location.href
+    // 參考 PR：https://github.com/ampproject/amphtml/issues/26791
+    const scriptStyleRegex = /<script|<style/g
+    if (scriptStyleRegex.test(ampTikTokCode)) {
+      const randomId = generateRandomCode(5)
+      return `
+      <amp-script layout="container" script="getUrl">
+      <div>amp 不支援本元件，請跳轉至<span id='${randomId}'>頁面</span>觀看完整內容</div>
+      <script type="text/plain" id="getUrl" target="amp-script">
+        const currentUrl = window.location.href;
+        const newUrl = currentUrl.replace('/story/amp/', '/story/');
+        const currentUrlElement = document.getElementById('${randomId}');
+        currentUrlElement.addEventListener('click', () => {
+          console.log({currentUrl, newUrl})
+          if (newUrl) {
+            AMP.navigateTo(url=newUrl)
+          }
+        })
+      </script>
+    </amp-script>`
+    }
+    return ampTikTokCode
   }
 
   if (contentLayout === 'amp') {
