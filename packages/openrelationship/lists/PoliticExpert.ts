@@ -33,7 +33,12 @@ const listConfigurations = list ({
 	}),
     expertPointSummary: text({
       label: '專家觀點（摘要）',
-	  validation: { isRequired: true },
+	  validation: { 
+        isRequired: true,
+		length: {
+		  max: 15,
+		},
+      },
 	  defaultValue: '',
 	  ui: {
 		displayMode: 'textarea',
