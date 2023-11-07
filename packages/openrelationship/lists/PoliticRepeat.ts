@@ -20,7 +20,12 @@ const listConfigurations = list ({
     repeatSummary: text({
       label: '重複政見（摘要）',
 	  defaultValue: '',
-	  validation: { isRequired: true },
+	  validation: { 
+        isRequired: true, 
+		length: {
+		  max: 15,
+		},
+      },
 	  ui: {
 		displayMode: 'textarea',
 	  },
