@@ -83,17 +83,6 @@ export const EmbeddedCodeBlock = (
     node.appendChild(fragment)
   }, [embeddedCode])
 
-  function generateRandomCode(length) {
-    const charset =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    let randomCode = ''
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * charset.length)
-      randomCode += charset[randomIndex]
-    }
-    return randomCode
-  }
-
   function convertIframesToAmp(embeddedCode) {
     // Use regex to find iframe tags and get their content and attributes
     const iframeRegex = /<iframe([^>]*)><\/iframe>/g
@@ -214,27 +203,26 @@ export const EmbeddedCodeBlock = (
       }
     )
 
-    // Check for the presence of <script> or <style> tags
-    // 尚未解決的問題：無法取得正確的 window.location.href
-    // 參考 PR：https://github.com/ampproject/amphtml/issues/26791
     const scriptStyleRegex = /<script|<style/g
     if (scriptStyleRegex.test(ampTikTokCode)) {
-      const randomId = generateRandomCode(5)
+      // css hover 效果由 mm-next 的 amp-main決定。
+      // a href 由 amp-proxy 決定
       return `
-      <amp-script layout="container" script="getUrl">
-      <div>amp 不支援本元件，請跳轉至<span id='${randomId}'>頁面</span>觀看完整內容</div>
-      <script type="text/plain" id="getUrl" target="amp-script">
-        const currentUrl = window.location.href;
-        const newUrl = currentUrl.replace('/story/amp/', '/story/');
-        const currentUrlElement = document.getElementById('${randomId}');
-        currentUrlElement.addEventListener('click', () => {
-          console.log({currentUrl, newUrl})
-          if (newUrl) {
-            AMP.navigateTo(url=newUrl)
-          }
-        })
-      </script>
-    </amp-script>`
+      <a class='link-to-story' style='
+        display: flex; 
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%; 
+        height: 210px;
+        box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.15) inset;
+        color: #888;
+        font-family: PingFang TC;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 300;
+        line-height: 180%;'><div>AMP不支援此功能，請</div><div style='font-weight: 600;'>點擊連結觀看完整內容</div></a>
+      `
     }
     return ampTikTokCode
   }
