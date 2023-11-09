@@ -189,7 +189,7 @@ const listConfigurations = list ({
 	operation: {
 	  query: allowRoles(admin, moderator, editor),
 	  update: allowRoles(admin, moderator, editor),
-	  create: allowRoles(admin, moderator),
+	  create: allowRoles(admin, moderator, editor),
 	  delete: allowRoles(admin),
 	},
   },
