@@ -68,7 +68,6 @@ type ID = string
 export type AudioEntity = {
   id: ID
   name?: string
-  urlOriginal?: string
   audioSrc?: string
   file?: {
     url: string
@@ -117,7 +116,6 @@ function AudioGrid(props: {
         {isSelected ? <i className="fas fa-check-circle"></i> : null}
       </AudioSelected>
       <Audio controls>
-        <source src={audio?.urlOriginal} />
         <source src={audio?.audioSrc} />
         <source src={audio?.file?.url} />
       </Audio>
@@ -146,7 +144,6 @@ function AudioMetaGrid(props: {
   return (
     <AudioMetaGridWrapper>
       <Audio controls>
-        <source src={audio?.urlOriginal} />
         <source src={audio?.audioSrc} />
         <source src={audio?.file?.url} />
       </Audio>
@@ -166,7 +163,6 @@ const AudiosQuery = gql`
     ) {
       id
       name
-      urlOriginal
       audioSrc
       file {
         url

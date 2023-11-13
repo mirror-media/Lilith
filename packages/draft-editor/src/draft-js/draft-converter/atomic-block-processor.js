@@ -85,6 +85,7 @@ const processor = {
         content = Array.isArray(content) ? content : [content]
         break
       case ENTITY.AUDIO.type:
+      case ENTITY['AUDIO-V2'].type:
       case ENTITY.IMAGE.type:
       case ENTITY.IMAGEDIFF.type:
       case ENTITY.SLIDESHOW.type:
