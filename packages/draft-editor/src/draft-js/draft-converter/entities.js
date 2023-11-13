@@ -25,6 +25,9 @@ const ENTITY = {
   AUDIO: {
     type: 'AUDIO',
   },
+  ['AUDIO-V2']: {
+    type: 'AUDIO-V2',
+  },
   VIDEO: {
     type: 'VIDEO',
   },
