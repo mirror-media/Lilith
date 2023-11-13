@@ -20,7 +20,7 @@ const listConfigurations = list ({
     organization: relationship({
       label: '政黨-選舉',
       many: false,
-      ref: 'OrganizationsElection',
+      ref: 'OrganizationsElection.politics',
     }),
     thread_parent: relationship({
       label: 'Thread',
