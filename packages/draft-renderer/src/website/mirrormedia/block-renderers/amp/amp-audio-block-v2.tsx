@@ -20,7 +20,7 @@ type ImageEntity = {
 type AudioEntity = {
   id: string
   name?: string
-  urlOriginal?: string
+  audioSrc?: string
   file?: {
     url: string
   }
@@ -28,15 +28,15 @@ type AudioEntity = {
 }
 
 /**
- * Before 202310, audio which contain property `urlOriginal` and not contain property `audioSrc`.
+ * After 202310, audio which only contain property `audioSrc`, and property `urlOriginal` is an empty string.
  */
-export default function AmpAudioBlock({ audio }: { audio: AudioEntity }) {
-  const urlOriginalType = extractFileExtension(audio?.urlOriginal)
+export default function AmpAudioBlockV2({ audio }: { audio: AudioEntity }) {
+  const audioSrcType = extractFileExtension(audio?.audioSrc)
   const fileUrlType = extractFileExtension(audio?.file?.url)
   return (
     <amp-audio width="50vw" height="54">
-      {urlOriginalType && (
-        <source type={`audio/${urlOriginalType}`} src={audio?.urlOriginal} />
+      {audioSrcType && (
+        <source type={`audio/${audioSrcType}`} src={audio?.audioSrc} />
       )}
       {fileUrlType && (
         <source type={`audio/${fileUrlType}`} src={audio?.file?.url} />
