@@ -33,7 +33,7 @@ const listConfigurations = list ({
 	politics: relationship({ 
 	  label: '政見',
 	  many: true,
-	  ref: 'Politic',
+	  ref: 'Politic.organization',
 	  ui: {
 		displayMode: 'cards',
 		cardFields: [ 'desc', 'content', 'source', 'contributer', 'status', 'thread_parent', 'tag', 'reviewed' ],
