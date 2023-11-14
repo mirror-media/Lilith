@@ -151,7 +151,10 @@ export default function AmpEmbeddedCodeBlock({
       videoRegex,
       (match, attributes) => {
         // Replace with <amp-video> tag
-        return `<amp-video${attributes}></amp-video>`
+        return `<amp-video${attributes.replace(
+          'controls="true"',
+          'controls'
+        )}></amp-video>`
       }
     )
 
@@ -164,7 +167,7 @@ export default function AmpEmbeddedCodeBlock({
       }
     )
 
-    const scriptStyleRegex = /<script|<style|<iframe|<embed/g
+    const scriptStyleRegex = /<script|<style|<iframe|<embed|<nft-card/g
     if (scriptStyleRegex.test(ampTikTokCode)) {
       // css hover 效果由 mm-next 的 amp-main決定。
       // a href 由 amp-proxy 決定
@@ -187,7 +190,13 @@ export default function AmpEmbeddedCodeBlock({
         </svg></a>
       `
     }
-    return ampTikTokCode
+
+    const codeWithoutWrongWidth = ampTikTokCode.replace(
+      /width="auto"|width="100%"/,
+      'width="100vw"'
+    )
+
+    return codeWithoutWrongWidth
   }
 
   return (
