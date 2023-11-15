@@ -35,8 +35,10 @@ export function AudioButton(props: {
     }
 
     const contentState = editorState.getCurrentContent()
+
+    // since 202310, only AUDIO-V2 will be created
     const contentStateWithEntity = contentState.createEntity(
-      'AUDIO',
+      'AUDIO-V2',
       'IMMUTABLE',
       {
         audio,

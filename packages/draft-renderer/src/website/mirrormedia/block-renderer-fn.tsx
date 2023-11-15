@@ -17,6 +17,7 @@ const {
   VideoBlock,
   VideoBlockV2,
   AudioBlock,
+  AudioBlockV2,
   YoutubeBlock,
 } = blockRenderers
 
@@ -75,6 +76,9 @@ const AtomicBlock = (props) => {
     }
     case 'AUDIO': {
       return AudioBlock(entity, contentLayout)
+    }
+    case 'AUDIO-V2': {
+      return AudioBlockV2(entity, contentLayout)
     }
     case 'YOUTUBE': {
       return YoutubeBlock(entity, contentLayout)

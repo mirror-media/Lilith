@@ -230,7 +230,11 @@ function AmpAnnotationBlock(props) {
     <React.Fragment>
       <AnnotatedText contentLayout={contentLayout}>
         {annotated}
-        <span on="tap:annotation-body.toggleVisibility, arrow-up.toggleVisibility, array-down.toggleVisibility">
+        <span
+          on="tap:annotation-body.toggleVisibility, arrow-up.toggleVisibility, array-down.toggleVisibility"
+          role="button"
+          tabindex={annotated}
+        >
           <span id="arrow-up">{indicatorSvg(false, contentLayout)}</span>
           <span id="array-down" hidden>
             {indicatorSvg(true, contentLayout)}

@@ -3419,16 +3419,6 @@
     draft-js "^0.11.7"
     node-html-parser "^6.1.5"
 
-"@mirrormedia/lilith-draft-renderer@1.3.0-alpha.17":
-  version "1.3.0-alpha.17"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.3.0-alpha.17.tgz#d5cc89aa8c57b47ca573c2fa042eb45604ee8e60"
-  integrity sha512-eVS4eafr2gWbiLkOoPYKonWPZe1a7uurJaIup7ndbO8hdGhwdtbbtQnH1izHbU0WvPMDS3HKeZiCa1cu3uv6CQ==
-  dependencies:
-    "@readr-media/react-image" "2.1.3"
-    body-scroll-lock "3.1.5"
-    draft-js "^0.11.7"
-    node-html-parser "^6.1.5"
-
 "@mirrormedia/lilith-draft-renderer@1.3.0-alpha.5":
   version "1.3.0-alpha.5"
   resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.3.0-alpha.5.tgz#82dc1b18f43937ab49195033148a535ad5ad04a7"
