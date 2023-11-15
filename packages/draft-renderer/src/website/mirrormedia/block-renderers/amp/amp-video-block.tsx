@@ -40,7 +40,7 @@ export default function AmpVideoBlock({ video }: { video: VideoEntity }) {
   return (
     <>
       <amp-video
-        controls="controls"
+        controls
         autoplay="autoplay"
         loop="loop"
         layout="responsive"
