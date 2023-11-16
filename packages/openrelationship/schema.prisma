@@ -183,8 +183,7 @@ model Election {
   hidePoliticDetail                    DateTime?
   tags                                 Tag[]                   @relation("Election_tags")
   addComments                          Boolean                 @default(false)
-  organizationsElection                OrganizationsElection?  @relation("Election_organizationsElection", fields: [organizationsElectionId], references: [id])
-  organizationsElectionId              Int?                    @map("organizationsElection")
+  organizationsElection                OrganizationsElection[] @relation("Election_organizationsElection")
   createdAt                            DateTime?
   updatedAt                            DateTime?
   createdBy                            User?                   @relation("Election_createdBy", fields: [createdById], references: [id])
@@ -195,7 +194,6 @@ model Election {
   from_OrganizationsElection_elections OrganizationsElection[] @relation("OrganizationsElection_elections")
   from_PersonElection_election         PersonElection[]        @relation("PersonElection_election")
 
-  @@index([organizationsElectionId])
   @@index([createdById])
   @@index([updatedById])
 }

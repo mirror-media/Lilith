@@ -500,7 +500,8 @@ type Election {
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   addComments: Boolean
-  organizationsElection: OrganizationsElection
+  organizationsElection(where: OrganizationsElectionWhereInput! = {}, orderBy: [OrganizationsElectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrganizationsElectionWhereUniqueInput): [OrganizationsElection!]
+  organizationsElectionCount(where: OrganizationsElectionWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -530,7 +531,7 @@ input ElectionWhereInput {
   hidePoliticDetail: DateTimeNullableFilter
   tags: TagManyRelationFilter
   addComments: BooleanFilter
-  organizationsElection: OrganizationsElectionWhereInput
+  organizationsElection: OrganizationsElectionManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -589,6 +590,12 @@ input TagManyRelationFilter {
   none: TagWhereInput
 }
 
+input OrganizationsElectionManyRelationFilter {
+  every: OrganizationsElectionWhereInput
+  some: OrganizationsElectionWhereInput
+  none: OrganizationsElectionWhereInput
+}
+
 input ElectionOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -622,7 +629,7 @@ input ElectionUpdateInput {
   hidePoliticDetail: DateTime
   tags: TagRelateToManyForUpdateInput
   addComments: Boolean
-  organizationsElection: OrganizationsElectionRelateToOneForUpdateInput
+  organizationsElection: OrganizationsElectionRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -643,10 +650,11 @@ input TagRelateToManyForUpdateInput {
   connect: [TagWhereUniqueInput!]
 }
 
-input OrganizationsElectionRelateToOneForUpdateInput {
-  create: OrganizationsElectionCreateInput
-  connect: OrganizationsElectionWhereUniqueInput
-  disconnect: Boolean
+input OrganizationsElectionRelateToManyForUpdateInput {
+  disconnect: [OrganizationsElectionWhereUniqueInput!]
+  set: [OrganizationsElectionWhereUniqueInput!]
+  create: [OrganizationsElectionCreateInput!]
+  connect: [OrganizationsElectionWhereUniqueInput!]
 }
 
 input ElectionUpdateArgs {
@@ -669,7 +677,7 @@ input ElectionCreateInput {
   hidePoliticDetail: DateTime
   tags: TagRelateToManyForCreateInput
   addComments: Boolean
-  organizationsElection: OrganizationsElectionRelateToOneForCreateInput
+  organizationsElection: OrganizationsElectionRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -686,9 +694,9 @@ input TagRelateToManyForCreateInput {
   connect: [TagWhereUniqueInput!]
 }
 
-input OrganizationsElectionRelateToOneForCreateInput {
-  create: OrganizationsElectionCreateInput
-  connect: OrganizationsElectionWhereUniqueInput
+input OrganizationsElectionRelateToManyForCreateInput {
+  create: [OrganizationsElectionCreateInput!]
+  connect: [OrganizationsElectionWhereUniqueInput!]
 }
 
 type ElectionArea {
@@ -938,6 +946,12 @@ input PersonElectionRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input OrganizationsElectionRelateToOneForUpdateInput {
+  create: OrganizationsElectionCreateInput
+  connect: OrganizationsElectionWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PoliticRelateToOneForUpdateInput {
   create: PoliticCreateInput
   connect: PoliticWhereUniqueInput
@@ -1041,6 +1055,11 @@ input PoliticCreateInput {
 input PersonElectionRelateToOneForCreateInput {
   create: PersonElectionCreateInput
   connect: PersonElectionWhereUniqueInput
+}
+
+input OrganizationsElectionRelateToOneForCreateInput {
+  create: OrganizationsElectionCreateInput
+  connect: OrganizationsElectionWhereUniqueInput
 }
 
 input PoliticRelateToOneForCreateInput {
