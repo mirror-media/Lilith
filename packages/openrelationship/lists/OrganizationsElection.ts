@@ -28,7 +28,7 @@ const listConfigurations = list ({
     source: text({ label: '資料來源' }),
 	elections: relationship({ 
 	  label: '選舉',
-	  ref: 'Election',
+	  ref: 'Election.organizationsElection',
 	}),
 	politics: relationship({ 
 	  label: '政見',

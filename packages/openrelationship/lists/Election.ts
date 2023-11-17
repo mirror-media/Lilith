@@ -72,7 +72,8 @@ const listConfigurations = list({
 		}),
         organizationsElection: relationship({ 
           label: '政黨',
-          ref: 'OrganizationsElection',
+		  many: true,
+          ref: 'OrganizationsElection.elections',
         }),
 	},
 	access: {
