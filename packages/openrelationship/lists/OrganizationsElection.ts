@@ -25,13 +25,13 @@ const listConfigurations = list ({
     number: text({ label: '號次' }),
     votes_obtained_number: text({ label: '得票數' }),
     first_obtained_number: text({ 
-	  label: '第一階段得票數', 
+	  label: '第一階段得票率', 
 	  db: {
 		isNullable: true,
 	  }
 	}),
     second_obtained_number: text({ 
-	  label: '第二階段得票數',
+	  label: '第二階段得票率',
 	  db: {
 		isNullable: true,
 	  }
