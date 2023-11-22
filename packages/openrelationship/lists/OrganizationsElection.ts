@@ -24,6 +24,18 @@ const listConfigurations = list ({
 
     number: text({ label: '號次' }),
     votes_obtained_number: text({ label: '得票數' }),
+    first_obtained_number: text({ 
+	  label: '第一階段得票率', 
+	  db: {
+		isNullable: true,
+	  }
+	}),
+    second_obtained_number: text({ 
+	  label: '第二階段得票率',
+	  db: {
+		isNullable: true,
+	  }
+	 }),
     seats: text({ label: '分配席次' }),
     source: text({ label: '資料來源' }),
 	elections: relationship({ 
