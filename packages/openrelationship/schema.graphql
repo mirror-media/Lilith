@@ -2839,6 +2839,8 @@ type OrganizationsElection {
   election_year_day: Int
   number: String
   votes_obtained_number: String
+  first_obtained_number: String
+  second_obtained_number: String
   seats: String
   source: String
   elections: Election
@@ -2865,6 +2867,8 @@ input OrganizationsElectionWhereInput {
   election_year_day: IntNullableFilter
   number: StringFilter
   votes_obtained_number: StringFilter
+  first_obtained_number: StringNullableFilter
+  second_obtained_number: StringNullableFilter
   seats: StringFilter
   source: StringFilter
   elections: ElectionWhereInput
@@ -2882,6 +2886,8 @@ input OrganizationsElectionOrderByInput {
   election_year_day: OrderDirection
   number: OrderDirection
   votes_obtained_number: OrderDirection
+  first_obtained_number: OrderDirection
+  second_obtained_number: OrderDirection
   seats: OrderDirection
   source: OrderDirection
   createdAt: OrderDirection
@@ -2895,6 +2901,8 @@ input OrganizationsElectionUpdateInput {
   election_year_day: Int
   number: String
   votes_obtained_number: String
+  first_obtained_number: String
+  second_obtained_number: String
   seats: String
   source: String
   elections: ElectionRelateToOneForUpdateInput
@@ -2917,6 +2925,8 @@ input OrganizationsElectionCreateInput {
   election_year_day: Int
   number: String
   votes_obtained_number: String
+  first_obtained_number: String
+  second_obtained_number: String
   seats: String
   source: String
   elections: ElectionRelateToOneForCreateInput

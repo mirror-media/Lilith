@@ -247,7 +247,7 @@ export function ImageBlock(props: ImageBlockProps) {
           <amp-img src={resized?.w800} alt={name} layout="fill">
             {/** @ts-ignore amp-html-tag*/}
             <amp-img
-              fallback
+              fallback=""
               src={resized?.original ? resized?.original : defaultImage}
               alt={name}
               layout="fill"

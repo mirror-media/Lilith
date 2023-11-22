@@ -694,6 +694,8 @@ model OrganizationsElection {
   election_year_day                Int?
   number                           String           @default("")
   votes_obtained_number            String           @default("")
+  first_obtained_number            String?
+  second_obtained_number           String?
   seats                            String           @default("")
   source                           String           @default("")
   elections                        Election?        @relation("OrganizationsElection_elections", fields: [electionsId], references: [id])
