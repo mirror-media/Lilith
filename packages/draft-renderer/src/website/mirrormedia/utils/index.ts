@@ -235,8 +235,17 @@ function convertEmbeddedToAmp(embeddedCode) {
     }
   )
 
+  // Use regex to replace Google Maps embedded code with <amp-iframe>
+  const googleMapsRegex = /<iframe[^>]*src="https:\/\/www\.google\.com\/maps\/embed\?([^"]+)"[^>]*><\/iframe>/g
+  const ampGoogleMapsCode = ampVideoCode.replace(
+    googleMapsRegex,
+    (googleMapsMatch, queryParams) => {
+      return `<amp-iframe width="600" height="450" layout="responsive" sandbox="allow-scripts allow-same-origin allow-popups" src="https://www.google.com/maps/embed?${queryParams}"></amp-iframe>`
+    }
+  )
+
   const scriptStyleRegex = /<script|<style|<iframe|<embed|<nft-card/g
-  if (scriptStyleRegex.test(ampTikTokCode)) {
+  if (scriptStyleRegex.test(ampGoogleMapsCode)) {
     // css hover 效果由 mm-next 的 amp-main決定。
     // a href 由 amp-proxy 決定
     return `
