@@ -541,9 +541,6 @@ const listConfigurations = list({
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
       },
-	  graphql: {
-		cacheHint: { maxAge: 0, scope: 'PRIVATE' },
-	  },
       access: {
         read: ({
           context,
@@ -625,6 +622,9 @@ const listConfigurations = list({
     itemView: {
       defaultFieldMode: itemViewFunction,
     },
+  },
+  graphql: {
+	cacheHint: { maxAge: 0, scope: 'PRIVATE' },
   },
   access: {
     operation: {
