@@ -100,9 +100,14 @@ const listConfigurations = list({
       label: '狀態',
     }),
     editingPolitics: relationship({
-      label: '政見',
+      label: '政見（修改）',
       many: true,
       ref: 'EditingPolitic.person',
+      ui: {
+        displayMode: 'select',
+        labelField: 'labelField',
+        searchFields: ['desc'],
+      },
     }),
   },
   access: {
