@@ -6,6 +6,7 @@ import {
   select,
   relationship,
   text,
+  integer,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -46,7 +47,12 @@ const listConfigurations = list({
       ref: 'Organization',
     }),
     // election_name: { label: "選舉名稱", type: Text },
-    legislatoratlarge_number: text({ label: '不分區立委排序' }),
+    legislatoratlarge_number: integer({
+      label: '不分區立委排序',
+      db: {
+        isNullable: true,
+      },
+    }),
     number: text({ label: '號次' }),
     electoral_district: relationship({
       ref: 'ElectionArea',

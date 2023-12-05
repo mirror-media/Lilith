@@ -752,7 +752,7 @@ model PersonElection {
   mainCandidateId                   Int?                @map("mainCandidate")
   party                             Organization?       @relation("PersonElection_party", fields: [partyId], references: [id])
   partyId                           Int?                @map("party")
-  legislatoratlarge_number          String              @default("")
+  legislatoratlarge_number          Int?
   number                            String              @default("")
   electoral_district                ElectionArea?       @relation("PersonElection_electoral_district", fields: [electoral_districtId], references: [id])
   electoral_districtId              Int?                @map("electoral_district")
