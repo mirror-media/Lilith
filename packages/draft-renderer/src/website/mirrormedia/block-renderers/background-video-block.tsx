@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { ContentBlock, ContentState } from 'draft-js'
+import { convertEmbeddedToAmp } from '../utils'
 
 const BGVideoRenderWrapper = styled.div`
   position: relative;
@@ -48,7 +49,7 @@ type BGVideoBlockProps = {
   contentState: ContentState
 }
 
-export function BGVideoBlock(props: BGVideoBlockProps) {
+export function BGVideoBlock(props: BGVideoBlockProps, contentLayout: string) {
   const { block, contentState } = props
   const entityKey = block.getEntityAt(0)
   const entity = contentState.getEntity(entityKey)
@@ -61,7 +62,11 @@ export function BGVideoBlock(props: BGVideoBlockProps) {
           <source src={video?.urlOriginal} />
           <source src={video?.file?.url} />
         </BGVideoRednerVideo>
-        <BGVideoRenderBody dangerouslySetInnerHTML={{ __html: body }} />
+        <BGVideoRenderBody
+          dangerouslySetInnerHTML={{
+            __html: contentLayout === 'amp' ? convertEmbeddedToAmp(body) : body,
+          }}
+        />
       </BGVideoRenderWrapper>
     </React.Fragment>
   )

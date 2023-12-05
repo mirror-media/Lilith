@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { ContentBlock, ContentState } from 'draft-js'
+import { convertEmbeddedToAmp } from '../utils'
 
 const BGImageRenderWrapper = styled.div`
   padding: 30px;
@@ -42,7 +43,7 @@ type BGImageBlockProps = {
   contentState: ContentState
 }
 
-export function BGImageBlock(props: BGImageBlockProps) {
+export function BGImageBlock(props: BGImageBlockProps, contentLayout: string) {
   const { block, contentState } = props
   const entityKey = block.getEntityAt(0)
   const entity = contentState.getEntity(entityKey)
@@ -54,7 +55,11 @@ export function BGImageBlock(props: BGImageBlockProps) {
         image={image?.imageFile?.url}
         textBlockAlign={textBlockAlign}
       >
-        <BGImageRenderBody dangerouslySetInnerHTML={{ __html: body }} />
+        <BGImageRenderBody
+          dangerouslySetInnerHTML={{
+            __html: contentLayout === 'amp' ? convertEmbeddedToAmp(body) : body,
+          }}
+        />
       </BGImageRenderWrapper>
     </React.Fragment>
   )
