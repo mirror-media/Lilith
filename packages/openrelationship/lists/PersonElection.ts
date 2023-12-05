@@ -85,6 +85,11 @@ const listConfigurations = list({
       label: '政見',
       many: true,
       ref: 'Politic.person',
+      ui: {
+        displayMode: 'select',
+        labelField: 'labelField',
+        searchFields: ['desc'],
+      },
     }),
     status: select({
       options: [
