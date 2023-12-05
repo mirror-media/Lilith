@@ -7,7 +7,7 @@ import {
   text,
   virtual,
 } from '@keystone-6/core/fields'
-import { STATUS, STATUS_LABEL } from './constants'
+import { STATUS, STATUS_LABEL, DESC_LENGTH } from './constants'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -292,7 +292,6 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         async resolve(item: Record<string, unknown>) {
-          const DESC_LENGTH = 25
           const status =
             String(item.status) === STATUS.VERIFIED
               ? STATUS_LABEL[STATUS.VERIFIED]
