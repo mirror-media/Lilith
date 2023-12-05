@@ -3,6 +3,7 @@ import { ContentBlock, ContentState } from 'draft-js'
 import styled, { css } from 'styled-components'
 import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
 import { ContentLayout } from '../types'
+import { convertEmbeddedToAmp } from '../utils'
 
 //for setting background color info box
 const backgroundColorNormal = '#054f77'
@@ -203,7 +204,9 @@ export function InfoBoxBlock(
       <h2>{title}</h2>
       <InfoBoxBody
         contentLayout={contentLayout}
-        dangerouslySetInnerHTML={{ __html: body }}
+        dangerouslySetInnerHTML={{
+          __html: contentLayout === 'amp' ? convertEmbeddedToAmp(body) : body,
+        }}
       />
     </InfoBoxRenderWrapper>
   )

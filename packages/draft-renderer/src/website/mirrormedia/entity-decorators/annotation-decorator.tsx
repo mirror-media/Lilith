@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 import { ContentLayout } from '../types'
+import { convertEmbeddedToAmp } from '../utils'
 const annotationBodyColorNormal = {
   backgroundColor: '#F2F2F2',
   textColor: '#054f77',
@@ -246,7 +247,7 @@ function AmpAnnotationBlock(props) {
         id="annotation-body"
         contentLayout={contentLayout}
         contentEditable={false}
-        dangerouslySetInnerHTML={{ __html: bodyHTML }}
+        dangerouslySetInnerHTML={{ __html: convertEmbeddedToAmp(bodyHTML) }}
       ></AnnotationBody>
     </React.Fragment>
   )

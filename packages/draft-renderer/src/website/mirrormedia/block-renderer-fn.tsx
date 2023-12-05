@@ -54,13 +54,13 @@ const AtomicBlock = (props) => {
       return TableBlock(props)
     }
     case 'COLORBOX': {
-      return ColorBoxBlock(props)
+      return ColorBoxBlock(props, contentLayout)
     }
     case 'BACKGROUNDIMAGE': {
-      return BGImageBlock(props)
+      return BGImageBlock(props, contentLayout)
     }
     case 'BACKGROUNDVIDEO': {
-      return BGVideoBlock(props)
+      return BGVideoBlock(props, contentLayout)
     }
     case 'RELATEDPOST': {
       return RelatedPostBlock(entity)
