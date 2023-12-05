@@ -1,6 +1,13 @@
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core'
-import { checkbox, select, relationship, text } from '@keystone-6/core/fields'
+import { graphql, list } from '@keystone-6/core'
+import {
+  checkbox,
+  select,
+  relationship,
+  text,
+  virtual,
+} from '@keystone-6/core/fields'
+import { STATUS, STATUS_LABEL } from './constants'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -251,10 +258,10 @@ const listConfigurations = list({
     }),
     status: select({
       options: [
-        { label: '已確認', value: 'verified' },
-        { label: '未確認', value: 'notverified' },
+        { label: STATUS_LABEL[STATUS.VERIFIED], value: STATUS.VERIFIED },
+        { label: STATUS_LABEL[STATUS.NOTVERIFIED], value: STATUS.NOTVERIFIED },
       ],
-      defaultValue: 'notverified',
+      defaultValue: STATUS.NOTVERIFIED,
       label: '狀態',
       isIndexed: true,
     }),
@@ -280,6 +287,31 @@ const listConfigurations = list({
     reviewed: checkbox({
       defaultValue: false,
       label: '檢閱',
+    }),
+    labelField: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        async resolve(item: Record<string, unknown>) {
+          const DESC_LENGTH = 25
+          const status =
+            String(item.status) === STATUS.VERIFIED
+              ? STATUS_LABEL[STATUS.VERIFIED]
+              : STATUS_LABEL[STATUS.NOTVERIFIED]
+
+          let desc = String(item.desc)
+
+          if (desc.length > DESC_LENGTH)
+            desc = desc.substring(0, DESC_LENGTH) + '...'
+
+          return `(${item.id})-(${status})-${desc}`
+        },
+      }),
+      ui: {
+        description: 'This field is for labelling on CMS only.',
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
   },
