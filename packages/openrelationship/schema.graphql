@@ -813,6 +813,7 @@ type Politic {
   politicCategory: PoliticCategory
   checked: Boolean
   reviewed: Boolean
+  labelField: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -3857,6 +3858,7 @@ type EditingPolitic {
   politicCategory: PoliticCategory
   checked: Boolean
   reviewed: Boolean
+  labelField: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
