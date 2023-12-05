@@ -3040,7 +3040,7 @@ type PersonElection {
   mainCandidate: PersonElection
   name: String
   party: Organization
-  legislatoratlarge_number: String
+  legislatoratlarge_number: Int
   number: String
   electoral_district: ElectionArea
   votes_obtained_number: String
@@ -3074,7 +3074,7 @@ input PersonElectionWhereInput {
   election: ElectionWhereInput
   mainCandidate: PersonElectionWhereInput
   party: OrganizationWhereInput
-  legislatoratlarge_number: StringFilter
+  legislatoratlarge_number: IntNullableFilter
   number: StringFilter
   electoral_district: ElectionAreaWhereInput
   votes_obtained_number: StringFilter
@@ -3113,7 +3113,7 @@ input PersonElectionUpdateInput {
   election: ElectionRelateToOneForUpdateInput
   mainCandidate: PersonElectionRelateToOneForUpdateInput
   party: OrganizationRelateToOneForUpdateInput
-  legislatoratlarge_number: String
+  legislatoratlarge_number: Int
   number: String
   electoral_district: ElectionAreaRelateToOneForUpdateInput
   votes_obtained_number: String
@@ -3154,7 +3154,7 @@ input PersonElectionCreateInput {
   election: ElectionRelateToOneForCreateInput
   mainCandidate: PersonElectionRelateToOneForCreateInput
   party: OrganizationRelateToOneForCreateInput
-  legislatoratlarge_number: String
+  legislatoratlarge_number: Int
   number: String
   electoral_district: ElectionAreaRelateToOneForCreateInput
   votes_obtained_number: String
