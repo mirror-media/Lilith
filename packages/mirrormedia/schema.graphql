@@ -819,7 +819,6 @@ type Magazine {
   title: String
   pdfFile: FileFieldOutput
   urlOriginal: String
-  pdfSrc: String
   coverPhoto: Photo
   type: String
   state: String

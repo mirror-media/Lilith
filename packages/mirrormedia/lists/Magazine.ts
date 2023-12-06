@@ -40,19 +40,6 @@ const listConfigurations = list({
         },
       }),
     }),
-    pdfSrc: virtual({
-      field: graphql.field({
-        type: graphql.String,
-        resolve(item: Record<string, unknown>) {
-          const filename = item?.pdfFile_filename
-          if (!filename) {
-            return ''
-          }
-          return `https://${config.googleCloudStorage.bucket}/files/${filename}`
-        },
-      }),
-    }),
-
     coverPhoto: relationship({
       label: '首圖',
       ref: 'Photo',
