@@ -1,11 +1,13 @@
+import config from '../config'
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core'
+import { list, graphql } from '@keystone-6/core'
 import {
   select,
   text,
   timestamp,
   relationship,
   file,
+  virtual,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -25,18 +27,19 @@ const listConfigurations = list({
       label: '雜誌pdf',
       storage: 'files',
     }),
-    urlOriginal: text({
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
+    // change to virtual field for backward compatibility
+    urlOriginal: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>) {
+          const filename = item?.pdfFile_filename
+
+          if (!filename) {
+            return ''
+          }
+          return `https://${config.googleCloudStorage.bucket}/files/${filename}`
         },
-        itemView: {
-          fieldMode: 'read',
-        },
-        listView: {
-          fieldMode: 'read',
-        },
-      },
+      }),
     }),
     coverPhoto: relationship({
       label: '首圖',
