@@ -1,6 +1,6 @@
+import config from '../config'
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core'
-import { graphql } from '@graphql-ts/schema'
+import { list, graphql } from '@keystone-6/core'
 import {
   select,
   text,
@@ -27,11 +27,12 @@ const listConfigurations = list({
       label: '雜誌pdf',
       storage: 'files',
     }),
-    pdfSrc: virtual({
+    // change to virtual field for backward compatibility
+    urlOriginal: virtual({
       field: graphql.field({
         type: graphql.String,
         resolve(item: Record<string, unknown>) {
-          const filename = item?.pdfFile
+          const filename = item?.pdfFile_filename
           if (!filename) {
             return ''
           }
@@ -39,19 +40,19 @@ const listConfigurations = list({
         },
       }),
     }),
-    urlOriginal: text({
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
+    pdfSrc: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>) {
+          const filename = item?.pdfFile_filename
+          if (!filename) {
+            return ''
+          }
+          return `https://${config.googleCloudStorage.bucket}/files/${filename}`
         },
-        itemView: {
-          fieldMode: 'read',
-        },
-        listView: {
-          fieldMode: 'read',
-        },
-      },
+      }),
     }),
+
     coverPhoto: relationship({
       label: '首圖',
       ref: 'Photo',

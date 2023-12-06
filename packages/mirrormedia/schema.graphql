@@ -818,8 +818,8 @@ type Magazine {
   slug: String
   title: String
   pdfFile: FileFieldOutput
-  pdfSrc: String
   urlOriginal: String
+  pdfSrc: String
   coverPhoto: Photo
   type: String
   state: String
@@ -842,7 +842,6 @@ input MagazineWhereInput {
   id: IDFilter
   slug: StringFilter
   title: StringFilter
-  urlOriginal: StringFilter
   coverPhoto: PhotoWhereInput
   type: StringNullableFilter
   state: StringNullableFilter
@@ -857,7 +856,6 @@ input MagazineOrderByInput {
   id: OrderDirection
   slug: OrderDirection
   title: OrderDirection
-  urlOriginal: OrderDirection
   type: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
@@ -869,7 +867,6 @@ input MagazineUpdateInput {
   slug: String
   title: String
   pdfFile: FileFieldInput
-  urlOriginal: String
   coverPhoto: PhotoRelateToOneForUpdateInput
   type: String
   state: String
@@ -889,7 +886,6 @@ input MagazineCreateInput {
   slug: String
   title: String
   pdfFile: FileFieldInput
-  urlOriginal: String
   coverPhoto: PhotoRelateToOneForCreateInput
   type: String
   state: String

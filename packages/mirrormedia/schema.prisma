@@ -186,7 +186,6 @@ model Magazine {
   title            String    @default("")
   pdfFile_filesize Int?
   pdfFile_filename String?
-  urlOriginal      String    @default("")
   coverPhoto       Photo?    @relation("Magazine_coverPhoto", fields: [coverPhotoId], references: [id])
   coverPhotoId     Int?      @map("coverPhoto")
   type             String?   @default("weekly")
