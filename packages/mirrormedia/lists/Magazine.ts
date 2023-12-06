@@ -1,11 +1,13 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
+import { graphql } from '@graphql-ts/schema'
 import {
   select,
   text,
   timestamp,
   relationship,
   file,
+  virtual,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -24,6 +26,18 @@ const listConfigurations = list({
     pdfFile: file({
       label: '雜誌pdf',
       storage: 'files',
+    }),
+    pdfSrc: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>) {
+          const filename = item?.pdfFile
+          if (!filename) {
+            return ''
+          }
+          return `https://${config.googleCloudStorage.bucket}/files/${filename}`
+        },
+      }),
     }),
     urlOriginal: text({
       ui: {
