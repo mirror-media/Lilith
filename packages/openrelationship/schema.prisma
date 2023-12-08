@@ -275,6 +275,8 @@ model PoliticTimeline {
   content        String           @default("")
   link           String           @default("")
   contributer    String           @default("")
+  checked        Boolean          @default(false)
+  reviewed       Boolean          @default(false)
   editingPolitic EditingPolitic[] @relation("EditingPolitic_timeline")
   createdAt      DateTime?
   updatedAt      DateTime?
