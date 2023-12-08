@@ -59,10 +59,8 @@ const listConfigurations = list ({
   hooks: {
     beforeOperation: async ({ operation, resolvedData, context, item }) => {
       /* ... */
-
-      let checked = item?.checked || false
       if (operation === 'create' && context.session?.data?.role === 'admin') {
-        resolvedData.status = 'verified'
+        resolvedData.checked = true
         resolvedData.reviewed = true
       }
 	},
