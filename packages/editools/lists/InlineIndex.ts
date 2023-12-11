@@ -150,7 +150,7 @@ const listConfigurations = list({
               border-image: none;
             }
             .item {
-              width: calc(50% - 60px);
+              width: calc(50% - 30px);
             }
             .item__color {
               width: 100%;
