@@ -521,7 +521,8 @@ model EmbedCode {
 model InlineIndex {
   id          Int         @id @default(autoincrement())
   name        String      @default("")
-  style       String?
+  style       String?     @default("default")
+  themeColor  String      @default("#000")
   index       IndexItem[] @relation("IndexItem_index")
   createdAt   DateTime?
   updatedAt   DateTime?
