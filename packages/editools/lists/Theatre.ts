@@ -111,7 +111,8 @@ const listConfigurations = list({
         type: graphql.JSON,
         resolve(item: Record<string, unknown>): Record<string, string> {
           return {
-            href: `/theatre/theatre-editor/index.html?three-story-point-id=${item.id}`,
+            //href: `/theatre/theatre-editor/index.html?three-story-point-id=${item.id}`,
+            href: `https://theatre-playground-v9.netlify.app/`,
             label: 'Theatre 編輯器',
           }
         },
