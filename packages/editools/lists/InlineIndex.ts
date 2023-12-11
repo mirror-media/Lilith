@@ -118,15 +118,15 @@ const listConfigurations = list({
           }
           .item__color {
             flex: 0;
-            width: 129px;
-            height: 72px;
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 100vw;
           }
           .item__color--item {
-            width: 64px;
-            height: 22px;
+            width: 100%;
+            height: 0;
+            padding-top: 66.25%;
             border: 1px solid #000;
           }
           .item__name {
@@ -146,9 +146,14 @@ const listConfigurations = list({
               display: flex;
               flex-wrap: wrap;
               padding: 60px 0;
+              border-color: ${item.themeColor};
+              border-image: none;
             }
             .item {
               width: calc(50% - 60px);
+            }
+            .item__color {
+              width: 100%;
             }
             .item__img {
               width: 100%;
