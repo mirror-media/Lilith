@@ -3,7 +3,7 @@ import config from '../config'
 // @ts-ignore
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, virtual, relationship } from '@keystone-6/core/fields'
+import { text, virtual, relationship, select } from '@keystone-6/core/fields'
 
 const {
   allowRoles,
@@ -18,6 +18,20 @@ const listConfigurations = list({
     name: text({
       label: '索引名稱',
       validation: { isRequired: true },
+    }),
+    style: select({
+      label: '樣式',
+      type: 'string',
+      options: [
+        {
+          label: '預設',
+          value: 'default',
+        },
+        {
+          label: '大圖',
+          value: 'larger-image',
+        },
+      ],
     }),
     index: relationship({
       label: '索引',

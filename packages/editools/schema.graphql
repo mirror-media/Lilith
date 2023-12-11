@@ -2024,6 +2024,7 @@ input EmbedCodeCreateInput {
 type InlineIndex {
   id: ID!
   name: String
+  style: String
   index(where: IndexItemWhereInput! = {}, orderBy: [IndexItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: IndexItemWhereUniqueInput): [IndexItem!]
   indexCount(where: IndexItemWhereInput! = {}): Int
   embedCode: String
@@ -2044,6 +2045,7 @@ input InlineIndexWhereInput {
   NOT: [InlineIndexWhereInput!]
   id: IDFilter
   name: StringFilter
+  style: StringNullableFilter
   index: IndexItemManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2060,12 +2062,14 @@ input IndexItemManyRelationFilter {
 input InlineIndexOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  style: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input InlineIndexUpdateInput {
   name: String
+  style: String
   index: IndexItemRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -2087,6 +2091,7 @@ input InlineIndexUpdateArgs {
 
 input InlineIndexCreateInput {
   name: String
+  style: String
   index: IndexItemRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
