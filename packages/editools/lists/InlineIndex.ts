@@ -91,6 +91,9 @@ const listConfigurations = list({
             )
             1;
           }
+          .toc-item {
+            line-height: 0;
+          }
           .toc-item + .toc-item {
             margin-top: 20px;
           }
