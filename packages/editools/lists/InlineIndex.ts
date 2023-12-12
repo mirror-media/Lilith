@@ -75,6 +75,7 @@ const listConfigurations = list({
             `,
           })
           let indexItemsCode = ''
+          const themeColor = item.themeColor || '#000'
           const largeImageStyle = `  
           .toc {
             list-style: none;
@@ -84,16 +85,16 @@ const listConfigurations = list({
             border-image: linear-gradient(
               to right,
               transparent 40px,
-              ${item.themeColor} 40px,
-              ${item.themeColor} calc(100% - 40px),
+              ${themeColor} 40px,
+              ${themeColor} calc(100% - 40px),
               transparent calc(100% - 40px)
             )
             1;
           }
-          .item + .item {
+          .toc-item + .toc-item {
             margin-top: 20px;
           }
-          .item__link {
+          .toc-item__link {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -101,44 +102,44 @@ const listConfigurations = list({
             text-decoration: none;
             position: relative;
           }
-          svg {
+          .toc-item__img--svg {
             position: absolute;
             top: 0;
             left: 0;
           }
-          .item__img {
+          .toc-item__img {
             width: 100vw;
             aspect-ratio: 66.25%;
             box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.15) inset;
           }
-          .item__img::before {
+          .toc-item__img::before {
             content: 0;
             top: 0;
             left: 0;
           }
-          .item__color {
+          .toc-item__color {
             flex: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100vw;
           }
-          .item__color--item {
+          .toc-item__color--item {
             width: 100%;
             height: 0;
             padding-top: 66.25%;
             border: 1px solid #000;
           }
-          .item__name {
+          .toc-item__name {
             font-size: 14px;
             font-style: normal;
             font-weight: 500;
             line-height: 150%;
-            color: ${item.themeColor};
+            color: ${themeColor};
             padding: 12px 12px 0 12px;
           }
-          path {
-            fill: ${item.themeColor};
+          .toc-item__img--svg path {
+            fill: ${themeColor};
           }
         
           @media (min-width: 768px) {
@@ -146,25 +147,25 @@ const listConfigurations = list({
               display: flex;
               flex-wrap: wrap;
               padding: 60px 0;
-              border-color: ${item.themeColor};
+              border-color: ${themeColor};
               border-image: none;
             }
-            .item {
+            .toc-item {
               width: calc(50% - 30px);
             }
-            .item__color {
+            .toc-item__color {
               width: 100%;
             }
-            .item__img {
+            .toc-item__img {
               width: 100%;
             }
-            .item + .item {
+            .toc-item + .toc-item {
               margin-top: 0;
             }
-            .item:nth-child(2n) {
+            .toc-item:nth-child(2n) {
               margin-left: 60px;
             }
-            .item:nth-child(n + 3) {
+            .toc-item:nth-child(n + 3) {
               margin-top: 20px;
             }
           }`
@@ -172,22 +173,22 @@ const listConfigurations = list({
           .toc { 
             list-style: none;
             padding: 25px 0;
-            border-top: 2px solid ${item.themeColor};
-            border-bottom: 2px solid ${item.themeColor};
+            border-top: 2px solid ${themeColor};
+            border-bottom: 2px solid ${themeColor};
            } 
-          .item + .item { 
+          .toc-item + .toc-item { 
             margin-top: 16px;
             }
-          .item__link { 
+          .toc-item__link { 
             display: flex; 
             align-items: center; 
             text-decoration:none; 
           } 
-          .item__img { 
+          .toc-item__img { 
             width: 129px; 
             height: 72px; 
           } 
-          .item__color { 
+          .toc-item__color { 
             flex: 0;
             width: 129px; 
             height: 72px;
@@ -195,17 +196,17 @@ const listConfigurations = list({
             align-items: center;
             justify-content: center; 
           } 
-          .item__color--item { 
+          .toc-item__color--item { 
             width: 64px; 
             height: 22px; 
             border: 1px solid #000;
           }
-          .item__name { 
+          .toc-item__name { 
             font-weight: 700; 
             font-size: 16px; 
             line-height: 23px; 
             letter-spacing: 0.03em; 
-            color: ${item.themeColor}; 
+            color: ${themeColor}; 
             margin-left: 16px; 
           } 
 
@@ -213,19 +214,19 @@ const listConfigurations = list({
             .toc { 
               display: flex; 
               flex-wrap: wrap; 
-              border-top: 8px solid ${item.themeColor};
-              border-bottom: 8px solid ${item.themeColor};
+              border-top: 8px solid ${themeColor};
+              border-bottom: 8px solid ${themeColor};
             } 
-            .item { 
+            .toc-item { 
               width: calc(50% - 20px); 
             } 
-            .item + .item { 
+            .toc-item + .toc-item { 
               margin-top: 0; 
             } 
-            .item:nth-child(2n) { 
+            .toc-item:nth-child(2n) { 
               margin-left: 40px; 
             } 
-            .item:nth-child(n+3) { 
+            .toc-item:nth-child(n+3) { 
               margin-top:20px; 
             } 
           }`
@@ -233,7 +234,7 @@ const listConfigurations = list({
           const svgBeforeImg =
             item.style === 'default'
               ? ''
-              : `<svg
+              : `<svg class='toc-item__img--svg'
           xmlns="http://www.w3.org/2000/svg"
           width="71"
           height="71"
@@ -252,15 +253,15 @@ const listConfigurations = list({
             .forEach((item) => {
               const urlPrefix = config.images.gcsBaseUrl
               const leftArea = item.imageFile?.url
-                ? `${svgBeforeImg}<img src='${urlPrefix}${item.imageFile?.url}' class='item__img' alt='${item.name}'/>`
-                : `<div class='item__color'>
-                  <div class='item__color--item' style='background: ${item.color};'></div>
+                ? `${svgBeforeImg}<img src='${urlPrefix}${item.imageFile?.url}' class='toc-item__img' alt='${item.name}'/>`
+                : `<div class='toc-item__color'>
+                  <div class='toc-item__color--item' style='background: ${item.color};'></div>
                 </div>`
               indexItemsCode += `
-              <li class='item'>
-              <a class='item__link' href='#${item.slug}'>
+              <li class='toc-item'>
+              <a class='toc-item__link' href='#${item.slug}'>
                   ${leftArea}
-                  <span class='item__name'>${item.name}</span>
+                  <span class='toc-item__name'>${item.name}</span>
               </a>
             </li>
           `
