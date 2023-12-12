@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core';
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { integer, relationship, timestamp, text } from '@keystone-6/core/fields';
+import { checkbox, integer, relationship, timestamp, text } from '@keystone-6/core/fields';
 	  
 const {
   allowRoles,
@@ -33,6 +33,14 @@ const listConfigurations = list ({
 	  label: '連結',
 	}),
     contributer: text({ label: '資料提供' }),
+    checked: checkbox({
+      defaultValue: false,
+      label: '已查核',
+    }),
+    reviewed: checkbox({
+      defaultValue: false,
+      label: '檢閱',
+    }),
     editingPolitic: relationship({
       label: '候選人政見（待審核）',
       many: true,
@@ -49,6 +57,13 @@ const listConfigurations = list ({
 	},
   },
   hooks: {
+    beforeOperation: async ({ operation, resolvedData, context, item }) => {
+      /* ... */
+      if (operation === 'create' && context.session?.data?.role === 'admin') {
+        resolvedData.checked = true
+        resolvedData.reviewed = true
+      }
+	},
     validateInput: async ({
       listKey,
       operation,
