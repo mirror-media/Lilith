@@ -78,6 +78,7 @@ const listConfigurations = list({
           const themeColor = item.themeColor || '#000'
           const largeImageStyle = `  
           .toc {
+            line-height: 0;
             list-style: none;
             padding: 48px 0;
             border-top: 4px solid transparent;
