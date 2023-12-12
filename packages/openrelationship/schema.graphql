@@ -1122,6 +1122,8 @@ type PoliticTimeline {
   content: String
   link: String
   contributer: String
+  checked: Boolean
+  reviewed: Boolean
   editingPolitic(where: EditingPoliticWhereInput! = {}, orderBy: [EditingPoliticOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EditingPoliticWhereUniqueInput): [EditingPolitic!]
   editingPoliticCount(where: EditingPoliticWhereInput! = {}): Int
   createdAt: DateTime
@@ -1145,6 +1147,8 @@ input PoliticTimelineWhereInput {
   content: StringFilter
   link: StringFilter
   contributer: StringFilter
+  checked: BooleanFilter
+  reviewed: BooleanFilter
   editingPolitic: EditingPoliticManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1171,6 +1175,8 @@ input PoliticTimelineOrderByInput {
   content: OrderDirection
   link: OrderDirection
   contributer: OrderDirection
+  checked: OrderDirection
+  reviewed: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1182,6 +1188,8 @@ input PoliticTimelineUpdateInput {
   content: String
   link: String
   contributer: String
+  checked: Boolean
+  reviewed: Boolean
   editingPolitic: EditingPoliticRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -1215,6 +1223,8 @@ input PoliticTimelineCreateInput {
   content: String
   link: String
   contributer: String
+  checked: Boolean
+  reviewed: Boolean
   editingPolitic: EditingPoliticRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
