@@ -3136,6 +3136,66 @@ input FullSceneCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type File {
+  id: ID!
+  name: String
+  file: FileFieldOutput
+  FileSrc: String
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input FileWhereUniqueInput {
+  id: ID
+}
+
+input FileWhereInput {
+  AND: [FileWhereInput!]
+  OR: [FileWhereInput!]
+  NOT: [FileWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input FileOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input FileUpdateInput {
+  name: String
+  file: FileFieldInput
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input FileUpdateArgs {
+  where: FileWhereUniqueInput!
+  data: FileUpdateInput!
+}
+
+input FileCreateInput {
+  name: String
+  file: FileFieldInput
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -3328,6 +3388,12 @@ type Mutation {
   updateFullScenes(data: [FullSceneUpdateArgs!]!): [FullScene]
   deleteFullScene(where: FullSceneWhereUniqueInput!): FullScene
   deleteFullScenes(where: [FullSceneWhereUniqueInput!]!): [FullScene]
+  createFile(data: FileCreateInput!): File
+  createFiles(data: [FileCreateInput!]!): [File]
+  updateFile(where: FileWhereUniqueInput!, data: FileUpdateInput!): File
+  updateFiles(data: [FileUpdateArgs!]!): [File]
+  deleteFile(where: FileWhereUniqueInput!): File
+  deleteFiles(where: [FileWhereUniqueInput!]!): [File]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -3445,6 +3511,9 @@ type Query {
   fullScenes(where: FullSceneWhereInput! = {}, orderBy: [FullSceneOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FullSceneWhereUniqueInput): [FullScene!]
   fullScene(where: FullSceneWhereUniqueInput!): FullScene
   fullScenesCount(where: FullSceneWhereInput! = {}): Int
+  files(where: FileWhereInput! = {}, orderBy: [FileOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FileWhereUniqueInput): [File!]
+  file(where: FileWhereUniqueInput!): File
+  filesCount(where: FileWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

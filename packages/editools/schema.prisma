@@ -78,6 +78,8 @@ model User {
   from_Theatre_updatedBy             Theatre[]             @relation("Theatre_updatedBy")
   from_FullScene_createdBy           FullScene[]           @relation("FullScene_createdBy")
   from_FullScene_updatedBy           FullScene[]           @relation("FullScene_updatedBy")
+  from_File_createdBy                File[]                @relation("File_createdBy")
+  from_File_updatedBy                File[]                @relation("File_updatedBy")
 }
 
 model LiveblogItem {
@@ -830,6 +832,23 @@ model FullScene {
   createdById         Int?      @map("createdBy")
   updatedBy           User?     @relation("FullScene_updatedBy", fields: [updatedById], references: [id])
   updatedById         Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model File {
+  id            Int       @id @default(autoincrement())
+  name          String    @default("")
+  file_filesize Int?
+  file_filename String?
+  apiData       Json?
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("File_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("File_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
