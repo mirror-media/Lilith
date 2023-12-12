@@ -30,7 +30,7 @@ const listConfigurations = list({
           if (!filename) {
             return ''
           }
-          return `https://${config.googleCloudStorage.bucket}/files/${filename}`
+          return `https://${config.files.gcsBaseUrl}/files/${filename}`
         },
       }),
     }),
