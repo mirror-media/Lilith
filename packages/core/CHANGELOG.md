@@ -1,13 +1,30 @@
 # @mirrormedia/lilith-core Changelog
 
+## 2023-12-13, Version 2.1.0
+
+### Notable Changes
+- fix type issues in richTextEditor
+- fix type issues in trackingHandler util
+- fix type issues in manual-order-relation-ship util
+- fix type issues in accessControl util
+- add type files to build process
+
+### Commits
+* \[[`20c3c2ddbc`](https://github.com/mirror-media/lilith/commit/20c3c2ddbc)] - chore(lilith-core): add type files to build process (Tsuki Akiba)
+* \[[`f934203f71`](https://github.com/mirror-media/lilith/commit/f934203f71)] - fix(lilith-core): type issues in accessControl util (Tsuki Akiba)
+* \[[`f33cbaf51f`](https://github.com/mirror-media/lilith/commit/f33cbaf51f)] - fix(lilith-core): type issues in manual-order-relationship util (Tsuki Akiba)
+* \[[`269662a0b7`](https://github.com/mirror-media/lilith/commit/269662a0b7)] - fix(lilith-core): type issues in trackingHandler util (Tsuki Akiba)
+* \[[`e7f6d49d50`](https://github.com/mirror-media/lilith/commit/e7f6d49d50)] - fix(lilith-core): issues in richTextEditor (Tsuki Akiba)
+* \[[`8faab9bb14`](https://github.com/mirror-media/lilith/commit/8faab9bb14)] - chore(core): update dependency and bump version (caesar)
+
 ## 2023-03-06, Version 1.2.7
 
 ### Notable Changes
 
 ### Commits
 
-* \[[`e56f10ca95`](https://github.com/mirror-media/lilith-core/commit/e56f10ca95)] - chore(core): upgrade Dep version `lilith-draft-editor`, bump version of `lilith-core` (DianYangFu)
-* \[[`997e6f4c7b`](https://github.com/mirror-media/lilith-core/commit/997e6f4c7b)] - fix(draft-editor): solve error by adding `themeProvider` of `styled-component` (DianYangFu)
+* \[[`e56f10ca95`](https://github.com/mirror-media/lilith/commit/e56f10ca95)] - chore(core): upgrade Dep version `lilith-draft-editor`, bump version of `lilith-core` (DianYangFu)
+* \[[`997e6f4c7b`](https://github.com/mirror-media/lilith/commit/997e6f4c7b)] - fix(draft-editor): solve error by adding `themeProvider` of `styled-component` (DianYangFu)
 
 ## 2023-02-22, Version 1.2.6
 
