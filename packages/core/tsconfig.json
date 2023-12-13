@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declarationDir": "./@types",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "isolatedModules": true,
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
