@@ -124,6 +124,7 @@ const listConfigurations = list({
             position: absolute;
             top: 0;
             left: 0;
+            z-index: 2;
           }
           .toc-item__img {
             min-height: 100%;
