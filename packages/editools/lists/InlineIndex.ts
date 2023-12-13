@@ -126,14 +126,12 @@ const listConfigurations = list({
             left: 0;
           }
           .toc-item__img {
-            min-width: 100%;
             min-height: 100%;
             width: 100%;
-            height: 100%;
             box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.15) inset;
             position: absolute;
             top: 50%;
-            width: 50%;
+            left: 50%;
             transform: translate(-50%, -50%)
           }
           .toc-item__color {
