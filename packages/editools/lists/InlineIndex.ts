@@ -271,7 +271,7 @@ const listConfigurations = list({
             .forEach((item) => {
               const urlPrefix = config.images.gcsBaseUrl
               const leftArea = item.imageFile?.url
-                ? `<div class=class='toc-item__img--wrapper'>${svgBeforeImg}<img src='${urlPrefix}${item.imageFile?.url}' class='toc-item__img' alt='${item.name}'/></div>`
+                ? `<div class='toc-item__img--wrapper'>${svgBeforeImg}<img src='${urlPrefix}${item.imageFile?.url}' class='toc-item__img' alt='${item.name}'/></div>`
                 : `<div class='toc-item__color'>
                   <div class='toc-item__color--item' style='background: ${item.color};'></div>
                 </div>`
