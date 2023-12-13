@@ -5,6 +5,7 @@ import type {
   BaseItem,
   BaseListTypeInfo,
   ListHooks,
+  MaybePromise,
 } from '@keystone-6/core/types'
 
 type ResolveInputHook = ListHooks<BaseListTypeInfo>['resolveInput']
@@ -88,13 +89,18 @@ function combineResolveInputHooks<T extends ResolveInputHook>(...hooks: T[]) {
   return async (params: Parameters<NonNullable<T>>[0]) => {
     const { resolvedData } = params
 
-    return hooks.reduce(async (newResolvedData, hook) => {
-      if (typeof hook === 'function') {
-        return await hook({ ...params, resolvedData: newResolvedData })
-      } else {
-        return newResolvedData
-      }
-    }, resolvedData)
+    return hooks.reduce(
+      async (promiseData: MaybePromise<typeof resolvedData>, hook) => {
+        const data = await promiseData
+
+        if (typeof hook === 'function') {
+          return hook({ ...params, resolvedData: data })
+        } else {
+          return data
+        }
+      },
+      resolvedData
+    )
   }
 }
 
