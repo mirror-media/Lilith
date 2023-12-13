@@ -8,10 +8,14 @@ build-lib:
 	@echo "$(P) Transpile es6, typescript, jsx and tsx to es5"
 	NODE_ENV=production yarn babel src --out-dir lib --extensions '.ts,.tsx,.js,.jsx' --copy-files --root-mode upward
 
-build: clean build-lib
+build-type:
+	@echo "$(P) Build type definitions"
+	yarn tsc
+
+build: clean build-lib build-type
 
 clean:
-	@echo "$(P) Clean lib/"
-	rm -rf lib/
+	@echo "$(P) Clean lib/ @types/"
+	rm -rf lib/ @types/
 
 .PHONY: build clean build-lib
