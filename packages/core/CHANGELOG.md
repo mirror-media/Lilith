@@ -1,5 +1,14 @@
 # @mirrormedia/lilith-core Changelog
 
+## 2023-12-13, Version 2.1.1
+
+### Notable Changes
+- fix errors in combineResolveInputHooks
+
+### Commits
+* \[[`97d846c67f`](https://github.com/mirror-media/lilith/commit/97d846c67f)] - fix(lilith-core): errors in combineResolveInputHooks (Tsuki Akiba)
+* \[[`5200d0b2f4`](https://github.com/mirror-media/lilith/commit/5200d0b2f4)] - chore(lilith-core): bump version to 2.1.0 (Tsuki Akiba)
+
 ## 2023-12-13, Version 2.1.0
 
 ### Notable Changes
