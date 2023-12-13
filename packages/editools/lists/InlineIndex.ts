@@ -113,20 +113,27 @@ const listConfigurations = list({
             text-decoration: none;
             position: relative;
           }
+          .toc-item__img--wrapper {
+            position: relative;
+            width: 100vw;
+            height: 0;
+            padding-top: 66.875%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
           .toc-item__img--svg {
             position: absolute;
             top: 0;
             left: 0;
           }
           .toc-item__img {
-            width: 100vw;
-            height: calc(100% * 0.66875);
+            min-width: 100%;
+            min-height: 100%;
+            width: 100%;
+            height: 100%;
             box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.15) inset;
-          }
-          .toc-item__img::before {
-            content: 0;
-            top: 0;
-            left: 0;
           }
           .toc-item__color {
             flex: 0;
@@ -167,7 +174,7 @@ const listConfigurations = list({
             .toc-item__color {
               width: 100%;
             }
-            .toc-item__img {
+            .toc-item__img--wrapper {
               width: 100%;
             }
             .toc-item + .toc-item {
@@ -264,7 +271,7 @@ const listConfigurations = list({
             .forEach((item) => {
               const urlPrefix = config.images.gcsBaseUrl
               const leftArea = item.imageFile?.url
-                ? `${svgBeforeImg}<img src='${urlPrefix}${item.imageFile?.url}' class='toc-item__img' alt='${item.name}'/>`
+                ? `<div class=class='toc-item__img--wrapper'>${svgBeforeImg}<img src='${urlPrefix}${item.imageFile?.url}' class='toc-item__img' alt='${item.name}'/></div>`
                 : `<div class='toc-item__color'>
                   <div class='toc-item__color--item' style='background: ${item.color};'></div>
                 </div>`
