@@ -119,9 +119,6 @@ const listConfigurations = list({
             height: 0;
             padding-top: 66.875%;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
           }
           .toc-item__img--svg {
             position: absolute;
@@ -134,6 +131,10 @@ const listConfigurations = list({
             width: 100%;
             height: 100%;
             box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.15) inset;
+            position: absolute;
+            top: 50%;
+            width: 50%;
+            transform: translate(-50%, -50%)
           }
           .toc-item__color {
             flex: 0;
