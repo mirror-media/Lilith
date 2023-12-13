@@ -101,9 +101,6 @@ const listConfigurations = list({
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1), 2px -2px 0px rgba(0, 0, 0, 0.1);
             transform: translate(2px, -2px);
           }
-          .toc-item:hover .toc-item__img{
-            transform: translate(2px, -2px);
-          }
           .toc-item + .toc-item {
             margin-top: 20px;
           }
@@ -122,7 +119,7 @@ const listConfigurations = list({
           }
           .toc-item__img {
             width: 100vw;
-            aspect-ratio: 66.875%;
+            height: calc(100% * 0.66875);
             box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.15) inset;
           }
           .toc-item__img::before {
