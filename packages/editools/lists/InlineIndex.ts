@@ -100,6 +100,7 @@ const listConfigurations = list({
             line-height: 0;
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1), 2px -2px 0px rgba(0, 0, 0, 0.1);
             transform: translate(2px, -2px);
+            cursor: pointer;
           }
           .toc-item + .toc-item {
             margin-top: 20px;
