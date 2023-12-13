@@ -1,17 +1,31 @@
+import type { ListConfig } from '@keystone-6/core'
 import { relationship, timestamp } from '@keystone-6/core/fields'
+import type {
+  BaseFields,
+  BaseItem,
+  BaseListTypeInfo,
+  ListHooks,
+} from '@keystone-6/core/types'
+
+type ResolveInputHook = ListHooks<BaseListTypeInfo>['resolveInput']
 
 /**
-add additional fields and hooks into existed list.
-hooks: fill data into fields after save .
-@param {object} list
-@return {object} list
+  add additional fields and hooks into existed list.
+  hooks: fill data into fields after save .
 */
-export function addTrackingFields(list) {
+export function addTrackingFields(
+  list: ListConfig<BaseListTypeInfo, BaseFields<BaseListTypeInfo>>
+) {
   // list's original hooks.resolveInput came from list
   const originalResolveInput = list.hooks?.resolveInput
 
   // custom hooks.resolveInput
-  const newResolveInput = ({ resolvedData, item, context, operation }) => {
+  const newResolveInput: ResolveInputHook = ({
+    resolvedData,
+    item,
+    context,
+    operation,
+  }) => {
     // fill additional fields with corresponding data
     fillAtTrackingField(resolvedData, item)
 
@@ -58,26 +72,29 @@ export function addTrackingFields(list) {
   // combine the original hook and the custom one
   list.hooks = {
     ...list.hooks,
-    resolveInput: combineTwoHook(originalResolveInput, newResolveInput),
+    resolveInput: combineResolveInputHooks(
+      originalResolveInput,
+      newResolveInput
+    ),
   }
 
   return list
 }
-/** 
-combine two lifecycle functions(ex. resolveInput) in hooks
- * @param {function} originalHook
- * @param {function} newHook
- * @return {function} combinedHook
-*/
-function combineTwoHook(originalHook, newHook) {
+/**
+ * combine resolveInput functions
+ */
+function combineResolveInputHooks<T extends ResolveInputHook>(...hooks: T[]) {
   // params is came from hooks : resolvedData, item...etc
-  return async (params) => {
-    let { resolvedData } = params
+  return async (params: Parameters<NonNullable<T>>[0]) => {
+    const { resolvedData } = params
 
-    if (originalHook) {
-      resolvedData = await originalHook(params)
-    }
-    return newHook({ ...params, resolvedData })
+    return hooks.reduce(async (newResolvedData, hook) => {
+      if (typeof hook === 'function') {
+        return await hook({ ...params, resolvedData: newResolvedData })
+      } else {
+        return newResolvedData
+      }
+    }, resolvedData)
   }
 }
 
@@ -85,10 +102,13 @@ function combineTwoHook(originalHook, newHook) {
  * Fill relationship's connect data (userId) into field,
  * if it's in create mode, put data into 'createdBy' field;
  * if it's in update mode, then put data into 'updatedBy' field.
- * @param {object} resolvedData
- * @param {object} item
  */
-function fillByTrackingField(currentUserId, resolvedData, item, operation) {
+function fillByTrackingField(
+  currentUserId: number,
+  resolvedData: Record<string, unknown>,
+  item: BaseItem | undefined,
+  operation: string
+) {
   const relationshipData = { connect: { id: currentUserId } }
 
   // Note:
@@ -122,10 +142,11 @@ function fillByTrackingField(currentUserId, resolvedData, item, operation) {
  * Fill Date object into field,
  * if it's in create mode, put created time into 'createdAt' field;
  * if it's in update mode, then put updated time into 'updatedAt' field.
- * @param {object} resolvedData
- * @param {object} item
  */
-function fillAtTrackingField(resolvedData, item) {
+function fillAtTrackingField(
+  resolvedData: Record<string, unknown>,
+  item: BaseItem | undefined
+) {
   if (item && item['createdAt']) {
     // update mode
     resolvedData['updatedAt'] = new Date()
