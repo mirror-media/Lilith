@@ -98,9 +98,11 @@ const listConfigurations = list({
           }
           .toc-item:hover {
             line-height: 0;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1), 2px -2px 0px rgba(0, 0, 0, 0.1);
             transform: translate(2px, -2px);
             cursor: pointer;
+          }
+          .toc-item__img--wrapper:hover {
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1), 2px -2px 0px rgba(0, 0, 0, 0.1);
           }
           .toc-item + .toc-item {
             margin-top: 20px;
@@ -149,7 +151,7 @@ const listConfigurations = list({
             border: 1px solid #000;
           }
           .toc-item__name {
-            font-size: 14px;
+            font-size: 18px;
             font-style: normal;
             font-weight: 500;
             line-height: 150%;
