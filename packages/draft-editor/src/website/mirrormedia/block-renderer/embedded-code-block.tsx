@@ -4,6 +4,9 @@ import styled from 'styled-components'
 
 export const Block = styled.div`
   position: relative;
+  /* fix CLS issue while re-rendering trigger by composition input */
+  height: 25vh;
+  overflow-y: scroll;
   /* styles for image link */
   img.img-responsive {
     margin: 0 auto;
