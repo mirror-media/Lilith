@@ -1,5 +1,13 @@
 # @mirrormedia/lilith-core Changelog
 
+## 2023-12-14, Version 2.2.0
+
+### Notable Changes
+- upgrade lilith-draft-editor to 1.2.0
+
+### Commits
+* \[[`02a0101b74`](https://github.com/mirror-media/lilith/commit/02a0101b74)] - chore(lilith-core): upgrade lilith-draft-editor to 1.2.0 (Tsuki Akiba)
+
 ## 2023-12-13, Version 2.1.1
 
 ### Notable Changes
