@@ -115,7 +115,7 @@ const listConfigurations = list({
           }
           .toc-item__img--wrapper {
             position: relative;
-            width: 100vw;
+            width: 100%;
             height: 0;
             padding-top: 66.875%;
             overflow: hidden;
