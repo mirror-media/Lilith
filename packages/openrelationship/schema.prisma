@@ -275,7 +275,7 @@ model PoliticTimeline {
   content        String           @default("")
   link           String           @default("")
   contributer    String           @default("")
-  checked        Boolean          @default(false)
+  status         String?          @default("notverified")
   reviewed       Boolean          @default(false)
   editingPolitic EditingPolitic[] @relation("EditingPolitic_timeline")
   createdAt      DateTime?
@@ -285,6 +285,7 @@ model PoliticTimeline {
   updatedBy      User?            @relation("PoliticTimeline_updatedBy", fields: [updatedById], references: [id])
   updatedById    Int?             @map("updatedBy")
 
+  @@index([status])
   @@index([createdById])
   @@index([updatedById])
 }

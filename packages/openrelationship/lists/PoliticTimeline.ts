@@ -1,7 +1,8 @@
 import { list } from '@keystone-6/core';
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { checkbox, integer, relationship, timestamp, text } from '@keystone-6/core/fields';
-	  
+import { select, checkbox, integer, relationship, timestamp, text } from '@keystone-6/core/fields';
+import { STATUS, STATUS_LABEL, DESC_LENGTH } from './constants'
+
 const {
   allowRoles,
   admin,
@@ -33,9 +34,14 @@ const listConfigurations = list ({
 	  label: '連結',
 	}),
     contributer: text({ label: '資料提供' }),
-    checked: checkbox({
-      defaultValue: false,
-      label: '已查核',
+    status: select({
+      options: [
+        { label: STATUS_LABEL[STATUS.VERIFIED], value: STATUS.VERIFIED },
+        { label: STATUS_LABEL[STATUS.NOTVERIFIED], value: STATUS.NOTVERIFIED },
+      ],
+      defaultValue: STATUS.NOTVERIFIED,
+      label: '狀態',
+      isIndexed: true,
     }),
     reviewed: checkbox({
       defaultValue: false,
