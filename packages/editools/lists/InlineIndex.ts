@@ -93,7 +93,16 @@ const listConfigurations = list({
             1;
           }
           .toc-item {
+            transition: 0.3s ease;
             line-height: 0;
+          }
+          .toc-item:hover {
+            line-height: 0;
+            transform: translate(2px, -2px);
+            cursor: pointer;
+          }
+          .toc-item__img--wrapper:hover {
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1), 2px -2px 0px rgba(0, 0, 0, 0.1);
           }
           .toc-item + .toc-item {
             margin-top: 20px;
@@ -106,20 +115,27 @@ const listConfigurations = list({
             text-decoration: none;
             position: relative;
           }
+          .toc-item__img--wrapper {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-top: 66.875%;
+            overflow: hidden;
+          }
           .toc-item__img--svg {
             position: absolute;
             top: 0;
             left: 0;
+            z-index: 2;
           }
           .toc-item__img {
-            width: 100vw;
-            aspect-ratio: 66.25%;
+            min-height: 100%;
+            width: 100%;
             box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.15) inset;
-          }
-          .toc-item__img::before {
-            content: 0;
-            top: 0;
-            left: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%)
           }
           .toc-item__color {
             flex: 0;
@@ -131,11 +147,11 @@ const listConfigurations = list({
           .toc-item__color--item {
             width: 100%;
             height: 0;
-            padding-top: 66.25%;
+            padding-top: 66.875%;
             border: 1px solid #000;
           }
           .toc-item__name {
-            font-size: 14px;
+            font-size: 18px;
             font-style: normal;
             font-weight: 500;
             line-height: 150%;
@@ -160,7 +176,7 @@ const listConfigurations = list({
             .toc-item__color {
               width: 100%;
             }
-            .toc-item__img {
+            .toc-item__img--wrapper {
               width: 100%;
             }
             .toc-item + .toc-item {
@@ -257,7 +273,7 @@ const listConfigurations = list({
             .forEach((item) => {
               const urlPrefix = config.images.gcsBaseUrl
               const leftArea = item.imageFile?.url
-                ? `${svgBeforeImg}<img src='${urlPrefix}${item.imageFile?.url}' class='toc-item__img' alt='${item.name}'/>`
+                ? `<div class='toc-item__img--wrapper'>${svgBeforeImg}<img src='${urlPrefix}${item.imageFile?.url}' class='toc-item__img' alt='${item.name}'/></div>`
                 : `<div class='toc-item__color'>
                   <div class='toc-item__color--item' style='background: ${item.color};'></div>
                 </div>`

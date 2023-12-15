@@ -14,5 +14,7 @@ config.js
 gcskeyfile.json
 .eslintcache
 
+# output files
 packages/**/lib
 packages/**/public/*
+packages/**/@types
