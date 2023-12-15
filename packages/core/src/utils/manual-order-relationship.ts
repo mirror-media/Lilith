@@ -1,13 +1,29 @@
-import { BaseItem } from '@keystone-6/core/types'
-import { ListConfig, graphql } from '@keystone-6/core'
+import type {
+  BaseFields,
+  BaseItem,
+  BaseListTypeInfo,
+} from '@keystone-6/core/types'
+import { type ListConfig, graphql } from '@keystone-6/core'
 import { json, virtual } from '@keystone-6/core/fields'
 
 type ManualOrderFieldConfig = {
+  /** name for established field, e.g., `manualOrderOfAuthors` */
   fieldName: string
+  /** label for established field, e.g., `authors 手動排序結果` */
   fieldLabel?: string
+  /** the target field to record the user input order, e.g., `authors` */
   targetFieldName: string
+  /** the list that target field related to, e.g., `User` */
   targetListName: string
+  /** label of the field on the list that target field related to.  For example, if we use `name`, it refers to `User`.`name` */
   targetListLabelField: string
+}
+
+/** Item for order data */
+type Item = {
+  id: string
+  /** key should be value of ManualOrderFieldConfig.targetListLabelField  */
+  [targetListLabelField: string]: unknown
 }
 
 /**
@@ -58,7 +74,7 @@ type ManualOrderFieldConfig = {
  */
 function addManualOrderRelationshipFields(
   manualOrderFields: ManualOrderFieldConfig[] = [],
-  list: ListConfig<any, any>
+  list: ListConfig<BaseListTypeInfo, BaseFields<BaseListTypeInfo>>
 ) {
   manualOrderFields.forEach((mo) => {
     if (!list.fields?.[mo.fieldName]) {
@@ -100,29 +116,27 @@ function addManualOrderRelationshipFields(
 
       // if create/update operation creates/modifies the `${targetFieldName}` field
       if (resolvedData?.[targetFieldName]) {
-        let currentOrder: { id: string }[] = []
+        let currentOrder: Item[] = []
 
         // update operation due to `item` not being `undefiend`
         if (item) {
-          const previousOrder: { id: string }[] = Array.isArray(item[fieldName])
-            ? item[fieldName]
-            : []
+          const previousOrder = getOrderData(item[fieldName])
 
           // user disconnects/removes some relationship items.
           const disconnectIds =
-            resolvedData[
-              targetFieldName
-            ]?.disconnect?.map((obj: { id: number }) => obj.id.toString()) || []
+            resolvedData[targetFieldName]?.disconnect?.map((obj: Item) =>
+              obj.id.toString()
+            ) || []
 
           // filtered out to-be-disconnected relationship items
-          currentOrder = previousOrder.filter(({ id }: { id: string }) => {
+          currentOrder = previousOrder.filter(({ id }: Item) => {
             return disconnectIds.indexOf(id) === -1
           })
         }
 
         // user connects/adds some relationship item.
-        const connectedIds =
-          resolvedData[targetFieldName]?.connect?.map((obj: { id: number }) =>
+        const connectedIds: string[] =
+          resolvedData[targetFieldName]?.connect?.map((obj: Item) =>
             obj.id.toString()
           ) || []
 
@@ -179,7 +193,7 @@ function addManualOrderRelationshipFields(
  *  And the GQL resolver will be defined in `resolve` function.
  */
 function addVirtualFieldToReturnItemsInInputOrder(
-  list: ListConfig<any, any>,
+  list: ListConfig<BaseListTypeInfo, BaseFields<BaseListTypeInfo>>,
   manualOrderField: ManualOrderFieldConfig
 ) {
   const virtualFieldName = `${manualOrderField.targetFieldName}InInputOrder`
@@ -228,6 +242,18 @@ function addVirtualFieldToReturnItemsInInputOrder(
       createView: { fieldMode: 'hidden' },
     },
   })
+}
+
+function getOrderData(items: unknown): Item[] {
+  if (Array.isArray(items)) {
+    return items.filter(isOrderItem)
+  } else {
+    return []
+  }
+}
+
+function isOrderItem(item: BaseItem): item is Item {
+  return 'id' in item
 }
 
 export default addManualOrderRelationshipFields

@@ -1,9 +1,12 @@
 import React, { useEffect, useRef } from 'react'
-import { DraftEntityInstance } from 'draft-js'
+import type { EntityInstance } from 'draft-js'
 import styled from 'styled-components'
 
 export const Block = styled.div`
   position: relative;
+  /* fix CLS issue while re-rendering trigger by composition input */
+  height: 25vh;
+  overflow-y: scroll;
   /* styles for image link */
   img.img-responsive {
     margin: 0 auto;
@@ -21,13 +24,13 @@ export const Caption = styled.div`
   padding: 15px 15px 0 15px;
 `
 
-export const EmbeddedCodeEditorBlock = (entity: DraftEntityInstance) => {
+export const EmbeddedCodeEditorBlock = (entity: EntityInstance) => {
   const { caption, embeddedCode } = entity.getData()
-  const embedded = useRef(null)
+  const embedded = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!embedded.current) return
-    const node: HTMLElement = embedded.current
+    const node = embedded.current
 
     const fragment = document.createDocumentFragment()
 
