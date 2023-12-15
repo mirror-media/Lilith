@@ -84,9 +84,9 @@ const listConfigurations = list ({
           where: { id: item.createdById.toString() },
           query: 'name',
         });
-        if (context!.session?.data?.name !== name && context?.session?.data?.role === 'editor') {
-          addValidationError("沒有權限")
-        }
+        //if (context!.session?.data?.name !== name && context?.session?.data?.role === 'editor') {
+        //  addValidationError("沒有權限")
+        //}
       }
     },
     validateDelete: async ({

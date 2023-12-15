@@ -92,9 +92,9 @@ const listConfigurations = list ({
 	}) => { /* ... */ 
 	  if (operation === 'create' || operation === 'update') {
         if (operation === 'update') {
-          if (context!.session?.data?.name !== item?.name && (context!.session?.data.role === 'editor')) {
-            addValidationError("沒有修改權限")
-          }
+          //if (context!.session?.data?.name !== item?.name && (context!.session?.data.role === 'editor')) {
+          //  addValidationError("沒有修改權限")
+          //}
         }
 		if (inputData?.checkResultType === "10" && (inputData?.checkResultOther === '' || inputData?.checkResultOther === undefined)) {
 		  if (item?.checkResultOther === '' || item?.checkResultOther === undefined) {
