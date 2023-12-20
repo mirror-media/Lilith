@@ -66,7 +66,6 @@ const listConfigurations = list ({
     beforeOperation: async ({ operation, resolvedData, context, item }) => {
       /* ... */
       if (operation === 'create' && context.session?.data?.role === 'admin') {
-        resolvedData.checked = true
         resolvedData.reviewed = true
       }
 	},
