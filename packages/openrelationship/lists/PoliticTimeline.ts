@@ -67,6 +67,7 @@ const listConfigurations = list ({
       /* ... */
       if (operation === 'create' && context.session?.data?.role === 'admin') {
         resolvedData.reviewed = true
+		resolvedData.status =  STATUS.VERIFIED
       }
 	},
     validateInput: async ({
