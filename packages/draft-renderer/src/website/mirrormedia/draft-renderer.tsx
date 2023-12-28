@@ -68,7 +68,7 @@ const draftEditorCssWide = css`
   font-size: 18px;
   line-height: 2;
   [style*='font-weight:bold'] {
-    font-weight: 800 !important;
+    font-weight: 900 !important;
   }
   .public-DraftStyleDefault-header-two {
     text-align: center;
