@@ -81,7 +81,7 @@ const listConfigurations = list ({
     }) => { /* ... */ 
       if (operation === 'update') {
         const { name } = await context.query.User.findOne({
-          where: { id: item.createdById.toString() },
+          where: { id: item.createdById?.toString() },
           query: 'name',
         });
         if (context!.session?.data?.name !== name && context?.session?.data?.role === 'editor') {
@@ -98,7 +98,7 @@ const listConfigurations = list ({
       addValidationError,
     }) => { /* ... */ 
       const { name } = await context.query.User.findOne({
-        where: { id: item.createdById.toString() },
+        where: { id: item.createdById?.toString() },
         query: 'name',
       });
       if (context!.session?.data?.name !== name && context?.session?.data?.role === 'editor') {
