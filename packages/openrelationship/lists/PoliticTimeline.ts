@@ -80,12 +80,14 @@ const listConfigurations = list ({
       addValidationError,
     }) => { /* ... */ 
       if (operation === 'update') {
-        const { name } = await context.query.User.findOne({
-          where: { id: item.createdById?.toString() },
-          query: 'name',
-        });
-        if (context!.session?.data?.name !== name && context?.session?.data?.role === 'editor') {
-          addValidationError("沒有權限")
+		if (context?.session?.data?.role === 'editor') {
+          const { name } = await context.query.User.findOne({
+            where: { id: item.createdById?.toString() },
+            query: 'name',
+          });
+          if (context!.session?.data?.name !== name) {
+            addValidationError("沒有權限")
+          }
         }
       }
     },
@@ -97,14 +99,16 @@ const listConfigurations = list ({
       context,
       addValidationError,
     }) => { /* ... */ 
-      const { name } = await context.query.User.findOne({
-        where: { id: item.createdById?.toString() },
-        query: 'name',
-      });
-      if (context!.session?.data?.name !== name && context?.session?.data?.role === 'editor') {
-        addValidationError("沒有權限")
-      }
-    },
+	  if (context?.session?.data?.role === 'editor') {
+		const { name } = await context.query.User.findOne({
+		  where: { id: item.createdById?.toString() },
+		  query: 'name',
+		});
+		if (context!.session?.data?.name !== name) {
+		  addValidationError("沒有權限")
+		}
+	  }
+    }
   },
 })
 export default utils.addTrackingFields(listConfigurations)
