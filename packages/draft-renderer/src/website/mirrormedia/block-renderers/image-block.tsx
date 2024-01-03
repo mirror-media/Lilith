@@ -236,15 +236,15 @@ export function ImageBlock(props: ImageBlockProps) {
   const imageJsx = isAmp ? (
     /**
      * The rules for fallback of the heroImage:
-     * 1. Show w800 first.
-     * 2. If the URL of w800 is an empty string or an invalid URL, then show the original by using <amp-img> with `fallback` attribute.
+     * 1. Show w1600 first.
+     * 2. If the URL of w1600 is an empty string or an invalid URL, then show the original by using <amp-img> with `fallback` attribute.
      * 3. If the URL of original is an empty string, then show the default image url by replacing src of <amp-img>.
      */
     <AmpImgWrapper>
       {resized ? (
         <>
           {/** @ts-ignore amp-html-tag*/}
-          <amp-img src={resized?.w800} alt={name} layout="fill">
+          <amp-img src={resized?.w1600} alt={name} layout="fill">
             {/** @ts-ignore amp-html-tag*/}
             <amp-img
               fallback=""
