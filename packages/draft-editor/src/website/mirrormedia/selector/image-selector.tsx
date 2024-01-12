@@ -347,7 +347,7 @@ export function ImageSelector(props: {
   const [align, setAlign] = useState(initialAlign)
   const contentWrapperRef = useRef<HTMLDivElement>()
 
-  const pageSize = 6
+  const pageSize = 18
 
   const options = [
     { value: undefined, label: 'default', isDisabled: false },
