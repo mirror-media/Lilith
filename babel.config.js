@@ -9,7 +9,7 @@ module.exports = {
       {
         modules: 'auto',
         targets: {
-          node: '14',
+          node: '16',
         },
       },
     ],

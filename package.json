@@ -5,11 +5,13 @@
     "packages/draft-editor",
     "packages/draft-renderer",
     "packages/editools",
+    "packages/mirrormedia",
     "packages/readr",
     "packages/openrelationship"
   ],
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.10",
@@ -32,7 +34,7 @@
     "lint-staged": "^12.4.2",
     "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.1.0",
-    "prettier": "1.19.1",
+    "prettier": "^2",
     "typescript": "^4.7.4"
   },
   "lint-staged": {

@@ -1,4 +1,5 @@
 import { blockRenderers } from './block-renderers'
+import { ContentLayout } from './types'
 const {
   EmbeddedCodeBlock,
   MediaBlock,
@@ -14,13 +15,15 @@ const {
   RelatedPostBlock,
   SideIndexBlock,
   VideoBlock,
+  VideoBlockV2,
   AudioBlock,
+  AudioBlockV2,
   YoutubeBlock,
 } = blockRenderers
 
 const AtomicBlock = (props) => {
   const entity = props.contentState.getEntity(props.block.getEntityAt(0))
-  const { contentLayout } = props.blockProps
+  const { contentLayout }: { contentLayout: ContentLayout } = props.blockProps
   const entityType = entity.getType()
 
   switch (entityType) {
@@ -51,13 +54,13 @@ const AtomicBlock = (props) => {
       return TableBlock(props)
     }
     case 'COLORBOX': {
-      return ColorBoxBlock(props)
+      return ColorBoxBlock(props, contentLayout)
     }
     case 'BACKGROUNDIMAGE': {
-      return BGImageBlock(props)
+      return BGImageBlock(props, contentLayout)
     }
     case 'BACKGROUNDVIDEO': {
-      return BGVideoBlock(props)
+      return BGVideoBlock(props, contentLayout)
     }
     case 'RELATEDPOST': {
       return RelatedPostBlock(entity)
@@ -68,11 +71,17 @@ const AtomicBlock = (props) => {
     case 'VIDEO': {
       return VideoBlock(entity, contentLayout)
     }
+    case 'VIDEO-V2': {
+      return VideoBlockV2(entity, contentLayout)
+    }
     case 'AUDIO': {
       return AudioBlock(entity, contentLayout)
     }
+    case 'AUDIO-V2': {
+      return AudioBlockV2(entity, contentLayout)
+    }
     case 'YOUTUBE': {
-      return YoutubeBlock(entity)
+      return YoutubeBlock(entity, contentLayout)
     }
   }
   return null

@@ -15,7 +15,9 @@ const {
   DividerBlock,
   RelatedPostBlock,
   VideoBlock,
+  VideoBlockV2,
   AudioBlock,
+  AudioBlockV2,
   YoutubeBlock,
 } = MirrorMedia.blockRenderers
 
@@ -69,8 +71,14 @@ const AtomicBlock = (props) => {
     case 'VIDEO': {
       return VideoBlock(entity)
     }
+    case 'VIDEO-V2': {
+      return VideoBlockV2(entity)
+    }
     case 'AUDIO': {
       return AudioBlock(entity)
+    }
+    case 'AUDIO-V2': {
+      return AudioBlockV2(entity)
     }
     case 'YOUTUBE': {
       return YoutubeBlock(entity)

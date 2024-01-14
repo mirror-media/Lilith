@@ -12,6 +12,7 @@ import {
   enableBodyScroll,
   clearAllBodyScrollLocks,
 } from 'body-scroll-lock'
+import { ContentLayout } from '../types'
 
 const imageFigureLayoutNormal = css`
   .readr-media-react-image {
@@ -71,16 +72,20 @@ const figcaptionLayoutWide = css`
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 `
 
-const Figure = styled.figure`
+const Figure = styled.figure<{ aspectRatio: string }>`
   /* margin-block: unset; */
   /* margin-inline: unset; */
   ${defaultMarginTop}
   ${defaultMarginBottom}
   .readr-media-react-image {
     cursor: pointer;
+    aspect-ratio: ${({ aspectRatio }) =>
+      aspectRatio ? aspectRatio : 'inherit'};
   }
 `
-const ImageFigure = styled(Figure)`
+const ImageFigure = styled(Figure)<{
+  contentLayout: ContentLayout
+}>`
   ${({ contentLayout }) => {
     switch (contentLayout) {
       case 'normal':
@@ -94,7 +99,7 @@ const ImageFigure = styled(Figure)`
     }
   }}
 `
-const Figcaption = styled.figcaption`
+const Figcaption = styled.figcaption<{ contentLayout: ContentLayout }>`
   font-size: 14px;
   line-height: 1.8;
   font-weight: 400;
@@ -177,7 +182,7 @@ const LightBoxWrapper = styled.div`
 type ImageBlockProps = {
   block: ContentBlock
   blockProps: {
-    contentLayout: string
+    contentLayout: ContentLayout
   }
   contentState: ContentState
 }
@@ -193,8 +198,19 @@ export function ImageBlock(props: ImageBlockProps) {
   const isAmp = contentLayout === 'amp'
 
   const [shouldOpenLightBox, setShouldOpenLightBox] = useState(false)
-  const { name, desc, resized, url, resizedWebp = null } = entity.getData()
-
+  const {
+    name,
+    desc,
+    resized,
+    url,
+    resizedWebp = null,
+    imageFile = {},
+  } = entity.getData()
+  //imageFile in possibly a `null`
+  const aspectRatio =
+    imageFile && imageFile?.width && imageFile?.height
+      ? `${imageFile.width} / ${imageFile.height}`
+      : 'inherit'
   const hasDescription = Boolean(desc)
   useEffect(() => {
     if (lightBoxRef && lightBoxRef.current) {
@@ -218,8 +234,32 @@ export function ImageBlock(props: ImageBlockProps) {
   }
 
   const imageJsx = isAmp ? (
+    /**
+     * The rules for fallback of the heroImage:
+     * 1. Show w1600 first.
+     * 2. If the URL of w1600 is an empty string or an invalid URL, then show the original by using <amp-img> with `fallback` attribute.
+     * 3. If the URL of original is an empty string, then show the default image url by replacing src of <amp-img>.
+     */
     <AmpImgWrapper>
-      <amp-img src={resized?.original} alt={name} layout="fill"></amp-img>
+      {resized ? (
+        <>
+          {/** @ts-ignore amp-html-tag*/}
+          <amp-img src={resized?.w1600} alt={name} layout="fill">
+            {/** @ts-ignore amp-html-tag*/}
+            <amp-img
+              fallback=""
+              src={resized?.original ? resized?.original : defaultImage}
+              alt={name}
+              layout="fill"
+            ></amp-img>
+          </amp-img>
+        </>
+      ) : (
+        <>
+          {/** @ts-ignore amp-html-tag*/}
+          <amp-img src={defaultImage} alt={name} layout="fill"></amp-img>
+        </>
+      )}
     </AmpImgWrapper>
   ) : (
     <CustomImage
@@ -240,6 +280,7 @@ export function ImageBlock(props: ImageBlockProps) {
     <ImageFigure
       key={resized.original}
       contentLayout={contentLayout}
+      aspectRatio={aspectRatio}
       onClick={handleOpen}
     >
       {imageJsx}

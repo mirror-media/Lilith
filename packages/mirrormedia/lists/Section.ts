@@ -14,6 +14,7 @@ const listConfigurations = list({
   fields: {
     name: text({
       label: '名稱',
+      isIndexed: 'unique',
       validation: { isRequired: true },
     }),
     description: text({
@@ -37,6 +38,7 @@ const listConfigurations = list({
         { label: 'inactive', value: 'inactive' },
       ],
       validation: { isRequired: true },
+      isIndexed: true,
       ui: { displayMode: 'segmented-control' },
       defaultValue: 'active',
     }),

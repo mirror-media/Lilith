@@ -2024,6 +2024,8 @@ input EmbedCodeCreateInput {
 type InlineIndex {
   id: ID!
   name: String
+  style: String
+  themeColor: String
   index(where: IndexItemWhereInput! = {}, orderBy: [IndexItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: IndexItemWhereUniqueInput): [IndexItem!]
   indexCount(where: IndexItemWhereInput! = {}): Int
   embedCode: String
@@ -2044,6 +2046,8 @@ input InlineIndexWhereInput {
   NOT: [InlineIndexWhereInput!]
   id: IDFilter
   name: StringFilter
+  style: StringNullableFilter
+  themeColor: StringFilter
   index: IndexItemManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2060,12 +2064,16 @@ input IndexItemManyRelationFilter {
 input InlineIndexOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  style: OrderDirection
+  themeColor: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input InlineIndexUpdateInput {
   name: String
+  style: String
+  themeColor: String
   index: IndexItemRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -2087,6 +2095,8 @@ input InlineIndexUpdateArgs {
 
 input InlineIndexCreateInput {
   name: String
+  style: String
+  themeColor: String
   index: IndexItemRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -3055,6 +3065,137 @@ input TheatreCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type FullScene {
+  id: ID!
+  name: String
+  desc: String
+  imageFile: ImageFieldOutput
+  displayMode: String
+  hotspotJson: JSON
+  embedCode: String
+  previewButton: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input FullSceneWhereUniqueInput {
+  id: ID
+}
+
+input FullSceneWhereInput {
+  AND: [FullSceneWhereInput!]
+  OR: [FullSceneWhereInput!]
+  NOT: [FullSceneWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  desc: StringFilter
+  displayMode: StringNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input FullSceneOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  desc: OrderDirection
+  displayMode: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input FullSceneUpdateInput {
+  name: String
+  desc: String
+  imageFile: ImageFieldInput
+  displayMode: String
+  hotspotJson: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input FullSceneUpdateArgs {
+  where: FullSceneWhereUniqueInput!
+  data: FullSceneUpdateInput!
+}
+
+input FullSceneCreateInput {
+  name: String
+  desc: String
+  imageFile: ImageFieldInput
+  displayMode: String
+  hotspotJson: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type File {
+  id: ID!
+  name: String
+  file: FileFieldOutput
+  FileSrc: String
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input FileWhereUniqueInput {
+  id: ID
+}
+
+input FileWhereInput {
+  AND: [FileWhereInput!]
+  OR: [FileWhereInput!]
+  NOT: [FileWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input FileOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input FileUpdateInput {
+  name: String
+  file: FileFieldInput
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input FileUpdateArgs {
+  where: FileWhereUniqueInput!
+  data: FileUpdateInput!
+}
+
+input FileCreateInput {
+  name: String
+  file: FileFieldInput
+  apiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -3241,6 +3382,18 @@ type Mutation {
   updateTheatres(data: [TheatreUpdateArgs!]!): [Theatre]
   deleteTheatre(where: TheatreWhereUniqueInput!): Theatre
   deleteTheatres(where: [TheatreWhereUniqueInput!]!): [Theatre]
+  createFullScene(data: FullSceneCreateInput!): FullScene
+  createFullScenes(data: [FullSceneCreateInput!]!): [FullScene]
+  updateFullScene(where: FullSceneWhereUniqueInput!, data: FullSceneUpdateInput!): FullScene
+  updateFullScenes(data: [FullSceneUpdateArgs!]!): [FullScene]
+  deleteFullScene(where: FullSceneWhereUniqueInput!): FullScene
+  deleteFullScenes(where: [FullSceneWhereUniqueInput!]!): [FullScene]
+  createFile(data: FileCreateInput!): File
+  createFiles(data: [FileCreateInput!]!): [File]
+  updateFile(where: FileWhereUniqueInput!, data: FileUpdateInput!): File
+  updateFiles(data: [FileUpdateArgs!]!): [File]
+  deleteFile(where: FileWhereUniqueInput!): File
+  deleteFiles(where: [FileWhereUniqueInput!]!): [File]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -3355,6 +3508,12 @@ type Query {
   theatres(where: TheatreWhereInput! = {}, orderBy: [TheatreOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TheatreWhereUniqueInput): [Theatre!]
   theatre(where: TheatreWhereUniqueInput!): Theatre
   theatresCount(where: TheatreWhereInput! = {}): Int
+  fullScenes(where: FullSceneWhereInput! = {}, orderBy: [FullSceneOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FullSceneWhereUniqueInput): [FullScene!]
+  fullScene(where: FullSceneWhereUniqueInput!): FullScene
+  fullScenesCount(where: FullSceneWhereInput! = {}): Int
+  files(where: FileWhereInput! = {}, orderBy: [FileOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FileWhereUniqueInput): [File!]
+  file(where: FileWhereUniqueInput!): File
+  filesCount(where: FileWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

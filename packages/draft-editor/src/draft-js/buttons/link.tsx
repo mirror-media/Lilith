@@ -1,21 +1,29 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { AlertDialog } from '@keystone-ui/modals'
 import { EditorState, RichUtils } from 'draft-js'
 import { TextInput } from '@keystone-ui/fields'
 
-const styles = {
-  urlInput: {
-    fontFamily: "'Georgia', serif",
-    marginRight: 10,
-    padding: 10,
-  },
-}
+import { getSelectionEntityData } from '../util'
+
+const StyledTextInput = styled(TextInput)`
+  fontfamily: Georgia, serif;
+  marginright: 10;
+  padding: 10;
+`
 
 export function LinkButton(props) {
-  const { isActive, editorState, onChange } = props
+  const { editorState, onChange } = props
+
+  const entityData = getSelectionEntityData(editorState)
+  const url = entityData?.url || ''
+
+  useEffect(() => {
+    setLinkUrl(url)
+  }, [url])
 
   const [toShowUrlInput, setToShowUrlInput] = useState(false)
-  const [urlValue, setUrlValue] = useState('')
+  const [linkUrl, setLinkUrl] = useState(url || '')
 
   const promptForLink = (e) => {
     e.preventDefault()
@@ -30,22 +38,23 @@ export function LinkButton(props) {
     const contentStateWithEntity = contentState.createEntity(
       'LINK',
       'MUTABLE',
-      { url: urlValue }
+      { url: linkUrl }
     )
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey()
     const newEditorState = EditorState.set(editorState, {
       currentContent: contentStateWithEntity,
     })
+    const selection = newEditorState.getSelection()
+    // RichUtils.toggleLink will reset selection back to first block and cause
+    // the editor scroll to top. Use `forceSelection` to hold the selection.
     onChange(
-      RichUtils.toggleLink(
-        newEditorState,
-        newEditorState.getSelection(),
-        entityKey
+      EditorState.forceSelection(
+        RichUtils.toggleLink(newEditorState, selection, entityKey),
+        selection
       )
     )
 
     setToShowUrlInput(false)
-    setUrlValue('')
   }
 
   const onLinkInputKeyDown = (e) => {
@@ -58,32 +67,56 @@ export function LinkButton(props) {
   const removeLink = () => {
     const selection = editorState.getSelection()
     if (!selection.isCollapsed()) {
-      onChange(RichUtils.toggleLink(editorState, selection, null))
+      // RichUtils.toggleLink will reset selection back to first block and cause
+      // the editor scroll to top. Use `forceSelection` to hold the selection.
+      onChange(
+        EditorState.forceSelection(
+          RichUtils.toggleLink(editorState, selection, null),
+          selection
+        )
+      )
     }
     setToShowUrlInput(false)
-    setUrlValue('')
   }
+
+  const alertProps = linkUrl
+    ? {
+        title: 'Update Link',
+        actions: {
+          cancel: {
+            label: 'Remove',
+            action: removeLink,
+          },
+          confirm: {
+            label: 'Update',
+            action: confirmLink,
+          },
+        },
+      }
+    : {
+        title: 'Insert Link',
+        actions: {
+          cancel: {
+            label: 'Cancel',
+            action: removeLink,
+          },
+          confirm: {
+            label: 'Confirm',
+            action: confirmLink,
+          },
+        },
+      }
 
   const urlInput = (
     <AlertDialog
-      title="Insert LINK"
+      title={alertProps.title}
       isOpen={toShowUrlInput}
-      actions={{
-        cancel: {
-          label: 'Cancel',
-          action: removeLink,
-        },
-        confirm: {
-          label: 'Confirm',
-          action: confirmLink,
-        },
-      }}
+      actions={alertProps.actions}
     >
-      <TextInput
-        onChange={(e) => setUrlValue(e.target.value)}
-        style={styles.urlInput}
+      <StyledTextInput
+        onChange={(e) => setLinkUrl(e.target.value)}
+        value={linkUrl}
         type="text"
-        value={urlValue}
         onKeyDown={onLinkInputKeyDown}
       />
     </AlertDialog>
@@ -92,10 +125,7 @@ export function LinkButton(props) {
   return (
     <React.Fragment>
       {urlInput}
-      <div
-        className={props.className}
-        onMouseDown={isActive ? removeLink : promptForLink}
-      >
+      <div className={props.className} onMouseDown={promptForLink}>
         <i className="fas fa-link"></i>
       </div>
     </React.Fragment>

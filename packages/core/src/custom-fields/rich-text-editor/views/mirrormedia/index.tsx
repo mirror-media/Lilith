@@ -1,7 +1,7 @@
 import React from 'react'
-import { jsx, Stack } from '@keystone-ui/core'; // eslint-disable-line
+import { Stack } from '@keystone-ui/core'
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
-import {
+import type {
   CardValueComponent,
   CellComponent,
   FieldController,
@@ -11,7 +11,7 @@ import {
 } from '@keystone-6/core/types'
 import { CellContainer, CellLink } from '@keystone-6/core/admin-ui/components'
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js'
-// import { RichTextEditor, decorators } from '@mirrormedia/lilith-draft-editor'
+// @ts-ignore: no type definitions
 import MirrorMedia from '@mirrormedia/lilith-draft-editor/lib/website/mirrormedia'
 
 const { RichTextEditor, decorators } = MirrorMedia.DraftEditor
@@ -19,7 +19,8 @@ export const Field = ({
   field,
   value,
   onChange,
-  autoFocus, // eslint-disable-line
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  autoFocus,
 }: FieldProps<typeof controller>) => {
   return (
     <FieldContainer>
@@ -29,7 +30,10 @@ export const Field = ({
           <RichTextEditor
             disabledButtons={field.disabledButtons}
             editorState={value}
-            onChange={(editorState) => onChange?.(editorState)}
+            onChange={
+              // @ts-ignore: any
+              (editorState) => onChange?.(editorState)
+            }
           />
         </Stack>
       </FieldLabel>
@@ -63,6 +67,7 @@ export const controller = (
     disabledButtons: config.fieldMeta?.disabledButtons ?? [],
     path: config.path,
     label: config.label,
+    description: config.description,
     graphqlSelection: config.path,
     defaultValue: EditorState.createEmpty(decorators),
     deserialize: (data) => {

@@ -3,6 +3,7 @@ import { DraftEntityInstance } from 'draft-js'
 import styled from 'styled-components'
 import AmpEmbeddedCodeBlock from './amp/amp-embedded-code-block'
 import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
+import { ContentLayout } from '../types'
 const Wrapper = styled.div`
   position: relative;
   ${defaultMarginTop}
@@ -37,7 +38,7 @@ export const Caption = styled.div`
 
 export const EmbeddedCodeBlock = (
   entity: DraftEntityInstance,
-  contentLayout: string
+  contentLayout: ContentLayout
 ) => {
   const { caption, embeddedCode } = entity.getData()
   const embedded = useRef(null)
@@ -84,16 +85,14 @@ export const EmbeddedCodeBlock = (
 
   if (contentLayout === 'amp') {
     return (
-      <div>
-        <AmpEmbeddedCodeBlock embeddedCode={embeddedCode} />
-        {caption ? <Caption>{caption}</Caption> : null}
-      </div>
+      <AmpEmbeddedCodeBlock embeddedCode={embeddedCode} caption={caption} />
     )
   }
 
   return (
     <Wrapper>
       <Block ref={embedded} />
+
       {caption ? <Caption>{caption}</Caption> : null}
     </Wrapper>
   )

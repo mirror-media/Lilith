@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
-
+import { ContentLayout } from '../types'
+import { convertEmbeddedToAmp } from '../utils'
 const annotationBodyColorNormal = {
   backgroundColor: '#F2F2F2',
   textColor: '#054f77',
@@ -23,7 +24,7 @@ const annotatedTextWide = css`
 const annotatedTextPremium = css`
   color: #054f77;
 `
-const AnnotatedText = styled.span`
+const AnnotatedText = styled.span<{ contentLayout: ContentLayout }>`
   text-decoration: underline;
   svg {
     display: inline;
@@ -129,7 +130,7 @@ const annotationBodyPremium = css`
 `
 
 const annotationBodyLineHeight = 1.8
-const AnnotationBody = styled.div`
+const AnnotationBody = styled.div<{ contentLayout: ContentLayout }>`
   background-color: #e3e3e3;
   padding: 24px 32px;
   font-size: 16px;
@@ -185,7 +186,7 @@ const AnnotationBody = styled.div`
     }
   }}
 `
-const getSvgColor = (contentLayout = 'normal') => {
+const getSvgColor = (contentLayout: ContentLayout = 'normal') => {
   switch (contentLayout) {
     case 'normal':
       return '#054f77'
@@ -198,7 +199,10 @@ const getSvgColor = (contentLayout = 'normal') => {
   }
 }
 
-function indicatorSvg(shouldRotate: boolean, contentLayout = 'normal') {
+function indicatorSvg(
+  shouldRotate: boolean,
+  contentLayout: ContentLayout = 'normal'
+) {
   const svgColor = getSvgColor(contentLayout)
   const transform = `translateY(-50%)${shouldRotate ? 'rotate(180deg)' : ''}`
   return (
@@ -217,7 +221,9 @@ function indicatorSvg(shouldRotate: boolean, contentLayout = 'normal') {
     </svg>
   )
 }
-
+/**
+ * TODO: add props type
+ */
 function AmpAnnotationBlock(props) {
   const { children: annotated, contentLayout = 'normal' } = props
   const { bodyHTML } = props.contentState.getEntity(props.entityKey).getData()
@@ -225,7 +231,11 @@ function AmpAnnotationBlock(props) {
     <React.Fragment>
       <AnnotatedText contentLayout={contentLayout}>
         {annotated}
-        <span on="tap:annotation-body.toggleVisibility, arrow-up.toggleVisibility, array-down.toggleVisibility">
+        <span
+          on="tap:annotation-body.toggleVisibility, arrow-up.toggleVisibility, array-down.toggleVisibility"
+          role="button"
+          tabindex={annotated}
+        >
           <span id="arrow-up">{indicatorSvg(false, contentLayout)}</span>
           <span id="array-down" hidden>
             {indicatorSvg(true, contentLayout)}
@@ -237,14 +247,17 @@ function AmpAnnotationBlock(props) {
         id="annotation-body"
         contentLayout={contentLayout}
         contentEditable={false}
-        dangerouslySetInnerHTML={{ __html: bodyHTML }}
+        dangerouslySetInnerHTML={{ __html: convertEmbeddedToAmp(bodyHTML) }}
       ></AnnotationBody>
     </React.Fragment>
   )
 }
-
+/**
+ * TODO: add props type
+ */
 function AnnotationBlock(props) {
   const { children: annotated, contentLayout = 'normal' } = props
+
   const [toShowAnnotation, setToShowAnnotation] = useState(false)
   const { bodyHTML } = props.contentState.getEntity(props.entityKey).getData()
   return (
@@ -283,7 +296,9 @@ function findAnnotationEntities(contentBlock, callback, contentState) {
   }, callback)
 }
 
-export const annotationDecorator = (contentLayout = 'normal') => {
+export const annotationDecorator = (
+  contentLayout: ContentLayout = 'normal'
+) => {
   return {
     strategy: findAnnotationEntities,
     component: contentLayout === 'amp' ? AmpAnnotationBlock : AnnotationBlock,

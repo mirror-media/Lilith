@@ -2,6 +2,8 @@ import React from 'react'
 import { ContentBlock, ContentState } from 'draft-js'
 import styled, { css } from 'styled-components'
 import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
+import { ContentLayout } from '../types'
+import { convertEmbeddedToAmp } from '../utils'
 
 //for setting background color info box
 const backgroundColorNormal = '#054f77'
@@ -44,7 +46,7 @@ const infoBoxWrapperPremium = css`
   }
 `
 
-const InfoBoxRenderWrapper = styled.div`
+const InfoBoxRenderWrapper = styled.div<{ contentLayout: ContentLayout }>`
   padding: 32px 30px 22px 30px;
   ${defaultMarginTop}
   ${defaultMarginBottom}
@@ -118,7 +120,7 @@ const infoBoxBodyPremium = css`
   }
 `
 const infoBoxLineHeight = 1.8
-const InfoBoxBody = styled.div`
+const InfoBoxBody = styled.div<{ contentLayout: ContentLayout }>`
   > * + * {
     margin-top: 20px;
   }
@@ -189,7 +191,7 @@ type InfoBoxBlockProps = {
 
 export function InfoBoxBlock(
   props: InfoBoxBlockProps,
-  contentLayout = 'normal'
+  contentLayout: ContentLayout = 'normal'
 ) {
   const { block, contentState } = props
 
@@ -202,7 +204,9 @@ export function InfoBoxBlock(
       <h2>{title}</h2>
       <InfoBoxBody
         contentLayout={contentLayout}
-        dangerouslySetInnerHTML={{ __html: body }}
+        dangerouslySetInnerHTML={{
+          __html: contentLayout === 'amp' ? convertEmbeddedToAmp(body) : body,
+        }}
       />
     </InfoBoxRenderWrapper>
   )

@@ -13,7 +13,7 @@ const imagesQuery = gql`
     photosCount(where: { name: { contains: $searchText } })
     photos(
       where: { name: { contains: $searchText } }
-      orderBy: { createdAt: desc }
+      orderBy: { id: desc }
       take: $take
       skip: $skip
     ) {
@@ -21,6 +21,8 @@ const imagesQuery = gql`
       name
       imageFile {
         url
+        width
+        height
       }
       resized {
         original
@@ -118,6 +120,8 @@ type ID = string
 
 export type ImageEntityImageFile = {
   url: string
+  width: number
+  height: number
 }
 
 export type ImageEntityResized = {
@@ -134,6 +138,8 @@ export type ImageEntity = {
   name?: string
   imageFile: {
     url: string
+    width: number
+    height: number
   }
   resized: ImageEntityResized
   resizedWebp: ImageEntityResized
@@ -335,14 +341,13 @@ export function ImageSelector(props: {
   ] = useLazyQuery(imagesQuery, { fetchPolicy: 'no-cache' })
   const [currentPage, setCurrentPage] = useState(0) // page starts with 1, 0 is used to detect initialization
   const [searchText, setSearchText] = useState('')
-  const [selected, setSelected] = useState<ImageEntityWithMeta[]>(
-    initialSelected
-  )
+  const [selected, setSelected] =
+    useState<ImageEntityWithMeta[]>(initialSelected)
   const [delay, setDelay] = useState(initialDelay ?? '5')
   const [align, setAlign] = useState(initialAlign)
   const contentWrapperRef = useRef<HTMLDivElement>()
 
-  const pageSize = 6
+  const pageSize = 18
 
   const options = [
     { value: undefined, label: 'default', isDisabled: false },

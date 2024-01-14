@@ -11,13 +11,13 @@ const videosQuery = gql`
     videosCount(where: { name: { contains: $searchText } })
     videos(
       where: { name: { contains: $searchText } }
-      orderBy: { createdAt: desc }
+      orderBy: { id: desc }
       take: $take
       skip: $skip
     ) {
       id
       name
-      urlOriginal
+      videoSrc
       file {
         filename
         filesize
@@ -102,7 +102,7 @@ type ID = string
 export type VideoEntity = {
   id: ID
   name?: string
-  urlOriginal: string
+  videoSrc: string
   youtubeUrl?: string
   file: {
     filename?: string
@@ -153,7 +153,7 @@ function VideoGrid(props: {
         {isSelected ? <i className="fas fa-check-circle"></i> : null}
       </VideoSelected>
       <Video muted loop>
-        <source src={video?.urlOriginal} />
+        <source src={video?.videoSrc} />
         <source src={video?.file?.url} />
       </Video>
     </VideoGridWrapper>
@@ -180,7 +180,7 @@ function VideoMetaGrid(props: {
   return (
     <VideoMetaGridWrapper>
       <Video muted autoPlay loop>
-        <source src={video?.urlOriginal} />
+        <source src={video?.videoSrc} />
         <source src={video?.file?.url} />
       </Video>
       <VideoName>{video?.name}</VideoName>

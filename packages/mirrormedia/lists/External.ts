@@ -82,6 +82,17 @@ const listConfigurations = list({
       label: '發佈日期',
       isIndexed: true,
     }),
+    publishedDateString: text({
+      label: '發布日期',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+    }),
     extend_byline: text({
       label: '作者',
       validation: { isRequired: false },
@@ -107,7 +118,7 @@ const listConfigurations = list({
   ui: {
     labelField: 'title',
     listView: {
-      initialColumns: ['id', 'title', 'slug', 'partner'],
+      initialColumns: ['id', 'title', 'slug', 'partner', 'publishedDateString'],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
@@ -124,6 +135,25 @@ const listConfigurations = list({
         UserRole.Moderator,
         UserRole.Editor,
       ]),
+    },
+  },
+  hooks: {
+    beforeOperation: async ({ operation, resolvedData }) => {
+      /* ... */
+      if (operation === 'create' || operation === 'update') {
+        if (resolvedData.publishedDate) {
+          resolvedData.publishedDateString = new Date(
+            resolvedData.publishedDate
+          ).toLocaleDateString('zh-TW', {
+            timeZone: 'Asia/Taipei',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          })
+          return
+        }
+      }
+      return 0
     },
   },
 })

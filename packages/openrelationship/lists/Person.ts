@@ -43,6 +43,11 @@ const listConfigurations = list ({
 		displayMode: 'textarea',
 	  }
 	}),
+    tags: relationship({
+      label: '標籤',
+      many: true,
+      ref: 'Tag',
+    }),
     facebook: text({ 
 	  db: {
 		isNullable: true,
@@ -166,11 +171,6 @@ const listConfigurations = list ({
       many: false,
       ref: 'Person',
     }),
-    tags: relationship({
-      label: '標籤',
-      many: true,
-      ref: 'Tag',
-    }),
 	reviewed: checkbox({
 	  defaultValue: false,
 	  label: '檢閱',
@@ -182,6 +182,20 @@ const listConfigurations = list ({
 	  update: allowRoles(admin, moderator),
 	  create: allowRoles(admin, moderator),
 	  delete: allowRoles(admin),
+	},
+  },
+  hooks: {
+	beforeOperation: async ({
+	  operation,
+	  resolvedData,
+	  context,
+	  item
+	}) => { /* ... */ 
+	  var checked = item?.checked || false
+	  if (operation === 'create' && context.session?.data?.role === 'admin') {
+		resolvedData.status = 'verified'
+		resolvedData.reviewed = true
+	  }
 	},
   },
 })

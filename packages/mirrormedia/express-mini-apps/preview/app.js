@@ -1,15 +1,20 @@
 import express from 'express'
-import { KeystoneContext } from '@keystone-6/core/types' // eslint-disable-line
 
 import { createProxyMiddleware } from 'http-proxy-middleware'
 
 /**
+ *  @typedef {import('@keystone-6/core/types').KeystoneContext} KeystoneContext
+ *
+ *  @typedef {Object} PreviewServerConfig
+ *  @property {string} origin
+ *  @property {string} path
+ *
  *  @param {Object} opts
- *  @param {string} opts.previewServerOrigin
+ *  @param {PreviewServerConfig} opts.previewServer
  *  @param {KeystoneContext} opts.keystoneContext
  *  @returns {express.Router}
  */
-export function createPreviewMiniApp({ previewServerOrigin, keystoneContext }) {
+export function createPreviewMiniApp({ previewServer, keystoneContext }) {
   const router = express.Router()
 
   /**
@@ -30,7 +35,7 @@ export function createPreviewMiniApp({ previewServerOrigin, keystoneContext }) {
   }
 
   const previewProxyMiddleware = createProxyMiddleware({
-    target: previewServerOrigin,
+    target: previewServer.origin,
     changeOrigin: true,
     onProxyRes: (proxyRes) => {
       // The response from preview nuxt server might be with Cache-Control header.
@@ -40,20 +45,25 @@ export function createPreviewMiniApp({ previewServerOrigin, keystoneContext }) {
     },
   })
 
-  // Proxy requests with `/story/id` url path to preview nuxt server
-  router.get('/story/:slug', authenticationMw, previewProxyMiddleware)
-
-  // Proxy requests with `/event/:slug` url path to preview nuxt server
-  //router.get('/event/:slug', authenticationMw, previewProxyMiddleware)
-
-  // Proxy requests with `/news/:id` url path to preview nuxt server
-  router.get('/projects/:slug', authenticationMw, previewProxyMiddleware)
-
-  // Proxy requests with `/preview-server/_next/*` url path to preview next server
-  router.use(
-    '/preview-server/_next/*',
+  // proxy preview server traffic to subdirectory to prevent path collision between CMS and preview server
+  router.get(
+    '/images-next/*',
     createProxyMiddleware({
-      target: previewServerOrigin,
+      target: previewServer.origin,
+      changeOrigin: true,
+    })
+  )
+
+  router.get(
+    `${previewServer.path}/*`,
+    authenticationMw,
+    previewProxyMiddleware
+  )
+
+  router.use(
+    `${previewServer.path}/_next/*`,
+    createProxyMiddleware({
+      target: previewServer.origin,
       changeOrigin: true,
     })
   )

@@ -15,10 +15,12 @@ const listConfigurations = list({
   fields: {
     name: text({
       validation: { isRequired: true },
+      isIndexed: 'unique',
       label: '標題',
     }),
     slug: text({
       label: '原ID',
+      isIndexed: 'unique',
     }),
     sortOrder: integer(),
     state: select({
@@ -63,6 +65,12 @@ const listConfigurations = list({
     heroImage: relationship({
       ref: 'Photo',
       label: '首圖',
+    }),
+    heroUrl: text({
+      label: '首圖連結 URL',
+	  db: {
+		isNullable: true,
+	  },
     }),
     leading: select({
       label: '標頭樣式',

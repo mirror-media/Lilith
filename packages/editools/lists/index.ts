@@ -28,6 +28,8 @@ import ComponentHelp from './ComponentHelp'
 import RandomTextSelector from './RandomTextSelector'
 import DroppingText from './DroppingText'
 import Theatre from './Theatre'
+import FullScene from './FullScene'
+import File from './File'
 
 export const listDefinition = {
   User,
@@ -60,4 +62,6 @@ export const listDefinition = {
   ComponentHelp,
   DroppingText,
   Theatre,
+  FullScene,
+  File,
 }

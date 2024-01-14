@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { DraftEntityInstance } from 'draft-js'
 import { defaultMarginTop, defaultMarginBottom } from '../shared-style'
+import { ContentLayout } from '../types'
 
 const YoutubeRenderWrapper = styled.div`
   ${defaultMarginTop}
@@ -32,8 +33,41 @@ const Caption = styled.div`
   padding: 15px 15px 0 15px;
 `
 
-export function YoutubeBlock(entity: DraftEntityInstance) {
+export function YoutubeBlock(
+  entity: DraftEntityInstance,
+  contentLayout: ContentLayout
+) {
+  const isAmp = contentLayout === 'amp'
   const { youtubeId, description } = entity.getData()
+
+  function handleYoutubeId(urlOrId = '') {
+    // 使用正規表達式檢查可能的 YouTube ID 格式
+    const youtubeIdRegex = /^(?:https?:\/\/(?:www\.)?youtube\.com\/watch\?v=|https?:\/\/youtu.be\/|\/id\/)?([a-zA-Z0-9_-]{11})/i
+
+    const matches = urlOrId.startsWith('/')
+      ? urlOrId.replace('/', '').match(youtubeIdRegex)
+      : urlOrId.match(youtubeIdRegex)
+
+    if (matches && matches[1]) {
+      return matches[1]
+    }
+
+    return ''
+  }
+
+  const ampYoutubeIframe = youtubeId ? (
+    <IframeWrapper>
+      <amp-youtube data-videoid={handleYoutubeId(youtubeId)} layout="fill">
+        <amp-img
+          src={`https://i.ytimg.com/vi/${handleYoutubeId(
+            youtubeId
+          )}/hqdefault.jpg`}
+          placeholder
+          layout="fill"
+        />
+      </amp-youtube>
+    </IframeWrapper>
+  ) : null
 
   const youtubeIframe = youtubeId ? (
     <IframeWrapper>
@@ -49,7 +83,7 @@ export function YoutubeBlock(entity: DraftEntityInstance) {
 
   return (
     <YoutubeRenderWrapper>
-      {youtubeIframe}
+      {isAmp ? ampYoutubeIframe : youtubeIframe}
       {description && <Caption>{description}</Caption>}
     </YoutubeRenderWrapper>
   )

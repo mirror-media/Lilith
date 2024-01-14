@@ -5,6 +5,7 @@ type AudioFile {
   id: ID!
   name: String
   file: FileFieldOutput
+  audioSrc: String
   urlOriginal: String
   heroImage: Photo
   content: JSON
@@ -213,6 +214,7 @@ type Category {
 
 input CategoryWhereUniqueInput {
   id: ID
+  name: String
   slug: String
 }
 
@@ -620,6 +622,7 @@ type External {
   title: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
   extend_byline: String
   thumb: String
   brief: String
@@ -646,6 +649,7 @@ input ExternalWhereInput {
   title: StringFilter
   state: StringNullableFilter
   publishedDate: DateTimeNullableFilter
+  publishedDateString: StringFilter
   extend_byline: StringFilter
   thumb: StringFilter
   brief: StringFilter
@@ -663,6 +667,7 @@ input ExternalOrderByInput {
   title: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
+  publishedDateString: OrderDirection
   extend_byline: OrderDirection
   thumb: OrderDirection
   brief: OrderDirection
@@ -678,6 +683,7 @@ input ExternalUpdateInput {
   title: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
   extend_byline: String
   thumb: String
   brief: String
@@ -706,6 +712,7 @@ input ExternalCreateInput {
   title: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
   extend_byline: String
   thumb: String
   brief: String
@@ -834,7 +841,6 @@ input MagazineWhereInput {
   id: IDFilter
   slug: StringFilter
   title: StringFilter
-  urlOriginal: StringFilter
   coverPhoto: PhotoWhereInput
   type: StringNullableFilter
   state: StringNullableFilter
@@ -849,7 +855,6 @@ input MagazineOrderByInput {
   id: OrderDirection
   slug: OrderDirection
   title: OrderDirection
-  urlOriginal: OrderDirection
   type: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
@@ -861,7 +866,6 @@ input MagazineUpdateInput {
   slug: String
   title: String
   pdfFile: FileFieldInput
-  urlOriginal: String
   coverPhoto: PhotoRelateToOneForUpdateInput
   type: String
   state: String
@@ -881,7 +885,6 @@ input MagazineCreateInput {
   slug: String
   title: String
   pdfFile: FileFieldInput
-  urlOriginal: String
   coverPhoto: PhotoRelateToOneForCreateInput
   type: String
   state: String
@@ -1086,8 +1089,10 @@ type Post {
   lockExpireAt: DateTime
   slug: String
   title: String
+  subtitle: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
   updateTimeStamp: Boolean
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
@@ -1161,13 +1166,13 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
-  lockBy: UserWhereInput
   lockExpireAt: DateTimeNullableFilter
   slug: StringFilter
   title: StringFilter
+  subtitle: StringFilter
   state: StringNullableFilter
   publishedDate: DateTimeFilter
-  updateTimeStamp: BooleanFilter
+  publishedDateString: StringFilter
   sections: SectionManyRelationFilter
   categories: CategoryManyRelationFilter
   writers: ContactManyRelationFilter
@@ -1179,16 +1184,12 @@ input PostWhereInput {
   extend_byline: StringFilter
   heroVideo: VideoWhereInput
   heroImage: PhotoWhereInput
-  heroCaption: StringFilter
   style: StringNullableFilter
   isMember: BooleanFilter
   topics: TopicWhereInput
   relateds: PostManyRelationFilter
   tags: TagManyRelationFilter
   og_title: StringFilter
-  og_description: StringFilter
-  og_image: PhotoWhereInput
-  related_videos: VideoManyRelationFilter
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
   hiddenAdvertised: BooleanFilter
@@ -1214,19 +1215,15 @@ input ContactManyRelationFilter {
   none: ContactWhereInput
 }
 
-input VideoManyRelationFilter {
-  every: VideoWhereInput
-  some: VideoWhereInput
-  none: VideoWhereInput
-}
-
 input PostOrderByInput {
   id: OrderDirection
   lockExpireAt: OrderDirection
   slug: OrderDirection
   title: OrderDirection
+  subtitle: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
+  publishedDateString: OrderDirection
   updateTimeStamp: OrderDirection
   extend_byline: OrderDirection
   heroCaption: OrderDirection
@@ -1250,8 +1247,10 @@ input PostUpdateInput {
   lockExpireAt: DateTime
   slug: String
   title: String
+  subtitle: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
   updateTimeStamp: Boolean
   sections: SectionRelateToManyForUpdateInput
   manualOrderOfSections: JSON
@@ -1339,8 +1338,10 @@ input PostCreateInput {
   lockExpireAt: DateTime
   slug: String
   title: String
+  subtitle: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
   updateTimeStamp: Boolean
   sections: SectionRelateToManyForCreateInput
   manualOrderOfSections: JSON
@@ -1433,6 +1434,7 @@ type Section {
 
 input SectionWhereUniqueInput {
   id: ID
+  name: String
   slug: String
 }
 
@@ -1604,6 +1606,7 @@ type Topic {
   state: String
   brief: JSON
   heroImage: Photo
+  heroUrl: String
   leading: String
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
@@ -1633,6 +1636,8 @@ type Topic {
 
 input TopicWhereUniqueInput {
   id: ID
+  name: String
+  slug: String
 }
 
 input TopicWhereInput {
@@ -1645,6 +1650,7 @@ input TopicWhereInput {
   sortOrder: IntNullableFilter
   state: StringNullableFilter
   heroImage: PhotoWhereInput
+  heroUrl: StringNullableFilter
   leading: StringNullableFilter
   sections: SectionManyRelationFilter
   og_title: StringFilter
@@ -1678,6 +1684,7 @@ input TopicOrderByInput {
   slug: OrderDirection
   sortOrder: OrderDirection
   state: OrderDirection
+  heroUrl: OrderDirection
   leading: OrderDirection
   og_title: OrderDirection
   og_description: OrderDirection
@@ -1699,6 +1706,7 @@ input TopicUpdateInput {
   state: String
   brief: JSON
   heroImage: PhotoRelateToOneForUpdateInput
+  heroUrl: String
   leading: String
   sections: SectionRelateToManyForUpdateInput
   og_title: String
@@ -1740,6 +1748,7 @@ input TopicCreateInput {
   state: String
   brief: JSON
   heroImage: PhotoRelateToOneForCreateInput
+  heroUrl: String
   leading: String
   sections: SectionRelateToManyForCreateInput
   og_title: String
@@ -1829,6 +1838,7 @@ type Video {
   id: ID!
   name: String
   file: FileFieldOutput
+  videoSrc: String
   urlOriginal: String
   content: JSON
   heroImage: Photo

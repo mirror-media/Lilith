@@ -10,8 +10,8 @@ import { RelatedPostBlock } from './related-post-block'
 import { SideIndexBlock } from './side-index-block'
 import { SlideshowBlock, SlideshowBlockV2 } from './slideshow-block'
 import { TableBlock } from './table-block'
-import { VideoBlock } from './video-block'
-import { AudioBlock } from './audio-block'
+import { VideoBlock, VideoBlockV2 } from './video-block'
+import { AudioBlock, AudioBlockV2 } from './audio-block'
 import { YoutubeBlock } from './youtube-block'
 
 export const blockRenderers = {
@@ -29,6 +29,8 @@ export const blockRenderers = {
   SlideshowBlockV2,
   TableBlock,
   VideoBlock,
+  VideoBlockV2,
   AudioBlock,
+  AudioBlockV2,
   YoutubeBlock,
 }

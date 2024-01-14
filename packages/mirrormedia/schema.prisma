@@ -36,7 +36,7 @@ model AudioFile {
 
 model Category {
   id                   Int       @id @default(autoincrement())
-  name                 String    @default("")
+  name                 String    @unique @default("")
   slug                 String    @unique @default("")
   order                Int?
   state                String    @default("active")
@@ -53,6 +53,7 @@ model Category {
   updatedById          Int?      @map("updatedBy")
   from_Header_category Header[]  @relation("Header_category")
 
+  @@index([state])
   @@index([heroImageId])
   @@index([createdById])
   @@index([updatedById])
@@ -132,24 +133,25 @@ model Event {
 }
 
 model External {
-  id            Int       @id @default(autoincrement())
-  slug          String    @unique @default("")
-  partner       Partner?  @relation("External_partner", fields: [partnerId], references: [id])
-  partnerId     Int?      @map("partner")
-  title         String    @default("")
-  state         String?   @default("draft")
-  publishedDate DateTime?
-  extend_byline String    @default("")
-  thumb         String    @default("")
-  brief         String    @default("")
-  content       String    @default("")
-  source        String    @default("")
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?     @relation("External_createdBy", fields: [createdById], references: [id])
-  createdById   Int?      @map("createdBy")
-  updatedBy     User?     @relation("External_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?      @map("updatedBy")
+  id                  Int       @id @default(autoincrement())
+  slug                String    @unique @default("")
+  partner             Partner?  @relation("External_partner", fields: [partnerId], references: [id])
+  partnerId           Int?      @map("partner")
+  title               String    @default("")
+  state               String?   @default("draft")
+  publishedDate       DateTime?
+  publishedDateString String    @default("")
+  extend_byline       String    @default("")
+  thumb               String    @default("")
+  brief               String    @default("")
+  content             String    @default("")
+  source              String    @default("")
+  createdAt           DateTime?
+  updatedAt           DateTime?
+  createdBy           User?     @relation("External_createdBy", fields: [createdById], references: [id])
+  createdById         Int?      @map("createdBy")
+  updatedBy           User?     @relation("External_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?      @map("updatedBy")
 
   @@index([partnerId])
   @@index([state])
@@ -184,7 +186,6 @@ model Magazine {
   title            String    @default("")
   pdfFile_filesize Int?
   pdfFile_filename String?
-  urlOriginal      String    @default("")
   coverPhoto       Photo?    @relation("Magazine_coverPhoto", fields: [coverPhotoId], references: [id])
   coverPhotoId     Int?      @map("coverPhoto")
   type             String?   @default("weekly")
@@ -234,7 +235,7 @@ model Photo {
   imageFile_width             Int?
   imageFile_height            Int?
   imageFile_id                String?
-  waterMark                   Boolean     @default(true)
+  waterMark                   Boolean     @default(false)
   file_filesize               Int?
   file_filename               String?
   topicKeywords               String      @default("")
@@ -269,8 +270,10 @@ model Post {
   lockExpireAt               DateTime?
   slug                       String         @unique @default("")
   title                      String         @default("")
+  subtitle                   String         @default("")
   state                      String?        @default("draft")
   publishedDate              DateTime       @default(now())
+  publishedDateString        String         @default("")
   updateTimeStamp            Boolean        @default(false)
   sections                   Section[]      @relation("Post_sections")
   manualOrderOfSections      Json?
@@ -337,7 +340,7 @@ model Post {
 
 model Section {
   id                  Int        @id @default(autoincrement())
-  name                String     @default("")
+  name                String     @unique @default("")
   description         String     @default("")
   slug                String     @unique @default("")
   order               Int?
@@ -357,6 +360,7 @@ model Section {
   from_Event_sections Event[]    @relation("Event_sections")
   from_Header_section Header[]   @relation("Header_section")
 
+  @@index([state])
   @@index([heroImageId])
   @@index([createdById])
   @@index([updatedById])
@@ -383,13 +387,14 @@ model Tag {
 
 model Topic {
   id                           Int       @id @default(autoincrement())
-  name                         String    @default("")
-  slug                         String    @default("")
+  name                         String    @unique @default("")
+  slug                         String    @unique @default("")
   sortOrder                    Int?
   state                        String?   @default("draft")
   brief                        Json?
   heroImage                    Photo?    @relation("Topic_heroImage", fields: [heroImageId], references: [id])
   heroImageId                  Int?      @map("heroImage")
+  heroUrl                      String?
   leading                      String?
   sections                     Section[] @relation("Section_topics")
   og_title                     String    @default("")

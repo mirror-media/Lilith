@@ -27,6 +27,9 @@ type AudioEntity = {
   heroImage?: ImageEntity
 }
 
+/**
+ * Before 202310, audio which contain property `urlOriginal` and not contain property `audioSrc`.
+ */
 export default function AmpAudioBlock({ audio }: { audio: AudioEntity }) {
   const urlOriginalType = extractFileExtension(audio?.urlOriginal)
   const fileUrlType = extractFileExtension(audio?.file?.url)

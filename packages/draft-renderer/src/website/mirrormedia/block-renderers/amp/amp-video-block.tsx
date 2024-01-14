@@ -30,6 +30,9 @@ type VideoEntity = {
   heroImage: ImageEntity
 }
 
+/**
+ * Before 202310, video which contain property `urlOriginal` and not contain property `videoSrc`.
+ */
 export default function AmpVideoBlock({ video }: { video: VideoEntity }) {
   const urlOriginalType = extractFileExtension(video?.urlOriginal)
   const fileUrlType = extractFileExtension(video?.file?.url)
@@ -37,7 +40,7 @@ export default function AmpVideoBlock({ video }: { video: VideoEntity }) {
   return (
     <>
       <amp-video
-        controls="controls"
+        controls
         autoplay="autoplay"
         loop="loop"
         layout="responsive"

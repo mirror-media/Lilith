@@ -4,6 +4,7 @@ import Area from './Area'
 import Event from './Event'
 import Election from './Election'
 import ElectionArea from './ElectionArea'
+import FactcheckPartner from './FactcheckPartner'
 import Person from './Person'
 import Motion from './Motion'
 import Count from './Count'
@@ -19,11 +20,20 @@ import PersonOrganization from './PersonOrganization'
 import PersonPublication from './PersonPublication'
 import PersonRelationship from './PersonRelationship'
 import Politic from './Politic'
+import EditingPolitic from './EditingPolitic'
 //import PoliticProgress from './PoliticProgress'
 import PoliticTimeline from './PoliticTimeline'
 import PoliticExpert from './PoliticExpert'
+import PoliticPositionChange from './PoliticPositionChange'
+import PoliticFactCheck from './PoliticFactCheck'
+import PoliticRepeat from './PoliticRepeat'
+import PoliticResponse from './PoliticResponse'
+import PoliticControversie from './PoliticControversie'
+import RelatedPost from './RelatedPost'
 import Lawsuit from './Lawsuit'
 import Tag from './Tag'
+import PoliticCategory from './PoliticCategory'
+import Image from './Image'
 
 
 export const listDefinition = {
@@ -33,6 +43,17 @@ export const listDefinition = {
   Event,
   Election,
   ElectionArea,
+  Politic,
+  //PoliticProgress,
+  PoliticTimeline,
+  PoliticExpert,
+  PoliticFactCheck,
+  PoliticPositionChange,
+  PoliticRepeat,
+  PoliticResponse,
+  PoliticControversie,
+  RelatedPost,
+  FactcheckPartner,
   Vote,
   Person,
   Motion,
@@ -47,10 +68,9 @@ export const listDefinition = {
   PersonOrganization,
   PersonPublication,
   PersonRelationship,
-  Politic,
-  //PoliticProgress,
-  PoliticTimeline,
-  PoliticExpert,
   Lawsuit,
   Tag,
+  PoliticCategory,
+  Photo: Image,
+  EditingPolitic,
 }

@@ -91,6 +91,7 @@ export default withAuth(
         path: '/health_check',
         data: { status: 'healthy' },
       },
+	  maxFileSize: 2000 * 1024 * 1024,
       extendExpressApp: (app, context) => {
         // This middleware is available in Express v4.16.0 onwards
         // Set to 50mb because DraftJS Editor playload could be really large
@@ -101,7 +102,7 @@ export default withAuth(
         if (envVar.accessControlStrategy === 'cms') {
           app.use(
             createPreviewMiniApp({
-              previewServerOrigin: envVar.previewServerOrigin,
+              previewServer: envVar.previewServer,
               keystoneContext: context,
             })
           )

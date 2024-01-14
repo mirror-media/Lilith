@@ -1,6 +1,6 @@
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
-import { relationship, integer, select, text } from '@keystone-6/core/fields';
+import { checkbox, relationship, integer, timestamp, select, text } from '@keystone-6/core/fields';
 
 const {
 	allowRoles,
@@ -31,8 +31,12 @@ const listConfigurations = list({
 		type: select({
 			label: '選舉目的（種類）',
 			options: [
-				{ value: '總統', label: '總統' },
-				{ value: '立法委員', label: '立法委員' },
+				{ value: '總統（副總統）', label: '總統（副總統）' },
+				{ value: '區域立法委員', label: '區域立法委員' },
+				{ value: '不分區立委', label: '不分區立委' },
+				{ value: '原住民立委', label: '原住民立委' },
+				{ value: '山地原住民立委', label: '山地原住民立委' },
+				{ value: '平地原住民立委', label: '平地原住民立委' },
 				{ value: '縣市首長', label: '縣市首長' },
 				{ value: '縣市議員', label: '縣市議員' },
 				{ value: '鄉鎮市區長', label: '鄉鎮市區長' },
@@ -56,10 +60,22 @@ const listConfigurations = list({
 				{ value: 'deactive', label: '失效' },
 			],
 		}),
+		hidePoliticDetail: timestamp({
+		  label: '隱藏政見細節',
+	    }),
         tags: relationship({
           label: '標籤',
           many: true,
           ref: 'Tag',
+        }),
+		addComments: checkbox({
+		  label: '開放留言（心情）',
+		  defaultValue: false,
+		}),
+        organizationsElection: relationship({ 
+          label: '政黨',
+		  many: true,
+          ref: 'OrganizationsElection.elections',
         }),
 	},
 	access: {

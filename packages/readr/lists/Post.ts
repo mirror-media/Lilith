@@ -214,6 +214,7 @@ const listConfigurations = list({
       ref: 'Photo',
     }),
     isFeatured: checkbox({
+      isIndexed: true,
       label: '置頂',
     }),
     note: relationship({

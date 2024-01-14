@@ -83,3 +83,7 @@ A1: 如果錯誤訊息與 `@mirrormedia/lilith-core` 有關，可以嘗試先到
   2. `yarn install`
 
 確保 local 端有 `@mirrormedia-/lilith-core` 相關的檔案可以讓 `packages/(vision|mesh|editools)` 載入。
+
+## Patch
+
+### 目前使用 patch-package 讓 keystone admin UI (keystone-6/core 5.2.0) 可以在手機版進行編輯，該功能已在 keystone-6/core 5.5.1 新增，日後更新 keystone 板上時可移除。

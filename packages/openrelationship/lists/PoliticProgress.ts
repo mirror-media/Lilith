@@ -14,7 +14,7 @@ const listConfigurations = list ({
   fields: {
     politic: relationship({
       label: '候選人政見',
-      many: false,
+      many: true,
       ref: 'Politic',
     }),
     progress: select({
@@ -34,15 +34,57 @@ const listConfigurations = list ({
 	  },
 	}),
     contributer: text({ label: '資料提供' }),
+    editingPolitic: relationship({
+      label: '候選人政見（待審核）',
+      many: true,
+      ref: 'EditingPolitic',
+    }),
     // memberships: { label: "memberships", type: Relationship, many: false, ref: 'Membership' },
   },
   access: {
 	operation: {
 	  query: allowRoles(admin, moderator, editor),
-	  update: allowRoles(admin, moderator),
+	  update: allowRoles(admin, moderator, editor),
 	  create: allowRoles(admin, moderator),
 	  delete: allowRoles(admin),
 	},
+  },
+  hooks: {
+    validateInput: async ({
+      listKey,
+      operation,
+      inputData,
+      item,
+      resolvedData,
+      context,
+      addValidationError,
+    }) => { /* ... */ 
+      if (operation === 'update') {
+        const { name } = await context.query.User.findOne({
+          where: { id: item.createdById.toString() },
+          query: 'name',
+        });
+        if (context!.session?.data?.name !== name && context?.session?.data?.role === 'editor') {
+          addValidationError("沒有權限")
+        }
+      }
+    },
+    validateDelete: async ({
+      listKey,
+      fieldKey,
+      operation,
+      item,
+      context,
+      addValidationError,
+    }) => { /* ... */ 
+      const { name } = await context.query.User.findOne({
+        where: { id: item.createdById.toString() },
+        query: 'name',
+      });
+      if (context!.session?.data?.name !== name && context?.session?.data?.role === 'editor') {
+        addValidationError("沒有權限")
+      }
+    },
   },
 })
 export default utils.addTrackingFields(listConfigurations)
