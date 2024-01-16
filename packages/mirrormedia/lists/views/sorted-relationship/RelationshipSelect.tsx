@@ -79,8 +79,9 @@ export function useFilter(
   return useMemo(() => {
     if (!search.length) return { OR: [] }
 
-    const idFieldKind: IdFieldConfig['kind'] = (list.fields.id
-      .controller as any).idFieldKind
+    const idFieldKind: IdFieldConfig['kind'] = (
+      list.fields.id.controller as any
+    ).idFieldKind
     const trimmedSearch = search.trim()
     const isValidId = idValidators[idFieldKind](trimmedSearch)
 
@@ -165,10 +166,8 @@ export const RelationshipSelect = ({
   // because we want a re-render if the element changes
   // so that we can register the intersection observer
   // on the right element
-  const [
-    loadingIndicatorElement,
-    setLoadingIndicatorElement,
-  ] = useState<null | HTMLElement>(null)
+  const [loadingIndicatorElement, setLoadingIndicatorElement] =
+    useState<null | HTMLElement>(null)
 
   const QUERY: TypedDocumentNode<
     {
@@ -400,6 +399,25 @@ export const RelationshipSelect = ({
         controlShouldRenderValue={controlShouldRenderValue}
         isClearable={controlShouldRenderValue}
         isDisabled={isDisabled}
+        // The parameter `formatOptionLabel` is added specifically for this project
+        // and is not copied from the codebase of keystone-6/core.
+        // This parameter controls the appearance of element in drop-down list component, make it display image if needed.
+        // See [Pull Request](https://github.com/mirror-media/Lilith/pull/698) to get more details.
+        formatOptionLabel={(option) => {
+          return (
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <span>{option.label}</span>
+              {list.label === 'Photos' && (
+                <img
+                  src={option?.data?.imageFile?.url}
+                  width={50}
+                  height={50}
+                  style={{ objectFit: 'cover', marginLeft: 'auto' }}
+                ></img>
+              )}
+            </div>
+          )
+        }}
       />
     </LoadingIndicatorContext.Provider>
   )
