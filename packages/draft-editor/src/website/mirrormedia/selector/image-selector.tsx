@@ -341,14 +341,13 @@ export function ImageSelector(props: {
   ] = useLazyQuery(imagesQuery, { fetchPolicy: 'no-cache' })
   const [currentPage, setCurrentPage] = useState(0) // page starts with 1, 0 is used to detect initialization
   const [searchText, setSearchText] = useState('')
-  const [selected, setSelected] = useState<ImageEntityWithMeta[]>(
-    initialSelected
-  )
+  const [selected, setSelected] =
+    useState<ImageEntityWithMeta[]>(initialSelected)
   const [delay, setDelay] = useState(initialDelay ?? '5')
   const [align, setAlign] = useState(initialAlign)
   const contentWrapperRef = useRef<HTMLDivElement>()
 
-  const pageSize = 6
+  const pageSize = 18
 
   const options = [
     { value: undefined, label: 'default', isDisabled: false },
