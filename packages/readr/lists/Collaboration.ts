@@ -32,20 +32,20 @@ const listConfigurations = list({
       label: 'Leading Video',
       ref: 'Video',
     }),
-    isFeatured: checkbox({
+    isBanner: checkbox({
       label: '置頂',
     }),
-    ImageMobile: relationship({
+    bannerMobile: relationship({
       ref: 'Photo',
-      label: '置頂圖片（mobile）',
+      label: '置頂圖片（mobile: 280x172）',
     }),
-    ImageTablet: relationship({
+    bannerTablet: relationship({
       ref: 'Photo',
-      label: '置頂圖片（tablet）',
+      label: '置頂圖片（tablet: 710x215）',
     }),
-    ImageDesktop: relationship({
+    bannerDesktop: relationship({
       ref: 'Photo',
-      label: '置頂圖片（desktop）',
+      label: '置頂圖片（desktop: 1096x241）',
     }),
     heroImage: relationship({
       ref: 'Photo',
