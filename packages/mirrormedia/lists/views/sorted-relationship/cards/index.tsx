@@ -105,7 +105,11 @@ export function Cards({
     selectedFields += `\n${foreignList.labelField}`
   }
 
-  const { items, setItems, state: itemsState } = useItemState({
+  const {
+    items,
+    setItems,
+    state: itemsState,
+  } = useItemState({
     selectedFields,
     localList,
     id,
@@ -317,6 +321,13 @@ export function Cards({
               isLoading={isLoadingLazyItems}
               placeholder={`Select a ${foreignList.singular}`}
               portalMenu
+              // The parameter `extraSelection` is added specifically for this project
+              // and is not copied from the codebase of keystone-6/core.
+              // This parameter controls the extra GraphQL query we need to fetch.
+              // See [Pull Request](https://github.com/mirror-media/Lilith/pull/698) to get more details.
+              extraSelection={
+                foreignList.label === 'Photos' ? 'imageFile {url}' : ''
+              }
               state={{
                 kind: 'many',
                 async onChange(options) {
