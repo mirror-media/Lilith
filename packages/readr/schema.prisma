@@ -37,36 +37,39 @@ model EditorChoice {
 }
 
 model Photo {
-  id                             Int             @id @default(autoincrement())
-  name                           String          @default("")
-  imageFile_filesize             Int?
-  imageFile_extension            String?
-  imageFile_width                Int?
-  imageFile_height               Int?
-  imageFile_id                   String?
-  file_filesize                  Int?
-  file_filename                  String?
-  tags                           Tag[]           @relation("Photo_tags")
-  urlOriginal                    String          @default("")
-  createdAt                      DateTime?
-  updatedAt                      DateTime?
-  createdBy                      User?           @relation("Photo_createdBy", fields: [createdById], references: [id])
-  createdById                    Int?            @map("createdBy")
-  updatedBy                      User?           @relation("Photo_updatedBy", fields: [updatedById], references: [id])
-  updatedById                    Int?            @map("updatedBy")
-  from_EditorChoice_heroImage    EditorChoice[]  @relation("EditorChoice_heroImage")
-  from_Author_image              Author[]        @relation("Author_image")
-  from_PageVariable_relatedImage PageVariable[]  @relation("PageVariable_relatedImage")
-  from_Video_coverPhoto          Video[]         @relation("Video_coverPhoto")
-  from_Tag_ogImage               Tag[]           @relation("Tag_ogImage")
-  from_Category_heroImage        Category[]      @relation("Category_heroImage")
-  from_Category_ogImage          Category[]      @relation("Category_ogImage")
-  from_Post_heroImage            Post[]          @relation("Post_heroImage")
-  from_Post_ogImage              Post[]          @relation("Post_ogImage")
-  from_Collaboration_heroImage   Collaboration[] @relation("Collaboration_heroImage")
-  from_Gallery_heroImage         Gallery[]       @relation("Gallery_heroImage")
-  from_Project_heroImage         Project[]       @relation("Project_heroImage")
-  from_Project_ogImage           Project[]       @relation("Project_ogImage")
+  id                               Int             @id @default(autoincrement())
+  name                             String          @default("")
+  imageFile_filesize               Int?
+  imageFile_extension              String?
+  imageFile_width                  Int?
+  imageFile_height                 Int?
+  imageFile_id                     String?
+  file_filesize                    Int?
+  file_filename                    String?
+  tags                             Tag[]           @relation("Photo_tags")
+  urlOriginal                      String          @default("")
+  createdAt                        DateTime?
+  updatedAt                        DateTime?
+  createdBy                        User?           @relation("Photo_createdBy", fields: [createdById], references: [id])
+  createdById                      Int?            @map("createdBy")
+  updatedBy                        User?           @relation("Photo_updatedBy", fields: [updatedById], references: [id])
+  updatedById                      Int?            @map("updatedBy")
+  from_EditorChoice_heroImage      EditorChoice[]  @relation("EditorChoice_heroImage")
+  from_Author_image                Author[]        @relation("Author_image")
+  from_PageVariable_relatedImage   PageVariable[]  @relation("PageVariable_relatedImage")
+  from_Video_coverPhoto            Video[]         @relation("Video_coverPhoto")
+  from_Tag_ogImage                 Tag[]           @relation("Tag_ogImage")
+  from_Category_heroImage          Category[]      @relation("Category_heroImage")
+  from_Category_ogImage            Category[]      @relation("Category_ogImage")
+  from_Post_heroImage              Post[]          @relation("Post_heroImage")
+  from_Post_ogImage                Post[]          @relation("Post_ogImage")
+  from_Collaboration_bannerMobile  Collaboration[] @relation("Collaboration_bannerMobile")
+  from_Collaboration_bannerTablet  Collaboration[] @relation("Collaboration_bannerTablet")
+  from_Collaboration_bannerDesktop Collaboration[] @relation("Collaboration_bannerDesktop")
+  from_Collaboration_heroImage     Collaboration[] @relation("Collaboration_heroImage")
+  from_Gallery_heroImage           Gallery[]       @relation("Gallery_heroImage")
+  from_Project_heroImage           Project[]       @relation("Project_heroImage")
+  from_Project_ogImage             Project[]       @relation("Project_ogImage")
 
   @@index([createdById])
   @@index([updatedById])
@@ -394,31 +397,41 @@ model Post {
 }
 
 model Collaboration {
-  id          Int       @id @default(autoincrement())
-  name        String    @default("")
-  sortOrder   Int?
-  description String    @default("")
-  requireTime Int?
-  heroVideo   Video?    @relation("Collaboration_heroVideo", fields: [heroVideoId], references: [id])
-  heroVideoId Int?      @map("heroVideo")
-  heroImage   Photo?    @relation("Collaboration_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?      @map("heroImage")
-  startTime   DateTime?
-  endTime     DateTime?
-  progress    Int?
-  collabLink  String    @default("")
-  achvLink    String    @default("")
-  state       String?   @default("draft")
-  posts       Post[]    @relation("Collaboration_posts")
-  publishTime DateTime?
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("Collaboration_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("Collaboration_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
+  id              Int       @id @default(autoincrement())
+  name            String    @default("")
+  sortOrder       Int?
+  description     String    @default("")
+  requireTime     Int?
+  heroVideo       Video?    @relation("Collaboration_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId     Int?      @map("heroVideo")
+  isBanner        Boolean   @default(false)
+  bannerMobile    Photo?    @relation("Collaboration_bannerMobile", fields: [bannerMobileId], references: [id])
+  bannerMobileId  Int?      @map("bannerMobile")
+  bannerTablet    Photo?    @relation("Collaboration_bannerTablet", fields: [bannerTabletId], references: [id])
+  bannerTabletId  Int?      @map("bannerTablet")
+  bannerDesktop   Photo?    @relation("Collaboration_bannerDesktop", fields: [bannerDesktopId], references: [id])
+  bannerDesktopId Int?      @map("bannerDesktop")
+  heroImage       Photo?    @relation("Collaboration_heroImage", fields: [heroImageId], references: [id])
+  heroImageId     Int?      @map("heroImage")
+  startTime       DateTime?
+  endTime         DateTime?
+  progress        Int?
+  collabLink      String    @default("")
+  achvLink        String    @default("")
+  state           String?   @default("draft")
+  posts           Post[]    @relation("Collaboration_posts")
+  publishTime     DateTime?
+  createdAt       DateTime?
+  updatedAt       DateTime?
+  createdBy       User?     @relation("Collaboration_createdBy", fields: [createdById], references: [id])
+  createdById     Int?      @map("createdBy")
+  updatedBy       User?     @relation("Collaboration_updatedBy", fields: [updatedById], references: [id])
+  updatedById     Int?      @map("updatedBy")
 
   @@index([heroVideoId])
+  @@index([bannerMobileId])
+  @@index([bannerTabletId])
+  @@index([bannerDesktopId])
   @@index([heroImageId])
   @@index([state])
   @@index([createdById])

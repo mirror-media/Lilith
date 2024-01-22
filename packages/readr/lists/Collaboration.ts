@@ -7,6 +7,7 @@ import {
   text,
   integer,
   select,
+  checkbox,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -30,6 +31,21 @@ const listConfigurations = list({
     heroVideo: relationship({
       label: 'Leading Video',
       ref: 'Video',
+    }),
+    isBanner: checkbox({
+      label: '置頂',
+    }),
+    bannerMobile: relationship({
+      ref: 'Photo',
+      label: '置頂圖片（mobile: 280x172）',
+    }),
+    bannerTablet: relationship({
+      ref: 'Photo',
+      label: '置頂圖片（tablet: 710x215）',
+    }),
+    bannerDesktop: relationship({
+      ref: 'Photo',
+      label: '置頂圖片（desktop: 1096x241）',
     }),
     heroImage: relationship({
       ref: 'Photo',
@@ -71,7 +87,7 @@ const listConfigurations = list({
     }),
   },
   graphql: {
-    cacheHint: { maxAge: 3600, scope: 'PUBLIC' }
+    cacheHint: { maxAge: 3600, scope: 'PUBLIC' },
   },
   access: {
     operation: {

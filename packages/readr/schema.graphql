@@ -1599,6 +1599,10 @@ type Collaboration {
   description: String
   requireTime: Int
   heroVideo: Video
+  isBanner: Boolean
+  bannerMobile: Photo
+  bannerTablet: Photo
+  bannerDesktop: Photo
   heroImage: Photo
   startTime: DateTime
   endTime: DateTime
@@ -1629,6 +1633,10 @@ input CollaborationWhereInput {
   description: StringFilter
   requireTime: IntNullableFilter
   heroVideo: VideoWhereInput
+  isBanner: BooleanFilter
+  bannerMobile: PhotoWhereInput
+  bannerTablet: PhotoWhereInput
+  bannerDesktop: PhotoWhereInput
   heroImage: PhotoWhereInput
   startTime: DateTimeNullableFilter
   endTime: DateTimeNullableFilter
@@ -1650,6 +1658,7 @@ input CollaborationOrderByInput {
   sortOrder: OrderDirection
   description: OrderDirection
   requireTime: OrderDirection
+  isBanner: OrderDirection
   startTime: OrderDirection
   endTime: OrderDirection
   progress: OrderDirection
@@ -1667,6 +1676,10 @@ input CollaborationUpdateInput {
   description: String
   requireTime: Int
   heroVideo: VideoRelateToOneForUpdateInput
+  isBanner: Boolean
+  bannerMobile: PhotoRelateToOneForUpdateInput
+  bannerTablet: PhotoRelateToOneForUpdateInput
+  bannerDesktop: PhotoRelateToOneForUpdateInput
   heroImage: PhotoRelateToOneForUpdateInput
   startTime: DateTime
   endTime: DateTime
@@ -1693,6 +1706,10 @@ input CollaborationCreateInput {
   description: String
   requireTime: Int
   heroVideo: VideoRelateToOneForCreateInput
+  isBanner: Boolean
+  bannerMobile: PhotoRelateToOneForCreateInput
+  bannerTablet: PhotoRelateToOneForCreateInput
+  bannerDesktop: PhotoRelateToOneForCreateInput
   heroImage: PhotoRelateToOneForCreateInput
   startTime: DateTime
   endTime: DateTime
