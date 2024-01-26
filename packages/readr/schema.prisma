@@ -248,6 +248,7 @@ model Category {
   style                   String?
   heroImage               Photo?    @relation("Category_heroImage", fields: [heroImageId], references: [id])
   heroImageId             Int?      @map("heroImage")
+  sortOrder               Int?      @default(1)
   ogTitle                 String    @default("")
   ogDescription           String    @default("")
   ogImage                 Photo?    @relation("Category_ogImage", fields: [ogImageId], references: [id])
