@@ -1071,6 +1071,7 @@ type Category {
   state: String
   style: String
   heroImage: Photo
+  sortOrder: Int
   ogTitle: String
   ogDescription: String
   ogImage: Photo
@@ -1100,6 +1101,7 @@ input CategoryWhereInput {
   state: StringNullableFilter
   style: StringNullableFilter
   heroImage: PhotoWhereInput
+  sortOrder: IntNullableFilter
   ogTitle: StringFilter
   ogDescription: StringFilter
   ogImage: PhotoWhereInput
@@ -1119,6 +1121,7 @@ input CategoryOrderByInput {
   isFeatured: OrderDirection
   state: OrderDirection
   style: OrderDirection
+  sortOrder: OrderDirection
   ogTitle: OrderDirection
   ogDescription: OrderDirection
   css: OrderDirection
@@ -1134,6 +1137,7 @@ input CategoryUpdateInput {
   state: String
   style: String
   heroImage: PhotoRelateToOneForUpdateInput
+  sortOrder: Int
   ogTitle: String
   ogDescription: String
   ogImage: PhotoRelateToOneForUpdateInput
@@ -1158,6 +1162,7 @@ input CategoryCreateInput {
   state: String
   style: String
   heroImage: PhotoRelateToOneForCreateInput
+  sortOrder: Int
   ogTitle: String
   ogDescription: String
   ogImage: PhotoRelateToOneForCreateInput

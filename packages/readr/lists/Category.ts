@@ -1,7 +1,7 @@
 // @ts-ignore: no definition
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { relationship, checkbox, select, text } from '@keystone-6/core/fields'
+import { integer, relationship, checkbox, select, text } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -22,9 +22,8 @@ const listConfigurations = list({
     state: select({
       isIndexed: true,
       options: [
-        { label: 'inactive', value: 'inactive' },
-        { label: 'active', value: 'active' },
-        { label: 'archived', value: 'archived' },
+        { label: 'true', value: 'true' },
+        { label: 'false', value: 'false' },
       ],
     }),
     style: select({
@@ -39,6 +38,10 @@ const listConfigurations = list({
       label: '首圖',
       ref: 'Photo',
     }),
+	sortOrder: integer({
+	  defaultValue: 1,
+	  label: '排序',
+	}),
     ogTitle: text({
       label: 'FB分享標題',
       validation: { isRequired: false },
