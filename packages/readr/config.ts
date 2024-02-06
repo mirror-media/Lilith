@@ -29,6 +29,7 @@ const files = {
 
 const images = {
   baseUrl: envVar.images.baseUrl,
+  gcsBaseUrl: envVar.images.gcsBaseUrl,
   storagePath: envVar.images.storagePath,
 }
 
