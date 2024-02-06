@@ -55,7 +55,7 @@ export default {
   },
   images: {
     baseUrl: IMAGES_BASE_URL || '/images',
-    gcsBaseUrl: GCS_BASE_URL || 'https://static-readr-tw-dev.readr.tw/',
+    gcsBaseUrl: GCS_BASE_URL || 'https://static-readr-tw-dev.readr.tw',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
 }
