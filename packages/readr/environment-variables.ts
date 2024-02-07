@@ -13,6 +13,7 @@ const {
   IMAGES_STORAGE_PATH,
   MEMORY_CACHE_TTL,
   MEMORY_CACHE_SIZE,
+  GCS_BASE_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -54,6 +55,7 @@ export default {
   },
   images: {
     baseUrl: IMAGES_BASE_URL || '/images',
+    gcsBaseUrl: GCS_BASE_URL || 'https://static-readr-tw-dev.readr.tw',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
 }

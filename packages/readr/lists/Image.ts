@@ -87,12 +87,12 @@ const listConfigurations = list({
           resizedTargets.forEach((target) => {
             rtn[
               target
-            ] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+            ] = `${config.images.gcsBaseUrl}/images/${filename}-${target}${extension}`
           })
 
           rtn[
             'original'
-          ] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}${extension}`
+          ] = `${config.images.gcsBaseUrl}/images/${filename}${extension}`
           return Object.assign(empty, rtn)
         },
       }),
@@ -162,12 +162,12 @@ const listConfigurations = list({
           resizedTargets.forEach((target) => {
             rtn[
               target
-            ] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+            ] = `${config.images.gcsBaseUrl}/images/${filename}-${target}${extension}`
           })
 
           rtn[
             'original'
-          ] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}${extension}`
+          ] = `${config.images.gcsBaseUrl}/images/${filename}${extension}`
           return Object.assign(empty, rtn)
         },
       }),
