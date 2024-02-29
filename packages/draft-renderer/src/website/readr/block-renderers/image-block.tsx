@@ -38,12 +38,13 @@ export function ImageBlock(props: ImageBlockProps) {
   const entityKey = block.getEntityAt(0)
 
   const entity = contentState.getEntity(entityKey)
-  const { desc, name, resized, url } = entity.getData()
+  const { desc, name, resized = {}, resizedWebp = {}, url } = entity.getData()
 
   let imgBlock = (
     <Figure>
       <CustomImage
         images={resized}
+        imagesWebP={resizedWebp}
         defaultImage={defaultImage}
         alt={name}
         rwd={{
