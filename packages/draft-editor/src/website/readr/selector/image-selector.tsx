@@ -30,6 +30,14 @@ const imagesQuery = gql`
         w1600
         w2400
       }
+      resizedWebp {
+        original
+        w480
+        w800
+        w1200
+        w1600
+        w2400
+      }
     }
   }
 `
@@ -126,6 +134,7 @@ export type ImageEntity = {
   name?: string
   imageFile: ImageEntityImageFile
   resized: ImageEntityResized
+  resizedWebp: ImageEntityResized
 }
 
 export type ImageEntityWithMeta = {
@@ -320,9 +329,8 @@ export function ImageSelector(props: {
   ] = useLazyQuery(imagesQuery, { fetchPolicy: 'no-cache' })
   const [currentPage, setCurrentPage] = useState(0) // page starts with 1, 0 is used to detect initialization
   const [searchText, setSearchText] = useState('')
-  const [selected, setSelected] = useState<ImageEntityWithMeta[]>(
-    initialSelected
-  )
+  const [selected, setSelected] =
+    useState<ImageEntityWithMeta[]>(initialSelected)
   const [delay, setDelay] = useState('5')
   const [align, setAlign] = useState(initialAlign)
   const contentWrapperRef = useRef<HTMLDivElement>()

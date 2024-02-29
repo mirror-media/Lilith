@@ -48,26 +48,20 @@ export function ImageEditorBlock(props: ImageBlockProps) {
   const { onEditStart, onEditFinish } = blockProps
   const entityKey = block.getEntityAt(0)
   const entity = contentState.getEntity(entityKey)
-  const {
-    id,
-    name,
-    imageFile,
-    resized,
-    desc,
-    url,
-    alignment,
-  } = entity.getData() as {
-    id: string
-    name: string
-    imageFile: ImageEntityImageFile
-    resized: ImageEntityResized
-    desc: string
-    url: string
-    alignment: string
-  }
+  const { id, name, imageFile, resized, resizedWebp, desc, url, alignment } =
+    entity.getData() as {
+      id: string
+      name: string
+      imageFile: ImageEntityImageFile
+      resized: ImageEntityResized
+      resizedWebp: ImageEntityResized
+      desc: string
+      url: string
+      alignment: string
+    }
 
   const imageWithMeta: ImageEntityWithMeta = {
-    image: { id, name, imageFile, resized },
+    image: { id, name, imageFile, resized, resizedWebp },
     desc,
     url,
   }
