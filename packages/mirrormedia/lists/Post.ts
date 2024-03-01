@@ -677,6 +677,10 @@ const listConfigurations = list({
     beforeOperation: async ({ operation, resolvedData }) => {
       /* ... */
       if (operation === 'create' || operation === 'update') {
+        if (resolvedData.slug) {
+			resolvedData.slug = resolvedData.slug.trim()
+			resolvedData.slug = resolvedData.slug.replace(" ", "_")
+		}
         if (resolvedData.publishedDate) {
 		  /* check the publishedDate */
 		  if (resolvedData.publishedDate > Date.now()) {
