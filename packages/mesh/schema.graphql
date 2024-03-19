@@ -530,6 +530,7 @@ type Publisher {
   lang: String
   full_content: Boolean
   full_screen_ad: String
+  source_type: String
   paywall: Boolean
   follower(
     where: MemberWhereInput! = {}
@@ -564,6 +565,7 @@ input PublisherWhereInput {
   lang: StringNullableFilter
   full_content: BooleanFilter
   full_screen_ad: StringNullableFilter
+  source_type: StringNullableFilter
   paywall: BooleanFilter
   follower: MemberManyRelationFilter
   wallet: StringFilter
@@ -585,6 +587,7 @@ input PublisherOrderByInput {
   lang: OrderDirection
   full_content: OrderDirection
   full_screen_ad: OrderDirection
+  source_type: OrderDirection
   paywall: OrderDirection
   wallet: OrderDirection
   createdAt: OrderDirection
@@ -602,6 +605,7 @@ input PublisherUpdateInput {
   lang: String
   full_content: Boolean
   full_screen_ad: String
+  source_type: String
   paywall: Boolean
   follower: MemberRelateToManyForUpdateInput
   wallet: String
@@ -627,6 +631,7 @@ input PublisherCreateInput {
   lang: String
   full_content: Boolean
   full_screen_ad: String
+  source_type: String
   paywall: Boolean
   follower: MemberRelateToManyForCreateInput
   wallet: String
