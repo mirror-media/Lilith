@@ -3372,16 +3372,16 @@
     styled-components "5.3.5"
     zlib "^1.0.5"
 
-"@mirrormedia/lilith-core@2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-2.3.0.tgz#7ff7cc2b01f7a90566e8fc2f2dce6078afe9154a"
-  integrity sha512-cKixX3UIJ0APLshUgmy9BCYB65mlSxIYgPI0VrLYm0KsCA9fFk5+XBdB8/RVVPEIQZVUwufA9/LrFwWvxruLKQ==
+"@mirrormedia/lilith-core@2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-2.3.2.tgz#e969e2a851755c986d7387893889647bf8046e1d"
+  integrity sha512-6ywFJwvBRzaXmX4THuu4iG4I8okwOVH3Oy6ujoZLCZ6yjrr2I46zgEOXqgexRhlAOG1X7i04/k0YaAVOre2Otw==
   dependencies:
     "@google-cloud/storage" "^5.18.0"
     "@keystone-ui/button" "^7.0.2"
     "@keystone-ui/fields" "^7.2.0"
     "@keystone-ui/modals" "^6.0.3"
-    "@mirrormedia/lilith-draft-editor" "1.3.0"
+    "@mirrormedia/lilith-draft-editor" "1.3.2"
     "@twreporter/errors" "^1.1.1"
     axios "^0.26.0"
     draft-convert "^2.1.12"
@@ -3401,12 +3401,12 @@
     "@mirrormedia/lilith-draft-renderer" "1.2.0-alpha.29"
     draft-js "^0.11.7"
 
-"@mirrormedia/lilith-draft-editor@1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-editor/-/lilith-draft-editor-1.3.0.tgz#aa879d9109abe583c39ce6e7492174243bffb781"
-  integrity sha512-f8BXoiG84jrMxswr0sI0R4/4GQ2J0Vz+77YKTU36DB6vkpjHamT/wO6UHQxsB9XrjpBfX8etx4m8q8jITc+NYw==
+"@mirrormedia/lilith-draft-editor@1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-editor/-/lilith-draft-editor-1.3.2.tgz#a566c7a6116c9a347c14c7e499147260dfd96efc"
+  integrity sha512-+jB3hOl/l0W+BzCB04eIHwHr0KYnBa23ghZEvZFYQSW8p/RBHNwfoUVKCPQ+be9US1Mfiue3Q1rYV/XO5SlDqA==
   dependencies:
-    "@mirrormedia/lilith-draft-renderer" "1.3.0-alpha.26"
+    "@mirrormedia/lilith-draft-renderer" "1.3.1"
     draft-js "^0.11.7"
 
 "@mirrormedia/lilith-draft-renderer@1.2.0-alpha.29":
@@ -3419,10 +3419,10 @@
     draft-js "^0.11.7"
     node-html-parser "^6.1.5"
 
-"@mirrormedia/lilith-draft-renderer@1.3.0-alpha.26":
-  version "1.3.0-alpha.26"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.3.0-alpha.26.tgz#a7d462b3478ce3255114e2f70e0ded62f35d6dad"
-  integrity sha512-HqIRt0ByMl/gHHCsVYIAy6IXa+Bg/RcOnmQC8A3EWsMYwKcNwGdtYaCmgTPyuXtujeq0QhLJdGVYAfW/1AcbPg==
+"@mirrormedia/lilith-draft-renderer@1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-renderer/-/lilith-draft-renderer-1.3.1.tgz#33fc5d29e734ea0b731f71f01bd6ec70912a0a8e"
+  integrity sha512-YZhyhgE+vkx+ZzrjmGjpaegCEOhHeqPxScQP02uV3c72kC3yfgN5vWlpc72/dEst3SNNHQgL/BJhaba2N54kJQ==
   dependencies:
     "@readr-media/react-image" "2.1.3"
     body-scroll-lock "3.1.5"
@@ -8593,7 +8593,7 @@ new-github-issue-url@0.2.1:
   resolved "https://registry.yarnpkg.com/new-github-issue-url/-/new-github-issue-url-0.2.1.tgz#e17be1f665a92de465926603e44b9f8685630c1d"
   integrity sha512-md4cGoxuT4T4d/HDOXbrUHkTKrp/vp+m3aOA7XXVYwNsUNMK49g3SQicTSeV5GIz/5QVGAeYRAOlyp9OvlgsYA==
 
-next@13.3.4, next@^13.3.0:
+next@^13.3.0:
   version "13.3.4"
   resolved "https://registry.yarnpkg.com/next/-/next-13.3.4.tgz#ce2d96053cabfca092cc829941efe5dfbe015d16"
   integrity sha512-sod7HeokBSvH5QV0KB+pXeLfcXUlLrGnVUXxHpmhilQ+nQYT3Im2O8DswD5e4uqbR8Pvdu9pcWgb1CbXZQZlmQ==
@@ -9486,13 +9486,13 @@ react-day-picker@^8.0.4:
   resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.2.0.tgz#f6cac34d53e1ce963e561940e33fadec874e48cb"
   integrity sha512-6sI9+qk1xXSvV94WOz0H4FVGFaGquwMLQGw9WXoOZajMY/CVrLsautRFwkdjZ9jWj7WZR2Se1mTMrEpmcB6BEQ==
 
-react-dom@18.2.0, react-dom@^18.1.0, react-dom@^18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
-  integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
+react-dom@18.1.0, react-dom@^18.1.0, react-dom@^18.2.0:
+  version "18.1.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.1.0.tgz#7f6dd84b706408adde05e1df575b3a024d7e8a2f"
+  integrity sha512-fU1Txz7Budmvamp7bshe4Zi32d0ll7ect+ccxNu9FlObT605GOEB8BfO4tmRJ39R5Zj831VCpvQ05QPBW5yb+w==
   dependencies:
     loose-envify "^1.1.0"
-    scheduler "^0.23.0"
+    scheduler "^0.22.0"
 
 react-fast-compare@^3.0.1:
   version "3.2.0"
@@ -9605,10 +9605,10 @@ react-virtualized@^9.22.4:
     prop-types "^15.7.2"
     react-lifecycles-compat "^3.0.4"
 
-react@18.1.0, react@18.2.0, react@^18.1.0, react@^18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
-  integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
+react@18.1.0, react@^18.1.0, react@^18.2.0:
+  version "18.1.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-18.1.0.tgz#6f8620382decb17fdc5cc223a115e2adbf104890"
+  integrity sha512-4oL8ivCz5ZEPyclFQXaNksK3adutVS8l2xzZU0cqEFrE9Sb7fC0EFK5uEk74wIreL1DERyjvsU915j1pcT2uEQ==
   dependencies:
     loose-envify "^1.1.0"
 
@@ -9938,10 +9938,10 @@ saslprep@^1.0.3:
   dependencies:
     sparse-bitfield "^3.0.3"
 
-scheduler@^0.23.0:
-  version "0.23.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.0.tgz#ba8041afc3d30eb206a487b6b384002e4e61fdfe"
-  integrity sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==
+scheduler@^0.22.0:
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.22.0.tgz#83a5d63594edf074add9a7198b1bae76c3db01b8"
+  integrity sha512-6QAm1BgQI88NPYymgGQLCZgvep4FyePDWFpXVK+zNSUgHwlqpJy8VEh8Et0KxTACS4VWwMousBElAZOH9nkkoQ==
   dependencies:
     loose-envify "^1.1.0"
 
