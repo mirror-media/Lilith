@@ -6,10 +6,22 @@ import AmpVideoBlock from './amp/amp-video-block'
 import AmpVideoBlockV2 from './amp/amp-video-block-v2'
 import { ContentLayout } from '../types'
 
-const Video = styled.video`
-  width: 100%;
+const VideoWrapper = styled.div`
   ${defaultMarginTop}
   ${defaultMarginBottom}
+`
+
+const Video = styled.video`
+  display: block;
+  width: 100%;
+`
+
+const Description = styled.div`
+  line-height: 1.43;
+  letter-spacing: 0.4px;
+  font-size: 14px;
+  color: #808080;
+  padding: 15px 15px 0 15px;
 `
 
 type ImageEntity = {
@@ -74,18 +86,19 @@ export function VideoBlockV2(
   contentLayout: string
 ) {
   const isAmp = contentLayout === 'amp'
-  const { video }: { video: VideoEntity } = entity.getData()
+  const { video, desc }: { video: VideoEntity; desc: string } = entity.getData()
 
   if (isAmp) {
     return <AmpVideoBlockV2 video={video} />
   }
 
   return (
-    <>
+    <VideoWrapper>
       <Video muted autoPlay loop controls>
         <source src={video?.videoSrc} />
         <source src={video?.file?.url} />
       </Video>
-    </>
+      {desc && <Description>{desc}</Description>}
+    </VideoWrapper>
   )
 }
