@@ -56,6 +56,17 @@ const listConfigurations = list ({
       ],
 	  defaultValue: 'none',
 	}),
+	source_type: select({
+	  label: '資料來源',
+	  datatype: 'enum',
+	  options: [ 
+		{ label: '鏡週刊', value: 'mirrormedia' }, 
+		{ label: 'READr', value: 'readr' },
+		{ label: '鏡週刊 external', value: 'mm_external' },
+		{ label: 'rss', value: 'rss' }
+      ],
+	  defaultValue: 'rss',
+	}),
     paywall: checkbox({
       defaultValue: false,
     }),

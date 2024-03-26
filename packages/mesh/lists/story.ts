@@ -68,6 +68,7 @@ const listConfigurations = list ({
     is_active: checkbox({
       defaultValue: true,
     }),
+    tag: relationship({ ref: 'Tag', many: true}),
   },
   ui: {
     listView: {
