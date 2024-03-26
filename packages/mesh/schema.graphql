@@ -530,6 +530,7 @@ type Publisher {
   lang: String
   full_content: Boolean
   full_screen_ad: String
+  source_type: String
   paywall: Boolean
   follower(
     where: MemberWhereInput! = {}
@@ -564,6 +565,7 @@ input PublisherWhereInput {
   lang: StringNullableFilter
   full_content: BooleanFilter
   full_screen_ad: StringNullableFilter
+  source_type: StringNullableFilter
   paywall: BooleanFilter
   follower: MemberManyRelationFilter
   wallet: StringFilter
@@ -585,6 +587,7 @@ input PublisherOrderByInput {
   lang: OrderDirection
   full_content: OrderDirection
   full_screen_ad: OrderDirection
+  source_type: OrderDirection
   paywall: OrderDirection
   wallet: OrderDirection
   createdAt: OrderDirection
@@ -602,6 +605,7 @@ input PublisherUpdateInput {
   lang: String
   full_content: Boolean
   full_screen_ad: String
+  source_type: String
   paywall: Boolean
   follower: MemberRelateToManyForUpdateInput
   wallet: String
@@ -627,6 +631,7 @@ input PublisherCreateInput {
   lang: String
   full_content: Boolean
   full_screen_ad: String
+  source_type: String
   paywall: Boolean
   follower: MemberRelateToManyForCreateInput
   wallet: String
@@ -1100,6 +1105,13 @@ type Story {
   origid: String
   full_screen_ad: String
   is_active: Boolean
+  tag(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tagCount(where: TagWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1136,6 +1148,7 @@ input StoryWhereInput {
   origid: StringFilter
   full_screen_ad: StringNullableFilter
   is_active: BooleanFilter
+  tag: TagManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1146,6 +1159,12 @@ input StoryManyRelationFilter {
   every: StoryWhereInput
   some: StoryWhereInput
   none: StoryWhereInput
+}
+
+input TagManyRelationFilter {
+  every: TagWhereInput
+  some: TagWhereInput
+  none: TagWhereInput
 }
 
 input StoryOrderByInput {
@@ -1189,6 +1208,7 @@ input StoryUpdateInput {
   origid: String
   full_screen_ad: String
   is_active: Boolean
+  tag: TagRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1212,6 +1232,13 @@ input StoryRelateToManyForUpdateInput {
   set: [StoryWhereUniqueInput!]
   create: [StoryCreateInput!]
   connect: [StoryWhereUniqueInput!]
+}
+
+input TagRelateToManyForUpdateInput {
+  disconnect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
 }
 
 input StoryUpdateArgs {
@@ -1240,6 +1267,7 @@ input StoryCreateInput {
   origid: String
   full_screen_ad: String
   is_active: Boolean
+  tag: TagRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1261,6 +1289,11 @@ input StoryRelateToManyForCreateInput {
   connect: [StoryWhereUniqueInput!]
 }
 
+input TagRelateToManyForCreateInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
+}
+
 type Tag {
   id: ID!
   name: String
@@ -1271,6 +1304,13 @@ type Tag {
     skip: Int! = 0
   ): [Pick!]
   pickCount(where: PickWhereInput! = {}): Int
+  story(
+    where: StoryWhereInput! = {}
+    orderBy: [StoryOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Story!]
+  storyCount(where: StoryWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1288,6 +1328,7 @@ input TagWhereInput {
   id: IDFilter
   name: StringFilter
   pick: PickManyRelationFilter
+  story: StoryManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1304,6 +1345,7 @@ input TagOrderByInput {
 input TagUpdateInput {
   name: String
   pick: PickRelateToManyForUpdateInput
+  story: StoryRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1318,6 +1360,7 @@ input TagUpdateArgs {
 input TagCreateInput {
   name: String
   pick: PickRelateToManyForCreateInput
+  story: StoryRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

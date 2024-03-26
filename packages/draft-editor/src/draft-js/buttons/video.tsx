@@ -28,8 +28,8 @@ export function VideoButton(props: {
   const onVideoSelectorChange = (
     selectedVideosWithMeta: VideoEntityWithMeta[]
   ) => {
-    const video = selectedVideosWithMeta?.[0]?.video
-    if (!video) {
+    const selected = selectedVideosWithMeta?.[0]
+    if (!selected) {
       setToShowVideoSelector(false)
       return
     }
@@ -41,7 +41,8 @@ export function VideoButton(props: {
       'VIDEO-V2',
       'IMMUTABLE',
       {
-        video,
+        video: selected.video,
+        desc: selected.desc,
       }
     )
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey()

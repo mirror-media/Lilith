@@ -80,6 +80,7 @@ export type VideoEntity = {
 
 export type VideoEntityWithMeta = {
   video: VideoEntity
+  desc: string
 }
 
 type VideoEntityOnSelectFn = (param: VideoEntity) => void
