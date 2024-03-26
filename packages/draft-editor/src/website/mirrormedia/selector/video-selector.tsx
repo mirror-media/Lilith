@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import debounce from 'lodash/debounce'
 import styled from 'styled-components'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { gql, useLazyQuery } from '@keystone-6/core/admin-ui/apollo'
 import { ImageEntity } from './image-selector'
 import { SearchBox, SearchBoxOnChangeFn } from './search-box'
 import { Pagination } from './pagination'
+import { TextInput } from '@keystone-ui/fields'
 
 const videosQuery = gql`
   query Videos($searchText: String!, $take: Int, $skip: Int) {
@@ -36,6 +38,10 @@ const videosQuery = gql`
     }
   }
 `
+
+const _ = {
+  debounce,
+}
 
 const VideoSearchBox = styled(SearchBox)`
   margin-top: 10px;
@@ -97,6 +103,12 @@ const VideoName = styled.p`
   text-align: center;
 `
 
+const Label = styled.label`
+  display: block;
+  margin: 10px 0;
+  font-weight: 600;
+`
+
 type ID = string
 
 export type VideoEntity = {
@@ -114,6 +126,7 @@ export type VideoEntity = {
 
 export type VideoEntityWithMeta = {
   video: VideoEntity
+  desc: string
 }
 
 type VideoEntityOnSelectFn = (param: VideoEntity) => void
@@ -160,12 +173,21 @@ function VideoGrid(props: {
   )
 }
 
-function VideoMetaGrids(props: { videoMetas: VideoEntityWithMeta[] }) {
-  const { videoMetas } = props
+type VideoMetaOnChangeFn = (params: VideoEntityWithMeta) => void
+
+function VideoMetaGrids(props: {
+  videoMetas: VideoEntityWithMeta[]
+  onChange: VideoMetaOnChangeFn
+}) {
+  const { videoMetas, onChange } = props
   return (
     <VideoMetaGridsWrapper>
       {videoMetas.map((videoMeta) => (
-        <VideoMetaGrid key={videoMeta?.video?.id} videoMeta={videoMeta} />
+        <VideoMetaGrid
+          key={videoMeta?.video?.id}
+          videoMeta={videoMeta}
+          onChange={onChange}
+        />
       ))}
     </VideoMetaGridsWrapper>
   )
@@ -173,9 +195,19 @@ function VideoMetaGrids(props: { videoMetas: VideoEntityWithMeta[] }) {
 
 function VideoMetaGrid(props: {
   videoMeta: VideoEntityWithMeta
+  onChange: VideoMetaOnChangeFn
 }): React.ReactElement {
-  const { videoMeta } = props
-  const { video } = videoMeta
+  const { videoMeta, onChange } = props
+  const { video, desc } = videoMeta
+
+  const onVideoDescriptionChange: React.ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    onChange({
+      video,
+      desc: e.target.value,
+    })
+  }
 
   return (
     <VideoMetaGridWrapper>
@@ -183,7 +215,16 @@ function VideoMetaGrid(props: {
         <source src={video?.videoSrc} />
         <source src={video?.file?.url} />
       </Video>
+      <Label>Video Name</Label>
       <VideoName>{video?.name}</VideoName>
+      <Label htmlFor="description">Video Description</Label>
+      <TextInput
+        id="description"
+        type="text"
+        placeholder="(Optional)"
+        defaultValue={desc}
+        onChange={_.debounce(onVideoDescriptionChange)}
+      />
     </VideoMetaGridWrapper>
   )
 }
@@ -216,6 +257,10 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
     setCurrentPage(1)
   }
 
+  const onVideoMetaChange: VideoMetaOnChangeFn = (videoEntityWithMeta) => {
+    setSelected([videoEntityWithMeta])
+  }
+
   const onVideosGridSelect: VideoEntityOnSelectFn = (videoEntity) => {
     setSelected((selected) => {
       const filterdSelected = selected.filter(
@@ -228,7 +273,7 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
       }
 
       // single select
-      return [{ video: videoEntity }]
+      return [{ video: videoEntity, desc: '' }]
     })
   }
 
@@ -281,7 +326,7 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
           <div>{error.stack}</div>
           <br />
           <b>Query:</b>
-          <pre>{videosQuery.loc.source.body}</pre>
+          <pre>{videosQuery.loc?.source.body}</pre>
         </div>
       </ErrorWrapper>
     )
@@ -307,7 +352,10 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
           <VideoSelectionWrapper>
             <div>{searchResult}</div>
             {!!selected.length && <SeparationLine />}
-            <VideoMetaGrids videoMetas={selected} />
+            <VideoMetaGrids
+              videoMetas={selected}
+              onChange={onVideoMetaChange}
+            />
           </VideoSelectionWrapper>
         </div>
       </Drawer>
