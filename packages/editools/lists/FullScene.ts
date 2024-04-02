@@ -7,13 +7,8 @@ import { list, graphql } from '@keystone-6/core'
 import { text, select, image, json, virtual } from '@keystone-6/core/fields'
 
 const embedCodeWebpackAssets = embedCodeGen.loadWebpackAssets()
-const {
-  allowRoles,
-  admin,
-  moderator,
-  editor,
-  contributor,
-} = utils.accessControl
+const { allowRoles, admin, moderator, editor, contributor } =
+  utils.accessControl
 
 type Session = {
   data: {
@@ -61,12 +56,14 @@ const listConfigurations = list({
         displayMode: 'segmented-control',
       },
     }),
-    hotspotJson: json({
-      label: '熱點 json',
-      defaultValue: [],
-      //ui: {
-      //  createView: { fieldMode: 'hidden' },
-      //},
+    fullSceneConfig: json({
+      label: '360 config',
+      defaultValue: {
+        hotspots: [],
+        pitch: 0,
+        yaw: 0,
+        showControls: true,
+      },
       access: {
         operation: {
           query: allowRoles(admin, moderator, editor, contributor),
@@ -81,7 +78,7 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.String,
         resolve: async (item: Record<string, unknown>): Promise<string> => {
-          const { imageFile_id, desc, hotspotJson, displayMode } = item
+          const { imageFile_id, desc, fullSceneConfig, displayMode } = item
 
           const imageRwdUrls = {
             pc: imageFile_id
@@ -96,7 +93,7 @@ const listConfigurations = list({
             'react-360',
             {
               imageRwdUrls,
-              hotspotsConfig: hotspotJson,
+              config: fullSceneConfig,
               isFullScreenWidth: displayMode === 'full',
               caption: desc,
             },
