@@ -825,7 +825,7 @@ model FullScene {
   imageFile_height    Int?
   imageFile_id        String?
   displayMode         String?   @default("container")
-  hotspotJson         Json?     @default("[]")
+  fullSceneConfig     Json?     @default("{\"hotspots\":[],\"pitch\":0,\"yaw\":0,\"showControls\":true}")
   createdAt           DateTime?
   updatedAt           DateTime?
   createdBy           User?     @relation("FullScene_createdBy", fields: [createdById], references: [id])

@@ -3071,7 +3071,7 @@ type FullScene {
   desc: String
   imageFile: ImageFieldOutput
   displayMode: String
-  hotspotJson: JSON
+  fullSceneConfig: JSON
   embedCode: String
   previewButton: JSON
   createdAt: DateTime
@@ -3112,7 +3112,7 @@ input FullSceneUpdateInput {
   desc: String
   imageFile: ImageFieldInput
   displayMode: String
-  hotspotJson: JSON
+  fullSceneConfig: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -3129,7 +3129,7 @@ input FullSceneCreateInput {
   desc: String
   imageFile: ImageFieldInput
   displayMode: String
-  hotspotJson: JSON
+  fullSceneConfig: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
