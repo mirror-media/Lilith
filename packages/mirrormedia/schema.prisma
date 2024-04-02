@@ -148,10 +148,14 @@ model External {
   source              String    @default("")
   createdAt           DateTime?
   updatedAt           DateTime?
-  createdBy           User?     @relation("External_createdBy", fields: [createdById], references: [id])
-  createdById         Int?      @map("createdBy")
-  updatedBy           User?     @relation("External_updatedBy", fields: [updatedById], references: [id])
-  updatedById         Int?      @map("updatedBy")
+  createdBy           User?      @relation("External_createdBy", fields: [createdById], references: [id])
+  createdById         Int?       @map("createdBy")
+  updatedBy           User?      @relation("External_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?       @map("updatedBy")
+  tags                Tag[]      @relation("External_tags")
+  relateds            External[] @relation("External_relateds")
+
+  from_External_relateds External[] @relation("External_relateds")
 
   @@index([partnerId])
   @@index([state])
@@ -371,6 +375,7 @@ model Tag {
   slug                String      @unique @default("")
   name                String      @unique @default("")
   posts               Post[]      @relation("Post_tags")
+  externals           External[]  @relation("External_tags")
   topics              Topic[]     @relation("Tag_topics")
   createdAt           DateTime?
   updatedAt           DateTime?
