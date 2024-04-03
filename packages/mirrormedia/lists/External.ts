@@ -114,6 +114,22 @@ const listConfigurations = list({
       label: '原文網址',
       validation: { isRequired: false },
     }),
+    tags: relationship({
+      label: '標籤',
+      ref: 'Tag.externals',
+      many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
+    }),
+    relateds: relationship({
+      label: '相關外部文章',
+      ref: 'External',
+      many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
+    }),
   },
   ui: {
     labelField: 'title',
