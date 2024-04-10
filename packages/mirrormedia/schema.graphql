@@ -628,6 +628,12 @@ type External {
   brief: String
   content: String
   source: String
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
+  relateds(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  relatedsCount(where: PostWhereInput! = {}): Int
+  groups(where: GroupWhereInput! = {}, orderBy: [GroupOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GroupWhereUniqueInput): [Group!]
+  groupsCount(where: GroupWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -655,10 +661,19 @@ input ExternalWhereInput {
   brief: StringFilter
   content: StringFilter
   source: StringFilter
+  tags: TagManyRelationFilter
+  relateds: PostManyRelationFilter
+  groups: GroupManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input GroupManyRelationFilter {
+  every: GroupWhereInput
+  some: GroupWhereInput
+  none: GroupWhereInput
 }
 
 input ExternalOrderByInput {
@@ -689,6 +704,9 @@ input ExternalUpdateInput {
   brief: String
   content: String
   source: String
+  tags: TagRelateToManyForUpdateInput
+  relateds: PostRelateToManyForUpdateInput
+  groups: GroupRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -699,6 +717,13 @@ input PartnerRelateToOneForUpdateInput {
   create: PartnerCreateInput
   connect: PartnerWhereUniqueInput
   disconnect: Boolean
+}
+
+input GroupRelateToManyForUpdateInput {
+  disconnect: [GroupWhereUniqueInput!]
+  set: [GroupWhereUniqueInput!]
+  create: [GroupCreateInput!]
+  connect: [GroupWhereUniqueInput!]
 }
 
 input ExternalUpdateArgs {
@@ -718,6 +743,9 @@ input ExternalCreateInput {
   brief: String
   content: String
   source: String
+  tags: TagRelateToManyForCreateInput
+  relateds: PostRelateToManyForCreateInput
+  groups: GroupRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -727,6 +755,11 @@ input ExternalCreateInput {
 input PartnerRelateToOneForCreateInput {
   create: PartnerCreateInput
   connect: PartnerWhereUniqueInput
+}
+
+input GroupRelateToManyForCreateInput {
+  create: [GroupCreateInput!]
+  connect: [GroupWhereUniqueInput!]
 }
 
 type Header {
@@ -1125,6 +1158,10 @@ type Post {
   topics: Topic
   relateds(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedsCount(where: PostWhereInput! = {}): Int
+  from_External_relateds(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
+  from_External_relatedsCount(where: ExternalWhereInput! = {}): Int
+  groups(where: GroupWhereInput! = {}, orderBy: [GroupOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GroupWhereUniqueInput): [Group!]
+  groupsCount(where: GroupWhereInput! = {}): Int
   manualOrderOfRelateds: JSON
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
@@ -1188,6 +1225,8 @@ input PostWhereInput {
   isMember: BooleanFilter
   topics: TopicWhereInput
   relateds: PostManyRelationFilter
+  from_External_relateds: ExternalManyRelationFilter
+  groups: GroupManyRelationFilter
   tags: TagManyRelationFilter
   og_title: StringFilter
   isFeatured: BooleanFilter
@@ -1213,6 +1252,12 @@ input ContactManyRelationFilter {
   every: ContactWhereInput
   some: ContactWhereInput
   none: ContactWhereInput
+}
+
+input ExternalManyRelationFilter {
+  every: ExternalWhereInput
+  some: ExternalWhereInput
+  none: ExternalWhereInput
 }
 
 input PostOrderByInput {
@@ -1273,6 +1318,8 @@ input PostUpdateInput {
   isMember: Boolean
   topics: TopicRelateToOneForUpdateInput
   relateds: PostRelateToManyForUpdateInput
+  from_External_relateds: ExternalRelateToManyForUpdateInput
+  groups: GroupRelateToManyForUpdateInput
   manualOrderOfRelateds: JSON
   tags: TagRelateToManyForUpdateInput
   og_title: String
@@ -1321,6 +1368,13 @@ input TopicRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input ExternalRelateToManyForUpdateInput {
+  disconnect: [ExternalWhereUniqueInput!]
+  set: [ExternalWhereUniqueInput!]
+  create: [ExternalCreateInput!]
+  connect: [ExternalWhereUniqueInput!]
+}
+
 input VideoRelateToManyForUpdateInput {
   disconnect: [VideoWhereUniqueInput!]
   set: [VideoWhereUniqueInput!]
@@ -1364,6 +1418,8 @@ input PostCreateInput {
   isMember: Boolean
   topics: TopicRelateToOneForCreateInput
   relateds: PostRelateToManyForCreateInput
+  from_External_relateds: ExternalRelateToManyForCreateInput
+  groups: GroupRelateToManyForCreateInput
   manualOrderOfRelateds: JSON
   tags: TagRelateToManyForCreateInput
   og_title: String
@@ -1404,6 +1460,11 @@ input VideoRelateToOneForCreateInput {
 input TopicRelateToOneForCreateInput {
   create: TopicCreateInput
   connect: TopicWhereUniqueInput
+}
+
+input ExternalRelateToManyForCreateInput {
+  create: [ExternalCreateInput!]
+  connect: [ExternalWhereUniqueInput!]
 }
 
 input VideoRelateToManyForCreateInput {
@@ -1534,6 +1595,8 @@ type Tag {
   name: String
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  externals(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
+  externalsCount(where: ExternalWhereInput! = {}): Int
   topics(where: TopicWhereInput! = {}, orderBy: [TopicOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TopicWhereUniqueInput): [Topic!]
   topicsCount(where: TopicWhereInput! = {}): Int
   createdAt: DateTime
@@ -1556,6 +1619,7 @@ input TagWhereInput {
   slug: StringFilter
   name: StringFilter
   posts: PostManyRelationFilter
+  externals: ExternalManyRelationFilter
   topics: TopicManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1575,6 +1639,7 @@ input TagUpdateInput {
   slug: String
   name: String
   posts: PostRelateToManyForUpdateInput
+  externals: ExternalRelateToManyForUpdateInput
   topics: TopicRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -1591,6 +1656,7 @@ input TagCreateInput {
   slug: String
   name: String
   posts: PostRelateToManyForCreateInput
+  externals: ExternalRelateToManyForCreateInput
   topics: TopicRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -1935,6 +2001,69 @@ input VideoCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Group {
+  id: ID!
+  keyword: String
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  postsCount(where: PostWhereInput! = {}): Int
+  externals(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
+  externalsCount(where: ExternalWhereInput! = {}): Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input GroupWhereUniqueInput {
+  id: ID
+}
+
+input GroupWhereInput {
+  AND: [GroupWhereInput!]
+  OR: [GroupWhereInput!]
+  NOT: [GroupWhereInput!]
+  id: IDFilter
+  keyword: StringFilter
+  posts: PostManyRelationFilter
+  externals: ExternalManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input GroupOrderByInput {
+  id: OrderDirection
+  keyword: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input GroupUpdateInput {
+  keyword: String
+  posts: PostRelateToManyForUpdateInput
+  externals: ExternalRelateToManyForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input GroupUpdateArgs {
+  where: GroupWhereUniqueInput!
+  data: GroupUpdateInput!
+}
+
+input GroupCreateInput {
+  keyword: String
+  posts: PostRelateToManyForCreateInput
+  externals: ExternalRelateToManyForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2037,6 +2166,12 @@ type Mutation {
   updateVideos(data: [VideoUpdateArgs!]!): [Video]
   deleteVideo(where: VideoWhereUniqueInput!): Video
   deleteVideos(where: [VideoWhereUniqueInput!]!): [Video]
+  createGroup(data: GroupCreateInput!): Group
+  createGroups(data: [GroupCreateInput!]!): [Group]
+  updateGroup(where: GroupWhereUniqueInput!, data: GroupUpdateInput!): Group
+  updateGroups(data: [GroupUpdateArgs!]!): [Group]
+  deleteGroup(where: GroupWhereUniqueInput!): Group
+  deleteGroups(where: [GroupWhereUniqueInput!]!): [Group]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -2109,6 +2244,9 @@ type Query {
   videos(where: VideoWhereInput! = {}, orderBy: [VideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoWhereUniqueInput): [Video!]
   video(where: VideoWhereUniqueInput!): Video
   videosCount(where: VideoWhereInput! = {}): Int
+  groups(where: GroupWhereInput! = {}, orderBy: [GroupOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GroupWhereUniqueInput): [Group!]
+  group(where: GroupWhereUniqueInput!): Group
+  groupsCount(where: GroupWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
