@@ -123,8 +123,16 @@ const listConfigurations = list({
       },
     }),
     relateds: relationship({
-      label: '相關外部文章',
-      ref: 'External',
+      label: '相關內部文章',
+      ref: 'Post.from_External_relateds',
+      many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
+    }),
+    groups: relationship({
+      label: "群組",
+      ref: 'Group.externals',
       many: true,
       ui: {
         views: './lists/views/sorted-relationship/index',

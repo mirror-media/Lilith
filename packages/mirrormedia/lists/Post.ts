@@ -431,6 +431,22 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
       },
     }),
+    from_External_relateds: relationship({
+      label: '相關外部文章(發佈後由演算法自動計算)',
+      ref: 'External.relateds',
+      many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
+    }),
+    groups: relationship({
+      label: "群組(發佈後由演算法自動計算)",
+      ref: 'Group.posts',
+      many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
+    }),
     manualOrderOfRelateds: json({
       label: '相關文章手動排序結果',
       isFilterable: false,

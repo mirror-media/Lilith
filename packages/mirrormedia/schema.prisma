@@ -146,16 +146,15 @@ model External {
   brief               String    @default("")
   content             String    @default("")
   source              String    @default("")
+  tags                Tag[]     @relation("External_tags")
+  relateds            Post[]    @relation("External_relateds")
+  groups              Group[]   @relation("External_groups")
   createdAt           DateTime?
   updatedAt           DateTime?
-  createdBy           User?      @relation("External_createdBy", fields: [createdById], references: [id])
-  createdById         Int?       @map("createdBy")
-  updatedBy           User?      @relation("External_updatedBy", fields: [updatedById], references: [id])
-  updatedById         Int?       @map("updatedBy")
-  tags                Tag[]      @relation("External_tags")
-  relateds            External[] @relation("External_relateds")
-
-  from_External_relateds External[] @relation("External_relateds")
+  createdBy           User?     @relation("External_createdBy", fields: [createdById], references: [id])
+  createdById         Int?      @map("createdBy")
+  updatedBy           User?     @relation("External_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?      @map("updatedBy")
 
   @@index([partnerId])
   @@index([state])
@@ -303,6 +302,8 @@ model Post {
   topics                     Topic?         @relation("Post_topics", fields: [topicsId], references: [id])
   topicsId                   Int?           @map("topics")
   relateds                   Post[]         @relation("Post_relateds")
+  from_External_relateds     External[]     @relation("External_relateds")
+  groups                     Group[]        @relation("Group_posts")
   manualOrderOfRelateds      Json?
   tags                       Tag[]          @relation("Post_tags")
   og_title                   String         @default("")
@@ -472,6 +473,8 @@ model User {
   from_Topic_updatedBy        Topic[]        @relation("Topic_updatedBy")
   from_Video_createdBy        Video[]        @relation("Video_createdBy")
   from_Video_updatedBy        Video[]        @relation("Video_updatedBy")
+  from_Group_createdBy        Group[]        @relation("Group_createdBy")
+  from_Group_updatedBy        Group[]        @relation("Group_updatedBy")
 }
 
 model Video {
@@ -501,6 +504,22 @@ model Video {
   @@index([heroImageId])
   @@index([state])
   @@index([publishedDate])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Group {
+  id          Int        @id @default(autoincrement())
+  keyword     String     @default("")
+  posts       Post[]     @relation("Group_posts")
+  externals   External[] @relation("External_groups")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?      @relation("Group_createdBy", fields: [createdById], references: [id])
+  createdById Int?       @map("createdBy")
+  updatedBy   User?      @relation("Group_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?       @map("updatedBy")
+
   @@index([createdById])
   @@index([updatedById])
 }
