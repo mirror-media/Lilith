@@ -8,6 +8,9 @@ const listConfigurations = list({
   fields: {
     keyword: text({
         label: '關鍵詞',
+        validation: {
+            isRequired: true,
+        },
     }),
     posts: relationship({
         ref: 'Post.groups',
@@ -38,14 +41,6 @@ const listConfigurations = list({
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
     },
-  },
-  hooks: {
-    validateInput: ({ resolvedData, addValidationError }) => {
-        const { keyword } = resolvedData
-        if (keyword === '') {
-          addValidationError('keyword 不得為空值')
-        }
-      },
   },
 })
 export default utils.addTrackingFields(listConfigurations)
