@@ -1165,6 +1165,8 @@ type Post {
   manualOrderOfRelateds: JSON
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  tags_algo(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tags_algoCount(where: TagWhereInput! = {}): Int
   og_title: String
   og_description: String
   og_image: Photo
@@ -1228,6 +1230,7 @@ input PostWhereInput {
   from_External_relateds: ExternalManyRelationFilter
   groups: GroupManyRelationFilter
   tags: TagManyRelationFilter
+  tags_algo: TagManyRelationFilter
   og_title: StringFilter
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
@@ -1322,6 +1325,7 @@ input PostUpdateInput {
   groups: GroupRelateToManyForUpdateInput
   manualOrderOfRelateds: JSON
   tags: TagRelateToManyForUpdateInput
+  tags_algo: TagRelateToManyForUpdateInput
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForUpdateInput
@@ -1422,6 +1426,7 @@ input PostCreateInput {
   groups: GroupRelateToManyForCreateInput
   manualOrderOfRelateds: JSON
   tags: TagRelateToManyForCreateInput
+  tags_algo: TagRelateToManyForCreateInput
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForCreateInput
@@ -1595,6 +1600,8 @@ type Tag {
   name: String
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  posts_algo(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  posts_algoCount(where: PostWhereInput! = {}): Int
   externals(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
   externalsCount(where: ExternalWhereInput! = {}): Int
   topics(where: TopicWhereInput! = {}, orderBy: [TopicOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TopicWhereUniqueInput): [Topic!]
@@ -1619,6 +1626,7 @@ input TagWhereInput {
   slug: StringFilter
   name: StringFilter
   posts: PostManyRelationFilter
+  posts_algo: PostManyRelationFilter
   externals: ExternalManyRelationFilter
   topics: TopicManyRelationFilter
   createdAt: DateTimeNullableFilter
@@ -1639,6 +1647,7 @@ input TagUpdateInput {
   slug: String
   name: String
   posts: PostRelateToManyForUpdateInput
+  posts_algo: PostRelateToManyForUpdateInput
   externals: ExternalRelateToManyForUpdateInput
   topics: TopicRelateToManyForUpdateInput
   createdAt: DateTime
@@ -1656,6 +1665,7 @@ input TagCreateInput {
   slug: String
   name: String
   posts: PostRelateToManyForCreateInput
+  posts_algo: PostRelateToManyForCreateInput
   externals: ExternalRelateToManyForCreateInput
   topics: TopicRelateToManyForCreateInput
   createdAt: DateTime
