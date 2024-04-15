@@ -672,6 +672,7 @@ const listConfigurations = list({
       const { publishedDate, content, brief, updateTimeStamp } = resolvedData
       if (operation === 'create') {
         resolvedData.publishedDate = new Date(publishedDate.setSeconds(0, 0))
+        resolvedData.updatedAt = new Date()
       }
       if (content) {
         resolvedData.apiData = customFields.draftConverter
@@ -686,6 +687,7 @@ const listConfigurations = list({
       if (updateTimeStamp) {
         const now = new Date()
         resolvedData.publishedDate = new Date(now.setSeconds(0, 0))
+        resolvedData.updatedAt = new Date()
         resolvedData.updateTimeStamp = false
       }
       return resolvedData
@@ -694,15 +696,15 @@ const listConfigurations = list({
       /* ... */
       if (operation === 'create' || operation === 'update') {
         if (resolvedData.slug) {
-			resolvedData.slug = resolvedData.slug.trim()
-			resolvedData.slug = resolvedData.slug.replace(" ", "_")
-		}
+          resolvedData.slug = resolvedData.slug.trim()
+          resolvedData.slug = resolvedData.slug.replace(" ", "_")
+        }
         if (resolvedData.publishedDate) {
-		  /* check the publishedDate */
-		  if (resolvedData.publishedDate > Date.now()) {
-			resolvedData.state = 'scheduled'
-		  }
-		  /* end publishedDate check */
+          /* check the publishedDate */
+          if (resolvedData.publishedDate > Date.now()) {
+            resolvedData.state = 'scheduled'
+          }
+          /* end publishedDate check */
           resolvedData.publishedDateString = new Date(
             resolvedData.publishedDate
           ).toLocaleDateString('zh-TW', {
