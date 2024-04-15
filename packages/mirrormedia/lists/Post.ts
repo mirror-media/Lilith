@@ -459,6 +459,14 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
       },
     }),
+    tags_algo: relationship({
+      label: '演算法標籤',
+      ref: 'Tag.posts_algo',
+      many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
+    }),
     og_title: text({
       label: 'FB分享標題',
       validation: { isRequired: false },

@@ -23,6 +23,14 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
       },
     }),
+    posts_algo: relationship({
+      ref: 'Post.tags_algo',
+      many: true,
+      ui: {
+        hideCreate: true,
+        views: './lists/views/sorted-relationship/index',
+      },
+    }),
     externals: relationship({
       ref: 'External.tags',
       many: true,
