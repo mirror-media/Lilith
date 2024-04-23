@@ -1227,10 +1227,7 @@ input PostWhereInput {
   isMember: BooleanFilter
   topics: TopicWhereInput
   relateds: PostManyRelationFilter
-  from_External_relateds: ExternalManyRelationFilter
-  groups: GroupManyRelationFilter
   tags: TagManyRelationFilter
-  tags_algo: TagManyRelationFilter
   og_title: StringFilter
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
@@ -1255,12 +1252,6 @@ input ContactManyRelationFilter {
   every: ContactWhereInput
   some: ContactWhereInput
   none: ContactWhereInput
-}
-
-input ExternalManyRelationFilter {
-  every: ExternalWhereInput
-  some: ExternalWhereInput
-  none: ExternalWhereInput
 }
 
 input PostOrderByInput {
@@ -1633,6 +1624,12 @@ input TagWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input ExternalManyRelationFilter {
+  every: ExternalWhereInput
+  some: ExternalWhereInput
+  none: ExternalWhereInput
 }
 
 input TagOrderByInput {
