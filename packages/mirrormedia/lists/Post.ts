@@ -433,18 +433,26 @@ const listConfigurations = list({
     }),
     from_External_relateds: relationship({
       label: '相關外部文章(發佈後由演算法自動計算)',
+      isFilterable: false,
       ref: 'External.relateds',
       many: true,
       ui: {
         views: './lists/views/sorted-relationship/index',
+        createView: { fieldMode: 'hidden', },
+        itemView: { fieldMode: 'hidden', },
+        listView: { fieldMode: 'hidden', },
       },
     }),
     groups: relationship({
       label: "群組(發佈後由演算法自動計算)",
+      isFilterable: false,
       ref: 'Group.posts',
       many: true,
       ui: {
         views: './lists/views/sorted-relationship/index',
+        createView: { fieldMode: 'hidden', },
+        itemView: { fieldMode: 'hidden', },
+        listView: { fieldMode: 'hidden', },
       },
     }),
     manualOrderOfRelateds: json({
@@ -461,10 +469,14 @@ const listConfigurations = list({
     }),
     tags_algo: relationship({
       label: '演算法標籤',
+      isFilterable: false,
       ref: 'Tag.posts_algo',
       many: true,
       ui: {
         views: './lists/views/sorted-relationship/index',
+        createView: { fieldMode: 'hidden', },
+        itemView: { fieldMode: 'hidden', },
+        listView: { fieldMode: 'hidden', },
       },
     }),
     og_title: text({
