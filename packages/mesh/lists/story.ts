@@ -30,6 +30,13 @@ const listConfigurations = list ({
 	  validation: { isRequired: false },
 	  ui: { displayMode: 'textarea' },
 	}),
+    apiData: json({
+      label: '資料庫使用',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+  }),
     content: text({ 
 	  validation: { isRequired: false }, 
 	  ui: { displayMode: 'textarea' },

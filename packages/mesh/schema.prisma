@@ -280,6 +280,7 @@ model Story {
   title                     String           @default("")
   url                       String           @unique @default("")
   summary                   String           @default("")
+  apiData                   Json?
   content                   String           @default("")
   writer                    String           @default("")
   source                    Publisher?       @relation("Story_source", fields: [sourceId], references: [id])

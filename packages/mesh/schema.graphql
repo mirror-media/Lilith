@@ -1070,6 +1070,7 @@ type Story {
   title: String
   url: String
   summary: String
+  apiData: JSON
   content: String
   writer: String
   source: Publisher
@@ -1191,6 +1192,7 @@ input StoryUpdateInput {
   title: String
   url: String
   summary: String
+  apiData: JSON
   content: String
   writer: String
   source: PublisherRelateToOneForUpdateInput
@@ -1250,6 +1252,7 @@ input StoryCreateInput {
   title: String
   url: String
   summary: String
+  apiData: JSON
   content: String
   writer: String
   source: PublisherRelateToOneForCreateInput
