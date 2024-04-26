@@ -280,9 +280,11 @@ model Story {
   title                     String           @default("")
   url                       String           @unique @default("")
   summary                   String           @default("")
-  apiData                   Json?
   content                   String           @default("")
+  trimContent               String           @default("")
   writer                    String           @default("")
+  apiData                   Json?
+  trimApiData               Json?
   source                    Publisher?       @relation("Story_source", fields: [sourceId], references: [id])
   sourceId                  Int?             @map("source")
   author                    Member?          @relation("Story_author", fields: [authorId], references: [id])
