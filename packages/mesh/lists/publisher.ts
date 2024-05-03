@@ -22,6 +22,14 @@ const listConfigurations = list ({
     title: text({ validation: { isRequired: false } }),
     official_site: text({ validation: { isRequired: true } }),
     rss: text({ validation: { isRequired: true } }),
+    apidata_endpoint: text({
+      label: 'APIDATA Endpoint',
+      validation: {isRequired: false},
+    }),
+    need_apidata: checkbox({
+      label: '需抓取APIDATA',
+      defaultValue: false,
+    }),
     summary: text({ validation: { isRequired: false } }),
     logo: text({ validation: { isRequired: false } }),
     description: text({ validation: { isRequired: false } }),
@@ -58,7 +66,7 @@ const listConfigurations = list ({
 	}),
 	source_type: select({
 	  label: '資料來源',
-	  datatype: 'enum',
+	  // datatype: 'enum',
 	  options: [ 
 		{ label: '鏡週刊', value: 'mirrormedia' }, 
 		{ label: 'READr', value: 'readr' },
@@ -67,9 +75,9 @@ const listConfigurations = list ({
       ],
 	  defaultValue: 'rss',
 	}),
-    paywall: checkbox({
-      defaultValue: false,
-    }),
+  paywall: checkbox({
+    defaultValue: false,
+  }),
 	follower: relationship({
 	  ref: 'Member.follow_publisher',
 	  many: true,

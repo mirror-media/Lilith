@@ -13,7 +13,6 @@ const {
   IMAGES_STORAGE_PATH,
   MEMORY_CACHE_TTL,
   MEMORY_CACHE_SIZE,
-  READR_GQL_ENDPOINT
 } = process.env
 
 enum DatabaseProvider {
@@ -55,5 +54,4 @@ export default {
     baseUrl: IMAGES_BASE_URL || '/images',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
-  readr_gql_endpoint: READR_GQL_ENDPOINT || '', // endpoint should be secret
 }

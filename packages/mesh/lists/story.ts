@@ -1,5 +1,5 @@
-import { request, gql } from 'graphql-request'
-import { utils } from '@mirrormedia/lilith-core'
+import { request, } from 'graphql-request'
+import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
 import {
   text,
@@ -11,7 +11,6 @@ import {
   checkbox,
   json,
 } from '@keystone-6/core/fields';
-import envVar from '../environment-variables';
 
 const {
   allowRoles,
@@ -26,11 +25,18 @@ function getReadrPostQuery(postId: string): string {
     query Post {
       post(where: {id: ${postId}}) {
         id
-        name
-        apiData
+        content
       }
     }
   `;
+}
+
+interface PostContent{
+  id: string;
+  content: string;
+}
+interface PostResponse {
+  post?: PostContent;
 }
 
 const listConfigurations = list ({
@@ -116,13 +122,35 @@ const listConfigurations = list ({
     },
   },
   hooks: {
-    resolveInput: async ({operation, resolvedData }) => {
-      const {origid} = resolvedData;
-      const gql_endpoint = envVar.readr_gql_endpoint;
-      if (origid && gql_endpoint && operation === 'create') {
-        const gql_query = getReadrPostQuery(origid);
-        const result = await request(gql_endpoint, gql_query);
-        console.log(result);
+    resolveInput: async ({operation, resolvedData, context }) => {
+      const {source, origid} = resolvedData;
+      if (origid && operation === 'create'){
+        // Get information about the publisher
+        const source_id = source?.connect?.id;
+        if(source_id){
+          const publisher = await context.query.Publisher.findOne({
+            where: {id: source_id},
+            query: 'need_apidata apidata_endpoint',
+          });
+          // Retrieve content from api-endpoint and transform it to apidata
+          if (publisher?.need_apidata){
+            const gql_endpoint = publisher.apidata_endpoint;
+            if (gql_endpoint){
+              const gql_query = getReadrPostQuery(origid);
+              const response: PostResponse = await request(gql_endpoint, gql_query);
+              const post: PostContent | undefined = response?.post;
+              if (post){
+                const {id, content} = post;
+                if (content){
+                  resolvedData.apiData = customFields.draftConverter
+                  .convertToApiData(content)
+                  .toJS();
+                  console.log(`update apidata for readr post ${id} successed.`);
+                }
+              }
+            }
+          }
+        }
       }
       return resolvedData;
     },

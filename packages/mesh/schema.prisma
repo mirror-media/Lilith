@@ -143,6 +143,8 @@ model Publisher {
   title             String    @default("")
   official_site     String    @default("")
   rss               String    @default("")
+  apidata_endpoint  String    @default("")
+  need_apidata      Boolean   @default(false)
   summary           String    @default("")
   logo              String    @default("")
   description       String    @default("")

@@ -523,6 +523,8 @@ type Publisher {
   title: String
   official_site: String
   rss: String
+  apidata_endpoint: String
+  need_apidata: Boolean
   summary: String
   logo: String
   description: String
@@ -558,6 +560,8 @@ input PublisherWhereInput {
   title: StringFilter
   official_site: StringFilter
   rss: StringFilter
+  apidata_endpoint: StringFilter
+  need_apidata: BooleanFilter
   summary: StringFilter
   logo: StringFilter
   description: StringFilter
@@ -580,6 +584,8 @@ input PublisherOrderByInput {
   title: OrderDirection
   official_site: OrderDirection
   rss: OrderDirection
+  apidata_endpoint: OrderDirection
+  need_apidata: OrderDirection
   summary: OrderDirection
   logo: OrderDirection
   description: OrderDirection
@@ -598,6 +604,8 @@ input PublisherUpdateInput {
   title: String
   official_site: String
   rss: String
+  apidata_endpoint: String
+  need_apidata: Boolean
   summary: String
   logo: String
   description: String
@@ -624,6 +632,8 @@ input PublisherCreateInput {
   title: String
   official_site: String
   rss: String
+  apidata_endpoint: String
+  need_apidata: Boolean
   summary: String
   logo: String
   description: String
