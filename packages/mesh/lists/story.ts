@@ -1,3 +1,4 @@
+import { request, gql } from 'graphql-request'
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
 import {
@@ -10,6 +11,7 @@ import {
   checkbox,
   json,
 } from '@keystone-6/core/fields';
+import envVar from '../environment-variables';
 
 const {
   allowRoles,
@@ -18,6 +20,18 @@ const {
   editor,
   owner,
 } = utils.accessControl
+
+function getReadrPostQuery(postId: string): string {
+  return `
+    query Post {
+      post(where: {id: ${postId}}) {
+        id
+        name
+        apiData
+      }
+    }
+  `;
+}
 
 const listConfigurations = list ({
   fields: {
@@ -99,6 +113,18 @@ const listConfigurations = list ({
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
+    },
+  },
+  hooks: {
+    resolveInput: async ({operation, resolvedData }) => {
+      const {origid} = resolvedData;
+      const gql_endpoint = envVar.readr_gql_endpoint;
+      if (origid && gql_endpoint && operation === 'create') {
+        const gql_query = getReadrPostQuery(origid);
+        const result = await request(gql_endpoint, gql_query);
+        console.log(result);
+      }
+      return resolvedData;
     },
   },
 })

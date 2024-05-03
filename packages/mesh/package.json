@@ -21,6 +21,7 @@
     "@keystone-6/fields-document": "1.0.1",
     "@mirrormedia/lilith-core": "1.2.5",
     "express": "^4.17.1",
+    "graphql-request": "^6.1.0",
     "http-proxy-middleware": "^2.0.3",
     "patch-package": "^6.4.7"
   },
