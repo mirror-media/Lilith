@@ -4,6 +4,7 @@ import {
   relationship,
   select,
   integer,
+  text,
   timestamp,
 } from '@keystone-6/core/fields'
 
@@ -18,6 +19,9 @@ const listConfigurations = list({
         min: 1,
         max: 9999,
       },
+    }),
+    outlink: text({
+      label: '外部連結網址',
     }),
     choices: relationship({
       label: '精選文章',

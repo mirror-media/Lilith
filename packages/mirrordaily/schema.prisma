@@ -84,6 +84,7 @@ model Contact {
 model EditorChoice {
   id            Int       @id @default(autoincrement())
   order         Int?      @unique
+  outlink       String    @default("")
   choices       Post?     @relation("EditorChoice_choices", fields: [choicesId], references: [id])
   choicesId     Int?      @map("choices")
   state         String?   @default("draft")

@@ -396,6 +396,7 @@ input ContactCreateInput {
 type EditorChoice {
   id: ID!
   order: Int
+  outlink: String
   choices: Post
   state: String
   publishedDate: DateTime
@@ -416,6 +417,7 @@ input EditorChoiceWhereInput {
   NOT: [EditorChoiceWhereInput!]
   id: IDFilter
   order: IntNullableFilter
+  outlink: StringFilter
   choices: PostWhereInput
   state: StringNullableFilter
   publishedDate: DateTimeNullableFilter
@@ -457,6 +459,7 @@ input NestedStringNullableFilter {
 input EditorChoiceOrderByInput {
   id: OrderDirection
   order: OrderDirection
+  outlink: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
   createdAt: OrderDirection
@@ -465,6 +468,7 @@ input EditorChoiceOrderByInput {
 
 input EditorChoiceUpdateInput {
   order: Int
+  outlink: String
   choices: PostRelateToOneForUpdateInput
   state: String
   publishedDate: DateTime
@@ -487,6 +491,7 @@ input EditorChoiceUpdateArgs {
 
 input EditorChoiceCreateInput {
   order: Int
+  outlink: String
   choices: PostRelateToOneForCreateInput
   state: String
   publishedDate: DateTime
