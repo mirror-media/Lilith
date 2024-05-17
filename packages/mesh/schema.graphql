@@ -1071,7 +1071,10 @@ type Story {
   url: String
   summary: String
   content: String
+  trimContent: String
   writer: String
+  apiData: JSON
+  trimApiData: JSON
   source: Publisher
   author: Member
   category: Category
@@ -1132,6 +1135,7 @@ input StoryWhereInput {
   url: StringFilter
   summary: StringFilter
   content: StringFilter
+  trimContent: StringFilter
   writer: StringFilter
   source: PublisherWhereInput
   author: MemberWhereInput
@@ -1173,6 +1177,7 @@ input StoryOrderByInput {
   url: OrderDirection
   summary: OrderDirection
   content: OrderDirection
+  trimContent: OrderDirection
   writer: OrderDirection
   published_date: OrderDirection
   og_title: OrderDirection
@@ -1192,7 +1197,10 @@ input StoryUpdateInput {
   url: String
   summary: String
   content: String
+  trimContent: String
   writer: String
+  apiData: JSON
+  trimApiData: JSON
   source: PublisherRelateToOneForUpdateInput
   author: MemberRelateToOneForUpdateInput
   category: CategoryRelateToOneForUpdateInput
@@ -1251,7 +1259,10 @@ input StoryCreateInput {
   url: String
   summary: String
   content: String
+  trimContent: String
   writer: String
+  apiData: JSON
+  trimApiData: JSON
   source: PublisherRelateToOneForCreateInput
   author: MemberRelateToOneForCreateInput
   category: CategoryRelateToOneForCreateInput
