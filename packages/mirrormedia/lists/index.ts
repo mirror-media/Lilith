@@ -14,6 +14,7 @@ import Partner from './Partner'
 import Topic from './Topic'
 import External from './External'
 import Header from './Header'
+import Group from './Group'
 
 export const listDefinition = {
   AudioFile: Audio,
@@ -32,4 +33,5 @@ export const listDefinition = {
   Topic,
   User,
   Video,
+  Group,
 }

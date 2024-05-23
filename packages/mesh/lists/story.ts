@@ -34,9 +34,27 @@ const listConfigurations = list ({
 	  validation: { isRequired: false }, 
 	  ui: { displayMode: 'textarea' },
 	}),
+    trimContent: text({
+    validation: {isRequired: false},
+    ui: {displayMode: 'textarea'},
+  }),
     writer: text({ 
 	  validation: { isRequired: false }, 
 	}),
+    apiData: json({
+      label: '資料庫使用',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+  }),
+    trimApiData: json({
+      label: "資料庫使用",
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+  }),
 	source: relationship({ ref: 'Publisher', many: false }),
 	author: relationship({ ref: 'Member', many: false }),
 	category: relationship({ ref: 'Category', many: false }),
