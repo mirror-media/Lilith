@@ -23,7 +23,11 @@ const {
 
 const AtomicBlock = (props) => {
   const entity = props.contentState.getEntity(props.block.getEntityAt(0))
-  const { contentLayout }: { contentLayout: ContentLayout } = props.blockProps
+  const {
+    contentLayout,
+  }: {
+    contentLayout: ContentLayout
+  } = props.blockProps
   const entityType = entity.getType()
 
   switch (entityType) {
@@ -87,12 +91,16 @@ const AtomicBlock = (props) => {
   return null
 }
 
-export function atomicBlockRenderer(block, contentLayout) {
+export function atomicBlockRenderer(
+  block,
+  contentLayout,
+  firstImageAdComponent
+) {
   if (block.getType() === 'atomic') {
     return {
       component: AtomicBlock,
       editable: false,
-      props: { contentLayout },
+      props: { contentLayout, firstImageAdComponent },
     }
   }
 
