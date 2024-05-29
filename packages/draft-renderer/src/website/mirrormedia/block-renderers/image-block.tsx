@@ -56,6 +56,16 @@ const AmpImgWrapper = styled.section`
   }
 `
 
+const ImageWrapper = styled.div`
+  position: relative;
+`
+
+const AdWrapper = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+`
+
 const figcaptionLayoutNormal = css`
   margin-top: 12px;
   ${({ theme }) => theme.breakpoint.md} {
@@ -264,18 +274,21 @@ export function ImageBlock(props: ImageBlockProps) {
       )}
     </AmpImgWrapper>
   ) : (
-    <CustomImage
-      images={resized}
-      imagesWebP={resizedWebp}
-      defaultImage={defaultImage}
-      loadingImage={loadingImage}
-      width={''}
-      height={'auto'}
-      objectFit={'contain'}
-      alt={name}
-      rwd={{ mobile: '100vw', tablet: '640px', default: '640px' }}
-      priority={false}
-    ></CustomImage>
+    <ImageWrapper>
+      <CustomImage
+        images={resized}
+        imagesWebP={resizedWebp}
+        defaultImage={defaultImage}
+        loadingImage={loadingImage}
+        width={''}
+        height={'auto'}
+        objectFit={'contain'}
+        alt={name}
+        rwd={{ mobile: '100vw', tablet: '640px', default: '640px' }}
+        priority={false}
+      ></CustomImage>
+      {isFirstImage ? <AdWrapper>{firstImageAdComponent}</AdWrapper> : null}
+    </ImageWrapper>
   )
 
   const imageFigureJsx = (
@@ -286,7 +299,6 @@ export function ImageBlock(props: ImageBlockProps) {
       onClick={handleOpen}
     >
       {imageJsx}
-      {isFirstImage ? firstImageAdComponent : null}
       {hasDescription && (
         <Figcaption
           contentLayout={contentLayout}
