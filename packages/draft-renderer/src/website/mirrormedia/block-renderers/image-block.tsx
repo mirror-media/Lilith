@@ -56,16 +56,6 @@ const AmpImgWrapper = styled.section`
   }
 `
 
-const ImageWrapper = styled.div`
-  position: relative;
-`
-
-const AdWrapper = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-`
-
 const figcaptionLayoutNormal = css`
   margin-top: 12px;
   ${({ theme }) => theme.breakpoint.md} {
@@ -109,6 +99,18 @@ const ImageFigure = styled(Figure)<{
     }
   }}
 `
+
+const ImageWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`
+
+const AdWrapper = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+`
+
 const Figcaption = styled.figcaption<{ contentLayout: ContentLayout }>`
   font-size: 14px;
   line-height: 1.8;
@@ -274,7 +276,7 @@ export function ImageBlock(props: ImageBlockProps) {
       )}
     </AmpImgWrapper>
   ) : (
-    <ImageWrapper>
+    <ImageWrapper contentLayout={contentLayout}>
       <CustomImage
         images={resized}
         imagesWebP={resizedWebp}
