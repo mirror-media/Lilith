@@ -13,6 +13,7 @@ import Topic from './Topic'
 import External from './External'
 import Header from './Header'
 import Group from './Group'
+import Game from './Game'
 
 export const listDefinition = {
   AudioFile: Audio,
@@ -30,4 +31,5 @@ export const listDefinition = {
   User,
   Video,
   Group,
+  Game,
 }

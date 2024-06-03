@@ -84,6 +84,7 @@ model Contact {
 model EditorChoice {
   id            Int       @id @default(autoincrement())
   order         Int?      @unique
+  outlink       String    @default("")
   choices       Post?     @relation("EditorChoice_choices", fields: [choicesId], references: [id])
   choicesId     Int?      @map("choices")
   state         String?   @default("draft")
@@ -202,6 +203,7 @@ model Photo {
   from_Topic_og_image         Topic[]     @relation("Topic_og_image")
   from_Topic_slideshow_images Topic[]     @relation("Topic_slideshow_images")
   from_Video_heroImage        Video[]     @relation("Video_heroImage")
+  from_Game_heroImage         Game[]      @relation("Game_heroImage")
 
   @@index([createdById])
   @@index([updatedById])
@@ -414,6 +416,8 @@ model User {
   from_Video_updatedBy        Video[]        @relation("Video_updatedBy")
   from_Group_createdBy        Group[]        @relation("Group_createdBy")
   from_Group_updatedBy        Group[]        @relation("Group_updatedBy")
+  from_Game_createdBy         Game[]         @relation("Game_createdBy")
+  from_Game_updatedBy         Game[]         @relation("Game_updatedBy")
 }
 
 model Video {
@@ -428,6 +432,7 @@ model Video {
   isFeed                    Boolean   @default(false)
   related_posts             Post[]    @relation("Post_related_videos")
   manualOrderOfRelatedPosts Json?
+  videoSection              String?   @default("news")
   state                     String?   @default("draft")
   publishedDate             DateTime?
   tags                      Tag[]     @relation("Video_tags")
@@ -441,6 +446,7 @@ model Video {
   from_Post_heroVideo       Post[]    @relation("Post_heroVideo")
 
   @@index([heroImageId])
+  @@index([videoSection])
   @@index([state])
   @@index([publishedDate])
   @@index([createdById])
@@ -459,6 +465,30 @@ model Group {
   updatedBy   User?      @relation("Group_updatedBy", fields: [updatedById], references: [id])
   updatedById Int?       @map("updatedBy")
 
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Game {
+  id            Int       @id @default(autoincrement())
+  name          String    @default("")
+  state         String?   @default("draft")
+  publishedDate DateTime?
+  heroImage     Photo?    @relation("Game_heroImage", fields: [heroImageId], references: [id])
+  heroImageId   Int?      @map("heroImage")
+  link          String    @default("")
+  isFeatured    Boolean   @default(false)
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Game_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Game_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([name])
+  @@index([state])
+  @@index([publishedDate])
+  @@index([heroImageId])
   @@index([createdById])
   @@index([updatedById])
 }

@@ -396,6 +396,7 @@ input ContactCreateInput {
 type EditorChoice {
   id: ID!
   order: Int
+  outlink: String
   choices: Post
   state: String
   publishedDate: DateTime
@@ -416,6 +417,7 @@ input EditorChoiceWhereInput {
   NOT: [EditorChoiceWhereInput!]
   id: IDFilter
   order: IntNullableFilter
+  outlink: StringFilter
   choices: PostWhereInput
   state: StringNullableFilter
   publishedDate: DateTimeNullableFilter
@@ -457,6 +459,7 @@ input NestedStringNullableFilter {
 input EditorChoiceOrderByInput {
   id: OrderDirection
   order: OrderDirection
+  outlink: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
   createdAt: OrderDirection
@@ -465,6 +468,7 @@ input EditorChoiceOrderByInput {
 
 input EditorChoiceUpdateInput {
   order: Int
+  outlink: String
   choices: PostRelateToOneForUpdateInput
   state: String
   publishedDate: DateTime
@@ -487,6 +491,7 @@ input EditorChoiceUpdateArgs {
 
 input EditorChoiceCreateInput {
   order: Int
+  outlink: String
   choices: PostRelateToOneForCreateInput
   state: String
   publishedDate: DateTime
@@ -1734,6 +1739,7 @@ type Video {
   related_posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   related_postsCount(where: PostWhereInput! = {}): Int
   manualOrderOfRelatedPosts: JSON
+  videoSection: String
   state: String
   publishedDate: DateTime
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
@@ -1760,6 +1766,7 @@ input VideoWhereInput {
   heroImage: PhotoWhereInput
   isFeed: BooleanFilter
   related_posts: PostManyRelationFilter
+  videoSection: StringNullableFilter
   state: StringNullableFilter
   publishedDate: DateTimeNullableFilter
   tags: TagManyRelationFilter
@@ -1774,6 +1781,7 @@ input VideoOrderByInput {
   name: OrderDirection
   urlOriginal: OrderDirection
   isFeed: OrderDirection
+  videoSection: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
   createdAt: OrderDirection
@@ -1789,6 +1797,7 @@ input VideoUpdateInput {
   isFeed: Boolean
   related_posts: PostRelateToManyForUpdateInput
   manualOrderOfRelatedPosts: JSON
+  videoSection: String
   state: String
   publishedDate: DateTime
   tags: TagRelateToManyForUpdateInput
@@ -1813,6 +1822,7 @@ input VideoCreateInput {
   isFeed: Boolean
   related_posts: PostRelateToManyForCreateInput
   manualOrderOfRelatedPosts: JSON
+  videoSection: String
   state: String
   publishedDate: DateTime
   tags: TagRelateToManyForCreateInput
@@ -1880,6 +1890,83 @@ input GroupCreateInput {
   keyword: String
   posts: PostRelateToManyForCreateInput
   externals: ExternalRelateToManyForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Game {
+  id: ID!
+  name: String
+  state: String
+  publishedDate: DateTime
+  heroImage: Photo
+  link: String
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input GameWhereUniqueInput {
+  id: ID
+}
+
+input GameWhereInput {
+  AND: [GameWhereInput!]
+  OR: [GameWhereInput!]
+  NOT: [GameWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  state: StringNullableFilter
+  publishedDate: DateTimeNullableFilter
+  heroImage: PhotoWhereInput
+  link: StringFilter
+  isFeatured: BooleanFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input GameOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  state: OrderDirection
+  publishedDate: OrderDirection
+  link: OrderDirection
+  isFeatured: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input GameUpdateInput {
+  name: String
+  state: String
+  publishedDate: DateTime
+  heroImage: PhotoRelateToOneForUpdateInput
+  link: String
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input GameUpdateArgs {
+  where: GameWhereUniqueInput!
+  data: GameUpdateInput!
+}
+
+input GameCreateInput {
+  name: String
+  state: String
+  publishedDate: DateTime
+  heroImage: PhotoRelateToOneForCreateInput
+  link: String
+  isFeatured: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1982,6 +2069,12 @@ type Mutation {
   updateGroups(data: [GroupUpdateArgs!]!): [Group]
   deleteGroup(where: GroupWhereUniqueInput!): Group
   deleteGroups(where: [GroupWhereUniqueInput!]!): [Group]
+  createGame(data: GameCreateInput!): Game
+  createGames(data: [GameCreateInput!]!): [Game]
+  updateGame(where: GameWhereUniqueInput!, data: GameUpdateInput!): Game
+  updateGames(data: [GameUpdateArgs!]!): [Game]
+  deleteGame(where: GameWhereUniqueInput!): Game
+  deleteGames(where: [GameWhereUniqueInput!]!): [Game]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -2051,6 +2144,9 @@ type Query {
   groups(where: GroupWhereInput! = {}, orderBy: [GroupOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GroupWhereUniqueInput): [Group!]
   group(where: GroupWhereUniqueInput!): Group
   groupsCount(where: GroupWhereInput! = {}): Int
+  games(where: GameWhereInput! = {}, orderBy: [GameOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GameWhereUniqueInput): [Game!]
+  game(where: GameWhereUniqueInput!): Game
+  gamesCount(where: GameWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

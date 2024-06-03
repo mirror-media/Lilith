@@ -98,6 +98,15 @@ const listConfigurations = list({
     manualOrderOfRelatedPosts: json({
       label: '相關文章手動排序結果',
     }),
+    videoSection: select({
+      label: '短影音分區',
+      options: [
+        { label: '新聞', value: 'news' },
+        { label: '二創', value: 'creativity' },
+      ],
+      defaultValue: 'news',
+      isIndexed: true,
+    }),
     state: select({
       label: '狀態',
       options: [
@@ -128,7 +137,7 @@ const listConfigurations = list({
   ui: {
     labelField: 'name',
     listView: {
-      initialColumns: ['id', 'name', 'videoSrc'],
+      initialColumns: ['id', 'name', 'videoSrc', 'videoSection'],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
