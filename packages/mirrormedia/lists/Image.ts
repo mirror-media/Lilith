@@ -22,8 +22,22 @@ const listConfigurations = list({
       label: '浮水印',
       defaultValue: false,
       ui: {
-        itemView: { fieldMode: 'read' },
+        itemView: { fieldMode: 'hidden' },
       },
+    }),
+    waterMarkDescription: virtual({
+      label: '浮水印',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+      },
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>) {
+          return item.waterMark
+            ? '此圖片含有浮水印，如需修改，請刪除後重新上傳'
+            : '此圖片不含有浮水印，如需修改，請刪除後重新上傳'
+        },
+      }),
     }),
     resized: virtual({
       field: graphql.field({
