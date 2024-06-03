@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import styled, { css, ThemeProvider } from 'styled-components'
 
 import { Editor, EditorState, convertFromRaw } from 'draft-js'
@@ -357,15 +357,21 @@ const blockStyleFn = (editorState, block) => {
 export default function DraftRenderer({
   rawContentBlock,
   contentLayout = 'normal',
+  firstImageAdComponent,
 }: {
   rawContentBlock: any
   contentLayout: ContentLayout
+  firstImageAdComponent: ReactNode
 }) {
   const contentState = convertFromRaw(rawContentBlock)
   const decorators = decoratorsGenerator(contentLayout)
   const editorState = EditorState.createWithContent(contentState, decorators)
   const blockRendererFn = (block) => {
-    const atomicBlockObj = atomicBlockRenderer(block, contentLayout)
+    const atomicBlockObj = atomicBlockRenderer(
+      block,
+      contentLayout,
+      firstImageAdComponent
+    )
     return atomicBlockObj
   }
   return (

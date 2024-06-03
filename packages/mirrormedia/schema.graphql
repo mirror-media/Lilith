@@ -1007,6 +1007,7 @@ type Photo {
   name: String
   imageFile: ImageFieldOutput
   waterMark: Boolean
+  waterMarkDescription: String
   resized: ResizedImages
   resizedWebp: ResizedWebPImages
   file: FileFieldOutput

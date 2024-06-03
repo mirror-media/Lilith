@@ -1,6 +1,6 @@
 //REMINDER: DO NOT REMOVE className which has prefix `GTM-`, since it is used for collecting data of Google Analytics event.
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, ReactNode } from 'react'
 import { ContentBlock, ContentState } from 'draft-js'
 import styled, { css } from 'styled-components'
 import defaultImage from '../assets/default-og-img.png'
@@ -99,6 +99,18 @@ const ImageFigure = styled(Figure)<{
     }
   }}
 `
+
+const ImageWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`
+
+const AdWrapper = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+`
+
 const Figcaption = styled.figcaption<{ contentLayout: ContentLayout }>`
   font-size: 14px;
   line-height: 1.8;
@@ -183,6 +195,7 @@ type ImageBlockProps = {
   block: ContentBlock
   blockProps: {
     contentLayout: ContentLayout
+    firstImageAdComponent: ReactNode
   }
   contentState: ContentState
 }
@@ -192,7 +205,7 @@ export function ImageBlock(props: ImageBlockProps) {
   const entityKey = block.getEntityAt(0)
 
   const entity = contentState.getEntity(entityKey)
-  const { contentLayout = 'normal' } = blockProps
+  const { contentLayout = 'normal', firstImageAdComponent } = blockProps
 
   const lightBoxRef = useRef(null)
   const isAmp = contentLayout === 'amp'
@@ -205,6 +218,7 @@ export function ImageBlock(props: ImageBlockProps) {
     url,
     resizedWebp = null,
     imageFile = {},
+    isFirstImage,
   } = entity.getData()
   //imageFile in possibly a `null`
   const aspectRatio =
@@ -262,18 +276,21 @@ export function ImageBlock(props: ImageBlockProps) {
       )}
     </AmpImgWrapper>
   ) : (
-    <CustomImage
-      images={resized}
-      imagesWebP={resizedWebp}
-      defaultImage={defaultImage}
-      loadingImage={loadingImage}
-      width={''}
-      height={'auto'}
-      objectFit={'contain'}
-      alt={name}
-      rwd={{ mobile: '100vw', tablet: '640px', default: '640px' }}
-      priority={false}
-    ></CustomImage>
+    <ImageWrapper contentLayout={contentLayout}>
+      <CustomImage
+        images={resized}
+        imagesWebP={resizedWebp}
+        defaultImage={defaultImage}
+        loadingImage={loadingImage}
+        width={''}
+        height={'auto'}
+        objectFit={'contain'}
+        alt={name}
+        rwd={{ mobile: '100vw', tablet: '640px', default: '640px' }}
+        priority={false}
+      ></CustomImage>
+      {isFirstImage ? <AdWrapper>{firstImageAdComponent}</AdWrapper> : null}
+    </ImageWrapper>
   )
 
   const imageFigureJsx = (
