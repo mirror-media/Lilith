@@ -1,19 +1,19 @@
 # [@mirrormedia/lilith-core](https://www.npmjs.com/package/@mirrormedia/lilith-draft-editor) &middot; ![npm version](https://img.shields.io/npm/v/@mirrormedia/lilith-draft-editor.svg?style=flat)
 
-### Installation
-
-`yarn install`
-
-### Introduction
+## Introduction
 
 本套件是由 `@mirrormedia/lilith-draft-editor` 將其 maintain 的 buttons 對應的 block renderers 和 entity decorators 的邏輯 decouple，
 以應用在 Next.js 專案以及 CMS 上。
 
-### Development
+## Installation
+
+`yarn install`
+
+## Development
 
 在開發順序上，一開始各網站會有一套 default 的 block renderers 和 entity decorators，這些預設的 components 將會被 export 給 lilith-draft-editor 使用並在 CMS 上呈現出各 button 新增的 content。
 
-#### For Next.js to use
+## For Next.js to use
 
 在各網站開發時，工程師將因應設計將會針對 block renderers 和 entity decorators 修改樣式，因此會在各個網站的資料夾中修改網站專屬的 block renderers 和 entity decorators，這個套件將直接用在該 Next.js 專案上，當作 React component 直接使用，只要帶入 CMS 上拿到的 draft.js 相關的 contentBlock 的資料即可呈現樣式。
 
@@ -44,12 +44,12 @@
 
 修改完成後修改 package version, 跑 `yarn build` 和 `npm publish` 即可以發布新版套件並在 Next.js 中 `yarn install` 使用。
 
-#### For CMS to use
+### For CMS to use
 
 在特定網站的 block renderers 和 entity decorators 改動之後，為了保持 CMS 上的 draft-editorn 所見即所得呈現和 Next.js 端同樣的樣式，
 在完成 `npm publish` 後需要到 `packages/draft-editor` 去更新 `@mirrormedia/lilith-draft-renderer` 的版本，並依照該套件的 README.md 的指示在該網站的 CMS 中測試。
 
-### File Structure
+## File Structure
 
 在 `src` 資料夾下有兩大類的檔案
 
@@ -66,19 +66,19 @@
 
 \*注 2: 雖然各個網站都 maintain 了一個 draft-editor，可以自行決定 import 進來的 buttons，不過因為 lilith-core 中實作 disalbedButtons 的功能，所以目前一率將所有的 buttons 加入 RichTextEditor 中，由 lilith-(mirrormedia|readr|mesh|editools) 來控制所使用的 buttons。
 
-### Build
+## Build
 
 `yarn build`
 
-### Publish
+## Publish
 
 `npm run publish`
 
 在 publish 前，請根據 conventional commits 的規範，將 package.json#version 升版。
 
-### Notable Details
+## Notable Details
 
-#### For those files under `views/` folder, we transpile them specifically.
+### For those files under `views/` folder, we transpile them specifically.
 
 For those files under `views/` folder, we transpile them by babel according to different configuation.
 The specific babel configuration is `.views.babelrc.js`.
