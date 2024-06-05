@@ -76,13 +76,13 @@ ACCESS_CONTROL_STRATEGY=gql npm run dev
 注意：`gql` 模式的使用上，需要搭配「不允許外部網路的限制」來部署程式碼，以免門戶大開。
 
 ### Troubleshootings
-#### Q1: 我在 `packages/(vision|mesh|editools)` 資料夾底下跑 `yarn install` 時，在 `yarn postinstall` 階段發生錯誤。
+#### Q1: 我在 `packages/*` 資料夾底下跑 `yarn install` 時，在 `yarn postinstall` 階段發生錯誤。
 
 A1: 如果錯誤訊息與 `@mirrormedia/lilith-core` 有關，可以嘗試先到 `packages/core` 底下，執行
   1. `yarn build`
   2. `yarn install`
 
-確保 local 端有 `@mirrormedia-/lilith-core` 相關的檔案可以讓 `packages/(vision|mesh|editools)` 載入。
+確保 local 端有 `@mirrormedia-/lilith-core` 相關的檔案可以讓 `packages/*` 載入。
 
 ## Patch
 
