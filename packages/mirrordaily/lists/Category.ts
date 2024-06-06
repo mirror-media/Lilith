@@ -34,7 +34,7 @@ const listConfigurations = list({
         { label: 'active', value: 'active' },
         { label: 'inactive', value: 'inactive' },
       ],
-	  isIndexed: true,
+      isIndexed: true,
       validation: { isRequired: true },
       ui: { displayMode: 'segmented-control' },
       defaultValue: 'active',
