@@ -20,6 +20,10 @@ const listConfigurations = list({
     description: text({
       label: '簡介',
     }),
+    color: text({
+      label: '顏色色碼',
+      defaultValue: '#FFFFFF',
+    }),
     slug: text({
       label: 'slug',
       isIndexed: 'unique',

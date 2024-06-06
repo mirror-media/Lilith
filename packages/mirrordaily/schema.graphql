@@ -1292,6 +1292,7 @@ type Section {
   id: ID!
   name: String
   description: String
+  color: String
   slug: String
   order: Int
   state: String
@@ -1322,6 +1323,7 @@ input SectionWhereInput {
   id: IDFilter
   name: StringFilter
   description: StringFilter
+  color: StringFilter
   slug: StringFilter
   order: IntNullableFilter
   state: StringFilter
@@ -1346,6 +1348,7 @@ input SectionOrderByInput {
   id: OrderDirection
   name: OrderDirection
   description: OrderDirection
+  color: OrderDirection
   slug: OrderDirection
   order: OrderDirection
   state: OrderDirection
@@ -1357,6 +1360,7 @@ input SectionOrderByInput {
 input SectionUpdateInput {
   name: String
   description: String
+  color: String
   slug: String
   order: Int
   state: String
@@ -1386,6 +1390,7 @@ input SectionUpdateArgs {
 input SectionCreateInput {
   name: String
   description: String
+  color: String
   slug: String
   order: Int
   state: String
