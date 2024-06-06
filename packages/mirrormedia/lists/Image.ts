@@ -34,7 +34,7 @@ const listConfigurations = list({
         type: graphql.String,
         resolve(item: Record<string, unknown>) {
           return item.waterMark
-            ? '此圖片含有浮水印，如需修改，請刪除後重新上傳'
+            ? '此圖片已含有浮水印，嵌入文章時會自動顯示，如需修改，請刪除後重新上傳'
             : '此圖片不含有浮水印，如需修改，請刪除後重新上傳'
         },
       }),
