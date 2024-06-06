@@ -1,4 +1,4 @@
-import { utils } from '@mirrormedia/lilith-core'
+import { utils, customFields } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import {
   text,
@@ -10,6 +10,35 @@ import {
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
+type Option = {
+  label: string
+  value: string
+  color: string
+}
+
+const COLOR_LIST = [
+  '#FF5A36',
+  '#FF69BA',
+  '#E0AB00',
+  '#03C121',
+  '#00AEA4',
+  '#6DB0E1',
+  '#01D3F0',
+  '#1C7CED',
+  '#C668F2',
+  '#FF800A',
+  '#C0CB46',
+  '#C69942',
+  '#B867B9',
+  '#4D8AA4',
+]
+
+const COLOR_OPTIONS: Option[] = COLOR_LIST.map((color) => ({
+  label: color,
+  value: color,
+  color: color,
+}))
+
 const listConfigurations = list({
   fields: {
     name: text({
@@ -20,9 +49,16 @@ const listConfigurations = list({
     description: text({
       label: '簡介',
     }),
-    color: text({
+    color: customFields.selectWithColor({
       label: '顏色色碼',
-      defaultValue: '#FFFFFF',
+      type: 'string',
+      options: COLOR_OPTIONS,
+      validation: {
+        isRequired: true,
+      },
+      ui: {
+        displayMode: 'select',
+      },
     }),
     slug: text({
       label: 'slug',
@@ -78,9 +114,78 @@ const listConfigurations = list({
   ui: {
     labelField: 'slug',
     listView: {
-      initialColumns: ['id', 'slug', 'name', 'description'],
+      initialColumns: ['id', 'slug', 'name', 'description', 'color'],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
+    },
+  },
+  hooks: {
+    validateInput: async ({
+      operation,
+      inputData,
+      item,
+      context,
+      addValidationError,
+    }) => {
+      switch (operation) {
+        case 'create': {
+          const { color } = inputData
+
+          if (color) {
+            const matchedItems = await context.prisma.Section.findMany({
+              where: {
+                color: {
+                  equals: color,
+                },
+              },
+              select: {
+                name: true,
+                slug: true,
+              },
+            })
+
+            if (matchedItems && matchedItems.length > 0) {
+              addValidationError(
+                `顏色 (${color}) 已被 ${matchedItems[0].name}(${matchedItems[0].slug}) 使用`
+              )
+            }
+          }
+          break
+        }
+        case 'update': {
+          const { id } = item
+          const { color } = inputData
+
+          if (color) {
+            const matchedItems = await context.prisma.Section.findMany({
+              where: {
+                color: {
+                  equals: color,
+                },
+              },
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            })
+
+            if (
+              matchedItems &&
+              matchedItems.length > 0 &&
+              // @ts-ignore: i is any
+              matchedItems.some((i) => String(i.id) !== String(id))
+            ) {
+              addValidationError(
+                `顏色 (${color}) 已被 ${matchedItems[0].name}(${matchedItems[0].slug}) 使用`
+              )
+            }
+          }
+          break
+        }
+        default:
+          break
+      }
     },
   },
   access: {

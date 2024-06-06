@@ -1323,7 +1323,7 @@ input SectionWhereInput {
   id: IDFilter
   name: StringFilter
   description: StringFilter
-  color: StringFilter
+  color: CustomStringFilter
   slug: StringFilter
   order: IntNullableFilter
   state: StringFilter
@@ -1336,6 +1336,35 @@ input SectionWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input CustomStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: CustomNestedStringFilter
+}
+
+input CustomNestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: CustomNestedStringFilter
 }
 
 input TopicManyRelationFilter {
