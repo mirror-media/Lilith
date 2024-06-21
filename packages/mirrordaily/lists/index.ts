@@ -11,6 +11,7 @@ import Image from './Image'
 import Partner from './Partner'
 import Topic from './Topic'
 import External from './External'
+import Event from './Event'
 import Header from './Header'
 import Group from './Group'
 import Game from './Game'
@@ -21,6 +22,7 @@ export const listDefinition = {
   Contact,
   EditorChoice,
   External,
+  Event,
   Header,
   Partner,
   Photo: Image,

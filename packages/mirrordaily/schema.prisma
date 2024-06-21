@@ -134,6 +134,36 @@ model External {
   @@index([updatedById])
 }
 
+model Event {
+  id            Int       @id @default(autoincrement())
+  name          String    @default("")
+  slug          String    @unique @default("")
+  state         String?   @default("draft")
+  publishedDate DateTime?
+  sections      Section[] @relation("Event_sections")
+  eventType     String?
+  startDate     DateTime
+  endDate       DateTime?
+  heroImage     Photo?    @relation("Event_heroImage", fields: [heroImageId], references: [id])
+  heroImageId   Int?      @map("heroImage")
+  link          String    @default("")
+  isFeatured    Boolean   @default(false)
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Event_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Event_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([name])
+  @@index([state])
+  @@index([publishedDate])
+  @@index([eventType])
+  @@index([heroImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model Header {
   id          Int       @id @default(autoincrement())
   order       Int?      @unique
@@ -196,6 +226,7 @@ model Photo {
   updatedById                 Int?        @map("updatedBy")
   from_AudioFile_heroImage    AudioFile[] @relation("AudioFile_heroImage")
   from_Category_heroImage     Category[]  @relation("Category_heroImage")
+  from_Event_heroImage        Event[]     @relation("Event_heroImage")
   from_Post_heroImage         Post[]      @relation("Post_heroImage")
   from_Post_og_image          Post[]      @relation("Post_og_image")
   from_Section_heroImage      Section[]   @relation("Section_heroImage")
@@ -308,6 +339,7 @@ model Section {
   createdById         Int?       @map("createdBy")
   updatedBy           User?      @relation("Section_updatedBy", fields: [updatedById], references: [id])
   updatedById         Int?       @map("updatedBy")
+  from_Event_sections Event[]    @relation("Event_sections")
   from_Header_section Header[]   @relation("Header_section")
 
   @@index([state])
@@ -398,6 +430,8 @@ model User {
   from_EditorChoice_updatedBy EditorChoice[] @relation("EditorChoice_updatedBy")
   from_External_createdBy     External[]     @relation("External_createdBy")
   from_External_updatedBy     External[]     @relation("External_updatedBy")
+  from_Event_createdBy        Event[]        @relation("Event_createdBy")
+  from_Event_updatedBy        Event[]        @relation("Event_updatedBy")
   from_Header_createdBy       Header[]       @relation("Header_createdBy")
   from_Header_updatedBy       Header[]       @relation("Header_updatedBy")
   from_Partner_createdBy      Partner[]      @relation("Partner_createdBy")

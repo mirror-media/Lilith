@@ -653,6 +653,120 @@ input GroupRelateToManyForCreateInput {
   connect: [GroupWhereUniqueInput!]
 }
 
+type Event {
+  id: ID!
+  name: String
+  slug: String
+  state: String
+  publishedDate: DateTime
+  sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
+  eventType: String
+  startDate: DateTime
+  endDate: DateTime
+  heroImage: Photo
+  link: String
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input EventWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input EventWhereInput {
+  AND: [EventWhereInput!]
+  OR: [EventWhereInput!]
+  NOT: [EventWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  slug: StringFilter
+  state: StringNullableFilter
+  publishedDate: DateTimeNullableFilter
+  sections: SectionManyRelationFilter
+  eventType: StringNullableFilter
+  startDate: DateTimeFilter
+  endDate: DateTimeNullableFilter
+  heroImage: PhotoWhereInput
+  link: StringFilter
+  isFeatured: BooleanFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeFilter
+}
+
+input EventOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  slug: OrderDirection
+  state: OrderDirection
+  publishedDate: OrderDirection
+  eventType: OrderDirection
+  startDate: OrderDirection
+  endDate: OrderDirection
+  link: OrderDirection
+  isFeatured: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input EventUpdateInput {
+  name: String
+  slug: String
+  state: String
+  publishedDate: DateTime
+  sections: SectionRelateToManyForUpdateInput
+  eventType: String
+  startDate: DateTime
+  endDate: DateTime
+  heroImage: PhotoRelateToOneForUpdateInput
+  link: String
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input EventUpdateArgs {
+  where: EventWhereUniqueInput!
+  data: EventUpdateInput!
+}
+
+input EventCreateInput {
+  name: String
+  slug: String
+  state: String
+  publishedDate: DateTime
+  sections: SectionRelateToManyForCreateInput
+  eventType: String
+  startDate: DateTime
+  endDate: DateTime
+  heroImage: PhotoRelateToOneForCreateInput
+  link: String
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 type Header {
   id: ID!
   order: Int
@@ -1049,17 +1163,6 @@ input PostWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input DateTimeFilter {
-  equals: DateTime
-  in: [DateTime!]
-  notIn: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  gt: DateTime
-  gte: DateTime
-  not: DateTimeFilter
 }
 
 input CategoryManyRelationFilter {
@@ -2043,6 +2146,12 @@ type Mutation {
   updateExternals(data: [ExternalUpdateArgs!]!): [External]
   deleteExternal(where: ExternalWhereUniqueInput!): External
   deleteExternals(where: [ExternalWhereUniqueInput!]!): [External]
+  createEvent(data: EventCreateInput!): Event
+  createEvents(data: [EventCreateInput!]!): [Event]
+  updateEvent(where: EventWhereUniqueInput!, data: EventUpdateInput!): Event
+  updateEvents(data: [EventUpdateArgs!]!): [Event]
+  deleteEvent(where: EventWhereUniqueInput!): Event
+  deleteEvents(where: [EventWhereUniqueInput!]!): [Event]
   createHeader(data: HeaderCreateInput!): Header
   createHeaders(data: [HeaderCreateInput!]!): [Header]
   updateHeader(where: HeaderWhereUniqueInput!, data: HeaderUpdateInput!): Header
@@ -2148,6 +2257,9 @@ type Query {
   externals(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
   external(where: ExternalWhereUniqueInput!): External
   externalsCount(where: ExternalWhereInput! = {}): Int
+  events(where: EventWhereInput! = {}, orderBy: [EventOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EventWhereUniqueInput): [Event!]
+  event(where: EventWhereUniqueInput!): Event
+  eventsCount(where: EventWhereInput! = {}): Int
   headers(where: HeaderWhereInput! = {}, orderBy: [HeaderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: HeaderWhereUniqueInput): [Header!]
   header(where: HeaderWhereUniqueInput!): Header
   headersCount(where: HeaderWhereInput! = {}): Int
