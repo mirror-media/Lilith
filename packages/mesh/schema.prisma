@@ -53,6 +53,7 @@ model Category {
   title                          String    @default("")
   slug                           String    @default("")
   summary                        String    @default("")
+  priority                       Int       @default(0)
   createdAt                      DateTime?
   updatedAt                      DateTime?
   createdBy                      User?     @relation("Category_createdBy", fields: [createdById], references: [id])

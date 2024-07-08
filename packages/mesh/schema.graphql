@@ -119,6 +119,7 @@ type Category {
   title: String
   slug: String
   summary: String
+  priority: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -140,10 +141,22 @@ input CategoryWhereInput {
   title: StringFilter
   slug: StringFilter
   summary: StringFilter
+  priority: IntFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
 }
 
 input DateTimeNullableFilter {
@@ -162,6 +175,7 @@ input CategoryOrderByInput {
   title: OrderDirection
   slug: OrderDirection
   summary: OrderDirection
+  priority: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -170,6 +184,7 @@ input CategoryUpdateInput {
   title: String
   slug: String
   summary: String
+  priority: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -191,6 +206,7 @@ input CategoryCreateInput {
   title: String
   slug: String
   summary: String
+  priority: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
