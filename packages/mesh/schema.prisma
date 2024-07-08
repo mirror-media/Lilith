@@ -151,7 +151,7 @@ model Publisher {
   lang              String?   @default("zh-TW")
   full_content      Boolean   @default(false)
   full_screen_ad    String?   @default("none")
-  source_type       String?   @default("rss")
+  source_type       String?   @default("empty")
   paywall           Boolean   @default(false)
   follower          Member[]  @relation("Member_follow_publisher")
   wallet            String    @default("")

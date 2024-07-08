@@ -63,9 +63,10 @@ const listConfigurations = list ({
 		{ label: '鏡週刊', value: 'mirrormedia' }, 
 		{ label: 'READr', value: 'readr' },
 		{ label: '鏡週刊 external', value: 'mm_external' },
-		{ label: 'rss', value: 'rss' }
+		{ label: 'rss', value: 'rss' },
+    { label: 'empty', value: 'empty'}
       ],
-	  defaultValue: 'rss',
+	  defaultValue: 'empty',
 	}),
     paywall: checkbox({
       defaultValue: false,
