@@ -1991,6 +1991,231 @@ input PhotoCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Policy {
+  id: ID!
+  name: String
+  explanation: String
+  type: PolicyTypeType
+  unlockSingle: Boolean
+  publisher: Publisher
+  duration: Int
+  charge: Float
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum PolicyTypeType {
+  deposit
+  unlock_all_publishers
+  unlock_one_publisher
+}
+
+input PolicyWhereUniqueInput {
+  id: ID
+}
+
+input PolicyWhereInput {
+  AND: [PolicyWhereInput!]
+  OR: [PolicyWhereInput!]
+  NOT: [PolicyWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  explanation: StringFilter
+  type: PolicyTypeTypeNullableFilter
+  unlockSingle: BooleanFilter
+  publisher: PublisherWhereInput
+  duration: IntNullableFilter
+  charge: FloatNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PolicyTypeTypeNullableFilter {
+  equals: PolicyTypeType
+  in: [PolicyTypeType!]
+  notIn: [PolicyTypeType!]
+  not: PolicyTypeTypeNullableFilter
+}
+
+input FloatNullableFilter {
+  equals: Float
+  in: [Float!]
+  notIn: [Float!]
+  lt: Float
+  lte: Float
+  gt: Float
+  gte: Float
+  not: FloatNullableFilter
+}
+
+input PolicyOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  explanation: OrderDirection
+  type: OrderDirection
+  unlockSingle: OrderDirection
+  duration: OrderDirection
+  charge: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PolicyUpdateInput {
+  name: String
+  explanation: String
+  type: PolicyTypeType
+  unlockSingle: Boolean
+  publisher: PublisherRelateToOneForUpdateInput
+  duration: Int
+  charge: Float
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PolicyUpdateArgs {
+  where: PolicyWhereUniqueInput!
+  data: PolicyUpdateInput!
+}
+
+input PolicyCreateInput {
+  name: String
+  explanation: String
+  type: PolicyTypeType
+  unlockSingle: Boolean
+  publisher: PublisherRelateToOneForCreateInput
+  duration: Int
+  charge: Float
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Transaction {
+  id: ID!
+  member(
+    where: MemberWhereInput! = {}
+    orderBy: [MemberOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Member!]
+  memberCount(where: MemberWhereInput! = {}): Int
+  policy: Policy
+  tid: String
+  depositVolume: Float
+  unlockStory: Story
+  expireDate: DateTime
+  active: Boolean
+  status: TransactionStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum TransactionStatusType {
+  Success
+  Failed
+}
+
+input TransactionWhereUniqueInput {
+  id: ID
+}
+
+input TransactionWhereInput {
+  AND: [TransactionWhereInput!]
+  OR: [TransactionWhereInput!]
+  NOT: [TransactionWhereInput!]
+  id: IDFilter
+  member: MemberManyRelationFilter
+  policy: PolicyWhereInput
+  tid: StringFilter
+  depositVolume: FloatNullableFilter
+  unlockStory: StoryWhereInput
+  expireDate: DateTimeNullableFilter
+  active: BooleanFilter
+  status: TransactionStatusTypeNullableFilter
+  complement: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input TransactionStatusTypeNullableFilter {
+  equals: TransactionStatusType
+  in: [TransactionStatusType!]
+  notIn: [TransactionStatusType!]
+  not: TransactionStatusTypeNullableFilter
+}
+
+input TransactionOrderByInput {
+  id: OrderDirection
+  tid: OrderDirection
+  depositVolume: OrderDirection
+  expireDate: OrderDirection
+  active: OrderDirection
+  status: OrderDirection
+  complement: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input TransactionUpdateInput {
+  member: MemberRelateToManyForUpdateInput
+  policy: PolicyRelateToOneForUpdateInput
+  tid: String
+  depositVolume: Float
+  unlockStory: StoryRelateToOneForUpdateInput
+  expireDate: DateTime
+  active: Boolean
+  status: TransactionStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PolicyRelateToOneForUpdateInput {
+  create: PolicyCreateInput
+  connect: PolicyWhereUniqueInput
+  disconnect: Boolean
+}
+
+input TransactionUpdateArgs {
+  where: TransactionWhereUniqueInput!
+  data: TransactionUpdateInput!
+}
+
+input TransactionCreateInput {
+  member: MemberRelateToManyForCreateInput
+  policy: PolicyRelateToOneForCreateInput
+  tid: String
+  depositVolume: Float
+  unlockStory: StoryRelateToOneForCreateInput
+  expireDate: DateTime
+  active: Boolean
+  status: TransactionStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input PolicyRelateToOneForCreateInput {
+  create: PolicyCreateInput
+  connect: PolicyWhereUniqueInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2126,6 +2351,21 @@ type Mutation {
   updatePhotos(data: [PhotoUpdateArgs!]!): [Photo]
   deletePhoto(where: PhotoWhereUniqueInput!): Photo
   deletePhotos(where: [PhotoWhereUniqueInput!]!): [Photo]
+  createPolicy(data: PolicyCreateInput!): Policy
+  createPolicies(data: [PolicyCreateInput!]!): [Policy]
+  updatePolicy(where: PolicyWhereUniqueInput!, data: PolicyUpdateInput!): Policy
+  updatePolicies(data: [PolicyUpdateArgs!]!): [Policy]
+  deletePolicy(where: PolicyWhereUniqueInput!): Policy
+  deletePolicies(where: [PolicyWhereUniqueInput!]!): [Policy]
+  createTransaction(data: TransactionCreateInput!): Transaction
+  createTransactions(data: [TransactionCreateInput!]!): [Transaction]
+  updateTransaction(
+    where: TransactionWhereUniqueInput!
+    data: TransactionUpdateInput!
+  ): Transaction
+  updateTransactions(data: [TransactionUpdateArgs!]!): [Transaction]
+  deleteTransaction(where: TransactionWhereUniqueInput!): Transaction
+  deleteTransactions(where: [TransactionWhereUniqueInput!]!): [Transaction]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -2277,6 +2517,22 @@ type Query {
   ): [Photo!]
   photo(where: PhotoWhereUniqueInput!): Photo
   photosCount(where: PhotoWhereInput! = {}): Int
+  policies(
+    where: PolicyWhereInput! = {}
+    orderBy: [PolicyOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Policy!]
+  policy(where: PolicyWhereUniqueInput!): Policy
+  policiesCount(where: PolicyWhereInput! = {}): Int
+  transactions(
+    where: TransactionWhereInput! = {}
+    orderBy: [TransactionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Transaction!]
+  transaction(where: TransactionWhereUniqueInput!): Transaction
+  transactionsCount(where: TransactionWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
