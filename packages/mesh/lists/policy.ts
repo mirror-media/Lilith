@@ -7,8 +7,9 @@ const { allowRoles, admin, moderator, editor } = utils.accessControl
 const listConfigurations = list({
   fields: {
     name: text({
-      label: '政策名稱',
+      label: '政策名稱(須符合[name]-(single)-[duration]格式)',
       validation: {
+        match: { regex: /^(?:deposit|[a-zA-Z0-9]+(?:-single)?-[0-9]+)$/i },
         isRequired: true,
       },
     }),
