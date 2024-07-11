@@ -13,6 +13,8 @@ import InvitationCode from './invitation_code'
 import Image from './image'
 import Notify from './notify'
 import Announcement from './announcement'
+import Policy from './policy'
+import Transaction from './transaction'
 
 export const listDefinition = {
   User,
@@ -30,4 +32,6 @@ export const listDefinition = {
   Notify,
   Announcement,
   Photo: Image,
+  Policy,
+  Transaction
 }
