@@ -9,7 +9,7 @@ const listConfigurations = list({
     member: relationship({ 
         label: "會員",
         ref: 'Member', 
-        many: true 
+        many: false
     }),
     policy: relationship({ 
         label: "交易政策",
@@ -59,7 +59,7 @@ const listConfigurations = list({
   },
   ui: {
     listView: {
-      initialColumns: ['id', 'member', 'status'],
+      initialColumns: ['id', 'member', 'status', 'policy', 'tid'],
     },
   },
   access: {

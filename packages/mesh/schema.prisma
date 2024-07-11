@@ -481,7 +481,8 @@ model Policy {
 
 model Transaction {
   id            Int                    @id @default(autoincrement())
-  member        Member[]               @relation("Transaction_member")
+  member        Member?                @relation("Transaction_member", fields: [memberId], references: [id])
+  memberId      Int?                   @map("member")
   policy        Policy?                @relation("Transaction_policy", fields: [policyId], references: [id])
   policyId      Int?                   @map("policy")
   tid           String                 @default("")
@@ -499,6 +500,7 @@ model Transaction {
   updatedBy     User?                  @relation("Transaction_updatedBy", fields: [updatedById], references: [id])
   updatedById   Int?                   @map("updatedBy")
 
+  @@index([memberId])
   @@index([policyId])
   @@index([unlockStoryId])
   @@index([createdById])

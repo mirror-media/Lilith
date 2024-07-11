@@ -46,7 +46,7 @@ const listConfigurations = list({
   },
   ui: {
     listView: {
-      initialColumns: ['name', 'type', 'unlockSingle', 'duration'],
+      initialColumns: ['name', 'type', 'unlockSingle', 'publisher', 'duration'],
     },
   },
   access: {

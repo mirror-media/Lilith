@@ -2099,13 +2099,7 @@ input PolicyCreateInput {
 
 type Transaction {
   id: ID!
-  member(
-    where: MemberWhereInput! = {}
-    orderBy: [MemberOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Member!]
-  memberCount(where: MemberWhereInput! = {}): Int
+  member: Member
   policy: Policy
   tid: String
   depositVolume: Float
@@ -2134,7 +2128,7 @@ input TransactionWhereInput {
   OR: [TransactionWhereInput!]
   NOT: [TransactionWhereInput!]
   id: IDFilter
-  member: MemberManyRelationFilter
+  member: MemberWhereInput
   policy: PolicyWhereInput
   tid: StringFilter
   depositVolume: FloatNullableFilter
@@ -2169,7 +2163,7 @@ input TransactionOrderByInput {
 }
 
 input TransactionUpdateInput {
-  member: MemberRelateToManyForUpdateInput
+  member: MemberRelateToOneForUpdateInput
   policy: PolicyRelateToOneForUpdateInput
   tid: String
   depositVolume: Float
@@ -2196,7 +2190,7 @@ input TransactionUpdateArgs {
 }
 
 input TransactionCreateInput {
-  member: MemberRelateToManyForCreateInput
+  member: MemberRelateToOneForCreateInput
   policy: PolicyRelateToOneForCreateInput
   tid: String
   depositVolume: Float
