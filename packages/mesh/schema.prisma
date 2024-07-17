@@ -306,6 +306,7 @@ model Story {
   og_description               String           @default("")
   full_content                 Boolean          @default(false)
   paywall                      Boolean          @default(false)
+  isMember                     Boolean          @default(false)
   origid                       String           @default("")
   full_screen_ad               String?          @default("none")
   is_active                    Boolean          @default(true)
