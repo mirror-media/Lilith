@@ -10,6 +10,7 @@ import {
   checkbox,
   json,
 } from '@keystone-6/core/fields';
+import { checkAccessToken } from '../utils/accessToken'
 
 const {
   allowRoles,
@@ -33,6 +34,9 @@ const listConfigurations = list ({
     content: text({ 
 	  validation: { isRequired: false }, 
 	  ui: { displayMode: 'textarea' },
+    access: {
+      read: checkAccessToken('story')
+    }
 	}),
     trimContent: text({
     validation: {isRequired: false},
@@ -47,6 +51,9 @@ const listConfigurations = list ({
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
       },
+      access: {
+        read: checkAccessToken('story')
+      }
   }),
     trimApiData: json({
       label: "資料庫使用",
@@ -69,6 +76,9 @@ const listConfigurations = list ({
 	  defaultValue: false,
 	}),
     paywall: checkbox({
+      defaultValue: false,
+    }),
+    isMember: checkbox({
       defaultValue: false,
     }),
 	origid: text({}),

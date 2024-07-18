@@ -1121,6 +1121,7 @@ type Story {
   og_description: String
   full_content: Boolean
   paywall: Boolean
+  isMember: Boolean
   origid: String
   full_screen_ad: String
   is_active: Boolean
@@ -1165,6 +1166,7 @@ input StoryWhereInput {
   og_description: StringFilter
   full_content: BooleanFilter
   paywall: BooleanFilter
+  isMember: BooleanFilter
   origid: StringFilter
   full_screen_ad: StringNullableFilter
   is_active: BooleanFilter
@@ -1201,6 +1203,7 @@ input StoryOrderByInput {
   og_description: OrderDirection
   full_content: OrderDirection
   paywall: OrderDirection
+  isMember: OrderDirection
   origid: OrderDirection
   full_screen_ad: OrderDirection
   is_active: OrderDirection
@@ -1229,6 +1232,7 @@ input StoryUpdateInput {
   og_description: String
   full_content: Boolean
   paywall: Boolean
+  isMember: Boolean
   origid: String
   full_screen_ad: String
   is_active: Boolean
@@ -1291,6 +1295,7 @@ input StoryCreateInput {
   og_description: String
   full_content: Boolean
   paywall: Boolean
+  isMember: Boolean
   origid: String
   full_screen_ad: String
   is_active: Boolean
