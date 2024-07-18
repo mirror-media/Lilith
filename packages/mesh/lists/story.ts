@@ -10,7 +10,7 @@ import {
   checkbox,
   json,
 } from '@keystone-6/core/fields';
-import {checkAccessToken} from '../utils/accessToken'
+import { checkAccessToken } from '../utils/accessToken'
 
 const {
   allowRoles,
@@ -35,7 +35,7 @@ const listConfigurations = list ({
 	  validation: { isRequired: false }, 
 	  ui: { displayMode: 'textarea' },
     access: {
-      read: checkAccessToken
+      read: checkAccessToken('story')
     }
 	}),
     trimContent: text({
@@ -52,7 +52,7 @@ const listConfigurations = list ({
         itemView: { fieldMode: 'hidden' },
       },
       access: {
-        read: checkAccessToken
+        read: checkAccessToken('story')
       }
   }),
     trimApiData: json({

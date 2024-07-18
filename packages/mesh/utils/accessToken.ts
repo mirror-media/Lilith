@@ -1,14 +1,13 @@
 import { KeystoneContext } from '@keystone-6/core/types'
 import envVar from '../environment-variables'
 
-export function checkAccessToken({context, item}: {
+function checkStoryAccessToken({context, item}: {
   context: KeystoneContext
   item: Record<string, unknown>
 }){
   if (envVar.accessControlStrategy === 'gql') {
     // Story is not member only,
     // every request could access content field
-    console.log("check access token")
     if (item?.isMember === false) {
       return true
     }
@@ -57,4 +56,11 @@ export function checkAccessToken({context, item}: {
 
   // the request has permission to read this field
   return true
+}
+
+export function checkAccessToken(list_name: string){
+  switch(list_name){
+    case "story": return checkStoryAccessToken
+    default: return checkStoryAccessToken
+  }
 }
