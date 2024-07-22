@@ -2220,6 +2220,94 @@ input PolicyRelateToOneForCreateInput {
   connect: PolicyWhereUniqueInput
 }
 
+type Sponsorship {
+  id: ID!
+  tid: String
+  sponsor: Member
+  publisher: Publisher
+  fee: Float
+  status: SponsorshipStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum SponsorshipStatusType {
+  Success
+  Failed
+}
+
+input SponsorshipWhereUniqueInput {
+  id: ID
+}
+
+input SponsorshipWhereInput {
+  AND: [SponsorshipWhereInput!]
+  OR: [SponsorshipWhereInput!]
+  NOT: [SponsorshipWhereInput!]
+  id: IDFilter
+  tid: StringFilter
+  sponsor: MemberWhereInput
+  publisher: PublisherWhereInput
+  fee: FloatNullableFilter
+  status: SponsorshipStatusTypeNullableFilter
+  complement: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input SponsorshipStatusTypeNullableFilter {
+  equals: SponsorshipStatusType
+  in: [SponsorshipStatusType!]
+  notIn: [SponsorshipStatusType!]
+  not: SponsorshipStatusTypeNullableFilter
+}
+
+input SponsorshipOrderByInput {
+  id: OrderDirection
+  tid: OrderDirection
+  fee: OrderDirection
+  status: OrderDirection
+  complement: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input SponsorshipUpdateInput {
+  tid: String
+  sponsor: MemberRelateToOneForUpdateInput
+  publisher: PublisherRelateToOneForUpdateInput
+  fee: Float
+  status: SponsorshipStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input SponsorshipUpdateArgs {
+  where: SponsorshipWhereUniqueInput!
+  data: SponsorshipUpdateInput!
+}
+
+input SponsorshipCreateInput {
+  tid: String
+  sponsor: MemberRelateToOneForCreateInput
+  publisher: PublisherRelateToOneForCreateInput
+  fee: Float
+  status: SponsorshipStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2370,6 +2458,15 @@ type Mutation {
   updateTransactions(data: [TransactionUpdateArgs!]!): [Transaction]
   deleteTransaction(where: TransactionWhereUniqueInput!): Transaction
   deleteTransactions(where: [TransactionWhereUniqueInput!]!): [Transaction]
+  createSponsorship(data: SponsorshipCreateInput!): Sponsorship
+  createSponsorships(data: [SponsorshipCreateInput!]!): [Sponsorship]
+  updateSponsorship(
+    where: SponsorshipWhereUniqueInput!
+    data: SponsorshipUpdateInput!
+  ): Sponsorship
+  updateSponsorships(data: [SponsorshipUpdateArgs!]!): [Sponsorship]
+  deleteSponsorship(where: SponsorshipWhereUniqueInput!): Sponsorship
+  deleteSponsorships(where: [SponsorshipWhereUniqueInput!]!): [Sponsorship]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -2537,6 +2634,14 @@ type Query {
   ): [Transaction!]
   transaction(where: TransactionWhereUniqueInput!): Transaction
   transactionsCount(where: TransactionWhereInput! = {}): Int
+  sponsorships(
+    where: SponsorshipWhereInput! = {}
+    orderBy: [SponsorshipOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Sponsorship!]
+  sponsorship(where: SponsorshipWhereUniqueInput!): Sponsorship
+  sponsorshipsCount(where: SponsorshipWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

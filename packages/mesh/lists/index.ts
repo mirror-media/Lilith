@@ -15,6 +15,7 @@ import Notify from './notify'
 import Announcement from './announcement'
 import Policy from './policy'
 import Transaction from './transaction'
+import Sponsorship from './sponsorship'
 
 export const listDefinition = {
   User,
@@ -33,5 +34,6 @@ export const listDefinition = {
   Announcement,
   Photo: Image,
   Policy,
-  Transaction
+  Transaction,
+  Sponsorship,
 }

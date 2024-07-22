@@ -50,6 +50,8 @@ model User {
   from_Policy_updatedBy           Policy[]           @relation("Policy_updatedBy")
   from_Transaction_createdBy      Transaction[]      @relation("Transaction_createdBy")
   from_Transaction_updatedBy      Transaction[]      @relation("Transaction_updatedBy")
+  from_Sponsorship_createdBy      Sponsorship[]      @relation("Sponsorship_createdBy")
+  from_Sponsorship_updatedBy      Sponsorship[]      @relation("Sponsorship_updatedBy")
 }
 
 model Category {
@@ -144,29 +146,30 @@ model Pick {
 }
 
 model Publisher {
-  id                    Int       @id @default(autoincrement())
-  title                 String    @default("")
-  official_site         String    @default("")
-  rss                   String    @default("")
-  summary               String    @default("")
-  logo                  String    @default("")
-  description           String    @default("")
-  customId              String    @default("")
-  lang                  String?   @default("zh-TW")
-  full_content          Boolean   @default(false)
-  full_screen_ad        String?   @default("none")
-  source_type           String?   @default("empty")
-  paywall               Boolean   @default(false)
-  follower              Member[]  @relation("Member_follow_publisher")
-  wallet                String    @default("")
-  createdAt             DateTime?
-  updatedAt             DateTime?
-  createdBy             User?     @relation("Publisher_createdBy", fields: [createdById], references: [id])
-  createdById           Int?      @map("createdBy")
-  updatedBy             User?     @relation("Publisher_updatedBy", fields: [updatedById], references: [id])
-  updatedById           Int?      @map("updatedBy")
-  from_Story_source     Story[]   @relation("Story_source")
-  from_Policy_publisher Policy[]  @relation("Policy_publisher")
+  id                         Int           @id @default(autoincrement())
+  title                      String        @default("")
+  official_site              String        @default("")
+  rss                        String        @default("")
+  summary                    String        @default("")
+  logo                       String        @default("")
+  description                String        @default("")
+  customId                   String        @default("")
+  lang                       String?       @default("zh-TW")
+  full_content               Boolean       @default(false)
+  full_screen_ad             String?       @default("none")
+  source_type                String?       @default("empty")
+  paywall                    Boolean       @default(false)
+  follower                   Member[]      @relation("Member_follow_publisher")
+  wallet                     String        @default("")
+  createdAt                  DateTime?
+  updatedAt                  DateTime?
+  createdBy                  User?         @relation("Publisher_createdBy", fields: [createdById], references: [id])
+  createdById                Int?          @map("createdBy")
+  updatedBy                  User?         @relation("Publisher_updatedBy", fields: [updatedById], references: [id])
+  updatedById                Int?          @map("updatedBy")
+  from_Story_source          Story[]       @relation("Story_source")
+  from_Policy_publisher      Policy[]      @relation("Policy_publisher")
+  from_Sponsorship_publisher Sponsorship[] @relation("Sponsorship_publisher")
 
   @@index([createdById])
   @@index([updatedById])
@@ -388,6 +391,7 @@ model Member {
   from_Notify_member           Notify[]           @relation("Notify_member")
   from_Notify_sender           Notify[]           @relation("Notify_sender")
   from_Transaction_member      Transaction[]      @relation("Transaction_member")
+  from_Sponsorship_sponsor     Sponsorship[]      @relation("Sponsorship_sponsor")
 
   @@index([avatar_imageId])
   @@index([createdById])
@@ -509,6 +513,29 @@ model Transaction {
   @@index([updatedById])
 }
 
+model Sponsorship {
+  id          Int                    @id @default(autoincrement())
+  tid         String                 @default("")
+  sponsor     Member?                @relation("Sponsorship_sponsor", fields: [sponsorId], references: [id])
+  sponsorId   Int?                   @map("sponsor")
+  publisher   Publisher?             @relation("Sponsorship_publisher", fields: [publisherId], references: [id])
+  publisherId Int?                   @map("publisher")
+  fee         Float?
+  status      SponsorshipStatusType?
+  complement  String                 @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?                  @relation("Sponsorship_createdBy", fields: [createdById], references: [id])
+  createdById Int?                   @map("createdBy")
+  updatedBy   User?                  @relation("Sponsorship_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?                   @map("updatedBy")
+
+  @@index([sponsorId])
+  @@index([publisherId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 enum PolicyTypeType {
   deposit
   unlock_all_publishers
@@ -516,6 +543,11 @@ enum PolicyTypeType {
 }
 
 enum TransactionStatusType {
+  Success
+  Failed
+}
+
+enum SponsorshipStatusType {
   Success
   Failed
 }
