@@ -14,12 +14,12 @@ const listConfigurations = list({
     }),
     sponsor: relationship({ 
         label: "贊助者",
-        ref: 'Member', 
+        ref: 'Member.sponsor', 
         many: false
     }),
     publisher: relationship({ 
         label: "被贊助媒體",
-        ref: 'Publisher', 
+        ref: 'Publisher.sponsored', 
         many: false 
     }),
     fee: float({

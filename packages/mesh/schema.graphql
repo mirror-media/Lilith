@@ -543,6 +543,13 @@ type Publisher {
   logo: String
   description: String
   customId: String
+  sponsored(
+    where: SponsorshipWhereInput! = {}
+    orderBy: [SponsorshipOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Sponsorship!]
+  sponsoredCount(where: SponsorshipWhereInput! = {}): Int
   lang: String
   full_content: Boolean
   full_screen_ad: String
@@ -578,6 +585,7 @@ input PublisherWhereInput {
   logo: StringFilter
   description: StringFilter
   customId: StringFilter
+  sponsored: SponsorshipManyRelationFilter
   lang: StringNullableFilter
   full_content: BooleanFilter
   full_screen_ad: StringNullableFilter
@@ -589,6 +597,12 @@ input PublisherWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input SponsorshipManyRelationFilter {
+  every: SponsorshipWhereInput
+  some: SponsorshipWhereInput
+  none: SponsorshipWhereInput
 }
 
 input PublisherOrderByInput {
@@ -618,6 +632,7 @@ input PublisherUpdateInput {
   logo: String
   description: String
   customId: String
+  sponsored: SponsorshipRelateToManyForUpdateInput
   lang: String
   full_content: Boolean
   full_screen_ad: String
@@ -629,6 +644,13 @@ input PublisherUpdateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input SponsorshipRelateToManyForUpdateInput {
+  disconnect: [SponsorshipWhereUniqueInput!]
+  set: [SponsorshipWhereUniqueInput!]
+  create: [SponsorshipCreateInput!]
+  connect: [SponsorshipWhereUniqueInput!]
 }
 
 input PublisherUpdateArgs {
@@ -644,6 +666,7 @@ input PublisherCreateInput {
   logo: String
   description: String
   customId: String
+  sponsored: SponsorshipRelateToManyForCreateInput
   lang: String
   full_content: Boolean
   full_screen_ad: String
@@ -655,6 +678,11 @@ input PublisherCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input SponsorshipRelateToManyForCreateInput {
+  create: [SponsorshipCreateInput!]
+  connect: [SponsorshipWhereUniqueInput!]
 }
 
 type Collection {
@@ -1419,6 +1447,13 @@ type Member {
     skip: Int! = 0
   ): [Pick!]
   pickCount(where: PickWhereInput! = {}): Int
+  sponsor(
+    where: SponsorshipWhereInput! = {}
+    orderBy: [SponsorshipOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Sponsorship!]
+  sponsorCount(where: SponsorshipWhereInput! = {}): Int
   comment(
     where: CommentWhereInput! = {}
     orderBy: [CommentOrderByInput!]! = []
@@ -1534,6 +1569,7 @@ input MemberWhereInput {
   is_active: BooleanFilter
   verified: BooleanFilter
   pick: PickManyRelationFilter
+  sponsor: SponsorshipManyRelationFilter
   comment: CommentManyRelationFilter
   member_like: CommentManyRelationFilter
   follower: MemberManyRelationFilter
@@ -1612,6 +1648,7 @@ input MemberUpdateInput {
   is_active: Boolean
   verified: Boolean
   pick: PickRelateToManyForUpdateInput
+  sponsor: SponsorshipRelateToManyForUpdateInput
   comment: CommentRelateToManyForUpdateInput
   member_like: CommentRelateToManyForUpdateInput
   follower: MemberRelateToManyForUpdateInput
@@ -1690,6 +1727,7 @@ input MemberCreateInput {
   is_active: Boolean
   verified: Boolean
   pick: PickRelateToManyForCreateInput
+  sponsor: SponsorshipRelateToManyForCreateInput
   comment: CommentRelateToManyForCreateInput
   member_like: CommentRelateToManyForCreateInput
   follower: MemberRelateToManyForCreateInput

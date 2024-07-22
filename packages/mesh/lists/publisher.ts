@@ -30,7 +30,12 @@ const listConfigurations = list ({
 	  validation: {
         isRequired: true,
       },
-	  isindexed: 'unique',
+	    isindexed: 'unique',
+    }),
+    sponsored: relationship({
+      label: 'Sponsored',
+      ref: 'Sponsorship.publisher',
+      many: true,
     }),
 	lang: select({
 	  label: '語系',

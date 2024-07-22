@@ -48,6 +48,11 @@ const listConfigurations = list({
       ref: 'Pick.member',
       many: true,
     }),
+    sponsor: relationship({
+      label: 'Sponsors',
+      ref: 'Sponsorship.sponsor',
+      many: true,
+    }),
     comment: relationship({
       ref: 'Comment',
       many: true,
