@@ -1408,6 +1408,7 @@ type Member {
   avatar: String
   intro: String
   avatar_image: Photo
+  wallet: String
   email: String
   is_active: Boolean
   verified: Boolean
@@ -1528,6 +1529,7 @@ input MemberWhereInput {
   avatar: StringFilter
   intro: StringFilter
   avatar_image: PhotoWhereInput
+  wallet: StringFilter
   email: StringFilter
   is_active: BooleanFilter
   verified: BooleanFilter
@@ -1589,6 +1591,7 @@ input MemberOrderByInput {
   nickname: OrderDirection
   avatar: OrderDirection
   intro: OrderDirection
+  wallet: OrderDirection
   email: OrderDirection
   is_active: OrderDirection
   verified: OrderDirection
@@ -1604,6 +1607,7 @@ input MemberUpdateInput {
   avatar: String
   intro: String
   avatar_image: PhotoRelateToOneForUpdateInput
+  wallet: String
   email: String
   is_active: Boolean
   verified: Boolean
@@ -1681,6 +1685,7 @@ input MemberCreateInput {
   avatar: String
   intro: String
   avatar_image: PhotoRelateToOneForCreateInput
+  wallet: String
   email: String
   is_active: Boolean
   verified: Boolean

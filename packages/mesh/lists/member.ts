@@ -30,6 +30,9 @@ const listConfigurations = list({
       label: 'PFP',
       ref: 'Photo',
     }),
+    wallet: text({
+      label: '區塊鏈錢包'
+    }),
     email: text({
       validation: { isRequired: false },
       isFilterable: true,

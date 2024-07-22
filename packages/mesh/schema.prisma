@@ -356,6 +356,7 @@ model Member {
   intro                        String             @default("")
   avatar_image                 Photo?             @relation("Member_avatar_image", fields: [avatar_imageId], references: [id])
   avatar_imageId               Int?               @map("avatar_image")
+  wallet                       String             @default("")
   email                        String             @unique @default("")
   is_active                    Boolean            @default(true)
   verified                     Boolean            @default(false)
