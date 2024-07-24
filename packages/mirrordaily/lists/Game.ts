@@ -31,8 +31,15 @@ const listConfigurations = list({
       isIndexed: true,
     }),
     heroImage: relationship({
-      ref: 'Photo',
       label: '首圖',
+      ref: 'Photo',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['imageFile'],
+        linkToItem: true,
+        inlineConnect: true,
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     link: text({
       label: '連結',
