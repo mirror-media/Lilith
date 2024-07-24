@@ -46,13 +46,15 @@ const listConfigurations = list({
       isFilterable: false,
       validation: { isRequired: false },
     }),
-    sortOrder: integer(),
+    sortOrder: integer({
+      label: '排序',
+    }),
   },
   ui: {
     labelField: 'name',
     listView: {
-      initialColumns: ['id', 'name', 'state'],
-      initialSort: { field: 'id', direction: 'DESC' },
+      initialColumns: ['id', 'name', 'state', 'sortOrder'],
+      initialSort: { field: 'sortOrder', direction: 'DESC' },
       pageSize: 50,
     },
   },
