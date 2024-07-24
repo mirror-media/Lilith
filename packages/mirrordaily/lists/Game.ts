@@ -5,6 +5,7 @@ import {
   text,
   select,
   checkbox,
+  integer,
   relationship,
 } from '@keystone-6/core/fields'
 
@@ -40,6 +41,12 @@ const listConfigurations = list({
       label: '置頂',
       defaultValue: false,
     }),
+    description: text({
+      label: '說明',
+      isFilterable: false,
+      validation: { isRequired: false },
+    }),
+    sortOrder: integer(),
   },
   ui: {
     labelField: 'name',

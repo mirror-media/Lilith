@@ -42,9 +42,13 @@ const listConfigurations = list({
       defaultValue: 'draft',
       isIndexed: true,
     }),
-    publishedDate: timestamp({
-      isIndexed: true,
-      label: '發佈日期',
+    // publishedDate: timestamp({
+    //   isIndexed: true,
+    //   label: '發佈日期',
+    // }),
+    heroImage: relationship({
+      ref: 'Photo',
+      label: '首圖',
     }),
   },
   ui: {
