@@ -399,7 +399,7 @@ type EditorChoice {
   outlink: String
   choices: Post
   state: String
-  publishedDate: DateTime
+  heroImage: Photo
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -420,7 +420,7 @@ input EditorChoiceWhereInput {
   outlink: StringFilter
   choices: PostWhereInput
   state: StringNullableFilter
-  publishedDate: DateTimeNullableFilter
+  heroImage: PhotoWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -461,7 +461,6 @@ input EditorChoiceOrderByInput {
   order: OrderDirection
   outlink: OrderDirection
   state: OrderDirection
-  publishedDate: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -471,7 +470,7 @@ input EditorChoiceUpdateInput {
   outlink: String
   choices: PostRelateToOneForUpdateInput
   state: String
-  publishedDate: DateTime
+  heroImage: PhotoRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -494,7 +493,7 @@ input EditorChoiceCreateInput {
   outlink: String
   choices: PostRelateToOneForCreateInput
   state: String
-  publishedDate: DateTime
+  heroImage: PhotoRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2041,6 +2040,8 @@ type Game {
   heroImage: Photo
   link: String
   isFeatured: Boolean
+  description: String
+  sortOrder: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2062,6 +2063,7 @@ input GameWhereInput {
   heroImage: PhotoWhereInput
   link: StringFilter
   isFeatured: BooleanFilter
+  sortOrder: IntNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2075,6 +2077,8 @@ input GameOrderByInput {
   publishedDate: OrderDirection
   link: OrderDirection
   isFeatured: OrderDirection
+  description: OrderDirection
+  sortOrder: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2086,6 +2090,8 @@ input GameUpdateInput {
   heroImage: PhotoRelateToOneForUpdateInput
   link: String
   isFeatured: Boolean
+  description: String
+  sortOrder: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2104,6 +2110,8 @@ input GameCreateInput {
   heroImage: PhotoRelateToOneForCreateInput
   link: String
   isFeatured: Boolean
+  description: String
+  sortOrder: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

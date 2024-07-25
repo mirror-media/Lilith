@@ -5,6 +5,7 @@ import {
   text,
   select,
   checkbox,
+  integer,
   relationship,
 } from '@keystone-6/core/fields'
 
@@ -30,8 +31,15 @@ const listConfigurations = list({
       isIndexed: true,
     }),
     heroImage: relationship({
-      ref: 'Photo',
       label: '首圖',
+      ref: 'Photo',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['imageFile'],
+        linkToItem: true,
+        inlineConnect: true,
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     link: text({
       label: '連結',
@@ -40,12 +48,20 @@ const listConfigurations = list({
       label: '置頂',
       defaultValue: false,
     }),
+    description: text({
+      label: '說明',
+      isFilterable: false,
+      validation: { isRequired: false },
+    }),
+    sortOrder: integer({
+      label: '排序',
+    }),
   },
   ui: {
     labelField: 'name',
     listView: {
-      initialColumns: ['id', 'name', 'state'],
-      initialSort: { field: 'id', direction: 'DESC' },
+      initialColumns: ['id', 'name', 'state', 'sortOrder'],
+      initialSort: { field: 'sortOrder', direction: 'DESC' },
       pageSize: 50,
     },
   },
