@@ -2040,7 +2040,7 @@ type Game {
   heroImage: Photo
   link: String
   isFeatured: Boolean
-  description: String
+  descriptions: String
   sortOrder: Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -2077,7 +2077,7 @@ input GameOrderByInput {
   publishedDate: OrderDirection
   link: OrderDirection
   isFeatured: OrderDirection
-  description: OrderDirection
+  descriptions: OrderDirection
   sortOrder: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -2090,7 +2090,7 @@ input GameUpdateInput {
   heroImage: PhotoRelateToOneForUpdateInput
   link: String
   isFeatured: Boolean
-  description: String
+  descriptions: String
   sortOrder: Int
   createdAt: DateTime
   updatedAt: DateTime
@@ -2110,7 +2110,7 @@ input GameCreateInput {
   heroImage: PhotoRelateToOneForCreateInput
   link: String
   isFeatured: Boolean
-  description: String
+  descriptions: String
   sortOrder: Int
   createdAt: DateTime
   updatedAt: DateTime

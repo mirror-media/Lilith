@@ -48,7 +48,7 @@ const listConfigurations = list({
       label: '置頂',
       defaultValue: false,
     }),
-    description: text({
+    descriptions: text({
       label: '說明',
       isFilterable: false,
       validation: { isRequired: false },

@@ -515,7 +515,7 @@ model Game {
   heroImageId   Int?      @map("heroImage")
   link          String    @default("")
   isFeatured    Boolean   @default(false)
-  description   String    @default("")
+  descriptions  String    @default("")
   sortOrder     Int?
   createdAt     DateTime?
   updatedAt     DateTime?
