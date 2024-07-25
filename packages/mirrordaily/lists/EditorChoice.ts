@@ -1,12 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import {
-  relationship,
-  select,
-  integer,
-  text,
-  timestamp,
-} from '@keystone-6/core/fields'
+import { relationship, select, integer, text } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -43,8 +37,15 @@ const listConfigurations = list({
       isIndexed: true,
     }),
     heroImage: relationship({
-      ref: 'Photo',
       label: '首圖',
+      ref: 'Photo',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['imageFile'],
+        linkToItem: true,
+        inlineConnect: true,
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
   },
   ui: {

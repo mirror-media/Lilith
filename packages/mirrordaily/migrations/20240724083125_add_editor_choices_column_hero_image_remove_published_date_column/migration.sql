@@ -15,7 +15,7 @@ ALTER TABLE "EditorChoice" ADD COLUMN "heroImage" INTEGER;
 ALTER TABLE "Game" DROP COLUMN IF EXISTS "descriptions";
 ALTER TABLE "Game" DROP COLUMN IF EXISTS "sortorder";
 ALTER TABLE "Game"
-ADD COLUMN "description" TEXT NOT NULL DEFAULT '',
+ADD COLUMN "descriptions" TEXT NOT NULL DEFAULT '',
 ADD COLUMN "sortOrder" INTEGER;
 
 -- CreateIndex
