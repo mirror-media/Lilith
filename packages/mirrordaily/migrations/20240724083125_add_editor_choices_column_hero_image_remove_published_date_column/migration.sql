@@ -7,14 +7,16 @@
 
 */
 -- AlterTable
-ALTER TABLE "EditorChoice" DROP COLUMN "heroimage",
-ADD COLUMN     "heroImage" INTEGER;
+ALTER TABLE "EditorChoice" DROP COLUMN IF EXISTS "heroimage";
+ALTER TABLE "EditorChoice" DROP COLUMN IF EXISTS "publishedDate";
+ALTER TABLE "EditorChoice" ADD COLUMN "heroImage" INTEGER;
 
 -- AlterTable
-ALTER TABLE "Game" DROP COLUMN "descriptions",
-DROP COLUMN "sortorder",
-ADD COLUMN     "description" TEXT NOT NULL DEFAULT '',
-ADD COLUMN     "sortOrder" INTEGER;
+ALTER TABLE "Game" DROP COLUMN IF EXISTS "descriptions";
+ALTER TABLE "Game" DROP COLUMN IF EXISTS "sortorder";
+ALTER TABLE "Game"
+ADD COLUMN "description" TEXT NOT NULL DEFAULT '',
+ADD COLUMN "sortOrder" INTEGER;
 
 -- CreateIndex
 CREATE INDEX "EditorChoice_heroImage_idx" ON "EditorChoice"("heroImage");
