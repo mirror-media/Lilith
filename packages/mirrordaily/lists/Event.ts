@@ -40,11 +40,7 @@ const listConfigurations = list({
       many: true,
     }),
     eventType: select({
-      options: [
-        { label: 'logo', value: 'logo' },
-        { label: 'mod', value: 'mod' },
-        { label: 'embedded', value: 'embedded' },
-      ],
+      options: [{ label: '直播', value: 'livestreaming' }],
       isIndexed: true,
     }),
     startDate: timestamp({

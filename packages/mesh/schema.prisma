@@ -46,6 +46,12 @@ model User {
   from_Announcement_updatedBy     Announcement[]     @relation("Announcement_updatedBy")
   from_Photo_createdBy            Photo[]            @relation("Photo_createdBy")
   from_Photo_updatedBy            Photo[]            @relation("Photo_updatedBy")
+  from_Policy_createdBy           Policy[]           @relation("Policy_createdBy")
+  from_Policy_updatedBy           Policy[]           @relation("Policy_updatedBy")
+  from_Transaction_createdBy      Transaction[]      @relation("Transaction_createdBy")
+  from_Transaction_updatedBy      Transaction[]      @relation("Transaction_updatedBy")
+  from_Sponsorship_createdBy      Sponsorship[]      @relation("Sponsorship_createdBy")
+  from_Sponsorship_updatedBy      Sponsorship[]      @relation("Sponsorship_updatedBy")
 }
 
 model Category {
@@ -53,6 +59,7 @@ model Category {
   title                          String    @default("")
   slug                           String    @default("")
   summary                        String    @default("")
+  priority                       Int       @default(0)
   createdAt                      DateTime?
   updatedAt                      DateTime?
   createdBy                      User?     @relation("Category_createdBy", fields: [createdById], references: [id])
@@ -139,28 +146,30 @@ model Pick {
 }
 
 model Publisher {
-  id                Int       @id @default(autoincrement())
-  title             String    @default("")
-  official_site     String    @default("")
-  rss               String    @default("")
-  summary           String    @default("")
-  logo              String    @default("")
-  description       String    @default("")
-  customId          String    @default("")
-  lang              String?   @default("zh-TW")
-  full_content      Boolean   @default(false)
-  full_screen_ad    String?   @default("none")
-  source_type       String?   @default("rss")
-  paywall           Boolean   @default(false)
-  follower          Member[]  @relation("Member_follow_publisher")
-  wallet            String    @default("")
-  createdAt         DateTime?
-  updatedAt         DateTime?
-  createdBy         User?     @relation("Publisher_createdBy", fields: [createdById], references: [id])
-  createdById       Int?      @map("createdBy")
-  updatedBy         User?     @relation("Publisher_updatedBy", fields: [updatedById], references: [id])
-  updatedById       Int?      @map("updatedBy")
-  from_Story_source Story[]   @relation("Story_source")
+  id                    Int           @id @default(autoincrement())
+  title                 String        @default("")
+  official_site         String        @default("")
+  rss                   String        @default("")
+  summary               String        @default("")
+  logo                  String        @default("")
+  description           String        @default("")
+  customId              String        @default("")
+  sponsored             Sponsorship[] @relation("Sponsorship_publisher")
+  lang                  String?       @default("zh-TW")
+  full_content          Boolean       @default(false)
+  full_screen_ad        String?       @default("none")
+  source_type           String?       @default("empty")
+  paywall               Boolean       @default(false)
+  follower              Member[]      @relation("Member_follow_publisher")
+  wallet                String        @default("")
+  createdAt             DateTime?
+  updatedAt             DateTime?
+  createdBy             User?         @relation("Publisher_createdBy", fields: [createdById], references: [id])
+  createdById           Int?          @map("createdBy")
+  updatedBy             User?         @relation("Publisher_updatedBy", fields: [updatedById], references: [id])
+  updatedById           Int?          @map("updatedBy")
+  from_Story_source     Story[]       @relation("Story_source")
+  from_Policy_publisher Policy[]      @relation("Policy_publisher")
 
   @@index([createdById])
   @@index([updatedById])
@@ -276,43 +285,45 @@ model InvitationCode {
 }
 
 model Story {
-  id                        Int              @id @default(autoincrement())
-  title                     String           @default("")
-  url                       String           @unique @default("")
-  summary                   String           @default("")
-  content                   String           @default("")
-  trimContent               String           @default("")
-  writer                    String           @default("")
-  apiData                   Json?
-  trimApiData               Json?
-  source                    Publisher?       @relation("Story_source", fields: [sourceId], references: [id])
-  sourceId                  Int?             @map("source")
-  author                    Member?          @relation("Story_author", fields: [authorId], references: [id])
-  authorId                  Int?             @map("author")
-  category                  Category?        @relation("Story_category", fields: [categoryId], references: [id])
-  categoryId                Int?             @map("category")
-  pick                      Pick[]           @relation("Pick_story")
-  comment                   Comment[]        @relation("Comment_story")
-  related                   Story[]          @relation("Story_related")
-  published_date            DateTime?
-  og_title                  String           @default("")
-  og_image                  String           @default("")
-  og_description            String           @default("")
-  full_content              Boolean          @default(false)
-  paywall                   Boolean          @default(false)
-  origid                    String           @default("")
-  full_screen_ad            String?          @default("none")
-  is_active                 Boolean          @default(true)
-  tag                       Tag[]            @relation("Story_tag")
-  createdAt                 DateTime?
-  updatedAt                 DateTime?
-  createdBy                 User?            @relation("Story_createdBy", fields: [createdById], references: [id])
-  createdById               Int?             @map("createdBy")
-  updatedBy                 User?            @relation("Story_updatedBy", fields: [updatedById], references: [id])
-  updatedById               Int?             @map("updatedBy")
-  from_CollectionPick_story CollectionPick[] @relation("CollectionPick_story")
-  from_Story_related        Story[]          @relation("Story_related")
-  from_Tag_story            Tag[]            @relation("Tag_story")
+  id                           Int              @id @default(autoincrement())
+  title                        String           @default("")
+  url                          String           @unique @default("")
+  summary                      String           @default("")
+  content                      String           @default("")
+  trimContent                  String           @default("")
+  writer                       String           @default("")
+  apiData                      Json?
+  trimApiData                  Json?
+  source                       Publisher?       @relation("Story_source", fields: [sourceId], references: [id])
+  sourceId                     Int?             @map("source")
+  author                       Member?          @relation("Story_author", fields: [authorId], references: [id])
+  authorId                     Int?             @map("author")
+  category                     Category?        @relation("Story_category", fields: [categoryId], references: [id])
+  categoryId                   Int?             @map("category")
+  pick                         Pick[]           @relation("Pick_story")
+  comment                      Comment[]        @relation("Comment_story")
+  related                      Story[]          @relation("Story_related")
+  published_date               DateTime?
+  og_title                     String           @default("")
+  og_image                     String           @default("")
+  og_description               String           @default("")
+  full_content                 Boolean          @default(false)
+  paywall                      Boolean          @default(false)
+  isMember                     Boolean          @default(false)
+  origid                       String           @default("")
+  full_screen_ad               String?          @default("none")
+  is_active                    Boolean          @default(true)
+  tag                          Tag[]            @relation("Story_tag")
+  createdAt                    DateTime?
+  updatedAt                    DateTime?
+  createdBy                    User?            @relation("Story_createdBy", fields: [createdById], references: [id])
+  createdById                  Int?             @map("createdBy")
+  updatedBy                    User?            @relation("Story_updatedBy", fields: [updatedById], references: [id])
+  updatedById                  Int?             @map("updatedBy")
+  from_CollectionPick_story    CollectionPick[] @relation("CollectionPick_story")
+  from_Story_related           Story[]          @relation("Story_related")
+  from_Tag_story               Tag[]            @relation("Tag_story")
+  from_Transaction_unlockStory Transaction[]    @relation("Transaction_unlockStory")
 
   @@index([sourceId])
   @@index([authorId])
@@ -348,10 +359,12 @@ model Member {
   intro                        String             @default("")
   avatar_image                 Photo?             @relation("Member_avatar_image", fields: [avatar_imageId], references: [id])
   avatar_imageId               Int?               @map("avatar_image")
+  wallet                       String             @default("")
   email                        String             @unique @default("")
   is_active                    Boolean            @default(true)
   verified                     Boolean            @default(false)
   pick                         Pick[]             @relation("Pick_member")
+  sponsor                      Sponsorship[]      @relation("Sponsorship_sponsor")
   comment                      Comment[]          @relation("Member_comment")
   member_like                  Comment[]          @relation("Comment_like")
   follower                     Member[]           @relation("Member_follower")
@@ -378,6 +391,7 @@ model Member {
   from_Story_author            Story[]            @relation("Story_author")
   from_Notify_member           Notify[]           @relation("Notify_member")
   from_Notify_sender           Notify[]           @relation("Notify_sender")
+  from_Transaction_member      Transaction[]      @relation("Transaction_member")
 
   @@index([avatar_imageId])
   @@index([createdById])
@@ -446,4 +460,94 @@ model Photo {
   @@index([createdById])
   @@index([updatedById])
   @@map("Image")
+}
+
+model Policy {
+  id                      Int             @id @default(autoincrement())
+  name                    String          @default("")
+  explanation             String          @default("")
+  type                    PolicyTypeType?
+  unlockSingle            Boolean         @default(false)
+  publisher               Publisher?      @relation("Policy_publisher", fields: [publisherId], references: [id])
+  publisherId             Int?            @map("publisher")
+  duration                Int?
+  charge                  Float?          @default(0)
+  createdAt               DateTime?
+  updatedAt               DateTime?
+  createdBy               User?           @relation("Policy_createdBy", fields: [createdById], references: [id])
+  createdById             Int?            @map("createdBy")
+  updatedBy               User?           @relation("Policy_updatedBy", fields: [updatedById], references: [id])
+  updatedById             Int?            @map("updatedBy")
+  from_Transaction_policy Transaction[]   @relation("Transaction_policy")
+
+  @@index([publisherId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Transaction {
+  id            Int                    @id @default(autoincrement())
+  member        Member?                @relation("Transaction_member", fields: [memberId], references: [id])
+  memberId      Int?                   @map("member")
+  policy        Policy?                @relation("Transaction_policy", fields: [policyId], references: [id])
+  policyId      Int?                   @map("policy")
+  tid           String                 @default("")
+  depositVolume Float?
+  unlockStory   Story?                 @relation("Transaction_unlockStory", fields: [unlockStoryId], references: [id])
+  unlockStoryId Int?                   @map("unlockStory")
+  expireDate    DateTime?
+  active        Boolean                @default(true)
+  status        TransactionStatusType?
+  complement    String                 @default("")
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?                  @relation("Transaction_createdBy", fields: [createdById], references: [id])
+  createdById   Int?                   @map("createdBy")
+  updatedBy     User?                  @relation("Transaction_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?                   @map("updatedBy")
+
+  @@index([memberId])
+  @@index([policyId])
+  @@index([unlockStoryId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Sponsorship {
+  id          Int                    @id @default(autoincrement())
+  tid         String                 @default("")
+  sponsor     Member?                @relation("Sponsorship_sponsor", fields: [sponsorId], references: [id])
+  sponsorId   Int?                   @map("sponsor")
+  publisher   Publisher?             @relation("Sponsorship_publisher", fields: [publisherId], references: [id])
+  publisherId Int?                   @map("publisher")
+  fee         Float?
+  status      SponsorshipStatusType?
+  complement  String                 @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?                  @relation("Sponsorship_createdBy", fields: [createdById], references: [id])
+  createdById Int?                   @map("createdBy")
+  updatedBy   User?                  @relation("Sponsorship_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?                   @map("updatedBy")
+
+  @@index([sponsorId])
+  @@index([publisherId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+enum PolicyTypeType {
+  deposit
+  unlock_all_publishers
+  unlock_one_publisher
+}
+
+enum TransactionStatusType {
+  Success
+  Failed
+}
+
+enum SponsorshipStatusType {
+  Success
+  Failed
 }

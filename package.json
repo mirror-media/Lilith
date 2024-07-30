@@ -7,7 +7,8 @@
     "packages/editools",
     "packages/mirrormedia",
     "packages/readr",
-    "packages/openrelationship"
+    "packages/openrelationship",
+    "packages/mirrordaily"
   ],
   "scripts": {
     "prepare": "husky install",

@@ -82,23 +82,24 @@ model Contact {
 }
 
 model EditorChoice {
-  id            Int       @id @default(autoincrement())
-  order         Int?      @unique
-  outlink       String    @default("")
-  choices       Post?     @relation("EditorChoice_choices", fields: [choicesId], references: [id])
-  choicesId     Int?      @map("choices")
-  state         String?   @default("draft")
-  publishedDate DateTime?
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?     @relation("EditorChoice_createdBy", fields: [createdById], references: [id])
-  createdById   Int?      @map("createdBy")
-  updatedBy     User?     @relation("EditorChoice_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?      @map("updatedBy")
+  id          Int       @id @default(autoincrement())
+  order       Int?      @unique
+  outlink     String    @default("")
+  choices     Post?     @relation("EditorChoice_choices", fields: [choicesId], references: [id])
+  choicesId   Int?      @map("choices")
+  state       String?   @default("draft")
+  heroImage   Photo?    @relation("EditorChoice_heroImage", fields: [heroImageId], references: [id])
+  heroImageId Int?      @map("heroImage")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("EditorChoice_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("EditorChoice_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
 
   @@index([choicesId])
   @@index([state])
-  @@index([publishedDate])
+  @@index([heroImageId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -130,6 +131,36 @@ model External {
   @@index([partnerId])
   @@index([state])
   @@index([publishedDate])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Event {
+  id            Int       @id @default(autoincrement())
+  name          String    @default("")
+  slug          String    @unique @default("")
+  state         String?   @default("draft")
+  publishedDate DateTime?
+  sections      Section[] @relation("Event_sections")
+  eventType     String?
+  startDate     DateTime
+  endDate       DateTime?
+  heroImage     Photo?    @relation("Event_heroImage", fields: [heroImageId], references: [id])
+  heroImageId   Int?      @map("heroImage")
+  link          String    @default("")
+  isFeatured    Boolean   @default(false)
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Event_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Event_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([name])
+  @@index([state])
+  @@index([publishedDate])
+  @@index([eventType])
+  @@index([heroImageId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -176,34 +207,36 @@ model Partner {
 }
 
 model Photo {
-  id                          Int         @id @default(autoincrement())
-  name                        String      @default("")
+  id                          Int            @id @default(autoincrement())
+  name                        String         @default("")
   imageFile_filesize          Int?
   imageFile_extension         String?
   imageFile_width             Int?
   imageFile_height            Int?
   imageFile_id                String?
-  waterMark                   Boolean     @default(false)
+  waterMark                   Boolean        @default(false)
   file_filesize               Int?
   file_filename               String?
-  topicKeywords               String      @default("")
-  copyRight                   Boolean     @default(false)
+  topicKeywords               String         @default("")
+  copyRight                   Boolean        @default(false)
   createdAt                   DateTime?
   updatedAt                   DateTime?
-  createdBy                   User?       @relation("Photo_createdBy", fields: [createdById], references: [id])
-  createdById                 Int?        @map("createdBy")
-  updatedBy                   User?       @relation("Photo_updatedBy", fields: [updatedById], references: [id])
-  updatedById                 Int?        @map("updatedBy")
-  from_AudioFile_heroImage    AudioFile[] @relation("AudioFile_heroImage")
-  from_Category_heroImage     Category[]  @relation("Category_heroImage")
-  from_Post_heroImage         Post[]      @relation("Post_heroImage")
-  from_Post_og_image          Post[]      @relation("Post_og_image")
-  from_Section_heroImage      Section[]   @relation("Section_heroImage")
-  from_Topic_heroImage        Topic[]     @relation("Topic_heroImage")
-  from_Topic_og_image         Topic[]     @relation("Topic_og_image")
-  from_Topic_slideshow_images Topic[]     @relation("Topic_slideshow_images")
-  from_Video_heroImage        Video[]     @relation("Video_heroImage")
-  from_Game_heroImage         Game[]      @relation("Game_heroImage")
+  createdBy                   User?          @relation("Photo_createdBy", fields: [createdById], references: [id])
+  createdById                 Int?           @map("createdBy")
+  updatedBy                   User?          @relation("Photo_updatedBy", fields: [updatedById], references: [id])
+  updatedById                 Int?           @map("updatedBy")
+  from_AudioFile_heroImage    AudioFile[]    @relation("AudioFile_heroImage")
+  from_Category_heroImage     Category[]     @relation("Category_heroImage")
+  from_EditorChoice_heroImage EditorChoice[] @relation("EditorChoice_heroImage")
+  from_Event_heroImage        Event[]        @relation("Event_heroImage")
+  from_Post_heroImage         Post[]         @relation("Post_heroImage")
+  from_Post_og_image          Post[]         @relation("Post_og_image")
+  from_Section_heroImage      Section[]      @relation("Section_heroImage")
+  from_Topic_heroImage        Topic[]        @relation("Topic_heroImage")
+  from_Topic_og_image         Topic[]        @relation("Topic_og_image")
+  from_Topic_slideshow_images Topic[]        @relation("Topic_slideshow_images")
+  from_Video_heroImage        Video[]        @relation("Video_heroImage")
+  from_Game_heroImage         Game[]         @relation("Game_heroImage")
 
   @@index([createdById])
   @@index([updatedById])
@@ -292,6 +325,7 @@ model Section {
   id                  Int        @id @default(autoincrement())
   name                String     @unique @default("")
   description         String     @default("")
+  color               String
   slug                String     @unique @default("")
   order               Int?
   state               String     @default("active")
@@ -307,6 +341,7 @@ model Section {
   createdById         Int?       @map("createdBy")
   updatedBy           User?      @relation("Section_updatedBy", fields: [updatedById], references: [id])
   updatedById         Int?       @map("updatedBy")
+  from_Event_sections Event[]    @relation("Event_sections")
   from_Header_section Header[]   @relation("Header_section")
 
   @@index([state])
@@ -397,6 +432,8 @@ model User {
   from_EditorChoice_updatedBy EditorChoice[] @relation("EditorChoice_updatedBy")
   from_External_createdBy     External[]     @relation("External_createdBy")
   from_External_updatedBy     External[]     @relation("External_updatedBy")
+  from_Event_createdBy        Event[]        @relation("Event_createdBy")
+  from_Event_updatedBy        Event[]        @relation("Event_updatedBy")
   from_Header_createdBy       Header[]       @relation("Header_createdBy")
   from_Header_updatedBy       Header[]       @relation("Header_updatedBy")
   from_Partner_createdBy      Partner[]      @relation("Partner_createdBy")
@@ -478,6 +515,8 @@ model Game {
   heroImageId   Int?      @map("heroImage")
   link          String    @default("")
   isFeatured    Boolean   @default(false)
+  descriptions  String    @default("")
+  sortOrder     Int?
   createdAt     DateTime?
   updatedAt     DateTime?
   createdBy     User?     @relation("Game_createdBy", fields: [createdById], references: [id])

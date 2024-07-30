@@ -399,6 +399,7 @@ type EditorChoice {
   choices: Post
   state: String
   publishedDate: DateTime
+  isFixed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -419,6 +420,7 @@ input EditorChoiceWhereInput {
   choices: PostWhereInput
   state: StringNullableFilter
   publishedDate: DateTimeNullableFilter
+  isFixed: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -459,6 +461,7 @@ input EditorChoiceOrderByInput {
   order: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
+  isFixed: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -468,6 +471,7 @@ input EditorChoiceUpdateInput {
   choices: PostRelateToOneForUpdateInput
   state: String
   publishedDate: DateTime
+  isFixed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -490,6 +494,7 @@ input EditorChoiceCreateInput {
   choices: PostRelateToOneForCreateInput
   state: String
   publishedDate: DateTime
+  isFixed: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

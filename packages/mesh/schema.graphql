@@ -119,6 +119,7 @@ type Category {
   title: String
   slug: String
   summary: String
+  priority: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -140,10 +141,22 @@ input CategoryWhereInput {
   title: StringFilter
   slug: StringFilter
   summary: StringFilter
+  priority: IntFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
 }
 
 input DateTimeNullableFilter {
@@ -162,6 +175,7 @@ input CategoryOrderByInput {
   title: OrderDirection
   slug: OrderDirection
   summary: OrderDirection
+  priority: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -170,6 +184,7 @@ input CategoryUpdateInput {
   title: String
   slug: String
   summary: String
+  priority: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -191,6 +206,7 @@ input CategoryCreateInput {
   title: String
   slug: String
   summary: String
+  priority: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -527,6 +543,13 @@ type Publisher {
   logo: String
   description: String
   customId: String
+  sponsored(
+    where: SponsorshipWhereInput! = {}
+    orderBy: [SponsorshipOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Sponsorship!]
+  sponsoredCount(where: SponsorshipWhereInput! = {}): Int
   lang: String
   full_content: Boolean
   full_screen_ad: String
@@ -562,6 +585,7 @@ input PublisherWhereInput {
   logo: StringFilter
   description: StringFilter
   customId: StringFilter
+  sponsored: SponsorshipManyRelationFilter
   lang: StringNullableFilter
   full_content: BooleanFilter
   full_screen_ad: StringNullableFilter
@@ -573,6 +597,12 @@ input PublisherWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input SponsorshipManyRelationFilter {
+  every: SponsorshipWhereInput
+  some: SponsorshipWhereInput
+  none: SponsorshipWhereInput
 }
 
 input PublisherOrderByInput {
@@ -602,6 +632,7 @@ input PublisherUpdateInput {
   logo: String
   description: String
   customId: String
+  sponsored: SponsorshipRelateToManyForUpdateInput
   lang: String
   full_content: Boolean
   full_screen_ad: String
@@ -613,6 +644,13 @@ input PublisherUpdateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input SponsorshipRelateToManyForUpdateInput {
+  disconnect: [SponsorshipWhereUniqueInput!]
+  set: [SponsorshipWhereUniqueInput!]
+  create: [SponsorshipCreateInput!]
+  connect: [SponsorshipWhereUniqueInput!]
 }
 
 input PublisherUpdateArgs {
@@ -628,6 +666,7 @@ input PublisherCreateInput {
   logo: String
   description: String
   customId: String
+  sponsored: SponsorshipRelateToManyForCreateInput
   lang: String
   full_content: Boolean
   full_screen_ad: String
@@ -639,6 +678,11 @@ input PublisherCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input SponsorshipRelateToManyForCreateInput {
+  create: [SponsorshipCreateInput!]
+  connect: [SponsorshipWhereUniqueInput!]
 }
 
 type Collection {
@@ -1105,6 +1149,7 @@ type Story {
   og_description: String
   full_content: Boolean
   paywall: Boolean
+  isMember: Boolean
   origid: String
   full_screen_ad: String
   is_active: Boolean
@@ -1149,6 +1194,7 @@ input StoryWhereInput {
   og_description: StringFilter
   full_content: BooleanFilter
   paywall: BooleanFilter
+  isMember: BooleanFilter
   origid: StringFilter
   full_screen_ad: StringNullableFilter
   is_active: BooleanFilter
@@ -1185,6 +1231,7 @@ input StoryOrderByInput {
   og_description: OrderDirection
   full_content: OrderDirection
   paywall: OrderDirection
+  isMember: OrderDirection
   origid: OrderDirection
   full_screen_ad: OrderDirection
   is_active: OrderDirection
@@ -1213,6 +1260,7 @@ input StoryUpdateInput {
   og_description: String
   full_content: Boolean
   paywall: Boolean
+  isMember: Boolean
   origid: String
   full_screen_ad: String
   is_active: Boolean
@@ -1275,6 +1323,7 @@ input StoryCreateInput {
   og_description: String
   full_content: Boolean
   paywall: Boolean
+  isMember: Boolean
   origid: String
   full_screen_ad: String
   is_active: Boolean
@@ -1387,6 +1436,7 @@ type Member {
   avatar: String
   intro: String
   avatar_image: Photo
+  wallet: String
   email: String
   is_active: Boolean
   verified: Boolean
@@ -1397,6 +1447,13 @@ type Member {
     skip: Int! = 0
   ): [Pick!]
   pickCount(where: PickWhereInput! = {}): Int
+  sponsor(
+    where: SponsorshipWhereInput! = {}
+    orderBy: [SponsorshipOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Sponsorship!]
+  sponsorCount(where: SponsorshipWhereInput! = {}): Int
   comment(
     where: CommentWhereInput! = {}
     orderBy: [CommentOrderByInput!]! = []
@@ -1507,10 +1564,12 @@ input MemberWhereInput {
   avatar: StringFilter
   intro: StringFilter
   avatar_image: PhotoWhereInput
+  wallet: StringFilter
   email: StringFilter
   is_active: BooleanFilter
   verified: BooleanFilter
   pick: PickManyRelationFilter
+  sponsor: SponsorshipManyRelationFilter
   comment: CommentManyRelationFilter
   member_like: CommentManyRelationFilter
   follower: MemberManyRelationFilter
@@ -1568,6 +1627,7 @@ input MemberOrderByInput {
   nickname: OrderDirection
   avatar: OrderDirection
   intro: OrderDirection
+  wallet: OrderDirection
   email: OrderDirection
   is_active: OrderDirection
   verified: OrderDirection
@@ -1583,10 +1643,12 @@ input MemberUpdateInput {
   avatar: String
   intro: String
   avatar_image: PhotoRelateToOneForUpdateInput
+  wallet: String
   email: String
   is_active: Boolean
   verified: Boolean
   pick: PickRelateToManyForUpdateInput
+  sponsor: SponsorshipRelateToManyForUpdateInput
   comment: CommentRelateToManyForUpdateInput
   member_like: CommentRelateToManyForUpdateInput
   follower: MemberRelateToManyForUpdateInput
@@ -1660,10 +1722,12 @@ input MemberCreateInput {
   avatar: String
   intro: String
   avatar_image: PhotoRelateToOneForCreateInput
+  wallet: String
   email: String
   is_active: Boolean
   verified: Boolean
   pick: PickRelateToManyForCreateInput
+  sponsor: SponsorshipRelateToManyForCreateInput
   comment: CommentRelateToManyForCreateInput
   member_like: CommentRelateToManyForCreateInput
   follower: MemberRelateToManyForCreateInput
@@ -1975,6 +2039,313 @@ input PhotoCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Policy {
+  id: ID!
+  name: String
+  explanation: String
+  type: PolicyTypeType
+  unlockSingle: Boolean
+  publisher: Publisher
+  duration: Int
+  charge: Float
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum PolicyTypeType {
+  deposit
+  unlock_all_publishers
+  unlock_one_publisher
+}
+
+input PolicyWhereUniqueInput {
+  id: ID
+}
+
+input PolicyWhereInput {
+  AND: [PolicyWhereInput!]
+  OR: [PolicyWhereInput!]
+  NOT: [PolicyWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  explanation: StringFilter
+  type: PolicyTypeTypeNullableFilter
+  unlockSingle: BooleanFilter
+  publisher: PublisherWhereInput
+  duration: IntNullableFilter
+  charge: FloatNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PolicyTypeTypeNullableFilter {
+  equals: PolicyTypeType
+  in: [PolicyTypeType!]
+  notIn: [PolicyTypeType!]
+  not: PolicyTypeTypeNullableFilter
+}
+
+input FloatNullableFilter {
+  equals: Float
+  in: [Float!]
+  notIn: [Float!]
+  lt: Float
+  lte: Float
+  gt: Float
+  gte: Float
+  not: FloatNullableFilter
+}
+
+input PolicyOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  explanation: OrderDirection
+  type: OrderDirection
+  unlockSingle: OrderDirection
+  duration: OrderDirection
+  charge: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PolicyUpdateInput {
+  name: String
+  explanation: String
+  type: PolicyTypeType
+  unlockSingle: Boolean
+  publisher: PublisherRelateToOneForUpdateInput
+  duration: Int
+  charge: Float
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PolicyUpdateArgs {
+  where: PolicyWhereUniqueInput!
+  data: PolicyUpdateInput!
+}
+
+input PolicyCreateInput {
+  name: String
+  explanation: String
+  type: PolicyTypeType
+  unlockSingle: Boolean
+  publisher: PublisherRelateToOneForCreateInput
+  duration: Int
+  charge: Float
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Transaction {
+  id: ID!
+  member: Member
+  policy: Policy
+  tid: String
+  depositVolume: Float
+  unlockStory: Story
+  expireDate: DateTime
+  active: Boolean
+  status: TransactionStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum TransactionStatusType {
+  Success
+  Failed
+}
+
+input TransactionWhereUniqueInput {
+  id: ID
+}
+
+input TransactionWhereInput {
+  AND: [TransactionWhereInput!]
+  OR: [TransactionWhereInput!]
+  NOT: [TransactionWhereInput!]
+  id: IDFilter
+  member: MemberWhereInput
+  policy: PolicyWhereInput
+  tid: StringFilter
+  depositVolume: FloatNullableFilter
+  unlockStory: StoryWhereInput
+  expireDate: DateTimeNullableFilter
+  active: BooleanFilter
+  status: TransactionStatusTypeNullableFilter
+  complement: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input TransactionStatusTypeNullableFilter {
+  equals: TransactionStatusType
+  in: [TransactionStatusType!]
+  notIn: [TransactionStatusType!]
+  not: TransactionStatusTypeNullableFilter
+}
+
+input TransactionOrderByInput {
+  id: OrderDirection
+  tid: OrderDirection
+  depositVolume: OrderDirection
+  expireDate: OrderDirection
+  active: OrderDirection
+  status: OrderDirection
+  complement: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input TransactionUpdateInput {
+  member: MemberRelateToOneForUpdateInput
+  policy: PolicyRelateToOneForUpdateInput
+  tid: String
+  depositVolume: Float
+  unlockStory: StoryRelateToOneForUpdateInput
+  expireDate: DateTime
+  active: Boolean
+  status: TransactionStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PolicyRelateToOneForUpdateInput {
+  create: PolicyCreateInput
+  connect: PolicyWhereUniqueInput
+  disconnect: Boolean
+}
+
+input TransactionUpdateArgs {
+  where: TransactionWhereUniqueInput!
+  data: TransactionUpdateInput!
+}
+
+input TransactionCreateInput {
+  member: MemberRelateToOneForCreateInput
+  policy: PolicyRelateToOneForCreateInput
+  tid: String
+  depositVolume: Float
+  unlockStory: StoryRelateToOneForCreateInput
+  expireDate: DateTime
+  active: Boolean
+  status: TransactionStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input PolicyRelateToOneForCreateInput {
+  create: PolicyCreateInput
+  connect: PolicyWhereUniqueInput
+}
+
+type Sponsorship {
+  id: ID!
+  tid: String
+  sponsor: Member
+  publisher: Publisher
+  fee: Float
+  status: SponsorshipStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum SponsorshipStatusType {
+  Success
+  Failed
+}
+
+input SponsorshipWhereUniqueInput {
+  id: ID
+}
+
+input SponsorshipWhereInput {
+  AND: [SponsorshipWhereInput!]
+  OR: [SponsorshipWhereInput!]
+  NOT: [SponsorshipWhereInput!]
+  id: IDFilter
+  tid: StringFilter
+  sponsor: MemberWhereInput
+  publisher: PublisherWhereInput
+  fee: FloatNullableFilter
+  status: SponsorshipStatusTypeNullableFilter
+  complement: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input SponsorshipStatusTypeNullableFilter {
+  equals: SponsorshipStatusType
+  in: [SponsorshipStatusType!]
+  notIn: [SponsorshipStatusType!]
+  not: SponsorshipStatusTypeNullableFilter
+}
+
+input SponsorshipOrderByInput {
+  id: OrderDirection
+  tid: OrderDirection
+  fee: OrderDirection
+  status: OrderDirection
+  complement: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input SponsorshipUpdateInput {
+  tid: String
+  sponsor: MemberRelateToOneForUpdateInput
+  publisher: PublisherRelateToOneForUpdateInput
+  fee: Float
+  status: SponsorshipStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input SponsorshipUpdateArgs {
+  where: SponsorshipWhereUniqueInput!
+  data: SponsorshipUpdateInput!
+}
+
+input SponsorshipCreateInput {
+  tid: String
+  sponsor: MemberRelateToOneForCreateInput
+  publisher: PublisherRelateToOneForCreateInput
+  fee: Float
+  status: SponsorshipStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2110,6 +2481,30 @@ type Mutation {
   updatePhotos(data: [PhotoUpdateArgs!]!): [Photo]
   deletePhoto(where: PhotoWhereUniqueInput!): Photo
   deletePhotos(where: [PhotoWhereUniqueInput!]!): [Photo]
+  createPolicy(data: PolicyCreateInput!): Policy
+  createPolicies(data: [PolicyCreateInput!]!): [Policy]
+  updatePolicy(where: PolicyWhereUniqueInput!, data: PolicyUpdateInput!): Policy
+  updatePolicies(data: [PolicyUpdateArgs!]!): [Policy]
+  deletePolicy(where: PolicyWhereUniqueInput!): Policy
+  deletePolicies(where: [PolicyWhereUniqueInput!]!): [Policy]
+  createTransaction(data: TransactionCreateInput!): Transaction
+  createTransactions(data: [TransactionCreateInput!]!): [Transaction]
+  updateTransaction(
+    where: TransactionWhereUniqueInput!
+    data: TransactionUpdateInput!
+  ): Transaction
+  updateTransactions(data: [TransactionUpdateArgs!]!): [Transaction]
+  deleteTransaction(where: TransactionWhereUniqueInput!): Transaction
+  deleteTransactions(where: [TransactionWhereUniqueInput!]!): [Transaction]
+  createSponsorship(data: SponsorshipCreateInput!): Sponsorship
+  createSponsorships(data: [SponsorshipCreateInput!]!): [Sponsorship]
+  updateSponsorship(
+    where: SponsorshipWhereUniqueInput!
+    data: SponsorshipUpdateInput!
+  ): Sponsorship
+  updateSponsorships(data: [SponsorshipUpdateArgs!]!): [Sponsorship]
+  deleteSponsorship(where: SponsorshipWhereUniqueInput!): Sponsorship
+  deleteSponsorships(where: [SponsorshipWhereUniqueInput!]!): [Sponsorship]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -2261,6 +2656,30 @@ type Query {
   ): [Photo!]
   photo(where: PhotoWhereUniqueInput!): Photo
   photosCount(where: PhotoWhereInput! = {}): Int
+  policies(
+    where: PolicyWhereInput! = {}
+    orderBy: [PolicyOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Policy!]
+  policy(where: PolicyWhereUniqueInput!): Policy
+  policiesCount(where: PolicyWhereInput! = {}): Int
+  transactions(
+    where: TransactionWhereInput! = {}
+    orderBy: [TransactionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Transaction!]
+  transaction(where: TransactionWhereUniqueInput!): Transaction
+  transactionsCount(where: TransactionWhereInput! = {}): Int
+  sponsorships(
+    where: SponsorshipWhereInput! = {}
+    orderBy: [SponsorshipOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Sponsorship!]
+  sponsorship(where: SponsorshipWhereUniqueInput!): Sponsorship
+  sponsorshipsCount(where: SponsorshipWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
