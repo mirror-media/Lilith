@@ -2,6 +2,7 @@ import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core';
 import {
   text,
+  integer,
   relationship,
   password,
   timestamp,
@@ -21,6 +22,10 @@ const listConfigurations = list ({
     title: text({ validation: { isRequired: false } }),
     slug: text({ validation: { isUnique:true, isRequired: true } }),
     summary: text({ validation: { isRequired: false } }),
+    priority: integer({
+      validation: {isRequired: true, min: 0},
+      defaultValue: 0,
+    }),
   },
   ui: {
     listView: {

@@ -1,10 +1,10 @@
 # [@mirrormedia/lilith-core](https://www.npmjs.com/package/@mirrormedia/lilith-draft-editor) &middot; ![npm version](https://img.shields.io/npm/v/@mirrormedia/lilith-draft-editor.svg?style=flat)
 
-### Installation
+## Installation
 
 `yarn install`
 
-### Development
+## Development
 
 `@mirrormedia/lilith-draft-editor` export `@mirrormedia/lilith-core` 所需要的 `RichTextEditor`，而 `@mirrormedia/lilith-core` 則是被 `@mirrormedia/lilith-(mirrormedia|readr|mesh|editools)` 所使用，因此在開發上會以各網站的角度去切入，在本套件中修改 editor 相關的程式碼，並在 lilith-(mirrormedia|readr|mesh|editools) 中測試開發狀況。
 
@@ -14,7 +14,7 @@
 
 等到確定程式碼修改完畢後，我們再將最新的程式碼上傳(`npm publish`)到 npm registry 去，讓 lilith-editools 的 CI/CD 可以下載到最新的版本。
 
-### File Structure
+## File Structure
 
 在 `src` 資料夾下有兩大類的檔案
 
@@ -31,19 +31,19 @@
 
 \*注 2: 雖然各個網站都 maintain 了一個 draft-editor，可以自行決定 import 進來的 buttons，不過因為 lilith-core 中實作 disalbedButtons 的功能，所以目前一率將所有的 buttons 加入 RichTextEditor 中，由 lilith-(mirrormedia|readr|mesh|editools) 來控制所使用的 buttons。
 
-### Build
+## Build
 
 `yarn build`
 
-### Publish
+## Publish
 
 `npm run publish`
 
 在 publish 前，請根據 conventional commits 的規範，將 package.json#version 升版。
 
-### Notable Details
+## Notable Details
 
-#### For those files under `views/` folder, we transpile them specifically.
+### For those files under `views/` folder, we transpile them specifically.
 
 For those files under `views/` folder, we transpile them by babel according to different configuation.
 The specific babel configuration is `.views.babelrc.js`.

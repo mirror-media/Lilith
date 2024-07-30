@@ -1,5 +1,17 @@
 # @mirrormedia/lilith-core Changelog
 
+## 2024-06-06, Versuib 2.4.0
+
+### Notable Changes
+- add filters
+- add selectWithColor to custom field
+
+### Commits
+* \[[`289a418c1e`](https://github.com/mirror-media/lilith/commit/289a418c1e)] - feat(lilith-core): add selectWithColor to custom field (Tsuki Akiba)
+* \[[`ec881bb919`](https://github.com/mirror-media/lilith/commit/ec881bb919)] - feat(lilith-core): add filters (Tsuki Akiba)
+
+
+
 ## 2023-12-14, Version 2.2.0
 
 ### Notable Changes

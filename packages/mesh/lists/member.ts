@@ -30,6 +30,9 @@ const listConfigurations = list({
       label: 'PFP',
       ref: 'Photo',
     }),
+    wallet: text({
+      label: '區塊鏈錢包'
+    }),
     email: text({
       validation: { isRequired: false },
       isFilterable: true,
@@ -43,6 +46,11 @@ const listConfigurations = list({
     }),
     pick: relationship({
       ref: 'Pick.member',
+      many: true,
+    }),
+    sponsor: relationship({
+      label: 'Sponsors',
+      ref: 'Sponsorship.sponsor',
       many: true,
     }),
     comment: relationship({
