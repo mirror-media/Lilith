@@ -4,6 +4,7 @@ import {
   relationship,
   select,
   integer,
+  checkbox,
   timestamp,
 } from '@keystone-6/core/fields'
 
@@ -41,6 +42,10 @@ const listConfigurations = list({
     publishedDate: timestamp({
       isIndexed: true,
       label: '發佈日期',
+    }),
+    isFixed: checkbox({
+      label: '固定不替換',
+      defaultValue: false,
     }),
   },
   ui: {
