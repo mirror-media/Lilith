@@ -28,6 +28,14 @@ const listConfigurations = list({
       label: '是否顯示於首頁',
       defaultValue: true,
     }),
+    showBrief: checkbox({
+      label: '文章是否顯示前言',
+      defaultValue: false,
+    }),
+    showThumb: checkbox({
+      label: '文章是否顯示首圖',
+      defaultValue: true,
+    }),
   },
   ui: {
     labelField: 'name',
