@@ -940,6 +940,8 @@ type Partner {
   website: String
   public: Boolean
   showOnIndex: Boolean
+  showBrief: Boolean
+  showThumb: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -961,6 +963,8 @@ input PartnerWhereInput {
   website: StringFilter
   public: BooleanFilter
   showOnIndex: BooleanFilter
+  showBrief: BooleanFilter
+  showThumb: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -974,6 +978,8 @@ input PartnerOrderByInput {
   website: OrderDirection
   public: OrderDirection
   showOnIndex: OrderDirection
+  showBrief: OrderDirection
+  showThumb: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -984,6 +990,8 @@ input PartnerUpdateInput {
   website: String
   public: Boolean
   showOnIndex: Boolean
+  showBrief: Boolean
+  showThumb: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1001,6 +1009,8 @@ input PartnerCreateInput {
   website: String
   public: Boolean
   showOnIndex: Boolean
+  showBrief: Boolean
+  showThumb: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

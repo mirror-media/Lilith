@@ -217,6 +217,8 @@ model Partner {
   website               String     @default("")
   public                Boolean    @default(true)
   showOnIndex           Boolean    @default(true)
+  showBrief             Boolean    @default(false)
+  showThumb             Boolean    @default(true)
   createdAt             DateTime?
   updatedAt             DateTime?
   createdBy             User?      @relation("Partner_createdBy", fields: [createdById], references: [id])
