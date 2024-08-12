@@ -53,6 +53,11 @@ const listConfigurations = list({
       ref: 'Sponsorship.sponsor',
       many: true,
     }),
+    transaction: relationship({
+      label: 'Transactions',
+      ref: 'Transaction.member',
+      many: true,
+    }),
     comment: relationship({
       ref: 'Comment',
       many: true,
