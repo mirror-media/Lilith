@@ -1454,6 +1454,13 @@ type Member {
     skip: Int! = 0
   ): [Sponsorship!]
   sponsorCount(where: SponsorshipWhereInput! = {}): Int
+  transaction(
+    where: TransactionWhereInput! = {}
+    orderBy: [TransactionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Transaction!]
+  transactionCount(where: TransactionWhereInput! = {}): Int
   comment(
     where: CommentWhereInput! = {}
     orderBy: [CommentOrderByInput!]! = []
@@ -1570,6 +1577,7 @@ input MemberWhereInput {
   verified: BooleanFilter
   pick: PickManyRelationFilter
   sponsor: SponsorshipManyRelationFilter
+  transaction: TransactionManyRelationFilter
   comment: CommentManyRelationFilter
   member_like: CommentManyRelationFilter
   follower: MemberManyRelationFilter
@@ -1587,6 +1595,12 @@ input MemberWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input TransactionManyRelationFilter {
+  every: TransactionWhereInput
+  some: TransactionWhereInput
+  none: TransactionWhereInput
 }
 
 input CategoryManyRelationFilter {
@@ -1649,6 +1663,7 @@ input MemberUpdateInput {
   verified: Boolean
   pick: PickRelateToManyForUpdateInput
   sponsor: SponsorshipRelateToManyForUpdateInput
+  transaction: TransactionRelateToManyForUpdateInput
   comment: CommentRelateToManyForUpdateInput
   member_like: CommentRelateToManyForUpdateInput
   follower: MemberRelateToManyForUpdateInput
@@ -1666,6 +1681,13 @@ input MemberUpdateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input TransactionRelateToManyForUpdateInput {
+  disconnect: [TransactionWhereUniqueInput!]
+  set: [TransactionWhereUniqueInput!]
+  create: [TransactionCreateInput!]
+  connect: [TransactionWhereUniqueInput!]
 }
 
 input CategoryRelateToManyForUpdateInput {
@@ -1728,6 +1750,7 @@ input MemberCreateInput {
   verified: Boolean
   pick: PickRelateToManyForCreateInput
   sponsor: SponsorshipRelateToManyForCreateInput
+  transaction: TransactionRelateToManyForCreateInput
   comment: CommentRelateToManyForCreateInput
   member_like: CommentRelateToManyForCreateInput
   follower: MemberRelateToManyForCreateInput
@@ -1745,6 +1768,11 @@ input MemberCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input TransactionRelateToManyForCreateInput {
+  create: [TransactionCreateInput!]
+  connect: [TransactionWhereUniqueInput!]
 }
 
 input CategoryRelateToManyForCreateInput {
