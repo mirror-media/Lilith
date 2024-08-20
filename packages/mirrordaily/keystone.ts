@@ -74,7 +74,7 @@ export default withAuth(
         serverRoute: {
           path: envVar.files.baseUrl,
         },
-        generateUrl: (path) => `/files${path}`,
+        generateUrl: (path) => `${envVar.files.baseUrl}${path}`,
       },
       images: {
         kind: 'local',
@@ -83,7 +83,7 @@ export default withAuth(
         serverRoute: {
           path: envVar.images.baseUrl,
         },
-        generateUrl: (path) => `/images${path}`,
+        generateUrl: (path) => `${envVar.images.baseUrl}${path}`,
       },
     },
     server: {

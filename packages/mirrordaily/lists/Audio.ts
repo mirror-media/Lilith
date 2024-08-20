@@ -9,6 +9,7 @@ import {
   json,
   virtual,
 } from '@keystone-6/core/fields'
+import { getFileURL } from '../utils/common'
 
 const { admin, allowRoles, moderator } = utils.accessControl
 
@@ -27,10 +28,10 @@ const listConfigurations = list({
         type: graphql.String,
         resolve(item: Record<string, unknown>) {
           const filename = item?.file_filename
-          if (!filename) {
+          if (!filename || typeof filename !== 'string') {
             return ''
           }
-          return `https://${envVar.gcs.bucket}/files/${filename}`
+          return getFileURL(envVar.gcs.bucket, envVar.files.baseUrl, filename)
         },
       }),
     }),
