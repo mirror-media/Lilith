@@ -1,4 +1,4 @@
-import config from '../config'
+import envVar from '../environment-variables'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import { file, image, text, virtual, checkbox } from '@keystone-6/core/fields'
@@ -88,12 +88,12 @@ const listConfigurations = list({
           resizedTargets.forEach((target) => {
             rtn[
               target
-            ] = `https://${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+            ] = `https://${envVar.gcs.bucket}/images/${filename}-${target}${extension}`
           })
 
           rtn[
             'original'
-          ] = `https://${config.googleCloudStorage.bucket}/images/${filename}${extension}`
+          ] = `https://${envVar.gcs.bucket}/images/${filename}${extension}`
           return Object.assign(empty, rtn)
         },
       }),
@@ -163,12 +163,12 @@ const listConfigurations = list({
           resizedTargets.forEach((target) => {
             rtn[
               target
-            ] = `https://${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+            ] = `https://${envVar.gcs.bucket}/images/${filename}-${target}${extension}`
           })
 
           rtn[
             'original'
-          ] = `https://${config.googleCloudStorage.bucket}/images/${filename}${extension}`
+          ] = `https://${envVar.gcs.bucket}/images/${filename}${extension}`
           return Object.assign(empty, rtn)
         },
       }),

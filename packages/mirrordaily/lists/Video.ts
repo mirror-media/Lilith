@@ -1,4 +1,4 @@
-import config from '../config'
+import envVar from '../environment-variables'
 import { graphql } from '@graphql-ts/schema'
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
@@ -33,7 +33,7 @@ const listConfigurations = list({
           if (!filename) {
             return ''
           }
-          return `https://${config.googleCloudStorage.bucket}/files/${filename}`
+          return `https://${envVar.gcs.bucket}/files/${filename}`
         },
       }),
     }),
