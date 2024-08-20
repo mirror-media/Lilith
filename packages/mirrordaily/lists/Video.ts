@@ -24,7 +24,7 @@ const listConfigurations = list({
     }),
     file: file({
       label: '檔案',
-      storage: 'files',
+      storage: 'videos',
     }),
     videoSrc: virtual({
       field: graphql.field({
@@ -34,7 +34,7 @@ const listConfigurations = list({
           if (!filename || typeof filename !== 'string') {
             return ''
           }
-          return getFileURL(envVar.gcs.bucket, envVar.files.baseUrl, filename)
+          return getFileURL(envVar.gcs.bucket, envVar.videos.baseUrl, filename)
         },
       }),
     }),

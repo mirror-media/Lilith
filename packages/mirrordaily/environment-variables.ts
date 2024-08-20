@@ -12,6 +12,8 @@ const {
   FILES_STORAGE_PATH,
   IMAGES_BASE_URL,
   IMAGES_STORAGE_PATH,
+  VIDEOS_BASE_URL,
+  VIDEOS_STORAGE_PATH,
   LOCK_DURATION,
   IS_CACHE_ENABLED,
   REDIS_SERVER,
@@ -61,6 +63,10 @@ export default {
   images: {
     baseUrl: IMAGES_BASE_URL || '/images',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
+  },
+  videos: {
+    baseUrl: VIDEOS_BASE_URL || '/video-files',
+    storagePath: VIDEOS_STORAGE_PATH || 'public/video-files',
   },
   lockDuration:
     (typeof LOCK_DURATION === 'string' && parseInt(LOCK_DURATION)) || 30,

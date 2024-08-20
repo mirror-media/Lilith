@@ -85,6 +85,15 @@ export default withAuth(
         },
         generateUrl: (path) => `${envVar.images.baseUrl}${path}`,
       },
+      videos: {
+        kind: 'local',
+        type: 'file',
+        storagePath: envVar.videos.storagePath,
+        serverRoute: {
+          path: envVar.videos.baseUrl,
+        },
+        generateUrl: (path) => `${envVar.videos.baseUrl}${path}`,
+      },
     },
     server: {
       healthCheck: {
