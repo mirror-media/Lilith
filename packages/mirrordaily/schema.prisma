@@ -460,12 +460,14 @@ model User {
 model Video {
   id                        Int       @id @default(autoincrement())
   name                      String    @default("")
+  isShorts                  Boolean   @default(false)
   file_filesize             Int?
   file_filename             String?
-  urlOriginal               String    @default("")
-  content                   Json?
+  content                   String    @default("")
   heroImage                 Photo?    @relation("Video_heroImage", fields: [heroImageId], references: [id])
   heroImageId               Int?      @map("heroImage")
+  uploader                  String    @default("")
+  uploaderEmail             String    @default("")
   isFeed                    Boolean   @default(false)
   related_posts             Post[]    @relation("Post_related_videos")
   manualOrderOfRelatedPosts Json?
@@ -473,7 +475,6 @@ model Video {
   state                     String?   @default("draft")
   publishedDate             DateTime?
   tags                      Tag[]     @relation("Video_tags")
-  apiData                   Json?
   createdAt                 DateTime?
   updatedAt                 DateTime?
   createdBy                 User?     @relation("Video_createdBy", fields: [createdById], references: [id])

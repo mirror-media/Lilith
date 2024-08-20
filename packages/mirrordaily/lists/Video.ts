@@ -1,6 +1,6 @@
 import envVar from '../environment-variables'
 import { graphql } from '@graphql-ts/schema'
-import { customFields, utils } from '@mirrormedia/lilith-core'
+import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import {
   text,
@@ -22,6 +22,10 @@ const listConfigurations = list({
       label: 'name',
       validation: { isRequired: true },
     }),
+    isShorts: checkbox({
+      label: '是否為短影音',
+      defaultValue: false,
+    }),
     file: file({
       label: '檔案',
       storage: 'videos',
@@ -38,48 +42,11 @@ const listConfigurations = list({
         },
       }),
     }),
-    urlOriginal: text({
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
-        listView: {
-          fieldMode: 'read',
-        },
-      },
-    }),
-    content: customFields.richTextEditor({
+    content: text({
       label: '敘述',
-      website: 'mirrormedia',
-      disabledButtons: [
-        'code',
-        'header-four',
-        'blockquote',
-        'unordered-list-item',
-        'ordered-list-item',
-        'code-block',
-        'annotation',
-        'divider',
-        'embed',
-        'font-color',
-        'image',
-        'info-box',
-        'slideshow',
-        'table',
-        'text-align',
-        'color-box',
-        'background-color',
-        'background-image',
-        'background-video',
-        'related-post',
-        'side-index',
-        'video',
-        'audio',
-        'youtube',
-      ],
+      ui: {
+        displayMode: 'textarea',
+      },
     }),
     heroImage: relationship({
       label: '首圖',
@@ -87,6 +54,12 @@ const listConfigurations = list({
       ui: {
         hideCreate: true,
       },
+    }),
+    uploader: text({
+      label: '上傳者',
+    }),
+    uploaderEmail: text({
+      label: '上傳者 email',
     }),
     isFeed: checkbox({
       label: '供稿',
@@ -127,18 +100,11 @@ const listConfigurations = list({
       ref: 'Tag',
       many: true,
     }),
-    apiData: json({
-      label: '資料庫使用',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-      },
-    }),
   },
   ui: {
     labelField: 'name',
     listView: {
-      initialColumns: ['id', 'name', 'videoSrc', 'videoSection'],
+      initialColumns: ['id', 'name', 'isShorts', 'videoSection', 'videoSrc'],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
@@ -151,18 +117,7 @@ const listConfigurations = list({
       delete: allowRoles(admin, editor),
     },
   },
-
-  hooks: {
-    resolveInput: async ({ resolvedData }) => {
-      const { content } = resolvedData
-      if (content) {
-        resolvedData.apiData = customFields.draftConverter
-          .convertToApiData(content)
-          .toJS()
-      }
-      return resolvedData
-    },
-  },
+  hooks: {},
 })
 
 export default utils.addManualOrderRelationshipFields(
