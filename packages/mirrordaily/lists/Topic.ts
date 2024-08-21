@@ -68,9 +68,13 @@ const listConfigurations = list({
     }),
     heroUrl: text({
       label: '首圖連結 URL',
-	  db: {
-		isNullable: true,
-	  },
+      db: {
+        isNullable: true,
+      },
+    }),
+    heroVideo: relationship({
+      label: '首圖影片（Leading Video）',
+      ref: 'Video',
     }),
     leading: select({
       label: '標頭樣式',
