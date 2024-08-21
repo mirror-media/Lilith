@@ -381,6 +381,8 @@ model Topic {
   heroImage                    Photo?    @relation("Topic_heroImage", fields: [heroImageId], references: [id])
   heroImageId                  Int?      @map("heroImage")
   heroUrl                      String?
+  heroVideo                    Video?    @relation("Topic_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId                  Int?      @map("heroVideo")
   leading                      String?
   sections                     Section[] @relation("Section_topics")
   og_title                     String    @default("")
@@ -407,6 +409,7 @@ model Topic {
 
   @@index([state])
   @@index([heroImageId])
+  @@index([heroVideoId])
   @@index([leading])
   @@index([og_imageId])
   @@index([title_style])
@@ -482,6 +485,7 @@ model Video {
   updatedBy                 User?     @relation("Video_updatedBy", fields: [updatedById], references: [id])
   updatedById               Int?      @map("updatedBy")
   from_Post_heroVideo       Post[]    @relation("Post_heroVideo")
+  from_Topic_heroVideo      Topic[]   @relation("Topic_heroVideo")
 
   @@index([heroImageId])
   @@index([videoSection])
