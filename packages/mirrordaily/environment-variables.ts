@@ -12,11 +12,8 @@ const {
   FILES_STORAGE_PATH,
   IMAGES_BASE_URL,
   IMAGES_STORAGE_PATH,
-  JWT_SECRET,
-  GCP_PROJECT_ID,
-  FIREBASE_PROJECT_ID,
-  MEMBER_API_URL,
-  CORS_ALLOW_ORIGINS,
+  VIDEOS_BASE_URL,
+  VIDEOS_STORAGE_PATH,
   LOCK_DURATION,
   IS_CACHE_ENABLED,
   REDIS_SERVER,
@@ -67,22 +64,9 @@ export default {
     baseUrl: IMAGES_BASE_URL || '/images',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
-  jwt: {
-    secret: JWT_SECRET || 'jwt-secret',
-  },
-  gcp: {
-    projectId: GCP_PROJECT_ID || 'mirrordaily',
-  },
-  firebase: {
-    projectId: FIREBASE_PROJECT_ID || 'mirror-weekly',
-  },
-  memberApiUrl:
-    MEMBER_API_URL || 'https://israfel-gql.mirrormedia.mg/api/graphql',
-  cors: {
-    allowOrigins:
-      typeof CORS_ALLOW_ORIGINS === 'string'
-        ? CORS_ALLOW_ORIGINS.split(',')
-        : ['https://www.mirrordaily.com.tw', 'https://mirrordaily.com.tw'],
+  videos: {
+    baseUrl: VIDEOS_BASE_URL || '/video-files',
+    storagePath: VIDEOS_STORAGE_PATH || 'public/video-files',
   },
   lockDuration:
     (typeof LOCK_DURATION === 'string' && parseInt(LOCK_DURATION)) || 30,

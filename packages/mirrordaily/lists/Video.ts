@@ -1,4 +1,4 @@
-import config from '../config'
+import envVar from '../environment-variables'
 import { graphql } from '@graphql-ts/schema'
 import { customFields, utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
@@ -12,6 +12,7 @@ import {
   json,
   virtual,
 } from '@keystone-6/core/fields'
+import { getFileURL } from '../utils/common'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -23,17 +24,17 @@ const listConfigurations = list({
     }),
     file: file({
       label: '檔案',
-      storage: 'files',
+      storage: 'videos',
     }),
     videoSrc: virtual({
       field: graphql.field({
         type: graphql.String,
         resolve(item: Record<string, unknown>) {
           const filename = item?.file_filename
-          if (!filename) {
+          if (!filename || typeof filename !== 'string') {
             return ''
           }
-          return `https://${config.googleCloudStorage.bucket}/files/${filename}`
+          return getFileURL(envVar.gcs.bucket, envVar.videos.baseUrl, filename)
         },
       }),
     }),
