@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import InitialStep from './initial-step'
 import { useAppSelector } from '../redux/hooks'
 import { selectHasFiles } from '../redux/features/multi-images/selector'
 
@@ -14,7 +15,7 @@ export default function MainContainer() {
 
   return (
     <Container>
-      {hasFiles ? <>{/* EditorStep */}</> : <>{/* InitialStep */}</>}
+      {hasFiles ? <>{/* EditorStep */}</> : <InitialStep />}
     </Container>
   )
 }
