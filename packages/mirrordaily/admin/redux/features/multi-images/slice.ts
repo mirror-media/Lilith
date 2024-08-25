@@ -1,4 +1,8 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import {
+  createSlice,
+  createAsyncThunk,
+  type PayloadAction,
+} from '@reduxjs/toolkit'
 import { sha256 } from 'js-sha256'
 import { isImageFile } from '../../../utils'
 
@@ -14,10 +18,12 @@ type ImageFileData = {
 
 type MutilImageState = {
   files: ImageFileData[]
+  shouldSetWatermarkToAll: boolean
 }
 
 const initialState: MutilImageState = {
   files: [],
+  shouldSetWatermarkToAll: true,
 }
 
 type RawImageFileData = Pick<ImageFileData, 'uid' | 'name' | 'blobURL' | 'type'>
@@ -63,6 +69,28 @@ export const addImageFiles = createAsyncThunk(
 export const multiImagesSlice = createSlice({
   name: 'multiImages',
   initialState,
+  reducers: {
+    setShouldSetWatermarkByUid: (state, action: PayloadAction<string>) => {
+      state.files = state.files.map((file) => {
+        const uid = action.payload
+        if (file.uid === uid) {
+          return {
+            ...file,
+            shouldSetWatermark: !file.shouldSetWatermark,
+          }
+        }
+        return file
+      })
+    },
+    setShouldSetWatermarkToAll: (state) => {
+      const shouldSetWatermark = !state.shouldSetWatermarkToAll
+      state.shouldSetWatermarkToAll = shouldSetWatermark
+      state.files = state.files.map((file) => ({
+        ...file,
+        shouldSetWatermark: shouldSetWatermark,
+      }))
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(addImageFiles.fulfilled, (state, action) => {
       const existedUids = new Set<string>(state.files.map((data) => data.uid))
@@ -85,6 +113,8 @@ export const multiImagesSlice = createSlice({
     })
   },
 })
-export const multiImagesSliceActions = multiImagesSlice.actions
+
+export const { setShouldSetWatermarkByUid, setShouldSetWatermarkToAll } =
+  multiImagesSlice.actions
 
 export default multiImagesSlice.reducer
