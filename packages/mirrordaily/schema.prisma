@@ -215,8 +215,6 @@ model Photo {
   imageFile_height            Int?
   imageFile_id                String?
   waterMark                   Boolean        @default(false)
-  file_filesize               Int?
-  file_filename               String?
   topicKeywords               String         @default("")
   copyRight                   Boolean        @default(false)
   createdAt                   DateTime?
