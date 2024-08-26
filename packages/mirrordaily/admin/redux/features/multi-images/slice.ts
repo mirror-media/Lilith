@@ -4,7 +4,7 @@ import {
   type PayloadAction,
 } from '@reduxjs/toolkit'
 import { sha256 } from 'js-sha256'
-import { isImageFile } from '../../../utils'
+import { convertBlobToString, isImageFile } from '../../../utils'
 
 type ImageFileData = {
   uid: string
@@ -47,7 +47,7 @@ export const addImageFiles = createAsyncThunk(
             uid: sha256(uInt8Data),
             name: file.name + '_' + fileNamePostfix,
             type: file.type,
-            blobURL: URL.createObjectURL(file),
+            blobURL: convertBlobToString(file),
           }
         }
       }
@@ -90,6 +90,7 @@ export const multiImagesSlice = createSlice({
         shouldSetWatermark: shouldSetWatermark,
       }))
     },
+    resetAllState: () => initialState,
   },
   extraReducers: (builder) => {
     builder.addCase(addImageFiles.fulfilled, (state, action) => {
@@ -114,7 +115,10 @@ export const multiImagesSlice = createSlice({
   },
 })
 
-export const { setShouldSetWatermarkByUid, setShouldSetWatermarkToAll } =
-  multiImagesSlice.actions
+export const {
+  setShouldSetWatermarkByUid,
+  setShouldSetWatermarkToAll,
+  resetAllState,
+} = multiImagesSlice.actions
 
 export default multiImagesSlice.reducer

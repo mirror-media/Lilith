@@ -3,7 +3,9 @@ import type { RootState } from '../../store'
 export const selectHasFiles = (state: RootState) =>
   state.multiImages.files.length > 0
 
-export const selectUidOfFiles = (state: RootState) =>
+export const selectFiles = (state: RootState) => state.multiImages.files
+
+export const selectUidsOfFile = (state: RootState) =>
   state.multiImages.files.map((data) => data.uid)
 
 export const selectImageData = (uid: string) => (state: RootState) =>

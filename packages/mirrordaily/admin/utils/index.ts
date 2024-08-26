@@ -18,4 +18,31 @@ function isImageFile(file: File) {
   return file.type.startsWith('image/')
 }
 
-export { createFilesHandler, isImageFile }
+function blobToFile(blob: Blob, fileName: string, extension: string) {
+  return new File([blob], fileName, {
+    type: extension,
+  })
+}
+
+function convertBlobToString(blob: Blob) {
+  return URL.createObjectURL(blob)
+}
+
+async function convertStringToFile(
+  str: string,
+  fileName: string,
+  extension?: string
+) {
+  const request = new Request(str)
+
+  return await fetch(request)
+    .then((response) => response.blob())
+    .then((blob) => blobToFile(blob, fileName, extension ?? blob.type))
+}
+
+export {
+  createFilesHandler,
+  isImageFile,
+  convertBlobToString,
+  convertStringToFile,
+}

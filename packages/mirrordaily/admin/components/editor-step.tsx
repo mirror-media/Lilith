@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import {
   selectShouldSetWatermarkToAll,
-  selectUidOfFiles,
+  selectUidsOfFile,
 } from '../redux/features/multi-images/selector'
 import { isEqual } from 'lodash-es'
 import Button from './button'
@@ -10,6 +10,7 @@ import Item from './item'
 import { useRef } from 'react'
 import HiddenInput from './hidden-input'
 import { setShouldSetWatermarkToAll } from '../redux/features/multi-images/slice'
+import SubmissionButtonAndModal from './submission-button-and-modal'
 
 const Body = styled.div`
   display: block;
@@ -75,17 +76,9 @@ const ListGroup = styled.div`
   padding-right: 62px;
 `
 
-const SubmissionButtonWrapper = styled.div`
-  display: inline-block;
-  align-self: flex-end;
-  margin-top: 29px;
-  margin-right: 47px;
-  margin-bottom: 24px;
-`
-
 export default function EditorStep() {
   const dispatch = useAppDispatch()
-  const uids = useAppSelector(selectUidOfFiles, isEqual)
+  const uids = useAppSelector(selectUidsOfFile, isEqual)
   const shouldSetWatermarkToAll = useAppSelector(selectShouldSetWatermarkToAll)
   const inputRef = useRef<HTMLInputElement>(null)
   const checkInputRef = useRef<HTMLInputElement>(null)
@@ -111,9 +104,7 @@ export default function EditorStep() {
             <Item key={uid} uid={uid} />
           ))}
         </ListGroup>
-        <SubmissionButtonWrapper>
-          <Button width="116px">送出</Button>
-        </SubmissionButtonWrapper>
+        <SubmissionButtonAndModal />
       </Container>
     </Body>
   )
