@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 import { convertStringToFile } from '../utils'
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import Button from './button'

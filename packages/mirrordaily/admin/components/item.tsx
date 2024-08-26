@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { selectImageData } from '../redux/features/multi-images/selector'
 import { isEqual } from 'lodash-es'

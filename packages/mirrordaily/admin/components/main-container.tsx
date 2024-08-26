@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 import InitialStep from './initial-step'
 import EditorStep from './editor-step'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'

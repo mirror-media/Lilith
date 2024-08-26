@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 import type { DragEvent } from 'react'
 import { createFilesHandler } from '../utils'
 import { addImageFiles } from '../redux/features/multi-images/slice'
