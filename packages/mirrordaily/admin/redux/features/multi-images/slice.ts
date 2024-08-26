@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit'
 import { sha256 } from 'js-sha256'
 import { convertBlobToString, isImageFile } from '../../../utils'
+import { sortBy } from 'lodash-es'
 
 type ImageFileData = {
   uid: string
@@ -110,7 +111,7 @@ export const multiImagesSlice = createSlice({
         }
       })
 
-      state.files = [...state.files, ...newItems]
+      state.files = sortBy([...state.files, ...newItems], ['originalName'])
     })
   },
 })
