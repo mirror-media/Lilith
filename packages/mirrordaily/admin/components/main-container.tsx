@@ -1,8 +1,11 @@
 import styled from 'styled-components'
 import InitialStep from './initial-step'
 import EditorStep from './editor-step'
-import { useAppSelector } from '../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { selectHasFiles } from '../redux/features/multi-images/selector'
+import { useRouter } from '@keystone-6/core/admin-ui/router'
+import { useEffect } from 'react'
+import { resetAllState } from '../redux/features/multi-images/slice'
 
 const Container = styled.div`
   dispaly: flex;
@@ -12,7 +15,13 @@ const Container = styled.div`
 `
 
 export default function MainContainer() {
+  const dispatch = useAppDispatch()
   const hasFiles = useAppSelector(selectHasFiles)
+  const router = useRouter()
+
+  useEffect(() => {
+    dispatch(resetAllState())
+  }, [router.pathname])
 
   return <Container>{hasFiles ? <EditorStep /> : <InitialStep />}</Container>
 }
