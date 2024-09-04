@@ -13,3 +13,11 @@ export const selectImageData = (uid: string) => (state: RootState) =>
 
 export const selectShouldSetWatermarkToAll = (state: RootState) =>
   state.multiImages.shouldSetWatermarkToAll
+
+export const selectHasItemSelected = (state: RootState) =>
+  state.multiImages.files.some((file) => file.isSelected)
+
+export const selectSelectedFilename = (state: RootState) =>
+  (state.multiImages.files.filter((file) => file.isSelected) ?? []).map(
+    (file) => file.originalName
+  )

@@ -43,10 +43,23 @@ export const addImageFiles = createAsyncThunk(
           }).format(Date.now())
 
           const uInt8Data = await file.arrayBuffer()
+          const name = file.name
+          const positionOfLastDot = name.lastIndexOf('.')
+          let filename: string
+          if (positionOfLastDot > -1) {
+            filename = [
+              name.slice(0, positionOfLastDot),
+              '_',
+              fileNamePostfix,
+              name.slice(positionOfLastDot),
+            ].join('')
+          } else {
+            filename = [name, '_', fileNamePostfix].join('')
+          }
 
           return {
             uid: sha256(uInt8Data),
-            name: file.name + '_' + fileNamePostfix,
+            name: filename,
             type: file.type,
             blobURL: convertBlobToString(file),
           }
@@ -91,6 +104,21 @@ export const multiImagesSlice = createSlice({
         shouldSetWatermark: shouldSetWatermark,
       }))
     },
+    setIsSelected: (state, action: PayloadAction<string>) => {
+      state.files = state.files.map((file) => {
+        const uid = action.payload
+        if (file.uid === uid) {
+          return {
+            ...file,
+            isSelected: !file.isSelected,
+          }
+        }
+        return file
+      })
+    },
+    removeSelectedItems: (state) => {
+      state.files = state.files.filter((file) => file.isSelected === false)
+    },
     resetAllState: () => initialState,
   },
   extraReducers: (builder) => {
@@ -105,7 +133,7 @@ export const multiImagesSlice = createSlice({
           newItems.push({
             ...data,
             originalName: data.name,
-            isSelected: true,
+            isSelected: false,
             shouldSetWatermark: true,
           })
         }
@@ -119,6 +147,8 @@ export const multiImagesSlice = createSlice({
 export const {
   setShouldSetWatermarkByUid,
   setShouldSetWatermarkToAll,
+  setIsSelected,
+  removeSelectedItems,
   resetAllState,
 } = multiImagesSlice.actions
 
