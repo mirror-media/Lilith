@@ -1,16 +1,22 @@
 import styled from '@emotion/styled'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import {
+  selectHasItemSelected,
+  selectSelectedFilename,
   selectShouldSetWatermarkToAll,
   selectUidsOfFile,
 } from '../redux/features/multi-images/selector'
 import { isEqual } from 'lodash-es'
 import Button from './button'
 import Item from './item'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import HiddenInput from './hidden-input'
-import { setShouldSetWatermarkToAll } from '../redux/features/multi-images/slice'
+import {
+  removeSelectedItems,
+  setShouldSetWatermarkToAll,
+} from '../redux/features/multi-images/slice'
 import SubmissionButtonAndModal from './submission-button-and-modal'
+import Modal from './modal'
 
 const Body = styled.div`
   display: block;
@@ -76,12 +82,37 @@ const ListGroup = styled.div`
   padding-right: 62px;
 `
 
+const AlertBody = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  overflow-y: hidden;
+`
+
+const FileList = styled.div`
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 700;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  overflow-y: auto;
+`
+
+const ModalControl = styled.div`
+  display: flex;
+  column-gap: 16px;
+  flex-shrink: 0;
+`
+
 export default function EditorStep() {
   const dispatch = useAppDispatch()
   const uids = useAppSelector(selectUidsOfFile, isEqual)
   const shouldSetWatermarkToAll = useAppSelector(selectShouldSetWatermarkToAll)
+  const hasItemSelected = useAppSelector(selectHasItemSelected)
+  const filenames = useAppSelector(selectSelectedFilename)
   const inputRef = useRef<HTMLInputElement>(null)
   const checkInputRef = useRef<HTMLInputElement>(null)
+  const [shouldShowAlert, setShouldShowAlert] = useState(false)
 
   return (
     <Body>
@@ -98,6 +129,44 @@ export default function EditorStep() {
             />
             watermark
           </Button>
+          <Button
+            color={'#FB1818'}
+            disabled={!hasItemSelected}
+            clickFn={() => setShouldShowAlert(true)}
+          >
+            delete
+          </Button>
+          {shouldShowAlert && (
+            <Modal>
+              <AlertBody>
+                請確認是否要刪除以下檔案？
+                <FileList>
+                  <div>
+                    {filenames.map((filename) => (
+                      <>
+                        {filename}
+                        <br />
+                      </>
+                    ))}
+                  </div>
+                </FileList>
+                <ModalControl>
+                  <Button
+                    color={'#FB1818'}
+                    clickFn={() => {
+                      dispatch(removeSelectedItems())
+                      setShouldShowAlert(false)
+                    }}
+                  >
+                    刪除
+                  </Button>
+                  <Button clickFn={() => setShouldShowAlert(false)}>
+                    取消
+                  </Button>
+                </ModalControl>
+              </AlertBody>
+            </Modal>
+          )}
         </ControlGroup>
         <ListGroup>
           {uids.map((uid) => (

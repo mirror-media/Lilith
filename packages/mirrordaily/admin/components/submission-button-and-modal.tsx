@@ -7,6 +7,7 @@ import { selectFiles } from '../redux/features/multi-images/selector'
 import { isEqual } from 'lodash-es'
 import { useDispatch } from 'react-redux'
 import { resetAllState } from '../redux/features/multi-images/slice'
+import Modal from './modal'
 
 const ButtonWrapper = styled.div`
   display: inline-block;
@@ -14,27 +15,6 @@ const ButtonWrapper = styled.div`
   margin-top: 29px;
   margin-right: 47px;
   margin-bottom: 24px;
-`
-
-const ModalWrapper = styled.div`
-  position: absolute;
-  inset: 0;
-  background-color: rgba(179, 177, 177, 0.6);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`
-
-const ModalBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  row-gap: 30px;
-  max-width: 586px;
-  max-height: 75%;
-  padding: 36px 80px;
-  background-color: #fff;
 `
 
 const TextWrapper = styled.p`
@@ -111,40 +91,38 @@ export default function SubmissionButtonAndModal() {
         </Button>
       </ButtonWrapper>
       {(Boolean(data) || Boolean(error)) && (
-        <ModalWrapper>
-          <ModalBody>
-            {error ? (
-              <>
-                <TextWrapper>
-                  上傳<RedText>失敗</RedText>
-                  <br />
-                  請重新上傳
-                </TextWrapper>
-                <ErrorWrapper>{error.message}</ErrorWrapper>
-                <Button width="116px" clickFn={() => reset()}>
-                  確認
-                </Button>
-              </>
-            ) : (
-              <>
-                <TextWrapper>
-                  上傳成功
-                  <br />
-                  請至 Photos 查看照片
-                </TextWrapper>
-                <Button
-                  width="116px"
-                  clickFn={() => {
-                    reset()
-                    dispatch(resetAllState())
-                  }}
-                >
-                  確認
-                </Button>
-              </>
-            )}
-          </ModalBody>
-        </ModalWrapper>
+        <Modal>
+          {error ? (
+            <>
+              <TextWrapper>
+                上傳<RedText>失敗</RedText>
+                <br />
+                請重新上傳
+              </TextWrapper>
+              <ErrorWrapper>{error.message}</ErrorWrapper>
+              <Button width="116px" clickFn={() => reset()}>
+                確認
+              </Button>
+            </>
+          ) : (
+            <>
+              <TextWrapper>
+                上傳成功
+                <br />
+                請至 Photos 查看照片
+              </TextWrapper>
+              <Button
+                width="116px"
+                clickFn={() => {
+                  reset()
+                  dispatch(resetAllState())
+                }}
+              >
+                確認
+              </Button>
+            </>
+          )}
+        </Modal>
       )}
     </>
   )

@@ -2,7 +2,10 @@ import styled from '@emotion/styled'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { selectImageData } from '../redux/features/multi-images/selector'
 import { isEqual } from 'lodash-es'
-import { setShouldSetWatermarkByUid } from '../redux/features/multi-images/slice'
+import {
+  setIsSelected,
+  setShouldSetWatermarkByUid,
+} from '../redux/features/multi-images/slice'
 
 const Container = styled.div`
   display: inline-flex;
@@ -11,12 +14,14 @@ const Container = styled.div`
   width: 201px;
 `
 
-const ImageContainer = styled.img`
+const ImageContainer = styled.img<{ $isSelected: boolean }>`
   display: block;
   width: 100%;
   height: 144px;
   object-fit: contain;
   background-color: #d9d9d9;
+
+  ${({ $isSelected }) => $isSelected && `border: 7px solid #f00;`}
 `
 
 const InfoContainer = styled.div`
@@ -85,7 +90,12 @@ export default function Item({ uid }: Props) {
 
   return (
     <Container>
-      <ImageContainer src={data.blobURL} alt={data.name} />
+      <ImageContainer
+        src={data.blobURL}
+        alt={data.name}
+        $isSelected={data.isSelected}
+        onClick={() => dispatch(setIsSelected(data.uid))}
+      />
       <InfoContainer>
         <FileNameContainer title={data.name}>{data.name}</FileNameContainer>
         <WatermarkControl>
