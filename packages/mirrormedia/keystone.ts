@@ -1,6 +1,5 @@
 import { config } from '@keystone-6/core'
 import { listDefinition as lists } from './lists'
-import appConfig from './config'
 import envVar from './environment-variables'
 import express from 'express'
 import { createAuth } from '@keystone-6/auth'
@@ -24,7 +23,7 @@ const { withAuth } = createAuth({
   },
 })
 
-const session = statelessSessions(appConfig.session)
+const session = statelessSessions(envVar.session)
 
 const graphqlConfig: GraphQLConfig = {
   apolloConfig:
@@ -51,8 +50,8 @@ const graphqlConfig: GraphQLConfig = {
 export default withAuth(
   config({
     db: {
-      provider: appConfig.database.provider,
-      url: appConfig.database.url,
+      provider: envVar.database.provider,
+      url: envVar.database.url,
       idField: {
         kind: 'autoincrement',
       },
@@ -70,20 +69,20 @@ export default withAuth(
       files: {
         kind: 'local',
         type: 'file',
-        storagePath: appConfig.files.storagePath,
+        storagePath: envVar.files.storagePath,
         serverRoute: {
           path: '/files',
         },
-        generateUrl: (path) => `/files${path}`,
+        generateUrl: (path) => `${envVar.files.baseUrl}${path}`,
       },
       images: {
         kind: 'local',
         type: 'image',
-        storagePath: appConfig.images.storagePath,
+        storagePath: envVar.images.storagePath,
         serverRoute: {
           path: '/images',
         },
-        generateUrl: (path) => `/images${path}`,
+        generateUrl: (path) => `${envVar.images.baseUrl}${path}`,
       },
     },
     server: {
@@ -91,7 +90,7 @@ export default withAuth(
         path: '/health_check',
         data: { status: 'healthy' },
       },
-	  maxFileSize: 2000 * 1024 * 1024,
+      maxFileSize: 2000 * 1024 * 1024,
       extendExpressApp: (app, context) => {
         // This middleware is available in Express v4.16.0 onwards
         // Set to 50mb because DraftJS Editor playload could be really large
