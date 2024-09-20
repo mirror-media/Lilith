@@ -856,6 +856,7 @@ model File {
 
 enum FormTypeType {
   qa
+  poll
   form
   questionniare
   quiz

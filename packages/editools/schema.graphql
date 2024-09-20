@@ -1042,6 +1042,7 @@ type Form {
 
 enum FormTypeType {
   qa
+  poll
   form
   questionniare
   quiz
