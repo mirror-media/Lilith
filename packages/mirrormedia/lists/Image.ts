@@ -1,7 +1,8 @@
-import config from '../config'
+import envVar from '../environment-variables'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import { file, image, text, virtual, checkbox } from '@keystone-6/core/fields'
+import { getFileURL } from '../utils/common'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -100,14 +101,18 @@ const listConfigurations = list({
               : ['w480', 'w800', 'w1200', 'w1600']
 
           resizedTargets.forEach((target) => {
-            rtn[
-              target
-            ] = `https://${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+            rtn[target] = getFileURL(
+              envVar.gcs.bucket,
+              envVar.images.baseUrl,
+              `${filename}-${target}${extension}`
+            )
           })
 
-          rtn[
-            'original'
-          ] = `https://${config.googleCloudStorage.bucket}/images/${filename}${extension}`
+          rtn['original'] = getFileURL(
+            envVar.gcs.bucket,
+            envVar.images.baseUrl,
+            `${filename}${extension}`
+          )
           return Object.assign(empty, rtn)
         },
       }),
@@ -175,14 +180,18 @@ const listConfigurations = list({
               : ['w480', 'w800', 'w1200', 'w1600']
 
           resizedTargets.forEach((target) => {
-            rtn[
-              target
-            ] = `https://${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+            rtn[target] = getFileURL(
+              envVar.gcs.bucket,
+              envVar.images.baseUrl,
+              `${filename}-${target}${extension}`
+            )
           })
 
-          rtn[
-            'original'
-          ] = `https://${config.googleCloudStorage.bucket}/images/${filename}${extension}`
+          rtn['original'] = getFileURL(
+            envVar.gcs.bucket,
+            envVar.images.baseUrl,
+            `${filename}${extension}`
+          )
           return Object.assign(empty, rtn)
         },
       }),

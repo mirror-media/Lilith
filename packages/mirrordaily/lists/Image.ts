@@ -1,7 +1,8 @@
-import config from '../config'
+import envVar from '../environment-variables'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { file, image, text, virtual, checkbox } from '@keystone-6/core/fields'
+import { image, text, virtual, checkbox } from '@keystone-6/core/fields'
+import { getFileURL } from '../utils/common'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -86,14 +87,18 @@ const listConfigurations = list({
               : ['w480', 'w800', 'w1200', 'w1600']
 
           resizedTargets.forEach((target) => {
-            rtn[
-              target
-            ] = `https://${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+            rtn[target] = getFileURL(
+              envVar.gcs.bucket,
+              envVar.images.baseUrl,
+              `${filename}-${target}${extension}`
+            )
           })
 
-          rtn[
-            'original'
-          ] = `https://${config.googleCloudStorage.bucket}/images/${filename}${extension}`
+          rtn['original'] = getFileURL(
+            envVar.gcs.bucket,
+            envVar.images.baseUrl,
+            `${filename}${extension}`
+          )
           return Object.assign(empty, rtn)
         },
       }),
@@ -161,34 +166,23 @@ const listConfigurations = list({
               : ['w480', 'w800', 'w1200', 'w1600']
 
           resizedTargets.forEach((target) => {
-            rtn[
-              target
-            ] = `https://${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+            rtn[target] = getFileURL(
+              envVar.gcs.bucket,
+              envVar.images.baseUrl,
+              `${filename}-${target}${extension}`
+            )
           })
 
-          rtn[
-            'original'
-          ] = `https://${config.googleCloudStorage.bucket}/images/${filename}${extension}`
+          rtn['original'] = getFileURL(
+            envVar.gcs.bucket,
+            envVar.images.baseUrl,
+            `${filename}${extension}`
+          )
           return Object.assign(empty, rtn)
         },
       }),
       ui: {
         query: '{ original w480 w800 w1200 w1600 w2400 }',
-      },
-    }),
-    file: file({
-      label: '檔案（建議長邊大於 2000 pixel）',
-      storage: 'files',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
-        listView: {
-          fieldMode: 'read',
-        },
       },
     }),
     topicKeywords: text({

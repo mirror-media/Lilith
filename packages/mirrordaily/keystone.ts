@@ -1,7 +1,6 @@
 import 'dotenv/config'
 import { config } from '@keystone-6/core'
 import { listDefinition as lists } from './lists'
-import appConfig from './config'
 import envVar from './environment-variables'
 import express from 'express'
 import { createAuth } from '@keystone-6/auth'
@@ -25,7 +24,7 @@ const { withAuth } = createAuth({
   },
 })
 
-const session = statelessSessions(appConfig.session)
+const session = statelessSessions(envVar.session)
 
 const graphqlConfig: GraphQLConfig = {
   apolloConfig:
@@ -52,8 +51,8 @@ const graphqlConfig: GraphQLConfig = {
 export default withAuth(
   config({
     db: {
-      provider: appConfig.database.provider,
-      url: appConfig.database.url,
+      provider: envVar.database.provider,
+      url: envVar.database.url,
       idField: {
         kind: 'autoincrement',
       },
@@ -71,20 +70,29 @@ export default withAuth(
       files: {
         kind: 'local',
         type: 'file',
-        storagePath: appConfig.files.storagePath,
+        storagePath: envVar.files.storagePath,
         serverRoute: {
-          path: '/files',
+          path: envVar.files.baseUrl,
         },
-        generateUrl: (path) => `/files${path}`,
+        generateUrl: (path) => `${envVar.files.baseUrl}${path}`,
       },
       images: {
         kind: 'local',
         type: 'image',
-        storagePath: appConfig.images.storagePath,
+        storagePath: envVar.images.storagePath,
         serverRoute: {
-          path: '/images',
+          path: envVar.images.baseUrl,
         },
-        generateUrl: (path) => `/images${path}`,
+        generateUrl: (path) => `${envVar.images.baseUrl}${path}`,
+      },
+      videos: {
+        kind: 'local',
+        type: 'file',
+        storagePath: envVar.videos.storagePath,
+        serverRoute: {
+          path: envVar.videos.baseUrl,
+        },
+        generateUrl: (path) => `${envVar.videos.baseUrl}${path}`,
       },
     },
     server: {
