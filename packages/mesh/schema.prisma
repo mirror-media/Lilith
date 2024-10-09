@@ -365,6 +365,7 @@ model Member {
   verified                     Boolean            @default(false)
   pick                         Pick[]             @relation("Pick_member")
   sponsor                      Sponsorship[]      @relation("Sponsorship_sponsor")
+  transaction                  Transaction[]      @relation("Transaction_member")
   comment                      Comment[]          @relation("Member_comment")
   member_like                  Comment[]          @relation("Comment_like")
   follower                     Member[]           @relation("Member_follower")
@@ -391,7 +392,6 @@ model Member {
   from_Story_author            Story[]            @relation("Story_author")
   from_Notify_member           Notify[]           @relation("Notify_member")
   from_Notify_sender           Notify[]           @relation("Notify_sender")
-  from_Transaction_member      Transaction[]      @relation("Transaction_member")
 
   @@index([avatar_imageId])
   @@index([createdById])

@@ -8,7 +8,7 @@ const listConfigurations = list({
   fields: {
     member: relationship({ 
         label: "會員",
-        ref: 'Member', 
+        ref: 'Member.transaction', 
         many: false
     }),
     policy: relationship({ 

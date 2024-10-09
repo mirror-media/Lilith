@@ -215,8 +215,6 @@ model Photo {
   imageFile_height            Int?
   imageFile_id                String?
   waterMark                   Boolean        @default(false)
-  file_filesize               Int?
-  file_filename               String?
   topicKeywords               String         @default("")
   copyRight                   Boolean        @default(false)
   createdAt                   DateTime?
@@ -381,6 +379,8 @@ model Topic {
   heroImage                    Photo?    @relation("Topic_heroImage", fields: [heroImageId], references: [id])
   heroImageId                  Int?      @map("heroImage")
   heroUrl                      String?
+  heroVideo                    Video?    @relation("Topic_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId                  Int?      @map("heroVideo")
   leading                      String?
   sections                     Section[] @relation("Section_topics")
   og_title                     String    @default("")
@@ -407,6 +407,7 @@ model Topic {
 
   @@index([state])
   @@index([heroImageId])
+  @@index([heroVideoId])
   @@index([leading])
   @@index([og_imageId])
   @@index([title_style])
@@ -460,12 +461,14 @@ model User {
 model Video {
   id                        Int       @id @default(autoincrement())
   name                      String    @default("")
+  isShorts                  Boolean   @default(false)
   file_filesize             Int?
   file_filename             String?
-  urlOriginal               String    @default("")
-  content                   Json?
+  content                   String    @default("")
   heroImage                 Photo?    @relation("Video_heroImage", fields: [heroImageId], references: [id])
   heroImageId               Int?      @map("heroImage")
+  uploader                  String    @default("")
+  uploaderEmail             String    @default("")
   isFeed                    Boolean   @default(false)
   related_posts             Post[]    @relation("Post_related_videos")
   manualOrderOfRelatedPosts Json?
@@ -473,7 +476,6 @@ model Video {
   state                     String?   @default("draft")
   publishedDate             DateTime?
   tags                      Tag[]     @relation("Video_tags")
-  apiData                   Json?
   createdAt                 DateTime?
   updatedAt                 DateTime?
   createdBy                 User?     @relation("Video_createdBy", fields: [createdById], references: [id])
@@ -481,6 +483,7 @@ model Video {
   updatedBy                 User?     @relation("Video_updatedBy", fields: [updatedById], references: [id])
   updatedById               Int?      @map("updatedBy")
   from_Post_heroVideo       Post[]    @relation("Post_heroVideo")
+  from_Topic_heroVideo      Topic[]   @relation("Topic_heroVideo")
 
   @@index([heroImageId])
   @@index([videoSection])

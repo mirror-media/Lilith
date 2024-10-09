@@ -931,7 +931,6 @@ type Photo {
   waterMark: Boolean
   resized: ResizedImages
   resizedWebp: ResizedWebPImages
-  file: FileFieldOutput
   topicKeywords: String
   copyRight: Boolean
   createdAt: DateTime
@@ -1007,7 +1006,6 @@ input PhotoUpdateInput {
   name: String
   imageFile: ImageFieldInput
   waterMark: Boolean
-  file: FileFieldInput
   topicKeywords: String
   copyRight: Boolean
   createdAt: DateTime
@@ -1029,7 +1027,6 @@ input PhotoCreateInput {
   name: String
   imageFile: ImageFieldInput
   waterMark: Boolean
-  file: FileFieldInput
   topicKeywords: String
   copyRight: Boolean
   createdAt: DateTime
@@ -1636,6 +1633,7 @@ type Topic {
   brief: JSON
   heroImage: Photo
   heroUrl: String
+  heroVideo: Video
   leading: String
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
@@ -1680,6 +1678,7 @@ input TopicWhereInput {
   state: StringNullableFilter
   heroImage: PhotoWhereInput
   heroUrl: StringNullableFilter
+  heroVideo: VideoWhereInput
   leading: StringNullableFilter
   sections: SectionManyRelationFilter
   og_title: StringFilter
@@ -1736,6 +1735,7 @@ input TopicUpdateInput {
   brief: JSON
   heroImage: PhotoRelateToOneForUpdateInput
   heroUrl: String
+  heroVideo: VideoRelateToOneForUpdateInput
   leading: String
   sections: SectionRelateToManyForUpdateInput
   og_title: String
@@ -1778,6 +1778,7 @@ input TopicCreateInput {
   brief: JSON
   heroImage: PhotoRelateToOneForCreateInput
   heroUrl: String
+  heroVideo: VideoRelateToOneForCreateInput
   leading: String
   sections: SectionRelateToManyForCreateInput
   og_title: String
@@ -1866,11 +1867,13 @@ input UserCreateInput {
 type Video {
   id: ID!
   name: String
+  isShorts: Boolean
   file: FileFieldOutput
   videoSrc: String
-  urlOriginal: String
-  content: JSON
+  content: String
   heroImage: Photo
+  uploader: String
+  uploaderEmail: String
   isFeed: Boolean
   related_posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   related_postsCount(where: PostWhereInput! = {}): Int
@@ -1880,7 +1883,6 @@ type Video {
   publishedDate: DateTime
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
-  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1898,8 +1900,11 @@ input VideoWhereInput {
   NOT: [VideoWhereInput!]
   id: IDFilter
   name: StringFilter
-  urlOriginal: StringFilter
+  isShorts: BooleanFilter
+  content: StringFilter
   heroImage: PhotoWhereInput
+  uploader: StringFilter
+  uploaderEmail: StringFilter
   isFeed: BooleanFilter
   related_posts: PostManyRelationFilter
   videoSection: StringNullableFilter
@@ -1915,7 +1920,10 @@ input VideoWhereInput {
 input VideoOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  urlOriginal: OrderDirection
+  isShorts: OrderDirection
+  content: OrderDirection
+  uploader: OrderDirection
+  uploaderEmail: OrderDirection
   isFeed: OrderDirection
   videoSection: OrderDirection
   state: OrderDirection
@@ -1926,10 +1934,12 @@ input VideoOrderByInput {
 
 input VideoUpdateInput {
   name: String
+  isShorts: Boolean
   file: FileFieldInput
-  urlOriginal: String
-  content: JSON
+  content: String
   heroImage: PhotoRelateToOneForUpdateInput
+  uploader: String
+  uploaderEmail: String
   isFeed: Boolean
   related_posts: PostRelateToManyForUpdateInput
   manualOrderOfRelatedPosts: JSON
@@ -1937,7 +1947,6 @@ input VideoUpdateInput {
   state: String
   publishedDate: DateTime
   tags: TagRelateToManyForUpdateInput
-  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1951,10 +1960,12 @@ input VideoUpdateArgs {
 
 input VideoCreateInput {
   name: String
+  isShorts: Boolean
   file: FileFieldInput
-  urlOriginal: String
-  content: JSON
+  content: String
   heroImage: PhotoRelateToOneForCreateInput
+  uploader: String
+  uploaderEmail: String
   isFeed: Boolean
   related_posts: PostRelateToManyForCreateInput
   manualOrderOfRelatedPosts: JSON
@@ -1962,7 +1973,6 @@ input VideoCreateInput {
   state: String
   publishedDate: DateTime
   tags: TagRelateToManyForCreateInput
-  apiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

@@ -1,4 +1,4 @@
-import config from '../config'
+import envVar from '../environment-variables'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import {
@@ -9,6 +9,7 @@ import {
   file,
   virtual,
 } from '@keystone-6/core/fields'
+import { getFileURL } from '../utils/common'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -33,10 +34,10 @@ const listConfigurations = list({
         type: graphql.String,
         resolve(item: Record<string, unknown>) {
           const filename = item?.pdfFile_filename
-          if (!filename) {
+          if (!filename || typeof filename !== 'string') {
             return ''
           }
-          return `https://${config.googleCloudStorage.bucket}/files/${filename}`
+          return getFileURL(envVar.gcs.bucket, envVar.files.baseUrl, filename)
         },
       }),
     }),
@@ -74,7 +75,7 @@ const listConfigurations = list({
   ui: {
     labelField: 'title',
     listView: {
-      initialColumns: ['id', 'title', 'slug', 'pdfFile'],
+      initialColumns: ['id', 'title', 'slug', 'urlOriginal'],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },

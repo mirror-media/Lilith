@@ -9,13 +9,8 @@ import {
   timestamp,
 } from '@keystone-6/core/fields'
 
-const {
-  allowRoles,
-  admin,
-  moderator,
-  editor,
-  contributor,
-} = utils.accessControl
+const { allowRoles, admin, moderator, editor, contributor } =
+  utils.accessControl
 
 const listConfigurations = list({
   fields: {
@@ -37,6 +32,10 @@ const listConfigurations = list({
         {
           label: 'QA',
           value: 'qa',
+        },
+        {
+          label: 'Poll',
+          value: 'poll',
         },
         {
           label: 'form',
