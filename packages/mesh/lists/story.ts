@@ -4,6 +4,7 @@ import {
   text,
   relationship,
   select,
+  timestamp,
   checkbox,
   json,
 } from '@keystone-6/core/fields'
