@@ -1194,7 +1194,6 @@ type Story {
   paywall: Boolean
   isMember: Boolean
   origid: String
-  storyType: String
   full_screen_ad: String
   is_active: Boolean
   tag(
@@ -1240,7 +1239,6 @@ input StoryWhereInput {
   paywall: BooleanFilter
   isMember: BooleanFilter
   origid: StringFilter
-  storyType: StringNullableFilter
   full_screen_ad: StringNullableFilter
   is_active: BooleanFilter
   tag: TagManyRelationFilter
@@ -1278,7 +1276,6 @@ input StoryOrderByInput {
   paywall: OrderDirection
   isMember: OrderDirection
   origid: OrderDirection
-  storyType: OrderDirection
   full_screen_ad: OrderDirection
   is_active: OrderDirection
   createdAt: OrderDirection
@@ -1308,7 +1305,6 @@ input StoryUpdateInput {
   paywall: Boolean
   isMember: Boolean
   origid: String
-  storyType: String
   full_screen_ad: String
   is_active: Boolean
   tag: TagRelateToManyForUpdateInput
@@ -1366,7 +1362,6 @@ input StoryCreateInput {
   paywall: Boolean
   isMember: Boolean
   origid: String
-  storyType: String
   full_screen_ad: String
   is_active: Boolean
   tag: TagRelateToManyForCreateInput

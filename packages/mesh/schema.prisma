@@ -316,7 +316,6 @@ model Story {
   paywall                      Boolean          @default(false)
   isMember                     Boolean          @default(false)
   origid                       String           @default("")
-  storyType                    String?          @default("article")
   full_screen_ad               String?          @default("none")
   is_active                    Boolean          @default(true)
   tag                          Tag[]            @relation("Story_tag")

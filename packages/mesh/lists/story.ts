@@ -74,17 +74,6 @@ const listConfigurations = list({
       defaultValue: false,
     }),
     origid: text({}),
-    storyType: select({
-      label: '型態',
-      datatype: 'enum',
-      options: [
-        { label: '文章', value: 'article' },
-        { label: '連結', value: 'link' },
-        { label: 'Podcast', value: 'podcast' },
-        { label: '影片', value: 'video' },
-      ],
-      defaultValue: 'article',
-    }),
     full_screen_ad: select({
       label: '蓋板',
       datatype: 'enum',
