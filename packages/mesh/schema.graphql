@@ -7,6 +7,7 @@ type User {
   email: String
   password: PasswordState
   role: String
+  publisher: Publisher
   isProtected: Boolean
 }
 
@@ -27,6 +28,7 @@ input UserWhereInput {
   name: StringFilter
   email: StringFilter
   role: StringFilter
+  publisher: PublisherWhereInput
   isProtected: BooleanFilter
 }
 
@@ -98,7 +100,14 @@ input UserUpdateInput {
   email: String
   password: String
   role: String
+  publisher: PublisherRelateToOneForUpdateInput
   isProtected: Boolean
+}
+
+input PublisherRelateToOneForUpdateInput {
+  create: PublisherCreateInput
+  connect: PublisherWhereUniqueInput
+  disconnect: Boolean
 }
 
 input UserUpdateArgs {
@@ -111,7 +120,13 @@ input UserCreateInput {
   email: String
   password: String
   role: String
+  publisher: PublisherRelateToOneForCreateInput
   isProtected: Boolean
+}
+
+input PublisherRelateToOneForCreateInput {
+  create: PublisherCreateInput
+  connect: PublisherWhereUniqueInput
 }
 
 type Category {
@@ -563,6 +578,13 @@ type Publisher {
   ): [Member!]
   followerCount(where: MemberWhereInput! = {}): Int
   wallet: String
+  user(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [User!]
+  userCount(where: UserWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -593,6 +615,7 @@ input PublisherWhereInput {
   paywall: BooleanFilter
   follower: MemberManyRelationFilter
   wallet: StringFilter
+  user: UserManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -603,6 +626,12 @@ input SponsorshipManyRelationFilter {
   every: SponsorshipWhereInput
   some: SponsorshipWhereInput
   none: SponsorshipWhereInput
+}
+
+input UserManyRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
 }
 
 input PublisherOrderByInput {
@@ -640,6 +669,7 @@ input PublisherUpdateInput {
   paywall: Boolean
   follower: MemberRelateToManyForUpdateInput
   wallet: String
+  user: UserRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -651,6 +681,13 @@ input SponsorshipRelateToManyForUpdateInput {
   set: [SponsorshipWhereUniqueInput!]
   create: [SponsorshipCreateInput!]
   connect: [SponsorshipWhereUniqueInput!]
+}
+
+input UserRelateToManyForUpdateInput {
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
 }
 
 input PublisherUpdateArgs {
@@ -674,6 +711,7 @@ input PublisherCreateInput {
   paywall: Boolean
   follower: MemberRelateToManyForCreateInput
   wallet: String
+  user: UserRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -683,6 +721,11 @@ input PublisherCreateInput {
 input SponsorshipRelateToManyForCreateInput {
   create: [SponsorshipCreateInput!]
   connect: [SponsorshipWhereUniqueInput!]
+}
+
+input UserRelateToManyForCreateInput {
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
 }
 
 type Collection {
@@ -1151,6 +1194,7 @@ type Story {
   paywall: Boolean
   isMember: Boolean
   origid: String
+  storyType: String
   full_screen_ad: String
   is_active: Boolean
   tag(
@@ -1196,6 +1240,7 @@ input StoryWhereInput {
   paywall: BooleanFilter
   isMember: BooleanFilter
   origid: StringFilter
+  storyType: StringNullableFilter
   full_screen_ad: StringNullableFilter
   is_active: BooleanFilter
   tag: TagManyRelationFilter
@@ -1233,6 +1278,7 @@ input StoryOrderByInput {
   paywall: OrderDirection
   isMember: OrderDirection
   origid: OrderDirection
+  storyType: OrderDirection
   full_screen_ad: OrderDirection
   is_active: OrderDirection
   createdAt: OrderDirection
@@ -1262,6 +1308,7 @@ input StoryUpdateInput {
   paywall: Boolean
   isMember: Boolean
   origid: String
+  storyType: String
   full_screen_ad: String
   is_active: Boolean
   tag: TagRelateToManyForUpdateInput
@@ -1269,12 +1316,6 @@ input StoryUpdateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
-}
-
-input PublisherRelateToOneForUpdateInput {
-  create: PublisherCreateInput
-  connect: PublisherWhereUniqueInput
-  disconnect: Boolean
 }
 
 input CategoryRelateToOneForUpdateInput {
@@ -1325,6 +1366,7 @@ input StoryCreateInput {
   paywall: Boolean
   isMember: Boolean
   origid: String
+  storyType: String
   full_screen_ad: String
   is_active: Boolean
   tag: TagRelateToManyForCreateInput
@@ -1332,11 +1374,6 @@ input StoryCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input PublisherRelateToOneForCreateInput {
-  create: PublisherCreateInput
-  connect: PublisherWhereUniqueInput
 }
 
 input CategoryRelateToOneForCreateInput {

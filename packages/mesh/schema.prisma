@@ -17,6 +17,8 @@ model User {
   email                           String             @unique @default("")
   password                        String
   role                            String
+  publisher                       Publisher?         @relation("User_publisher", fields: [publisherId], references: [id])
+  publisherId                     Int?               @map("publisher")
   isProtected                     Boolean            @default(false)
   from_Category_createdBy         Category[]         @relation("Category_createdBy")
   from_Category_updatedBy         Category[]         @relation("Category_updatedBy")
@@ -52,6 +54,8 @@ model User {
   from_Transaction_updatedBy      Transaction[]      @relation("Transaction_updatedBy")
   from_Sponsorship_createdBy      Sponsorship[]      @relation("Sponsorship_createdBy")
   from_Sponsorship_updatedBy      Sponsorship[]      @relation("Sponsorship_updatedBy")
+
+  @@index([publisherId])
 }
 
 model Category {
@@ -162,6 +166,7 @@ model Publisher {
   paywall               Boolean       @default(false)
   follower              Member[]      @relation("Member_follow_publisher")
   wallet                String        @default("")
+  user                  User[]        @relation("User_publisher")
   createdAt             DateTime?
   updatedAt             DateTime?
   createdBy             User?         @relation("Publisher_createdBy", fields: [createdById], references: [id])
@@ -311,6 +316,7 @@ model Story {
   paywall                      Boolean          @default(false)
   isMember                     Boolean          @default(false)
   origid                       String           @default("")
+  storyType                    String?          @default("article")
   full_screen_ad               String?          @default("none")
   is_active                    Boolean          @default(true)
   tag                          Tag[]            @relation("Story_tag")
