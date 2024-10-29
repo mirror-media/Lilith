@@ -9,12 +9,7 @@ import {
   checkbox,
 } from '@keystone-6/core/fields'
 
-const {
-  allowRolesForUsers,
-  admin,
-  moderator,
-  editor,
-} = utils.accessControl
+const { allowRolesForUsers, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
@@ -54,6 +49,11 @@ const listConfigurations = list({
         },
       ],
       validation: { isRequired: true },
+    }),
+    publisher: relationship({
+      label: 'Publisher',
+      ref: 'Publisher.user',
+      many: false,
     }),
     isProtected: checkbox({
       defaultValue: false,

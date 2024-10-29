@@ -17,7 +17,11 @@ model User {
   email                           String             @unique @default("")
   password                        String
   role                            String
+  publisher                       Publisher?         @relation("User_publisher", fields: [publisherId], references: [id])
+  publisherId                     Int?               @map("publisher")
   isProtected                     Boolean            @default(false)
+  from_InvalidName_createdBy      InvalidName[]      @relation("InvalidName_createdBy")
+  from_InvalidName_updatedBy      InvalidName[]      @relation("InvalidName_updatedBy")
   from_Category_createdBy         Category[]         @relation("Category_createdBy")
   from_Category_updatedBy         Category[]         @relation("Category_updatedBy")
   from_Comment_createdBy          Comment[]          @relation("Comment_createdBy")
@@ -52,6 +56,22 @@ model User {
   from_Transaction_updatedBy      Transaction[]      @relation("Transaction_updatedBy")
   from_Sponsorship_createdBy      Sponsorship[]      @relation("Sponsorship_createdBy")
   from_Sponsorship_updatedBy      Sponsorship[]      @relation("Sponsorship_updatedBy")
+
+  @@index([publisherId])
+}
+
+model InvalidName {
+  id          Int       @id @default(autoincrement())
+  name        String    @default("")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("InvalidName_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("InvalidName_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 model Category {
@@ -153,6 +173,7 @@ model Publisher {
   summary               String        @default("")
   logo                  String        @default("")
   description           String        @default("")
+  is_active             Boolean       @default(true)
   customId              String        @default("")
   sponsored             Sponsorship[] @relation("Sponsorship_publisher")
   lang                  String?       @default("zh-TW")
@@ -162,6 +183,7 @@ model Publisher {
   paywall               Boolean       @default(false)
   follower              Member[]      @relation("Member_follow_publisher")
   wallet                String        @default("")
+  user                  User[]        @relation("User_publisher")
   createdAt             DateTime?
   updatedAt             DateTime?
   createdBy             User?         @relation("Publisher_createdBy", fields: [createdById], references: [id])

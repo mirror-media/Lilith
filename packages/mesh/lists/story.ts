@@ -1,50 +1,42 @@
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core';
+import { list } from '@keystone-6/core'
 import {
   text,
   relationship,
-  password,
-  timestamp,
   select,
-  integer,
+  timestamp,
   checkbox,
   json,
-} from '@keystone-6/core/fields';
+} from '@keystone-6/core/fields'
 import { checkAccessToken } from '../utils/accessToken'
 
-const {
-  allowRoles,
-  admin,
-  moderator,
-  editor,
-  owner,
-} = utils.accessControl
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
-const listConfigurations = list ({
+const listConfigurations = list({
   fields: {
     title: text({ validation: { isRequired: false } }),
-    url: text({ 
-		validation: { isRequired: true },
-		isIndexed: 'unique',
-	}),
-    summary: text({ 
-	  validation: { isRequired: false },
-	  ui: { displayMode: 'textarea' },
-	}),
-    content: text({ 
-	  validation: { isRequired: false }, 
-	  ui: { displayMode: 'textarea' },
-    access: {
-      read: checkAccessToken('story')
-    }
-	}),
+    url: text({
+      validation: { isRequired: true },
+      isIndexed: 'unique',
+    }),
+    summary: text({
+      validation: { isRequired: false },
+      ui: { displayMode: 'textarea' },
+    }),
+    content: text({
+      validation: { isRequired: false },
+      ui: { displayMode: 'textarea' },
+      access: {
+        read: checkAccessToken('story'),
+      },
+    }),
     trimContent: text({
-    validation: {isRequired: false},
-    ui: {displayMode: 'textarea'},
-  }),
-    writer: text({ 
-	  validation: { isRequired: false }, 
-	}),
+      validation: { isRequired: false },
+      ui: { displayMode: 'textarea' },
+    }),
+    writer: text({
+      validation: { isRequired: false },
+    }),
     apiData: json({
       label: '資料庫使用',
       ui: {
@@ -52,51 +44,51 @@ const listConfigurations = list ({
         itemView: { fieldMode: 'hidden' },
       },
       access: {
-        read: checkAccessToken('story')
-      }
-  }),
+        read: checkAccessToken('story'),
+      },
+    }),
     trimApiData: json({
-      label: "資料庫使用",
+      label: '資料庫使用',
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
       },
-  }),
-	source: relationship({ ref: 'Publisher', many: false }),
-	author: relationship({ ref: 'Member', many: false }),
-	category: relationship({ ref: 'Category', many: false }),
-	pick: relationship({ ref: 'Pick.story', many: true }),
-	comment: relationship({ ref: 'Comment.story', many: true }),
-	related: relationship({ ref: 'Story', many: true }),
+    }),
+    source: relationship({ ref: 'Publisher', many: false }),
+    author: relationship({ ref: 'Member', many: false }),
+    category: relationship({ ref: 'Category', many: false }),
+    pick: relationship({ ref: 'Pick.story', many: true }),
+    comment: relationship({ ref: 'Comment.story', many: true }),
+    related: relationship({ ref: 'Story', many: true }),
     published_date: timestamp({ validation: { isRequired: false } }),
     og_title: text({ validation: { isRequired: false } }),
     og_image: text({ validation: { isRequired: false } }),
     og_description: text({ validation: { isRequired: false } }),
-	full_content: checkbox({
-	  defaultValue: false,
-	}),
+    full_content: checkbox({
+      defaultValue: false,
+    }),
     paywall: checkbox({
       defaultValue: false,
     }),
     isMember: checkbox({
       defaultValue: false,
     }),
-	origid: text({}),
-	full_screen_ad: select({
-	  label: '蓋板',
-	  datatype: 'enum',
-	  options: [ 
-		{ label: '手機', value: 'mobile' }, 
-		{ label: '桌機', value: 'desktop' },
-		{ label: '所有尺寸', value: 'all' },
-		{ label: '無', value: 'none' }
-	  ],
-	  defaultValue: 'none',
-	}),
+    origid: text({}),
+    full_screen_ad: select({
+      label: '蓋板',
+      datatype: 'enum',
+      options: [
+        { label: '手機', value: 'mobile' },
+        { label: '桌機', value: 'desktop' },
+        { label: '所有尺寸', value: 'all' },
+        { label: '無', value: 'none' },
+      ],
+      defaultValue: 'none',
+    }),
     is_active: checkbox({
       defaultValue: true,
     }),
-    tag: relationship({ ref: 'Tag', many: true}),
+    tag: relationship({ ref: 'Tag', many: true }),
   },
   ui: {
     listView: {
