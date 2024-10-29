@@ -12,6 +12,9 @@ const listConfigurations = list({
     summary: text({ validation: { isRequired: false } }),
     logo: text({ validation: { isRequired: false } }),
     description: text({ validation: { isRequired: false } }),
+    is_active: checkbox({
+      defaultValue: true,
+    }),
     customId: text({
       label: 'customId',
       validation: {
