@@ -59,7 +59,7 @@ const listConfigurations = list({
       many: true,
     }),
     comment: relationship({
-      ref: 'Comment',
+      ref: 'Comment.member',
       many: true,
     }),
     member_like: relationship({

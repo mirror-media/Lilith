@@ -20,7 +20,7 @@ const {
 
 const listConfigurations = list ({
   fields: {
-	member: relationship({ ref: 'Member', many: false }),
+	member: relationship({ ref: 'Member.comment', many: false }),
 	story: relationship({ ref: 'Story.comment', many: false }),
     collection: relationship({ ref: 'Collection.comment', many: false }),
     content: text({ validation: { isRequired: false } }),
