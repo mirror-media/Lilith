@@ -13,12 +13,20 @@ const {
   IMAGES_STORAGE_PATH,
   MEMORY_CACHE_TTL,
   MEMORY_CACHE_SIZE,
+  IS_CACHE_ENABLED,
+  REDIS_SERVER,
+  CACHE_IDENTIFIER,
+  CACHE_CONNECT_TIMEOUT,
+  CACHE_MAXAGE,
 } = process.env
 
 enum DatabaseProvider {
   Sqlite = 'sqlite',
   Postgres = 'postgresql',
 }
+
+const cacheMaxAge = Number(CACHE_MAXAGE)
+const cacheConnectTimeout = Number(CACHE_CONNECT_TIMEOUT)
 
 export default {
   isUIDisabled: IS_UI_DISABLED === 'true',
@@ -53,5 +61,14 @@ export default {
   images: {
     baseUrl: IMAGES_BASE_URL || '/images',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
+  },
+  cache: {
+    isEnabled: IS_CACHE_ENABLED === 'true',
+    identifier: CACHE_IDENTIFIER ?? 'weekly-cms',
+    url: REDIS_SERVER ?? '',
+    connectTimeOut: Number.isNaN(cacheConnectTimeout)
+      ? 1000 * 10
+      : cacheConnectTimeout, // unit: millisecond
+    maxAge: Number.isNaN(cacheMaxAge) ? 60 : cacheMaxAge, // unit: second
   },
 }

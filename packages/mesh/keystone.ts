@@ -4,7 +4,10 @@ import appConfig from './config'
 import envVar from './environment-variables'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
-import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache'
+import Keyv from 'keyv'
+import { KeyvAdapter } from '@apollo/utils.keyvadapter'
+import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
+import responseCachePlugin from '@apollo/server-plugin-response-cache'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -19,6 +22,28 @@ const { withAuth } = createAuth({
 })
 
 const session = statelessSessions(appConfig.session)
+
+const graphqlConfig: GraphQLConfig = {
+  apolloConfig:
+    envVar.accessControlStrategy === 'gql' && envVar.cache.isEnabled
+      ? {
+          plugins: [
+            responseCachePlugin(),
+            ApolloServerPluginCacheControl({
+              defaultMaxAge: envVar.cache.maxAge,
+            }),
+          ],
+          cache: new KeyvAdapter(
+            new Keyv(envVar.cache.url, {
+              lazyConnect: true,
+              namespace: envVar.cache.identifier,
+              connectionName: envVar.cache.identifier,
+              connectTimeout: envVar.cache.connectTimeOut,
+            })
+          ),
+        }
+      : undefined,
+}
 
 export default withAuth(
   config({
@@ -44,16 +69,7 @@ export default withAuth(
         baseUrl: appConfig.files.baseUrl,
       },
     },
-    graphql: {
-      apolloConfig: {
-        cache: new InMemoryLRUCache({
-          // ~100MiB
-          maxSize: Math.pow(2, 20) * envVar.memoryCacheSize,
-          // 5 minutes (in milliseconds)
-          ttl: envVar.memoryCacheTtl,
-        }),
-      },
-    },
+    graphql: graphqlConfig,
     images: {
       upload: 'local',
       local: {
