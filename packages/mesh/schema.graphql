@@ -290,6 +290,7 @@ type Comment {
   id: ID!
   member: Member
   story: Story
+  podcast: Podcast
   collection: Collection
   content: String
   parent: Comment
@@ -322,6 +323,7 @@ input CommentWhereInput {
   id: IDFilter
   member: MemberWhereInput
   story: StoryWhereInput
+  podcast: PodcastWhereInput
   collection: CollectionWhereInput
   content: StringFilter
   parent: CommentWhereInput
@@ -386,6 +388,7 @@ input CommentOrderByInput {
 input CommentUpdateInput {
   member: MemberRelateToOneForUpdateInput
   story: StoryRelateToOneForUpdateInput
+  podcast: PodcastRelateToOneForUpdateInput
   collection: CollectionRelateToOneForUpdateInput
   content: String
   parent: CommentRelateToOneForUpdateInput
@@ -410,6 +413,12 @@ input MemberRelateToOneForUpdateInput {
 input StoryRelateToOneForUpdateInput {
   create: StoryCreateInput
   connect: StoryWhereUniqueInput
+  disconnect: Boolean
+}
+
+input PodcastRelateToOneForUpdateInput {
+  create: PodcastCreateInput
+  connect: PodcastWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -440,6 +449,7 @@ input CommentUpdateArgs {
 input CommentCreateInput {
   member: MemberRelateToOneForCreateInput
   story: StoryRelateToOneForCreateInput
+  podcast: PodcastRelateToOneForCreateInput
   collection: CollectionRelateToOneForCreateInput
   content: String
   parent: CommentRelateToOneForCreateInput
@@ -465,6 +475,11 @@ input StoryRelateToOneForCreateInput {
   connect: StoryWhereUniqueInput
 }
 
+input PodcastRelateToOneForCreateInput {
+  create: PodcastCreateInput
+  connect: PodcastWhereUniqueInput
+}
+
 input CollectionRelateToOneForCreateInput {
   create: CollectionCreateInput
   connect: CollectionWhereUniqueInput
@@ -485,6 +500,7 @@ type Pick {
   member: Member
   objective: String
   story: Story
+  podcast: Podcast
   collection: Collection
   comment: Comment
   pick_comment(
@@ -517,6 +533,7 @@ input PickWhereInput {
   member: MemberWhereInput
   objective: StringNullableFilter
   story: StoryWhereInput
+  podcast: PodcastWhereInput
   collection: CollectionWhereInput
   comment: CommentWhereInput
   pick_comment: CommentManyRelationFilter
@@ -553,6 +570,7 @@ input PickUpdateInput {
   member: MemberRelateToOneForUpdateInput
   objective: String
   story: StoryRelateToOneForUpdateInput
+  podcast: PodcastRelateToOneForUpdateInput
   collection: CollectionRelateToOneForUpdateInput
   comment: CommentRelateToOneForUpdateInput
   pick_comment: CommentRelateToManyForUpdateInput
@@ -583,6 +601,7 @@ input PickCreateInput {
   member: MemberRelateToOneForCreateInput
   objective: String
   story: StoryRelateToOneForCreateInput
+  podcast: PodcastRelateToOneForCreateInput
   collection: CollectionRelateToOneForCreateInput
   comment: CommentRelateToOneForCreateInput
   pick_comment: CommentRelateToManyForCreateInput
@@ -2263,6 +2282,153 @@ input PolicyCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Podcast {
+  id: ID!
+  title: String
+  url: String
+  description: String
+  author: String
+  source: Publisher
+  category: Category
+  duration: String
+  pick(
+    where: PickWhereInput! = {}
+    orderBy: [PickOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Pick!]
+  pickCount(where: PickWhereInput! = {}): Int
+  comment(
+    where: CommentWhereInput! = {}
+    orderBy: [CommentOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Comment!]
+  commentCount(where: CommentWhereInput! = {}): Int
+  published_date: DateTime
+  og_title: String
+  og_image: String
+  og_description: String
+  isMember: Boolean
+  origid: String
+  is_active: Boolean
+  tag(
+    where: TagWhereInput! = {}
+    orderBy: [TagOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Tag!]
+  tagCount(where: TagWhereInput! = {}): Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input PodcastWhereUniqueInput {
+  id: ID
+  url: String
+}
+
+input PodcastWhereInput {
+  AND: [PodcastWhereInput!]
+  OR: [PodcastWhereInput!]
+  NOT: [PodcastWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  url: StringFilter
+  description: StringFilter
+  author: StringFilter
+  source: PublisherWhereInput
+  category: CategoryWhereInput
+  duration: StringFilter
+  pick: PickManyRelationFilter
+  comment: CommentManyRelationFilter
+  published_date: DateTimeNullableFilter
+  og_title: StringFilter
+  og_image: StringFilter
+  og_description: StringFilter
+  isMember: BooleanFilter
+  origid: StringFilter
+  is_active: BooleanFilter
+  tag: TagManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PodcastOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  url: OrderDirection
+  description: OrderDirection
+  author: OrderDirection
+  duration: OrderDirection
+  published_date: OrderDirection
+  og_title: OrderDirection
+  og_image: OrderDirection
+  og_description: OrderDirection
+  isMember: OrderDirection
+  origid: OrderDirection
+  is_active: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PodcastUpdateInput {
+  title: String
+  url: String
+  description: String
+  author: String
+  source: PublisherRelateToOneForUpdateInput
+  category: CategoryRelateToOneForUpdateInput
+  duration: String
+  pick: PickRelateToManyForUpdateInput
+  comment: CommentRelateToManyForUpdateInput
+  published_date: DateTime
+  og_title: String
+  og_image: String
+  og_description: String
+  isMember: Boolean
+  origid: String
+  is_active: Boolean
+  tag: TagRelateToManyForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PodcastUpdateArgs {
+  where: PodcastWhereUniqueInput!
+  data: PodcastUpdateInput!
+}
+
+input PodcastCreateInput {
+  title: String
+  url: String
+  description: String
+  author: String
+  source: PublisherRelateToOneForCreateInput
+  category: CategoryRelateToOneForCreateInput
+  duration: String
+  pick: PickRelateToManyForCreateInput
+  comment: CommentRelateToManyForCreateInput
+  published_date: DateTime
+  og_title: String
+  og_image: String
+  og_description: String
+  isMember: Boolean
+  origid: String
+  is_active: Boolean
+  tag: TagRelateToManyForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 type Transaction {
   id: ID!
   member: Member
@@ -2614,6 +2780,15 @@ type Mutation {
   updatePolicies(data: [PolicyUpdateArgs!]!): [Policy]
   deletePolicy(where: PolicyWhereUniqueInput!): Policy
   deletePolicies(where: [PolicyWhereUniqueInput!]!): [Policy]
+  createPodcast(data: PodcastCreateInput!): Podcast
+  createPodcasts(data: [PodcastCreateInput!]!): [Podcast]
+  updatePodcast(
+    where: PodcastWhereUniqueInput!
+    data: PodcastUpdateInput!
+  ): Podcast
+  updatePodcasts(data: [PodcastUpdateArgs!]!): [Podcast]
+  deletePodcast(where: PodcastWhereUniqueInput!): Podcast
+  deletePodcasts(where: [PodcastWhereUniqueInput!]!): [Podcast]
   createTransaction(data: TransactionCreateInput!): Transaction
   createTransactions(data: [TransactionCreateInput!]!): [Transaction]
   updateTransaction(
@@ -2799,6 +2974,14 @@ type Query {
   ): [Policy!]
   policy(where: PolicyWhereUniqueInput!): Policy
   policiesCount(where: PolicyWhereInput! = {}): Int
+  podcasts(
+    where: PodcastWhereInput! = {}
+    orderBy: [PodcastOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Podcast!]
+  podcast(where: PodcastWhereUniqueInput!): Podcast
+  podcastsCount(where: PodcastWhereInput! = {}): Int
   transactions(
     where: TransactionWhereInput! = {}
     orderBy: [TransactionOrderByInput!]! = []

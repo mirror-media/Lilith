@@ -52,6 +52,8 @@ model User {
   from_Photo_updatedBy            Photo[]            @relation("Photo_updatedBy")
   from_Policy_createdBy           Policy[]           @relation("Policy_createdBy")
   from_Policy_updatedBy           Policy[]           @relation("Policy_updatedBy")
+  from_Podcast_createdBy          Podcast[]          @relation("Podcast_createdBy")
+  from_Podcast_updatedBy          Podcast[]          @relation("Podcast_updatedBy")
   from_Transaction_createdBy      Transaction[]      @relation("Transaction_createdBy")
   from_Transaction_updatedBy      Transaction[]      @relation("Transaction_updatedBy")
   from_Sponsorship_createdBy      Sponsorship[]      @relation("Sponsorship_createdBy")
@@ -88,6 +90,7 @@ model Category {
   updatedById                    Int?      @map("updatedBy")
   from_Story_category            Story[]   @relation("Story_category")
   from_Member_following_category Member[]  @relation("Member_following_category")
+  from_Podcast_category          Podcast[] @relation("Podcast_category")
 
   @@index([createdById])
   @@index([updatedById])
@@ -99,6 +102,8 @@ model Comment {
   memberId               Int?        @map("member")
   story                  Story?      @relation("Comment_story", fields: [storyId], references: [id])
   storyId                Int?        @map("story")
+  podcast                Podcast?    @relation("Comment_podcast", fields: [podcastId], references: [id])
+  podcastId              Int?        @map("podcast")
   collection             Collection? @relation("Comment_collection", fields: [collectionId], references: [id])
   collectionId           Int?        @map("collection")
   content                String      @default("")
@@ -124,6 +129,7 @@ model Comment {
 
   @@index([memberId])
   @@index([storyId])
+  @@index([podcastId])
   @@index([collectionId])
   @@index([parentId])
   @@index([rootId])
@@ -138,6 +144,8 @@ model Pick {
   objective     String?
   story         Story?      @relation("Pick_story", fields: [storyId], references: [id])
   storyId       Int?        @map("story")
+  podcast       Podcast?    @relation("Pick_podcast", fields: [podcastId], references: [id])
+  podcastId     Int?        @map("podcast")
   collection    Collection? @relation("Pick_collection", fields: [collectionId], references: [id])
   collectionId  Int?        @map("collection")
   comment       Comment?    @relation("Pick_comment", fields: [commentId], references: [id])
@@ -158,6 +166,7 @@ model Pick {
 
   @@index([memberId])
   @@index([storyId])
+  @@index([podcastId])
   @@index([collectionId])
   @@index([commentId])
   @@index([createdById])
@@ -191,6 +200,7 @@ model Publisher {
   updatedById           Int?          @map("updatedBy")
   from_Story_source     Story[]       @relation("Story_source")
   from_Policy_publisher Policy[]      @relation("Policy_publisher")
+  from_Podcast_source   Podcast[]     @relation("Podcast_source")
 
   @@index([createdById])
   @@index([updatedById])
@@ -354,17 +364,18 @@ model Story {
 }
 
 model Tag {
-  id             Int       @id @default(autoincrement())
-  name           String    @default("")
-  pick           Pick[]    @relation("Tag_pick")
-  story          Story[]   @relation("Tag_story")
-  createdAt      DateTime?
-  updatedAt      DateTime?
-  createdBy      User?     @relation("Tag_createdBy", fields: [createdById], references: [id])
-  createdById    Int?      @map("createdBy")
-  updatedBy      User?     @relation("Tag_updatedBy", fields: [updatedById], references: [id])
-  updatedById    Int?      @map("updatedBy")
-  from_Story_tag Story[]   @relation("Story_tag")
+  id               Int       @id @default(autoincrement())
+  name             String    @default("")
+  pick             Pick[]    @relation("Tag_pick")
+  story            Story[]   @relation("Tag_story")
+  createdAt        DateTime?
+  updatedAt        DateTime?
+  createdBy        User?     @relation("Tag_createdBy", fields: [createdById], references: [id])
+  createdById      Int?      @map("createdBy")
+  updatedBy        User?     @relation("Tag_updatedBy", fields: [updatedById], references: [id])
+  updatedById      Int?      @map("updatedBy")
+  from_Story_tag   Story[]   @relation("Story_tag")
+  from_Podcast_tag Podcast[] @relation("Podcast_tag")
 
   @@index([createdById])
   @@index([updatedById])
@@ -501,6 +512,40 @@ model Policy {
   from_Transaction_policy Transaction[]   @relation("Transaction_policy")
 
   @@index([publisherId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Podcast {
+  id             Int        @id @default(autoincrement())
+  title          String     @default("")
+  url            String     @unique @default("")
+  description    String     @default("")
+  author         String     @default("")
+  source         Publisher? @relation("Podcast_source", fields: [sourceId], references: [id])
+  sourceId       Int?       @map("source")
+  category       Category?  @relation("Podcast_category", fields: [categoryId], references: [id])
+  categoryId     Int?       @map("category")
+  duration       String     @default("")
+  pick           Pick[]     @relation("Pick_podcast")
+  comment        Comment[]  @relation("Comment_podcast")
+  published_date DateTime?
+  og_title       String     @default("")
+  og_image       String     @default("")
+  og_description String     @default("")
+  isMember       Boolean    @default(false)
+  origid         String     @default("")
+  is_active      Boolean    @default(true)
+  tag            Tag[]      @relation("Podcast_tag")
+  createdAt      DateTime?
+  updatedAt      DateTime?
+  createdBy      User?      @relation("Podcast_createdBy", fields: [createdById], references: [id])
+  createdById    Int?       @map("createdBy")
+  updatedBy      User?      @relation("Podcast_updatedBy", fields: [updatedById], references: [id])
+  updatedById    Int?       @map("updatedBy")
+
+  @@index([sourceId])
+  @@index([categoryId])
   @@index([createdById])
   @@index([updatedById])
 }
