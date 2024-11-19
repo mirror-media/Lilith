@@ -2067,6 +2067,7 @@ type Photo {
   name: String
   file: ImageFieldOutput
   resized: ResizedImages
+  resizedWebp: ResizedWebPImages
   urlOriginal: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -2092,6 +2093,15 @@ enum ImageExtension {
 }
 
 type ResizedImages {
+  original: String
+  w480: String
+  w800: String
+  w1200: String
+  w1600: String
+  w2400: String
+}
+
+type ResizedWebPImages {
   original: String
   w480: String
   w800: String
