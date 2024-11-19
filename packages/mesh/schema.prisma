@@ -77,20 +77,21 @@ model InvalidName {
 }
 
 model Category {
-  id                             Int       @id @default(autoincrement())
-  title                          String    @default("")
-  slug                           String    @default("")
-  summary                        String    @default("")
-  priority                       Int       @default(0)
+  id                             Int         @id @default(autoincrement())
+  title                          String      @default("")
+  slug                           String      @default("")
+  summary                        String      @default("")
+  priority                       Int         @default(0)
   createdAt                      DateTime?
   updatedAt                      DateTime?
-  createdBy                      User?     @relation("Category_createdBy", fields: [createdById], references: [id])
-  createdById                    Int?      @map("createdBy")
-  updatedBy                      User?     @relation("Category_updatedBy", fields: [updatedById], references: [id])
-  updatedById                    Int?      @map("updatedBy")
-  from_Story_category            Story[]   @relation("Story_category")
-  from_Member_following_category Member[]  @relation("Member_following_category")
-  from_Podcast_category          Podcast[] @relation("Podcast_category")
+  createdBy                      User?       @relation("Category_createdBy", fields: [createdById], references: [id])
+  createdById                    Int?        @map("createdBy")
+  updatedBy                      User?       @relation("Category_updatedBy", fields: [updatedById], references: [id])
+  updatedById                    Int?        @map("updatedBy")
+  from_Publisher_category        Publisher[] @relation("Publisher_category")
+  from_Story_category            Story[]     @relation("Story_category")
+  from_Member_following_category Member[]    @relation("Member_following_category")
+  from_Podcast_category          Podcast[]   @relation("Podcast_category")
 
   @@index([createdById])
   @@index([updatedById])
@@ -185,6 +186,8 @@ model Publisher {
   customId              String        @default("")
   sponsored             Sponsorship[] @relation("Sponsorship_publisher")
   lang                  String?       @default("zh-TW")
+  category              Category?     @relation("Publisher_category", fields: [categoryId], references: [id])
+  categoryId            Int?          @map("category")
   full_content          Boolean       @default(false)
   full_screen_ad        String?       @default("none")
   source_type           String?       @default("empty")
@@ -202,6 +205,7 @@ model Publisher {
   from_Policy_publisher Policy[]      @relation("Policy_publisher")
   from_Podcast_source   Podcast[]     @relation("Podcast_source")
 
+  @@index([categoryId])
   @@index([createdById])
   @@index([updatedById])
 }

@@ -639,6 +639,7 @@ type Publisher {
   ): [Sponsorship!]
   sponsoredCount(where: SponsorshipWhereInput! = {}): Int
   lang: String
+  category: Category
   full_content: Boolean
   full_screen_ad: String
   source_type: String
@@ -683,6 +684,7 @@ input PublisherWhereInput {
   customId: StringFilter
   sponsored: SponsorshipManyRelationFilter
   lang: StringNullableFilter
+  category: CategoryWhereInput
   full_content: BooleanFilter
   full_screen_ad: StringNullableFilter
   source_type: StringNullableFilter
@@ -739,6 +741,7 @@ input PublisherUpdateInput {
   customId: String
   sponsored: SponsorshipRelateToManyForUpdateInput
   lang: String
+  category: CategoryRelateToOneForUpdateInput
   full_content: Boolean
   full_screen_ad: String
   source_type: String
@@ -757,6 +760,12 @@ input SponsorshipRelateToManyForUpdateInput {
   set: [SponsorshipWhereUniqueInput!]
   create: [SponsorshipCreateInput!]
   connect: [SponsorshipWhereUniqueInput!]
+}
+
+input CategoryRelateToOneForUpdateInput {
+  create: CategoryCreateInput
+  connect: CategoryWhereUniqueInput
+  disconnect: Boolean
 }
 
 input UserRelateToManyForUpdateInput {
@@ -782,6 +791,7 @@ input PublisherCreateInput {
   customId: String
   sponsored: SponsorshipRelateToManyForCreateInput
   lang: String
+  category: CategoryRelateToOneForCreateInput
   full_content: Boolean
   full_screen_ad: String
   source_type: String
@@ -798,6 +808,11 @@ input PublisherCreateInput {
 input SponsorshipRelateToManyForCreateInput {
   create: [SponsorshipCreateInput!]
   connect: [SponsorshipWhereUniqueInput!]
+}
+
+input CategoryRelateToOneForCreateInput {
+  create: CategoryCreateInput
+  connect: CategoryWhereUniqueInput
 }
 
 input UserRelateToManyForCreateInput {
@@ -1391,12 +1406,6 @@ input StoryUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input CategoryRelateToOneForUpdateInput {
-  create: CategoryCreateInput
-  connect: CategoryWhereUniqueInput
-  disconnect: Boolean
-}
-
 input StoryRelateToManyForUpdateInput {
   disconnect: [StoryWhereUniqueInput!]
   set: [StoryWhereUniqueInput!]
@@ -1446,11 +1455,6 @@ input StoryCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input CategoryRelateToOneForCreateInput {
-  create: CategoryCreateInput
-  connect: CategoryWhereUniqueInput
 }
 
 input StoryRelateToManyForCreateInput {
