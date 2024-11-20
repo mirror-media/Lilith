@@ -14,6 +14,7 @@ import Image from './image'
 import Notify from './notify'
 import Announcement from './announcement'
 import Policy from './policy'
+import Podcast from './podcast'
 import Transaction from './transaction'
 import Sponsorship from './sponsorship'
 import InvalidName from './invalid_name'
@@ -36,6 +37,7 @@ export const listDefinition = {
   Announcement,
   Photo: Image,
   Policy,
+  Podcast,
   Transaction,
   Sponsorship,
 }
