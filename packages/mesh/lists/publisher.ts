@@ -37,6 +37,7 @@ const listConfigurations = list({
       ],
       defaultValue: 'zh-TW',
     }),
+    category: relationship({ ref: 'Category', many: false }),
     full_content: checkbox({
       defaultValue: false,
     }),
