@@ -631,6 +631,7 @@ type Publisher {
   description: String
   is_active: Boolean
   customId: String
+  admin: Member
   sponsored(
     where: SponsorshipWhereInput! = {}
     orderBy: [SponsorshipOrderByInput!]! = []
@@ -682,6 +683,7 @@ input PublisherWhereInput {
   description: StringFilter
   is_active: BooleanFilter
   customId: StringFilter
+  admin: MemberWhereInput
   sponsored: SponsorshipManyRelationFilter
   lang: StringNullableFilter
   category: CategoryWhereInput
@@ -739,6 +741,7 @@ input PublisherUpdateInput {
   description: String
   is_active: Boolean
   customId: String
+  admin: MemberRelateToOneForUpdateInput
   sponsored: SponsorshipRelateToManyForUpdateInput
   lang: String
   category: CategoryRelateToOneForUpdateInput
@@ -789,6 +792,7 @@ input PublisherCreateInput {
   description: String
   is_active: Boolean
   customId: String
+  admin: MemberRelateToOneForCreateInput
   sponsored: SponsorshipRelateToManyForCreateInput
   lang: String
   category: CategoryRelateToOneForCreateInput
@@ -1553,6 +1557,7 @@ type Member {
   email: String
   is_active: Boolean
   verified: Boolean
+  publisher: Publisher
   pick(
     where: PickWhereInput! = {}
     orderBy: [PickOrderByInput!]! = []
@@ -1688,6 +1693,7 @@ input MemberWhereInput {
   email: StringFilter
   is_active: BooleanFilter
   verified: BooleanFilter
+  publisher: PublisherWhereInput
   pick: PickManyRelationFilter
   sponsor: SponsorshipManyRelationFilter
   transaction: TransactionManyRelationFilter
@@ -1774,6 +1780,7 @@ input MemberUpdateInput {
   email: String
   is_active: Boolean
   verified: Boolean
+  publisher: PublisherRelateToOneForUpdateInput
   pick: PickRelateToManyForUpdateInput
   sponsor: SponsorshipRelateToManyForUpdateInput
   transaction: TransactionRelateToManyForUpdateInput
@@ -1861,6 +1868,7 @@ input MemberCreateInput {
   email: String
   is_active: Boolean
   verified: Boolean
+  publisher: PublisherRelateToOneForCreateInput
   pick: PickRelateToManyForCreateInput
   sponsor: SponsorshipRelateToManyForCreateInput
   transaction: TransactionRelateToManyForCreateInput
