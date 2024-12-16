@@ -820,6 +820,11 @@
     "@hapi/cryptiles" "5.x.x"
     "@hapi/hoek" "9.x.x"
 
+"@ioredis/commands@^1.1.1":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@ioredis/commands/-/commands-1.2.0.tgz#6d61b3097470af1fdbbe622795b8921d42018e11"
+  integrity sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==
+
 "@josephg/resolvable@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@josephg/resolvable/-/resolvable-1.0.1.tgz#69bc4db754d79e1a2f17a650d3466e038d94a5eb"
@@ -2607,6 +2612,11 @@ clipboard-copy@^4.0.1:
   resolved "https://registry.yarnpkg.com/clipboard-copy/-/clipboard-copy-4.0.1.tgz#326ef9726d4ffe72d9a82a7bbe19379de692017d"
   integrity sha512-wOlqdqziE/NNTUJsfSgXmBMIrYmfd5V0HCGsR8uAKHcg+h9NENWINcfRjtWGU77wDHC8B8ijV4hMTGYbrKovng==
 
+cluster-key-slot@^1.1.0:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/cluster-key-slot/-/cluster-key-slot-1.1.2.tgz#88ddaa46906e303b5de30d3153b7d9fe0a0c19ac"
+  integrity sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==
+
 color-convert@^1.9.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.3.tgz#bb71850690e1f136567de629d2d5471deda4c1e8"
@@ -2910,7 +2920,7 @@ delayed-stream@~1.0.0:
   resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
   integrity sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==
 
-denque@^2.0.1:
+denque@^2.0.1, denque@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/denque/-/denque-2.1.0.tgz#e93e1a6569fb5e66f16a3c2a2964617d349d6ab1"
   integrity sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==
@@ -4072,6 +4082,21 @@ io-ts@^2.0.0, io-ts@^2.2.16:
   resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.20.tgz#be42b75f6668a2c44f706f72ee6e4c906777c7f5"
   integrity sha512-Rq2BsYmtwS5vVttie4rqrOCIfHCS9TgpRLFpKQCM1wZBBRY9nWVGmEvm2FnDbSE2un1UE39DvFpTR5UL47YDcA==
 
+ioredis@^5.3.2:
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-5.4.1.tgz#1c56b70b759f01465913887375ed809134296f40"
+  integrity sha512-2YZsvl7jopIa1gaePkeMtd9rAcSjOOjPtpcLlOeusyO+XH2SK5ZcT+UCrElPP+WVIInh2TzeI4XW9ENaSLVVHA==
+  dependencies:
+    "@ioredis/commands" "^1.1.1"
+    cluster-key-slot "^1.1.0"
+    debug "^4.3.4"
+    denque "^2.1.0"
+    lodash.defaults "^4.2.0"
+    lodash.isarguments "^3.1.0"
+    redis-errors "^1.2.0"
+    redis-parser "^3.0.0"
+    standard-as-callback "^2.1.0"
+
 ipaddr.js@1.9.1:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.9.1.tgz#bff38543eeb8984825079ff3a2a8e6cbd46781b3"
@@ -4342,6 +4367,11 @@ json-bigint@^1.0.0:
   dependencies:
     bignumber.js "^9.0.0"
 
+json-buffer@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/json-buffer/-/json-buffer-3.0.1.tgz#9338802a30d3b6605fbe0613e094008ca8c05a13"
+  integrity sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==
+
 json-parse-even-better-errors@^2.3.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/json-parse-even-better-errors/-/json-parse-even-better-errors-2.3.1.tgz#7c47805a94319928e05777405dc12e1f7a4ee02d"
@@ -4404,6 +4434,13 @@ jws@^4.0.0:
   dependencies:
     jwa "^2.0.0"
     safe-buffer "^5.0.1"
+
+keyv@^4.5.3:
+  version "4.5.4"
+  resolved "https://registry.yarnpkg.com/keyv/-/keyv-4.5.4.tgz#a879a99e29452f942439f2a405e3af8b31d4de93"
+  integrity sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==
+  dependencies:
+    json-buffer "3.0.1"
 
 kind-of@^6.0.3:
   version "6.0.3"
@@ -4480,6 +4517,11 @@ lodash.get@4:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
   integrity sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==
+
+lodash.isarguments@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/lodash.isarguments/-/lodash.isarguments-3.1.0.tgz#2f573d85c6a24289ff00663b491c1d338ff3458a"
+  integrity sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==
 
 lodash.isplainobject@^4.0.6:
   version "4.0.6"
@@ -5521,13 +5563,13 @@ react-day-picker@^8.0.4:
   resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.7.1.tgz#b8388c2afa69d4a6da4c5fde5323fae884acfe2f"
   integrity sha512-Gv426AW8b151CZfh3aP5RUGztLwHB/EyJgWZ5iMgtzbFBkjHfG6Y66CIQFMWGLnYjsQ9DYSJRmJ5S0Pg5HWKjA==
 
-react-dom@18.1.0, react-dom@^17.0.2:
-  version "18.1.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.1.0.tgz#7f6dd84b706408adde05e1df575b3a024d7e8a2f"
-  integrity sha512-fU1Txz7Budmvamp7bshe4Zi32d0ll7ect+ccxNu9FlObT605GOEB8BfO4tmRJ39R5Zj831VCpvQ05QPBW5yb+w==
+react-dom@18.2.0, react-dom@^17.0.2:
+  version "18.2.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
+  integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
   dependencies:
     loose-envify "^1.1.0"
-    scheduler "^0.22.0"
+    scheduler "^0.23.0"
 
 react-fast-compare@^3.0.1:
   version "3.2.2"
@@ -5612,10 +5654,10 @@ react-transition-group@^4.3.0, react-transition-group@^4.4.2:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react@18.1.0, react@^17.0.2:
-  version "18.1.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-18.1.0.tgz#6f8620382decb17fdc5cc223a115e2adbf104890"
-  integrity sha512-4oL8ivCz5ZEPyclFQXaNksK3adutVS8l2xzZU0cqEFrE9Sb7fC0EFK5uEk74wIreL1DERyjvsU915j1pcT2uEQ==
+react@18.2.0, react@^17.0.2:
+  version "18.2.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
+  integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
   dependencies:
     loose-envify "^1.1.0"
 
@@ -5674,6 +5716,18 @@ redent@^3.0.0:
   dependencies:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
+
+redis-errors@^1.0.0, redis-errors@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/redis-errors/-/redis-errors-1.2.0.tgz#eb62d2adb15e4eaf4610c04afe1529384250abad"
+  integrity sha512-1qny3OExCf0UvUV/5wpYKf2YwPcOqXzkwKKSmKHiE6ZMQs5heeE/c8eXK+PNllPvmjgAbfnsbpkGZWy8cBpn9w==
+
+redis-parser@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/redis-parser/-/redis-parser-3.0.0.tgz#b66d828cdcafe6b4b8a428a7def4c6bcac31c8b4"
+  integrity sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==
+  dependencies:
+    redis-errors "^1.0.0"
 
 regenerator-runtime@^0.13.11:
   version "0.13.11"
@@ -5813,10 +5867,10 @@ safe-regex-test@^1.0.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-scheduler@^0.22.0:
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.22.0.tgz#83a5d63594edf074add9a7198b1bae76c3db01b8"
-  integrity sha512-6QAm1BgQI88NPYymgGQLCZgvep4FyePDWFpXVK+zNSUgHwlqpJy8VEh8Et0KxTACS4VWwMousBElAZOH9nkkoQ==
+scheduler@^0.23.0:
+  version "0.23.2"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.2.tgz#414ba64a3b282892e944cf2108ecc078d115cdc3"
+  integrity sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==
   dependencies:
     loose-envify "^1.1.0"
 
@@ -6077,6 +6131,11 @@ sprintf-js@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.1.2.tgz#da1765262bf8c0f571749f2ad6c26300207ae673"
   integrity sha512-VE0SOVEHCk7Qc8ulkWw3ntAzXuqf7S2lvwQaDLRnUeIEaKNQJzV6BwmLKhOqT61aGhfUMrXeaBk+oDGCzvhcug==
+
+standard-as-callback@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/standard-as-callback/-/standard-as-callback-2.1.0.tgz#8953fc05359868a77b5b9739a665c5977bb7df45"
+  integrity sha512-qoRRSyROncaz1z0mvYqIE4lCd9p2R90i6GxW3uZv5ucSu8tU7B5HXUP1gG8pVZsYNVaXjk8ClXHPttLyxAL48A==
 
 statuses@2.0.1:
   version "2.0.1"

@@ -22,6 +22,11 @@ const listConfigurations = list({
       },
       isindexed: 'unique',
     }),
+    admin: relationship({
+      label: "媒體管理員",
+      ref: "Member.publisher",
+      many: false,
+    }),
     sponsored: relationship({
       label: 'Sponsored',
       ref: 'Sponsorship.publisher',
