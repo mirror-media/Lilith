@@ -1585,7 +1585,13 @@ type Member {
   email: String
   is_active: Boolean
   verified: Boolean
-  publisher: Publisher
+  publisher(
+    where: PublisherWhereInput! = {}
+    orderBy: [PublisherOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Publisher!]
+  publisherCount(where: PublisherWhereInput! = {}): Int
   pick(
     where: PickWhereInput! = {}
     orderBy: [PickOrderByInput!]! = []
@@ -1721,7 +1727,7 @@ input MemberWhereInput {
   email: StringFilter
   is_active: BooleanFilter
   verified: BooleanFilter
-  publisher: PublisherWhereInput
+  publisher: PublisherManyRelationFilter
   pick: PickManyRelationFilter
   sponsor: SponsorshipManyRelationFilter
   transaction: TransactionManyRelationFilter
@@ -1744,6 +1750,12 @@ input MemberWhereInput {
   updatedBy: UserWhereInput
 }
 
+input PublisherManyRelationFilter {
+  every: PublisherWhereInput
+  some: PublisherWhereInput
+  none: PublisherWhereInput
+}
+
 input TransactionManyRelationFilter {
   every: TransactionWhereInput
   some: TransactionWhereInput
@@ -1760,12 +1772,6 @@ input CollectionManyRelationFilter {
   every: CollectionWhereInput
   some: CollectionWhereInput
   none: CollectionWhereInput
-}
-
-input PublisherManyRelationFilter {
-  every: PublisherWhereInput
-  some: PublisherWhereInput
-  none: PublisherWhereInput
 }
 
 input InvitationCodeManyRelationFilter {
@@ -1808,7 +1814,7 @@ input MemberUpdateInput {
   email: String
   is_active: Boolean
   verified: Boolean
-  publisher: PublisherRelateToOneForUpdateInput
+  publisher: PublisherRelateToManyForUpdateInput
   pick: PickRelateToManyForUpdateInput
   sponsor: SponsorshipRelateToManyForUpdateInput
   transaction: TransactionRelateToManyForUpdateInput
@@ -1831,6 +1837,13 @@ input MemberUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
+input PublisherRelateToManyForUpdateInput {
+  disconnect: [PublisherWhereUniqueInput!]
+  set: [PublisherWhereUniqueInput!]
+  create: [PublisherCreateInput!]
+  connect: [PublisherWhereUniqueInput!]
+}
+
 input TransactionRelateToManyForUpdateInput {
   disconnect: [TransactionWhereUniqueInput!]
   set: [TransactionWhereUniqueInput!]
@@ -1850,13 +1863,6 @@ input CollectionRelateToManyForUpdateInput {
   set: [CollectionWhereUniqueInput!]
   create: [CollectionCreateInput!]
   connect: [CollectionWhereUniqueInput!]
-}
-
-input PublisherRelateToManyForUpdateInput {
-  disconnect: [PublisherWhereUniqueInput!]
-  set: [PublisherWhereUniqueInput!]
-  create: [PublisherCreateInput!]
-  connect: [PublisherWhereUniqueInput!]
 }
 
 input InvitationCodeRelateToManyForUpdateInput {
@@ -1896,7 +1902,7 @@ input MemberCreateInput {
   email: String
   is_active: Boolean
   verified: Boolean
-  publisher: PublisherRelateToOneForCreateInput
+  publisher: PublisherRelateToManyForCreateInput
   pick: PickRelateToManyForCreateInput
   sponsor: SponsorshipRelateToManyForCreateInput
   transaction: TransactionRelateToManyForCreateInput
@@ -1919,6 +1925,11 @@ input MemberCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+input PublisherRelateToManyForCreateInput {
+  create: [PublisherCreateInput!]
+  connect: [PublisherWhereUniqueInput!]
+}
+
 input TransactionRelateToManyForCreateInput {
   create: [TransactionCreateInput!]
   connect: [TransactionWhereUniqueInput!]
@@ -1932,11 +1943,6 @@ input CategoryRelateToManyForCreateInput {
 input CollectionRelateToManyForCreateInput {
   create: [CollectionCreateInput!]
   connect: [CollectionWhereUniqueInput!]
-}
-
-input PublisherRelateToManyForCreateInput {
-  create: [PublisherCreateInput!]
-  connect: [PublisherWhereUniqueInput!]
 }
 
 input InvitationCodeRelateToManyForCreateInput {
