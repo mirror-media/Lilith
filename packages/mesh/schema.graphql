@@ -632,6 +632,13 @@ type Publisher {
   is_active: Boolean
   customId: String
   admin: Member
+  exchange(
+    where: ExchangeWhereInput! = {}
+    orderBy: [ExchangeOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Exchange!]
+  exchangeCount(where: ExchangeWhereInput! = {}): Int
   sponsored(
     where: SponsorshipWhereInput! = {}
     orderBy: [SponsorshipOrderByInput!]! = []
@@ -684,6 +691,7 @@ input PublisherWhereInput {
   is_active: BooleanFilter
   customId: StringFilter
   admin: MemberWhereInput
+  exchange: ExchangeManyRelationFilter
   sponsored: SponsorshipManyRelationFilter
   lang: StringNullableFilter
   category: CategoryWhereInput
@@ -698,6 +706,12 @@ input PublisherWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input ExchangeManyRelationFilter {
+  every: ExchangeWhereInput
+  some: ExchangeWhereInput
+  none: ExchangeWhereInput
 }
 
 input SponsorshipManyRelationFilter {
@@ -742,6 +756,7 @@ input PublisherUpdateInput {
   is_active: Boolean
   customId: String
   admin: MemberRelateToOneForUpdateInput
+  exchange: ExchangeRelateToManyForUpdateInput
   sponsored: SponsorshipRelateToManyForUpdateInput
   lang: String
   category: CategoryRelateToOneForUpdateInput
@@ -756,6 +771,13 @@ input PublisherUpdateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ExchangeRelateToManyForUpdateInput {
+  disconnect: [ExchangeWhereUniqueInput!]
+  set: [ExchangeWhereUniqueInput!]
+  create: [ExchangeCreateInput!]
+  connect: [ExchangeWhereUniqueInput!]
 }
 
 input SponsorshipRelateToManyForUpdateInput {
@@ -793,6 +815,7 @@ input PublisherCreateInput {
   is_active: Boolean
   customId: String
   admin: MemberRelateToOneForCreateInput
+  exchange: ExchangeRelateToManyForCreateInput
   sponsored: SponsorshipRelateToManyForCreateInput
   lang: String
   category: CategoryRelateToOneForCreateInput
@@ -807,6 +830,11 @@ input PublisherCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input ExchangeRelateToManyForCreateInput {
+  create: [ExchangeCreateInput!]
+  connect: [ExchangeWhereUniqueInput!]
 }
 
 input SponsorshipRelateToManyForCreateInput {
@@ -2652,6 +2680,101 @@ input SponsorshipCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Exchange {
+  id: ID!
+  publisher: Publisher
+  tid: String
+  exchangeVolume: Float
+  status: ExchangeStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum ExchangeStatusType {
+  Success
+  Failed
+}
+
+input ExchangeWhereUniqueInput {
+  id: ID
+}
+
+input ExchangeWhereInput {
+  AND: [ExchangeWhereInput!]
+  OR: [ExchangeWhereInput!]
+  NOT: [ExchangeWhereInput!]
+  id: IDFilter
+  publisher: PublisherWhereInput
+  tid: StringFilter
+  exchangeVolume: FloatFilter
+  status: ExchangeStatusTypeNullableFilter
+  complement: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input FloatFilter {
+  equals: Float
+  in: [Float!]
+  notIn: [Float!]
+  lt: Float
+  lte: Float
+  gt: Float
+  gte: Float
+  not: FloatFilter
+}
+
+input ExchangeStatusTypeNullableFilter {
+  equals: ExchangeStatusType
+  in: [ExchangeStatusType!]
+  notIn: [ExchangeStatusType!]
+  not: ExchangeStatusTypeNullableFilter
+}
+
+input ExchangeOrderByInput {
+  id: OrderDirection
+  tid: OrderDirection
+  exchangeVolume: OrderDirection
+  status: OrderDirection
+  complement: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ExchangeUpdateInput {
+  publisher: PublisherRelateToOneForUpdateInput
+  tid: String
+  exchangeVolume: Float
+  status: ExchangeStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ExchangeUpdateArgs {
+  where: ExchangeWhereUniqueInput!
+  data: ExchangeUpdateInput!
+}
+
+input ExchangeCreateInput {
+  publisher: PublisherRelateToOneForCreateInput
+  tid: String
+  exchangeVolume: Float
+  status: ExchangeStatusType
+  complement: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2829,6 +2952,15 @@ type Mutation {
   updateSponsorships(data: [SponsorshipUpdateArgs!]!): [Sponsorship]
   deleteSponsorship(where: SponsorshipWhereUniqueInput!): Sponsorship
   deleteSponsorships(where: [SponsorshipWhereUniqueInput!]!): [Sponsorship]
+  createExchange(data: ExchangeCreateInput!): Exchange
+  createExchanges(data: [ExchangeCreateInput!]!): [Exchange]
+  updateExchange(
+    where: ExchangeWhereUniqueInput!
+    data: ExchangeUpdateInput!
+  ): Exchange
+  updateExchanges(data: [ExchangeUpdateArgs!]!): [Exchange]
+  deleteExchange(where: ExchangeWhereUniqueInput!): Exchange
+  deleteExchanges(where: [ExchangeWhereUniqueInput!]!): [Exchange]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -3020,6 +3152,14 @@ type Query {
   ): [Sponsorship!]
   sponsorship(where: SponsorshipWhereUniqueInput!): Sponsorship
   sponsorshipsCount(where: SponsorshipWhereInput! = {}): Int
+  exchanges(
+    where: ExchangeWhereInput! = {}
+    orderBy: [ExchangeOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Exchange!]
+  exchange(where: ExchangeWhereUniqueInput!): Exchange
+  exchangesCount(where: ExchangeWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
