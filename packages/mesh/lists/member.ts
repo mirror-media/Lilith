@@ -47,7 +47,7 @@ const listConfigurations = list({
     publisher: relationship({
       label: "媒體管理員",
       ref: "Publisher.admin",
-      many: false
+      many: true
     }),
     pick: relationship({
       ref: 'Pick.member',

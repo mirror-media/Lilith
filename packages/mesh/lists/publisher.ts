@@ -27,6 +27,11 @@ const listConfigurations = list({
       ref: "Member.publisher",
       many: false,
     }),
+    exchange: relationship({
+      label: "點數兌換紀錄",
+      ref: "Exchange.publisher",
+      many: true,
+    }),
     sponsored: relationship({
       label: 'Sponsored',
       ref: 'Sponsorship.publisher',
