@@ -2505,6 +2505,7 @@ type Transaction {
 enum TransactionStatusType {
   Success
   Failed
+  Processing
 }
 
 input TransactionWhereUniqueInput {
@@ -2615,6 +2616,7 @@ type Sponsorship {
 enum SponsorshipStatusType {
   Success
   Failed
+  Processing
 }
 
 input SponsorshipWhereUniqueInput {
@@ -2702,6 +2704,7 @@ type Exchange {
 enum ExchangeStatusType {
   Success
   Failed
+  Processing
 }
 
 input ExchangeWhereUniqueInput {

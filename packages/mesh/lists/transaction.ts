@@ -47,6 +47,7 @@ const listConfigurations = list({
         options: [
             {label: "成功", value: "Success"},
             {label: "失敗", value: "Failed"},
+            {label: "處理中", value: "Processing"},
         ]
     }),
     complement: text({
