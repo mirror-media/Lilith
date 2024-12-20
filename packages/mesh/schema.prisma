@@ -641,14 +641,17 @@ enum PolicyTypeType {
 enum TransactionStatusType {
   Success
   Failed
+  Processing
 }
 
 enum SponsorshipStatusType {
   Success
   Failed
+  Processing
 }
 
 enum ExchangeStatusType {
   Success
   Failed
+  Processing
 }
