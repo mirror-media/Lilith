@@ -14,7 +14,7 @@ const listConfigurations = list({
     tid: text({
         label: '交易編號(TransactionID)',
         validation: {
-            isRequired: true,
+            isRequired: false,
         },
     }),
     exchangeVolume: float({
