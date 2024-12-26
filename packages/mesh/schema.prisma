@@ -58,6 +58,8 @@ model User {
   from_Transaction_updatedBy      Transaction[]      @relation("Transaction_updatedBy")
   from_Sponsorship_createdBy      Sponsorship[]      @relation("Sponsorship_createdBy")
   from_Sponsorship_updatedBy      Sponsorship[]      @relation("Sponsorship_updatedBy")
+  from_Exchange_createdBy         Exchange[]         @relation("Exchange_createdBy")
+  from_Exchange_updatedBy         Exchange[]         @relation("Exchange_updatedBy")
 
   @@index([publisherId])
 }
@@ -184,6 +186,9 @@ model Publisher {
   description           String        @default("")
   is_active             Boolean       @default(true)
   customId              String        @default("")
+  admin                 Member?       @relation("Publisher_admin", fields: [adminId], references: [id])
+  adminId               Int?          @map("admin")
+  exchange              Exchange[]    @relation("Exchange_publisher")
   sponsored             Sponsorship[] @relation("Sponsorship_publisher")
   lang                  String?       @default("zh-TW")
   category              Category?     @relation("Publisher_category", fields: [categoryId], references: [id])
@@ -205,6 +210,7 @@ model Publisher {
   from_Policy_publisher Policy[]      @relation("Policy_publisher")
   from_Podcast_source   Podcast[]     @relation("Podcast_source")
 
+  @@index([adminId])
   @@index([categoryId])
   @@index([createdById])
   @@index([updatedById])
@@ -399,6 +405,7 @@ model Member {
   email                        String             @unique @default("")
   is_active                    Boolean            @default(true)
   verified                     Boolean            @default(false)
+  publisher                    Publisher[]        @relation("Publisher_admin")
   pick                         Pick[]             @relation("Pick_member")
   sponsor                      Sponsorship[]      @relation("Sponsorship_sponsor")
   transaction                  Transaction[]      @relation("Transaction_member")
@@ -605,6 +612,26 @@ model Sponsorship {
   @@index([updatedById])
 }
 
+model Exchange {
+  id             Int                 @id @default(autoincrement())
+  publisher      Publisher?          @relation("Exchange_publisher", fields: [publisherId], references: [id])
+  publisherId    Int?                @map("publisher")
+  tid            String              @default("")
+  exchangeVolume Float
+  status         ExchangeStatusType?
+  complement     String              @default("")
+  createdAt      DateTime?
+  updatedAt      DateTime?
+  createdBy      User?               @relation("Exchange_createdBy", fields: [createdById], references: [id])
+  createdById    Int?                @map("createdBy")
+  updatedBy      User?               @relation("Exchange_updatedBy", fields: [updatedById], references: [id])
+  updatedById    Int?                @map("updatedBy")
+
+  @@index([publisherId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 enum PolicyTypeType {
   deposit
   unlock_all_publishers
@@ -614,9 +641,17 @@ enum PolicyTypeType {
 enum TransactionStatusType {
   Success
   Failed
+  Processing
 }
 
 enum SponsorshipStatusType {
   Success
   Failed
+  Processing
+}
+
+enum ExchangeStatusType {
+  Success
+  Failed
+  Processing
 }

@@ -44,6 +44,11 @@ const listConfigurations = list({
     verified: checkbox({
       defaultValue: false,
     }),
+    publisher: relationship({
+      label: "媒體管理員",
+      ref: "Publisher.admin",
+      many: true
+    }),
     pick: relationship({
       ref: 'Pick.member',
       many: true,

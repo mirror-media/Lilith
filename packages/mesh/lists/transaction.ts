@@ -19,7 +19,7 @@ const listConfigurations = list({
     tid: text({
         label: '交易編號(TransactionID)',
         validation: {
-            isRequired: true,
+            isRequired: false,
         },
     }),
     depositVolume: float({
@@ -47,6 +47,7 @@ const listConfigurations = list({
         options: [
             {label: "成功", value: "Success"},
             {label: "失敗", value: "Failed"},
+            {label: "處理中", value: "Processing"},
         ]
     }),
     complement: text({

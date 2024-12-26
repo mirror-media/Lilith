@@ -6,26 +6,21 @@ const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
+    publisher: relationship({ 
+        label: "媒體",
+        ref: 'Publisher.exchange', 
+        many: false
+    }),
     tid: text({
         label: '交易編號(TransactionID)',
         validation: {
             isRequired: false,
         },
     }),
-    sponsor: relationship({ 
-        label: "贊助者",
-        ref: 'Member.sponsor', 
-        many: false
-    }),
-    publisher: relationship({ 
-        label: "被贊助媒體",
-        ref: 'Publisher.sponsored', 
-        many: false 
-    }),
-    fee: float({
-        label: "贊助金額",
+    exchangeVolume: float({
+        label: "兌換金額",
         validation: {
-            isRequired: false,
+            isRequired: true,
         }
     }),
     status: select({
@@ -47,7 +42,7 @@ const listConfigurations = list({
   },
   ui: {
     listView: {
-      initialColumns: ['id', 'sponsor', 'publisher', 'fee', 'status'],
+      initialColumns: ['id', 'publisher', 'status', 'exchangeVolume', 'tid'],
     },
   },
   access: {
