@@ -2784,6 +2784,138 @@ input ExchangeCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type ReportReason {
+  id: ID!
+  reason: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ReportReasonWhereUniqueInput {
+  id: ID
+}
+
+input ReportReasonWhereInput {
+  AND: [ReportReasonWhereInput!]
+  OR: [ReportReasonWhereInput!]
+  NOT: [ReportReasonWhereInput!]
+  id: IDFilter
+  reason: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ReportReasonOrderByInput {
+  id: OrderDirection
+  reason: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ReportReasonUpdateInput {
+  reason: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ReportReasonUpdateArgs {
+  where: ReportReasonWhereUniqueInput!
+  data: ReportReasonUpdateInput!
+}
+
+input ReportReasonCreateInput {
+  reason: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type ReportRecord {
+  id: ID!
+  informant: Member
+  reason: ReportReason
+  respondent: Member
+  comment: Comment
+  collection: Collection
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ReportRecordWhereUniqueInput {
+  id: ID
+}
+
+input ReportRecordWhereInput {
+  AND: [ReportRecordWhereInput!]
+  OR: [ReportRecordWhereInput!]
+  NOT: [ReportRecordWhereInput!]
+  id: IDFilter
+  informant: MemberWhereInput
+  reason: ReportReasonWhereInput
+  respondent: MemberWhereInput
+  comment: CommentWhereInput
+  collection: CollectionWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ReportRecordOrderByInput {
+  id: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ReportRecordUpdateInput {
+  informant: MemberRelateToOneForUpdateInput
+  reason: ReportReasonRelateToOneForUpdateInput
+  respondent: MemberRelateToOneForUpdateInput
+  comment: CommentRelateToOneForUpdateInput
+  collection: CollectionRelateToOneForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ReportReasonRelateToOneForUpdateInput {
+  create: ReportReasonCreateInput
+  connect: ReportReasonWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ReportRecordUpdateArgs {
+  where: ReportRecordWhereUniqueInput!
+  data: ReportRecordUpdateInput!
+}
+
+input ReportRecordCreateInput {
+  informant: MemberRelateToOneForCreateInput
+  reason: ReportReasonRelateToOneForCreateInput
+  respondent: MemberRelateToOneForCreateInput
+  comment: CommentRelateToOneForCreateInput
+  collection: CollectionRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input ReportReasonRelateToOneForCreateInput {
+  create: ReportReasonCreateInput
+  connect: ReportReasonWhereUniqueInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2970,6 +3102,24 @@ type Mutation {
   updateExchanges(data: [ExchangeUpdateArgs!]!): [Exchange]
   deleteExchange(where: ExchangeWhereUniqueInput!): Exchange
   deleteExchanges(where: [ExchangeWhereUniqueInput!]!): [Exchange]
+  createReportReason(data: ReportReasonCreateInput!): ReportReason
+  createReportReasons(data: [ReportReasonCreateInput!]!): [ReportReason]
+  updateReportReason(
+    where: ReportReasonWhereUniqueInput!
+    data: ReportReasonUpdateInput!
+  ): ReportReason
+  updateReportReasons(data: [ReportReasonUpdateArgs!]!): [ReportReason]
+  deleteReportReason(where: ReportReasonWhereUniqueInput!): ReportReason
+  deleteReportReasons(where: [ReportReasonWhereUniqueInput!]!): [ReportReason]
+  createReportRecord(data: ReportRecordCreateInput!): ReportRecord
+  createReportRecords(data: [ReportRecordCreateInput!]!): [ReportRecord]
+  updateReportRecord(
+    where: ReportRecordWhereUniqueInput!
+    data: ReportRecordUpdateInput!
+  ): ReportRecord
+  updateReportRecords(data: [ReportRecordUpdateArgs!]!): [ReportRecord]
+  deleteReportRecord(where: ReportRecordWhereUniqueInput!): ReportRecord
+  deleteReportRecords(where: [ReportRecordWhereUniqueInput!]!): [ReportRecord]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -3169,6 +3319,22 @@ type Query {
   ): [Exchange!]
   exchange(where: ExchangeWhereUniqueInput!): Exchange
   exchangesCount(where: ExchangeWhereInput! = {}): Int
+  reportReasons(
+    where: ReportReasonWhereInput! = {}
+    orderBy: [ReportReasonOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ReportReason!]
+  reportReason(where: ReportReasonWhereUniqueInput!): ReportReason
+  reportReasonsCount(where: ReportReasonWhereInput! = {}): Int
+  reportRecords(
+    where: ReportRecordWhereInput! = {}
+    orderBy: [ReportRecordOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ReportRecord!]
+  reportRecord(where: ReportRecordWhereUniqueInput!): ReportRecord
+  reportRecordsCount(where: ReportRecordWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
