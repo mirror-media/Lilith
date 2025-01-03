@@ -13,6 +13,7 @@ const listConfigurations = list({
         ui: {
             displayMode: 'textarea',
         },
+        isIndexed: 'unique',
     }),
   },
   ui: {
