@@ -60,6 +60,10 @@ model User {
   from_Sponsorship_updatedBy      Sponsorship[]      @relation("Sponsorship_updatedBy")
   from_Exchange_createdBy         Exchange[]         @relation("Exchange_createdBy")
   from_Exchange_updatedBy         Exchange[]         @relation("Exchange_updatedBy")
+  from_ReportReason_createdBy     ReportReason[]     @relation("ReportReason_createdBy")
+  from_ReportReason_updatedBy     ReportReason[]     @relation("ReportReason_updatedBy")
+  from_ReportRecord_createdBy     ReportRecord[]     @relation("ReportRecord_createdBy")
+  from_ReportRecord_updatedBy     ReportRecord[]     @relation("ReportRecord_updatedBy")
 
   @@index([publisherId])
 }
@@ -100,35 +104,36 @@ model Category {
 }
 
 model Comment {
-  id                     Int         @id @default(autoincrement())
-  member                 Member?     @relation("Comment_member", fields: [memberId], references: [id])
-  memberId               Int?        @map("member")
-  story                  Story?      @relation("Comment_story", fields: [storyId], references: [id])
-  storyId                Int?        @map("story")
-  podcast                Podcast?    @relation("Comment_podcast", fields: [podcastId], references: [id])
-  podcastId              Int?        @map("podcast")
-  collection             Collection? @relation("Comment_collection", fields: [collectionId], references: [id])
-  collectionId           Int?        @map("collection")
-  content                String      @default("")
-  parent                 Comment?    @relation("Comment_parent", fields: [parentId], references: [id])
-  parentId               Int?        @map("parent")
-  root                   Comment?    @relation("Comment_root", fields: [rootId], references: [id])
-  rootId                 Int?        @map("root")
-  like                   Member[]    @relation("Comment_like")
-  state                  String?     @default("public")
-  published_date         DateTime?
-  is_edited              Boolean     @default(false)
-  is_active              Boolean     @default(true)
-  createdAt              DateTime?
-  updatedAt              DateTime?
-  createdBy              User?       @relation("Comment_createdBy", fields: [createdById], references: [id])
-  createdById            Int?        @map("createdBy")
-  updatedBy              User?       @relation("Comment_updatedBy", fields: [updatedById], references: [id])
-  updatedById            Int?        @map("updatedBy")
-  from_Comment_parent    Comment[]   @relation("Comment_parent")
-  from_Comment_root      Comment[]   @relation("Comment_root")
-  from_Pick_comment      Pick[]      @relation("Pick_comment")
-  from_Pick_pick_comment Pick[]      @relation("Pick_pick_comment")
+  id                        Int            @id @default(autoincrement())
+  member                    Member?        @relation("Comment_member", fields: [memberId], references: [id])
+  memberId                  Int?           @map("member")
+  story                     Story?         @relation("Comment_story", fields: [storyId], references: [id])
+  storyId                   Int?           @map("story")
+  podcast                   Podcast?       @relation("Comment_podcast", fields: [podcastId], references: [id])
+  podcastId                 Int?           @map("podcast")
+  collection                Collection?    @relation("Comment_collection", fields: [collectionId], references: [id])
+  collectionId              Int?           @map("collection")
+  content                   String         @default("")
+  parent                    Comment?       @relation("Comment_parent", fields: [parentId], references: [id])
+  parentId                  Int?           @map("parent")
+  root                      Comment?       @relation("Comment_root", fields: [rootId], references: [id])
+  rootId                    Int?           @map("root")
+  like                      Member[]       @relation("Comment_like")
+  state                     String?        @default("public")
+  published_date            DateTime?
+  is_edited                 Boolean        @default(false)
+  is_active                 Boolean        @default(true)
+  createdAt                 DateTime?
+  updatedAt                 DateTime?
+  createdBy                 User?          @relation("Comment_createdBy", fields: [createdById], references: [id])
+  createdById               Int?           @map("createdBy")
+  updatedBy                 User?          @relation("Comment_updatedBy", fields: [updatedById], references: [id])
+  updatedById               Int?           @map("updatedBy")
+  from_Comment_parent       Comment[]      @relation("Comment_parent")
+  from_Comment_root         Comment[]      @relation("Comment_root")
+  from_Pick_comment         Pick[]         @relation("Pick_comment")
+  from_Pick_pick_comment    Pick[]         @relation("Pick_pick_comment")
+  from_ReportRecord_comment ReportRecord[] @relation("ReportRecord_comment")
 
   @@index([memberId])
   @@index([storyId])
@@ -239,6 +244,7 @@ model Collection {
   updatedById                      Int?               @map("updatedBy")
   from_CollectionMember_collection CollectionMember[] @relation("CollectionMember_collection")
   from_Member_following_collection Member[]           @relation("Member_following_collection")
+  from_ReportRecord_collection     ReportRecord[]     @relation("ReportRecord_collection")
 
   @@index([heroImageId])
   @@index([creatorId])
@@ -434,6 +440,8 @@ model Member {
   from_Story_author            Story[]            @relation("Story_author")
   from_Notify_member           Notify[]           @relation("Notify_member")
   from_Notify_sender           Notify[]           @relation("Notify_sender")
+  from_ReportRecord_informant  ReportRecord[]     @relation("ReportRecord_informant")
+  from_ReportRecord_respondent ReportRecord[]     @relation("ReportRecord_respondent")
 
   @@index([avatar_imageId])
   @@index([createdById])
@@ -628,6 +636,49 @@ model Exchange {
   updatedById    Int?                @map("updatedBy")
 
   @@index([publisherId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model ReportReason {
+  id                       Int            @id @default(autoincrement())
+  reason                   String         @default("")
+  createdAt                DateTime?
+  updatedAt                DateTime?
+  createdBy                User?          @relation("ReportReason_createdBy", fields: [createdById], references: [id])
+  createdById              Int?           @map("createdBy")
+  updatedBy                User?          @relation("ReportReason_updatedBy", fields: [updatedById], references: [id])
+  updatedById              Int?           @map("updatedBy")
+  from_ReportRecord_reason ReportRecord[] @relation("ReportRecord_reason")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model ReportRecord {
+  id           Int           @id @default(autoincrement())
+  informant    Member?       @relation("ReportRecord_informant", fields: [informantId], references: [id])
+  informantId  Int?          @map("informant")
+  reason       ReportReason? @relation("ReportRecord_reason", fields: [reasonId], references: [id])
+  reasonId     Int?          @map("reason")
+  respondent   Member?       @relation("ReportRecord_respondent", fields: [respondentId], references: [id])
+  respondentId Int?          @map("respondent")
+  comment      Comment?      @relation("ReportRecord_comment", fields: [commentId], references: [id])
+  commentId    Int?          @map("comment")
+  collection   Collection?   @relation("ReportRecord_collection", fields: [collectionId], references: [id])
+  collectionId Int?          @map("collection")
+  createdAt    DateTime?
+  updatedAt    DateTime?
+  createdBy    User?         @relation("ReportRecord_createdBy", fields: [createdById], references: [id])
+  createdById  Int?          @map("createdBy")
+  updatedBy    User?         @relation("ReportRecord_updatedBy", fields: [updatedById], references: [id])
+  updatedById  Int?          @map("updatedBy")
+
+  @@index([informantId])
+  @@index([reasonId])
+  @@index([respondentId])
+  @@index([commentId])
+  @@index([collectionId])
   @@index([createdById])
   @@index([updatedById])
 }
