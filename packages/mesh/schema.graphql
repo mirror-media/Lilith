@@ -1524,6 +1524,7 @@ type Tag {
 
 input TagWhereUniqueInput {
   id: ID
+  name: String
 }
 
 input TagWhereInput {
