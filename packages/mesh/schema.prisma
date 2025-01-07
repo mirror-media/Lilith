@@ -381,7 +381,7 @@ model Story {
 
 model Tag {
   id               Int       @id @default(autoincrement())
-  name             String    @default("")
+  name             String    @unique @default("")
   pick             Pick[]    @relation("Tag_pick")
   story            Story[]   @relation("Tag_story")
   createdAt        DateTime?
