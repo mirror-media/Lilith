@@ -363,7 +363,6 @@ model Story {
   updatedById                  Int?             @map("updatedBy")
   from_CollectionPick_story    CollectionPick[] @relation("CollectionPick_story")
   from_Story_related           Story[]          @relation("Story_related")
-  from_Tag_story               Tag[]            @relation("Tag_story")
   from_Transaction_unlockStory Transaction[]    @relation("Transaction_unlockStory")
 
   @@index([sourceId])
@@ -377,14 +376,13 @@ model Tag {
   id               Int       @id @default(autoincrement())
   name             String    @unique @default("")
   pick             Pick[]    @relation("Tag_pick")
-  story            Story[]   @relation("Tag_story")
+  story            Story[]   @relation("Story_tag")
   createdAt        DateTime?
   updatedAt        DateTime?
   createdBy        User?     @relation("Tag_createdBy", fields: [createdById], references: [id])
   createdById      Int?      @map("createdBy")
   updatedBy        User?     @relation("Tag_updatedBy", fields: [updatedById], references: [id])
   updatedById      Int?      @map("updatedBy")
-  from_Story_tag   Story[]   @relation("Story_tag")
   from_Podcast_tag Podcast[] @relation("Podcast_tag")
 
   @@index([createdById])
