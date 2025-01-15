@@ -34,6 +34,41 @@ model AudioFile {
   @@index([updatedById])
 }
 
+model AnnouncementScope {
+  id                      Int            @id @default(autoincrement())
+  name                    String         @unique @default("")
+  description             String         @default("")
+  createdAt               DateTime?
+  updatedAt               DateTime?
+  createdBy               User?          @relation("AnnouncementScope_createdBy", fields: [createdById], references: [id])
+  createdById             Int?           @map("createdBy")
+  updatedBy               User?          @relation("AnnouncementScope_updatedBy", fields: [updatedById], references: [id])
+  updatedById             Int?           @map("updatedBy")
+  from_Announcement_scope Announcement[] @relation("Announcement_scope")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Announcement {
+  id          Int                   @id @default(autoincrement())
+  title       String                @default("")
+  description String                @default("")
+  startDate   DateTime?
+  endDate     DateTime?
+  level       AnnouncementLevelType @default(info)
+  scope       AnnouncementScope[]   @relation("Announcement_scope")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?                 @relation("Announcement_createdBy", fields: [createdById], references: [id])
+  createdById Int?                  @map("createdBy")
+  updatedBy   User?                 @relation("Announcement_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?                  @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model Category {
   id                   Int       @id @default(autoincrement())
   name                 String    @unique @default("")
@@ -441,45 +476,49 @@ model Topic {
 }
 
 model User {
-  id                          Int            @id @default(autoincrement())
-  name                        String         @default("")
-  email                       String         @unique @default("")
-  password                    String
-  role                        String
-  isProtected                 Boolean        @default(false)
-  from_AudioFile_createdBy    AudioFile[]    @relation("AudioFile_createdBy")
-  from_AudioFile_updatedBy    AudioFile[]    @relation("AudioFile_updatedBy")
-  from_Category_createdBy     Category[]     @relation("Category_createdBy")
-  from_Category_updatedBy     Category[]     @relation("Category_updatedBy")
-  from_Contact_createdBy      Contact[]      @relation("Contact_createdBy")
-  from_Contact_updatedBy      Contact[]      @relation("Contact_updatedBy")
-  from_EditorChoice_createdBy EditorChoice[] @relation("EditorChoice_createdBy")
-  from_EditorChoice_updatedBy EditorChoice[] @relation("EditorChoice_updatedBy")
-  from_Event_createdBy        Event[]        @relation("Event_createdBy")
-  from_Event_updatedBy        Event[]        @relation("Event_updatedBy")
-  from_External_createdBy     External[]     @relation("External_createdBy")
-  from_External_updatedBy     External[]     @relation("External_updatedBy")
-  from_Header_createdBy       Header[]       @relation("Header_createdBy")
-  from_Header_updatedBy       Header[]       @relation("Header_updatedBy")
-  from_Magazine_createdBy     Magazine[]     @relation("Magazine_createdBy")
-  from_Magazine_updatedBy     Magazine[]     @relation("Magazine_updatedBy")
-  from_Partner_createdBy      Partner[]      @relation("Partner_createdBy")
-  from_Partner_updatedBy      Partner[]      @relation("Partner_updatedBy")
-  from_Photo_createdBy        Photo[]        @relation("Photo_createdBy")
-  from_Photo_updatedBy        Photo[]        @relation("Photo_updatedBy")
-  from_Post_lockBy            Post[]         @relation("Post_lockBy")
-  from_Post_createdBy         Post[]         @relation("Post_createdBy")
-  from_Post_updatedBy         Post[]         @relation("Post_updatedBy")
-  from_Section_createdBy      Section[]      @relation("Section_createdBy")
-  from_Section_updatedBy      Section[]      @relation("Section_updatedBy")
-  from_Tag_createdBy          Tag[]          @relation("Tag_createdBy")
-  from_Tag_updatedBy          Tag[]          @relation("Tag_updatedBy")
-  from_Topic_createdBy        Topic[]        @relation("Topic_createdBy")
-  from_Topic_updatedBy        Topic[]        @relation("Topic_updatedBy")
-  from_Video_createdBy        Video[]        @relation("Video_createdBy")
-  from_Video_updatedBy        Video[]        @relation("Video_updatedBy")
-  from_Group_createdBy        Group[]        @relation("Group_createdBy")
-  from_Group_updatedBy        Group[]        @relation("Group_updatedBy")
+  id                               Int                 @id @default(autoincrement())
+  name                             String              @default("")
+  email                            String              @unique @default("")
+  password                         String
+  role                             String
+  isProtected                      Boolean             @default(false)
+  from_AudioFile_createdBy         AudioFile[]         @relation("AudioFile_createdBy")
+  from_AudioFile_updatedBy         AudioFile[]         @relation("AudioFile_updatedBy")
+  from_AnnouncementScope_createdBy AnnouncementScope[] @relation("AnnouncementScope_createdBy")
+  from_AnnouncementScope_updatedBy AnnouncementScope[] @relation("AnnouncementScope_updatedBy")
+  from_Announcement_createdBy      Announcement[]      @relation("Announcement_createdBy")
+  from_Announcement_updatedBy      Announcement[]      @relation("Announcement_updatedBy")
+  from_Category_createdBy          Category[]          @relation("Category_createdBy")
+  from_Category_updatedBy          Category[]          @relation("Category_updatedBy")
+  from_Contact_createdBy           Contact[]           @relation("Contact_createdBy")
+  from_Contact_updatedBy           Contact[]           @relation("Contact_updatedBy")
+  from_EditorChoice_createdBy      EditorChoice[]      @relation("EditorChoice_createdBy")
+  from_EditorChoice_updatedBy      EditorChoice[]      @relation("EditorChoice_updatedBy")
+  from_Event_createdBy             Event[]             @relation("Event_createdBy")
+  from_Event_updatedBy             Event[]             @relation("Event_updatedBy")
+  from_External_createdBy          External[]          @relation("External_createdBy")
+  from_External_updatedBy          External[]          @relation("External_updatedBy")
+  from_Header_createdBy            Header[]            @relation("Header_createdBy")
+  from_Header_updatedBy            Header[]            @relation("Header_updatedBy")
+  from_Magazine_createdBy          Magazine[]          @relation("Magazine_createdBy")
+  from_Magazine_updatedBy          Magazine[]          @relation("Magazine_updatedBy")
+  from_Partner_createdBy           Partner[]           @relation("Partner_createdBy")
+  from_Partner_updatedBy           Partner[]           @relation("Partner_updatedBy")
+  from_Photo_createdBy             Photo[]             @relation("Photo_createdBy")
+  from_Photo_updatedBy             Photo[]             @relation("Photo_updatedBy")
+  from_Post_lockBy                 Post[]              @relation("Post_lockBy")
+  from_Post_createdBy              Post[]              @relation("Post_createdBy")
+  from_Post_updatedBy              Post[]              @relation("Post_updatedBy")
+  from_Section_createdBy           Section[]           @relation("Section_createdBy")
+  from_Section_updatedBy           Section[]           @relation("Section_updatedBy")
+  from_Tag_createdBy               Tag[]               @relation("Tag_createdBy")
+  from_Tag_updatedBy               Tag[]               @relation("Tag_updatedBy")
+  from_Topic_createdBy             Topic[]             @relation("Topic_createdBy")
+  from_Topic_updatedBy             Topic[]             @relation("Topic_updatedBy")
+  from_Video_createdBy             Video[]             @relation("Video_createdBy")
+  from_Video_updatedBy             Video[]             @relation("Video_updatedBy")
+  from_Group_createdBy             Group[]             @relation("Group_createdBy")
+  from_Group_updatedBy             Group[]             @relation("Group_updatedBy")
 }
 
 model Video {
@@ -527,4 +566,9 @@ model Group {
 
   @@index([createdById])
   @@index([updatedById])
+}
+
+enum AnnouncementLevelType {
+  info
+  warning
 }

@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { config } from '@keystone-6/core'
 import { listDefinition as lists } from './lists'
 import envVar from './environment-variables'
