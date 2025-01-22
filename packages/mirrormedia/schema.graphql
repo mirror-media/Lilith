@@ -194,6 +194,174 @@ input UserRelateToOneForCreateInput {
   connect: UserWhereUniqueInput
 }
 
+type AnnouncementScope {
+  id: ID!
+  name: String
+  description: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input AnnouncementScopeWhereUniqueInput {
+  id: ID
+  name: String
+}
+
+input AnnouncementScopeWhereInput {
+  AND: [AnnouncementScopeWhereInput!]
+  OR: [AnnouncementScopeWhereInput!]
+  NOT: [AnnouncementScopeWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  description: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input AnnouncementScopeOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  description: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input AnnouncementScopeUpdateInput {
+  name: String
+  description: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input AnnouncementScopeUpdateArgs {
+  where: AnnouncementScopeWhereUniqueInput!
+  data: AnnouncementScopeUpdateInput!
+}
+
+input AnnouncementScopeCreateInput {
+  name: String
+  description: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Announcement {
+  id: ID!
+  title: String
+  description: String
+  startDate: DateTime
+  endDate: DateTime
+  isActive: Boolean
+  level: AnnouncementLevelType
+  scope(where: AnnouncementScopeWhereInput! = {}, orderBy: [AnnouncementScopeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AnnouncementScopeWhereUniqueInput): [AnnouncementScope!]
+  scopeCount(where: AnnouncementScopeWhereInput! = {}): Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum AnnouncementLevelType {
+  info
+  warning
+}
+
+input AnnouncementWhereUniqueInput {
+  id: ID
+}
+
+input AnnouncementWhereInput {
+  AND: [AnnouncementWhereInput!]
+  OR: [AnnouncementWhereInput!]
+  NOT: [AnnouncementWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  description: StringFilter
+  startDate: DateTimeNullableFilter
+  endDate: DateTimeNullableFilter
+  level: AnnouncementLevelTypeNullableFilter
+  scope: AnnouncementScopeManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input AnnouncementLevelTypeNullableFilter {
+  equals: AnnouncementLevelType
+  in: [AnnouncementLevelType!]
+  notIn: [AnnouncementLevelType!]
+  not: AnnouncementLevelTypeNullableFilter
+}
+
+input AnnouncementScopeManyRelationFilter {
+  every: AnnouncementScopeWhereInput
+  some: AnnouncementScopeWhereInput
+  none: AnnouncementScopeWhereInput
+}
+
+input AnnouncementOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  description: OrderDirection
+  startDate: OrderDirection
+  endDate: OrderDirection
+  level: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input AnnouncementUpdateInput {
+  title: String
+  description: String
+  startDate: DateTime
+  endDate: DateTime
+  level: AnnouncementLevelType
+  scope: AnnouncementScopeRelateToManyForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input AnnouncementScopeRelateToManyForUpdateInput {
+  disconnect: [AnnouncementScopeWhereUniqueInput!]
+  set: [AnnouncementScopeWhereUniqueInput!]
+  create: [AnnouncementScopeCreateInput!]
+  connect: [AnnouncementScopeWhereUniqueInput!]
+}
+
+input AnnouncementUpdateArgs {
+  where: AnnouncementWhereUniqueInput!
+  data: AnnouncementUpdateInput!
+}
+
+input AnnouncementCreateInput {
+  title: String
+  description: String
+  startDate: DateTime
+  endDate: DateTime
+  level: AnnouncementLevelType
+  scope: AnnouncementScopeRelateToManyForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input AnnouncementScopeRelateToManyForCreateInput {
+  create: [AnnouncementScopeCreateInput!]
+  connect: [AnnouncementScopeWhereUniqueInput!]
+}
+
 type Category {
   id: ID!
   name: String
@@ -2099,6 +2267,18 @@ type Mutation {
   updateAudioFiles(data: [AudioFileUpdateArgs!]!): [AudioFile]
   deleteAudioFile(where: AudioFileWhereUniqueInput!): AudioFile
   deleteAudioFiles(where: [AudioFileWhereUniqueInput!]!): [AudioFile]
+  createAnnouncementScope(data: AnnouncementScopeCreateInput!): AnnouncementScope
+  createAnnouncementScopes(data: [AnnouncementScopeCreateInput!]!): [AnnouncementScope]
+  updateAnnouncementScope(where: AnnouncementScopeWhereUniqueInput!, data: AnnouncementScopeUpdateInput!): AnnouncementScope
+  updateAnnouncementScopes(data: [AnnouncementScopeUpdateArgs!]!): [AnnouncementScope]
+  deleteAnnouncementScope(where: AnnouncementScopeWhereUniqueInput!): AnnouncementScope
+  deleteAnnouncementScopes(where: [AnnouncementScopeWhereUniqueInput!]!): [AnnouncementScope]
+  createAnnouncement(data: AnnouncementCreateInput!): Announcement
+  createAnnouncements(data: [AnnouncementCreateInput!]!): [Announcement]
+  updateAnnouncement(where: AnnouncementWhereUniqueInput!, data: AnnouncementUpdateInput!): Announcement
+  updateAnnouncements(data: [AnnouncementUpdateArgs!]!): [Announcement]
+  deleteAnnouncement(where: AnnouncementWhereUniqueInput!): Announcement
+  deleteAnnouncements(where: [AnnouncementWhereUniqueInput!]!): [Announcement]
   createCategory(data: CategoryCreateInput!): Category
   createCategories(data: [CategoryCreateInput!]!): [Category]
   updateCategory(where: CategoryWhereUniqueInput!, data: CategoryUpdateInput!): Category
@@ -2222,6 +2402,12 @@ type Query {
   audioFiles(where: AudioFileWhereInput! = {}, orderBy: [AudioFileOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AudioFileWhereUniqueInput): [AudioFile!]
   audioFile(where: AudioFileWhereUniqueInput!): AudioFile
   audioFilesCount(where: AudioFileWhereInput! = {}): Int
+  announcementScopes(where: AnnouncementScopeWhereInput! = {}, orderBy: [AnnouncementScopeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AnnouncementScopeWhereUniqueInput): [AnnouncementScope!]
+  announcementScope(where: AnnouncementScopeWhereUniqueInput!): AnnouncementScope
+  announcementScopesCount(where: AnnouncementScopeWhereInput! = {}): Int
+  announcements(where: AnnouncementWhereInput! = {}, orderBy: [AnnouncementOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AnnouncementWhereUniqueInput): [Announcement!]
+  announcement(where: AnnouncementWhereUniqueInput!): Announcement
+  announcementsCount(where: AnnouncementWhereInput! = {}): Int
   categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   category(where: CategoryWhereUniqueInput!): Category
   categoriesCount(where: CategoryWhereInput! = {}): Int

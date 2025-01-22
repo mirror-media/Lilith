@@ -15,9 +15,13 @@ import Topic from './Topic'
 import External from './External'
 import Header from './Header'
 import Group from './Group'
+import AnnouncementScope from './AnnouncementScope'
+import Announcement from './Announcement'
 
 export const listDefinition = {
   AudioFile: Audio,
+  AnnouncementScope,
+  Announcement,
   Category,
   Contact,
   EditorChoice,
