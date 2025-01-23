@@ -96,7 +96,13 @@ const listConfigurations = list({
       many: true,
     }),
     follow_publisher: relationship({
+      label: "追蹤媒體",
       ref: 'Publisher.follower',
+      many: true,
+    }),
+    exclude_publisher: relationship({
+      label: "排除媒體",
+      ref: 'Publisher.exclude_follower',
       many: true,
     }),
     invited: relationship({
