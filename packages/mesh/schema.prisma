@@ -203,6 +203,7 @@ model Publisher {
   source_type           String?       @default("empty")
   paywall               Boolean       @default(false)
   follower              Member[]      @relation("Member_follow_publisher")
+  exclude_follower      Member[]      @relation("Member_exclude_publisher")
   wallet                String        @default("")
   user                  User[]        @relation("User_publisher")
   createdAt             DateTime?
@@ -422,6 +423,7 @@ model Member {
   following_category           Category[]         @relation("Member_following_category")
   following_collection         Collection[]       @relation("Member_following_collection")
   follow_publisher             Publisher[]        @relation("Member_follow_publisher")
+  exclude_publisher            Publisher[]        @relation("Member_exclude_publisher")
   invited                      InvitationCode[]   @relation("InvitationCode_send")
   invited_by                   InvitationCode?    @relation("InvitationCode_receive")
   create_collection            CollectionMember[] @relation("CollectionMember_added_by")

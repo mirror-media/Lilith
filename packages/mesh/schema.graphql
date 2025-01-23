@@ -659,6 +659,13 @@ type Publisher {
     skip: Int! = 0
   ): [Member!]
   followerCount(where: MemberWhereInput! = {}): Int
+  exclude_follower(
+    where: MemberWhereInput! = {}
+    orderBy: [MemberOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Member!]
+  exclude_followerCount(where: MemberWhereInput! = {}): Int
   wallet: String
   user(
     where: UserWhereInput! = {}
@@ -700,6 +707,7 @@ input PublisherWhereInput {
   source_type: StringNullableFilter
   paywall: BooleanFilter
   follower: MemberManyRelationFilter
+  exclude_follower: MemberManyRelationFilter
   wallet: StringFilter
   user: UserManyRelationFilter
   createdAt: DateTimeNullableFilter
@@ -765,6 +773,7 @@ input PublisherUpdateInput {
   source_type: String
   paywall: Boolean
   follower: MemberRelateToManyForUpdateInput
+  exclude_follower: MemberRelateToManyForUpdateInput
   wallet: String
   user: UserRelateToManyForUpdateInput
   createdAt: DateTime
@@ -824,6 +833,7 @@ input PublisherCreateInput {
   source_type: String
   paywall: Boolean
   follower: MemberRelateToManyForCreateInput
+  exclude_follower: MemberRelateToManyForCreateInput
   wallet: String
   user: UserRelateToManyForCreateInput
   createdAt: DateTime
@@ -1677,6 +1687,13 @@ type Member {
     skip: Int! = 0
   ): [Publisher!]
   follow_publisherCount(where: PublisherWhereInput! = {}): Int
+  exclude_publisher(
+    where: PublisherWhereInput! = {}
+    orderBy: [PublisherOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Publisher!]
+  exclude_publisherCount(where: PublisherWhereInput! = {}): Int
   invited(
     where: InvitationCodeWhereInput! = {}
     orderBy: [InvitationCodeOrderByInput!]! = []
@@ -1741,6 +1758,7 @@ input MemberWhereInput {
   following_category: CategoryManyRelationFilter
   following_collection: CollectionManyRelationFilter
   follow_publisher: PublisherManyRelationFilter
+  exclude_publisher: PublisherManyRelationFilter
   invited: InvitationCodeManyRelationFilter
   invited_by: InvitationCodeWhereInput
   create_collection: CollectionMemberManyRelationFilter
@@ -1828,6 +1846,7 @@ input MemberUpdateInput {
   following_category: CategoryRelateToManyForUpdateInput
   following_collection: CollectionRelateToManyForUpdateInput
   follow_publisher: PublisherRelateToManyForUpdateInput
+  exclude_publisher: PublisherRelateToManyForUpdateInput
   invited: InvitationCodeRelateToManyForUpdateInput
   invited_by: InvitationCodeRelateToOneForUpdateInput
   create_collection: CollectionMemberRelateToManyForUpdateInput
@@ -1916,6 +1935,7 @@ input MemberCreateInput {
   following_category: CategoryRelateToManyForCreateInput
   following_collection: CollectionRelateToManyForCreateInput
   follow_publisher: PublisherRelateToManyForCreateInput
+  exclude_publisher: PublisherRelateToManyForCreateInput
   invited: InvitationCodeRelateToManyForCreateInput
   invited_by: InvitationCodeRelateToOneForCreateInput
   create_collection: CollectionMemberRelateToManyForCreateInput
