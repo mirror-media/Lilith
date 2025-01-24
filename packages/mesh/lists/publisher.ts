@@ -78,7 +78,13 @@ const listConfigurations = list({
       defaultValue: false,
     }),
     follower: relationship({
+      label: "追蹤該媒體的用戶",
       ref: 'Member.follow_publisher',
+      many: true,
+    }),
+    exclude_follower: relationship({
+      label: "排除該媒體的用戶",
+      ref: 'Member.exclude_publisher',
       many: true,
     }),
     //posts: relationship({ ref: 'Post.author', many: true }),
