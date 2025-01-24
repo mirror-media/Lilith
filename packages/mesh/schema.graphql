@@ -1716,6 +1716,7 @@ type Member {
     skip: Int! = 0
   ): [CollectionMember!]
   modify_collectionCount(where: CollectionMemberWhereInput! = {}): Int
+  balance: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1763,6 +1764,7 @@ input MemberWhereInput {
   invited_by: InvitationCodeWhereInput
   create_collection: CollectionMemberManyRelationFilter
   modify_collection: CollectionMemberManyRelationFilter
+  balance: IntNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1817,6 +1819,7 @@ input MemberOrderByInput {
   email: OrderDirection
   is_active: OrderDirection
   verified: OrderDirection
+  balance: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1851,6 +1854,7 @@ input MemberUpdateInput {
   invited_by: InvitationCodeRelateToOneForUpdateInput
   create_collection: CollectionMemberRelateToManyForUpdateInput
   modify_collection: CollectionMemberRelateToManyForUpdateInput
+  balance: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1940,6 +1944,7 @@ input MemberCreateInput {
   invited_by: InvitationCodeRelateToOneForCreateInput
   create_collection: CollectionMemberRelateToManyForCreateInput
   modify_collection: CollectionMemberRelateToManyForCreateInput
+  balance: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

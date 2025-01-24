@@ -428,6 +428,7 @@ model Member {
   invited_by                   InvitationCode?    @relation("InvitationCode_receive")
   create_collection            CollectionMember[] @relation("CollectionMember_added_by")
   modify_collection            CollectionMember[] @relation("CollectionMember_updated_by")
+  balance                      Int?               @default(0)
   createdAt                    DateTime?
   updatedAt                    DateTime?
   createdBy                    User?              @relation("Member_createdBy", fields: [createdById], references: [id])
