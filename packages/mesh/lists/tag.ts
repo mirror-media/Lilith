@@ -17,9 +17,9 @@ const {
 
 const listConfigurations = list ({
   fields: {
-	name: text({ validation: { isRequired: true, isUnique: true } }),
+	name: text({ validation: { isRequired: true }, isIndexed: "unique" }),
     pick: relationship({ ref: 'Pick', many: true }),
-    story: relationship({ ref: 'Story', many: true }),
+    story: relationship({ ref: 'Story.tag', many: true }),
   },
   ui: {
     listView: {

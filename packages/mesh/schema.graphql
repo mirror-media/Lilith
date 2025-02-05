@@ -659,6 +659,13 @@ type Publisher {
     skip: Int! = 0
   ): [Member!]
   followerCount(where: MemberWhereInput! = {}): Int
+  exclude_follower(
+    where: MemberWhereInput! = {}
+    orderBy: [MemberOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Member!]
+  exclude_followerCount(where: MemberWhereInput! = {}): Int
   wallet: String
   user(
     where: UserWhereInput! = {}
@@ -700,6 +707,7 @@ input PublisherWhereInput {
   source_type: StringNullableFilter
   paywall: BooleanFilter
   follower: MemberManyRelationFilter
+  exclude_follower: MemberManyRelationFilter
   wallet: StringFilter
   user: UserManyRelationFilter
   createdAt: DateTimeNullableFilter
@@ -765,6 +773,7 @@ input PublisherUpdateInput {
   source_type: String
   paywall: Boolean
   follower: MemberRelateToManyForUpdateInput
+  exclude_follower: MemberRelateToManyForUpdateInput
   wallet: String
   user: UserRelateToManyForUpdateInput
   createdAt: DateTime
@@ -824,6 +833,7 @@ input PublisherCreateInput {
   source_type: String
   paywall: Boolean
   follower: MemberRelateToManyForCreateInput
+  exclude_follower: MemberRelateToManyForCreateInput
   wallet: String
   user: UserRelateToManyForCreateInput
   createdAt: DateTime
@@ -1524,6 +1534,7 @@ type Tag {
 
 input TagWhereUniqueInput {
   id: ID
+  name: String
 }
 
 input TagWhereInput {
@@ -1676,6 +1687,13 @@ type Member {
     skip: Int! = 0
   ): [Publisher!]
   follow_publisherCount(where: PublisherWhereInput! = {}): Int
+  exclude_publisher(
+    where: PublisherWhereInput! = {}
+    orderBy: [PublisherOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Publisher!]
+  exclude_publisherCount(where: PublisherWhereInput! = {}): Int
   invited(
     where: InvitationCodeWhereInput! = {}
     orderBy: [InvitationCodeOrderByInput!]! = []
@@ -1740,6 +1758,7 @@ input MemberWhereInput {
   following_category: CategoryManyRelationFilter
   following_collection: CollectionManyRelationFilter
   follow_publisher: PublisherManyRelationFilter
+  exclude_publisher: PublisherManyRelationFilter
   invited: InvitationCodeManyRelationFilter
   invited_by: InvitationCodeWhereInput
   create_collection: CollectionMemberManyRelationFilter
@@ -1827,6 +1846,7 @@ input MemberUpdateInput {
   following_category: CategoryRelateToManyForUpdateInput
   following_collection: CollectionRelateToManyForUpdateInput
   follow_publisher: PublisherRelateToManyForUpdateInput
+  exclude_publisher: PublisherRelateToManyForUpdateInput
   invited: InvitationCodeRelateToManyForUpdateInput
   invited_by: InvitationCodeRelateToOneForUpdateInput
   create_collection: CollectionMemberRelateToManyForUpdateInput
@@ -1915,6 +1935,7 @@ input MemberCreateInput {
   following_category: CategoryRelateToManyForCreateInput
   following_collection: CollectionRelateToManyForCreateInput
   follow_publisher: PublisherRelateToManyForCreateInput
+  exclude_publisher: PublisherRelateToManyForCreateInput
   invited: InvitationCodeRelateToManyForCreateInput
   invited_by: InvitationCodeRelateToOneForCreateInput
   create_collection: CollectionMemberRelateToManyForCreateInput
@@ -2784,6 +2805,138 @@ input ExchangeCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type ReportReason {
+  id: ID!
+  reason: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ReportReasonWhereUniqueInput {
+  id: ID
+}
+
+input ReportReasonWhereInput {
+  AND: [ReportReasonWhereInput!]
+  OR: [ReportReasonWhereInput!]
+  NOT: [ReportReasonWhereInput!]
+  id: IDFilter
+  reason: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ReportReasonOrderByInput {
+  id: OrderDirection
+  reason: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ReportReasonUpdateInput {
+  reason: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ReportReasonUpdateArgs {
+  where: ReportReasonWhereUniqueInput!
+  data: ReportReasonUpdateInput!
+}
+
+input ReportReasonCreateInput {
+  reason: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type ReportRecord {
+  id: ID!
+  informant: Member
+  reason: ReportReason
+  respondent: Member
+  comment: Comment
+  collection: Collection
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ReportRecordWhereUniqueInput {
+  id: ID
+}
+
+input ReportRecordWhereInput {
+  AND: [ReportRecordWhereInput!]
+  OR: [ReportRecordWhereInput!]
+  NOT: [ReportRecordWhereInput!]
+  id: IDFilter
+  informant: MemberWhereInput
+  reason: ReportReasonWhereInput
+  respondent: MemberWhereInput
+  comment: CommentWhereInput
+  collection: CollectionWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ReportRecordOrderByInput {
+  id: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ReportRecordUpdateInput {
+  informant: MemberRelateToOneForUpdateInput
+  reason: ReportReasonRelateToOneForUpdateInput
+  respondent: MemberRelateToOneForUpdateInput
+  comment: CommentRelateToOneForUpdateInput
+  collection: CollectionRelateToOneForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ReportReasonRelateToOneForUpdateInput {
+  create: ReportReasonCreateInput
+  connect: ReportReasonWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ReportRecordUpdateArgs {
+  where: ReportRecordWhereUniqueInput!
+  data: ReportRecordUpdateInput!
+}
+
+input ReportRecordCreateInput {
+  informant: MemberRelateToOneForCreateInput
+  reason: ReportReasonRelateToOneForCreateInput
+  respondent: MemberRelateToOneForCreateInput
+  comment: CommentRelateToOneForCreateInput
+  collection: CollectionRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input ReportReasonRelateToOneForCreateInput {
+  create: ReportReasonCreateInput
+  connect: ReportReasonWhereUniqueInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2970,6 +3123,24 @@ type Mutation {
   updateExchanges(data: [ExchangeUpdateArgs!]!): [Exchange]
   deleteExchange(where: ExchangeWhereUniqueInput!): Exchange
   deleteExchanges(where: [ExchangeWhereUniqueInput!]!): [Exchange]
+  createReportReason(data: ReportReasonCreateInput!): ReportReason
+  createReportReasons(data: [ReportReasonCreateInput!]!): [ReportReason]
+  updateReportReason(
+    where: ReportReasonWhereUniqueInput!
+    data: ReportReasonUpdateInput!
+  ): ReportReason
+  updateReportReasons(data: [ReportReasonUpdateArgs!]!): [ReportReason]
+  deleteReportReason(where: ReportReasonWhereUniqueInput!): ReportReason
+  deleteReportReasons(where: [ReportReasonWhereUniqueInput!]!): [ReportReason]
+  createReportRecord(data: ReportRecordCreateInput!): ReportRecord
+  createReportRecords(data: [ReportRecordCreateInput!]!): [ReportRecord]
+  updateReportRecord(
+    where: ReportRecordWhereUniqueInput!
+    data: ReportRecordUpdateInput!
+  ): ReportRecord
+  updateReportRecords(data: [ReportRecordUpdateArgs!]!): [ReportRecord]
+  deleteReportRecord(where: ReportRecordWhereUniqueInput!): ReportRecord
+  deleteReportRecords(where: [ReportRecordWhereUniqueInput!]!): [ReportRecord]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -3169,6 +3340,22 @@ type Query {
   ): [Exchange!]
   exchange(where: ExchangeWhereUniqueInput!): Exchange
   exchangesCount(where: ExchangeWhereInput! = {}): Int
+  reportReasons(
+    where: ReportReasonWhereInput! = {}
+    orderBy: [ReportReasonOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ReportReason!]
+  reportReason(where: ReportReasonWhereUniqueInput!): ReportReason
+  reportReasonsCount(where: ReportReasonWhereInput! = {}): Int
+  reportRecords(
+    where: ReportRecordWhereInput! = {}
+    orderBy: [ReportRecordOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ReportRecord!]
+  reportRecord(where: ReportRecordWhereUniqueInput!): ReportRecord
+  reportRecordsCount(where: ReportRecordWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
