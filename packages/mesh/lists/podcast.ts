@@ -3,10 +3,7 @@ import { list } from '@keystone-6/core'
 import {
   text,
   relationship,
-  select,
-  timestamp,
-  checkbox,
-  json,
+  integer,
 } from '@keystone-6/core/fields'
 import { checkAccessToken } from '../utils/accessToken'
 
@@ -14,39 +11,33 @@ const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
-    title: text({ validation: { isRequired: false } }),
+    author: text({ 
+      label: '作者', 
+      validation: { isRequired: false },
+    }),
     url: text({
+      label : '音源連結',
       validation: { isRequired: true },
       isIndexed: 'unique',
     }),
-    description: text({
-      validation: { isRequired: false },
-      ui: { displayMode: 'textarea' },
-    }),
-    author: text({
+    file_size: integer({ 
+      label : '音源檔案大小',
       validation: { isRequired: false },
     }),
-    source: relationship({ ref: 'Publisher', many: false }),
-    category: relationship({ ref: 'Category', many: false }),
+    mime_type: text({ 
+      label : '音源檔案格式',
+      validation: { isRequired: false } 
+    }),
     duration: text({ validation: { isRequired: false } }),
-    pick: relationship({ ref: 'Pick.podcast', many: true }),
-    comment: relationship({ ref: 'Comment.podcast', many: true }),
-    published_date: timestamp({ validation: { isRequired: false } }),
-    og_title: text({ validation: { isRequired: false } }),
-    og_image: text({ validation: { isRequired: false } }),
-    og_description: text({ validation: { isRequired: false } }),
-    isMember: checkbox({
-      defaultValue: false,
+    source: relationship({ ref: 'Publisher', many: false }),
+    story: relationship({ 
+      label : '所屬文章',
+      ref: 'Story', many: false 
     }),
-    origid: text({}),
-    is_active: checkbox({
-      defaultValue: true,
-    }),
-    tag: relationship({ ref: 'Tag', many: true }),
   },
   ui: {
     listView: {
-      initialColumns: ['title', 'url', "source", "author"],
+      initialColumns: ['story','source', "url"],
     },
   },
   access: {

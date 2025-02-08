@@ -22,7 +22,6 @@ const listConfigurations = list ({
   fields: {
 	member: relationship({ ref: 'Member.comment', many: false }),
 	story: relationship({ ref: 'Story.comment', many: false }),
-	podcast: relationship({ ref: 'Podcast.comment', many: false }),
     collection: relationship({ ref: 'Collection.comment', many: false }),
     content: text({ validation: { isRequired: false } }),
 	parent: relationship({ ref: 'Comment', many: false }),
