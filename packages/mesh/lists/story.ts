@@ -76,7 +76,7 @@ const listConfigurations = list({
     origid: text({}),
     full_screen_ad: select({
       label: '蓋板',
-      datatype: 'enum',
+      type: 'enum',
       options: [
         { label: '手機', value: 'mobile' },
         { label: '桌機', value: 'desktop' },
@@ -91,15 +91,14 @@ const listConfigurations = list({
     tag: relationship({ ref: 'Tag.story', many: true }),
     story_type: select({
       label: '類型',
-      datatype: 'enum',
+      type: 'enum',
       options: [
         { label: 'Story', value: 'story' },
         { label: 'Podcast', value: 'podcast' },
       ],
       defaultValue: 'story',
-      isIndexed: true,
     }),
-    podcast_src: relationship({ ref: 'Podcast', many: false }),
+    podcast: relationship({ ref: 'Podcast', many: false }),
   },
   ui: {
     listView: {

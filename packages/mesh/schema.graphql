@@ -1309,7 +1309,7 @@ type Story {
   paywall: Boolean
   isMember: Boolean
   origid: String
-  full_screen_ad: String
+  full_screen_ad: StoryFullScreenAdType
   is_active: Boolean
   tag(
     where: TagWhereInput! = {}
@@ -1318,12 +1318,24 @@ type Story {
     skip: Int! = 0
   ): [Tag!]
   tagCount(where: TagWhereInput! = {}): Int
-  story_type: String
-  podcast_src: Podcast
+  story_type: StoryStoryTypeType
+  podcast: Podcast
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+}
+
+enum StoryFullScreenAdType {
+  mobile
+  desktop
+  all
+  none
+}
+
+enum StoryStoryTypeType {
+  story
+  podcast
 }
 
 input StoryWhereUniqueInput {
@@ -1356,11 +1368,11 @@ input StoryWhereInput {
   paywall: BooleanFilter
   isMember: BooleanFilter
   origid: StringFilter
-  full_screen_ad: StringNullableFilter
+  full_screen_ad: StoryFullScreenAdTypeNullableFilter
   is_active: BooleanFilter
   tag: TagManyRelationFilter
-  story_type: StringNullableFilter
-  podcast_src: PodcastWhereInput
+  story_type: StoryStoryTypeTypeNullableFilter
+  podcast: PodcastWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1373,10 +1385,24 @@ input StoryManyRelationFilter {
   none: StoryWhereInput
 }
 
+input StoryFullScreenAdTypeNullableFilter {
+  equals: StoryFullScreenAdType
+  in: [StoryFullScreenAdType!]
+  notIn: [StoryFullScreenAdType!]
+  not: StoryFullScreenAdTypeNullableFilter
+}
+
 input TagManyRelationFilter {
   every: TagWhereInput
   some: TagWhereInput
   none: TagWhereInput
+}
+
+input StoryStoryTypeTypeNullableFilter {
+  equals: StoryStoryTypeType
+  in: [StoryStoryTypeType!]
+  notIn: [StoryStoryTypeType!]
+  not: StoryStoryTypeTypeNullableFilter
 }
 
 input StoryOrderByInput {
@@ -1425,11 +1451,11 @@ input StoryUpdateInput {
   paywall: Boolean
   isMember: Boolean
   origid: String
-  full_screen_ad: String
+  full_screen_ad: StoryFullScreenAdType
   is_active: Boolean
   tag: TagRelateToManyForUpdateInput
-  story_type: String
-  podcast_src: PodcastRelateToOneForUpdateInput
+  story_type: StoryStoryTypeType
+  podcast: PodcastRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1484,11 +1510,11 @@ input StoryCreateInput {
   paywall: Boolean
   isMember: Boolean
   origid: String
-  full_screen_ad: String
+  full_screen_ad: StoryFullScreenAdType
   is_active: Boolean
   tag: TagRelateToManyForCreateInput
-  story_type: String
-  podcast_src: PodcastRelateToOneForCreateInput
+  story_type: StoryStoryTypeType
+  podcast: PodcastRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2368,8 +2394,12 @@ input PolicyCreateInput {
 type Podcast {
   id: ID!
   url: String
+  author: String
+  duration: String
   source: Publisher
-  document: Story
+  story: Story
+  file_size: Int
+  mime_type: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2387,8 +2417,12 @@ input PodcastWhereInput {
   NOT: [PodcastWhereInput!]
   id: IDFilter
   url: StringFilter
+  author: StringFilter
+  duration: StringFilter
   source: PublisherWhereInput
-  document: StoryWhereInput
+  story: StoryWhereInput
+  file_size: IntNullableFilter
+  mime_type: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2398,14 +2432,22 @@ input PodcastWhereInput {
 input PodcastOrderByInput {
   id: OrderDirection
   url: OrderDirection
+  author: OrderDirection
+  duration: OrderDirection
+  file_size: OrderDirection
+  mime_type: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input PodcastUpdateInput {
   url: String
+  author: String
+  duration: String
   source: PublisherRelateToOneForUpdateInput
-  document: StoryRelateToOneForUpdateInput
+  story: StoryRelateToOneForUpdateInput
+  file_size: Int
+  mime_type: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2419,8 +2461,12 @@ input PodcastUpdateArgs {
 
 input PodcastCreateInput {
   url: String
+  author: String
+  duration: String
   source: PublisherRelateToOneForCreateInput
-  document: StoryRelateToOneForCreateInput
+  story: StoryRelateToOneForCreateInput
+  file_size: Int
+  mime_type: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

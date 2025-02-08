@@ -3,10 +3,7 @@ import { list } from '@keystone-6/core'
 import {
   text,
   relationship,
-  select,
-  timestamp,
-  checkbox,
-  json,
+  integer,
 } from '@keystone-6/core/fields'
 import { checkAccessToken } from '../utils/accessToken'
 
@@ -18,8 +15,12 @@ const listConfigurations = list({
       validation: { isRequired: true },
       isIndexed: 'unique',
     }),
+    author: text({ validation: { isRequired: false },}),
+    duration: text({ validation: { isRequired: false } }),
     source: relationship({ ref: 'Publisher', many: false }),
-    document: relationship({ ref: 'Story', many: false }),
+    story: relationship({ ref: 'Story', many: false }),
+    file_size: integer({ validation: { isRequired: false } }),
+    mime_type: text({ validation: { isRequired: false } }),
   },
   ui: {
     listView: {
