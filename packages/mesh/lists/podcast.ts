@@ -11,16 +11,29 @@ const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
+    author: text({ 
+      label: '作者', 
+      validation: { isRequired: false },
+    }),
     url: text({
+      label : '音源連結',
       validation: { isRequired: true },
       isIndexed: 'unique',
     }),
-    author: text({ validation: { isRequired: false },}),
+    file_size: integer({ 
+      label : '音源檔案大小',
+      validation: { isRequired: false },
+    }),
+    mime_type: text({ 
+      label : '音源檔案格式',
+      validation: { isRequired: false } 
+    }),
     duration: text({ validation: { isRequired: false } }),
     source: relationship({ ref: 'Publisher', many: false }),
-    story: relationship({ ref: 'Story', many: false }),
-    file_size: integer({ validation: { isRequired: false } }),
-    mime_type: text({ validation: { isRequired: false } }),
+    story: relationship({ 
+      label : '所屬文章',
+      ref: 'Story', many: false 
+    }),
   },
   ui: {
     listView: {

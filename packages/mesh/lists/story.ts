@@ -97,6 +97,7 @@ const listConfigurations = list({
         { label: 'Podcast', value: 'podcast' },
       ],
       defaultValue: 'story',
+      isIndexed: true,
     }),
     podcast: relationship({ ref: 'Podcast', many: false }),
   },
