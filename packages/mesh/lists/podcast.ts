@@ -14,39 +14,16 @@ const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
-    title: text({ validation: { isRequired: false } }),
     url: text({
       validation: { isRequired: true },
       isIndexed: 'unique',
     }),
-    description: text({
-      validation: { isRequired: false },
-      ui: { displayMode: 'textarea' },
-    }),
-    author: text({
-      validation: { isRequired: false },
-    }),
     source: relationship({ ref: 'Publisher', many: false }),
-    category: relationship({ ref: 'Category', many: false }),
-    duration: text({ validation: { isRequired: false } }),
-    pick: relationship({ ref: 'Pick.podcast', many: true }),
-    comment: relationship({ ref: 'Comment.podcast', many: true }),
-    published_date: timestamp({ validation: { isRequired: false } }),
-    og_title: text({ validation: { isRequired: false } }),
-    og_image: text({ validation: { isRequired: false } }),
-    og_description: text({ validation: { isRequired: false } }),
-    isMember: checkbox({
-      defaultValue: false,
-    }),
-    origid: text({}),
-    is_active: checkbox({
-      defaultValue: true,
-    }),
-    tag: relationship({ ref: 'Tag', many: true }),
+    document: relationship({ ref: 'Story', many: false }),
   },
   ui: {
     listView: {
-      initialColumns: ['title', 'url', "source", "author"],
+      initialColumns: ['url', "source"],
     },
   },
   access: {

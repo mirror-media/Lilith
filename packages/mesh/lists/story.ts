@@ -89,6 +89,17 @@ const listConfigurations = list({
       defaultValue: true,
     }),
     tag: relationship({ ref: 'Tag.story', many: true }),
+    story_type: select({
+      label: '類型',
+      datatype: 'enum',
+      options: [
+        { label: 'Story', value: 'story' },
+        { label: 'Podcast', value: 'podcast' },
+      ],
+      defaultValue: 'story',
+      isIndexed: true,
+    }),
+    podcast_src: relationship({ ref: 'Podcast', many: false }),
   },
   ui: {
     listView: {
