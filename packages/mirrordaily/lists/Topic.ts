@@ -62,6 +62,14 @@ const listConfigurations = list({
         'youtube',
       ],
     }),
+    apiDataBrief: json({
+      label: 'Brief資料庫使用',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
     leading: select({
       label: '標頭樣式',
       options: [
@@ -242,6 +250,17 @@ const listConfigurations = list({
       update: allowRoles(admin, moderator, editor),
       create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin),
+    },
+  },
+  hooks: {
+    resolveInput: async ({ resolvedData }) => {
+      const { brief } = resolvedData
+      if (brief) {
+        resolvedData.apiDataBrief = customFields.draftConverter
+          .convertToApiData(brief)
+          .toJS()
+      }
+      return resolvedData
     },
   },
 })

@@ -1631,6 +1631,7 @@ type Topic {
   sortOrder: Int
   state: String
   brief: JSON
+  apiDataBrief: JSON
   leading: String
   heroImage: Photo
   heroUrl: String
@@ -1733,6 +1734,7 @@ input TopicUpdateInput {
   sortOrder: Int
   state: String
   brief: JSON
+  apiDataBrief: JSON
   leading: String
   heroImage: PhotoRelateToOneForUpdateInput
   heroUrl: String
@@ -1776,6 +1778,7 @@ input TopicCreateInput {
   sortOrder: Int
   state: String
   brief: JSON
+  apiDataBrief: JSON
   leading: String
   heroImage: PhotoRelateToOneForCreateInput
   heroUrl: String

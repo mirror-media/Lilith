@@ -376,6 +376,7 @@ model Topic {
   sortOrder                    Int?
   state                        String?   @default("draft")
   brief                        Json?
+  apiDataBrief                 Json?
   leading                      String?
   heroImage                    Photo?    @relation("Topic_heroImage", fields: [heroImageId], references: [id])
   heroImageId                  Int?      @map("heroImage")
