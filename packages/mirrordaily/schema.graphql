@@ -1631,26 +1631,26 @@ type Topic {
   sortOrder: Int
   state: String
   brief: JSON
+  leading: String
   heroImage: Photo
   heroUrl: String
   heroVideo: Video
-  leading: String
-  sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
-  sectionsCount(where: SectionWhereInput! = {}): Int
-  og_title: String
-  og_description: String
-  og_image: Photo
-  isFeatured: Boolean
-  title_style: String
-  type: String
-  style: String
-  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
-  tagsCount(where: TagWhereInput! = {}): Int
   slideshow_images(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
   slideshow_imagesCount(where: PhotoWhereInput! = {}): Int
   manualOrderOfSlideshowImages: JSON
+  og_title: String
+  og_description: String
+  og_image: Photo
+  type: String
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  style: String
+  isFeatured: Boolean
+  title_style: String
+  sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
   javascript: String
   dfp: String
   mobile_dfp: String
@@ -1676,21 +1676,21 @@ input TopicWhereInput {
   slug: StringFilter
   sortOrder: IntNullableFilter
   state: StringNullableFilter
+  leading: StringNullableFilter
   heroImage: PhotoWhereInput
   heroUrl: StringNullableFilter
   heroVideo: VideoWhereInput
-  leading: StringNullableFilter
-  sections: SectionManyRelationFilter
+  slideshow_images: PhotoManyRelationFilter
   og_title: StringFilter
   og_description: StringFilter
   og_image: PhotoWhereInput
+  type: StringNullableFilter
+  tags: TagManyRelationFilter
+  posts: PostManyRelationFilter
+  style: StringFilter
   isFeatured: BooleanFilter
   title_style: StringNullableFilter
-  type: StringNullableFilter
-  style: StringFilter
-  tags: TagManyRelationFilter
-  slideshow_images: PhotoManyRelationFilter
-  posts: PostManyRelationFilter
+  sections: SectionManyRelationFilter
   javascript: StringFilter
   dfp: StringFilter
   mobile_dfp: StringFilter
@@ -1712,14 +1712,14 @@ input TopicOrderByInput {
   slug: OrderDirection
   sortOrder: OrderDirection
   state: OrderDirection
-  heroUrl: OrderDirection
   leading: OrderDirection
+  heroUrl: OrderDirection
   og_title: OrderDirection
   og_description: OrderDirection
-  isFeatured: OrderDirection
-  title_style: OrderDirection
   type: OrderDirection
   style: OrderDirection
+  isFeatured: OrderDirection
+  title_style: OrderDirection
   javascript: OrderDirection
   dfp: OrderDirection
   mobile_dfp: OrderDirection
@@ -1733,22 +1733,22 @@ input TopicUpdateInput {
   sortOrder: Int
   state: String
   brief: JSON
+  leading: String
   heroImage: PhotoRelateToOneForUpdateInput
   heroUrl: String
   heroVideo: VideoRelateToOneForUpdateInput
-  leading: String
-  sections: SectionRelateToManyForUpdateInput
+  slideshow_images: PhotoRelateToManyForUpdateInput
+  manualOrderOfSlideshowImages: JSON
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForUpdateInput
+  type: String
+  tags: TagRelateToManyForUpdateInput
+  posts: PostRelateToManyForUpdateInput
+  style: String
   isFeatured: Boolean
   title_style: String
-  type: String
-  style: String
-  tags: TagRelateToManyForUpdateInput
-  slideshow_images: PhotoRelateToManyForUpdateInput
-  manualOrderOfSlideshowImages: JSON
-  posts: PostRelateToManyForUpdateInput
+  sections: SectionRelateToManyForUpdateInput
   javascript: String
   dfp: String
   mobile_dfp: String
@@ -1776,22 +1776,22 @@ input TopicCreateInput {
   sortOrder: Int
   state: String
   brief: JSON
+  leading: String
   heroImage: PhotoRelateToOneForCreateInput
   heroUrl: String
   heroVideo: VideoRelateToOneForCreateInput
-  leading: String
-  sections: SectionRelateToManyForCreateInput
+  slideshow_images: PhotoRelateToManyForCreateInput
+  manualOrderOfSlideshowImages: JSON
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForCreateInput
+  type: String
+  tags: TagRelateToManyForCreateInput
+  posts: PostRelateToManyForCreateInput
+  style: String
   isFeatured: Boolean
   title_style: String
-  type: String
-  style: String
-  tags: TagRelateToManyForCreateInput
-  slideshow_images: PhotoRelateToManyForCreateInput
-  manualOrderOfSlideshowImages: JSON
-  posts: PostRelateToManyForCreateInput
+  sections: SectionRelateToManyForCreateInput
   javascript: String
   dfp: String
   mobile_dfp: String
