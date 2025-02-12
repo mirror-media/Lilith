@@ -21,6 +21,8 @@ import InvalidName from './invalid_name'
 import Exchange from './exchange'
 import ReportReason from './report_reason'
 import ReportRecord from './report_record'
+import Revenue from './revenue'
+import Statement from './statement'
 
 export const listDefinition = {
   User,
@@ -46,4 +48,6 @@ export const listDefinition = {
   Exchange,
   ReportReason,
   ReportRecord,
+  Revenue,
+  Statement,
 }
