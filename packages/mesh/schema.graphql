@@ -2393,13 +2393,13 @@ input PolicyCreateInput {
 
 type Podcast {
   id: ID!
-  url: String
   author: String
+  url: String
+  file_size: Int
+  mime_type: String
   duration: String
   source: Publisher
   story: Story
-  file_size: Int
-  mime_type: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2416,13 +2416,13 @@ input PodcastWhereInput {
   OR: [PodcastWhereInput!]
   NOT: [PodcastWhereInput!]
   id: IDFilter
-  url: StringFilter
   author: StringFilter
+  url: StringFilter
+  file_size: IntNullableFilter
+  mime_type: StringFilter
   duration: StringFilter
   source: PublisherWhereInput
   story: StoryWhereInput
-  file_size: IntNullableFilter
-  mime_type: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2431,23 +2431,23 @@ input PodcastWhereInput {
 
 input PodcastOrderByInput {
   id: OrderDirection
-  url: OrderDirection
   author: OrderDirection
-  duration: OrderDirection
+  url: OrderDirection
   file_size: OrderDirection
   mime_type: OrderDirection
+  duration: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input PodcastUpdateInput {
-  url: String
   author: String
+  url: String
+  file_size: Int
+  mime_type: String
   duration: String
   source: PublisherRelateToOneForUpdateInput
   story: StoryRelateToOneForUpdateInput
-  file_size: Int
-  mime_type: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2460,13 +2460,13 @@ input PodcastUpdateArgs {
 }
 
 input PodcastCreateInput {
-  url: String
   author: String
+  url: String
+  file_size: Int
+  mime_type: String
   duration: String
   source: PublisherRelateToOneForCreateInput
   story: StoryRelateToOneForCreateInput
-  file_size: Int
-  mime_type: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2905,6 +2905,185 @@ input ReportReasonRelateToOneForCreateInput {
   connect: ReportReasonWhereUniqueInput
 }
 
+type Revenue {
+  id: ID!
+  title: String
+  publisher: Publisher
+  type: RevenueTypeType
+  value: Float
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum RevenueTypeType {
+  story_ad_revenue
+  mutual_fund_revenue
+}
+
+input RevenueWhereUniqueInput {
+  id: ID
+}
+
+input RevenueWhereInput {
+  AND: [RevenueWhereInput!]
+  OR: [RevenueWhereInput!]
+  NOT: [RevenueWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  publisher: PublisherWhereInput
+  type: RevenueTypeTypeNullableFilter
+  value: FloatFilter
+  start_date: DateTimeNullableFilter
+  end_date: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input RevenueTypeTypeNullableFilter {
+  equals: RevenueTypeType
+  in: [RevenueTypeType!]
+  notIn: [RevenueTypeType!]
+  not: RevenueTypeTypeNullableFilter
+}
+
+input RevenueOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  type: OrderDirection
+  value: OrderDirection
+  start_date: OrderDirection
+  end_date: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input RevenueUpdateInput {
+  title: String
+  publisher: PublisherRelateToOneForUpdateInput
+  type: RevenueTypeType
+  value: Float
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input RevenueUpdateArgs {
+  where: RevenueWhereUniqueInput!
+  data: RevenueUpdateInput!
+}
+
+input RevenueCreateInput {
+  title: String
+  publisher: PublisherRelateToOneForCreateInput
+  type: RevenueTypeType
+  value: Float
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Statement {
+  id: ID!
+  title: String
+  publisher: Publisher
+  type: StatementTypeType
+  url: String
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum StatementTypeType {
+  month
+  quarter
+  semi_annual
+}
+
+input StatementWhereUniqueInput {
+  id: ID
+}
+
+input StatementWhereInput {
+  AND: [StatementWhereInput!]
+  OR: [StatementWhereInput!]
+  NOT: [StatementWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  publisher: PublisherWhereInput
+  type: StatementTypeTypeNullableFilter
+  url: StringFilter
+  start_date: DateTimeNullableFilter
+  end_date: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input StatementTypeTypeNullableFilter {
+  equals: StatementTypeType
+  in: [StatementTypeType!]
+  notIn: [StatementTypeType!]
+  not: StatementTypeTypeNullableFilter
+}
+
+input StatementOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  type: OrderDirection
+  url: OrderDirection
+  start_date: OrderDirection
+  end_date: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input StatementUpdateInput {
+  title: String
+  publisher: PublisherRelateToOneForUpdateInput
+  type: StatementTypeType
+  url: String
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input StatementUpdateArgs {
+  where: StatementWhereUniqueInput!
+  data: StatementUpdateInput!
+}
+
+input StatementCreateInput {
+  title: String
+  publisher: PublisherRelateToOneForCreateInput
+  type: StatementTypeType
+  url: String
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -3109,6 +3288,24 @@ type Mutation {
   updateReportRecords(data: [ReportRecordUpdateArgs!]!): [ReportRecord]
   deleteReportRecord(where: ReportRecordWhereUniqueInput!): ReportRecord
   deleteReportRecords(where: [ReportRecordWhereUniqueInput!]!): [ReportRecord]
+  createRevenue(data: RevenueCreateInput!): Revenue
+  createRevenues(data: [RevenueCreateInput!]!): [Revenue]
+  updateRevenue(
+    where: RevenueWhereUniqueInput!
+    data: RevenueUpdateInput!
+  ): Revenue
+  updateRevenues(data: [RevenueUpdateArgs!]!): [Revenue]
+  deleteRevenue(where: RevenueWhereUniqueInput!): Revenue
+  deleteRevenues(where: [RevenueWhereUniqueInput!]!): [Revenue]
+  createStatement(data: StatementCreateInput!): Statement
+  createStatements(data: [StatementCreateInput!]!): [Statement]
+  updateStatement(
+    where: StatementWhereUniqueInput!
+    data: StatementUpdateInput!
+  ): Statement
+  updateStatements(data: [StatementUpdateArgs!]!): [Statement]
+  deleteStatement(where: StatementWhereUniqueInput!): Statement
+  deleteStatements(where: [StatementWhereUniqueInput!]!): [Statement]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -3324,6 +3521,22 @@ type Query {
   ): [ReportRecord!]
   reportRecord(where: ReportRecordWhereUniqueInput!): ReportRecord
   reportRecordsCount(where: ReportRecordWhereInput! = {}): Int
+  revenues(
+    where: RevenueWhereInput! = {}
+    orderBy: [RevenueOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Revenue!]
+  revenue(where: RevenueWhereUniqueInput!): Revenue
+  revenuesCount(where: RevenueWhereInput! = {}): Int
+  statements(
+    where: StatementWhereInput! = {}
+    orderBy: [StatementOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Statement!]
+  statement(where: StatementWhereUniqueInput!): Statement
+  statementsCount(where: StatementWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
