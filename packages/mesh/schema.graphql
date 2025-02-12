@@ -2810,6 +2810,95 @@ input ExchangeCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Revenue {
+  id: ID!
+  title: String
+  publisher: Publisher
+  type: RevenueTypeType
+  value: Float
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum RevenueTypeType {
+  story_ad_revenue
+  mutual_fund_revenue
+}
+
+input RevenueWhereUniqueInput {
+  id: ID
+}
+
+input RevenueWhereInput {
+  AND: [RevenueWhereInput!]
+  OR: [RevenueWhereInput!]
+  NOT: [RevenueWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  publisher: PublisherWhereInput
+  type: RevenueTypeTypeNullableFilter
+  value: FloatFilter
+  start_date: DateTimeNullableFilter
+  end_date: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input RevenueTypeTypeNullableFilter {
+  equals: RevenueTypeType
+  in: [RevenueTypeType!]
+  notIn: [RevenueTypeType!]
+  not: RevenueTypeTypeNullableFilter
+}
+
+input RevenueOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  type: OrderDirection
+  value: OrderDirection
+  start_date: OrderDirection
+  end_date: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input RevenueUpdateInput {
+  title: String
+  publisher: PublisherRelateToOneForUpdateInput
+  type: RevenueTypeType
+  value: Float
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input RevenueUpdateArgs {
+  where: RevenueWhereUniqueInput!
+  data: RevenueUpdateInput!
+}
+
+input RevenueCreateInput {
+  title: String
+  publisher: PublisherRelateToOneForCreateInput
+  type: RevenueTypeType
+  value: Float
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2996,6 +3085,15 @@ type Mutation {
   updateExchanges(data: [ExchangeUpdateArgs!]!): [Exchange]
   deleteExchange(where: ExchangeWhereUniqueInput!): Exchange
   deleteExchanges(where: [ExchangeWhereUniqueInput!]!): [Exchange]
+  createRevenue(data: RevenueCreateInput!): Revenue
+  createRevenues(data: [RevenueCreateInput!]!): [Revenue]
+  updateRevenue(
+    where: RevenueWhereUniqueInput!
+    data: RevenueUpdateInput!
+  ): Revenue
+  updateRevenues(data: [RevenueUpdateArgs!]!): [Revenue]
+  deleteRevenue(where: RevenueWhereUniqueInput!): Revenue
+  deleteRevenues(where: [RevenueWhereUniqueInput!]!): [Revenue]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -3195,6 +3293,14 @@ type Query {
   ): [Exchange!]
   exchange(where: ExchangeWhereUniqueInput!): Exchange
   exchangesCount(where: ExchangeWhereInput! = {}): Int
+  revenues(
+    where: RevenueWhereInput! = {}
+    orderBy: [RevenueOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Revenue!]
+  revenue(where: RevenueWhereUniqueInput!): Revenue
+  revenuesCount(where: RevenueWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
