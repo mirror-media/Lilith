@@ -2899,6 +2899,96 @@ input RevenueCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Statement {
+  id: ID!
+  title: String
+  publisher: Publisher
+  type: StatementTypeType
+  url: String
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum StatementTypeType {
+  month
+  quarter
+  semi_annual
+}
+
+input StatementWhereUniqueInput {
+  id: ID
+}
+
+input StatementWhereInput {
+  AND: [StatementWhereInput!]
+  OR: [StatementWhereInput!]
+  NOT: [StatementWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  publisher: PublisherWhereInput
+  type: StatementTypeTypeNullableFilter
+  url: StringFilter
+  start_date: DateTimeNullableFilter
+  end_date: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input StatementTypeTypeNullableFilter {
+  equals: StatementTypeType
+  in: [StatementTypeType!]
+  notIn: [StatementTypeType!]
+  not: StatementTypeTypeNullableFilter
+}
+
+input StatementOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  type: OrderDirection
+  url: OrderDirection
+  start_date: OrderDirection
+  end_date: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input StatementUpdateInput {
+  title: String
+  publisher: PublisherRelateToOneForUpdateInput
+  type: StatementTypeType
+  url: String
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input StatementUpdateArgs {
+  where: StatementWhereUniqueInput!
+  data: StatementUpdateInput!
+}
+
+input StatementCreateInput {
+  title: String
+  publisher: PublisherRelateToOneForCreateInput
+  type: StatementTypeType
+  url: String
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -3094,6 +3184,15 @@ type Mutation {
   updateRevenues(data: [RevenueUpdateArgs!]!): [Revenue]
   deleteRevenue(where: RevenueWhereUniqueInput!): Revenue
   deleteRevenues(where: [RevenueWhereUniqueInput!]!): [Revenue]
+  createStatement(data: StatementCreateInput!): Statement
+  createStatements(data: [StatementCreateInput!]!): [Statement]
+  updateStatement(
+    where: StatementWhereUniqueInput!
+    data: StatementUpdateInput!
+  ): Statement
+  updateStatements(data: [StatementUpdateArgs!]!): [Statement]
+  deleteStatement(where: StatementWhereUniqueInput!): Statement
+  deleteStatements(where: [StatementWhereUniqueInput!]!): [Statement]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -3301,6 +3400,14 @@ type Query {
   ): [Revenue!]
   revenue(where: RevenueWhereUniqueInput!): Revenue
   revenuesCount(where: RevenueWhereInput! = {}): Int
+  statements(
+    where: StatementWhereInput! = {}
+    orderBy: [StatementOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Statement!]
+  statement(where: StatementWhereUniqueInput!): Statement
+  statementsCount(where: StatementWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

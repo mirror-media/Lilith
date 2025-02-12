@@ -62,6 +62,8 @@ model User {
   from_Exchange_updatedBy         Exchange[]         @relation("Exchange_updatedBy")
   from_Revenue_createdBy          Revenue[]          @relation("Revenue_createdBy")
   from_Revenue_updatedBy          Revenue[]          @relation("Revenue_updatedBy")
+  from_Statement_createdBy        Statement[]        @relation("Statement_createdBy")
+  from_Statement_updatedBy        Statement[]        @relation("Statement_updatedBy")
 
   @@index([publisherId])
 }
@@ -179,40 +181,41 @@ model Pick {
 }
 
 model Publisher {
-  id                     Int           @id @default(autoincrement())
-  title                  String        @default("")
-  official_site          String        @default("")
-  rss                    String        @default("")
-  summary                String        @default("")
-  logo                   String        @default("")
-  description            String        @default("")
-  is_active              Boolean       @default(true)
-  customId               String        @default("")
-  admin                  Member?       @relation("Publisher_admin", fields: [adminId], references: [id])
-  adminId                Int?          @map("admin")
-  exchange               Exchange[]    @relation("Exchange_publisher")
-  sponsored              Sponsorship[] @relation("Sponsorship_publisher")
-  lang                   String?       @default("zh-TW")
-  category               Category?     @relation("Publisher_category", fields: [categoryId], references: [id])
-  categoryId             Int?          @map("category")
-  full_content           Boolean       @default(false)
-  full_screen_ad         String?       @default("none")
-  source_type            String?       @default("empty")
-  paywall                Boolean       @default(false)
-  follower               Member[]      @relation("Member_follow_publisher")
-  exclude_follower       Member[]      @relation("Member_exclude_publisher")
-  wallet                 String        @default("")
-  user                   User[]        @relation("User_publisher")
-  createdAt              DateTime?
-  updatedAt              DateTime?
-  createdBy              User?         @relation("Publisher_createdBy", fields: [createdById], references: [id])
-  createdById            Int?          @map("createdBy")
-  updatedBy              User?         @relation("Publisher_updatedBy", fields: [updatedById], references: [id])
-  updatedById            Int?          @map("updatedBy")
-  from_Story_source      Story[]       @relation("Story_source")
-  from_Policy_publisher  Policy[]      @relation("Policy_publisher")
-  from_Podcast_source    Podcast[]     @relation("Podcast_source")
-  from_Revenue_publisher Revenue[]     @relation("Revenue_publisher")
+  id                       Int           @id @default(autoincrement())
+  title                    String        @default("")
+  official_site            String        @default("")
+  rss                      String        @default("")
+  summary                  String        @default("")
+  logo                     String        @default("")
+  description              String        @default("")
+  is_active                Boolean       @default(true)
+  customId                 String        @default("")
+  admin                    Member?       @relation("Publisher_admin", fields: [adminId], references: [id])
+  adminId                  Int?          @map("admin")
+  exchange                 Exchange[]    @relation("Exchange_publisher")
+  sponsored                Sponsorship[] @relation("Sponsorship_publisher")
+  lang                     String?       @default("zh-TW")
+  category                 Category?     @relation("Publisher_category", fields: [categoryId], references: [id])
+  categoryId               Int?          @map("category")
+  full_content             Boolean       @default(false)
+  full_screen_ad           String?       @default("none")
+  source_type              String?       @default("empty")
+  paywall                  Boolean       @default(false)
+  follower                 Member[]      @relation("Member_follow_publisher")
+  exclude_follower         Member[]      @relation("Member_exclude_publisher")
+  wallet                   String        @default("")
+  user                     User[]        @relation("User_publisher")
+  createdAt                DateTime?
+  updatedAt                DateTime?
+  createdBy                User?         @relation("Publisher_createdBy", fields: [createdById], references: [id])
+  createdById              Int?          @map("createdBy")
+  updatedBy                User?         @relation("Publisher_updatedBy", fields: [updatedById], references: [id])
+  updatedById              Int?          @map("updatedBy")
+  from_Story_source        Story[]       @relation("Story_source")
+  from_Policy_publisher    Policy[]      @relation("Policy_publisher")
+  from_Podcast_source      Podcast[]     @relation("Podcast_source")
+  from_Revenue_publisher   Revenue[]     @relation("Revenue_publisher")
+  from_Statement_publisher Statement[]   @relation("Statement_publisher")
 
   @@index([adminId])
   @@index([categoryId])
@@ -657,6 +660,27 @@ model Revenue {
   @@index([updatedById])
 }
 
+model Statement {
+  id          Int                @id @default(autoincrement())
+  title       String             @default("")
+  publisher   Publisher?         @relation("Statement_publisher", fields: [publisherId], references: [id])
+  publisherId Int?               @map("publisher")
+  type        StatementTypeType?
+  url         String             @default("")
+  start_date  DateTime?
+  end_date    DateTime?
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?              @relation("Statement_createdBy", fields: [createdById], references: [id])
+  createdById Int?               @map("createdBy")
+  updatedBy   User?              @relation("Statement_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?               @map("updatedBy")
+
+  @@index([publisherId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 enum PolicyTypeType {
   deposit
   unlock_all_publishers
@@ -684,4 +708,10 @@ enum ExchangeStatusType {
 enum RevenueTypeType {
   story_ad_revenue
   mutual_fund_revenue
+}
+
+enum StatementTypeType {
+  month
+  quarter
+  semi_annual
 }
