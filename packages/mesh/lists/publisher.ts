@@ -96,6 +96,11 @@ const listConfigurations = list({
       ref: 'User.publisher',
       many: true,
     }),
+    statements: relationship({
+      label: '媒體報表',
+      ref: 'Statement.publisher',
+      many: true,
+    }),
   },
   ui: {
     listView: {
