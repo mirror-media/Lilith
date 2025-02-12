@@ -655,6 +655,13 @@ type Publisher {
     skip: Int! = 0
   ): [User!]
   userCount(where: UserWhereInput! = {}): Int
+  statements(
+    where: StatementWhereInput! = {}
+    orderBy: [StatementOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Statement!]
+  statementsCount(where: StatementWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -691,6 +698,7 @@ input PublisherWhereInput {
   exclude_follower: MemberManyRelationFilter
   wallet: StringFilter
   user: UserManyRelationFilter
+  statements: StatementManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -713,6 +721,12 @@ input UserManyRelationFilter {
   every: UserWhereInput
   some: UserWhereInput
   none: UserWhereInput
+}
+
+input StatementManyRelationFilter {
+  every: StatementWhereInput
+  some: StatementWhereInput
+  none: StatementWhereInput
 }
 
 input PublisherOrderByInput {
@@ -757,6 +771,7 @@ input PublisherUpdateInput {
   exclude_follower: MemberRelateToManyForUpdateInput
   wallet: String
   user: UserRelateToManyForUpdateInput
+  statements: StatementRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -790,6 +805,13 @@ input UserRelateToManyForUpdateInput {
   connect: [UserWhereUniqueInput!]
 }
 
+input StatementRelateToManyForUpdateInput {
+  disconnect: [StatementWhereUniqueInput!]
+  set: [StatementWhereUniqueInput!]
+  create: [StatementCreateInput!]
+  connect: [StatementWhereUniqueInput!]
+}
+
 input PublisherUpdateArgs {
   where: PublisherWhereUniqueInput!
   data: PublisherUpdateInput!
@@ -817,6 +839,7 @@ input PublisherCreateInput {
   exclude_follower: MemberRelateToManyForCreateInput
   wallet: String
   user: UserRelateToManyForCreateInput
+  statements: StatementRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -841,6 +864,11 @@ input CategoryRelateToOneForCreateInput {
 input UserRelateToManyForCreateInput {
   create: [UserCreateInput!]
   connect: [UserWhereUniqueInput!]
+}
+
+input StatementRelateToManyForCreateInput {
+  create: [StatementCreateInput!]
+  connect: [StatementWhereUniqueInput!]
 }
 
 type Collection {

@@ -13,7 +13,7 @@ const listConfigurations = list({
     }),
     publisher: relationship({ 
         label: "媒體",
-        ref: 'Publisher', 
+        ref: 'Publisher.statements', 
         many: false 
     }),
     type: select({
