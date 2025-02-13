@@ -187,7 +187,7 @@ model Publisher {
   logo                   String        @default("")
   description            String        @default("")
   is_active              Boolean       @default(true)
-  customId               String        @default("")
+  customId               String        @unique @default("")
   admin                  Member?       @relation("Publisher_admin", fields: [adminId], references: [id])
   adminId                Int?          @map("admin")
   exchange               Exchange[]    @relation("Exchange_publisher")

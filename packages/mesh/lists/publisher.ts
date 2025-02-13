@@ -20,7 +20,7 @@ const listConfigurations = list({
       validation: {
         isRequired: true,
       },
-      isindexed: 'unique',
+      isIndexed: 'unique',
     }),
     admin: relationship({
       label: "媒體管理員",
@@ -71,6 +71,7 @@ const listConfigurations = list({
         { label: '鏡週刊 external', value: 'mm_external' },
         { label: 'rss', value: 'rss' },
         { label: 'empty', value: 'empty' },
+        { label: 'Podcast', value: 'podcast' },
       ],
       defaultValue: 'empty',
     }),

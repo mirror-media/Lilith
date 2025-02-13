@@ -670,6 +670,7 @@ type Publisher {
 
 input PublisherWhereUniqueInput {
   id: ID
+  customId: String
 }
 
 input PublisherWhereInput {
