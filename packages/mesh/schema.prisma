@@ -183,6 +183,7 @@ model Publisher {
   title                  String        @default("")
   official_site          String        @default("")
   rss                    String        @default("")
+  podcast_url            String        @default("")
   summary                String        @default("")
   logo                   String        @default("")
   description            String        @default("")
