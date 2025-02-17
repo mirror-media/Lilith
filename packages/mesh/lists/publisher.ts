@@ -9,6 +9,7 @@ const listConfigurations = list({
     title: text({ validation: { isRequired: false } }),
     official_site: text({ validation: { isRequired: true } }),
     rss: text({ validation: { isRequired: true } }),
+    podcast_url: text({ validation: { isRequired: false } }),
     summary: text({ validation: { isRequired: false } }),
     logo: text({ validation: { isRequired: false } }),
     description: text({ validation: { isRequired: false } }),
@@ -20,7 +21,7 @@ const listConfigurations = list({
       validation: {
         isRequired: true,
       },
-      isindexed: 'unique',
+      isIndexed: 'unique',
     }),
     admin: relationship({
       label: "媒體管理員",
@@ -94,6 +95,11 @@ const listConfigurations = list({
     user: relationship({
       label: 'User',
       ref: 'User.publisher',
+      many: true,
+    }),
+    statements: relationship({
+      label: '媒體報表',
+      ref: 'Statement.publisher',
       many: true,
     }),
   },

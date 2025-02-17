@@ -290,7 +290,6 @@ type Comment {
   id: ID!
   member: Member
   story: Story
-  podcast: Podcast
   collection: Collection
   content: String
   parent: Comment
@@ -323,7 +322,6 @@ input CommentWhereInput {
   id: IDFilter
   member: MemberWhereInput
   story: StoryWhereInput
-  podcast: PodcastWhereInput
   collection: CollectionWhereInput
   content: StringFilter
   parent: CommentWhereInput
@@ -388,7 +386,6 @@ input CommentOrderByInput {
 input CommentUpdateInput {
   member: MemberRelateToOneForUpdateInput
   story: StoryRelateToOneForUpdateInput
-  podcast: PodcastRelateToOneForUpdateInput
   collection: CollectionRelateToOneForUpdateInput
   content: String
   parent: CommentRelateToOneForUpdateInput
@@ -413,12 +410,6 @@ input MemberRelateToOneForUpdateInput {
 input StoryRelateToOneForUpdateInput {
   create: StoryCreateInput
   connect: StoryWhereUniqueInput
-  disconnect: Boolean
-}
-
-input PodcastRelateToOneForUpdateInput {
-  create: PodcastCreateInput
-  connect: PodcastWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -449,7 +440,6 @@ input CommentUpdateArgs {
 input CommentCreateInput {
   member: MemberRelateToOneForCreateInput
   story: StoryRelateToOneForCreateInput
-  podcast: PodcastRelateToOneForCreateInput
   collection: CollectionRelateToOneForCreateInput
   content: String
   parent: CommentRelateToOneForCreateInput
@@ -475,11 +465,6 @@ input StoryRelateToOneForCreateInput {
   connect: StoryWhereUniqueInput
 }
 
-input PodcastRelateToOneForCreateInput {
-  create: PodcastCreateInput
-  connect: PodcastWhereUniqueInput
-}
-
 input CollectionRelateToOneForCreateInput {
   create: CollectionCreateInput
   connect: CollectionWhereUniqueInput
@@ -500,7 +485,6 @@ type Pick {
   member: Member
   objective: String
   story: Story
-  podcast: Podcast
   collection: Collection
   comment: Comment
   pick_comment(
@@ -533,7 +517,6 @@ input PickWhereInput {
   member: MemberWhereInput
   objective: StringNullableFilter
   story: StoryWhereInput
-  podcast: PodcastWhereInput
   collection: CollectionWhereInput
   comment: CommentWhereInput
   pick_comment: CommentManyRelationFilter
@@ -570,7 +553,6 @@ input PickUpdateInput {
   member: MemberRelateToOneForUpdateInput
   objective: String
   story: StoryRelateToOneForUpdateInput
-  podcast: PodcastRelateToOneForUpdateInput
   collection: CollectionRelateToOneForUpdateInput
   comment: CommentRelateToOneForUpdateInput
   pick_comment: CommentRelateToManyForUpdateInput
@@ -601,7 +583,6 @@ input PickCreateInput {
   member: MemberRelateToOneForCreateInput
   objective: String
   story: StoryRelateToOneForCreateInput
-  podcast: PodcastRelateToOneForCreateInput
   collection: CollectionRelateToOneForCreateInput
   comment: CommentRelateToOneForCreateInput
   pick_comment: CommentRelateToManyForCreateInput
@@ -626,6 +607,7 @@ type Publisher {
   title: String
   official_site: String
   rss: String
+  podcast_url: String
   summary: String
   logo: String
   description: String
@@ -674,6 +656,13 @@ type Publisher {
     skip: Int! = 0
   ): [User!]
   userCount(where: UserWhereInput! = {}): Int
+  statements(
+    where: StatementWhereInput! = {}
+    orderBy: [StatementOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Statement!]
+  statementsCount(where: StatementWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -682,6 +671,7 @@ type Publisher {
 
 input PublisherWhereUniqueInput {
   id: ID
+  customId: String
 }
 
 input PublisherWhereInput {
@@ -692,6 +682,7 @@ input PublisherWhereInput {
   title: StringFilter
   official_site: StringFilter
   rss: StringFilter
+  podcast_url: StringFilter
   summary: StringFilter
   logo: StringFilter
   description: StringFilter
@@ -710,6 +701,7 @@ input PublisherWhereInput {
   exclude_follower: MemberManyRelationFilter
   wallet: StringFilter
   user: UserManyRelationFilter
+  statements: StatementManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -734,11 +726,18 @@ input UserManyRelationFilter {
   none: UserWhereInput
 }
 
+input StatementManyRelationFilter {
+  every: StatementWhereInput
+  some: StatementWhereInput
+  none: StatementWhereInput
+}
+
 input PublisherOrderByInput {
   id: OrderDirection
   title: OrderDirection
   official_site: OrderDirection
   rss: OrderDirection
+  podcast_url: OrderDirection
   summary: OrderDirection
   logo: OrderDirection
   description: OrderDirection
@@ -758,6 +757,7 @@ input PublisherUpdateInput {
   title: String
   official_site: String
   rss: String
+  podcast_url: String
   summary: String
   logo: String
   description: String
@@ -776,6 +776,7 @@ input PublisherUpdateInput {
   exclude_follower: MemberRelateToManyForUpdateInput
   wallet: String
   user: UserRelateToManyForUpdateInput
+  statements: StatementRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -809,6 +810,13 @@ input UserRelateToManyForUpdateInput {
   connect: [UserWhereUniqueInput!]
 }
 
+input StatementRelateToManyForUpdateInput {
+  disconnect: [StatementWhereUniqueInput!]
+  set: [StatementWhereUniqueInput!]
+  create: [StatementCreateInput!]
+  connect: [StatementWhereUniqueInput!]
+}
+
 input PublisherUpdateArgs {
   where: PublisherWhereUniqueInput!
   data: PublisherUpdateInput!
@@ -818,6 +826,7 @@ input PublisherCreateInput {
   title: String
   official_site: String
   rss: String
+  podcast_url: String
   summary: String
   logo: String
   description: String
@@ -836,6 +845,7 @@ input PublisherCreateInput {
   exclude_follower: MemberRelateToManyForCreateInput
   wallet: String
   user: UserRelateToManyForCreateInput
+  statements: StatementRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -860,6 +870,11 @@ input CategoryRelateToOneForCreateInput {
 input UserRelateToManyForCreateInput {
   create: [UserCreateInput!]
   connect: [UserWhereUniqueInput!]
+}
+
+input StatementRelateToManyForCreateInput {
+  create: [StatementCreateInput!]
+  connect: [StatementWhereUniqueInput!]
 }
 
 type Collection {
@@ -1328,7 +1343,7 @@ type Story {
   paywall: Boolean
   isMember: Boolean
   origid: String
-  full_screen_ad: String
+  full_screen_ad: StoryFullScreenAdType
   is_active: Boolean
   tag(
     where: TagWhereInput! = {}
@@ -1337,10 +1352,24 @@ type Story {
     skip: Int! = 0
   ): [Tag!]
   tagCount(where: TagWhereInput! = {}): Int
+  story_type: StoryStoryTypeType
+  podcast: Podcast
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+}
+
+enum StoryFullScreenAdType {
+  mobile
+  desktop
+  all
+  none
+}
+
+enum StoryStoryTypeType {
+  story
+  podcast
 }
 
 input StoryWhereUniqueInput {
@@ -1373,9 +1402,11 @@ input StoryWhereInput {
   paywall: BooleanFilter
   isMember: BooleanFilter
   origid: StringFilter
-  full_screen_ad: StringNullableFilter
+  full_screen_ad: StoryFullScreenAdTypeNullableFilter
   is_active: BooleanFilter
   tag: TagManyRelationFilter
+  story_type: StoryStoryTypeTypeNullableFilter
+  podcast: PodcastWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1388,10 +1419,24 @@ input StoryManyRelationFilter {
   none: StoryWhereInput
 }
 
+input StoryFullScreenAdTypeNullableFilter {
+  equals: StoryFullScreenAdType
+  in: [StoryFullScreenAdType!]
+  notIn: [StoryFullScreenAdType!]
+  not: StoryFullScreenAdTypeNullableFilter
+}
+
 input TagManyRelationFilter {
   every: TagWhereInput
   some: TagWhereInput
   none: TagWhereInput
+}
+
+input StoryStoryTypeTypeNullableFilter {
+  equals: StoryStoryTypeType
+  in: [StoryStoryTypeType!]
+  notIn: [StoryStoryTypeType!]
+  not: StoryStoryTypeTypeNullableFilter
 }
 
 input StoryOrderByInput {
@@ -1412,6 +1457,7 @@ input StoryOrderByInput {
   origid: OrderDirection
   full_screen_ad: OrderDirection
   is_active: OrderDirection
+  story_type: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1439,9 +1485,11 @@ input StoryUpdateInput {
   paywall: Boolean
   isMember: Boolean
   origid: String
-  full_screen_ad: String
+  full_screen_ad: StoryFullScreenAdType
   is_active: Boolean
   tag: TagRelateToManyForUpdateInput
+  story_type: StoryStoryTypeType
+  podcast: PodcastRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1460,6 +1508,12 @@ input TagRelateToManyForUpdateInput {
   set: [TagWhereUniqueInput!]
   create: [TagCreateInput!]
   connect: [TagWhereUniqueInput!]
+}
+
+input PodcastRelateToOneForUpdateInput {
+  create: PodcastCreateInput
+  connect: PodcastWhereUniqueInput
+  disconnect: Boolean
 }
 
 input StoryUpdateArgs {
@@ -1490,9 +1544,11 @@ input StoryCreateInput {
   paywall: Boolean
   isMember: Boolean
   origid: String
-  full_screen_ad: String
+  full_screen_ad: StoryFullScreenAdType
   is_active: Boolean
   tag: TagRelateToManyForCreateInput
+  story_type: StoryStoryTypeType
+  podcast: PodcastRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1507,6 +1563,11 @@ input StoryRelateToManyForCreateInput {
 input TagRelateToManyForCreateInput {
   create: [TagCreateInput!]
   connect: [TagWhereUniqueInput!]
+}
+
+input PodcastRelateToOneForCreateInput {
+  create: PodcastCreateInput
+  connect: PodcastWhereUniqueInput
 }
 
 type Tag {
@@ -1716,6 +1777,7 @@ type Member {
     skip: Int! = 0
   ): [CollectionMember!]
   modify_collectionCount(where: CollectionMemberWhereInput! = {}): Int
+  balance: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1763,6 +1825,7 @@ input MemberWhereInput {
   invited_by: InvitationCodeWhereInput
   create_collection: CollectionMemberManyRelationFilter
   modify_collection: CollectionMemberManyRelationFilter
+  balance: IntNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1817,6 +1880,7 @@ input MemberOrderByInput {
   email: OrderDirection
   is_active: OrderDirection
   verified: OrderDirection
+  balance: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1851,6 +1915,7 @@ input MemberUpdateInput {
   invited_by: InvitationCodeRelateToOneForUpdateInput
   create_collection: CollectionMemberRelateToManyForUpdateInput
   modify_collection: CollectionMemberRelateToManyForUpdateInput
+  balance: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1940,6 +2005,7 @@ input MemberCreateInput {
   invited_by: InvitationCodeRelateToOneForCreateInput
   create_collection: CollectionMemberRelateToManyForCreateInput
   modify_collection: CollectionMemberRelateToManyForCreateInput
+  balance: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2361,41 +2427,13 @@ input PolicyCreateInput {
 
 type Podcast {
   id: ID!
-  title: String
-  url: String
-  description: String
   author: String
-  source: Publisher
-  category: Category
+  url: String
+  file_size: Int
+  mime_type: String
   duration: String
-  pick(
-    where: PickWhereInput! = {}
-    orderBy: [PickOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Pick!]
-  pickCount(where: PickWhereInput! = {}): Int
-  comment(
-    where: CommentWhereInput! = {}
-    orderBy: [CommentOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Comment!]
-  commentCount(where: CommentWhereInput! = {}): Int
-  published_date: DateTime
-  og_title: String
-  og_image: String
-  og_description: String
-  isMember: Boolean
-  origid: String
-  is_active: Boolean
-  tag(
-    where: TagWhereInput! = {}
-    orderBy: [TagOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Tag!]
-  tagCount(where: TagWhereInput! = {}): Int
+  source: Publisher
+  story: Story
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2412,23 +2450,13 @@ input PodcastWhereInput {
   OR: [PodcastWhereInput!]
   NOT: [PodcastWhereInput!]
   id: IDFilter
-  title: StringFilter
-  url: StringFilter
-  description: StringFilter
   author: StringFilter
-  source: PublisherWhereInput
-  category: CategoryWhereInput
+  url: StringFilter
+  file_size: IntNullableFilter
+  mime_type: StringFilter
   duration: StringFilter
-  pick: PickManyRelationFilter
-  comment: CommentManyRelationFilter
-  published_date: DateTimeNullableFilter
-  og_title: StringFilter
-  og_image: StringFilter
-  og_description: StringFilter
-  isMember: BooleanFilter
-  origid: StringFilter
-  is_active: BooleanFilter
-  tag: TagManyRelationFilter
+  source: PublisherWhereInput
+  story: StoryWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2437,40 +2465,23 @@ input PodcastWhereInput {
 
 input PodcastOrderByInput {
   id: OrderDirection
-  title: OrderDirection
-  url: OrderDirection
-  description: OrderDirection
   author: OrderDirection
+  url: OrderDirection
+  file_size: OrderDirection
+  mime_type: OrderDirection
   duration: OrderDirection
-  published_date: OrderDirection
-  og_title: OrderDirection
-  og_image: OrderDirection
-  og_description: OrderDirection
-  isMember: OrderDirection
-  origid: OrderDirection
-  is_active: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input PodcastUpdateInput {
-  title: String
-  url: String
-  description: String
   author: String
-  source: PublisherRelateToOneForUpdateInput
-  category: CategoryRelateToOneForUpdateInput
+  url: String
+  file_size: Int
+  mime_type: String
   duration: String
-  pick: PickRelateToManyForUpdateInput
-  comment: CommentRelateToManyForUpdateInput
-  published_date: DateTime
-  og_title: String
-  og_image: String
-  og_description: String
-  isMember: Boolean
-  origid: String
-  is_active: Boolean
-  tag: TagRelateToManyForUpdateInput
+  source: PublisherRelateToOneForUpdateInput
+  story: StoryRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2483,23 +2494,13 @@ input PodcastUpdateArgs {
 }
 
 input PodcastCreateInput {
-  title: String
-  url: String
-  description: String
   author: String
-  source: PublisherRelateToOneForCreateInput
-  category: CategoryRelateToOneForCreateInput
+  url: String
+  file_size: Int
+  mime_type: String
   duration: String
-  pick: PickRelateToManyForCreateInput
-  comment: CommentRelateToManyForCreateInput
-  published_date: DateTime
-  og_title: String
-  og_image: String
-  og_description: String
-  isMember: Boolean
-  origid: String
-  is_active: Boolean
-  tag: TagRelateToManyForCreateInput
+  source: PublisherRelateToOneForCreateInput
+  story: StoryRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2816,6 +2817,7 @@ type ReportReason {
 
 input ReportReasonWhereUniqueInput {
   id: ID
+  reason: String
 }
 
 input ReportReasonWhereInput {
@@ -2935,6 +2937,185 @@ input ReportRecordCreateInput {
 input ReportReasonRelateToOneForCreateInput {
   create: ReportReasonCreateInput
   connect: ReportReasonWhereUniqueInput
+}
+
+type Revenue {
+  id: ID!
+  title: String
+  publisher: Publisher
+  type: RevenueTypeType
+  value: Float
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum RevenueTypeType {
+  story_ad_revenue
+  mutual_fund_revenue
+}
+
+input RevenueWhereUniqueInput {
+  id: ID
+}
+
+input RevenueWhereInput {
+  AND: [RevenueWhereInput!]
+  OR: [RevenueWhereInput!]
+  NOT: [RevenueWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  publisher: PublisherWhereInput
+  type: RevenueTypeTypeNullableFilter
+  value: FloatFilter
+  start_date: DateTimeNullableFilter
+  end_date: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input RevenueTypeTypeNullableFilter {
+  equals: RevenueTypeType
+  in: [RevenueTypeType!]
+  notIn: [RevenueTypeType!]
+  not: RevenueTypeTypeNullableFilter
+}
+
+input RevenueOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  type: OrderDirection
+  value: OrderDirection
+  start_date: OrderDirection
+  end_date: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input RevenueUpdateInput {
+  title: String
+  publisher: PublisherRelateToOneForUpdateInput
+  type: RevenueTypeType
+  value: Float
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input RevenueUpdateArgs {
+  where: RevenueWhereUniqueInput!
+  data: RevenueUpdateInput!
+}
+
+input RevenueCreateInput {
+  title: String
+  publisher: PublisherRelateToOneForCreateInput
+  type: RevenueTypeType
+  value: Float
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Statement {
+  id: ID!
+  title: String
+  publisher: Publisher
+  type: StatementTypeType
+  url: String
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum StatementTypeType {
+  month
+  quarter
+  semi_annual
+}
+
+input StatementWhereUniqueInput {
+  id: ID
+}
+
+input StatementWhereInput {
+  AND: [StatementWhereInput!]
+  OR: [StatementWhereInput!]
+  NOT: [StatementWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  publisher: PublisherWhereInput
+  type: StatementTypeTypeNullableFilter
+  url: StringFilter
+  start_date: DateTimeNullableFilter
+  end_date: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input StatementTypeTypeNullableFilter {
+  equals: StatementTypeType
+  in: [StatementTypeType!]
+  notIn: [StatementTypeType!]
+  not: StatementTypeTypeNullableFilter
+}
+
+input StatementOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  type: OrderDirection
+  url: OrderDirection
+  start_date: OrderDirection
+  end_date: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input StatementUpdateInput {
+  title: String
+  publisher: PublisherRelateToOneForUpdateInput
+  type: StatementTypeType
+  url: String
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input StatementUpdateArgs {
+  where: StatementWhereUniqueInput!
+  data: StatementUpdateInput!
+}
+
+input StatementCreateInput {
+  title: String
+  publisher: PublisherRelateToOneForCreateInput
+  type: StatementTypeType
+  url: String
+  start_date: DateTime
+  end_date: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
 }
 
 """
@@ -3141,6 +3322,24 @@ type Mutation {
   updateReportRecords(data: [ReportRecordUpdateArgs!]!): [ReportRecord]
   deleteReportRecord(where: ReportRecordWhereUniqueInput!): ReportRecord
   deleteReportRecords(where: [ReportRecordWhereUniqueInput!]!): [ReportRecord]
+  createRevenue(data: RevenueCreateInput!): Revenue
+  createRevenues(data: [RevenueCreateInput!]!): [Revenue]
+  updateRevenue(
+    where: RevenueWhereUniqueInput!
+    data: RevenueUpdateInput!
+  ): Revenue
+  updateRevenues(data: [RevenueUpdateArgs!]!): [Revenue]
+  deleteRevenue(where: RevenueWhereUniqueInput!): Revenue
+  deleteRevenues(where: [RevenueWhereUniqueInput!]!): [Revenue]
+  createStatement(data: StatementCreateInput!): Statement
+  createStatements(data: [StatementCreateInput!]!): [Statement]
+  updateStatement(
+    where: StatementWhereUniqueInput!
+    data: StatementUpdateInput!
+  ): Statement
+  updateStatements(data: [StatementUpdateArgs!]!): [Statement]
+  deleteStatement(where: StatementWhereUniqueInput!): Statement
+  deleteStatements(where: [StatementWhereUniqueInput!]!): [Statement]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -3356,6 +3555,22 @@ type Query {
   ): [ReportRecord!]
   reportRecord(where: ReportRecordWhereUniqueInput!): ReportRecord
   reportRecordsCount(where: ReportRecordWhereInput! = {}): Int
+  revenues(
+    where: RevenueWhereInput! = {}
+    orderBy: [RevenueOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Revenue!]
+  revenue(where: RevenueWhereUniqueInput!): Revenue
+  revenuesCount(where: RevenueWhereInput! = {}): Int
+  statements(
+    where: StatementWhereInput! = {}
+    orderBy: [StatementOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Statement!]
+  statement(where: StatementWhereUniqueInput!): Statement
+  statementsCount(where: StatementWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
