@@ -607,6 +607,7 @@ type Publisher {
   title: String
   official_site: String
   rss: String
+  podcast_url: String
   summary: String
   logo: String
   description: String
@@ -670,6 +671,7 @@ type Publisher {
 
 input PublisherWhereUniqueInput {
   id: ID
+  customId: String
 }
 
 input PublisherWhereInput {
@@ -680,6 +682,7 @@ input PublisherWhereInput {
   title: StringFilter
   official_site: StringFilter
   rss: StringFilter
+  podcast_url: StringFilter
   summary: StringFilter
   logo: StringFilter
   description: StringFilter
@@ -734,6 +737,7 @@ input PublisherOrderByInput {
   title: OrderDirection
   official_site: OrderDirection
   rss: OrderDirection
+  podcast_url: OrderDirection
   summary: OrderDirection
   logo: OrderDirection
   description: OrderDirection
@@ -753,6 +757,7 @@ input PublisherUpdateInput {
   title: String
   official_site: String
   rss: String
+  podcast_url: String
   summary: String
   logo: String
   description: String
@@ -821,6 +826,7 @@ input PublisherCreateInput {
   title: String
   official_site: String
   rss: String
+  podcast_url: String
   summary: String
   logo: String
   description: String
