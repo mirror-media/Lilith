@@ -62,6 +62,23 @@ const listConfigurations = list({
         'youtube',
       ],
     }),
+    apiDataBrief: json({
+      label: 'Brief資料庫使用',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
+    leading: select({
+      label: '標頭樣式',
+      options: [
+        { label: 'video', value: 'video' },
+        { label: 'slideshow', value: 'slideshow' },
+        { label: 'image', value: 'image' },
+      ],
+      isIndexed: true,
+    }),
     heroImage: relationship({
       ref: 'Photo',
       label: '首圖',
@@ -76,19 +93,14 @@ const listConfigurations = list({
       label: '首圖影片（Leading Video）',
       ref: 'Video',
     }),
-    leading: select({
-      label: '標頭樣式',
-      options: [
-        { label: 'video', value: 'video' },
-        { label: 'slideshow', value: 'slideshow' },
-        { label: 'image', value: 'image' },
-      ],
-      isIndexed: true,
-    }),
-    sections: relationship({
-      label: '分區',
-      ref: 'Section.topics',
+    slideshow_images: relationship({
+      ref: 'Photo',
+      label: 'slideshow 圖片',
       many: true,
+    }),
+    manualOrderOfSlideshowImages: json({
+      label: 'slideshow 圖片排序結果',
+      defaultValue: null,
     }),
     og_title: text({
       label: 'FB分享標題',
@@ -102,60 +114,126 @@ const listConfigurations = list({
       label: 'FB分享縮圖',
       ref: 'Photo',
     }),
-    isFeatured: checkbox({
-      label: '置頂',
-    }),
-    title_style: select({
-      label: '專題樣式',
-      options: [{ label: 'Feature', value: 'feature' }],
-      isIndexed: true,
-      defaultValue: 'feature',
-    }),
     type: select({
       label: '型態',
       isIndexed: true,
       defaultValue: 'list',
       options: [
         { label: 'List', value: 'list' },
-        { label: 'Timeline', value: 'timeline' },
         { label: 'Group', value: 'group' },
-        { label: 'Portrait Wall', value: 'portraitwall' },
       ],
-    }),
-    style: text({
-      label: 'CSS',
-      ui: { displayMode: 'textarea' },
     }),
     tags: relationship({
       ref: 'Tag.topics',
       label: '標籤',
       many: true,
     }),
-    slideshow_images: relationship({
-      ref: 'Photo',
-      label: 'slideshow 圖片',
-      many: true,
-    }),
-    manualOrderOfSlideshowImages: json({
-      label: 'slideshow 圖片排序結果',
-      defaultValue: null,
-    }),
     posts: relationship({
       ref: 'Post.topics',
       label: '文章',
       many: true,
     }),
+    style: text({
+      label: 'CSS',
+      ui: { displayMode: 'textarea' },
+    }),
+    isFeatured: checkbox({
+      label: '置頂',
+      ui: {
+        // TODO: 未被使用，移除此欄位
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
+    }),
+    title_style: select({
+      label: '專題樣式',
+      options: [{ label: 'Feature', value: 'feature' }],
+      isIndexed: true,
+      defaultValue: 'feature',
+      ui: {
+        // TODO: 未被使用，移除此欄位
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
+    }),
+    sections: relationship({
+      label: '分區',
+      ref: 'Section.topics',
+      many: true,
+      ui: {
+        // TODO: 未被使用，移除此欄位
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
+    }),
     javascript: text({
       label: 'javascript',
-      ui: { displayMode: 'textarea' },
+      ui: {
+        displayMode: 'textarea',
+        // TODO: 未被使用，移除此欄位
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     dfp: text({
       validation: { isRequired: false },
       label: 'DFP code',
+      ui: {
+        // TODO: 未被使用，移除此欄位
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     mobile_dfp: text({
       validation: { isRequired: false },
       label: 'Mobile DFP code',
+      ui: {
+        // TODO: 未被使用，移除此欄位
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
   },
   ui: {
@@ -172,6 +250,17 @@ const listConfigurations = list({
       update: allowRoles(admin, moderator, editor),
       create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin),
+    },
+  },
+  hooks: {
+    resolveInput: async ({ resolvedData }) => {
+      const { brief } = resolvedData
+      if (brief) {
+        resolvedData.apiDataBrief = customFields.draftConverter
+          .convertToApiData(brief)
+          .toJS()
+      }
+      return resolvedData
     },
   },
 })
