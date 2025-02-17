@@ -360,6 +360,20 @@ const listConfigurations = list({
       }
       return resolvedData
     },
+	validateInput: async ({
+		existingItem,
+		resolvedData,
+		addValidationError,
+		context,
+		operation,
+	}) => {
+		if (operation == 'update' && (existingItem.state == 'published' || existingItem.state == 'scheduled')) {
+			if (context.req.user.role == 'contributor') {
+				addValidationError("You don't have the permission")
+				return
+			}
+		}
+	},
   },
 })
 export default utils.addManualOrderRelationshipFields(
