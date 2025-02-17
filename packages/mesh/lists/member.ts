@@ -1,6 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { text, relationship, checkbox } from '@keystone-6/core/fields'
+import { text, relationship, checkbox, integer } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -120,6 +120,13 @@ const listConfigurations = list({
     modify_collection: relationship({
       ref: 'CollectionMember.updated_by',
       many: true,
+    }),
+    balance: integer({
+      label: '錢包餘額(此為後端寫入之鏈下資料)',
+      defaultValue: 0,
+      ui: {
+        createView: {fieldMode: "hidden"},
+      }
     }),
   },
   ui: {
