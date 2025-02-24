@@ -1778,10 +1778,21 @@ type Member {
   ): [CollectionMember!]
   modify_collectionCount(where: CollectionMemberWhereInput! = {}): Int
   balance: Int
+  language: MemberLanguageType
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+}
+
+enum MemberLanguageType {
+  zh_TW
+  zh_CN
+  en_US
+  en_GB
+  ja_JP
+  fr_FR
+  de_DE
 }
 
 input MemberWhereUniqueInput {
@@ -1826,6 +1837,7 @@ input MemberWhereInput {
   create_collection: CollectionMemberManyRelationFilter
   modify_collection: CollectionMemberManyRelationFilter
   balance: IntNullableFilter
+  language: MemberLanguageTypeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1868,6 +1880,13 @@ input CollectionMemberManyRelationFilter {
   none: CollectionMemberWhereInput
 }
 
+input MemberLanguageTypeNullableFilter {
+  equals: MemberLanguageType
+  in: [MemberLanguageType!]
+  notIn: [MemberLanguageType!]
+  not: MemberLanguageTypeNullableFilter
+}
+
 input MemberOrderByInput {
   id: OrderDirection
   firebaseId: OrderDirection
@@ -1881,6 +1900,7 @@ input MemberOrderByInput {
   is_active: OrderDirection
   verified: OrderDirection
   balance: OrderDirection
+  language: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1916,6 +1936,7 @@ input MemberUpdateInput {
   create_collection: CollectionMemberRelateToManyForUpdateInput
   modify_collection: CollectionMemberRelateToManyForUpdateInput
   balance: Int
+  language: MemberLanguageType
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2006,6 +2027,7 @@ input MemberCreateInput {
   create_collection: CollectionMemberRelateToManyForCreateInput
   modify_collection: CollectionMemberRelateToManyForCreateInput
   balance: Int
+  language: MemberLanguageType
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
