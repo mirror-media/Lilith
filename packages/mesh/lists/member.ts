@@ -1,6 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { text, relationship, checkbox, integer } from '@keystone-6/core/fields'
+import { text, relationship, checkbox, integer, select } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -127,6 +127,20 @@ const listConfigurations = list({
       ui: {
         createView: {fieldMode: "hidden"},
       }
+    }),
+    language: select({
+      label: '語系',
+      type: 'enum',
+      options: [
+        {label: "中文-台灣", value: "zh_TW"},
+        {label: "中文-中國", value: "zh_CN"},
+        {label: "英文-美國", value: "en_US"},
+        {label: "英文-英國", value: "en_GB"},
+        {label: "日文-日本", value: "ja_JP"},
+        {label: "法文-法國", value: "fr_FR"},
+        {label: "德文-德國", value: "de_DE"},
+      ],
+      defaultValue: "zh_TW",
     }),
   },
   ui: {
