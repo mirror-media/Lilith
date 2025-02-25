@@ -13,23 +13,16 @@ import {
 import envVar from '../environment-variables'
 // @ts-ignore draft-js does not have typescript definition
 import { RawContentState } from 'draft-js'
-import { ACL, UserRole } from '../type'
+import { ACL, UserRole, State, type Session } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 enum PostStatus {
-  Published = 'published',
-  Draft = 'draft',
-  Scheduled = 'scheduled',
-  Archived = 'archived',
-  Invisible = 'invisible',
-}
-
-type Session = {
-  data: {
-    id: string
-    role: UserRole
-  }
+  Published = State.Published,
+  Draft = State.Draft,
+  Scheduled = State.Scheduled,
+  Archived = State.Archived,
+  Invisible = State.Invisible,
 }
 
 function filterPosts(roles: string[]) {

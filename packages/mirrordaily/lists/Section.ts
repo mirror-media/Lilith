@@ -7,8 +7,13 @@ import {
   relationship,
   integer,
 } from '@keystone-6/core/fields'
+import { State } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+enum SectionState {
+  Active = State.Active,
+  Inactive = State.Inactive,
+}
 
 type Option = {
   label: string
@@ -74,13 +79,13 @@ const listConfigurations = list({
     }),
     state: select({
       options: [
-        { label: 'active', value: 'active' },
-        { label: 'inactive', value: 'inactive' },
+        { label: 'active', value: SectionState.Active },
+        { label: 'inactive', value: SectionState.Inactive },
       ],
       validation: { isRequired: true },
       isIndexed: true,
       ui: { displayMode: 'segmented-control' },
-      defaultValue: 'active',
+      defaultValue: SectionState.Active,
     }),
     isFeatured: checkbox({
       label: '置頂',

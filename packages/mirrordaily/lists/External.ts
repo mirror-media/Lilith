@@ -2,23 +2,16 @@ import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { select, text, timestamp, relationship } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
-import { ACL, UserRole } from '../type'
+import { ACL, UserRole, State, type Session } from '../type'
 
 const { allowRoles, admin, moderator } = utils.accessControl
 
 enum ExternalStatus {
-  Published = 'published',
-  Draft = 'draft',
-  Scheduled = 'scheduled',
-  Archived = 'archived',
-  Invisible = 'invisible',
-}
-
-type Session = {
-  data: {
-    id: string
-    role: UserRole
-  }
+  Published = State.Published,
+  Draft = State.Draft,
+  Scheduled = State.Scheduled,
+  Archived = State.Archived,
+  Invisible = State.Invisible,
 }
 
 function filterExternals(roles: string[]) {

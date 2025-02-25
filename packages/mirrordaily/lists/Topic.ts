@@ -8,8 +8,14 @@ import {
   integer,
   json,
 } from '@keystone-6/core/fields'
+import { State } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+enum TopicState {
+  Draft = State.Draft,
+  Published = State.Published,
+}
 
 const listConfigurations = list({
   fields: {
@@ -26,10 +32,10 @@ const listConfigurations = list({
     state: select({
       label: '狀態',
       options: [
-        { label: '草稿', value: 'draft' },
-        { label: '已發布', value: 'published' },
+        { label: '草稿', value: TopicState.Draft },
+        { label: '已發布', value: TopicState.Published },
       ],
-      defaultValue: 'draft',
+      defaultValue: TopicState.Draft,
       isIndexed: true,
     }),
     brief: customFields.richTextEditor({

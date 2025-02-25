@@ -7,8 +7,13 @@ import {
   text,
   integer,
 } from '@keystone-6/core/fields'
+import { State } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+enum CategoryState {
+  Active = State.Active,
+  Inactive = State.Inactive,
+}
 
 const listConfigurations = list({
   fields: {
@@ -31,13 +36,13 @@ const listConfigurations = list({
     }),
     state: select({
       options: [
-        { label: 'active', value: 'active' },
-        { label: 'inactive', value: 'inactive' },
+        { label: 'active', value: CategoryState.Active },
+        { label: 'inactive', value: CategoryState.Inactive },
       ],
       isIndexed: true,
       validation: { isRequired: true },
       ui: { displayMode: 'segmented-control' },
-      defaultValue: 'active',
+      defaultValue: CategoryState.Active,
     }),
     heroImage: relationship({
       label: 'Banner圖片',

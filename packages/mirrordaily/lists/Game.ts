@@ -8,8 +8,14 @@ import {
   integer,
   relationship,
 } from '@keystone-6/core/fields'
+import { State } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+enum GameState {
+  Draft = State.Draft,
+  Published = State.Published,
+}
 
 const listConfigurations = list({
   fields: {
@@ -19,11 +25,11 @@ const listConfigurations = list({
     }),
     state: select({
       options: [
-        { label: '草稿', value: 'draft' },
-        { label: '發布', value: 'published' },
+        { label: '草稿', value: GameState.Draft },
+        { label: '發布', value: GameState.Published },
       ],
       label: '狀態',
-      defaultValue: 'draft',
+      defaultValue: GameState.Draft,
       isIndexed: true,
     }),
     publishedDate: timestamp({
