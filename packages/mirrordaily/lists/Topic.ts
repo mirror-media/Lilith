@@ -8,13 +8,37 @@ import {
   integer,
   json,
 } from '@keystone-6/core/fields'
-import { State } from '../type'
+import envVar from '../environment-variables'
+import { State, ACL, UserRole, type Session } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 enum TopicState {
   Draft = State.Draft,
   Published = State.Published,
+}
+
+function filterTopics(roles: string[]) {
+  return ({ session }: { session?: Session }) => {
+    switch (envVar.accessControlStrategy) {
+      case ACL.GraphQL: {
+        // Expose `published` topics
+        return { state: { equals: TopicState.Published } }
+      }
+      case ACL.Preview: {
+        // Expose all topics
+        return true
+      }
+      case ACL.CMS:
+      default: {
+        // Expose all topics if user logged in
+        return (
+          session?.data?.role !== undefined &&
+          roles.indexOf(session.data.role) > -1
+        )
+      }
+    }
+  }
 }
 
 const listConfigurations = list({
@@ -256,6 +280,13 @@ const listConfigurations = list({
       update: allowRoles(admin, moderator, editor),
       create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin),
+    },
+    filter: {
+      query: filterTopics([
+        UserRole.Admin,
+        UserRole.Moderator,
+        UserRole.Editor,
+      ]),
     },
   },
   hooks: {
