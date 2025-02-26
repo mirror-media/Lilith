@@ -11,6 +11,7 @@ import { KeyvAdapter } from '@apollo/utils.keyvadapter'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
 import responseCachePlugin from '@apollo/server-plugin-response-cache'
 import { GraphQLConfig } from '@keystone-6/core/types'
+import { ACL } from './type'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -28,7 +29,7 @@ const session = statelessSessions(envVar.session)
 
 const graphqlConfig: GraphQLConfig = {
   apolloConfig:
-    envVar.accessControlStrategy === 'gql' && envVar.cache.isEnabled
+    envVar.accessControlStrategy === ACL.GraphQL && envVar.cache.isEnabled
       ? {
           plugins: [
             responseCachePlugin(),
@@ -108,7 +109,7 @@ export default withAuth(
         const jsonBodyParser = express.json({ limit: '500mb' })
         app.use(jsonBodyParser)
 
-        if (envVar.accessControlStrategy === 'cms') {
+        if (envVar.accessControlStrategy === ACL.CMS) {
           app.use(
             createPreviewMiniApp({
               previewServer: envVar.previewServer,

@@ -2,47 +2,34 @@ import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { select, text, timestamp, relationship } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
+import { ACL, UserRole, State, type Session } from '../type'
 
 const { allowRoles, admin, moderator } = utils.accessControl
 
-enum UserRole {
-  Admin = 'admin',
-  Moderator = 'moderator',
-  Editor = 'editor',
-  Contributor = 'contributor',
-}
-
 enum ExternalStatus {
-  Published = 'published',
-  Draft = 'draft',
-  Scheduled = 'scheduled',
-  Archived = 'archived',
-  Invisible = 'invisible',
-}
-
-type Session = {
-  data: {
-    id: string
-    role: UserRole
-  }
+  Published = State.Published,
+  Draft = State.Draft,
+  Scheduled = State.Scheduled,
+  Archived = State.Archived,
+  Invisible = State.Invisible,
 }
 
 function filterExternals(roles: string[]) {
   return ({ session }: { session: Session }) => {
     switch (envVar.accessControlStrategy) {
-      case 'gql': {
+      case ACL.GraphQL: {
         // Expose `published` and `invisible` externals
         return {
           state: { in: [ExternalStatus.Published, ExternalStatus.Invisible] },
         }
       }
-      case 'preview': {
-        // Expose all externals, including `published`, `draft` and `archived` externals
+      case ACL.Preview: {
+        // Expose all externals
         return true
       }
-      case 'cms':
+      case ACL.CMS:
       default: {
-        // Expose all externals, including `published`, `draft` and `archived` externals if user logged in
+        // Expose all externals if user logged in
         return roles.indexOf(session?.data?.role) > -1
       }
     }
@@ -69,13 +56,13 @@ const listConfigurations = list({
     state: select({
       label: '狀態',
       options: [
-        { label: '草稿', value: 'draft' },
-        { label: '已發布', value: 'published' },
-        { label: '預約發佈', value: 'scheduled' },
-        { label: '下線', value: 'archived' },
-        { label: '前台不可見', value: 'invisible' },
+        { label: '草稿', value: ExternalStatus.Draft },
+        { label: '已發布', value: ExternalStatus.Published },
+        { label: '預約發佈', value: ExternalStatus.Scheduled },
+        { label: '下線', value: ExternalStatus.Archived },
+        { label: '前台不可見', value: ExternalStatus.Invisible },
       ],
-      defaultValue: 'draft',
+      defaultValue: ExternalStatus.Draft,
       isIndexed: true,
     }),
     publishedDate: timestamp({
@@ -131,7 +118,7 @@ const listConfigurations = list({
       },
     }),
     groups: relationship({
-      label: "群組",
+      label: '群組',
       ref: 'Group.externals',
       many: true,
       ui: {
@@ -149,6 +136,7 @@ const listConfigurations = list({
   },
   access: {
     operation: {
+      query: () => true,
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
@@ -177,7 +165,7 @@ const listConfigurations = list({
           return
         }
       }
-      return 0
+      return
     },
   },
 })
