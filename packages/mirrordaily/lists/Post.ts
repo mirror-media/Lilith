@@ -14,6 +14,7 @@ import envVar from '../environment-variables'
 // @ts-ignore draft-js does not have typescript definition
 import { RawContentState } from 'draft-js'
 import { ACL, UserRole, State, type Session } from '../type'
+import { invalidateStoryCache } from '../utils/invalidate-cdn-cache'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -682,7 +683,13 @@ const listConfigurations = list({
       }
       return
     },
-    afterOperation: async ({ operation, inputData, item, context }) => {
+    afterOperation: async ({
+      operation,
+      inputData,
+      item,
+      context,
+      originalItem,
+    }) => {
       if (operation === 'update') {
         // If the operation is to update lockBy and lockExpireAt, then no need to do anything further.
         // inputDate example:
@@ -702,6 +709,9 @@ const listConfigurations = list({
           },
         })
       }
+
+      const slug = originalItem?.slug ?? item?.slug
+      await invalidateStoryCache(slug)
     },
   },
 })
