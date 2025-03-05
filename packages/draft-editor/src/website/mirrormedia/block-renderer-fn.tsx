@@ -9,6 +9,7 @@ import { SlideshowEditBlock as SlideshowBlock } from './block-renderer/slideshow
 import { SlideshowEditBlockV2 as SlideshowBlockV2 } from './block-renderer/slideshow-block'
 import { ImageEditorBlock as ImageBlock } from './block-renderer/image-block'
 import MirrorMedia from '@mirrormedia/lilith-draft-renderer/lib/website/mirrormedia'
+import { ContentBlock } from 'draft-js'
 
 const {
   MediaBlock,
@@ -87,7 +88,7 @@ const AtomicBlock = (props) => {
   return null
 }
 
-export function atomicBlockRenderer(block) {
+export function atomicBlockRenderer(block: ContentBlock) {
   if (block.getType() === 'atomic') {
     return {
       component: AtomicBlock,

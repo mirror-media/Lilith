@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import debounce from 'lodash/debounce'
 import styled from 'styled-components'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
@@ -294,7 +294,7 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
   }, [currentPage, searchText])
 
   let searchResult = (
-    <React.Fragment>
+    <Fragment>
       <VideosGrids
         videos={videos}
         selected={selectedVideos}
@@ -308,7 +308,7 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
           setCurrentPage(pageIndex)
         }}
       />
-    </React.Fragment>
+    </Fragment>
   )
   if (loading) {
     searchResult = <p>searching...</p>
