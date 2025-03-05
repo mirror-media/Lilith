@@ -1,7 +1,13 @@
 import React from 'react'
 import { AtomicBlockUtils, EditorState, RawDraftContentState } from 'draft-js'
+import type { ButtonProps } from './type'
 
-export function TableButton(props) {
+type TableButtonProps = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+>
+
+export function TableButton(props: TableButtonProps) {
   const { editorState, onChange, className } = props
 
   const onClick = () => {

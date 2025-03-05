@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import {
   AtomicBlockUtils,
   EditorState,
@@ -11,6 +11,7 @@ import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { TextInput } from '@keystone-ui/fields'
 import draftConverter from '../draft-converter'
 import styled from 'styled-components'
+import type { ButtonProps } from './type'
 
 const Label = styled.label`
   display: block;
@@ -40,7 +41,7 @@ type ColorBoxInputType = {
   }) => void
   onCancel: () => void
   renderBasicEditor: RenderBasicEditor
-  decorators: CompositeDecorator
+  decorators?: CompositeDecorator
 }
 
 export function ColorBoxInput(props: ColorBoxInputType) {
@@ -143,10 +144,10 @@ export function ColorBoxInput(props: ColorBoxInputType) {
   )
 }
 
-type ColorBoxButtonProps = {
-  className: string
-  editorState: EditorState
-  onChange: ({ editorState }: { editorState: EditorState }) => void
+type ColorBoxButtonProps = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
   renderBasicEditor: RenderBasicEditor
 }
 
@@ -192,7 +193,7 @@ export function ColorBoxButton(props: ColorBoxButtonProps) {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       <ColorBoxInput
         renderBasicEditor={renderBasicEditor}
         onChange={onChange}
@@ -225,6 +226,6 @@ export function ColorBoxButton(props: ColorBoxButtonProps) {
         </svg>
         <span> ColorBox</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

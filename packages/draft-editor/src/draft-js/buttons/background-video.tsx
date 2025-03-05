@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import {
   AtomicBlockUtils,
   EditorState,
@@ -17,6 +17,7 @@ import {
   VideoEntityWithMeta,
 } from './selector/video-selector'
 import { AlignSelector } from './selector/align-selector'
+import type { ButtonProps } from './type'
 
 const Label = styled.label`
   display: block;
@@ -34,29 +35,29 @@ export type RenderBasicEditor = (propsOfBasicEditor: {
   editorState: EditorState
 }) => React.ReactElement
 
-type BGVideoInputOnChange = ({
+type BGVideoInputOnChange<T> = ({
   textBlockAlign,
   video,
   rawContentState,
 }: {
   textBlockAlign: string
-  video?: VideoEntity
+  video?: T
   rawContentState: RawDraftContentState
 }) => void
 
-type BGVideoInputType = {
+type BGVideoInputType<T> = {
   textBlockAlign?: string
-  video?: VideoEntity
+  video?: T
   rawContentStateForBGVideoEditor?: RawDraftContentState
   isOpen: boolean
-  onChange: BGVideoInputOnChange
+  onChange: BGVideoInputOnChange<T>
   onCancel: () => void
-  VideoSelector: typeof DefaultVideoSelector
+  VideoSelector?: typeof DefaultVideoSelector<T>
   renderBasicEditor: RenderBasicEditor
-  decorators: CompositeDecorator
+  decorators?: CompositeDecorator
 }
 
-export function BGVideoInput(props: BGVideoInputType) {
+export function BGVideoInput<T>(props: BGVideoInputType<T>) {
   const {
     isOpen,
     onChange,
@@ -80,7 +81,7 @@ export function BGVideoInput(props: BGVideoInputType) {
   ]
   const initialInputValue: {
     textBlockAlign: string
-    video?: VideoEntity
+    video?: T
     editorStateOfBasicEditor: EditorState
   } = {
     textBlockAlign: textBlockAlign || 'fixed',
@@ -109,7 +110,7 @@ export function BGVideoInput(props: BGVideoInputType) {
   }
 
   const onVideoSelectorChange = (
-    selectedVideosWithMeta: VideoEntityWithMeta[]
+    selectedVideosWithMeta: VideoEntityWithMeta<T>[]
   ) => {
     const video = selectedVideosWithMeta?.[0]?.video
     if (!video) {
@@ -175,7 +176,9 @@ export function BGVideoInput(props: BGVideoInputType) {
           <Label>影片</Label>
           <div>
             <VideoInputText>
-              {inputValue.video?.name ? inputValue.video.name : '尚未選取影片'}
+              {(inputValue.video as VideoEntity)?.name
+                ? (inputValue.video as VideoEntity).name
+                : '尚未選取影片'}
             </VideoInputText>
             <Button
               type="button"
@@ -203,15 +206,16 @@ export function BGVideoInput(props: BGVideoInputType) {
   )
 }
 
-type BGVideoButtonProps = {
-  className: string
-  editorState: EditorState
-  onChange: ({ editorState }: { editorState: EditorState }) => void
-  VideoSelector: typeof DefaultVideoSelector
+type BGVideoButtonProps<T> = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
+  VideoSelector?: typeof DefaultVideoSelector<T>
   renderBasicEditor: RenderBasicEditor
+  decorators?: CompositeDecorator
 }
 
-export function BGVideoButton(props: BGVideoButtonProps) {
+export function BGVideoButton<T>(props: BGVideoButtonProps<T>) {
   const [toShowInput, setToShowInput] = useState(false)
   const {
     className,
@@ -219,9 +223,10 @@ export function BGVideoButton(props: BGVideoButtonProps) {
     onChange: onEditorStateChange,
     VideoSelector,
     renderBasicEditor,
+    decorators,
   } = props
 
-  const onChange: BGVideoInputOnChange = ({
+  const onChange: BGVideoInputOnChange<T> = ({
     textBlockAlign,
     video,
     rawContentState,
@@ -253,7 +258,7 @@ export function BGVideoButton(props: BGVideoButtonProps) {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       <BGVideoInput
         renderBasicEditor={renderBasicEditor}
         onChange={onChange}
@@ -262,6 +267,7 @@ export function BGVideoButton(props: BGVideoButtonProps) {
         }}
         isOpen={toShowInput}
         VideoSelector={VideoSelector}
+        decorators={decorators}
       />
       <div
         className={className}
@@ -283,6 +289,6 @@ export function BGVideoButton(props: BGVideoButtonProps) {
         </svg>
         <span>Background Video</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

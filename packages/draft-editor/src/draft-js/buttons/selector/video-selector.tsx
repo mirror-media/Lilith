@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { gql, useLazyQuery } from '@keystone-6/core/admin-ui/apollo'
@@ -78,17 +78,17 @@ export type VideoEntity = {
   coverPhoto: ImageEntity
 }
 
-export type VideoEntityWithMeta = {
-  video: VideoEntity
+export type VideoEntityWithMeta<T> = {
+  video: T
   desc: string
 }
 
-type VideoEntityOnSelectFn = (param: VideoEntity) => void
+type VideoEntityOnSelectFn<T> = (param: T) => void
 
-function VideosGrids(props: {
-  videos: VideoEntity[]
-  selected: VideoEntity[]
-  onSelect: VideoEntityOnSelectFn
+function VideosGrids<T>(props: {
+  videos: T[]
+  selected: T[]
+  onSelect: VideoEntityOnSelectFn<T>
 }): React.ReactElement {
   const { videos, selected, onSelect } = props
 
@@ -97,7 +97,7 @@ function VideosGrids(props: {
       {videos.map((video) => {
         return (
           <VideoGrid
-            key={video.id}
+            key={(video as VideoEntity).id}
             isSelected={selected?.includes(video)}
             onSelect={() => onSelect(video)}
             video={video}
@@ -108,47 +108,55 @@ function VideosGrids(props: {
   )
 }
 
-function VideoGrid(props: {
-  video: VideoEntity
+function VideoGrid<T>(props: {
+  video: T
   isSelected: boolean
-  onSelect: VideoEntityOnSelectFn
+  onSelect: VideoEntityOnSelectFn<T>
 }) {
   const { video, onSelect, isSelected } = props
+
+  const newVideo = video as VideoEntity
+
   return (
-    <VideoGridWrapper key={video?.id} onClick={() => onSelect(video)}>
+    <VideoGridWrapper key={newVideo?.id} onClick={() => onSelect(video)}>
       <VideoSelected>
         {isSelected ? <i className="fas fa-check-circle"></i> : null}
       </VideoSelected>
       <Video muted loop>
-        <source src={video?.videoSrc} />
-        <source src={video?.videoFile?.url} />
+        <source src={newVideo?.videoSrc} />
+        <source src={newVideo?.videoFile?.url} />
       </Video>
     </VideoGridWrapper>
   )
 }
 
-function VideoMetaGrids(props: { videoMetas: VideoEntityWithMeta[] }) {
+function VideoMetaGrids<T>(props: { videoMetas: VideoEntityWithMeta<T>[] }) {
   const { videoMetas } = props
   return (
     <VideoMetaGridsWrapper>
       {videoMetas.map((videoMeta) => (
-        <VideoMetaGrid key={videoMeta?.video?.id} videoMeta={videoMeta} />
+        <VideoMetaGrid
+          key={(videoMeta?.video as VideoEntity)?.id}
+          videoMeta={videoMeta}
+        />
       ))}
     </VideoMetaGridsWrapper>
   )
 }
 
-function VideoMetaGrid(props: {
-  videoMeta: VideoEntityWithMeta
+function VideoMetaGrid<T>(props: {
+  videoMeta: VideoEntityWithMeta<T>
 }): React.ReactElement {
   const { videoMeta } = props
   const { video } = videoMeta
 
+  const newVideo = video as VideoEntity
+
   return (
     <VideoMetaGridWrapper>
       <Video muted autoPlay loop>
-        <source src={video?.videoSrc} />
-        <source src={video?.videoFile?.url} />
+        <source src={newVideo?.videoSrc} />
+        <source src={newVideo?.videoFile?.url} />
       </Video>
     </VideoMetaGridWrapper>
   )
@@ -185,16 +193,18 @@ const videosQuery = gql`
   }
 `
 
-type VideoSelectorOnChangeFn = (params: VideoEntityWithMeta[]) => void
+type VideoSelectorOnChangeFn<T> = (params: VideoEntityWithMeta<T>[]) => void
 
-export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
+export function VideoSelector<T>(props: {
+  onChange: VideoSelectorOnChangeFn<T>
+}) {
   const [
     queryVideos,
     { loading, error, data: { videos = [], videosCount = 0 } = {} },
   ] = useLazyQuery(videosQuery, { fetchPolicy: 'no-cache' })
   const [currentPage, setCurrentPage] = useState(0) // page starts with 1, 0 is used to detect initialization
   const [searchText, setSearchText] = useState('')
-  const [selected, setSelected] = useState<VideoEntityWithMeta[]>([])
+  const [selected, setSelected] = useState<VideoEntityWithMeta<T>[]>([])
 
   const pageSize = 6
 
@@ -213,10 +223,11 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
     setCurrentPage(1)
   }
 
-  const onVideosGridSelect: VideoEntityOnSelectFn = (videoEntity) => {
+  const onVideosGridSelect: VideoEntityOnSelectFn<T> = (videoEntity) => {
     setSelected((selected) => {
       const filterdSelected = selected.filter(
-        (ele) => ele.video?.id !== videoEntity.id
+        (ele) =>
+          (ele.video as VideoEntity)?.id !== (videoEntity as VideoEntity).id
       )
 
       // deselect the video
@@ -225,11 +236,11 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
       }
 
       // single select
-      return [{ video: videoEntity }]
+      return [{ video: videoEntity, desc: '' }]
     })
   }
 
-  const selectedVideos = selected.map((ele: VideoEntityWithMeta) => {
+  const selectedVideos = selected.map((ele: VideoEntityWithMeta<T>) => {
     return ele.video
   })
 
@@ -246,7 +257,7 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
   }, [currentPage, searchText])
 
   let searchResult = (
-    <React.Fragment>
+    <Fragment>
       <VideosGrids
         videos={videos}
         selected={selectedVideos}
@@ -260,7 +271,7 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
           setCurrentPage(pageIndex)
         }}
       />
-    </React.Fragment>
+    </Fragment>
   )
   if (loading) {
     searchResult = <p>searching...</p>
@@ -278,7 +289,7 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
           <div>{error.stack}</div>
           <br />
           <b>Query:</b>
-          <pre>{videosQuery.loc.source.body}</pre>
+          <pre>{videosQuery?.loc?.source.body}</pre>
         </div>
       </ErrorWrapper>
     )

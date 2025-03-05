@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { AtomicBlockUtils, EditorState } from 'draft-js'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { Button } from '@keystone-ui/button'
@@ -9,6 +9,7 @@ import {
   ImageEntity,
 } from './selector/image-selector'
 import { TextInput } from '@keystone-ui/fields'
+import type { ButtonProps } from './type'
 
 const Label = styled.label`
   display: block;
@@ -21,22 +22,24 @@ const ImageInputText = styled.span`
   margin-right: 10px;
 `
 
-type SideIndexEntityData = {
+type SideIndexEntityData<T> = {
   h2Text?: string
   sideIndexText?: string
   sideIndexUrl?: string
-  sideIndexImage?: ImageEntity
+  sideIndexImage?: T
 }
 
-export type SideIndexInputOnChange = (inputValue: SideIndexEntityData) => void
+export type SideIndexInputOnChange<T> = (
+  inputValue: SideIndexEntityData<T>
+) => void
 
-type SideIndexInputProps = SideIndexEntityData & {
+type SideIndexInputProps<T> = SideIndexEntityData<T> & {
   isOpen: boolean
-  onChange: SideIndexInputOnChange
+  onChange: SideIndexInputOnChange<T>
   onCancel: () => void
 }
 
-export function SideIndexInput(props: SideIndexInputProps) {
+export function SideIndexInput<T>(props: SideIndexInputProps<T>) {
   const {
     isOpen,
     onChange,
@@ -47,7 +50,7 @@ export function SideIndexInput(props: SideIndexInputProps) {
     sideIndexImage,
   } = props
 
-  const initialInputValue: SideIndexEntityData = {
+  const initialInputValue: SideIndexEntityData<T> = {
     h2Text: h2Text || '',
     sideIndexText: sideIndexText || '',
     sideIndexUrl: sideIndexUrl || '',
@@ -58,7 +61,7 @@ export function SideIndexInput(props: SideIndexInputProps) {
   const [toShowImageSelector, setToShowImageSelector] = useState(false)
 
   const onImageSelectorChange = (
-    selectedImagesWithMeta: ImageEntityWithMeta[]
+    selectedImagesWithMeta: ImageEntityWithMeta<T>[]
   ) => {
     const image = selectedImagesWithMeta?.[0]?.image
     if (!image) {
@@ -143,8 +146,8 @@ export function SideIndexInput(props: SideIndexInputProps) {
           <Label>側欄圖片 (Optional)</Label>
           <div>
             <ImageInputText>
-              {inputValue.sideIndexImage?.name
-                ? inputValue.sideIndexImage.name
+              {(inputValue.sideIndexImage as ImageEntity)?.name
+                ? (inputValue.sideIndexImage as ImageEntity).name
                 : '尚未選取圖片'}
             </ImageInputText>
             <Button
@@ -161,17 +164,16 @@ export function SideIndexInput(props: SideIndexInputProps) {
   )
 }
 
-type SideIndexButtonProps = {
-  className: string
-  editorState: EditorState
-  onChange: ({ editorState }: { editorState: EditorState }) => void
-}
+type SideIndexButtonProps = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+>
 
-export function SideIndexButton(props: SideIndexButtonProps) {
+export function SideIndexButton<T>(props: SideIndexButtonProps) {
   const [toShowInput, setToShowInput] = useState(false)
   const { className, editorState, onChange: onEditorStateChange } = props
 
-  const onChange: SideIndexInputOnChange = ({
+  const onChange: SideIndexInputOnChange<T> = ({
     h2Text,
     sideIndexText,
     sideIndexUrl,
@@ -204,7 +206,7 @@ export function SideIndexButton(props: SideIndexButtonProps) {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       <SideIndexInput
         onChange={onChange}
         onCancel={() => {
@@ -252,6 +254,6 @@ export function SideIndexButton(props: SideIndexButtonProps) {
         </svg>
         <span>SideIndex</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

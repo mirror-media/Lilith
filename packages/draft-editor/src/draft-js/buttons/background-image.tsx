@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import {
   AtomicBlockUtils,
   EditorState,
@@ -13,10 +13,11 @@ import draftConverter from '../draft-converter'
 import styled from 'styled-components'
 import {
   ImageSelector as DefaultImageSelector,
-  ImageEntityWithMeta,
   ImageEntity,
+  ImageEntityWithMeta,
 } from './selector/image-selector'
 import { AlignSelector } from './selector/align-selector'
+import type { ButtonProps } from './type'
 
 const Label = styled.label`
   display: block;
@@ -34,29 +35,29 @@ export type RenderBasicEditor = (propsOfBasicEditor: {
   editorState: EditorState
 }) => React.ReactElement
 
-type BGImageInputOnChange = ({
+type BGImageInputOnChange<T> = ({
   textBlockAlign,
   image,
   rawContentState,
 }: {
   textBlockAlign: string
-  image?: ImageEntity
+  image?: T
   rawContentState: RawDraftContentState
 }) => void
 
-type BGImageInputType = {
+type BGImageInputType<T> = {
   textBlockAlign?: string
-  image?: ImageEntity
+  image?: T
   rawContentStateForBGImageEditor?: RawDraftContentState
   isOpen: boolean
-  onChange: BGImageInputOnChange
+  onChange: BGImageInputOnChange<T>
   onCancel: () => void
-  ImageSelector: typeof DefaultImageSelector
+  ImageSelector?: typeof DefaultImageSelector<T>
   renderBasicEditor: RenderBasicEditor
-  decorators: CompositeDecorator
+  decorators?: CompositeDecorator
 }
 
-export function BGImageInput(props: BGImageInputType) {
+export function BGImageInput<T>(props: BGImageInputType<T>) {
   const {
     isOpen,
     onChange,
@@ -81,7 +82,7 @@ export function BGImageInput(props: BGImageInputType) {
   ]
   const initialInputValue: {
     textBlockAlign: string
-    image?: ImageEntity
+    image?: T
     editorStateOfBasicEditor: EditorState
   } = {
     textBlockAlign: textBlockAlign || 'fixed',
@@ -110,7 +111,7 @@ export function BGImageInput(props: BGImageInputType) {
   }
 
   const onImageSelectorChange = (
-    selectedImagesWithMeta: ImageEntityWithMeta[]
+    selectedImagesWithMeta: ImageEntityWithMeta<T>[]
   ) => {
     const image = selectedImagesWithMeta?.[0]?.image
     if (!image) {
@@ -176,7 +177,9 @@ export function BGImageInput(props: BGImageInputType) {
           <Label>圖片</Label>
           <div>
             <ImageInputText>
-              {inputValue.image?.name ? inputValue.image.name : '尚未選取圖片'}
+              {(inputValue.image as ImageEntity)?.name
+                ? (inputValue.image as ImageEntity).name
+                : '尚未選取圖片'}
             </ImageInputText>
             <Button
               type="button"
@@ -204,15 +207,16 @@ export function BGImageInput(props: BGImageInputType) {
   )
 }
 
-type BGImageButtonProps = {
-  className: string
-  editorState: EditorState
-  onChange: ({ editorState }: { editorState: EditorState }) => void
-  ImageSelector: typeof DefaultImageSelector
+type BGImageButtonProps<T> = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
+  ImageSelector?: typeof DefaultImageSelector<T>
   renderBasicEditor: RenderBasicEditor
+  decorators?: CompositeDecorator
 }
 
-export function BGImageButton(props: BGImageButtonProps) {
+export function BGImageButton<T>(props: BGImageButtonProps<T>) {
   const [toShowInput, setToShowInput] = useState(false)
   const {
     className,
@@ -220,9 +224,10 @@ export function BGImageButton(props: BGImageButtonProps) {
     onChange: onEditorStateChange,
     ImageSelector,
     renderBasicEditor,
+    decorators,
   } = props
 
-  const onChange: BGImageInputOnChange = ({
+  const onChange: BGImageInputOnChange<T> = ({
     textBlockAlign,
     image,
     rawContentState,
@@ -254,7 +259,7 @@ export function BGImageButton(props: BGImageButtonProps) {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       <BGImageInput
         renderBasicEditor={renderBasicEditor}
         onChange={onChange}
@@ -263,6 +268,7 @@ export function BGImageButton(props: BGImageButtonProps) {
         }}
         isOpen={toShowInput}
         ImageSelector={ImageSelector}
+        decorators={decorators}
       />
       <div
         className={className}
@@ -284,6 +290,6 @@ export function BGImageButton(props: BGImageButtonProps) {
         </svg>
         <span>Background Image</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

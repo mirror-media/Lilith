@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { AlertDialog } from '@keystone-ui/modals'
 import { EditorState } from 'draft-js'
 import { TextInput } from '@keystone-ui/fields'
 import styled from 'styled-components'
 import { Modifier } from '../modifier'
 import { CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR } from '../const'
+import type { ButtonProps } from './type'
 
 const ColorHexInput = styled(TextInput)`
   font-family: Georgia, serif;
@@ -12,13 +13,20 @@ const ColorHexInput = styled(TextInput)`
   padding: 10px;
 `
 
-export function BackgroundColorButton(props) {
-  const { isActive, editorState, onChange } = props
+type BackgroundColorButtonProps = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
+  isActive?: boolean
+}
+
+export function BackgroundColorButton(props: BackgroundColorButtonProps) {
+  const { isActive, editorState, onChange, className } = props
 
   const [toShowColorInput, setToShowColorInput] = useState(false)
   const [colorValue, setColorValue] = useState('')
 
-  const promptForColor = (e) => {
+  const promptForColor = (e: React.MouseEvent) => {
     e.preventDefault()
     const selection = editorState.getSelection()
     if (!selection.isCollapsed()) {
@@ -49,7 +57,7 @@ export function BackgroundColorButton(props) {
     setColorValue('')
   }
 
-  const onColorInputKeyDown = (e) => {
+  const onColorInputKeyDown = (e: React.KeyboardEvent) => {
     if (e.which === 13) {
       e.preventDefault()
       confirmColor()
@@ -99,10 +107,10 @@ export function BackgroundColorButton(props) {
   )
 
   return (
-    <React.Fragment>
+    <Fragment>
       {colorInput}
       <div
-        className={props.className}
+        className={className}
         onMouseDown={isActive ? removeColor : promptForColor}
       >
         <svg
@@ -119,6 +127,6 @@ export function BackgroundColorButton(props) {
         </svg>
         <span> Highlight</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

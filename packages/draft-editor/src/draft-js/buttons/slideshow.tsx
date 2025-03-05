@@ -1,16 +1,19 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import {
   ImageSelector as DefaultImageSelector,
   ImageEntityWithMeta,
 } from './selector/image-selector'
 import { AtomicBlockUtils, EditorState } from 'draft-js'
+import type { ButtonProps } from './type'
 
-export function SlideshowButton(props: {
-  editorState: EditorState
-  onChange: (param: EditorState) => void
-  className?: string
-  ImageSelector: typeof DefaultImageSelector
-}) {
+type SlideshowButtonProps<T> = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
+  ImageSelector?: typeof DefaultImageSelector<T>
+}
+
+export function SlideshowButton<T>(props: SlideshowButtonProps<T>) {
   const {
     editorState,
     onChange,
@@ -25,7 +28,7 @@ export function SlideshowButton(props: {
   }
 
   const onImageSelectorChange = (
-    selected: ImageEntityWithMeta[],
+    selected: ImageEntityWithMeta<T>[],
     align?: string,
     delay?: number
   ) => {
@@ -63,7 +66,7 @@ export function SlideshowButton(props: {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       {toShowImageSelector && (
         <ImageSelector
           onChange={onImageSelectorChange}
@@ -76,6 +79,6 @@ export function SlideshowButton(props: {
         <i className="far fa-images"></i>
         <span> Slideshow</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

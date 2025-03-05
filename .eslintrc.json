@@ -27,6 +27,7 @@
         "ts-ignore": "allow-with-description",
         "minimumDescriptionLength": 5
       }
-    ]
+    ],
+    "prefer-const":"error"
   }
 }

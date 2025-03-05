@@ -1,18 +1,33 @@
 import { Record } from 'immutable'
 import shortid from 'shortid'
 
-const ApiDataInstanceRecord = Record({
-  id: shortid.generate(),
-  type: 'paragraph',
-  alignment: 'center',
-  content: [],
-  styles: {},
-  textAlign: undefined,
-})
+/**
+ * @typedef Property
+ * @property {string} [id]
+ * @property {string} [type]
+ * @property {string} [alignment]
+ * @property {any[]} [content]
+ * @property {Record<string, any>} [styles]
+ * @property {string} [textAlign]
+ */
+
+const ApiDataInstanceRecord = Record(
+  /** @type {Property} */ ({
+    id: shortid.generate(),
+    type: 'paragraph',
+    alignment: 'center',
+    content: [],
+    styles: {},
+    textAlign: undefined,
+  })
+)
 
 class ApiDataInstance extends ApiDataInstanceRecord {
+  /**
+   * @param {Property} props
+   */
   constructor(props) {
-    let id = (props && props.id) || shortid.generate()
+    const id = (props && props.id) || shortid.generate()
     props.id = id
     super(props)
   }
