@@ -6,6 +6,20 @@ import {
   CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR,
 } from '../const'
 
+/**
+ * @typedef {import('./jsdoc').RawDraftContentBlock} RawDraftContentBlock
+ * @typedef {import('./jsdoc').EntityMap} EntityMap
+ * @typedef {import('./jsdoc').RawDraftEntityRange} RawDraftEntityRange
+ * @typedef {import('./jsdoc').DraftInlineStyleType} DraftInlineStyleType
+ * @typedef {import('./jsdoc').RawDraftInlineStyleRange} RawDraftInlineStyleRange
+ * @typedef {import('./jsdoc').EntityTagMap} EntityTagMap
+ * @typedef {import('./jsdoc').InlineTagMap} InlineTagMap
+ * @typedef {Record<string, any>} TagInsertMap
+ */
+
+/**
+ * @param {DraftInlineStyleType} style
+ */
 function tagForCustomInlineStyle(style) {
   const customInlineStylePrefixs = [
     CUSTOM_STYLE_PREFIX_FONT_COLOR,
@@ -14,6 +28,8 @@ function tagForCustomInlineStyle(style) {
   const stylePrefix = customInlineStylePrefixs.find((prefix) =>
     style.startsWith(prefix)
   )
+
+  /** @type {string[]} */
   let tag, value
   switch (stylePrefix) {
     case CUSTOM_STYLE_PREFIX_FONT_COLOR:
@@ -25,27 +41,33 @@ function tagForCustomInlineStyle(style) {
       tag = [`<span style="background-color: ${value}">`, '</span>']
       break
     default:
+      tag = []
       break
   }
   return tag
 }
 
+/**
+ * @param {RawDraftContentBlock} block
+ */
 function _fullfilIntersection(block) {
   // SORT BEFORE PROCESSING
-  let sortedISRanges = _.sortBy(block.inlineStyleRanges, 'offset')
-  let sortedEntityRanges = _.sortBy(block.entityRanges, 'offset')
-  let splitedISInline = []
+  const sortedISRanges = _.sortBy(block.inlineStyleRanges, 'offset')
+  const sortedEntityRanges = _.sortBy(block.entityRanges, 'offset')
+  const splitedISInline = []
 
   for (let i = 0; i < sortedEntityRanges.length; i++) {
-    let entityRange = sortedEntityRanges[i]
+    const entityRange = sortedEntityRanges[i]
     for (let j = 0; j < sortedISRanges.length; j++) {
-      let entityOffset = _.get(entityRange, 'offset', 0)
-      let entityLength = _.get(entityRange, 'length', 0)
-      let inlineLength = _.get(sortedISRanges, [j, 'length'], 0)
-      let inlineOffset = _.get(sortedISRanges, [j, 'offset'], 0)
-      let inlineStyle = _.get(sortedISRanges, [j, 'style'], '')
-      let nextEntityOffset = _.get(sortedEntityRanges, [i + 1, 'offset'], 0)
-      let nextEntityLength = _.get(sortedEntityRanges, [i + 1, 'length'], 0)
+      const entityOffset = _.get(entityRange, 'offset', 0)
+      const entityLength = _.get(entityRange, 'length', 0)
+      const inlineLength = _.get(sortedISRanges, [j, 'length'], 0)
+      const inlineOffset = _.get(sortedISRanges, [j, 'offset'], 0)
+      const inlineStyle = /** @type {DraftInlineStyleType}*/ (
+        _.get(sortedISRanges, [j, 'style'], '')
+      )
+      const nextEntityOffset = _.get(sortedEntityRanges, [i + 1, 'offset'], 0)
+      const nextEntityLength = _.get(sortedEntityRanges, [i + 1, 'length'], 0)
 
       // handle intersections of inline style and entity
       // <a></a> is entity
@@ -141,12 +163,17 @@ function _fullfilIntersection(block) {
   return sortedISRanges
 }
 
+/**
+ * @param {InlineTagMap} inlineTagMap
+ * @param {RawDraftInlineStyleRange[]} inlineStyleRanges
+ * @param {TagInsertMap} [tagInsertMap]
+ */
 function _inlineTag(inlineTagMap, inlineStyleRanges, tagInsertMap = {}) {
   // SORT BEFORE PROCESSING
-  let sortedRanges = _.sortBy(inlineStyleRanges, 'offset')
+  const sortedRanges = _.sortBy(inlineStyleRanges, 'offset')
 
   // map all the tag insertions we're going to do
-  sortedRanges.forEach(function(range) {
+  sortedRanges.forEach(function (range) {
     let tag = inlineTagMap[range.style]
 
     // handle dynamic inline style
@@ -171,15 +198,21 @@ function _inlineTag(inlineTagMap, inlineStyleRanges, tagInsertMap = {}) {
   return tagInsertMap
 }
 
+/**
+ * @param {EntityTagMap} entityTagMap
+ * @param {EntityMap} entityMap
+ * @param {RawDraftEntityRange[]} entityRanges
+ * @param {TagInsertMap} tagInsertMap
+ */
 function _entityTag(entityTagMap, entityMap, entityRanges, tagInsertMap = {}) {
   _.forEach(entityRanges, (range) => {
-    let entity = entityMap[range.key]
-    let type = entity.type && entity.type.toUpperCase()
-    let tag = entityTagMap[type]
-    let data = entity.data
+    const entity = entityMap[range.key]
+    const type = entity.type && entity.type.toUpperCase()
+    const tag = entityTagMap[type]
+    const data = entity.data
 
-    let compiledTag0 = _.template(tag[0], { variable: 'data' })(data)
-    let compiledTag1 = _.template(tag[1], { variable: 'data' })(data)
+    const compiledTag0 = _.template(tag[0], { variable: 'data' })(data)
+    const compiledTag1 = _.template(tag[1], { variable: 'data' })(data)
 
     if (!tagInsertMap[range.offset]) {
       tagInsertMap[range.offset] = []
@@ -198,6 +231,12 @@ function _entityTag(entityTagMap, entityMap, entityRanges, tagInsertMap = {}) {
   return tagInsertMap
 }
 
+/**
+ * @param {InlineTagMap} inlineTagMap
+ * @param {EntityTagMap} entityTagMap
+ * @param {EntityMap} entityMap
+ * @param {RawDraftContentBlock} block
+ */
 function convertToHtml(inlineTagMap, entityTagMap, entityMap, block) {
   //  exit if there is no inlineStyleRanges/entityRanges or length === 0 as well
   if (
@@ -207,8 +246,9 @@ function convertToHtml(inlineTagMap, entityTagMap, entityMap, block) {
     return block.text
   }
   let html = block.text
-  let inlineStyleRanges = _fullfilIntersection(block)
+  const inlineStyleRanges = _fullfilIntersection(block)
 
+  /** @type {TagInsertMap} */
   let tagInsertMap = {}
   tagInsertMap = _entityTag(
     entityTagMap,
@@ -220,13 +260,13 @@ function convertToHtml(inlineTagMap, entityTagMap, entityMap, block) {
   tagInsertMap = _inlineTag(inlineTagMap, inlineStyleRanges, tagInsertMap)
 
   // sort on position, as we'll need to keep track of offset
-  let orderedKeys = Object.keys(tagInsertMap).sort(function(a, b) {
-    a = Number(a)
-    b = Number(b)
-    if (a > b) {
+  const orderedKeys = Object.keys(tagInsertMap).sort(function (a, b) {
+    const x = Number(a)
+    const y = Number(b)
+    if (x > y) {
       return 1
     }
-    if (a < b) {
+    if (x < y) {
       return -1
     }
     return 0
@@ -234,9 +274,9 @@ function convertToHtml(inlineTagMap, entityTagMap, entityMap, block) {
 
   // insert tags into string, keep track of offset caused by our text insertions
   let offset = 0
-  orderedKeys.forEach(function(pos) {
-    let index = Number(pos)
-    tagInsertMap[pos].forEach(function(tag) {
+  orderedKeys.forEach(function (pos) {
+    const index = Number(pos)
+    tagInsertMap[pos].forEach(function (/** @type {any} */ tag) {
       html = html.substr(0, offset + index) + tag + html.substr(offset + index)
       offset += tag.length
     })

@@ -1,4 +1,6 @@
-export const getSelectionEntityData = (editorState) => {
+export const getSelectionEntityData = (
+  /** @type {import('draft-js').EditorState} */ editorState
+) => {
   const selection = editorState.getSelection()
   const startOffset = selection.getStartOffset()
   const startBlock = editorState

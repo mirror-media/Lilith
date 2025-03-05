@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { gql, useLazyQuery } from '@keystone-6/core/admin-ui/apollo'
@@ -76,16 +76,16 @@ export type AudioEntity = {
   heroImage?: ImageEntity
 }
 
-export type AudioEntityWithMeta = {
-  audio: AudioEntity
+export type AudioEntityWithMeta<T> = {
+  audio: T
 }
 
-type AudioEntityOnSelectFn = (param: AudioEntity) => void
+type AudioEntityOnSelectFn<T> = (param: T) => void
 
-function AudiosGrids(props: {
-  audios: AudioEntity[]
-  selected: AudioEntity[]
-  onSelect: AudioEntityOnSelectFn
+function AudiosGrids<T>(props: {
+  audios: T[]
+  selected: T[]
+  onSelect: AudioEntityOnSelectFn<T>
 }): React.ReactElement {
   const { audios, selected, onSelect } = props
 
@@ -94,7 +94,7 @@ function AudiosGrids(props: {
       {audios.map((audio) => {
         return (
           <AudioGrid
-            key={audio.id}
+            key={(audio as AudioEntity).id}
             isSelected={selected?.includes(audio)}
             onSelect={() => onSelect(audio)}
             audio={audio}
@@ -105,52 +105,58 @@ function AudiosGrids(props: {
   )
 }
 
-function AudioGrid(props: {
-  audio: AudioEntity
+function AudioGrid<T>(props: {
+  audio: T
   isSelected: boolean
-  onSelect: AudioEntityOnSelectFn
+  onSelect: AudioEntityOnSelectFn<T>
 }) {
   const { audio, onSelect, isSelected } = props
+  const newAudio = audio as AudioEntity
+
   return (
-    <AudioGridWrapper key={audio?.id} onClick={() => onSelect(audio)}>
+    <AudioGridWrapper key={newAudio?.id} onClick={() => onSelect(audio)}>
       <AudioSelected>
         {isSelected ? <i className="fas fa-check-circle"></i> : null}
       </AudioSelected>
       <Audio controls>
-        <source src={audio?.urlOriginal} />
-        <source src={audio?.audioSrc} />
-        <source src={audio?.file?.url} />
+        <source src={newAudio?.urlOriginal} />
+        <source src={newAudio?.audioSrc} />
+        <source src={newAudio?.file?.url} />
       </Audio>
-      <AudioName>{audio?.name}</AudioName>
+      <AudioName>{newAudio?.name}</AudioName>
     </AudioGridWrapper>
   )
 }
 
-function AudioMetaGrids(props: { audioMetas: AudioEntityWithMeta[] }) {
+function AudioMetaGrids<T>(props: { audioMetas: AudioEntityWithMeta<T>[] }) {
   const { audioMetas } = props
   return (
     <AudioMetaGridsWrapper>
       {audioMetas.map((audioMeta) => (
-        <AudioMetaGrid key={audioMeta?.audio?.id} audioMeta={audioMeta} />
+        <AudioMetaGrid
+          key={(audioMeta?.audio as AudioEntity)?.id}
+          audioMeta={audioMeta}
+        />
       ))}
     </AudioMetaGridsWrapper>
   )
 }
 
-function AudioMetaGrid(props: {
-  audioMeta: AudioEntityWithMeta
+function AudioMetaGrid<T>(props: {
+  audioMeta: AudioEntityWithMeta<T>
 }): React.ReactElement {
   const { audioMeta } = props
   const { audio } = audioMeta
+  const newAudio = audio as AudioEntity
 
   return (
     <AudioMetaGridWrapper>
       <Audio controls>
-        <source src={audio?.urlOriginal} />
-        <source src={audio?.audioSrc} />
-        <source src={audio?.file?.url} />
+        <source src={newAudio?.urlOriginal} />
+        <source src={newAudio?.audioSrc} />
+        <source src={newAudio?.file?.url} />
       </Audio>
-      <AudioName>{audio?.name}</AudioName>
+      <AudioName>{newAudio?.name}</AudioName>
     </AudioMetaGridWrapper>
   )
 }
@@ -186,16 +192,18 @@ const AudiosQuery = gql`
   }
 `
 
-type AudioSelectorOnChangeFn = (params: AudioEntityWithMeta[]) => void
+type AudioSelectorOnChangeFn<T> = (params: AudioEntityWithMeta<T>[]) => void
 
-export function AudioSelector(props: { onChange: AudioSelectorOnChangeFn }) {
+export function AudioSelector<T>(props: {
+  onChange: AudioSelectorOnChangeFn<T>
+}) {
   const [
     queryAudios,
     { loading, error, data: { audioFiles = [], audioFilesCount = 0 } = {} },
   ] = useLazyQuery(AudiosQuery, { fetchPolicy: 'no-cache' })
   const [currentPage, setCurrentPage] = useState(0) // page starts with 1, 0 is used to detect initialization
   const [searchText, setSearchText] = useState('')
-  const [selected, setSelected] = useState<AudioEntityWithMeta[]>([])
+  const [selected, setSelected] = useState<AudioEntityWithMeta<T>[]>([])
 
   const pageSize = 6
 
@@ -214,10 +222,11 @@ export function AudioSelector(props: { onChange: AudioSelectorOnChangeFn }) {
     setCurrentPage(1)
   }
 
-  const onAudiosGridSelect: AudioEntityOnSelectFn = (audioEntity) => {
+  const onAudiosGridSelect: AudioEntityOnSelectFn<T> = (audioEntity) => {
     setSelected((selected) => {
       const filterdSelected = selected.filter(
-        (ele) => ele.audio?.id !== audioEntity.id
+        (ele) =>
+          (ele.audio as AudioEntity)?.id !== (audioEntity as AudioEntity).id
       )
 
       // deselect the audio
@@ -230,7 +239,7 @@ export function AudioSelector(props: { onChange: AudioSelectorOnChangeFn }) {
     })
   }
 
-  const selectedAudios = selected.map((ele: AudioEntityWithMeta) => {
+  const selectedAudios = selected.map((ele: AudioEntityWithMeta<T>) => {
     return ele.audio
   })
 
@@ -247,7 +256,7 @@ export function AudioSelector(props: { onChange: AudioSelectorOnChangeFn }) {
   }, [currentPage, searchText])
 
   let searchResult = (
-    <React.Fragment>
+    <Fragment>
       <AudiosGrids
         audios={audioFiles}
         selected={selectedAudios}
@@ -257,11 +266,11 @@ export function AudioSelector(props: { onChange: AudioSelectorOnChangeFn }) {
         currentPage={currentPage}
         total={audioFilesCount}
         pageSize={pageSize}
-        onChange={(pageIndex) => {
+        onChange={(pageIndex: number) => {
           setCurrentPage(pageIndex)
         }}
       />
-    </React.Fragment>
+    </Fragment>
   )
   if (loading) {
     searchResult = <p>searching...</p>
@@ -279,7 +288,7 @@ export function AudioSelector(props: { onChange: AudioSelectorOnChangeFn }) {
           <div>{error.stack}</div>
           <br />
           <b>Query:</b>
-          <pre>{AudiosQuery.loc.source.body}</pre>
+          <pre>{AudiosQuery?.loc?.source.body}</pre>
         </div>
       </ErrorWrapper>
     )

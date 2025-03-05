@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import {
   AtomicBlockUtils,
   EditorState,
@@ -11,16 +11,16 @@ import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { TextInput } from '@keystone-ui/fields'
 import draftConverter from '../draft-converter'
 import styled from 'styled-components'
+import type { ButtonProps } from './type'
 
 const TitleInput = styled(TextInput)`
   margin-top: 30px;
   margin-bottom: 10px;
 `
 
-export type RenderBasicEditor = (propsOfBasicEditor: {
-  onChange: (es: EditorState) => void
-  editorState: EditorState
-}) => React.ReactElement
+export type RenderBasicEditor = (
+  propsOfBasicEditor: Pick<ButtonProps, 'editorState' | 'onChange'>
+) => React.ReactElement
 
 type InfoBoxInputType = {
   title?: string
@@ -121,10 +121,10 @@ export function InfoBoxInput(props: InfoBoxInputType) {
   )
 }
 
-type InfoBoxButtonProps = {
-  className: string
-  editorState: EditorState
-  onChange: (param: EditorState) => void
+type InfoBoxButtonProps = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
   renderBasicEditor: RenderBasicEditor
 }
 
@@ -170,7 +170,7 @@ export function InfoBoxButton(props: InfoBoxButtonProps) {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       <InfoBoxInput
         renderBasicEditor={renderBasicEditor}
         onChange={onChange}
@@ -188,6 +188,6 @@ export function InfoBoxButton(props: InfoBoxButtonProps) {
         <i className="far"></i>
         <span>InfoBox</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

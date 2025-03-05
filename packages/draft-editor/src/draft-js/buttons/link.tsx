@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { AlertDialog } from '@keystone-ui/modals'
 import { EditorState, RichUtils } from 'draft-js'
 import { TextInput } from '@keystone-ui/fields'
 
 import { getSelectionEntityData } from '../util'
+import type { ButtonProps } from './type'
 
 const StyledTextInput = styled(TextInput)`
   fontfamily: Georgia, serif;
@@ -12,8 +13,13 @@ const StyledTextInput = styled(TextInput)`
   padding: 10;
 `
 
-export function LinkButton(props) {
-  const { editorState, onChange } = props
+type LinkButtonProps = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+>
+
+export function LinkButton(props: LinkButtonProps) {
+  const { editorState, className, onChange } = props
 
   const entityData = getSelectionEntityData(editorState)
   const url = entityData?.url || ''
@@ -25,7 +31,7 @@ export function LinkButton(props) {
   const [toShowUrlInput, setToShowUrlInput] = useState(false)
   const [linkUrl, setLinkUrl] = useState(url || '')
 
-  const promptForLink = (e) => {
+  const promptForLink = (e: React.MouseEvent) => {
     e.preventDefault()
     const selection = editorState.getSelection()
     if (!selection.isCollapsed()) {
@@ -57,7 +63,7 @@ export function LinkButton(props) {
     setToShowUrlInput(false)
   }
 
-  const onLinkInputKeyDown = (e) => {
+  const onLinkInputKeyDown = (e: React.KeyboardEvent) => {
     if (e.which === 13) {
       e.preventDefault()
       confirmLink()
@@ -123,11 +129,11 @@ export function LinkButton(props) {
   )
 
   return (
-    <React.Fragment>
+    <Fragment>
       {urlInput}
-      <div className={props.className} onMouseDown={promptForLink}>
+      <div className={className} onMouseDown={promptForLink}>
         <i className="fas fa-link"></i>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

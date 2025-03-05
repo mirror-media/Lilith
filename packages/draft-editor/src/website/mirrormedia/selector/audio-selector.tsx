@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { gql, useLazyQuery } from '@keystone-6/core/admin-ui/apollo'
@@ -244,7 +244,7 @@ export function AudioSelector(props: { onChange: AudioSelectorOnChangeFn }) {
   }, [currentPage, searchText])
 
   let searchResult = (
-    <React.Fragment>
+    <Fragment>
       <AudiosGrids
         audios={audioFiles}
         selected={selectedAudios}
@@ -258,7 +258,7 @@ export function AudioSelector(props: { onChange: AudioSelectorOnChangeFn }) {
           setCurrentPage(pageIndex)
         }}
       />
-    </React.Fragment>
+    </Fragment>
   )
   if (loading) {
     searchResult = <p>searching...</p>
@@ -276,7 +276,7 @@ export function AudioSelector(props: { onChange: AudioSelectorOnChangeFn }) {
           <div>{error.stack}</div>
           <br />
           <b>Query:</b>
-          <pre>{AudiosQuery.loc.source.body}</pre>
+          <pre>{AudiosQuery?.loc?.source.body}</pre>
         </div>
       </ErrorWrapper>
     )

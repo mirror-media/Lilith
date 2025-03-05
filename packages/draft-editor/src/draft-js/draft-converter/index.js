@@ -8,7 +8,7 @@ import ApiDataInstance from './api-data-instance'
 import AtomicBlockProcessor from './atomic-block-processor'
 import ENTITY from './entities'
 
-let defaultBlockTagMap = {
+const defaultBlockTagMap = {
   atomic: `<div>%content%</div>`,
   blockquote: `<blockquote>%content%</blockquote>`,
   'code-block': `<code>%content%</code>`,
@@ -22,7 +22,7 @@ let defaultBlockTagMap = {
   unstyled: `<p>%content%</p>`,
 }
 
-let inlineTagMap = {
+const inlineTagMap = {
   BOLD: ['<strong>', '</strong>'],
   CODE: ['<code>', '</code>'],
   default: ['<span>', '</span>'],
@@ -30,7 +30,7 @@ let inlineTagMap = {
   UNDERLINE: ['<u>', '</u>'],
 }
 
-let defaultEntityTagMap = {
+const defaultEntityTagMap = {
   [ENTITY.DIVIDER.type]: ['<hr>', ''],
   [ENTITY.ANNOTATION.type]: [
     '<abbr title="<%= data.body %>"><%= data.text %>',
@@ -77,11 +77,25 @@ let defaultEntityTagMap = {
   ],
 }
 
-let nestedTagMap = {
+const nestedTagMap = {
   'ordered-list-item': ['<ol>', '</ol>'],
   'unordered-list-item': ['<ul>', '</ul>'],
 }
 
+/**
+ * @typedef {import('./jsdoc').RawDraftContentState} RawDraftContentState
+ * @typedef {import('./jsdoc').RawDraftContentBlock} RawDraftContentBlock
+ * @typedef {import('./jsdoc').EntityMap} EntityMap
+ * @typedef {import('./jsdoc').BlockTagMap} BlockTagMap
+ * @typedef {import('./jsdoc').EntityTagMap} EntityTagMap
+ */
+
+/**
+ * @param {RawDraftContentBlock} block
+ * @param {EntityMap} entityMap
+ * @param {BlockTagMap} blockTagMap
+ * @param {EntityTagMap} entityTagMap
+ */
 function _convertInlineStyle(block, entityMap, blockTagMap, entityTagMap) {
   return blockTagMap[block.type]
     ? blockTagMap[block.type].replace(
@@ -95,23 +109,42 @@ function _convertInlineStyle(block, entityMap, blockTagMap, entityTagMap) {
       )
     : blockTagMap.default.replace(
         '%content%',
-        InlineStylesProcessor.convertToHtml(inlineTagMap, block)
+        InlineStylesProcessor.convertToHtml(
+          inlineTagMap,
+          entityTagMap,
+          entityMap,
+          block
+        )
       )
 }
 
+/**
+ * @param {RawDraftContentBlock[]} blocks
+ * @param {EntityMap} entityMap
+ * @param {BlockTagMap} blockTagMap
+ * @param {EntityTagMap} entityTagMap
+ */
 function _convertBlocksToHtml(blocks, entityMap, blockTagMap, entityTagMap) {
   let html = ''
-  let nestLevel = [] // store the list type of the previous item: null/ol/ul
+  /** @type {string[]} */
+  const nestLevel = [] // store the list type of the previous item: null/ol/ul
   blocks.forEach((block) => {
     // create tag for <ol> or <ul>: deal with ordered/unordered list item
     // if the block is a list-item && the previous block is not a list-item
-    if (nestedTagMap[block.type] && nestLevel[0] !== block.type) {
+    if (
+      block.type in nestedTagMap &&
+      // @ts-ignore: block.type is nestedTagMap property
+      nestedTagMap[block.type] &&
+      nestLevel[0] !== block.type
+    ) {
+      // @ts-ignore: block.type is nestedTagMap property
       html += nestedTagMap[block.type][0] // start with <ol> or <ul>
       nestLevel.unshift(block.type)
     }
 
     // end tag with </ol> or </ul>: deal with ordered/unordered list item
     if (nestLevel.length > 0 && nestLevel[0] !== block.type) {
+      // @ts-ignore: nestLevel.shift() is not undefined
       html += nestedTagMap[nestLevel.shift()][1] // close with </ol> or </ul>
     }
 
@@ -119,20 +152,29 @@ function _convertBlocksToHtml(blocks, entityMap, blockTagMap, entityTagMap) {
   })
 
   // end tag with </ol> or </ul>: or if it is the last block
+  // @ts-ignore: blocks[blocks.length - 1] is not undefined
   if (blocks.length > 0 && nestedTagMap[blocks[blocks.length - 1].type]) {
+    // @ts-ignore: nestLevel.shift() should not be undefined
     html += nestedTagMap[nestLevel.shift()][1] // close with </ol> or </ul>
   }
 
   return html
 }
 
+/**
+ * @param {RawDraftContentBlock[]} blocks
+ * @param {EntityMap} entityMap
+ * @param {EntityTagMap} entityTagMap
+ */
 function convertBlocksToApiData(blocks, entityMap, entityTagMap) {
   let apiDataArr = List()
+  /** @type {any[]} */
   let content = []
-  let nestLevel = []
+  /** @type {string[]} */
+  const nestLevel = []
   blocks.forEach((block) => {
     // block is not a list-item
-    if (!nestedTagMap[block.type]) {
+    if (!(block.type in nestedTagMap)) {
       // if previous block is a list-item
       if (content.length > 0 && nestLevel.length > 0) {
         apiDataArr = apiDataArr.push(
@@ -154,7 +196,7 @@ function convertBlocksToApiData(blocks, entityMap, entityTagMap) {
           console.error(e)
         }
       } else {
-        let converted = InlineStylesProcessor.convertToHtml(
+        const converted = InlineStylesProcessor.convertToHtml(
           inlineTagMap,
           entityTagMap,
           entityMap,
@@ -174,7 +216,7 @@ function convertBlocksToApiData(blocks, entityMap, entityTagMap) {
         )
       }
     } else {
-      let converted = InlineStylesProcessor.convertToHtml(
+      const converted = InlineStylesProcessor.convertToHtml(
         inlineTagMap,
         entityTagMap,
         entityMap,
@@ -205,7 +247,7 @@ function convertBlocksToApiData(blocks, entityMap, entityTagMap) {
 
   // last block is a item-list
   if (blocks.length > 0 && nestLevel.length > 0) {
-    let block = blocks[blocks.length - 1]
+    const block = blocks[blocks.length - 1]
     apiDataArr = apiDataArr.push(
       new ApiDataInstance({
         id: block.key,
@@ -218,29 +260,36 @@ function convertBlocksToApiData(blocks, entityMap, entityTagMap) {
   return apiDataArr
 }
 
+/**
+ * @param {RawDraftContentState} raw
+ * @param {BlockTagMap} [blockTagMap]
+ * @param {EntityTagMap} [entityTagMap]
+ */
 function convertRawToHtml(raw, blockTagMap, entityTagMap) {
   blockTagMap = _.merge({}, defaultBlockTagMap, blockTagMap)
   entityTagMap = entityTagMap || defaultEntityTagMap
   let html = ''
-  raw = raw || {}
+  raw = raw || /** @type {RawDraftContentState} */ ({})
   const blocks = Array.isArray(raw.blocks) ? raw.blocks : []
   const entityMap = typeof raw.entityMap === 'object' ? raw.entityMap : {}
   html = _convertBlocksToHtml(blocks, entityMap, blockTagMap, entityTagMap)
   return html
 }
 
+/**
+ * @param {RawDraftContentState} raw
+ */
 function convertRawToApiData(raw) {
-  let apiData
-  raw = raw || {}
+  raw = raw || /** @type {RawDraftContentState} */ ({})
   const blocks = Array.isArray(raw.blocks) ? raw.blocks : []
   const entityMap = typeof raw.entityMap === 'object' ? raw.entityMap : {}
-  let entityTagMap = _.merge({}, defaultEntityTagMap, {
+  const entityTagMap = _.merge({}, defaultEntityTagMap, {
     [ENTITY.ANNOTATION.type]: [
       `<span data-entity-type="annotation" data-annotation-body="<%= data.bodyEscapedHTML %>">`,
       '</span>',
     ],
   })
-  apiData = convertBlocksToApiData(blocks, entityMap, entityTagMap)
+  const apiData = convertBlocksToApiData(blocks, entityMap, entityTagMap)
   return apiData
 }
 

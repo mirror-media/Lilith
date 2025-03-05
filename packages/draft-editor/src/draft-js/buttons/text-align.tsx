@@ -1,17 +1,25 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { EditorState } from 'draft-js'
 import { Modifier } from '../modifier'
+import type { ButtonProps } from './type'
+import type { Map } from 'immutable'
 
-const toggleSelectionTextAlign = (editorState, textAlign) => {
+const toggleSelectionTextAlign = (
+  editorState: EditorState,
+  textAlign: string
+) => {
   return setSelectionBlockData(editorState, {
     textAlign:
       getSelectionBlockData(editorState, 'textAlign') !== textAlign
         ? textAlign
         : undefined,
-  })
+  } as unknown as Map<any, any>)
 }
 
-const setSelectionBlockData = (editorState, blockData) => {
+const setSelectionBlockData = (
+  editorState: EditorState,
+  blockData: Map<any, any>
+) => {
   return Modifier.setBlockData(
     editorState.getCurrentContent(),
     editorState.getSelection(),
@@ -19,7 +27,10 @@ const setSelectionBlockData = (editorState, blockData) => {
   )
 }
 
-export const getSelectionBlockData = (editorState, name) => {
+export const getSelectionBlockData = (
+  editorState: EditorState,
+  name: string
+) => {
   const block = editorState
     .getCurrentContent()
     .getBlockForKey(editorState.getSelection().getAnchorKey())
@@ -27,19 +38,27 @@ export const getSelectionBlockData = (editorState, name) => {
   return blockData.get(name)
 }
 
-export function AlignCenterButton(props) {
-  const { isActive, editorState, onChange } = props
+type AlignCenterButtonProps = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
+  isActive?: boolean
+}
+
+export function AlignCenterButton(props: AlignCenterButtonProps) {
+  const { isActive, editorState, onChange, className } = props
 
   const toggleTextAlign = () => {
     const newContentState = toggleSelectionTextAlign(editorState, 'center')
     onChange(
+      // @ts-ignore `change-block-style` is not EditoChangeType
       EditorState.push(editorState, newContentState, 'change-block-style')
     )
   }
 
   return (
-    <React.Fragment>
-      <div className={props.className} onMouseDown={toggleTextAlign}>
+    <Fragment>
+      <div className={className} onMouseDown={toggleTextAlign}>
         <svg
           width="16"
           height="16"
@@ -53,23 +72,31 @@ export function AlignCenterButton(props) {
           />
         </svg>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }
 
-export function AlignLeftButton(props) {
-  const { isActive, editorState, onChange } = props
+type AlignLeftButtonProps = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
+  isActive?: boolean
+}
+
+export function AlignLeftButton(props: AlignLeftButtonProps) {
+  const { isActive, editorState, onChange, className } = props
 
   const toggleTextAlign = () => {
     const newContentState = toggleSelectionTextAlign(editorState, 'left')
     onChange(
+      // @ts-ignore `change-block-style` is not EditoChangeType
       EditorState.push(editorState, newContentState, 'change-block-style')
     )
   }
 
   return (
-    <React.Fragment>
-      <div className={props.className} onMouseDown={toggleTextAlign}>
+    <Fragment>
+      <div className={className} onMouseDown={toggleTextAlign}>
         <svg
           width="16"
           height="16"
@@ -83,6 +110,6 @@ export function AlignLeftButton(props) {
           />
         </svg>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

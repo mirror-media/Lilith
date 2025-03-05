@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { gql, useLazyQuery } from '@keystone-6/core/admin-ui/apollo'
@@ -120,27 +120,27 @@ export type PostEntity = {
   ogImage: ImageEntity
 }
 
-export type PostEntityWithMeta = {
-  post: PostEntity
+export type PostEntityWithMeta<T> = {
+  post: T
 }
 
-type PostEntityOnSelectFn = (param: PostEntity) => void
+type PostEntityOnSelectFn<T> = (param: T) => void
 
-function PostGrids(props: {
-  posts: PostEntity[]
-  selected: PostEntity[]
-  onSelect: PostEntityOnSelectFn
+function PostGrids<T>(props: {
+  posts: T[]
+  selected: T[]
+  onSelect: PostEntityOnSelectFn<T>
 }): React.ReactElement {
   const { posts, selected, onSelect } = props
 
   return (
     <PostGridsWrapper>
-      {posts.map((post) => {
+      {(posts as PostEntity[]).map((post) => {
         return (
           <PostGrid
             key={post.id}
-            isSelected={selected?.includes(post)}
-            onSelect={() => onSelect(post)}
+            isSelected={selected?.includes(post as T)}
+            onSelect={() => onSelect(post as T)}
             post={post}
           />
         )
@@ -149,66 +149,72 @@ function PostGrids(props: {
   )
 }
 
-function PostGrid(props: {
-  post: PostEntity
+function PostGrid<T>(props: {
+  post: T
   isSelected: boolean
-  onSelect: PostEntityOnSelectFn
+  onSelect: PostEntityOnSelectFn<T>
 }) {
   const { post, onSelect, isSelected } = props
+  const newPost = post as PostEntity
+
   return (
-    <PostGridWrapper key={post?.id} onClick={() => onSelect(post)}>
+    <PostGridWrapper key={newPost?.id} onClick={() => onSelect(post)}>
       <PostSelected>
         {isSelected ? <i className="fas fa-check-circle"></i> : null}
       </PostSelected>
       <Post>
         <PostImage
-          src={post.heroImage?.resized?.original}
+          src={newPost.heroImage?.resized?.original}
           onError={(e) =>
-            (e.currentTarget.src = post.heroImage?.imageFile?.url)
+            (e.currentTarget.src = newPost.heroImage?.imageFile?.url)
           }
         />
-        <PostTitle>{post.name}</PostTitle>
+        <PostTitle>{newPost.name}</PostTitle>
       </Post>
     </PostGridWrapper>
   )
 }
 
-function PostMetaGrids(props: { postMetas: PostEntityWithMeta[] }) {
+function PostMetaGrids<T>(props: { postMetas: PostEntityWithMeta<T>[] }) {
   const { postMetas } = props
   return (
     <PostMetaGridsWrapper>
       {postMetas.map((postMetas) => (
-        <PostMetaGrid key={postMetas?.post?.id} postMeta={postMetas} />
+        <PostMetaGrid
+          key={(postMetas?.post as PostEntity)?.id}
+          postMeta={postMetas}
+        />
       ))}
     </PostMetaGridsWrapper>
   )
 }
 
-function PostMetaGrid(props: {
-  postMeta: PostEntityWithMeta
+function PostMetaGrid<T>(props: {
+  postMeta: PostEntityWithMeta<T>
 }): React.ReactElement {
   const { postMeta } = props
   const { post } = postMeta
+  const newPost = post as PostEntity
 
   return (
     <PostMetaGridWrapper>
       <Post>
         <PostImage
-          src={post?.heroImage?.resized?.original}
+          src={newPost?.heroImage?.resized?.original}
           onError={(e) =>
-            (e.currentTarget.src = post?.heroImage?.imageFile?.url)
+            (e.currentTarget.src = newPost?.heroImage?.imageFile?.url)
           }
         />
-        <PostTitle>{post?.name}</PostTitle>
+        <PostTitle>{newPost?.name}</PostTitle>
       </Post>
     </PostMetaGridWrapper>
   )
 }
 
-type PostSelectorOnChangeFn = (params: PostEntityWithMeta[]) => void
+type PostSelectorOnChangeFn<T> = (params: PostEntityWithMeta<T>[]) => void
 
-export function PostSelector(props: {
-  onChange: PostSelectorOnChangeFn
+export function PostSelector<T>(props: {
+  onChange: PostSelectorOnChangeFn<T>
   enableMultiSelect?: boolean
   minSelectCount?: number
   maxSelectCount?: number
@@ -219,7 +225,7 @@ export function PostSelector(props: {
   ] = useLazyQuery(postsQuery, { fetchPolicy: 'no-cache' })
   const [currentPage, setCurrentPage] = useState(0) // page starts with 1, 0 is used to detect initialization
   const [searchText, setSearchText] = useState('')
-  const [selected, setSelected] = useState<PostEntityWithMeta[]>([])
+  const [selected, setSelected] = useState<PostEntityWithMeta<T>[]>([])
   const [showErrorHint, setShowErrorHint] = useState(false)
 
   const pageSize = 6
@@ -253,10 +259,10 @@ export function PostSelector(props: {
     setCurrentPage(1)
   }
 
-  const onPostsGridSelect: PostEntityOnSelectFn = (postEntity) => {
+  const onPostsGridSelect: PostEntityOnSelectFn<T> = (postEntity) => {
     setSelected((selected) => {
       const filterdSelected = selected.filter(
-        (ele) => ele.post?.id !== postEntity.id
+        (ele) => (ele.post as PostEntity)?.id !== (postEntity as PostEntity).id
       )
 
       // deselect the post
@@ -280,7 +286,7 @@ export function PostSelector(props: {
     })
   }
 
-  const selectedPosts = selected.map((ele: PostEntityWithMeta) => {
+  const selectedPosts = selected.map((ele: PostEntityWithMeta<T>) => {
     return ele.post
   })
 
@@ -297,7 +303,7 @@ export function PostSelector(props: {
   }, [currentPage, searchText])
 
   let searchResult = (
-    <React.Fragment>
+    <Fragment>
       <PostGrids
         posts={posts}
         selected={selectedPosts}
@@ -311,7 +317,7 @@ export function PostSelector(props: {
           setCurrentPage(pageIndex)
         }}
       />
-    </React.Fragment>
+    </Fragment>
   )
   if (loading) {
     searchResult = <p>searching...</p>
@@ -329,7 +335,7 @@ export function PostSelector(props: {
           <div>{error.stack}</div>
           <br />
           <b>Query:</b>
-          <pre>{postsQuery.loc.source.body}</pre>
+          <pre>{postsQuery?.loc?.source.body}</pre>
         </div>
       </ErrorWrapper>
     )

@@ -1,6 +1,12 @@
 import React from 'react'
+import type { ButtonProps } from './type'
 
-export function EnlargeButton(props) {
+type EnlargeButtonProps = Pick<ButtonProps, 'className'> & {
+  onToggle?: () => void
+  isEnlarged?: boolean
+}
+
+export function EnlargeButton(props: EnlargeButtonProps) {
   const { onToggle, isEnlarged, className } = props
 
   return (

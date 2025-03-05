@@ -1,4 +1,4 @@
-# [@mirrormedia/lilith-core](https://www.npmjs.com/package/@mirrormedia/lilith-draft-editor) &middot; ![npm version](https://img.shields.io/npm/v/@mirrormedia/lilith-draft-editor.svg?style=flat)
+# [@mirrormedia/lilith-draft-editor](https://www.npmjs.com/package/@mirrormedia/lilith-draft-editor) &middot; ![npm version](https://img.shields.io/npm/v/@mirrormedia/lilith-draft-editor.svg?style=flat)
 
 ## Installation
 
@@ -27,9 +27,9 @@
 - selector: 依照各網站 keystone list 來調整 photo, video 和 post 的 gql query
 - draft-editor: 主要 export 出 RichTextEditor 的檔案，實際使用在 lilith-core 對應的 webiste 中，可直接決定 RichTextEditor 樣式(注 2)
 
-\*注 1: lilith-draft-editor 各個 buttons 對應的 block-renderers, entity-decorators 會 maintain 在 lilith-draft-renderer，由各網站 Next.js 專案開發人員實作，在本專案中會直接將 lilith-draft-renderer 中定義好的 block-renderers, entity-decorators 直接使用(除了少數需要再編輯的 block-renderer，參考 `src/website/${website}/block-renderer`中的 editor wrapper component)。
+\* 註 1: lilith-draft-editor 各個 buttons 對應的 block-renderers, entity-decorators 會 maintain 在 lilith-draft-renderer，由各網站 Next.js 專案開發人員實作，在本專案中會直接將 lilith-draft-renderer 中定義好的 block-renderers, entity-decorators 直接使用(除了少數需要再編輯的 block-renderer，參考 `src/website/${website}/block-renderer`中的 editor wrapper component)。
 
-\*注 2: 雖然各個網站都 maintain 了一個 draft-editor，可以自行決定 import 進來的 buttons，不過因為 lilith-core 中實作 disalbedButtons 的功能，所以目前一率將所有的 buttons 加入 RichTextEditor 中，由 lilith-(mirrormedia|readr|mesh|editools) 來控制所使用的 buttons。
+\* 註 2: 雖然各個網站都 maintain 了一個 draft-editor，可以自行決定 import 進來的 buttons，不過因為 lilith-core 中實作 disalbedButtons 的功能，所以目前一率將所有的 buttons 加入 RichTextEditor 中，由 lilith-(mirrormedia|readr|mesh|editools) 來控制所使用的 buttons。
 
 ## Build
 
@@ -42,10 +42,4 @@
 在 publish 前，請根據 conventional commits 的規範，將 package.json#version 升版。
 
 ## Notable Details
-
-### For those files under `views/` folder, we transpile them specifically.
-
-For those files under `views/` folder, we transpile them by babel according to different configuation.
-The specific babel configuration is `.views.babelrc.js`.
-In `.views.babelrc.js`, we tell babel not to transpile `import` and `export` es6 codes into commonJS codes.
-The Keystone server won't start server well if those files under `views/` are transpiled into commonJS codes.
+* 元件裡的 `import React from 'react'` 為必要的，避免 babel transpile 後，無法抓取的 react 依賴的問題。

@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { AtomicBlockUtils, EditorState } from 'draft-js'
 import {
   PostSelector as DefaultPostSelector,
   PostEntityWithMeta,
 } from './selector/post-selector'
+import type { ButtonProps } from './type'
 
-type RelatedPostButtonProps = {
-  className: string
-  editorState: EditorState
-  onChange: ({ editorState }: { editorState: EditorState }) => void
-  PostSelector: typeof DefaultPostSelector
+type RelatedPostButtonProps<T> = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
+  PostSelector?: typeof DefaultPostSelector<T>
 }
 
-export function RelatedPostButton(props: RelatedPostButtonProps) {
+export function RelatedPostButton<T>(props: RelatedPostButtonProps<T>) {
   const {
     editorState,
     onChange,
@@ -26,7 +27,7 @@ export function RelatedPostButton(props: RelatedPostButtonProps) {
     setToShowPostSelector(true)
   }
 
-  const onPostSelectorChange = (selected: PostEntityWithMeta[]) => {
+  const onPostSelectorChange = (selected: PostEntityWithMeta<T>[]) => {
     if (!selected.length) {
       setToShowPostSelector(false)
       return
@@ -52,7 +53,7 @@ export function RelatedPostButton(props: RelatedPostButtonProps) {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       {toShowPostSelector && (
         <PostSelector
           onChange={onPostSelectorChange}
@@ -76,6 +77,6 @@ export function RelatedPostButton(props: RelatedPostButtonProps) {
         </svg>
         <span>Related Post</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }
