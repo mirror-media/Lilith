@@ -114,7 +114,7 @@ export const Field = ({
           <Stack gap="small" marginTop={'small'}>
             {field.options.map((option) => (
               <Radio
-                css={
+                style={
                   field.shouldShowColorSpan
                     ? { ...colorSpan(option.color), alignItems: 'center' }
                     : { alignItems: 'center' }
