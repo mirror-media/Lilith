@@ -3066,7 +3066,7 @@ type Statement {
 
 enum StatementTypeType {
   month
-  quarter
+  media
   semi_annual
 }
 
