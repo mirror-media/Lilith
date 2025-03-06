@@ -169,18 +169,6 @@ const listConfigurations = list({
     }),
     isFeatured: checkbox({
       label: '置頂',
-      ui: {
-        // TODO: 未被使用，移除此欄位
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'hidden',
-        },
-        listView: {
-          fieldMode: 'hidden',
-        },
-      },
     }),
     title_style: select({
       label: '專題樣式',
