@@ -52,36 +52,57 @@ const listConfigurations = list({
       ref: 'Category.relatedPost',
       label: '分類',
       many: true,
+	  ui: {
+		labelField: 'title',
+	  }
     }),
     writers: relationship({
       ref: 'Author.posts',
       many: true,
       label: '作者',
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     photographers: relationship({
       many: true,
       label: '攝影',
       ref: 'Author',
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     cameraOperators: relationship({
       label: '影音',
       many: true,
       ref: 'Author',
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     designers: relationship({
       label: '設計',
       many: true,
       ref: 'Author',
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     engineers: relationship({
       many: true,
       label: '工程',
       ref: 'Author',
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     dataAnalysts: relationship({
       many: true,
       label: '資料分析',
       ref: 'Author',
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     otherByline: text({
       validation: { isRequired: false },
@@ -168,6 +189,9 @@ const listConfigurations = list({
     projects: relationship({
       label: '專題',
       ref: 'Project.posts',
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     tags: relationship({
       ref: 'Tag.posts',
