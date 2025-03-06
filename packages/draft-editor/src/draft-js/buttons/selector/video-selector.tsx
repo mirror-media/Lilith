@@ -80,7 +80,7 @@ export type VideoEntity = {
 
 export type VideoEntityWithMeta<T> = {
   video: T
-  desc: string
+  desc?: string
 }
 
 type VideoEntityOnSelectFn<T> = (param: T) => void
@@ -236,7 +236,7 @@ export function VideoSelector<T>(props: {
       }
 
       // single select
-      return [{ video: videoEntity, desc: '' }]
+      return [{ video: videoEntity }]
     })
   }
 
