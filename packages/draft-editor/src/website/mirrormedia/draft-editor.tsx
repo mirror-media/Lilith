@@ -574,20 +574,17 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
   }
 
   getCustomStyle = (style: DraftInlineStyle) => {
-    return style.reduce(
-      (styles: Record<string, any> | undefined, styleName) => {
-        if (styleName?.startsWith(CUSTOM_STYLE_PREFIX_FONT_COLOR)) {
-          styles!['color'] = styleName.split(CUSTOM_STYLE_PREFIX_FONT_COLOR)[1]
-        }
-        if (styleName?.startsWith(CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR)) {
-          styles!['backgroundColor'] = styleName.split(
-            CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR
-          )[1]
-        }
-        return styles ?? {}
-      },
-      {}
-    )
+    return style.reduce((styles, styleName) => {
+      if (styleName?.startsWith(CUSTOM_STYLE_PREFIX_FONT_COLOR)) {
+        styles['color'] = styleName.split(CUSTOM_STYLE_PREFIX_FONT_COLOR)[1]
+      }
+      if (styleName?.startsWith(CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR)) {
+        styles['backgroundColor'] = styleName.split(
+          CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR
+        )[1]
+      }
+      return styles
+    }, {} as Record<string, any>)
   }
 
   toggleEnlarge = () => {

@@ -10,7 +10,7 @@ const Arrows = styled.div`
   display: flex;
 `
 
-const ArrowButtonWrapper = styled.a`
+const ArrowButtonWrapper = styled.a<{ disable: boolean }>`
   color: #415269;
   cursor: pointer;
   ${({ disable }) => {
@@ -24,7 +24,18 @@ const ArrowButtonWrapper = styled.a`
   }}
 `
 
-export function Pagination({ currentPage, total, pageSize, onChange }) {
+type PaginationProps = {
+  currentPage: number
+  total: number
+  pageSize: number
+  onChange: (value: number) => void
+}
+export function Pagination({
+  currentPage,
+  total,
+  pageSize,
+  onChange,
+}: PaginationProps) {
   const minPage = 1
   const limit = Math.ceil(total / pageSize)
   const nextPage = currentPage + 1

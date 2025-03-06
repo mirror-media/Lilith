@@ -6,6 +6,7 @@ import { BGVideoEditorBlock as BGVideoBlock } from './block-renderer/background-
 import { SideIndexEditorBlock as SideIndexBlock } from './block-renderer/side-index-block'
 import { ImageEditorBlock as ImageBlock } from './block-renderer/image-block'
 import Readr from '@mirrormedia/lilith-draft-renderer/lib/website/readr'
+import { ContentBlock } from 'draft-js'
 
 const {
   EmbeddedCodeBlock,
@@ -75,7 +76,7 @@ const AtomicBlock = (props) => {
   return null
 }
 
-export function atomicBlockRenderer(block) {
+export function atomicBlockRenderer(block: ContentBlock) {
   if (block.getType() === 'atomic') {
     return {
       component: AtomicBlock,
