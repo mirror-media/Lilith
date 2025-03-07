@@ -12,13 +12,15 @@ export type JsonFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     defaultValue?: JSONValue
     db?: { map?: string }
     disabledButtons?: string[]
-    website?: 'mirrormedia' | 'readr' | 'editools' | 'mesh'
+    hideOnMobileButtons?: string[]
+    website?: 'mirrormedia' | 'readr' | 'mirrordaily'
   }
 
 export const richTextEditor =
   <ListTypeInfo extends BaseListTypeInfo>({
     defaultValue = null,
     disabledButtons = [],
+    hideOnMobileButtons = [],
     website,
     ...config
   }: JsonFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
@@ -55,7 +57,11 @@ export const richTextEditor =
         },
         output: graphql.field({ type: graphql.JSON }),
         views: `@mirrormedia/lilith-core/lib/custom-fields/rich-text-editor/views/${website}`,
-        getAdminMeta: () => ({ defaultValue, disabledButtons }),
+        getAdminMeta: () => ({
+          defaultValue,
+          disabledButtons,
+          hideOnMobileButtons,
+        }),
       },
       {
         default:

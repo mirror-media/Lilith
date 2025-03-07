@@ -6,9 +6,9 @@ import {
   createField,
 } from '../utils'
 // @ts-ignore: no type definitions
-import Readr from '@mirrormedia/lilith-draft-editor/lib/website/readr'
+import Mirrordaily from '@mirrormedia/lilith-draft-editor/lib/website/mirrordaily'
 
-const { RichTextEditor, decorators } = Readr.DraftEditor
+const { RichTextEditor, decorators } = Mirrordaily.DraftEditor
 
 export const Field = createField(RichTextEditor)
 
