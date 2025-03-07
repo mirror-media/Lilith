@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { AlertDialog } from '@keystone-ui/modals'
 import { EditorState } from 'draft-js'
 import { TextInput } from '@keystone-ui/fields'
 import styled from 'styled-components'
 import { Modifier } from '../modifier'
 import { CUSTOM_STYLE_PREFIX_FONT_COLOR } from '../const'
+import type { ButtonProps } from './type'
 
 const ColorHexInput = styled(TextInput)`
   font-family: Georgia, serif;
@@ -12,13 +13,20 @@ const ColorHexInput = styled(TextInput)`
   padding: 10px;
 `
 
-export function FontColorButton(props) {
-  const { isActive, editorState, onChange } = props
+type FontColorButtonProps = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
+  isActive?: boolean
+}
+
+export function FontColorButton(props: FontColorButtonProps) {
+  const { isActive, editorState, onChange, className } = props
 
   const [toShowColorInput, setToShowColorInput] = useState(false)
   const [colorValue, setColorValue] = useState('')
 
-  const promptForColor = (e) => {
+  const promptForColor = (e: React.MouseEvent) => {
     e.preventDefault()
     const selection = editorState.getSelection()
     if (!selection.isCollapsed()) {
@@ -34,6 +42,7 @@ export function FontColorButton(props) {
       selection,
       CUSTOM_STYLE_PREFIX_FONT_COLOR
     )
+
     if (colorValue) {
       newContentState = Modifier.applyInlineStyle(
         newContentState,
@@ -49,7 +58,7 @@ export function FontColorButton(props) {
     setColorValue('')
   }
 
-  const onColorInputKeyDown = (e) => {
+  const onColorInputKeyDown = (e: React.KeyboardEvent) => {
     if (e.which === 13) {
       e.preventDefault()
       confirmColor()
@@ -99,14 +108,14 @@ export function FontColorButton(props) {
   )
 
   return (
-    <React.Fragment>
+    <Fragment>
       {colorInput}
       <div
-        className={props.className}
+        className={className}
         onMouseDown={isActive ? removeColor : promptForColor}
       >
         <i className="fas fa-palette"></i>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

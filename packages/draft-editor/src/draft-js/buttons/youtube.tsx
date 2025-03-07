@@ -1,19 +1,15 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { AtomicBlockUtils, EditorState } from 'draft-js'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { TextInput } from '@keystone-ui/fields'
 import styled from 'styled-components'
+import type { ButtonProps } from './type'
 
 const Label = styled.label`
   display: block;
   font-weight: 600;
   margin: 10px 0;
 `
-
-export type RenderBasicEditor = (propsOfBasicEditor: {
-  onChange: (es: EditorState) => void
-  editorState: EditorState
-}) => React.ReactElement
 
 type YoutubeInputType = {
   isOpen: boolean
@@ -96,12 +92,10 @@ export function YoutubeInput(props: YoutubeInputType) {
   )
 }
 
-type YoutubeButtonProps = {
-  className: string
-  editorState: EditorState
-  onChange: (param: EditorState) => void
-  renderBasicEditor: RenderBasicEditor
-}
+type YoutubeButtonProps = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+>
 
 export function YoutubeButton(props: YoutubeButtonProps) {
   const [toShowInput, setToShowInput] = useState(false)
@@ -139,7 +133,7 @@ export function YoutubeButton(props: YoutubeButtonProps) {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       <YoutubeInput
         onChange={onChange}
         onCancel={() => {
@@ -171,6 +165,6 @@ export function YoutubeButton(props: YoutubeButtonProps) {
         </svg>
         <span>Youtube</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

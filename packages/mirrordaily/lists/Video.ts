@@ -13,8 +13,15 @@ import {
   virtual,
 } from '@keystone-6/core/fields'
 import { getFileURL } from '../utils/common'
+import { State } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+enum VideoState {
+  Draft = State.Draft,
+  Published = State.Published,
+  Scheduled = State.Scheduled,
+}
 
 const listConfigurations = list({
   fields: {
@@ -84,11 +91,11 @@ const listConfigurations = list({
     state: select({
       label: '狀態',
       options: [
-        { label: '草稿', value: 'draft' },
-        { label: '已發布', value: 'published' },
-        { label: '預約發佈', value: 'scheduled' },
+        { label: '草稿', value: VideoState.Draft },
+        { label: '已發布', value: VideoState.Published },
+        { label: '預約發佈', value: VideoState.Scheduled },
       ],
-      defaultValue: 'draft',
+      defaultValue: VideoState.Draft,
       isIndexed: true,
     }),
     publishedDate: timestamp({

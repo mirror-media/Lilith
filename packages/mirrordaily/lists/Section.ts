@@ -7,8 +7,15 @@ import {
   relationship,
   integer,
 } from '@keystone-6/core/fields'
+import envVar from '../environment-variables'
+import { State, ACL, UserRole, type Session } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+enum SectionState {
+  Active = State.Active,
+  Inactive = State.Inactive,
+}
 
 type Option = {
   label: string
@@ -38,6 +45,29 @@ const COLOR_OPTIONS: Option[] = COLOR_LIST.map((color) => ({
   value: color,
   color: color,
 }))
+
+function filterSections(roles: string[]) {
+  return ({ session }: { session?: Session }) => {
+    switch (envVar.accessControlStrategy) {
+      case ACL.GraphQL: {
+        // Expose `active` sections
+        return { state: { equals: SectionState.Active } }
+      }
+      case ACL.Preview: {
+        // Expose all sections
+        return true
+      }
+      case ACL.CMS:
+      default: {
+        // Expose all sections if user logged in
+        return (
+          session?.data?.role !== undefined &&
+          roles.indexOf(session.data.role) > -1
+        )
+      }
+    }
+  }
+}
 
 const listConfigurations = list({
   fields: {
@@ -74,13 +104,13 @@ const listConfigurations = list({
     }),
     state: select({
       options: [
-        { label: 'active', value: 'active' },
-        { label: 'inactive', value: 'inactive' },
+        { label: 'active', value: SectionState.Active },
+        { label: 'inactive', value: SectionState.Inactive },
       ],
       validation: { isRequired: true },
       isIndexed: true,
       ui: { displayMode: 'segmented-control' },
-      defaultValue: 'active',
+      defaultValue: SectionState.Active,
     }),
     isFeatured: checkbox({
       label: '置頂',
@@ -194,6 +224,13 @@ const listConfigurations = list({
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
+    },
+    filter: {
+      query: filterSections([
+        UserRole.Admin,
+        UserRole.Moderator,
+        UserRole.Editor,
+      ]),
     },
   },
 })

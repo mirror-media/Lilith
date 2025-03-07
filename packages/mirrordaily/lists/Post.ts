@@ -13,45 +13,33 @@ import {
 import envVar from '../environment-variables'
 // @ts-ignore draft-js does not have typescript definition
 import { RawContentState } from 'draft-js'
+import { ACL, UserRole, State, type Session } from '../type'
+import { invalidateStoryCache } from '../utils/invalidate-cdn-cache'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
-enum UserRole {
-  Admin = 'admin',
-  Moderator = 'moderator',
-  Editor = 'editor',
-  Contributor = 'contributor',
-}
-
 enum PostStatus {
-  Published = 'published',
-  Draft = 'draft',
-  Scheduled = 'scheduled',
-  Archived = 'archived',
-  Invisible = 'invisible',
-}
-
-type Session = {
-  data: {
-    id: string
-    role: UserRole
-  }
+  Published = State.Published,
+  Draft = State.Draft,
+  Scheduled = State.Scheduled,
+  Archived = State.Archived,
+  Invisible = State.Invisible,
 }
 
 function filterPosts(roles: string[]) {
   return ({ session }: { session?: Session }) => {
     switch (envVar.accessControlStrategy) {
-      case 'gql': {
+      case ACL.GraphQL: {
         // Expose `published` and `invisible` posts
         return { state: { in: [PostStatus.Published, PostStatus.Invisible] } }
       }
-      case 'preview': {
-        // Expose all posts, including `published`, `draft` and `archived` posts
+      case ACL.Preview: {
+        // Expose all posts
         return true
       }
-      case 'cms':
+      case ACL.CMS:
       default: {
-        // Expose all posts, including `published`, `draft` and `archived` posts if user logged in
+        // Expose all posts if user logged in
         return (
           session?.data?.role !== undefined &&
           roles.indexOf(session.data.role) > -1
@@ -59,6 +47,53 @@ function filterPosts(roles: string[]) {
       }
     }
   }
+}
+
+function checkReadPermission({
+  context,
+  item,
+}: {
+  context: KeystoneContext
+  item: Record<string, unknown>
+}) {
+  if (envVar.accessControlStrategy === ACL.GraphQL) {
+    // Post is not member only,
+    // every request could access content field
+    if (item?.isMember === false) {
+      return true
+    }
+
+    // Post is member only.
+    // Check request permission.
+    const scope = context.req?.headers?.['x-access-token-scope']
+
+    // get acl from scope
+    const acl =
+      typeof scope === 'string'
+        ? scope.match(/read:member-posts:([^\s]*)/i)?.[1]
+        : ''
+
+    if (typeof acl !== 'string') {
+      return false
+    } else if (acl === 'all') {
+      // scope contains 'read:memeber-posts:all'
+      // the request has the permission to read this field
+      return true
+    } else {
+      // scope contains 'read:member-posts:${postId1},${postId2},...,${postIdN}'
+      const postIdArr = acl.split(',')
+
+      // check the request has the permission to read this field
+      if (postIdArr.indexOf(`${item.id}`) > -1) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  // the request has permission to read this field
+  return true
 }
 
 type FieldMode = 'edit' | 'read' | 'hidden'
@@ -148,13 +183,13 @@ const listConfigurations = list({
     state: select({
       label: '狀態',
       options: [
-        { label: '草稿', value: 'draft' },
-        { label: '已發布', value: 'published' },
-        { label: '預約發佈', value: 'scheduled' },
-        { label: '下線', value: 'archived' },
-        { label: '前台不可見', value: 'invisible' },
+        { label: '草稿', value: PostStatus.Draft },
+        { label: '已發布', value: PostStatus.Published },
+        { label: '預約發佈', value: PostStatus.Scheduled },
+        { label: '下線', value: PostStatus.Archived },
+        { label: '前台不可見', value: PostStatus.Invisible },
       ],
-      defaultValue: 'draft',
+      defaultValue: PostStatus.Draft,
       isIndexed: true,
     }),
     publishedDate: timestamp({
@@ -184,6 +219,9 @@ const listConfigurations = list({
       label: '大分類',
       ref: 'Section.posts',
       many: true,
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     manualOrderOfSections: json({
       isFilterable: false,
@@ -193,6 +231,9 @@ const listConfigurations = list({
       label: '小分類',
       ref: 'Category.posts',
       many: true,
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     manualOrderOfCategories: json({
       isFilterable: false,
@@ -364,52 +405,7 @@ const listConfigurations = list({
       ],
       website: 'mirrormedia',
       access: {
-        read: ({
-          context,
-          item,
-        }: {
-          context: KeystoneContext
-          item: Record<string, unknown>
-        }) => {
-          if (envVar.accessControlStrategy === 'gql') {
-            // Post is not member only,
-            // every request could access content field
-            if (item?.isMember === false) {
-              return true
-            }
-
-            // Post is member only.
-            // Check request permission.
-            const scope = context.req?.headers?.['x-access-token-scope']
-
-            // get acl from scope
-            const acl =
-              typeof scope === 'string'
-                ? scope.match(/read:member-posts:([^\s]*)/i)?.[1]
-                : ''
-
-            if (typeof acl !== 'string') {
-              return false
-            } else if (acl === 'all') {
-              // scope contains 'read:memeber-posts:all'
-              // the request has the permission to read this field
-              return true
-            } else {
-              // scope contains 'read:member-posts:${postId1},${postId2},...,${postIdN}'
-              const postIdArr = acl.split(',')
-
-              // check the request has the permission to read this field
-              if (postIdArr.indexOf(`${item.id}`) > -1) {
-                return true
-              }
-            }
-
-            return false
-          }
-
-          // the request has permission to read this field
-          return true
-        },
+        read: checkReadPermission,
       },
     }),
     isMember: checkbox({
@@ -438,21 +434,21 @@ const listConfigurations = list({
       many: true,
       ui: {
         views: './lists/views/sorted-relationship/index',
-        createView: { fieldMode: 'hidden', },
-        itemView: { fieldMode: 'hidden', },
-        listView: { fieldMode: 'hidden', },
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     groups: relationship({
-      label: "群組(發佈後由演算法自動計算)",
+      label: '群組(發佈後由演算法自動計算)',
       isFilterable: false,
       ref: 'Group.posts',
       many: true,
       ui: {
         views: './lists/views/sorted-relationship/index',
-        createView: { fieldMode: 'hidden', },
-        itemView: { fieldMode: 'hidden', },
-        listView: { fieldMode: 'hidden', },
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     manualOrderOfRelateds: json({
@@ -474,9 +470,9 @@ const listConfigurations = list({
       many: true,
       ui: {
         views: './lists/views/sorted-relationship/index',
-        createView: { fieldMode: 'hidden', },
-        itemView: { fieldMode: 'hidden', },
-        listView: { fieldMode: 'hidden', },
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     og_title: text({
@@ -578,52 +574,7 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
       access: {
-        read: ({
-          context,
-          item,
-        }: {
-          context: KeystoneContext
-          item: Record<string, unknown>
-        }) => {
-          if (envVar.accessControlStrategy === 'gql') {
-            // Post is not member only,
-            // every request could access content field
-            if (item?.isMember === false) {
-              return true
-            }
-
-            // Post is member only.
-            // Check request permission.
-            const scope = context.req?.headers?.['x-access-token-scope']
-
-            // get acl from scope
-            const acl =
-              typeof scope === 'string'
-                ? scope.match(/read:member-posts:([^\s]*)/i)?.[1]
-                : ''
-
-            if (typeof acl !== 'string') {
-              return false
-            } else if (acl === 'all') {
-              // scope contains 'read:memeber-posts:all'
-              // the request has the permission to read this field
-              return true
-            } else {
-              // scope contains 'read:member-posts:${postId1},${postId2},...,${postIdN}'
-              const postIdArr = acl.split(',')
-
-              // check the request has the permission to read this field
-              if (postIdArr.indexOf(`${item.id}`) > -1) {
-                return true
-              }
-            }
-
-            return false
-          }
-
-          // the request has permission to read this field
-          return true
-        },
+        read: checkReadPermission,
       },
     }),
     trimmedApiData: virtual({
@@ -660,7 +611,7 @@ const listConfigurations = list({
     },
   },
   graphql: {
-	cacheHint: { maxAge: 0, scope: 'PRIVATE' },
+    cacheHint: { maxAge: 0, scope: 'PRIVATE' },
   },
   access: {
     operation: {
@@ -717,12 +668,12 @@ const listConfigurations = list({
       if (operation === 'create' || operation === 'update') {
         if (resolvedData.slug) {
           resolvedData.slug = resolvedData.slug.trim()
-          resolvedData.slug = resolvedData.slug.replace(" ", "_")
+          resolvedData.slug = resolvedData.slug.replace(' ', '_')
         }
         if (resolvedData.publishedDate) {
           /* check the publishedDate */
           if (resolvedData.publishedDate > Date.now()) {
-            resolvedData.state = 'scheduled'
+            resolvedData.state = PostStatus.Scheduled
           }
           /* end publishedDate check */
           resolvedData.publishedDateString = new Date(
@@ -736,9 +687,15 @@ const listConfigurations = list({
           return
         }
       }
-      return 0
+      return
     },
-    afterOperation: async ({ operation, inputData, item, context }) => {
+    afterOperation: async ({
+      operation,
+      inputData,
+      item,
+      context,
+      originalItem,
+    }) => {
       if (operation === 'update') {
         // If the operation is to update lockBy and lockExpireAt, then no need to do anything further.
         // inputDate example:
@@ -758,6 +715,9 @@ const listConfigurations = list({
           },
         })
       }
+
+      const slug = originalItem?.slug ?? item?.slug
+      await invalidateStoryCache(slug)
     },
   },
 })

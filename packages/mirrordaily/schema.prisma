@@ -44,7 +44,6 @@ model Category {
   heroImageId          Int?      @map("heroImage")
   sections             Section[] @relation("Category_sections")
   posts                Post[]    @relation("Category_posts")
-  isMemberOnly         Boolean   @default(false)
   createdAt            DateTime?
   updatedAt            DateTime?
   createdBy            User?     @relation("Category_createdBy", fields: [createdById], references: [id])
@@ -231,8 +230,8 @@ model Photo {
   from_Post_og_image          Post[]         @relation("Post_og_image")
   from_Section_heroImage      Section[]      @relation("Section_heroImage")
   from_Topic_heroImage        Topic[]        @relation("Topic_heroImage")
-  from_Topic_og_image         Topic[]        @relation("Topic_og_image")
   from_Topic_slideshow_images Topic[]        @relation("Topic_slideshow_images")
+  from_Topic_og_image         Topic[]        @relation("Topic_og_image")
   from_Video_heroImage        Video[]        @relation("Video_heroImage")
   from_Game_heroImage         Game[]         @relation("Game_heroImage")
 
@@ -376,25 +375,26 @@ model Topic {
   sortOrder                    Int?
   state                        String?   @default("draft")
   brief                        Json?
+  apiDataBrief                 Json?
+  leading                      String?
   heroImage                    Photo?    @relation("Topic_heroImage", fields: [heroImageId], references: [id])
   heroImageId                  Int?      @map("heroImage")
   heroUrl                      String?
   heroVideo                    Video?    @relation("Topic_heroVideo", fields: [heroVideoId], references: [id])
   heroVideoId                  Int?      @map("heroVideo")
-  leading                      String?
-  sections                     Section[] @relation("Section_topics")
+  slideshow_images             Photo[]   @relation("Topic_slideshow_images")
+  manualOrderOfSlideshowImages Json?
   og_title                     String    @default("")
   og_description               String    @default("")
   og_image                     Photo?    @relation("Topic_og_image", fields: [og_imageId], references: [id])
   og_imageId                   Int?      @map("og_image")
+  type                         String?   @default("list")
+  tags                         Tag[]     @relation("Tag_topics")
+  posts                        Post[]    @relation("Post_topics")
+  style                        String    @default("")
   isFeatured                   Boolean   @default(false)
   title_style                  String?   @default("feature")
-  type                         String?   @default("list")
-  style                        String    @default("")
-  tags                         Tag[]     @relation("Tag_topics")
-  slideshow_images             Photo[]   @relation("Topic_slideshow_images")
-  manualOrderOfSlideshowImages Json?
-  posts                        Post[]    @relation("Post_topics")
+  sections                     Section[] @relation("Section_topics")
   javascript                   String    @default("")
   dfp                          String    @default("")
   mobile_dfp                   String    @default("")
@@ -406,12 +406,12 @@ model Topic {
   updatedById                  Int?      @map("updatedBy")
 
   @@index([state])
+  @@index([leading])
   @@index([heroImageId])
   @@index([heroVideoId])
-  @@index([leading])
   @@index([og_imageId])
-  @@index([title_style])
   @@index([type])
+  @@index([title_style])
   @@index([createdById])
   @@index([updatedById])
 }

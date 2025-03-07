@@ -402,52 +402,53 @@ model Tag {
 }
 
 model Member {
-  id                           Int                @id @default(autoincrement())
-  firebaseId                   String             @unique @default("")
-  customId                     String             @unique @default("")
-  name                         String             @default("")
-  nickname                     String             @default("")
-  avatar                       String             @default("")
-  intro                        String             @default("")
-  avatar_image                 Photo?             @relation("Member_avatar_image", fields: [avatar_imageId], references: [id])
-  avatar_imageId               Int?               @map("avatar_image")
-  wallet                       String             @default("")
-  email                        String             @unique @default("")
-  is_active                    Boolean            @default(true)
-  verified                     Boolean            @default(false)
-  publisher                    Publisher[]        @relation("Publisher_admin")
-  pick                         Pick[]             @relation("Pick_member")
-  sponsor                      Sponsorship[]      @relation("Sponsorship_sponsor")
-  transaction                  Transaction[]      @relation("Transaction_member")
-  comment                      Comment[]          @relation("Comment_member")
-  member_like                  Comment[]          @relation("Comment_like")
-  follower                     Member[]           @relation("Member_follower")
-  following                    Member[]           @relation("Member_follower")
-  block                        Member[]           @relation("Member_block")
-  blocked                      Member[]           @relation("Member_block")
-  following_category           Category[]         @relation("Member_following_category")
-  following_collection         Collection[]       @relation("Member_following_collection")
-  follow_publisher             Publisher[]        @relation("Member_follow_publisher")
-  exclude_publisher            Publisher[]        @relation("Member_exclude_publisher")
-  invited                      InvitationCode[]   @relation("InvitationCode_send")
-  invited_by                   InvitationCode?    @relation("InvitationCode_receive")
-  create_collection            CollectionMember[] @relation("CollectionMember_added_by")
-  modify_collection            CollectionMember[] @relation("CollectionMember_updated_by")
-  balance                      Int?               @default(0)
+  id                           Int                 @id @default(autoincrement())
+  firebaseId                   String              @unique @default("")
+  customId                     String              @unique @default("")
+  name                         String              @default("")
+  nickname                     String              @default("")
+  avatar                       String              @default("")
+  intro                        String              @default("")
+  avatar_image                 Photo?              @relation("Member_avatar_image", fields: [avatar_imageId], references: [id])
+  avatar_imageId               Int?                @map("avatar_image")
+  wallet                       String              @default("")
+  email                        String              @unique @default("")
+  is_active                    Boolean             @default(true)
+  verified                     Boolean             @default(false)
+  publisher                    Publisher[]         @relation("Publisher_admin")
+  pick                         Pick[]              @relation("Pick_member")
+  sponsor                      Sponsorship[]       @relation("Sponsorship_sponsor")
+  transaction                  Transaction[]       @relation("Transaction_member")
+  comment                      Comment[]           @relation("Comment_member")
+  member_like                  Comment[]           @relation("Comment_like")
+  follower                     Member[]            @relation("Member_follower")
+  following                    Member[]            @relation("Member_follower")
+  block                        Member[]            @relation("Member_block")
+  blocked                      Member[]            @relation("Member_block")
+  following_category           Category[]          @relation("Member_following_category")
+  following_collection         Collection[]        @relation("Member_following_collection")
+  follow_publisher             Publisher[]         @relation("Member_follow_publisher")
+  exclude_publisher            Publisher[]         @relation("Member_exclude_publisher")
+  invited                      InvitationCode[]    @relation("InvitationCode_send")
+  invited_by                   InvitationCode?     @relation("InvitationCode_receive")
+  create_collection            CollectionMember[]  @relation("CollectionMember_added_by")
+  modify_collection            CollectionMember[]  @relation("CollectionMember_updated_by")
+  balance                      Int?                @default(0)
+  language                     MemberLanguageType? @default(zh_TW)
   createdAt                    DateTime?
   updatedAt                    DateTime?
-  createdBy                    User?              @relation("Member_createdBy", fields: [createdById], references: [id])
-  createdById                  Int?               @map("createdBy")
-  updatedBy                    User?              @relation("Member_updatedBy", fields: [updatedById], references: [id])
-  updatedById                  Int?               @map("updatedBy")
-  from_Collection_creator      Collection[]       @relation("Collection_creator")
-  from_CollectionMember_member CollectionMember[] @relation("CollectionMember_member")
-  from_CollectionPick_creator  CollectionPick[]   @relation("CollectionPick_creator")
-  from_Story_author            Story[]            @relation("Story_author")
-  from_Notify_member           Notify[]           @relation("Notify_member")
-  from_Notify_sender           Notify[]           @relation("Notify_sender")
-  from_ReportRecord_informant  ReportRecord[]     @relation("ReportRecord_informant")
-  from_ReportRecord_respondent ReportRecord[]     @relation("ReportRecord_respondent")
+  createdBy                    User?               @relation("Member_createdBy", fields: [createdById], references: [id])
+  createdById                  Int?                @map("createdBy")
+  updatedBy                    User?               @relation("Member_updatedBy", fields: [updatedById], references: [id])
+  updatedById                  Int?                @map("updatedBy")
+  from_Collection_creator      Collection[]        @relation("Collection_creator")
+  from_CollectionMember_member CollectionMember[]  @relation("CollectionMember_member")
+  from_CollectionPick_creator  CollectionPick[]    @relation("CollectionPick_creator")
+  from_Story_author            Story[]             @relation("Story_author")
+  from_Notify_member           Notify[]            @relation("Notify_member")
+  from_Notify_sender           Notify[]            @relation("Notify_sender")
+  from_ReportRecord_informant  ReportRecord[]      @relation("ReportRecord_informant")
+  from_ReportRecord_respondent ReportRecord[]      @relation("ReportRecord_respondent")
 
   @@index([avatar_imageId])
   @@index([createdById])
@@ -734,6 +735,16 @@ enum StoryStoryTypeType {
   podcast
 }
 
+enum MemberLanguageType {
+  zh_TW
+  zh_CN
+  en_US
+  en_GB
+  ja_JP
+  fr_FR
+  de_DE
+}
+
 enum PolicyTypeType {
   deposit
   unlock_all_publishers
@@ -765,6 +776,6 @@ enum RevenueTypeType {
 
 enum StatementTypeType {
   month
-  quarter
+  media
   semi_annual
 }

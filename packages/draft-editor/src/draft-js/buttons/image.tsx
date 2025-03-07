@@ -1,17 +1,20 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { AtomicBlockUtils, EditorState } from 'draft-js'
 
 import {
   ImageSelector as DefaultImageSelector,
   ImageSelectorOnChangeFn,
 } from './selector/image-selector'
+import type { ButtonProps } from './type'
 
-export function ImageButton(props: {
-  editorState: EditorState
-  onChange: (param: EditorState) => void
-  className?: string
-  ImageSelector: typeof DefaultImageSelector
-}) {
+type ImageButtonProps<T> = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
+  ImageSelector?: typeof DefaultImageSelector<T>
+}
+
+export function ImageButton<T>(props: ImageButtonProps<T>) {
   const {
     editorState,
     onChange,
@@ -25,7 +28,7 @@ export function ImageButton(props: {
     setToShowImageSelector(true)
   }
 
-  const onImageSelectorChange: ImageSelectorOnChangeFn = (
+  const onImageSelectorChange: ImageSelectorOnChangeFn<T> = (
     selectedImagesWithMeta,
     align
   ) => {
@@ -58,7 +61,7 @@ export function ImageButton(props: {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       {toShowImageSelector && (
         <ImageSelector
           onChange={onImageSelectorChange}
@@ -72,6 +75,6 @@ export function ImageButton(props: {
         <i className="far fa-image"></i>
         <span> Image</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

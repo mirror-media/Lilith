@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { Fragment, useState, useEffect, useRef } from 'react'
 import debounce from 'lodash/debounce'
 import styled from 'styled-components'
 import { TextInput } from '@keystone-ui/fields'
@@ -94,18 +94,18 @@ export type ImageEntity = {
   }
 }
 
-export type ImageEntityWithMeta = {
-  image: ImageEntity
+export type ImageEntityWithMeta<T> = {
+  image: T
   desc?: string
   url?: string
 }
 
-type ImageEntityOnSelectFn = (param: ImageEntity) => void
+type ImageEntityOnSelectFn<T> = (param: T) => void
 
-function ImageGrids(props: {
-  images: ImageEntity[]
-  selected: ImageEntity[]
-  onSelect: ImageEntityOnSelectFn
+function ImageGrids<T>(props: {
+  images: T[]
+  selected: T[]
+  onSelect: ImageEntityOnSelectFn<T>
 }): React.ReactElement {
   const { images, selected, onSelect } = props
 
@@ -114,7 +114,7 @@ function ImageGrids(props: {
       {images.map((image) => {
         return (
           <ImageGrid
-            key={image.id}
+            key={(image as ImageEntity).id}
             isSelected={selected?.includes(image)}
             onSelect={() => onSelect(image)}
             image={image}
@@ -125,30 +125,35 @@ function ImageGrids(props: {
   )
 }
 
-function ImageGrid(props: {
-  image: ImageEntity
+function ImageGrid<T>(props: {
+  image: T
   isSelected: boolean
-  onSelect: ImageEntityOnSelectFn
+  onSelect: ImageEntityOnSelectFn<T>
 }) {
   const { image, onSelect, isSelected } = props
+  const newImage = image as ImageEntity
+
   return (
-    <ImageGridWrapper key={image?.id} onClick={() => onSelect(image)}>
+    <ImageGridWrapper
+      key={newImage?.id}
+      onClick={() => onSelect(newImage as T)}
+    >
       <ImageSelected>
         {isSelected ? <i className="fas fa-check-circle"></i> : null}
       </ImageSelected>
       <Image
-        src={image?.resized?.w800}
-        onError={(e) => (e.currentTarget.src = image?.imageFile?.url)}
+        src={newImage?.resized?.w800}
+        onError={(e) => (e.currentTarget.src = newImage?.imageFile?.url)}
       />
     </ImageGridWrapper>
   )
 }
 
-type ImageMetaOnChangeFn = (params: ImageEntityWithMeta) => void
+type ImageMetaOnChangeFn<T> = (params: ImageEntityWithMeta<T>) => void
 
-function ImageMetaGrids(props: {
-  imageMetas: ImageEntityWithMeta[]
-  onChange: ImageMetaOnChangeFn
+function ImageMetaGrids<T>(props: {
+  imageMetas: ImageEntityWithMeta<T>[]
+  onChange: ImageMetaOnChangeFn<T>
   enableCaption: boolean
   enableUrl: boolean
 }) {
@@ -157,7 +162,7 @@ function ImageMetaGrids(props: {
     <ImageMetaGridsWrapper>
       {imageMetas.map((imageMeta) => (
         <ImageMetaGrid
-          key={imageMeta?.image?.id}
+          key={(imageMeta?.image as ImageEntity)?.id}
           imageMeta={imageMeta}
           enableCaption={enableCaption}
           enableUrl={enableUrl}
@@ -168,41 +173,42 @@ function ImageMetaGrids(props: {
   )
 }
 
-function ImageMetaGrid(props: {
-  imageMeta: ImageEntityWithMeta
-  onChange: ImageMetaOnChangeFn
+function ImageMetaGrid<T>(props: {
+  imageMeta: ImageEntityWithMeta<T>
+  onChange: ImageMetaOnChangeFn<T>
   enableCaption: boolean
   enableUrl: boolean
 }): React.ReactElement {
   const { imageMeta, enableCaption, enableUrl, onChange } = props
   const { image, desc, url } = imageMeta
+  const newImage = image as ImageEntity
 
   return (
     <ImageMetaGridWrapper>
       <Image
-        src={image?.resized?.w800}
-        onError={(e) => (e.currentTarget.src = image?.imageFile?.url)}
+        src={newImage?.resized?.w800}
+        onError={(e) => (e.currentTarget.src = newImage?.imageFile?.url)}
       />
       {enableCaption && (
-        <React.Fragment>
+        <Fragment>
           <Label htmlFor="caption">Image Caption:</Label>
           <TextInput
             id="caption"
             type="text"
-            placeholder={image?.name}
+            placeholder={newImage?.name}
             defaultValue={desc}
             onChange={_.debounce((e) => {
               onChange({
-                image,
+                image: newImage as T,
                 desc: e.target.value,
                 url,
               })
             })}
           />
-        </React.Fragment>
+        </Fragment>
       )}
       {enableUrl && (
-        <React.Fragment>
+        <Fragment>
           <Label htmlFor="url">Url:</Label>
           <TextInput
             id="url"
@@ -211,13 +217,13 @@ function ImageMetaGrid(props: {
             defaultValue={url}
             onChange={_.debounce((e) => {
               onChange({
-                image,
+                image: newImage as T,
                 desc,
                 url: e.target.value,
               })
             })}
           />
-        </React.Fragment>
+        </Fragment>
       )}
     </ImageMetaGridWrapper>
   )
@@ -232,7 +238,7 @@ function DelayInput(props: {
   const { delay, onChange } = props
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Label>Slideshow delay:</Label>
       <TextInput
         type="number"
@@ -244,7 +250,7 @@ function DelayInput(props: {
           onChange(e.target.value)
         }}
       />
-    </React.Fragment>
+    </Fragment>
   )
 }
 
@@ -275,20 +281,20 @@ const imagesQuery = gql`
   }
 `
 
-export type ImageSelectorOnChangeFn = (
-  params: ImageEntityWithMeta[],
+export type ImageSelectorOnChangeFn<T> = (
+  params: ImageEntityWithMeta<T>[],
   align?: string,
   delay?: number
 ) => void
 
-export function ImageSelector(props: {
+export function ImageSelector<T>(props: {
   enableMultiSelect?: boolean
   enableCaption?: boolean
   enableUrl?: boolean
   enableAlignment?: boolean
   enableDelay?: boolean
-  onChange: ImageSelectorOnChangeFn
-  initialSelected?: ImageEntityWithMeta[]
+  onChange: ImageSelectorOnChangeFn<T>
+  initialSelected?: ImageEntityWithMeta<T>[]
   initialAlign?: string
 }) {
   const {
@@ -312,12 +318,11 @@ export function ImageSelector(props: {
   ] = useLazyQuery(imagesQuery, { fetchPolicy: 'no-cache' })
   const [currentPage, setCurrentPage] = useState(0) // page starts with 1, 0 is used to detect initialization
   const [searchText, setSearchText] = useState('')
-  const [selected, setSelected] = useState<ImageEntityWithMeta[]>(
-    initialSelected
-  )
+  const [selected, setSelected] =
+    useState<ImageEntityWithMeta<T>[]>(initialSelected)
   const [delay, setDelay] = useState('5')
   const [align, setAlign] = useState(initialAlign)
-  const contentWrapperRef = useRef<HTMLDivElement>()
+  const contentWrapperRef = useRef<HTMLDivElement>(null)
 
   const pageSize = 6
 
@@ -352,13 +357,17 @@ export function ImageSelector(props: {
 
   const onAlignSelectOpen = () => {
     const scrollWrapper = contentWrapperRef.current?.parentElement
-    scrollWrapper.scrollTop = scrollWrapper.scrollHeight
+    if (scrollWrapper) {
+      scrollWrapper.scrollTop = scrollWrapper.scrollHeight
+    }
   }
 
-  const onImageMetaChange: ImageMetaOnChangeFn = (imageEntityWithMeta) => {
+  const onImageMetaChange: ImageMetaOnChangeFn<T> = (imageEntityWithMeta) => {
     if (enableMultiSelect) {
       const foundIndex = selected.findIndex(
-        (ele) => ele?.image?.id === imageEntityWithMeta?.image?.id
+        (ele) =>
+          (ele?.image as ImageEntity)?.id ===
+          (imageEntityWithMeta?.image as ImageEntity)?.id
       )
       if (foundIndex !== -1) {
         selected[foundIndex] = imageEntityWithMeta
@@ -369,10 +378,11 @@ export function ImageSelector(props: {
     setSelected([imageEntityWithMeta])
   }
 
-  const onImagesGridSelect: ImageEntityOnSelectFn = (imageEntity) => {
+  const onImagesGridSelect: ImageEntityOnSelectFn<T> = (imageEntity) => {
     setSelected((selected) => {
       const filterdSelected = selected.filter(
-        (ele) => ele.image?.id !== imageEntity.id
+        (ele) =>
+          (ele.image as ImageEntity)?.id !== (imageEntity as ImageEntity).id
       )
 
       // deselect the image
@@ -390,7 +400,7 @@ export function ImageSelector(props: {
     })
   }
 
-  const selectedImages = selected.map((ele: ImageEntityWithMeta) => {
+  const selectedImages = selected.map((ele: ImageEntityWithMeta<T>) => {
     return ele.image
   })
 
@@ -407,7 +417,7 @@ export function ImageSelector(props: {
   }, [currentPage, searchText])
 
   let searchResult = (
-    <React.Fragment>
+    <Fragment>
       <ImageGrids
         images={images}
         selected={selectedImages}
@@ -417,11 +427,11 @@ export function ImageSelector(props: {
         currentPage={currentPage}
         total={imagesCount}
         pageSize={pageSize}
-        onChange={(pageIndex) => {
+        onChange={(pageIndex: number) => {
           setCurrentPage(pageIndex)
         }}
       />
-    </React.Fragment>
+    </Fragment>
   )
   if (loading) {
     searchResult = <p>searching...</p>
@@ -439,7 +449,7 @@ export function ImageSelector(props: {
           <div>{error.stack}</div>
           <br />
           <b>Query:</b>
-          <pre>{imagesQuery.loc.source.body}</pre>
+          <pre>{imagesQuery?.loc?.source?.body}</pre>
         </div>
       </ErrorWrapper>
     )
@@ -480,6 +490,7 @@ export function ImageSelector(props: {
             {enableAlignment && (
               <AlignSelector
                 align={align}
+                // @ts-ignore: option with undefined value
                 options={options}
                 onChange={onAlignSelectChange}
                 onOpen={onAlignSelectOpen}
