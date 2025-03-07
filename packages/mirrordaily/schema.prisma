@@ -44,7 +44,6 @@ model Category {
   heroImageId          Int?      @map("heroImage")
   sections             Section[] @relation("Category_sections")
   posts                Post[]    @relation("Category_posts")
-  isMemberOnly         Boolean   @default(false)
   createdAt            DateTime?
   updatedAt            DateTime?
   createdBy            User?     @relation("Category_createdBy", fields: [createdById], references: [id])

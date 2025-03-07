@@ -219,6 +219,9 @@ const listConfigurations = list({
       label: '大分類',
       ref: 'Section.posts',
       many: true,
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     manualOrderOfSections: json({
       isFilterable: false,
@@ -228,6 +231,9 @@ const listConfigurations = list({
       label: '小分類',
       ref: 'Category.posts',
       many: true,
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     manualOrderOfCategories: json({
       isFilterable: false,
