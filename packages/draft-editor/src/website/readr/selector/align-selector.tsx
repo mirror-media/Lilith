@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Select } from '@keystone-ui/fields'
 
@@ -8,7 +8,7 @@ const Label = styled.label`
   font-weight: 600;
 `
 
-const AlignSelect = styled(Select)`
+const AlignSelect = styled(Select)<{ menuHeight: number }>`
   ${({ menuHeight }) => {
     return `margin-bottom: ${menuHeight}px;`
   }}
@@ -46,20 +46,20 @@ export function AlignSelector(props: {
     }
   }, [isOpen])
   return (
-    <React.Fragment>
+    <Fragment>
       <Label htmlFor="alignment">對齊</Label>
       <AlignSelect
         id="alignment"
         // default align === undefined
-        value={options.find((option) => option.value === align)}
+        value={options.find((option) => option.value === align) ?? null}
         options={options}
         onChange={(option) => {
-          onChange(option.value)
+          onChange(option?.value ?? '')
         }}
         onMenuOpen={() => setIsOpen(true)}
         onMenuClose={() => setIsOpen(false)}
         menuHeight={menuHeight}
       />
-    </React.Fragment>
+    </Fragment>
   )
 }

@@ -1,7 +1,11 @@
-import { Modifier as DraftModifier, CharacterMetadata } from 'draft-js'
+import {
+  Modifier as DraftModifier,
+  CharacterMetadata,
+  ContentState,
+  SelectionState,
+  ContentBlock,
+} from 'draft-js'
 import { Map } from 'immutable'
-
-const Modifier = { ...DraftModifier }
 
 /* 
     This method is specified for custom inline style such as 'FONT_COLOR_#ffffff'.
@@ -14,10 +18,10 @@ const Modifier = { ...DraftModifier }
 
     Reference: https://github.com/facebook/draft-js/blob/main/src/model/transaction/ContentStateInlineStyle.js#L39-L88
   */
-Modifier.removeInlineStyleByPrefix = (
-  contentState,
-  selectionState,
-  inlineStylePrefix
+const removeInlineStyleByPrefix = (
+  contentState: ContentState,
+  selectionState: SelectionState,
+  inlineStylePrefix: string
 ) => {
   const blockMap = contentState.getBlockMap()
   const startKey = selectionState.getStartKey()
@@ -39,16 +43,16 @@ Modifier.removeInlineStyleByPrefix = (
         sliceEnd = endOffset
       } else {
         sliceStart = blockKey === startKey ? startOffset : 0
-        sliceEnd = blockKey === endKey ? endOffset : block.getLength()
+        sliceEnd = blockKey === endKey ? endOffset : block!.getLength()
       }
 
-      let chars = block.getCharacterList()
+      let chars = block!.getCharacterList()
       let current
       while (sliceStart < sliceEnd) {
         current = chars.get(sliceStart)
         const inlineStyle = current
           .getStyle()
-          .find((styleName) => styleName.startsWith(inlineStylePrefix))
+          .find((styleName) => styleName!.startsWith(inlineStylePrefix))
         if (inlineStyle) {
           chars = chars.set(
             sliceStart,
@@ -58,14 +62,22 @@ Modifier.removeInlineStyleByPrefix = (
         sliceStart++
       }
 
-      return block.set('characterList', chars)
-    })
+      return block!.set('characterList', chars)
+    }) as ContentBlock
 
   return contentState.merge({
     blockMap: blockMap.merge(newBlocks),
     selectionBefore: selectionState,
     selectionAfter: selectionState,
-  })
+  }) as ContentState
 }
+
+type ExtendedModifiler = typeof DraftModifier & {
+  removeInlineStyleByPrefix: typeof removeInlineStyleByPrefix
+}
+
+const Modifier: ExtendedModifiler = Object.assign({}, DraftModifier, {
+  removeInlineStyleByPrefix,
+})
 
 export { Modifier }

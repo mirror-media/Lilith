@@ -1,4 +1,4 @@
-# [@mirrormedia/lilith-core](https://www.npmjs.com/package/@mirrormedia/lilith-draft-editor) &middot; ![npm version](https://img.shields.io/npm/v/@mirrormedia/lilith-draft-editor.svg?style=flat)
+# [@mirrormedia/lilith-draft-renderer](https://www.npmjs.com/package/@mirrormedia/lilith-draft-renderer) &middot; ![npm version](https://img.shields.io/npm/v/@mirrormedia/lilith-draft-renderer.svg?style=flat)
 
 ## Introduction
 
@@ -77,10 +77,3 @@
 在 publish 前，請根據 conventional commits 的規範，將 package.json#version 升版。
 
 ## Notable Details
-
-### For those files under `views/` folder, we transpile them specifically.
-
-For those files under `views/` folder, we transpile them by babel according to different configuation.
-The specific babel configuration is `.views.babelrc.js`.
-In `.views.babelrc.js`, we tell babel not to transpile `import` and `export` es6 codes into commonJS codes.
-The Keystone server won't start server well if those files under `views/` are transpiled into commonJS codes.

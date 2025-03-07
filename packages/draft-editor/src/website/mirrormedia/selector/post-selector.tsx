@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { gql, useLazyQuery } from '@keystone-6/core/admin-ui/apollo'
@@ -200,7 +200,7 @@ function PostMetaGrid(props: {
             (e.currentTarget.src = post?.heroImage?.imageFile?.url)
           }
         />
-        <PostTitle>{post?.name}</PostTitle>
+        <PostTitle>{post?.title}</PostTitle>
       </Post>
     </PostMetaGridWrapper>
   )
@@ -298,7 +298,7 @@ export function PostSelector(props: {
   }, [currentPage, searchText])
 
   let searchResult = (
-    <React.Fragment>
+    <Fragment>
       <PostGrids
         posts={posts}
         selected={selectedPosts}
@@ -312,7 +312,7 @@ export function PostSelector(props: {
           setCurrentPage(pageIndex)
         }}
       />
-    </React.Fragment>
+    </Fragment>
   )
   if (loading) {
     searchResult = <p>searching...</p>
@@ -330,7 +330,7 @@ export function PostSelector(props: {
           <div>{error.stack}</div>
           <br />
           <b>Query:</b>
-          <pre>{postsQuery.loc.source.body}</pre>
+          <pre>{postsQuery?.loc?.source.body}</pre>
         </div>
       </ErrorWrapper>
     )

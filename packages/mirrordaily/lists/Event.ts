@@ -7,8 +7,14 @@ import {
   checkbox,
   relationship,
 } from '@keystone-6/core/fields'
+import { State } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+enum EventState {
+  Draft = State.Draft,
+  Published = State.Published,
+}
 
 const listConfigurations = list({
   fields: {
@@ -23,11 +29,11 @@ const listConfigurations = list({
     }),
     state: select({
       options: [
-        { label: '過往活動', value: 'draft' },
-        { label: '即將舉辦（舉辦中）', value: 'published' },
+        { label: '過往活動', value: EventState.Draft },
+        { label: '即將舉辦（舉辦中）', value: EventState.Published },
       ],
       label: '狀態',
-      defaultValue: 'draft',
+      defaultValue: EventState.Draft,
       isIndexed: true,
     }),
     publishedDate: timestamp({

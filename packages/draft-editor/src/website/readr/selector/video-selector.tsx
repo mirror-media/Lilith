@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { gql, useLazyQuery } from '@keystone-6/core/admin-ui/apollo'
@@ -249,7 +249,7 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
   }, [currentPage, searchText])
 
   let searchResult = (
-    <React.Fragment>
+    <Fragment>
       <VideosGrids
         videos={videos}
         selected={selectedVideos}
@@ -263,7 +263,7 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
           setCurrentPage(pageIndex)
         }}
       />
-    </React.Fragment>
+    </Fragment>
   )
   if (loading) {
     searchResult = <p>searching...</p>
@@ -281,7 +281,7 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
           <div>{error.stack}</div>
           <br />
           <b>Query:</b>
-          <pre>{videosQuery.loc.source.body}</pre>
+          <pre>{videosQuery.loc?.source.body}</pre>
         </div>
       </ErrorWrapper>
     )

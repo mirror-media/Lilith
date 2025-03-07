@@ -21,7 +21,7 @@ const listConfigurations = list({
         type: "enum",  
         options: [
             { label: '月報', value: 'month' },
-            { label: '季報', value: 'quarter' },
+            { label: '媒體期報', value: 'media' },
             { label: '半年報', value: 'semi_annual'}
         ],
     }),

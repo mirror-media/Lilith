@@ -1,9 +1,15 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { AtomicBlockUtils, EditorState } from 'draft-js'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { TextInput, TextArea } from '@keystone-ui/fields'
+import type { ButtonProps } from './type'
 
-export function EmbeddedCodeButton(props) {
+type EmbeddedCodeButtonProps = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+>
+
+export function EmbeddedCodeButton(props: EmbeddedCodeButtonProps) {
   const { editorState, onChange, className } = props
 
   const [toShowInput, setToShowInput] = useState(false)
@@ -90,7 +96,7 @@ export function EmbeddedCodeButton(props) {
   )
 
   return (
-    <React.Fragment>
+    <Fragment>
       {input}
       <div
         onClick={() => {
@@ -101,6 +107,6 @@ export function EmbeddedCodeButton(props) {
         <i className="far"></i>
         <span>Embed</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

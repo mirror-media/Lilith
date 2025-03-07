@@ -1,17 +1,20 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { AtomicBlockUtils, EditorState } from 'draft-js'
 
 import {
   AudioSelector as DefaultAudioSelector,
   AudioEntityWithMeta,
 } from './selector/audio-selector'
+import type { ButtonProps } from './type'
 
-export function AudioButton(props: {
-  editorState: EditorState
-  onChange: (param: EditorState) => void
-  className?: string
-  AudioSelector: typeof DefaultAudioSelector
-}) {
+type AudioButtonProps<T> = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
+  AudioSelector?: typeof DefaultAudioSelector<T>
+}
+
+export function AudioButton<T>(props: AudioButtonProps<T>) {
   const {
     editorState,
     onChange,
@@ -26,7 +29,7 @@ export function AudioButton(props: {
   }
 
   const onAudioSelectorChange = (
-    selectedAudiosWithMeta: AudioEntityWithMeta[]
+    selectedAudiosWithMeta: AudioEntityWithMeta<T>[]
   ) => {
     const audio = selectedAudiosWithMeta?.[0]?.audio
     if (!audio) {
@@ -56,7 +59,7 @@ export function AudioButton(props: {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       {toShowAudioSelector && (
         <AudioSelector onChange={onAudioSelectorChange} />
       )}
@@ -65,6 +68,6 @@ export function AudioButton(props: {
         <i className="fa fa-file-audio"></i>
         <span> Audio</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

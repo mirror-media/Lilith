@@ -1,19 +1,17 @@
 {
   "name": "@mirrormedia/lilith-draft-renderer",
-  "version": "1.3.4-beta.3",
+  "version": "1.4.0",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "make dev",
     "build": "make build",
-    "clean": "make clean",
-    "build-lib": "make build-lib"
+    "clean": "make clean"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/mirror-media/Lilith.git",
-    "directory": "packages/draft-editor"
+    "directory": "packages/draft-renderer"
   },
   "keywords": [
     "react",
@@ -28,9 +26,9 @@
     "node-html-parser": "^6.1.5"
   },
   "peerDependencies": {
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "styled-components": "5.3.5"
+    "react": "^18",
+    "react-dom": "^18",
+    "styled-components": "^5"
   },
   "files": [
     "lib"

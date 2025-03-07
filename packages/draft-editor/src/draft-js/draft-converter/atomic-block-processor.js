@@ -3,7 +3,7 @@ import _ from 'lodash'
 // import sizeOf from 'image-size';
 import ApiDataInstance from './api-data-instance'
 import ENTITY from './entities'
-import { RawDraftContentState, convertFromRaw } from 'draft-js' // eslint-disable-line
+import { convertFromRaw } from 'draft-js'
 import { convertToHTML } from 'draft-convert'
 
 // import htmlparser2 from 'htmlparser2'
@@ -18,15 +18,22 @@ const htmlparser2 = require('htmlparser2')
  */
 
 /**
+ *  @typedef {import('./jsdoc').RawDraftContentState} RawDraftContentState
+ *  @typedef {import('./jsdoc').RawDraftContentBlock} RawDraftContentBlock
+ *  @typedef {import('./jsdoc').EntityMap} EntityMap
  *  @typedef {RawDraftContentState[][]} DraftEditor.TableEntity.TableData
  */
 
 const processor = {
+  /**
+   * @param {EntityMap} entityMap
+   * @param {RawDraftContentBlock} block
+   */
   convertBlock(entityMap, block) {
     let alignment = 'center'
     let content
-    let entityRange = block.entityRanges[0]
-    let styles = {}
+    const entityRange = block.entityRanges[0]
+    const styles = {}
     // current block's entity data
     // ex:
     // entity.type = IMAGE, entity.data={id,name,url...}
@@ -80,7 +87,7 @@ const processor = {
         // this is different from default blockquote of draftjs
         // so we name our specific blockquote as 'quoteby'
         type = 'quoteby'
-        alignment = (entity.data && entity.data.alignment) || alignment
+        alignment = (entity?.data && entity?.data.alignment) || alignment
         content = _.get(entity, 'data')
         content = Array.isArray(content) ? content : [content]
         break
@@ -97,16 +104,16 @@ const processor = {
       case ENTITY.BACKGROUNDVIDEO.type:
       case ENTITY.RELATEDPOST.type:
       case ENTITY.SIDEINDEX.type:
-        alignment = (entity.data && entity.data.alignment) || alignment
+        alignment = (entity?.data && entity?.data.alignment) || alignment
         content = _.get(entity, 'data')
         content = Array.isArray(content) ? content : [content]
         break
       case ENTITY.IMAGELINK.type: {
         // use Embedded component to dangerouslySetInnerHTML
         type = ENTITY.EMBEDDEDCODE.type
-        alignment = (entity.data && entity.data.alignment) || alignment
-        let description = _.get(entity, ['data', 'description'], '')
-        let url = _.get(entity, ['data', 'url'], '')
+        alignment = (entity?.data && entity?.data.alignment) || alignment
+        const description = _.get(entity, ['data', 'description'], '')
+        const url = _.get(entity, ['data', 'url'], '')
         content = [
           {
             caption: description,
@@ -117,15 +124,17 @@ const processor = {
         break
       }
       case ENTITY.EMBEDDEDCODE.type: {
-        alignment = (entity.data && entity.data.alignment) || alignment
-        let caption = _.get(entity, ['data', 'caption'], '')
-        let embeddedCode = _.get(entity, ['data', 'embeddedCode'], '')
-        let script = {}
-        let scripts = []
+        alignment = (entity?.data && entity?.data.alignment) || alignment
+        const caption = _.get(entity, ['data', 'caption'], '')
+        const embeddedCode = _.get(entity, ['data', 'embeddedCode'], '')
+        /** @type {Record<string, any>} */
+        const script = {}
+        /** @type {typeof script[]} */
+        const scripts = []
         let scriptTagStart = false
         let height
         let width
-        let parser = new htmlparser2.Parser({
+        const parser = new htmlparser2.Parser({
           onopentag: (name, attribs) => {
             if (name === 'script') {
               scriptTagStart = true

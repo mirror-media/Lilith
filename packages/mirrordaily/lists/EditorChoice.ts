@@ -1,8 +1,16 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { relationship, select, integer, text } from '@keystone-6/core/fields'
+import { State } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+enum EditorChoiceState {
+  Draft = State.Draft,
+  Published = State.Published,
+  Scheduled = State.Scheduled,
+  Archived = State.Archived,
+}
 
 const listConfigurations = list({
   fields: {
@@ -28,12 +36,12 @@ const listConfigurations = list({
     state: select({
       label: '狀態',
       options: [
-        { label: '草稿', value: 'draft' },
-        { label: '已發布', value: 'published' },
-        { label: '預約發佈', value: 'scheduled' },
-        { label: '下線', value: 'archived' },
+        { label: '草稿', value: EditorChoiceState.Draft },
+        { label: '已發布', value: EditorChoiceState.Published },
+        { label: '預約發佈', value: EditorChoiceState.Scheduled },
+        { label: '下線', value: EditorChoiceState.Archived },
       ],
-      defaultValue: 'draft',
+      defaultValue: EditorChoiceState.Draft,
       isIndexed: true,
     }),
     heroImage: relationship({

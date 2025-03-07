@@ -1,3 +1,5 @@
+import { ACL } from './type'
+
 const {
   IS_UI_DISABLED,
   ACCESS_CONTROL_STRATEGY,
@@ -20,6 +22,7 @@ const {
   CACHE_IDENTIFIER,
   CACHE_CONNECT_TIMEOUT,
   CACHE_MAXAGE,
+  INVALID_CDN_CACHE_SERVER_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -32,7 +35,7 @@ const cacheConnectTimeout = Number(CACHE_CONNECT_TIMEOUT)
 
 export default {
   isUIDisabled: IS_UI_DISABLED === 'true',
-  accessControlStrategy: ACCESS_CONTROL_STRATEGY || 'cms', // the value could be one of 'cms', 'gql' or 'preview'
+  accessControlStrategy: ACCESS_CONTROL_STRATEGY || ACL.CMS, // the value could be one of 'cms', 'gql' or 'preview'
   previewServer: {
     origin: PREVIEW_SERVER_ORIGIN || 'http://localhost:3001',
     path: PREVIEW_SERVER_PATH || '/preview-server',
@@ -79,4 +82,5 @@ export default {
       : cacheConnectTimeout, // unit: millisecond
     maxAge: Number.isNaN(cacheMaxAge) ? 60 : cacheMaxAge, // unit: second
   },
+  invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
 }

@@ -7,8 +7,38 @@ import {
   text,
   integer,
 } from '@keystone-6/core/fields'
+import envVar from '../environment-variables'
+import { State, ACL, UserRole, type Session } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+enum CategoryState {
+  Active = State.Active,
+  Inactive = State.Inactive,
+}
+
+function filterCategories(roles: string[]) {
+  return ({ session }: { session?: Session }) => {
+    switch (envVar.accessControlStrategy) {
+      case ACL.GraphQL: {
+        // Expose `active` categories
+        return { state: { equals: CategoryState.Active } }
+      }
+      case ACL.Preview: {
+        // Expose all categories
+        return true
+      }
+      case ACL.CMS:
+      default: {
+        // Expose all categories if user logged in
+        return (
+          session?.data?.role !== undefined &&
+          roles.indexOf(session.data.role) > -1
+        )
+      }
+    }
+  }
+}
 
 const listConfigurations = list({
   fields: {
@@ -31,13 +61,13 @@ const listConfigurations = list({
     }),
     state: select({
       options: [
-        { label: 'active', value: 'active' },
-        { label: 'inactive', value: 'inactive' },
+        { label: 'active', value: CategoryState.Active },
+        { label: 'inactive', value: CategoryState.Inactive },
       ],
       isIndexed: true,
       validation: { isRequired: true },
       ui: { displayMode: 'segmented-control' },
-      defaultValue: 'active',
+      defaultValue: CategoryState.Active,
     }),
     heroImage: relationship({
       label: 'Banner圖片',
@@ -46,6 +76,9 @@ const listConfigurations = list({
     sections: relationship({
       ref: 'Section.categories',
       many: true,
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     posts: relationship({
       ref: 'Post.categories',
@@ -54,10 +87,6 @@ const listConfigurations = list({
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
       },
-    }),
-    isMemberOnly: checkbox({
-      label: '會員文章',
-      defaultValue: false,
     }),
   },
   ui: {
@@ -74,6 +103,13 @@ const listConfigurations = list({
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
+    },
+    filter: {
+      query: filterCategories([
+        UserRole.Admin,
+        UserRole.Moderator,
+        UserRole.Editor,
+      ]),
     },
   },
 })

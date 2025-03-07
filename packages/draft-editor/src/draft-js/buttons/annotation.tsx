@@ -1,9 +1,15 @@
-import React, { useState } from 'react'
-import { EditorState, RichUtils, convertToRaw } from 'draft-js'
+import React, { Fragment, useState } from 'react'
+import {
+  EditorState,
+  RichUtils,
+  convertToRaw,
+  DraftDecoratorType,
+} from 'draft-js'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import draftConverter from '../draft-converter'
+import type { ButtonProps } from './type'
 
-function escapeHTML(s) {
+function escapeHTML(s: string) {
   return s
     .replace(/&/g, '&amp;')
     .replace(/"/g, '&quot;')
@@ -12,7 +18,18 @@ function escapeHTML(s) {
     .replace(/'/g, '&#39;')
 }
 
-export function AnnotationButton(props) {
+type AnnotationButtonProps = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
+  isActive?: boolean
+  decorators?: DraftDecoratorType
+  renderBasicEditor: (
+    props: Pick<AnnotationButtonProps, 'editorState' | 'onChange'>
+  ) => React.ReactElement
+}
+
+export function AnnotationButton(props: AnnotationButtonProps) {
   const toggleEntity = RichUtils.toggleLink
   const {
     isActive,
@@ -20,13 +37,14 @@ export function AnnotationButton(props) {
     onChange,
     renderBasicEditor,
     decorators,
+    className,
   } = props
   const [toShowInput, setToShowInput] = useState(false)
   const [inputValue, setInputValue] = useState({
     editorStateOfBasicEditor: EditorState.createEmpty(decorators),
   })
 
-  const promptForAnnotation = (e) => {
+  const promptForAnnotation = (e: React.MouseEvent) => {
     e.preventDefault()
     const selection = editorState.getSelection()
     if (!selection.isCollapsed()) {
@@ -105,15 +123,15 @@ export function AnnotationButton(props) {
   )
 
   return (
-    <React.Fragment>
+    <Fragment>
       {urlInput}
       <div
-        className={props.className}
+        className={className}
         onMouseDown={isActive ? removeAnnotation : promptForAnnotation}
       >
         <i className="far"></i>
         <span>Annotation</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

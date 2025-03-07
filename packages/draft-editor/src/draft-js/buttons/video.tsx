@@ -1,17 +1,20 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { AtomicBlockUtils, EditorState } from 'draft-js'
 
 import {
   VideoSelector as DefaultVideoSelector,
   VideoEntityWithMeta,
 } from './selector/video-selector'
+import type { ButtonProps } from './type'
 
-export function VideoButton(props: {
-  editorState: EditorState
-  onChange: (param: EditorState) => void
-  className?: string
-  VideoSelector: typeof DefaultVideoSelector
-}) {
+type VideoButtonProps<T> = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+> & {
+  VideoSelector?: typeof DefaultVideoSelector<T>
+}
+
+export function VideoButton<T>(props: VideoButtonProps<T>) {
   const {
     editorState,
     onChange,
@@ -26,7 +29,7 @@ export function VideoButton(props: {
   }
 
   const onVideoSelectorChange = (
-    selectedVideosWithMeta: VideoEntityWithMeta[]
+    selectedVideosWithMeta: VideoEntityWithMeta<T>[]
   ) => {
     const selected = selectedVideosWithMeta?.[0]
     if (!selected) {
@@ -57,7 +60,7 @@ export function VideoButton(props: {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       {toShowVideoSelector && (
         <VideoSelector onChange={onVideoSelectorChange} />
       )}
@@ -66,6 +69,6 @@ export function VideoButton(props: {
         <i className="fa fa-video-camera"></i>
         <span> Video</span>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

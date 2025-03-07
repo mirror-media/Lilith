@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { Fragment, useState, useEffect, useRef } from 'react'
 import debounce from 'lodash/debounce'
 import styled from 'styled-components'
 import { TextInput } from '@keystone-ui/fields'
@@ -228,7 +228,7 @@ function ImageMetaGrid(props: {
       />
       <ImageName>{image?.name}</ImageName>
       {enableCaption && (
-        <React.Fragment>
+        <Fragment>
           <Label htmlFor="caption">Image Caption:</Label>
           <TextInput
             id="caption"
@@ -243,10 +243,10 @@ function ImageMetaGrid(props: {
               })
             })}
           />
-        </React.Fragment>
+        </Fragment>
       )}
       {enableUrl && (
-        <React.Fragment>
+        <Fragment>
           <Label htmlFor="url">Url:</Label>
           <TextInput
             id="url"
@@ -261,7 +261,7 @@ function ImageMetaGrid(props: {
               })
             })}
           />
-        </React.Fragment>
+        </Fragment>
       )}
     </ImageMetaGridWrapper>
   )
@@ -270,13 +270,13 @@ function ImageMetaGrid(props: {
 type DelayInputOnChangeFn = (param: string) => void
 
 function DelayInput(props: {
-  delay: string
+  delay: string | number
   onChange: DelayInputOnChangeFn
 }): React.ReactElement {
   const { delay, onChange } = props
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Label>Slideshow delay:</Label>
       <TextInput
         type="number"
@@ -288,7 +288,7 @@ function DelayInput(props: {
           onChange(e.target.value)
         }}
       />
-    </React.Fragment>
+    </Fragment>
   )
 }
 
@@ -333,7 +333,7 @@ export function ImageSelector(props: {
     useState<ImageEntityWithMeta[]>(initialSelected)
   const [delay, setDelay] = useState('5')
   const [align, setAlign] = useState(initialAlign)
-  const contentWrapperRef = useRef<HTMLDivElement>()
+  const contentWrapperRef = useRef<HTMLDivElement>(null)
 
   const pageSize = 6
 
@@ -368,7 +368,9 @@ export function ImageSelector(props: {
 
   const onAlignSelectOpen = () => {
     const scrollWrapper = contentWrapperRef.current?.parentElement
-    scrollWrapper.scrollTop = scrollWrapper.scrollHeight
+    if (scrollWrapper) {
+      scrollWrapper.scrollTop = scrollWrapper.scrollHeight
+    }
   }
 
   const onImageMetaChange: ImageMetaOnChangeFn = (imageEntityWithMeta) => {
@@ -423,7 +425,7 @@ export function ImageSelector(props: {
   }, [currentPage, searchText])
 
   let searchResult = (
-    <React.Fragment>
+    <Fragment>
       <ImageGrids
         images={images}
         selected={selectedImages}
@@ -437,7 +439,7 @@ export function ImageSelector(props: {
           setCurrentPage(pageIndex)
         }}
       />
-    </React.Fragment>
+    </Fragment>
   )
   if (loading) {
     searchResult = <p>searching...</p>
@@ -455,7 +457,7 @@ export function ImageSelector(props: {
           <div>{error.stack}</div>
           <br />
           <b>Query:</b>
-          <pre>{imagesQuery.loc.source.body}</pre>
+          <pre>{imagesQuery?.loc?.source.body}</pre>
         </div>
       </ErrorWrapper>
     )
@@ -495,7 +497,9 @@ export function ImageSelector(props: {
             )}
             {enableAlignment && (
               <AlignSelector
+                // @ts-ignore: align could be undefined
                 align={align}
+                // @ts-ignore: option with undefined value
                 options={options}
                 onChange={onAlignSelectChange}
                 onOpen={onAlignSelectOpen}

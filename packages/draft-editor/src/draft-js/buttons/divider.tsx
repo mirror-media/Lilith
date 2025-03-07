@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { AtomicBlockUtils, EditorState } from 'draft-js'
 import styled from 'styled-components'
+import type { ButtonProps } from './type'
 
 const IconWrapper = styled.span`
   display: inline-block;
@@ -8,7 +9,12 @@ const IconWrapper = styled.span`
   top: 2px;
 `
 
-export function DividerButton(props) {
+type DividerButtonProps = Pick<
+  ButtonProps,
+  'editorState' | 'onChange' | 'className'
+>
+
+export function DividerButton(props: DividerButtonProps) {
   const { editorState, onChange, className } = props
 
   const onClick = () => {
@@ -29,7 +35,7 @@ export function DividerButton(props) {
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       <div onClick={onClick} className={className}>
         <IconWrapper>
           <svg
@@ -51,6 +57,6 @@ export function DividerButton(props) {
           </svg>
         </IconWrapper>
       </div>
-    </React.Fragment>
+    </Fragment>
   )
 }

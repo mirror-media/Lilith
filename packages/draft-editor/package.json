@@ -1,14 +1,12 @@
 {
   "name": "@mirrormedia/lilith-draft-editor",
-  "version": "1.3.4",
+  "version": "2.3.0",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "make dev",
     "build": "make build",
-    "clean": "make clean",
-    "build-lib": "make build-lib"
+    "clean": "make clean"
   },
   "repository": {
     "type": "git",
@@ -22,17 +20,17 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "draft-js": "^0.11.7",
-    "@mirrormedia/lilith-draft-renderer": "1.3.2"
+    "@mirrormedia/lilith-draft-renderer": "1.3.2",
+    "draft-js": "^0.11.7"
   },
   "peerDependencies": {
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "styled-components": "5.3.5",
-    "@keystone-6/core": "5.2.0",
-    "@keystone-ui/button": "^7.0.2",
-    "@keystone-ui/fields": "^7.2.0",
-    "@keystone-ui/modals": "^6.0.3"
+    "@keystone-6/core": "^5",
+    "@keystone-ui/button": "^5",
+    "@keystone-ui/fields": "^5",
+    "@keystone-ui/modals": "^6",
+    "react": "^18",
+    "react-dom": "^18",
+    "styled-components": "^5"
   },
   "files": [
     "lib"
