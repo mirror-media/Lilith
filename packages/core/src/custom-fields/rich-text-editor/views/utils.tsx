@@ -18,12 +18,15 @@ export function createController(decorators: any) {
   return (
     config: FieldControllerConfig<{
       disabledButtons?: string[]
+      hideOnMobileButtons?: string[]
     }>
   ): FieldController<EditorState, JSONValue> & {
     disabledButtons: string[]
+    hideOnMobileButtons: string[]
   } => {
     return {
       disabledButtons: config.fieldMeta?.disabledButtons ?? [],
+      hideOnMobileButtons: config.fieldMeta?.hideOnMobileButtons ?? [],
       path: config.path,
       label: config.label,
       description: config.description,
@@ -80,6 +83,7 @@ export function createField(RichTextEditor: any) {
           <Stack>
             <RichTextEditor
               disabledButtons={field.disabledButtons}
+              hideOnMobileButtons={field.hideOnMobileButtons}
               editorState={value}
               onChange={
                 // @ts-ignore: any
