@@ -56,10 +56,10 @@ const MOBILE_BOUNDARY = mediaSize.md
 
 export const buttonNames = {
   // inline styles
-  bold: 'bold',
-  italic: 'italic',
-  underline: 'underline',
-  code: 'code',
+  bold: 'BOLD',
+  italic: 'ITALIC',
+  underline: 'UNDERLINE',
+  code: 'CODE',
 
   // block styles
   h2: 'header-two',
@@ -90,9 +90,11 @@ export const buttonNames = {
   video: 'video',
   audio: 'audio',
   youtube: 'youtube',
-}
+} as const
 
-const disabledButtonsOnBasicEditor = [
+type ButtonName = (typeof buttonNames)[keyof typeof buttonNames]
+
+const disabledButtonsOnBasicEditor: ButtonName[] = [
   buttonNames.annotation,
   buttonNames.divider,
   buttonNames.embed,
@@ -954,14 +956,24 @@ type StyleControlsProps = Pick<
     onToggle: (buttonName: string) => void
   }
 
-const blockStyles = [
-  { label: 'H2', style: 'header-two', icon: '' },
-  { label: 'H3', style: 'header-three', icon: '' },
-  { label: 'H4', style: 'header-four', icon: '' },
-  { label: 'Blockquote', style: 'blockquote', icon: 'fas fa-quote-right' },
-  { label: 'UL', style: 'unordered-list-item', icon: 'fas fa-list-ul' },
-  { label: 'OL', style: 'ordered-list-item', icon: 'fas fa-list-ol' },
-  { label: 'Code Block', style: 'code-block', icon: 'fas fa-code' },
+type StyleControl = {
+  label: string
+  style: ButtonName
+  icon: string
+}
+
+const blockStyles: StyleControl[] = [
+  { label: 'H2', style: buttonNames.h2, icon: '' },
+  { label: 'H3', style: buttonNames.h3, icon: '' },
+  { label: 'H4', style: buttonNames.h4, icon: '' },
+  {
+    label: 'Blockquote',
+    style: buttonNames.blockquote,
+    icon: 'fas fa-quote-right',
+  },
+  { label: 'UL', style: buttonNames.ul, icon: 'fas fa-list-ul' },
+  { label: 'OL', style: buttonNames.ol, icon: 'fas fa-list-ol' },
+  { label: 'Code Block', style: buttonNames.codeBlock, icon: 'fas fa-code' },
 ]
 
 const BlockStyleControls = ({
@@ -999,11 +1011,15 @@ const BlockStyleControls = ({
   )
 }
 
-const inlineStyles = [
-  { label: 'Bold', style: 'BOLD', icon: 'fas fa-bold' },
-  { label: 'Italic', style: 'ITALIC', icon: 'fas fa-italic' },
-  { label: 'Underline', style: 'UNDERLINE', icon: 'fas fa-underline' },
-  { label: 'Monospace', style: 'CODE', icon: 'fas fa-terminal' },
+const inlineStyles: StyleControl[] = [
+  { label: 'Bold', style: buttonNames.bold, icon: 'fas fa-bold' },
+  { label: 'Italic', style: buttonNames.italic, icon: 'fas fa-italic' },
+  {
+    label: 'Underline',
+    style: buttonNames.underline,
+    icon: 'fas fa-underline',
+  },
+  { label: 'Monospace', style: buttonNames.code, icon: 'fas fa-terminal' },
 ]
 
 const InlineStyleControls = ({
