@@ -1,11 +1,11 @@
 import styled from '@emotion/styled'
-import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { selectImageData } from '../redux/features/multi-images/selector'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { selectImageData } from '../../redux/features/multi-images/selector'
 import { isEqual } from 'lodash-es'
 import {
   setIsSelected,
   setShouldSetWatermarkByUid,
-} from '../redux/features/multi-images/slice'
+} from '../../redux/features/multi-images/slice'
 
 const Container = styled.div`
   display: inline-flex;

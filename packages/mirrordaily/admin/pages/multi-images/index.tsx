@@ -1,8 +1,8 @@
 import { PageContainer } from '@keystone-6/core/admin-ui/components'
 import { Heading } from '@keystone-ui/core'
-import { store } from '../redux/store'
+import { store } from '../../redux/store'
 import { Provider } from 'react-redux'
-import MainContainer from '../components/main-container'
+import MainContainer from '../../components/multi-images/main-container'
 
 export default function MultiImages() {
   return (

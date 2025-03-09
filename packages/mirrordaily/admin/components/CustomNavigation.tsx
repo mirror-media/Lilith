@@ -15,7 +15,7 @@ export function CustomNavigation({
     <NavigationContainer authenticatedItem={authenticatedItem}>
       <NavItem href="/">Dashboard</NavItem>
       {/* creat post shortcut */}
-      <NavItem key="create-post-shortcut" href="/posts/create">
+      <NavItem key="create-post-shortcut" href="/custom-post-creation">
         Create Post <PlusIcon size="smallish" color="blue" />
       </NavItem>
       {lists.map((list) => {

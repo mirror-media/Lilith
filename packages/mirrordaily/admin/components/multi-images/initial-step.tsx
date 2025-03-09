@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 import type { DragEvent } from 'react'
-import { createFilesHandler } from '../utils'
-import { addImageFiles } from '../redux/features/multi-images/slice'
-import { useAppDispatch } from '../redux/hooks'
+import { createFilesHandler } from '../../utils'
+import { addImageFiles } from '../../redux/features/multi-images/slice'
+import { useAppDispatch } from '../../redux/hooks'
 import HiddenInput from './hidden-input'
 
 const FileDropArea = styled.div`
