@@ -1,12 +1,12 @@
 import styled from '@emotion/styled'
-import { convertStringToFile } from '../utils'
+import { convertStringToFile } from '../../utils'
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import Button from './button'
-import { useAppSelector } from '../redux/hooks'
-import { selectFiles } from '../redux/features/multi-images/selector'
+import { useAppSelector } from '../../redux/hooks'
+import { selectFiles } from '../../redux/features/multi-images/selector'
 import { isEqual } from 'lodash-es'
 import { useDispatch } from 'react-redux'
-import { resetAllState } from '../redux/features/multi-images/slice'
+import { resetAllState } from '../../redux/features/multi-images/slice'
 import Modal from './modal'
 
 const ButtonWrapper = styled.div`

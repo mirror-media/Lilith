@@ -1,11 +1,11 @@
 import styled from '@emotion/styled'
-import { useAppDispatch, useAppSelector } from '../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import {
   selectHasItemSelected,
   selectSelectedFilename,
   selectShouldSetWatermarkToAll,
   selectUidsOfFile,
-} from '../redux/features/multi-images/selector'
+} from '../../redux/features/multi-images/selector'
 import { isEqual } from 'lodash-es'
 import Button from './button'
 import Item from './item'
@@ -14,7 +14,7 @@ import HiddenInput from './hidden-input'
 import {
   removeSelectedItems,
   setShouldSetWatermarkToAll,
-} from '../redux/features/multi-images/slice'
+} from '../../redux/features/multi-images/slice'
 import SubmissionButtonAndModal from './submission-button-and-modal'
 import Modal from './modal'
 
