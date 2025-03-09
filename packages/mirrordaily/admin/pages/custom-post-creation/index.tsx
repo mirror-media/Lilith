@@ -69,12 +69,14 @@ export default function CustomPostCreation() {
   const list = useList(LIST_KEY)
   const { createViewFieldModes } = useKeystone()
 
-  list.fields = pick(list.fields, PICKED_FIELDS)
+  const newList = Object.assign({}, list, {
+    fields: pick(list.fields, PICKED_FIELDS),
+  })
 
   return (
     <PageContainer
       title="Custom Post Creation"
-      header={<ItemPageHeader list={list} label="Create" />}
+      header={<ItemPageHeader list={newList} label="Create" />}
     >
       <ColumnLayout>
         <Box>
@@ -95,7 +97,7 @@ export default function CustomPostCreation() {
           {createViewFieldModes.state === 'loading' && (
             <LoadingDots label="Loading create form" />
           )}
-          <CreatePageForm list={list} />
+          <CreatePageForm list={newList} />
         </Box>
       </ColumnLayout>
     </PageContainer>
