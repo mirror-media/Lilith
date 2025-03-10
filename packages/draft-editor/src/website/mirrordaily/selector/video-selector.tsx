@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import debounce from 'lodash/debounce'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { gql, useLazyQuery } from '@keystone-6/core/admin-ui/apollo'
 import { ImageEntity } from './image-selector'
@@ -42,6 +42,14 @@ const videosQuery = gql`
 const _ = {
   debounce,
 }
+
+const GlobalStyle = createGlobalStyle`
+  form {
+    @media (max-width: 575px) {
+      width: 100vw !important;
+    }
+  }
+`
 
 const VideoSearchBox = styled(SearchBox)`
   margin-top: 10px;
@@ -333,32 +341,36 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
   }
 
   return (
-    <DrawerController isOpen={true}>
-      <Drawer
-        title="Select video"
-        actions={{
-          cancel: {
-            label: 'Cancel',
-            action: onCancel,
-          },
-          confirm: {
-            label: 'Confirm',
-            action: onSave,
-          },
-        }}
-      >
-        <div>
-          <VideoSearchBox onChange={onSearchBoxChange} />
-          <VideoSelectionWrapper>
-            <div>{searchResult}</div>
-            {!!selected.length && <SeparationLine />}
-            <VideoMetaGrids
-              videoMetas={selected}
-              onChange={onVideoMetaChange}
-            />
-          </VideoSelectionWrapper>
-        </div>
-      </Drawer>
-    </DrawerController>
+    <>
+      <GlobalStyle />
+      <DrawerController isOpen={true}>
+        <Drawer
+          title="Select video"
+          actions={{
+            cancel: {
+              label: 'Cancel',
+              action: onCancel,
+            },
+            confirm: {
+              label: 'Confirm',
+              action: onSave,
+            },
+          }}
+          width="narrow"
+        >
+          <div>
+            <VideoSearchBox onChange={onSearchBoxChange} />
+            <VideoSelectionWrapper>
+              <div>{searchResult}</div>
+              {!!selected.length && <SeparationLine />}
+              <VideoMetaGrids
+                videoMetas={selected}
+                onChange={onVideoMetaChange}
+              />
+            </VideoSelectionWrapper>
+          </div>
+        </Drawer>
+      </DrawerController>
+    </>
   )
 }
