@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react'
 import debounce from 'lodash/debounce'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { TextInput } from '@keystone-ui/fields'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { gql, useLazyQuery } from '@keystone-6/core/admin-ui/apollo'
@@ -47,6 +47,14 @@ const imagesQuery = gql`
 const _ = {
   debounce,
 }
+
+const GlobalStyle = createGlobalStyle`
+  form {
+    @media (max-width: 575px) {
+      width: 100vw !important;
+    }
+  }
+`
 
 const ImageSearchBox = styled(SearchBox)`
   margin-top: 10px;
@@ -476,50 +484,54 @@ export function ImageSelector(props: {
   }
 
   return (
-    <DrawerController isOpen={true}>
-      <Drawer
-        title="Select image"
-        actions={{
-          cancel: {
-            label: 'Cancel',
-            action: onCancel,
-          },
-          confirm: {
-            label: 'Confirm',
-            action: onSave,
-          },
-        }}
-      >
-        <div ref={contentWrapperRef}>
-          <ImageSearchBox onChange={onSearchBoxChange} />
-          <ImageSelectionWrapper>
-            <div>{searchResult}</div>
-            {!!selected.length && <SeparationLine />}
-            <ImageMetaGrids
-              imageMetas={selected}
-              onChange={onImageMetaChange}
-              enableCaption={enableCaption}
-              enableUrl={enableUrl}
-            />
-          </ImageSelectionWrapper>
-          <ImageBlockMetaWrapper>
-            {(enableDelay || enableAlignment) && <SeparationLine />}
-            {enableDelay && (
-              <DelayInput delay={delay} onChange={onDealyChange} />
-            )}
-            {enableAlignment && (
-              <AlignSelector
-                // @ts-ignore: align could be undefined
-                align={align}
-                // @ts-ignore: option with undefined value
-                options={options}
-                onChange={onAlignSelectChange}
-                onOpen={onAlignSelectOpen}
+    <>
+      <GlobalStyle />
+      <DrawerController isOpen={true}>
+        <Drawer
+          title="Select images"
+          actions={{
+            cancel: {
+              label: 'Cancel',
+              action: onCancel,
+            },
+            confirm: {
+              label: 'Confirm',
+              action: onSave,
+            },
+          }}
+          width="narrow"
+        >
+          <div ref={contentWrapperRef}>
+            <ImageSearchBox onChange={onSearchBoxChange} />
+            <ImageSelectionWrapper>
+              <div>{searchResult}</div>
+              {!!selected.length && <SeparationLine />}
+              <ImageMetaGrids
+                imageMetas={selected}
+                onChange={onImageMetaChange}
+                enableCaption={enableCaption}
+                enableUrl={enableUrl}
               />
-            )}
-          </ImageBlockMetaWrapper>
-        </div>
-      </Drawer>
-    </DrawerController>
+            </ImageSelectionWrapper>
+            <ImageBlockMetaWrapper>
+              {(enableDelay || enableAlignment) && <SeparationLine />}
+              {enableDelay && (
+                <DelayInput delay={delay} onChange={onDealyChange} />
+              )}
+              {enableAlignment && (
+                <AlignSelector
+                  // @ts-ignore: align could be undefined
+                  align={align}
+                  // @ts-ignore: option with undefined value
+                  options={options}
+                  onChange={onAlignSelectChange}
+                  onOpen={onAlignSelectOpen}
+                />
+              )}
+            </ImageBlockMetaWrapper>
+          </div>
+        </Drawer>
+      </DrawerController>
+    </>
   )
 }

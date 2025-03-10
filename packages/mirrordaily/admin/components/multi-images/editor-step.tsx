@@ -38,7 +38,8 @@ const Container = styled.div`
 const ControlGroup = styled.div`
   display: flex;
   flex-shrink: 0;
-  column-gap: 18px;
+  flex-wrap: wrap;
+  gap: 18px;
   margin-top: 38px;
   margin-left: 69px;
   margin-right: 69px;
