@@ -367,6 +367,8 @@ const listConfigurations = list({
       label: '前言',
       disabledButtons: [
         'code',
+        'header-two',
+        'header-three',
         'header-four',
         'blockquote',
         'unordered-list-item',
@@ -456,6 +458,9 @@ const listConfigurations = list({
       ],
       hideOnMobileButtons: [
         'annotation',
+        'unordered-list-item',
+        'ordered-list-item',
+        'header-three',
         'audio',
         'blockquote',
         'code',
