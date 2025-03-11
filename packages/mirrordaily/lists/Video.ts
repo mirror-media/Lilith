@@ -33,6 +33,9 @@ const listConfigurations = list({
       label: '是否為短影音',
       defaultValue: false,
     }),
+    youtubeUrl: text({
+      label: 'Youtube網址',
+    }),
     file: file({
       label: '檔案',
       storage: 'videos',
