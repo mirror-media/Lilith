@@ -19,6 +19,8 @@ import {
   BaseToolbar,
 } from '../../components/common'
 import { useCreateItem } from '../../utils/use-create-item'
+import { useRef } from 'react'
+import { gql, useQuery } from '@keystone-6/core/admin-ui/apollo'
 
 const LIST_KEY = 'Post'
 const PICKED_FIELDS = [
@@ -36,6 +38,54 @@ const PICKED_FIELDS = [
 function CreatePageForm(props: { list: ListMeta }) {
   const createItem = useCreateItem(props.list)
   const router = useRouter()
+  // use Ref to prevent infinite re-render
+  const isAssignedRef = useRef(false)
+  const { data } = useQuery(
+    gql`
+      query GetSection($where: SectionWhereInput! = {}) {
+        sections(where: $where) {
+          id
+          name
+        }
+      }
+    `,
+    {
+      variables: { where: { name: { equals: '即時' } } },
+    }
+  )
+
+  if (
+    isAssignedRef.current === false &&
+    data &&
+    Array.isArray(data.sections) &&
+    data.sections.length > 0
+  ) {
+    const section = data.sections[0]
+
+    // set `即時` section as default
+    createItem.props.onChange(() => {
+      return Object.assign({}, createItem.props.value, {
+        sections: {
+          ...createItem.props.value.sections,
+          value: {
+            // @ts-ignore: .value exists
+            ...createItem.props.value.sections.value,
+            value: [
+              {
+                id: section.id,
+                label: section.name,
+                data: {
+                  __typename: 'Section',
+                },
+              },
+            ],
+          },
+        },
+      })
+    })
+    isAssignedRef.current = true
+  }
+
   return (
     <Box paddingTop="xlarge">
       {createItem.error && (
