@@ -1,6 +1,31 @@
 # @mirrormedia/lilith-core Changelog
 
-## 2024-06-06, Versuib 2.4.0
+## 2025-03-07, Version 2.6.0
+
+### Notable Changes
+- add utilities to create RichTextEditor views
+- add mirrordaily view to RichTextEditor
+
+### Commits
+* \[[`515273a515`](https://github.com/mirror-media/lilith/commit/515273a515)] - **feat(core)**: add mirrordaily view to RichTextEditor (Tsuki Akiba)
+* \[[`21b28aabbb`](https://github.com/mirror-media/lilith/commit/21b28aabbb)] - **refactor(core)**: add utilities to create RichTextEditor views (Tsuki Akiba)
+
+
+
+## 2025-03-05, Version 2.5.1
+
+### Notable Changes
+- fix error in SelectWithColor component
+- upgrade `@mirrormedia/lilith-draft-editor` to 2.2.1
+
+### Commits
+* \[[`d546e1f8fb`](https://github.com/mirror-media/lilith/commit/d546e1f8fb)] - **chore(core)**: upgrade `@mirrormedia/lilith-draft-editor` to 2.2.1 (Tsuki Akiba)
+* \[[`90c4ebcc0e`](https://github.com/mirror-media/lilith/commit/90c4ebcc0e)] - **fix(core)**: error in SelectWithColor component (Tsuki Akiba)
+* \[[`a50d26e8b8`](https://github.com/mirror-media/lilith/commit/a50d26e8b8)] - **chore(core)**: update Makefile (Tsuki Akiba)
+
+
+
+## 2024-06-06, Version 2.4.0
 
 ### Notable Changes
 - add filters

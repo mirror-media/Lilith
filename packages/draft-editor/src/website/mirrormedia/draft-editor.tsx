@@ -735,11 +735,6 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
               type="text/css"
             />
             <link
-              href="https://storage.googleapis.com/static-readr-tw-dev/cdn/draft-js/rich-editor.css"
-              rel="stylesheet"
-              type="text/css"
-            />
-            <link
               href="https://cdnjs.cloudflare.com/ajax/libs/draft-js/0.11.7/Draft.css"
               rel="stylesheet"
               type="text/css"

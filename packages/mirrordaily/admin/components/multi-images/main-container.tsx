@@ -1,11 +1,11 @@
 import styled from '@emotion/styled'
 import InitialStep from './initial-step'
 import EditorStep from './editor-step'
-import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { selectHasFiles } from '../redux/features/multi-images/selector'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { selectHasFiles } from '../../redux/features/multi-images/selector'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 import { useEffect } from 'react'
-import { resetAllState } from '../redux/features/multi-images/slice'
+import { resetAllState } from '../../redux/features/multi-images/slice'
 
 const Container = styled.div`
   dispaly: flex;

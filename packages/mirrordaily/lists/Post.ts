@@ -179,6 +179,11 @@ const listConfigurations = list({
     }),
     subtitle: text({
       label: '副標',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     state: select({
       label: '狀態',
@@ -214,6 +219,11 @@ const listConfigurations = list({
       label: '下次存檔時自動更改成「現在時間」',
       isFilterable: false,
       defaultValue: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     sections: relationship({
       label: '大分類',
@@ -226,6 +236,10 @@ const listConfigurations = list({
     manualOrderOfSections: json({
       isFilterable: false,
       label: '大分類手動排序結果',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     categories: relationship({
       label: '小分類',
@@ -238,6 +252,10 @@ const listConfigurations = list({
     manualOrderOfCategories: json({
       isFilterable: false,
       label: '小分類手動排序結果',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     writers: relationship({
       label: '作者',
@@ -247,6 +265,10 @@ const listConfigurations = list({
     manualOrderOfWriters: json({
       label: '作者手動排序結果',
       isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     photographers: relationship({
       label: '攝影',
@@ -257,21 +279,41 @@ const listConfigurations = list({
       label: '影音',
       ref: 'Contact',
       many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     designers: relationship({
       label: '設計',
       ref: 'Contact',
       many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     engineers: relationship({
       label: '工程',
       ref: 'Contact',
       many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     vocals: relationship({
       label: '主播',
       ref: 'Contact',
       many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     extend_byline: text({
       label: '作者（其他）',
@@ -282,6 +324,9 @@ const listConfigurations = list({
       ref: 'Video',
       ui: {
         views: './lists/views/sorted-relationship/index',
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     heroImage: relationship({
@@ -312,11 +357,18 @@ const listConfigurations = list({
         { label: 'Script', value: 'script' },
         { label: 'Campaign', value: 'campaign' },
       ],
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     brief: customFields.richTextEditor({
       label: '前言',
       disabledButtons: [
         'code',
+        'header-two',
+        'header-three',
         'header-four',
         'blockquote',
         'unordered-list-item',
@@ -347,6 +399,7 @@ const listConfigurations = list({
       label: '擷取前5段的內文（不包括換行）',
       ui: {
         createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
       },
       field: graphql.field({
@@ -393,17 +446,34 @@ const listConfigurations = list({
     content: customFields.richTextEditor({
       label: '內文',
       disabledButtons: [
-        'header-four',
-        'font-color',
-        'text-align',
-        'color-box',
         'background-color',
         'background-image',
         'background-video',
+        'color-box',
+        'font-color',
+        'header-four',
         'related-post',
         'side-index',
+        'text-align',
       ],
-      website: 'mirrormedia',
+      hideOnMobileButtons: [
+        'annotation',
+        'unordered-list-item',
+        'ordered-list-item',
+        'header-three',
+        'audio',
+        'blockquote',
+        'code',
+        'code-block',
+        'divider',
+        'embed',
+        'info-box',
+        'link',
+        'slideshow',
+        'table',
+        'youtube',
+      ],
+      website: 'mirrordaily',
       access: {
         read: checkReadPermission,
       },
@@ -411,6 +481,11 @@ const listConfigurations = list({
     isMember: checkbox({
       label: '會員文章',
       defaultValue: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
     topics: relationship({
       label: '專題',
@@ -454,6 +529,10 @@ const listConfigurations = list({
     manualOrderOfRelateds: json({
       label: '相關文章手動排序結果',
       isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
     tags: relationship({
       label: '標籤',
@@ -503,11 +582,17 @@ const listConfigurations = list({
       many: true,
       ui: {
         views: './lists/views/sorted-relationship/index',
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     manualOrderOfRelatedVideos: json({
       label: '相關影片手動排序結果',
       isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
 
     preview: virtual({
@@ -534,14 +619,26 @@ const listConfigurations = list({
     isFeatured: checkbox({
       label: '置頂',
       defaultValue: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
     isAdvertised: checkbox({
       label: '廣告文案',
       defaultValue: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
     hiddenAdvertised: checkbox({
       label: 'google廣告違規',
       defaultValue: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
     isAdult: checkbox({
       label: '18禁',
@@ -549,14 +646,27 @@ const listConfigurations = list({
     }),
     redirect: text({
       label: '廣編文轉址 slug',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
     adTrace: text({
       label: '追蹤代碼',
-      ui: { displayMode: 'textarea' },
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
     css: text({
-      ui: { displayMode: 'textarea' },
       label: 'CSS',
+      ui: { 
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+		displayMode: 'textarea' 
+	  },
     }),
     apiDataBrief: json({
       label: 'Brief資料庫使用',
@@ -564,6 +674,7 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     apiData: json({
@@ -572,6 +683,7 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
       access: {
         read: checkReadPermission,
@@ -582,6 +694,7 @@ const listConfigurations = list({
       isFilterable: false,
       ui: {
         createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
       },
       field: graphql.field({
