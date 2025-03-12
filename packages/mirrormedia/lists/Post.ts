@@ -422,6 +422,10 @@ const listConfigurations = list({
       label: '會員文章',
       defaultValue: false,
     }),
+    memberFeed: checkbox({
+      label: '會員文章Feed',
+      defaultValue: false,
+    }),
     topics: relationship({
       label: '專題',
       ref: 'Topic.posts',
