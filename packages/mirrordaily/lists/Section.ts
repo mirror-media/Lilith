@@ -123,6 +123,9 @@ const listConfigurations = list({
       ref: 'Category.sections',
       label: '分類',
       many: true,
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     posts: relationship({
       ref: 'Post.sections',

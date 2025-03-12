@@ -1866,6 +1866,7 @@ type Video {
   id: ID!
   name: String
   isShorts: Boolean
+  youtubeUrl: String
   file: FileFieldOutput
   videoSrc: String
   content: String
@@ -1899,6 +1900,7 @@ input VideoWhereInput {
   id: IDFilter
   name: StringFilter
   isShorts: BooleanFilter
+  youtubeUrl: StringFilter
   content: StringFilter
   heroImage: PhotoWhereInput
   uploader: StringFilter
@@ -1919,6 +1921,7 @@ input VideoOrderByInput {
   id: OrderDirection
   name: OrderDirection
   isShorts: OrderDirection
+  youtubeUrl: OrderDirection
   content: OrderDirection
   uploader: OrderDirection
   uploaderEmail: OrderDirection
@@ -1933,6 +1936,7 @@ input VideoOrderByInput {
 input VideoUpdateInput {
   name: String
   isShorts: Boolean
+  youtubeUrl: String
   file: FileFieldInput
   content: String
   heroImage: PhotoRelateToOneForUpdateInput
@@ -1959,6 +1963,7 @@ input VideoUpdateArgs {
 input VideoCreateInput {
   name: String
   isShorts: Boolean
+  youtubeUrl: String
   file: FileFieldInput
   content: String
   heroImage: PhotoRelateToOneForCreateInput

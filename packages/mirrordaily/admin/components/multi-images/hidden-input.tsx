@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
-import { useAppDispatch } from '../redux/hooks'
-import { createFilesHandler } from '../utils'
-import { addImageFiles } from '../redux/features/multi-images/slice'
+import { useAppDispatch } from '../../redux/hooks'
+import { createFilesHandler } from '../../utils'
+import { addImageFiles } from '../../redux/features/multi-images/slice'
 import { forwardRef, type ChangeEvent } from 'react'
 
 const Input = styled.input`
