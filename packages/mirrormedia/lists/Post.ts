@@ -184,9 +184,6 @@ const listConfigurations = list({
       label: '大分類',
       ref: 'Section.posts',
       many: true,
-      ui: {
-        labelField: 'name',
-      },
     }),
     manualOrderOfSections: json({
       isFilterable: false,
@@ -196,9 +193,6 @@ const listConfigurations = list({
       label: '小分類',
       ref: 'Category.posts',
       many: true,
-      ui: {
-        labelField: 'name',
-      },
     }),
     manualOrderOfCategories: json({
       isFilterable: false,
@@ -420,6 +414,10 @@ const listConfigurations = list({
     }),
     isMember: checkbox({
       label: '會員文章',
+      defaultValue: false,
+    }),
+    memberFeed: checkbox({
+      label: '會員文章Feed',
       defaultValue: false,
     }),
     topics: relationship({
