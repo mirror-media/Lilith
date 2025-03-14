@@ -229,9 +229,9 @@ const listConfigurations = list({
       label: '大分類',
       ref: 'Section.posts',
       many: true,
-	  ui: {
-		labelField: 'name',
-	  }
+      ui: {
+        labelField: 'name',
+      },
     }),
     manualOrderOfSections: json({
       isFilterable: false,
@@ -245,9 +245,9 @@ const listConfigurations = list({
       label: '小分類',
       ref: 'Category.posts',
       many: true,
-	  ui: {
-		labelField: 'name',
-	  }
+      ui: {
+        labelField: 'name',
+      },
     }),
     manualOrderOfCategories: json({
       isFilterable: false,
@@ -662,11 +662,11 @@ const listConfigurations = list({
     }),
     css: text({
       label: 'CSS',
-      ui: { 
+      ui: {
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
-		displayMode: 'textarea' 
-	  },
+        displayMode: 'textarea',
+      },
     }),
     apiDataBrief: json({
       label: 'Brief資料庫使用',

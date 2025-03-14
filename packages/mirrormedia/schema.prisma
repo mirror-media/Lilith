@@ -337,6 +337,7 @@ model Post {
   brief                      Json?
   content                    Json?
   isMember                   Boolean        @default(false)
+  memberFeed                 Boolean        @default(false)
   topics                     Topic?         @relation("Post_topics", fields: [topicsId], references: [id])
   topicsId                   Int?           @map("topics")
   relateds                   Post[]         @relation("Post_relateds")
