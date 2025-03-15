@@ -1804,6 +1804,8 @@ type User {
   email: String
   password: PasswordState
   role: String
+  sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
   isProtected: Boolean
 }
 
@@ -1824,6 +1826,7 @@ input UserWhereInput {
   name: StringFilter
   email: StringFilter
   role: StringFilter
+  sections: SectionManyRelationFilter
   isProtected: BooleanFilter
 }
 
@@ -1840,6 +1843,7 @@ input UserUpdateInput {
   email: String
   password: String
   role: String
+  sections: SectionRelateToManyForUpdateInput
   isProtected: Boolean
 }
 
@@ -1853,6 +1857,7 @@ input UserCreateInput {
   email: String
   password: String
   role: String
+  sections: SectionRelateToManyForCreateInput
   isProtected: Boolean
 }
 

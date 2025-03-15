@@ -1,7 +1,13 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 
-import { text, password, select, checkbox } from '@keystone-6/core/fields'
+import {
+  text,
+  password,
+  select,
+  checkbox,
+  relationship,
+} from '@keystone-6/core/fields'
 
 const { allowRolesForUsers, admin, moderator } = utils.accessControl
 
@@ -43,6 +49,14 @@ const listConfigurations = list({
         },
       ],
       validation: { isRequired: true },
+    }),
+    sections: relationship({
+      label: '大分類',
+      ref: 'Section',
+      many: true,
+      ui: {
+        labelField: 'name',
+      },
     }),
     isProtected: checkbox({
       defaultValue: false,

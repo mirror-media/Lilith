@@ -34,55 +34,86 @@ const PICKED_FIELDS = [
   'content',
 ]
 
+type Section = {
+  id: string
+  name: string
+}
+
 function CreatePageForm(props: { list: ListMeta }) {
+  const { authenticatedItem } = useKeystone()
   const createItem = useCreateItem(props.list)
   const router = useRouter()
   // use Ref to prevent infinite re-render
   const isAssignedRef = useRef(false)
   const { data } = useQuery(
     gql`
-      query GetSection($where: SectionWhereInput! = {}) {
+      query GetSections($where: SectionWhereInput! = {}, $userId: ID!) {
         sections(where: $where) {
           id
           name
         }
+        user(where: { id: $userId }) {
+          sections {
+            id
+            name
+          }
+        }
       }
     `,
     {
-      variables: { where: { name: { equals: '即時' } } },
+      variables: {
+        where: { name: { equals: '即時' } },
+        // @ts-ignore: authenticatedItem.id exists
+        userId: authenticatedItem.id,
+      },
     }
   )
 
-  if (
-    isAssignedRef.current === false &&
-    data &&
-    Array.isArray(data.sections) &&
-    data.sections.length > 0
-  ) {
-    const section = data.sections[0]
+  if (isAssignedRef.current === false && data) {
+    const sections: any[] = []
+    const idSet = new Set()
 
-    // set `即時` section as default
-    createItem.props.onChange(() => {
-      return Object.assign({}, createItem.props.value, {
-        sections: {
-          ...createItem.props.value.sections,
-          value: {
-            // @ts-ignore: .value exists
-            ...createItem.props.value.sections.value,
-            value: [
-              {
-                id: section.id,
-                label: section.name,
-                data: {
-                  __typename: 'Section',
-                },
-              },
-            ],
+    const iteratorFn = (item: Section) => {
+      const id = item.id
+
+      if (!idSet.has(id)) {
+        idSet.add(id)
+
+        sections.push({
+          id: item.id,
+          label: item.name,
+          data: {
+            __typename: 'Section',
           },
-        },
+        })
+      }
+    }
+
+    if (Array.isArray(data.sections) && data.sections.length > 0) {
+      // set `即時` section as default
+      data.sections.forEach(iteratorFn)
+    }
+
+    if (Array.isArray(data.user?.sections) && data.user.sections.length > 0) {
+      // add user related sections
+      data.user.sections.forEach(iteratorFn)
+    }
+
+    if (sections.length > 0) {
+      createItem.props.onChange(() => {
+        return Object.assign({}, createItem.props.value, {
+          sections: {
+            ...createItem.props.value.sections,
+            value: {
+              // @ts-ignore: .value exists
+              ...createItem.props.value.sections.value,
+              value: sections,
+            },
+          },
+        })
       })
-    })
-    isAssignedRef.current = true
+      isAssignedRef.current = true
+    }
   }
 
   return (
