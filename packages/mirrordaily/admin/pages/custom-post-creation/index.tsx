@@ -25,7 +25,6 @@ import { gql, useQuery } from '@keystone-6/core/admin-ui/apollo'
 const LIST_KEY = 'Post'
 const PICKED_FIELDS = [
   'id',
-  'slug',
   'title',
   'state',
   'publishedDate',

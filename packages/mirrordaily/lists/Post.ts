@@ -169,10 +169,16 @@ const listConfigurations = list({
         listView: { fieldMode: 'hidden' },
       },
     }),
+    // TODO: slug field is deprecated, should be removed in the future
     slug: text({
       label: 'slug網址名稱（英文）',
-      isIndexed: 'unique',
-      validation: { isRequired: true },
+      isFilterable: false,
+      isOrderable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     title: text({
       label: '標題',
@@ -600,7 +606,7 @@ const listConfigurations = list({
         type: graphql.JSON,
         resolve(item: Record<string, unknown>): Record<string, string> {
           return {
-            href: `${envVar.previewServer.path}/story/${item?.slug}`,
+            href: `${envVar.previewServer.path}/story/${item?.id}`,
             label: 'Preview',
           }
         },
@@ -713,9 +719,9 @@ const listConfigurations = list({
     }),
   },
   ui: {
-    labelField: 'slug',
+    labelField: 'id',
     listView: {
-      initialColumns: ['id', 'title', 'slug', 'state', 'publishedDate'],
+      initialColumns: ['id', 'title', 'state', 'publishedDate'],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
@@ -779,10 +785,10 @@ const listConfigurations = list({
     beforeOperation: async ({ operation, resolvedData }) => {
       /* ... */
       if (operation === 'create' || operation === 'update') {
-        if (resolvedData.slug) {
-          resolvedData.slug = resolvedData.slug.trim()
-          resolvedData.slug = resolvedData.slug.replace(' ', '_')
-        }
+        // if (resolvedData.slug) {
+        //   resolvedData.slug = resolvedData.slug.trim()
+        //   resolvedData.slug = resolvedData.slug.replace(' ', '_')
+        // }
         if (resolvedData.publishedDate) {
           /* check the publishedDate */
           if (resolvedData.publishedDate > Date.now()) {
@@ -829,8 +835,9 @@ const listConfigurations = list({
         })
       }
 
-      const slug = originalItem?.slug ?? item?.slug
-      await invalidateStoryCache(slug)
+      // const slug = originalItem?.slug ?? item?.slug
+      const id = originalItem?.id ?? item?.id
+      await invalidateStoryCache(id)
     },
   },
 })
