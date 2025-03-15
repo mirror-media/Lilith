@@ -49,7 +49,7 @@ const listConfigurations = list({
       label: '標題',
     }),
     slug: text({
-      label: '原ID',
+      label: 'slug',
       isIndexed: 'unique',
     }),
     sortOrder: integer(),
