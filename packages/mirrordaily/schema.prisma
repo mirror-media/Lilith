@@ -340,6 +340,7 @@ model Section {
   updatedById         Int?       @map("updatedBy")
   from_Event_sections Event[]    @relation("Event_sections")
   from_Header_section Header[]   @relation("Header_section")
+  from_User_sections  User[]     @relation("User_sections")
 
   @@index([state])
   @@index([heroImageId])
@@ -422,6 +423,7 @@ model User {
   email                       String         @unique @default("")
   password                    String
   role                        String
+  sections                    Section[]      @relation("User_sections")
   isProtected                 Boolean        @default(false)
   from_AudioFile_createdBy    AudioFile[]    @relation("AudioFile_createdBy")
   from_AudioFile_updatedBy    AudioFile[]    @relation("AudioFile_updatedBy")
