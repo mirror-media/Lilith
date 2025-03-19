@@ -38,10 +38,16 @@ function filterExternals(roles: string[]) {
 
 const listConfigurations = list({
   fields: {
+    // TODO: slug field is deprecated, should be removed in the future
     slug: text({
       label: 'slug',
-      isIndexed: 'unique',
-      validation: { isRequired: true },
+      isFilterable: false,
+      isOrderable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     partner: relationship({
       ref: 'Partner',
@@ -129,7 +135,7 @@ const listConfigurations = list({
   ui: {
     labelField: 'title',
     listView: {
-      initialColumns: ['id', 'title', 'slug', 'partner', 'publishedDateString'],
+      initialColumns: ['id', 'title', 'partner', 'publishedDateString'],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },

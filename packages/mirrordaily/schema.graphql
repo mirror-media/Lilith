@@ -522,7 +522,6 @@ type External {
 
 input ExternalWhereUniqueInput {
   id: ID
-  slug: String
 }
 
 input ExternalWhereInput {
@@ -530,7 +529,6 @@ input ExternalWhereInput {
   OR: [ExternalWhereInput!]
   NOT: [ExternalWhereInput!]
   id: IDFilter
-  slug: StringFilter
   partner: PartnerWhereInput
   title: StringFilter
   state: StringNullableFilter
@@ -558,7 +556,6 @@ input GroupManyRelationFilter {
 
 input ExternalOrderByInput {
   id: OrderDirection
-  slug: OrderDirection
   title: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
@@ -1111,7 +1108,6 @@ type Post {
 
 input PostWhereUniqueInput {
   id: ID
-  slug: String
 }
 
 input PostWhereInput {
@@ -1120,7 +1116,6 @@ input PostWhereInput {
   NOT: [PostWhereInput!]
   id: IDFilter
   lockExpireAt: DateTimeNullableFilter
-  slug: StringFilter
   title: StringFilter
   subtitle: StringFilter
   state: StringNullableFilter
@@ -1171,7 +1166,6 @@ input ContactManyRelationFilter {
 input PostOrderByInput {
   id: OrderDirection
   lockExpireAt: OrderDirection
-  slug: OrderDirection
   title: OrderDirection
   subtitle: OrderDirection
   state: OrderDirection
@@ -1810,6 +1804,8 @@ type User {
   email: String
   password: PasswordState
   role: String
+  sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
   isProtected: Boolean
 }
 
@@ -1830,6 +1826,7 @@ input UserWhereInput {
   name: StringFilter
   email: StringFilter
   role: StringFilter
+  sections: SectionManyRelationFilter
   isProtected: BooleanFilter
 }
 
@@ -1846,6 +1843,7 @@ input UserUpdateInput {
   email: String
   password: String
   role: String
+  sections: SectionRelateToManyForUpdateInput
   isProtected: Boolean
 }
 
@@ -1859,6 +1857,7 @@ input UserCreateInput {
   email: String
   password: String
   role: String
+  sections: SectionRelateToManyForCreateInput
   isProtected: Boolean
 }
 
