@@ -105,7 +105,7 @@ model EditorChoice {
 
 model External {
   id                  Int       @id @default(autoincrement())
-  slug                String    @unique @default("")
+  slug                String    @default("")
   partner             Partner?  @relation("External_partner", fields: [partnerId], references: [id])
   partnerId           Int?      @map("partner")
   title               String    @default("")
@@ -245,7 +245,7 @@ model Post {
   lockBy                     User?          @relation("Post_lockBy", fields: [lockById], references: [id])
   lockById                   Int?           @map("lockBy")
   lockExpireAt               DateTime?
-  slug                       String         @unique @default("")
+  slug                       String         @default("")
   title                      String         @default("")
   subtitle                   String         @default("")
   state                      String?        @default("draft")
@@ -340,6 +340,7 @@ model Section {
   updatedById         Int?       @map("updatedBy")
   from_Event_sections Event[]    @relation("Event_sections")
   from_Header_section Header[]   @relation("Header_section")
+  from_User_sections  User[]     @relation("User_sections")
 
   @@index([state])
   @@index([heroImageId])
@@ -422,6 +423,7 @@ model User {
   email                       String         @unique @default("")
   password                    String
   role                        String
+  sections                    Section[]      @relation("User_sections")
   isProtected                 Boolean        @default(false)
   from_AudioFile_createdBy    AudioFile[]    @relation("AudioFile_createdBy")
   from_AudioFile_updatedBy    AudioFile[]    @relation("AudioFile_updatedBy")
