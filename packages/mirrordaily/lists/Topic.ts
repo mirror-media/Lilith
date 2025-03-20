@@ -162,6 +162,10 @@ const listConfigurations = list({
       ref: 'Post.topics',
       label: '文章',
       many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+        labelField: 'title',
+      },
     }),
     style: text({
       label: 'CSS',
