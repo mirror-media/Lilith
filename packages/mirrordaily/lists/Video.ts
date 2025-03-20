@@ -86,7 +86,7 @@ const listConfigurations = list({
       label: '短影音分區',
       options: [
         { label: '新聞', value: 'news' },
-        { label: '二創', value: 'creativity' },
+        { label: '投稿', value: 'creativity' },
       ],
       defaultValue: 'news',
       isIndexed: true,
