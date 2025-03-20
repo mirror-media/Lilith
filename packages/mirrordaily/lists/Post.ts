@@ -498,6 +498,7 @@ const listConfigurations = list({
       ref: 'Topic.posts',
       ui: {
         views: './lists/views/sorted-relationship/index',
+        labelField: 'name',
       },
     }),
     relateds: relationship({
@@ -506,6 +507,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         views: './lists/views/sorted-relationship/index',
+        labelField: 'title',
       },
     }),
     from_External_relateds: relationship({
