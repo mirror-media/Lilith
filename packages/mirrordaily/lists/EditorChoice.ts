@@ -31,6 +31,7 @@ const listConfigurations = list({
       many: false,
       ui: {
         views: './lists/views/sorted-relationship/index',
+        labelField: 'title',
       },
     }),
     state: select({
