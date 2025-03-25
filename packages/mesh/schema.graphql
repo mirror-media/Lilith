@@ -621,6 +621,13 @@ type Publisher {
     skip: Int! = 0
   ): [Exchange!]
   exchangeCount(where: ExchangeWhereInput! = {}): Int
+  story_type(
+    where: StoryTypeWhereInput! = {}
+    orderBy: [StoryTypeOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [StoryType!]
+  story_typeCount(where: StoryTypeWhereInput! = {}): Int
   sponsored(
     where: SponsorshipWhereInput! = {}
     orderBy: [SponsorshipOrderByInput!]! = []
@@ -690,6 +697,7 @@ input PublisherWhereInput {
   customId: StringFilter
   admin: MemberWhereInput
   exchange: ExchangeManyRelationFilter
+  story_type: StoryTypeManyRelationFilter
   sponsored: SponsorshipManyRelationFilter
   lang: StringNullableFilter
   category: CategoryWhereInput
@@ -712,6 +720,12 @@ input ExchangeManyRelationFilter {
   every: ExchangeWhereInput
   some: ExchangeWhereInput
   none: ExchangeWhereInput
+}
+
+input StoryTypeManyRelationFilter {
+  every: StoryTypeWhereInput
+  some: StoryTypeWhereInput
+  none: StoryTypeWhereInput
 }
 
 input SponsorshipManyRelationFilter {
@@ -765,6 +779,7 @@ input PublisherUpdateInput {
   customId: String
   admin: MemberRelateToOneForUpdateInput
   exchange: ExchangeRelateToManyForUpdateInput
+  story_type: StoryTypeRelateToManyForUpdateInput
   sponsored: SponsorshipRelateToManyForUpdateInput
   lang: String
   category: CategoryRelateToOneForUpdateInput
@@ -788,6 +803,13 @@ input ExchangeRelateToManyForUpdateInput {
   set: [ExchangeWhereUniqueInput!]
   create: [ExchangeCreateInput!]
   connect: [ExchangeWhereUniqueInput!]
+}
+
+input StoryTypeRelateToManyForUpdateInput {
+  disconnect: [StoryTypeWhereUniqueInput!]
+  set: [StoryTypeWhereUniqueInput!]
+  create: [StoryTypeCreateInput!]
+  connect: [StoryTypeWhereUniqueInput!]
 }
 
 input SponsorshipRelateToManyForUpdateInput {
@@ -834,6 +856,7 @@ input PublisherCreateInput {
   customId: String
   admin: MemberRelateToOneForCreateInput
   exchange: ExchangeRelateToManyForCreateInput
+  story_type: StoryTypeRelateToManyForCreateInput
   sponsored: SponsorshipRelateToManyForCreateInput
   lang: String
   category: CategoryRelateToOneForCreateInput
@@ -855,6 +878,11 @@ input PublisherCreateInput {
 input ExchangeRelateToManyForCreateInput {
   create: [ExchangeCreateInput!]
   connect: [ExchangeWhereUniqueInput!]
+}
+
+input StoryTypeRelateToManyForCreateInput {
+  create: [StoryTypeCreateInput!]
+  connect: [StoryTypeWhereUniqueInput!]
 }
 
 input SponsorshipRelateToManyForCreateInput {
@@ -1570,6 +1598,88 @@ input PodcastRelateToOneForCreateInput {
   connect: PodcastWhereUniqueInput
 }
 
+type StoryType {
+  id: ID!
+  name: String
+  publisher(
+    where: PublisherWhereInput! = {}
+    orderBy: [PublisherOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Publisher!]
+  publisherCount(where: PublisherWhereInput! = {}): Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input StoryTypeWhereUniqueInput {
+  id: ID
+  name: String
+}
+
+input StoryTypeWhereInput {
+  AND: [StoryTypeWhereInput!]
+  OR: [StoryTypeWhereInput!]
+  NOT: [StoryTypeWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  publisher: PublisherManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PublisherManyRelationFilter {
+  every: PublisherWhereInput
+  some: PublisherWhereInput
+  none: PublisherWhereInput
+}
+
+input StoryTypeOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input StoryTypeUpdateInput {
+  name: String
+  publisher: PublisherRelateToManyForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PublisherRelateToManyForUpdateInput {
+  disconnect: [PublisherWhereUniqueInput!]
+  set: [PublisherWhereUniqueInput!]
+  create: [PublisherCreateInput!]
+  connect: [PublisherWhereUniqueInput!]
+}
+
+input StoryTypeUpdateArgs {
+  where: StoryTypeWhereUniqueInput!
+  data: StoryTypeUpdateInput!
+}
+
+input StoryTypeCreateInput {
+  name: String
+  publisher: PublisherRelateToManyForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input PublisherRelateToManyForCreateInput {
+  create: [PublisherCreateInput!]
+  connect: [PublisherWhereUniqueInput!]
+}
+
 type Tag {
   id: ID!
   name: String
@@ -1844,12 +1954,6 @@ input MemberWhereInput {
   updatedBy: UserWhereInput
 }
 
-input PublisherManyRelationFilter {
-  every: PublisherWhereInput
-  some: PublisherWhereInput
-  none: PublisherWhereInput
-}
-
 input TransactionManyRelationFilter {
   every: TransactionWhereInput
   some: TransactionWhereInput
@@ -1943,13 +2047,6 @@ input MemberUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input PublisherRelateToManyForUpdateInput {
-  disconnect: [PublisherWhereUniqueInput!]
-  set: [PublisherWhereUniqueInput!]
-  create: [PublisherCreateInput!]
-  connect: [PublisherWhereUniqueInput!]
-}
-
 input TransactionRelateToManyForUpdateInput {
   disconnect: [TransactionWhereUniqueInput!]
   set: [TransactionWhereUniqueInput!]
@@ -2032,11 +2129,6 @@ input MemberCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input PublisherRelateToManyForCreateInput {
-  create: [PublisherCreateInput!]
-  connect: [PublisherWhereUniqueInput!]
 }
 
 input TransactionRelateToManyForCreateInput {
@@ -3251,6 +3343,15 @@ type Mutation {
   updateStories(data: [StoryUpdateArgs!]!): [Story]
   deleteStory(where: StoryWhereUniqueInput!): Story
   deleteStories(where: [StoryWhereUniqueInput!]!): [Story]
+  createStoryType(data: StoryTypeCreateInput!): StoryType
+  createStoryTypes(data: [StoryTypeCreateInput!]!): [StoryType]
+  updateStoryType(
+    where: StoryTypeWhereUniqueInput!
+    data: StoryTypeUpdateInput!
+  ): StoryType
+  updateStoryTypes(data: [StoryTypeUpdateArgs!]!): [StoryType]
+  deleteStoryType(where: StoryTypeWhereUniqueInput!): StoryType
+  deleteStoryTypes(where: [StoryTypeWhereUniqueInput!]!): [StoryType]
   createTag(data: TagCreateInput!): Tag
   createTags(data: [TagCreateInput!]!): [Tag]
   updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag
@@ -3481,6 +3582,14 @@ type Query {
   ): [Story!]
   story(where: StoryWhereUniqueInput!): Story
   storiesCount(where: StoryWhereInput! = {}): Int
+  storyTypes(
+    where: StoryTypeWhereInput! = {}
+    orderBy: [StoryTypeOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [StoryType!]
+  storyType(where: StoryTypeWhereUniqueInput!): StoryType
+  storyTypesCount(where: StoryTypeWhereInput! = {}): Int
   tags(
     where: TagWhereInput! = {}
     orderBy: [TagOrderByInput!]! = []
