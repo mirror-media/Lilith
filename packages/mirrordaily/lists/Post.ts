@@ -200,7 +200,7 @@ const listConfigurations = list({
         { label: '下線', value: PostStatus.Archived },
         { label: '前台不可見', value: PostStatus.Invisible },
       ],
-      defaultValue: PostStatus.Draft,
+      defaultValue: PostStatus.Published,
       isIndexed: true,
     }),
     publishedDate: timestamp({
@@ -224,12 +224,7 @@ const listConfigurations = list({
     updateTimeStamp: checkbox({
       label: '下次存檔時自動更改成「現在時間」',
       isFilterable: false,
-      defaultValue: false,
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-      },
+      defaultValue: true,
     }),
     sections: relationship({
       label: '大分類',
@@ -324,6 +319,11 @@ const listConfigurations = list({
     extend_byline: text({
       label: '作者（其他）',
       validation: { isRequired: false },
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     heroVideo: relationship({
       label: '首圖影片（Leading Video）',
@@ -341,7 +341,10 @@ const listConfigurations = list({
       ui: {
         displayMode: 'cards',
         cardFields: ['imageFile'],
-        linkToItem: true,
+        //linkToItem: true,
+		inlineCreate: { 
+		  fields: ['name', 'imageFile', 'waterMark'],
+		},
         inlineConnect: true,
         views: './lists/views/sorted-relationship/index',
       },
@@ -565,11 +568,21 @@ const listConfigurations = list({
     og_title: text({
       label: 'FB分享標題',
       validation: { isRequired: false },
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     og_description: text({
       label: 'FB分享說明',
       isFilterable: false,
       validation: { isRequired: false },
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     og_image: relationship({
       label: 'FB分享縮圖',
@@ -578,7 +591,10 @@ const listConfigurations = list({
       ui: {
         displayMode: 'cards',
         cardFields: ['imageFile'],
-        linkToItem: true,
+        //linkToItem: true,
+		inlineCreate: { 
+		  fields: ['name', 'imageFile', 'waterMark'],
+		},
         inlineConnect: true,
         views: './lists/views/sorted-relationship/index',
       },
