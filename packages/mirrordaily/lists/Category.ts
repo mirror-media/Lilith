@@ -76,6 +76,9 @@ const listConfigurations = list({
     sections: relationship({
       ref: 'Section.categories',
       many: true,
+	  ui: {
+		labelField: 'name',
+	  }
     }),
     posts: relationship({
       ref: 'Post.categories',
@@ -84,10 +87,6 @@ const listConfigurations = list({
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
       },
-    }),
-    isMemberOnly: checkbox({
-      label: '會員文章',
-      defaultValue: false,
     }),
   },
   ui: {

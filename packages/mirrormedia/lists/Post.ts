@@ -416,6 +416,10 @@ const listConfigurations = list({
       label: '會員文章',
       defaultValue: false,
     }),
+    memberFeed: checkbox({
+      label: '會員文章Feed',
+      defaultValue: false,
+    }),
     topics: relationship({
       label: '專題',
       ref: 'Topic.posts',
@@ -438,21 +442,21 @@ const listConfigurations = list({
       many: true,
       ui: {
         views: './lists/views/sorted-relationship/index',
-        createView: { fieldMode: 'hidden', },
-        itemView: { fieldMode: 'hidden', },
-        listView: { fieldMode: 'hidden', },
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     groups: relationship({
-      label: "群組(發佈後由演算法自動計算)",
+      label: '群組(發佈後由演算法自動計算)',
       isFilterable: false,
       ref: 'Group.posts',
       many: true,
       ui: {
         views: './lists/views/sorted-relationship/index',
-        createView: { fieldMode: 'hidden', },
-        itemView: { fieldMode: 'hidden', },
-        listView: { fieldMode: 'hidden', },
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     manualOrderOfRelateds: json({
@@ -474,9 +478,9 @@ const listConfigurations = list({
       many: true,
       ui: {
         views: './lists/views/sorted-relationship/index',
-        createView: { fieldMode: 'hidden', },
-        itemView: { fieldMode: 'hidden', },
-        listView: { fieldMode: 'hidden', },
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     og_title: text({
@@ -660,7 +664,7 @@ const listConfigurations = list({
     },
   },
   graphql: {
-	cacheHint: { maxAge: 0, scope: 'PRIVATE' },
+    cacheHint: { maxAge: 0, scope: 'PRIVATE' },
   },
   access: {
     operation: {
@@ -717,7 +721,7 @@ const listConfigurations = list({
       if (operation === 'create' || operation === 'update') {
         if (resolvedData.slug) {
           resolvedData.slug = resolvedData.slug.trim()
-          resolvedData.slug = resolvedData.slug.replace(" ", "_")
+          resolvedData.slug = resolvedData.slug.replace(' ', '_')
         }
         if (resolvedData.publishedDate) {
           /* check the publishedDate */
@@ -757,6 +761,56 @@ const listConfigurations = list({
             lockExpireAt: null,
           },
         })
+      }
+
+      if (operation === 'delete') return
+
+      const itemId = item?.id.toString()
+
+      const updatePostRelations = async (
+        postIds: string[],
+        operation: 'connect' | 'disconnect'
+      ) => {
+        // 檢查被更新的相關文章
+        const posts = await context.query.Post.findMany({
+          where: { id: { in: postIds } },
+          query: `id relateds { id }`,
+        })
+        // 刪掉已經有連結 or 已經沒有連結的
+        const postsToUpdate = posts.filter((post) => {
+          const hasRelated = post?.relateds?.some(
+            (post) => post.id.toString() === itemId
+          )
+          return operation === 'connect' ? !hasRelated : hasRelated
+        })
+        if (postsToUpdate.length) {
+          const data = postsToUpdate.map((post) => ({
+            where: { id: post.id.toString() },
+            data: {
+              relateds: {
+                [operation]: { id: itemId },
+              },
+            },
+          }))
+          await context.query.Post.updateMany({ data })
+        }
+      }
+
+      const { relateds = {} } = inputData
+      const connect = relateds?.connect
+      const disconnect = relateds?.disconnect
+
+      if (connect && itemId) {
+        updatePostRelations(
+          connect.map((post) => post.id),
+          'connect'
+        )
+      }
+      if (disconnect && itemId) {
+        updatePostRelations(
+          disconnect.map((post) => post.id),
+          'disconnect'
+        )
       }
     },
   },

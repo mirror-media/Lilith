@@ -11,7 +11,7 @@ export type SearchBoxOnChangeFn = (param: string) => void
 
 export function SearchBox(props: {
   onChange: SearchBoxOnChangeFn
-  className: string
+  className?: string
 }): React.ReactElement {
   const { onChange, className } = props
   const [searchInput, setSearchInput] = useState('')

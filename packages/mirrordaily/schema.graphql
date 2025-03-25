@@ -205,7 +205,6 @@ type Category {
   sectionsCount(where: SectionWhereInput! = {}): Int
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
-  isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -230,7 +229,6 @@ input CategoryWhereInput {
   heroImage: PhotoWhereInput
   sections: SectionManyRelationFilter
   posts: PostManyRelationFilter
-  isMemberOnly: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -260,18 +258,12 @@ input PostManyRelationFilter {
   none: PostWhereInput
 }
 
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
-}
-
 input CategoryOrderByInput {
   id: OrderDirection
   name: OrderDirection
   slug: OrderDirection
   order: OrderDirection
   state: OrderDirection
-  isMemberOnly: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -284,7 +276,6 @@ input CategoryUpdateInput {
   heroImage: PhotoRelateToOneForUpdateInput
   sections: SectionRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
-  isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -318,7 +309,6 @@ input CategoryCreateInput {
   heroImage: PhotoRelateToOneForCreateInput
   sections: SectionRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
-  isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -708,6 +698,11 @@ input DateTimeFilter {
   gt: DateTime
   gte: DateTime
   not: DateTimeFilter
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
 }
 
 input EventOrderByInput {
@@ -1871,6 +1866,7 @@ type Video {
   id: ID!
   name: String
   isShorts: Boolean
+  youtubeUrl: String
   file: FileFieldOutput
   videoSrc: String
   content: String
@@ -1904,6 +1900,7 @@ input VideoWhereInput {
   id: IDFilter
   name: StringFilter
   isShorts: BooleanFilter
+  youtubeUrl: StringFilter
   content: StringFilter
   heroImage: PhotoWhereInput
   uploader: StringFilter
@@ -1924,6 +1921,7 @@ input VideoOrderByInput {
   id: OrderDirection
   name: OrderDirection
   isShorts: OrderDirection
+  youtubeUrl: OrderDirection
   content: OrderDirection
   uploader: OrderDirection
   uploaderEmail: OrderDirection
@@ -1938,6 +1936,7 @@ input VideoOrderByInput {
 input VideoUpdateInput {
   name: String
   isShorts: Boolean
+  youtubeUrl: String
   file: FileFieldInput
   content: String
   heroImage: PhotoRelateToOneForUpdateInput
@@ -1964,6 +1963,7 @@ input VideoUpdateArgs {
 input VideoCreateInput {
   name: String
   isShorts: Boolean
+  youtubeUrl: String
   file: FileFieldInput
   content: String
   heroImage: PhotoRelateToOneForCreateInput

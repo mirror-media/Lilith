@@ -1339,6 +1339,7 @@ type Post {
   trimmedContent: JSON
   content: JSON
   isMember: Boolean
+  memberFeed: Boolean
   topics: Topic
   relateds(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedsCount(where: PostWhereInput! = {}): Int
@@ -1409,6 +1410,7 @@ input PostWhereInput {
   heroImage: PhotoWhereInput
   style: StringNullableFilter
   isMember: BooleanFilter
+  memberFeed: BooleanFilter
   topics: TopicWhereInput
   relateds: PostManyRelationFilter
   tags: TagManyRelationFilter
@@ -1452,6 +1454,7 @@ input PostOrderByInput {
   heroCaption: OrderDirection
   style: OrderDirection
   isMember: OrderDirection
+  memberFeed: OrderDirection
   og_title: OrderDirection
   og_description: OrderDirection
   isFeatured: OrderDirection
@@ -1494,6 +1497,7 @@ input PostUpdateInput {
   brief: JSON
   content: JSON
   isMember: Boolean
+  memberFeed: Boolean
   topics: TopicRelateToOneForUpdateInput
   relateds: PostRelateToManyForUpdateInput
   from_External_relateds: ExternalRelateToManyForUpdateInput
@@ -1595,6 +1599,7 @@ input PostCreateInput {
   brief: JSON
   content: JSON
   isMember: Boolean
+  memberFeed: Boolean
   topics: TopicRelateToOneForCreateInput
   relateds: PostRelateToManyForCreateInput
   from_External_relateds: ExternalRelateToManyForCreateInput

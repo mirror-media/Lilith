@@ -3859,27 +3859,6 @@
     styled-components "5.3.5"
     zlib "^1.0.5"
 
-"@mirrormedia/lilith-core@^2.5.1":
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-2.5.1.tgz#3936fc2bcc8da8f6b5a186a1b6ce0253df725ec6"
-  integrity sha512-86a8lWgFo1PW9iKbGT1Ap7S63SmAyBL2E+zN5YL4v7LSaL1rEdVPOKOQEM+ZzfeaIZ0Xrgw4pRLhFmQpRNsFLg==
-  dependencies:
-    "@google-cloud/storage" "^5.18.0"
-    "@keystone-ui/button" "^7.0.2"
-    "@keystone-ui/fields" "^7.2.0"
-    "@keystone-ui/modals" "^6.0.3"
-    "@mirrormedia/lilith-draft-editor" "^2.2.1"
-    "@twreporter/errors" "^1.1.1"
-    axios "^0.26.0"
-    draft-convert "^2.1.12"
-    draft-js "^0.11.7"
-    htmlparser2 "^7.2.0"
-    immutable "^4.0.0"
-    lodash "^4.17.21"
-    shortid "^2.2.16"
-    styled-components "5.3.5"
-    zlib "^1.0.5"
-
 "@mirrormedia/lilith-draft-editor@1.1.0-alpha.15":
   version "1.1.0-alpha.15"
   resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-editor/-/lilith-draft-editor-1.1.0-alpha.15.tgz#ee13547524064f876d13065bc816543dbd939c6f"
@@ -12387,6 +12366,13 @@ use-sync-external-store@^1.0.0:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.2.tgz#c3b6390f3a30eba13200d2302dcdf1e7b57b2ef9"
   integrity sha512-PElTlVMwpblvbNqQ82d2n6RjStvdSoNe9FG28kNfz3WiXilJm4DdNkEzRhCZuIDwY8U08WVihhGR5iRqAwfDiw==
+
+usehooks-ts@^2:
+  version "2.16.0"
+  resolved "https://registry.yarnpkg.com/usehooks-ts/-/usehooks-ts-2.16.0.tgz#31deaa2f1147f65666aae925bd890b54e63b0d3f"
+  integrity sha512-bez95WqYujxp6hFdM/CpRDiVPirZPxlMzOH2QB8yopoKQMXpscyZoxOjpEdaxvV+CAWUDSM62cWnqHE0E/MZ7w==
+  dependencies:
+    lodash.debounce "^4.0.8"
 
 util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   version "1.0.2"

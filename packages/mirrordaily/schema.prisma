@@ -44,7 +44,6 @@ model Category {
   heroImageId          Int?      @map("heroImage")
   sections             Section[] @relation("Category_sections")
   posts                Post[]    @relation("Category_posts")
-  isMemberOnly         Boolean   @default(false)
   createdAt            DateTime?
   updatedAt            DateTime?
   createdBy            User?     @relation("Category_createdBy", fields: [createdById], references: [id])
@@ -463,6 +462,7 @@ model Video {
   id                        Int       @id @default(autoincrement())
   name                      String    @default("")
   isShorts                  Boolean   @default(false)
+  youtubeUrl                String    @default("")
   file_filesize             Int?
   file_filename             String?
   content                   String    @default("")
