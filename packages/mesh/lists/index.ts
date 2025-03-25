@@ -23,6 +23,7 @@ import ReportReason from './report_reason'
 import ReportRecord from './report_record'
 import Revenue from './revenue'
 import Statement from './statement'
+import StoryType from './story_type'
 
 export const listDefinition = {
   User,
@@ -36,6 +37,7 @@ export const listDefinition = {
   CollectionPick,
   InvitationCode,
   Story,
+  StoryType,
   Tag,
   Member,
   Notify,

@@ -8,7 +8,7 @@ const listConfigurations = list({
   fields: {
     title: text({ validation: { isRequired: false } }),
     official_site: text({ validation: { isRequired: true } }),
-    rss: text({ validation: { isRequired: true } }),
+    rss: text({ validation: { isRequired: false } }),
     podcast_url: text({ validation: { isRequired: false } }),
     summary: text({ validation: { isRequired: false } }),
     logo: text({ validation: { isRequired: false } }),
@@ -31,6 +31,11 @@ const listConfigurations = list({
     exchange: relationship({
       label: "點數兌換紀錄",
       ref: "Exchange.publisher",
+      many: true,
+    }),
+    story_type: relationship({
+      label: "文章種類",
+      ref: "StoryType.publisher",
       many: true,
     }),
     sponsored: relationship({
