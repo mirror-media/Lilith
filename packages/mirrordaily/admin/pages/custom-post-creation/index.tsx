@@ -32,6 +32,8 @@ const PICKED_FIELDS = [
   'writers',
   'heroVideo',
   'content',
+  'heroImage',
+  'relateds',
 ]
 
 type Section = {
