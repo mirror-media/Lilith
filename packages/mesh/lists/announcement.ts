@@ -59,11 +59,11 @@ const listConfigurations = list({
         type: graphql.Boolean,
         async resolve(item: BaseItem) {
           const now = Date.now()
-          const state = item.state as string
+          const status = item.status as string
           const startDate = item.startDate as Date | null | undefined
           const endDate = item.endDate as Date | null | undefined
 
-          if (state !== 'published') return false
+          if (status !== 'published') return false
 
           if (startDate && endDate) {
             return startDate.valueOf() < now && now < endDate.valueOf()
