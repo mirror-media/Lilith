@@ -82,11 +82,11 @@ export const selectWithColor =
       getAdminMeta: () => import('./views').AdminSelectFieldMeta
     } => {
       const values = new Set(options.map((x) => x.value))
-      //if (values.size !== options.length) {
-      //  throw new Error(
-      //    `The select field at ${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`
-      //  )
-      //}
+      if (values.size !== options.length) {
+        throw new Error(
+          `The select field at ${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`
+        )
+      }
 
       const shouldShowColorSpan = options.reduce(
         (prev, option) =>
