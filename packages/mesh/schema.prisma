@@ -481,9 +481,11 @@ model Notify {
 
 model Announcement {
   id          Int       @id @default(autoincrement())
+  type        String?   @default("features")
   name        String    @default("")
   status      String?   @default("draft")
-  type        String?   @default("features")
+  startDate   DateTime?
+  endDate     DateTime?
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?     @relation("Announcement_createdBy", fields: [createdById], references: [id])
