@@ -2244,9 +2244,12 @@ input NotifyCreateInput {
 
 type Announcement {
   id: ID!
+  type: String
   name: String
   status: String
-  type: String
+  startDate: DateTime
+  endDate: DateTime
+  isActive: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -2262,9 +2265,11 @@ input AnnouncementWhereInput {
   OR: [AnnouncementWhereInput!]
   NOT: [AnnouncementWhereInput!]
   id: IDFilter
+  type: StringNullableFilter
   name: StringFilter
   status: StringNullableFilter
-  type: StringNullableFilter
+  startDate: DateTimeNullableFilter
+  endDate: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -2273,17 +2278,21 @@ input AnnouncementWhereInput {
 
 input AnnouncementOrderByInput {
   id: OrderDirection
+  type: OrderDirection
   name: OrderDirection
   status: OrderDirection
-  type: OrderDirection
+  startDate: OrderDirection
+  endDate: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input AnnouncementUpdateInput {
+  type: String
   name: String
   status: String
-  type: String
+  startDate: DateTime
+  endDate: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2296,9 +2305,11 @@ input AnnouncementUpdateArgs {
 }
 
 input AnnouncementCreateInput {
+  type: String
   name: String
   status: String
-  type: String
+  startDate: DateTime
+  endDate: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
