@@ -40,6 +40,8 @@ model User {
   from_InvitationCode_updatedBy   InvitationCode[]   @relation("InvitationCode_updatedBy")
   from_Story_createdBy            Story[]            @relation("Story_createdBy")
   from_Story_updatedBy            Story[]            @relation("Story_updatedBy")
+  from_StoryType_createdBy        StoryType[]        @relation("StoryType_createdBy")
+  from_StoryType_updatedBy        StoryType[]        @relation("StoryType_updatedBy")
   from_Tag_createdBy              Tag[]              @relation("Tag_createdBy")
   from_Tag_updatedBy              Tag[]              @relation("Tag_updatedBy")
   from_Member_createdBy           Member[]           @relation("Member_createdBy")
@@ -192,6 +194,7 @@ model Publisher {
   admin                  Member?       @relation("Publisher_admin", fields: [adminId], references: [id])
   adminId                Int?          @map("admin")
   exchange               Exchange[]    @relation("Exchange_publisher")
+  story_type             StoryType[]   @relation("Publisher_story_type")
   sponsored              Sponsorship[] @relation("Sponsorship_publisher")
   lang                   String?       @default("zh-TW")
   category               Category?     @relation("Publisher_category", fields: [categoryId], references: [id])
@@ -385,6 +388,21 @@ model Story {
   @@index([updatedById])
 }
 
+model StoryType {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique @default("")
+  publisher   Publisher[] @relation("Publisher_story_type")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?       @relation("StoryType_createdBy", fields: [createdById], references: [id])
+  createdById Int?        @map("createdBy")
+  updatedBy   User?       @relation("StoryType_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?        @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model Tag {
   id          Int       @id @default(autoincrement())
   name        String    @unique @default("")
@@ -481,9 +499,11 @@ model Notify {
 
 model Announcement {
   id          Int       @id @default(autoincrement())
+  type        String?   @default("features")
   name        String    @default("")
   status      String?   @default("draft")
-  type        String?   @default("features")
+  startDate   DateTime?
+  endDate     DateTime?
   createdAt   DateTime?
   updatedAt   DateTime?
   createdBy   User?     @relation("Announcement_createdBy", fields: [createdById], references: [id])
