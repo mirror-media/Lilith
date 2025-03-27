@@ -152,6 +152,7 @@ const listConfigurations = list({
       pageSize: 50,
     },
   },
+/*
   hooks: {
     validateInput: async ({
       operation,
@@ -221,6 +222,7 @@ const listConfigurations = list({
       }
     },
   },
+*/
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),
