@@ -18,6 +18,7 @@ import {
         }),
     },
     ui: {
+      labelField: 'content',
       listView: {
         initialColumns: ['content'],
       },

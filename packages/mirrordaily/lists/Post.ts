@@ -671,7 +671,10 @@ const listConfigurations = list({
     Warning: relationship({ 
       ref: 'Warning', 
       many: false, 
-      label:'警語', 
+      label:'警語',
+      ui: {
+        displayMode: 'select',
+      },
     }),
     redirect: text({
       label: '廣編文轉址 slug',
