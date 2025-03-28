@@ -291,6 +291,8 @@ model Post {
   isAdvertised               Boolean        @default(false)
   hiddenAdvertised           Boolean        @default(false)
   isAdult                    Boolean        @default(false)
+  Warning                    Warning?       @relation("Post_Warning", fields: [WarningId], references: [id])
+  WarningId                  Int?           @map("Warning")
   redirect                   String         @default("")
   adTrace                    String         @default("")
   css                        String         @default("")
@@ -314,6 +316,7 @@ model Post {
   @@index([style])
   @@index([topicsId])
   @@index([og_imageId])
+  @@index([WarningId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -458,6 +461,8 @@ model User {
   from_Group_updatedBy        Group[]        @relation("Group_updatedBy")
   from_Game_createdBy         Game[]         @relation("Game_createdBy")
   from_Game_updatedBy         Game[]         @relation("Game_updatedBy")
+  from_Warning_createdBy      Warning[]      @relation("Warning_createdBy")
+  from_Warning_updatedBy      Warning[]      @relation("Warning_updatedBy")
 }
 
 model Video {
@@ -534,6 +539,21 @@ model Game {
   @@index([state])
   @@index([publishedDate])
   @@index([heroImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Warning {
+  id                Int       @id @default(autoincrement())
+  content           String    @unique @default("")
+  createdAt         DateTime?
+  updatedAt         DateTime?
+  createdBy         User?     @relation("Warning_createdBy", fields: [createdById], references: [id])
+  createdById       Int?      @map("createdBy")
+  updatedBy         User?     @relation("Warning_updatedBy", fields: [updatedById], references: [id])
+  updatedById       Int?      @map("updatedBy")
+  from_Post_Warning Post[]    @relation("Post_Warning")
+
   @@index([createdById])
   @@index([updatedById])
 }

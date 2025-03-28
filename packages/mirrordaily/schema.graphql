@@ -1089,6 +1089,7 @@ type Post {
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
   isAdult: Boolean
+  Warning: Warning
   redirect: String
   adTrace: String
   css: String
@@ -1142,6 +1143,7 @@ input PostWhereInput {
   isAdvertised: BooleanFilter
   hiddenAdvertised: BooleanFilter
   isAdult: BooleanFilter
+  Warning: WarningWhereInput
   redirect: StringFilter
   adTrace: StringFilter
   css: StringFilter
@@ -1234,6 +1236,7 @@ input PostUpdateInput {
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
   isAdult: Boolean
+  Warning: WarningRelateToOneForUpdateInput
   redirect: String
   adTrace: String
   css: String
@@ -1283,6 +1286,12 @@ input VideoRelateToManyForUpdateInput {
   set: [VideoWhereUniqueInput!]
   create: [VideoCreateInput!]
   connect: [VideoWhereUniqueInput!]
+}
+
+input WarningRelateToOneForUpdateInput {
+  create: WarningCreateInput
+  connect: WarningWhereUniqueInput
+  disconnect: Boolean
 }
 
 input PostUpdateArgs {
@@ -1335,6 +1344,7 @@ input PostCreateInput {
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
   isAdult: Boolean
+  Warning: WarningRelateToOneForCreateInput
   redirect: String
   adTrace: String
   css: String
@@ -1374,6 +1384,11 @@ input ExternalRelateToManyForCreateInput {
 input VideoRelateToManyForCreateInput {
   create: [VideoCreateInput!]
   connect: [VideoWhereUniqueInput!]
+}
+
+input WarningRelateToOneForCreateInput {
+  create: WarningCreateInput
+  connect: WarningWhereUniqueInput
 }
 
 type Section {
@@ -2130,6 +2145,60 @@ input GameCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Warning {
+  id: ID!
+  content: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input WarningWhereUniqueInput {
+  id: ID
+  content: String
+}
+
+input WarningWhereInput {
+  AND: [WarningWhereInput!]
+  OR: [WarningWhereInput!]
+  NOT: [WarningWhereInput!]
+  id: IDFilter
+  content: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input WarningOrderByInput {
+  id: OrderDirection
+  content: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input WarningUpdateInput {
+  content: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input WarningUpdateArgs {
+  where: WarningWhereUniqueInput!
+  data: WarningUpdateInput!
+}
+
+input WarningCreateInput {
+  content: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2238,6 +2307,12 @@ type Mutation {
   updateGames(data: [GameUpdateArgs!]!): [Game]
   deleteGame(where: GameWhereUniqueInput!): Game
   deleteGames(where: [GameWhereUniqueInput!]!): [Game]
+  createWarning(data: WarningCreateInput!): Warning
+  createWarnings(data: [WarningCreateInput!]!): [Warning]
+  updateWarning(where: WarningWhereUniqueInput!, data: WarningUpdateInput!): Warning
+  updateWarnings(data: [WarningUpdateArgs!]!): [Warning]
+  deleteWarning(where: WarningWhereUniqueInput!): Warning
+  deleteWarnings(where: [WarningWhereUniqueInput!]!): [Warning]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -2313,6 +2388,9 @@ type Query {
   games(where: GameWhereInput! = {}, orderBy: [GameOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GameWhereUniqueInput): [Game!]
   game(where: GameWhereUniqueInput!): Game
   gamesCount(where: GameWhereInput! = {}): Int
+  warnings(where: WarningWhereInput! = {}, orderBy: [WarningOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: WarningWhereUniqueInput): [Warning!]
+  warning(where: WarningWhereUniqueInput!): Warning
+  warningsCount(where: WarningWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

@@ -668,6 +668,11 @@ const listConfigurations = list({
       label: '18禁',
       defaultValue: false,
     }),
+    Warning: relationship({ 
+      ref: 'Warning', 
+      many: false, 
+      label:'警語', 
+    }),
     redirect: text({
       label: '廣編文轉址 slug',
       ui: {
