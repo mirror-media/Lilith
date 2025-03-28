@@ -14,7 +14,6 @@ import {
             ui: {
                 displayMode: 'textarea',
             },
-            isIndexed: 'unique',
         }),
     },
     ui: {

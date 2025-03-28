@@ -14,9 +14,6 @@ CREATE TABLE "Warning" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Warning_content_key" ON "Warning"("content");
-
--- CreateIndex
 CREATE INDEX "Warning_createdBy_idx" ON "Warning"("createdBy");
 
 -- CreateIndex

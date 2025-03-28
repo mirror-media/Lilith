@@ -2156,7 +2156,6 @@ type Warning {
 
 input WarningWhereUniqueInput {
   id: ID
-  content: String
 }
 
 input WarningWhereInput {
