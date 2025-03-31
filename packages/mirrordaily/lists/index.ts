@@ -15,6 +15,7 @@ import Event from './Event'
 import Header from './Header'
 import Group from './Group'
 import Game from './Game'
+import Warning from './Warning'
 
 export const listDefinition = {
   AudioFile: Audio,
@@ -34,4 +35,5 @@ export const listDefinition = {
   Video,
   Group,
   Game,
+  Warning,
 }
