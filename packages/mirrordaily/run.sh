@@ -24,7 +24,7 @@ done
 
 echo "Keystone server is ready."
 
-if [ -n "${$REVERSE_PROXY_PORT}" ]; then
+if [ -n "$REVERSE_PROXY_PORT" ]; then
   # Run the http2 reverse proxy server, which proxies http2 request to web server
   PORT=$REVERSE_PROXY_PORT yarn run start-http2-proxy-server &
 fi
