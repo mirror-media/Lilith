@@ -1,6 +1,6 @@
 {
   "name": "@mirrormedia/lilith-draft-editor",
-  "version": "3.0.1",
+  "version": "2.6.1",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
