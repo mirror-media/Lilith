@@ -14,7 +14,6 @@ import envVar from '../environment-variables'
 // @ts-ignore draft-js does not have typescript definition
 import { RawContentState } from 'draft-js'
 import { ACL, UserRole, State, type Session } from '../type'
-import { invalidateStoryCache } from '../utils/invalidate-cdn-cache'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -668,10 +667,10 @@ const listConfigurations = list({
       label: '18禁',
       defaultValue: false,
     }),
-    Warning: relationship({ 
-      ref: 'Warning', 
-      many: false, 
-      label:'警語',
+    Warning: relationship({
+      ref: 'Warning',
+      many: false,
+      label: '警語',
       ui: {
         displayMode: 'select',
       },
@@ -834,13 +833,7 @@ const listConfigurations = list({
       }
       return
     },
-    afterOperation: async ({
-      operation,
-      inputData,
-      item,
-      context,
-      originalItem,
-    }) => {
+    afterOperation: async ({ operation, inputData, item, context }) => {
       if (operation === 'update') {
         // If the operation is to update lockBy and lockExpireAt, then no need to do anything further.
         // inputDate example:
@@ -860,13 +853,22 @@ const listConfigurations = list({
           },
         })
       }
-
-      // const slug = originalItem?.slug ?? item?.slug
-      const id = originalItem?.id ?? item?.id
-      await invalidateStoryCache(id)
     },
   },
 })
+
+let extendedListConfigurations = utils.addTrackingFields(listConfigurations)
+
+if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
+  extendedListConfigurations = utils.invalidateCacheAfterOperation(
+    extendedListConfigurations,
+    `${envVar.invalidateCDNCacheServerURL}/story`,
+    (item, originalItem) => ({
+      slug: originalItem?.id ?? item?.id,
+    })
+  )
+}
+
 export default utils.addManualOrderRelationshipFields(
   [
     {
@@ -900,5 +902,5 @@ export default utils.addManualOrderRelationshipFields(
       targetListLabelField: 'name',
     },
   ],
-  utils.addTrackingFields(listConfigurations)
+  extendedListConfigurations
 )
