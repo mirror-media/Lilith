@@ -10,6 +10,7 @@ import {
   select,
   json,
 } from '@keystone-6/core/fields'
+import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -52,57 +53,57 @@ const listConfigurations = list({
       ref: 'Category.relatedPost',
       label: '分類',
       many: true,
-	  ui: {
-		labelField: 'title',
-	  }
+      ui: {
+        labelField: 'title',
+      },
     }),
     writers: relationship({
       ref: 'Author.posts',
       many: true,
       label: '作者',
-	  ui: {
-		labelField: 'name',
-	  }
+      ui: {
+        labelField: 'name',
+      },
     }),
     photographers: relationship({
       many: true,
       label: '攝影',
       ref: 'Author',
-	  ui: {
-		labelField: 'name',
-	  }
+      ui: {
+        labelField: 'name',
+      },
     }),
     cameraOperators: relationship({
       label: '影音',
       many: true,
       ref: 'Author',
-	  ui: {
-		labelField: 'name',
-	  }
+      ui: {
+        labelField: 'name',
+      },
     }),
     designers: relationship({
       label: '設計',
       many: true,
       ref: 'Author',
-	  ui: {
-		labelField: 'name',
-	  }
+      ui: {
+        labelField: 'name',
+      },
     }),
     engineers: relationship({
       many: true,
       label: '工程',
       ref: 'Author',
-	  ui: {
-		labelField: 'name',
-	  }
+      ui: {
+        labelField: 'name',
+      },
     }),
     dataAnalysts: relationship({
       many: true,
       label: '資料分析',
       ref: 'Author',
-	  ui: {
-		labelField: 'name',
-	  }
+      ui: {
+        labelField: 'name',
+      },
     }),
     otherByline: text({
       validation: { isRequired: false },
@@ -189,9 +190,9 @@ const listConfigurations = list({
     projects: relationship({
       label: '專題',
       ref: 'Project.posts',
-	  ui: {
-		labelField: 'name',
-	  }
+      ui: {
+        labelField: 'name',
+      },
     }),
     tags: relationship({
       ref: 'Tag.posts',
@@ -238,7 +239,6 @@ const listConfigurations = list({
       ref: 'Photo',
     }),
     isFeatured: checkbox({
-      isIndexed: true,
       label: '置頂',
     }),
     note: relationship({
@@ -352,7 +352,7 @@ const listConfigurations = list({
     },
   },
   graphql: {
-    cacheHint: { maxAge: 1200, scope: 'PUBLIC' }
+    cacheHint: { maxAge: 1200, scope: 'PUBLIC' },
   },
   hooks: {
     resolveInput: async ({ resolvedData }) => {
@@ -386,6 +386,19 @@ const listConfigurations = list({
     },
   },
 })
+
+let extendedListConfigurations = utils.addTrackingFields(listConfigurations)
+
+if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
+  extendedListConfigurations = utils.invalidateCacheAfterOperation(
+    extendedListConfigurations,
+    `${envVar.invalidateCDNCacheServerURL}/story`,
+    (item, originalItem) => ({
+      slug: originalItem?.id ?? item?.id,
+    })
+  )
+}
+
 export default utils.addManualOrderRelationshipFields(
   [
     {
@@ -438,5 +451,5 @@ export default utils.addManualOrderRelationshipFields(
       targetListLabelField: 'name',
     },
   ],
-  utils.addTrackingFields(listConfigurations)
+  extendedListConfigurations
 )

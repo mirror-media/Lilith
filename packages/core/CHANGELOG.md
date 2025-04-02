@@ -1,5 +1,21 @@
 # @mirrormedia/lilith-core Changelog
 
+## 2025-04-02, Version 3.0.1
+
+### Notable Changes
+- fix: add missing dependency
+
+### Commits
+* \[[`1166c2db1e`](https://github.com/mirror-media/lilith-core/commit/1166c2db1e)] - **fix(core)**: add missing dependency (Tsuki Akiba)
+
+## 2025-04-02, Version 3.0.0
+
+### Notable Changes
+- add `invalidateCacheAfterOperation` util
+
+### Commits
+* \[[`cabec32500`](https://github.com/mirror-media/lilith-core/commit/cabec32500)] - **feat(core)**: add invalidateCacheAfterOperation util (Tsuki Akiba)
+
 ## 2025-03-07, Version 2.6.0
 
 ### Notable Changes
