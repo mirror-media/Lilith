@@ -1,16 +1,9 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { relationship, integer,} from '@keystone-6/core/fields'
-import { State } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
-enum EditorChoiceState {
-  Draft = State.Draft,
-  Published = State.Published,
-  Scheduled = State.Scheduled,
-  Archived = State.Archived,
-}
 
 const listConfigurations = list({
   fields: {
