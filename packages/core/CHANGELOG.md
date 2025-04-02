@@ -1,5 +1,13 @@
 # @mirrormedia/lilith-core Changelog
 
+## 2025-04-02, Version 3.0.0
+
+### Notable Changes
+- add `invalidateCacheAfterOperation` util
+
+### Commits
+* \[[`cabec32500`](https://github.com/mirror-media/lilith-core/commit/cabec32500)] - **feat(core)**: add invalidateCacheAfterOperation util (Tsuki Akiba)
+
 ## 2025-03-07, Version 2.6.0
 
 ### Notable Changes
