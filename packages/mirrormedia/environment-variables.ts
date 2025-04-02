@@ -18,6 +18,7 @@ const {
   CACHE_IDENTIFIER,
   CACHE_CONNECT_TIMEOUT,
   CACHE_MAXAGE,
+  INVALID_CDN_CACHE_SERVER_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -73,4 +74,5 @@ export default {
       : cacheConnectTimeout, // unit: millisecond
     maxAge: Number.isNaN(cacheMaxAge) ? 60 : cacheMaxAge, // unit: second
   },
+  invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
 }

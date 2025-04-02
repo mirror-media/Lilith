@@ -854,6 +854,18 @@ const listConfigurations = list({
     },
   },
 })
+
+let extendedListConfigurations = utils.addTrackingFields(listConfigurations)
+if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
+  extendedListConfigurations = utils.invalidateCacheAfterOperation(
+    extendedListConfigurations,
+    `${envVar.invalidateCDNCacheServerURL}/story`,
+    (item, originalItem) => ({
+      slug: originalItem?.slug ?? item?.slug,
+    })
+  )
+}
+
 export default utils.addManualOrderRelationshipFields(
   [
     {
@@ -887,5 +899,5 @@ export default utils.addManualOrderRelationshipFields(
       targetListLabelField: 'name',
     },
   ],
-  utils.addTrackingFields(listConfigurations)
+  extendedListConfigurations
 )
