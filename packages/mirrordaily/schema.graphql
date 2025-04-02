@@ -921,6 +921,7 @@ type Photo {
   name: String
   imageFile: ImageFieldOutput
   waterMark: Boolean
+  defaultImage: Boolean
   resized: ResizedImages
   resizedWebp: ResizedWebPImages
   topicKeywords: String
@@ -976,6 +977,7 @@ input PhotoWhereInput {
   id: IDFilter
   name: StringFilter
   waterMark: BooleanFilter
+  defaultImage: BooleanFilter
   topicKeywords: StringFilter
   copyRight: BooleanFilter
   createdAt: DateTimeNullableFilter
@@ -988,6 +990,7 @@ input PhotoOrderByInput {
   id: OrderDirection
   name: OrderDirection
   waterMark: OrderDirection
+  defaultImage: OrderDirection
   topicKeywords: OrderDirection
   copyRight: OrderDirection
   createdAt: OrderDirection
@@ -998,6 +1001,7 @@ input PhotoUpdateInput {
   name: String
   imageFile: ImageFieldInput
   waterMark: Boolean
+  defaultImage: Boolean
   topicKeywords: String
   copyRight: Boolean
   createdAt: DateTime
@@ -1019,6 +1023,7 @@ input PhotoCreateInput {
   name: String
   imageFile: ImageFieldInput
   waterMark: Boolean
+  defaultImage: Boolean
   topicKeywords: String
   copyRight: Boolean
   createdAt: DateTime
@@ -1060,6 +1065,7 @@ type Post {
   extend_byline: String
   heroVideo: Video
   heroImage: Photo
+  defaultHeroImage: Photo
   heroCaption: String
   style: String
   brief: JSON
@@ -1133,6 +1139,7 @@ input PostWhereInput {
   extend_byline: StringFilter
   heroVideo: VideoWhereInput
   heroImage: PhotoWhereInput
+  defaultHeroImage: PhotoWhereInput
   style: StringNullableFilter
   isMember: BooleanFilter
   topics: TopicWhereInput
@@ -1215,6 +1222,7 @@ input PostUpdateInput {
   extend_byline: String
   heroVideo: VideoRelateToOneForUpdateInput
   heroImage: PhotoRelateToOneForUpdateInput
+  defaultHeroImage: PhotoRelateToOneForUpdateInput
   heroCaption: String
   style: String
   brief: JSON
@@ -1323,6 +1331,7 @@ input PostCreateInput {
   extend_byline: String
   heroVideo: VideoRelateToOneForCreateInput
   heroImage: PhotoRelateToOneForCreateInput
+  defaultHeroImage: PhotoRelateToOneForCreateInput
   heroCaption: String
   style: String
   brief: JSON
@@ -2198,6 +2207,75 @@ input WarningCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type PopularTag {
+  id: ID!
+  order: Int
+  choices: Tag
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input PopularTagWhereUniqueInput {
+  id: ID
+  order: Int
+}
+
+input PopularTagWhereInput {
+  AND: [PopularTagWhereInput!]
+  OR: [PopularTagWhereInput!]
+  NOT: [PopularTagWhereInput!]
+  id: IDFilter
+  order: IntNullableFilter
+  choices: TagWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PopularTagOrderByInput {
+  id: OrderDirection
+  order: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PopularTagUpdateInput {
+  order: Int
+  choices: TagRelateToOneForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input TagRelateToOneForUpdateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
+  disconnect: Boolean
+}
+
+input PopularTagUpdateArgs {
+  where: PopularTagWhereUniqueInput!
+  data: PopularTagUpdateInput!
+}
+
+input PopularTagCreateInput {
+  order: Int
+  choices: TagRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input TagRelateToOneForCreateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2312,6 +2390,12 @@ type Mutation {
   updateWarnings(data: [WarningUpdateArgs!]!): [Warning]
   deleteWarning(where: WarningWhereUniqueInput!): Warning
   deleteWarnings(where: [WarningWhereUniqueInput!]!): [Warning]
+  createPopularTag(data: PopularTagCreateInput!): PopularTag
+  createPopularTags(data: [PopularTagCreateInput!]!): [PopularTag]
+  updatePopularTag(where: PopularTagWhereUniqueInput!, data: PopularTagUpdateInput!): PopularTag
+  updatePopularTags(data: [PopularTagUpdateArgs!]!): [PopularTag]
+  deletePopularTag(where: PopularTagWhereUniqueInput!): PopularTag
+  deletePopularTags(where: [PopularTagWhereUniqueInput!]!): [PopularTag]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -2390,6 +2474,9 @@ type Query {
   warnings(where: WarningWhereInput! = {}, orderBy: [WarningOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: WarningWhereUniqueInput): [Warning!]
   warning(where: WarningWhereUniqueInput!): Warning
   warningsCount(where: WarningWhereInput! = {}): Int
+  popularTags(where: PopularTagWhereInput! = {}, orderBy: [PopularTagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PopularTagWhereUniqueInput): [PopularTag!]
+  popularTag(where: PopularTagWhereUniqueInput!): PopularTag
+  popularTagsCount(where: PopularTagWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
