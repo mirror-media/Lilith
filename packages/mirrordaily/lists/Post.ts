@@ -14,7 +14,6 @@ import envVar from '../environment-variables'
 // @ts-ignore draft-js does not have typescript definition
 import { RawContentState } from 'draft-js'
 import { ACL, UserRole, State, type Session } from '../type'
-import { invalidateStoryCache } from '../utils/invalidate-cdn-cache'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -114,9 +113,15 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
   item,
 }) => {
   if (session?.data?.role == UserRole.Editor) {
-    const { lockBy } = await context.query.Post.findOne({
-      where: { id: String(item.id) },
-      query: 'lockBy { id }',
+    const { lockBy } = await context.prisma.Post.findUnique({
+      where: { id: Number(item.id) },
+      select: {
+        lockBy: {
+          select: {
+            id: true,
+          },
+        },
+      },
     })
 
     if (!lockBy) {
@@ -127,13 +132,23 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
           0
         )
       ).toISOString()
-      const updatedPost = await context.query.Post.updateOne({
-        where: { id: String(item.id) },
+      const updatedPost = await context.prisma.Post.update({
+        where: { id: Number(item.id) },
         data: {
-          lockBy: { connect: { id: session.data?.id } },
+          lockBy: {
+            connect: {
+              id: Number(session.data?.id),
+            },
+          },
           lockExpireAt: lockExpireAt,
         },
-        query: 'lockBy { id }',
+        select: {
+          lockBy: {
+            select: {
+              id: true,
+            },
+          },
+        },
       })
       return updatedPost.lockBy?.id === session.data?.id ? 'edit' : 'read'
     } else if (lockBy.id == session.data?.id) {
@@ -668,10 +683,10 @@ const listConfigurations = list({
       label: '18禁',
       defaultValue: false,
     }),
-    Warning: relationship({ 
-      ref: 'Warning', 
-      many: false, 
-      label:'警語',
+    Warning: relationship({
+      ref: 'Warning',
+      many: false,
+      label: '警語',
       ui: {
         displayMode: 'select',
       },
@@ -773,12 +788,21 @@ const listConfigurations = list({
     validateInput: async ({ operation, item, context, addValidationError }) => {
       if (context.session?.data?.role !== UserRole.Admin) {
         if (operation === 'update') {
-          const { lockBy } = await context.query.Post.findOne({
-            where: { id: item.id.toString() },
-            query: 'lockBy { id }',
+          const { lockBy } = await context.prisma.Post.findUnique({
+            where: { id: Number(item.id) },
+            select: {
+              lockBy: {
+                select: {
+                  id: true,
+                },
+              },
+            },
           })
 
-          if (lockBy?.id && lockBy?.id !== context.session?.data?.id) {
+          if (
+            lockBy?.id &&
+            Number(lockBy.id) !== Number(context.session?.data?.id)
+          ) {
             addValidationError('可能有其他人正在編輯，請重新整理頁面。')
           }
         }
@@ -834,39 +858,32 @@ const listConfigurations = list({
       }
       return
     },
-    afterOperation: async ({
-      operation,
-      inputData,
-      item,
-      context,
-      originalItem,
-    }) => {
+    afterOperation: async ({ operation, item, context }) => {
       if (operation === 'update') {
-        // If the operation is to update lockBy and lockExpireAt, then no need to do anything further.
-        // inputDate example:
-        // { lockBy: { connect: { id: '1' } }, lockExpireAt: 2023-09-01T09:37:00.000Z }
-        // { lockBy: { disconnect: true }, lockExpireAt: null }
-        if (Object.keys(inputData).length === 2 && inputData.lockBy) {
-          return
-        }
-
-        // The user saved changes, release the lock.
-        // This will trigger `afterOperation` again, so the above condition check is necessary.
-        await context.query.Post.updateOne({
-          where: { id: item.id.toString() },
+        await context.prisma.post.update({
+          where: { id: Number(item.id) },
           data: {
             lockBy: { disconnect: true },
             lockExpireAt: null,
           },
         })
       }
-
-      // const slug = originalItem?.slug ?? item?.slug
-      const id = originalItem?.id ?? item?.id
-      await invalidateStoryCache(id)
     },
   },
 })
+
+let extendedListConfigurations = utils.addTrackingFields(listConfigurations)
+
+if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
+  extendedListConfigurations = utils.invalidateCacheAfterOperation(
+    extendedListConfigurations,
+    `${envVar.invalidateCDNCacheServerURL}/story`,
+    (item, originalItem) => ({
+      slug: originalItem?.id ?? item?.id,
+    })
+  )
+}
+
 export default utils.addManualOrderRelationshipFields(
   [
     {
@@ -900,5 +917,5 @@ export default utils.addManualOrderRelationshipFields(
       targetListLabelField: 'name',
     },
   ],
-  utils.addTrackingFields(listConfigurations)
+  extendedListConfigurations
 )

@@ -79,9 +79,15 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
   item,
 }) => {
   if (session?.data?.role == UserRole.Editor) {
-    const { lockBy } = await context.query.Post.findOne({
-      where: { id: String(item.id) },
-      query: 'lockBy { id }',
+    const { lockBy } = await context.prisma.Post.findUnique({
+      where: { id: Number(item.id) },
+      select: {
+        lockBy: {
+          select: {
+            id: true,
+          },
+        },
+      },
     })
 
     if (!lockBy) {
@@ -92,15 +98,27 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
           0
         )
       ).toISOString()
-      const updatedPost = await context.query.Post.updateOne({
-        where: { id: String(item.id) },
+      const updatedPost = await context.prisma.Post.update({
+        where: { id: Number(item.id) },
         data: {
-          lockBy: { connect: { id: session.data?.id } },
+          lockBy: {
+            connect: {
+              id: Number(session.data?.id),
+            },
+          },
           lockExpireAt: lockExpireAt,
         },
-        query: 'lockBy { id }',
+        select: {
+          lockBy: {
+            select: {
+              id: true,
+            },
+          },
+        },
       })
-      return updatedPost.lockBy?.id === session.data?.id ? 'edit' : 'read'
+      return Number(updatedPost.lockBy?.id) === Number(session.data?.id)
+        ? 'edit'
+        : 'read'
     } else if (lockBy.id == session.data?.id) {
       return 'edit'
     }
@@ -681,12 +699,21 @@ const listConfigurations = list({
     validateInput: async ({ operation, item, context, addValidationError }) => {
       if (context.session?.data?.role !== UserRole.Admin) {
         if (operation === 'update') {
-          const { lockBy } = await context.query.Post.findOne({
-            where: { id: item.id.toString() },
-            query: 'lockBy { id }',
+          const { lockBy } = await context.prisma.Post.findUnique({
+            where: { id: Number(item.id) },
+            select: {
+              lockBy: {
+                select: {
+                  id: true,
+                },
+              },
+            },
           })
 
-          if (lockBy?.id && lockBy?.id !== context.session?.data?.id) {
+          if (
+            lockBy?.id &&
+            Number(lockBy.id) !== Number(context.session?.data?.id)
+          ) {
             addValidationError('可能有其他人正在編輯，請重新整理頁面。')
           }
         }
@@ -740,22 +767,12 @@ const listConfigurations = list({
           return
         }
       }
-      return 0
+      return
     },
     afterOperation: async ({ operation, inputData, item, context }) => {
       if (operation === 'update') {
-        // If the operation is to update lockBy and lockExpireAt, then no need to do anything further.
-        // inputDate example:
-        // { lockBy: { connect: { id: '1' } }, lockExpireAt: 2023-09-01T09:37:00.000Z }
-        // { lockBy: { disconnect: true }, lockExpireAt: null }
-        if (Object.keys(inputData).length === 2 && inputData.lockBy) {
-          return
-        }
-
-        // The user saved changes, release the lock.
-        // This will trigger `afterOperation` again, so the above condition check is necessary.
-        await context.query.Post.updateOne({
-          where: { id: item.id.toString() },
+        await context.prisma.post.update({
+          where: { id: Number(item.id) },
           data: {
             lockBy: { disconnect: true },
             lockExpireAt: null,
@@ -765,34 +782,56 @@ const listConfigurations = list({
 
       if (operation === 'delete') return
 
-      const itemId = item?.id.toString()
+      const itemId = Number(item?.id)
 
       const updatePostRelations = async (
         postIds: string[],
         operation: 'connect' | 'disconnect'
       ) => {
         // 檢查被更新的相關文章
-        const posts = await context.query.Post.findMany({
-          where: { id: { in: postIds } },
-          query: `id relateds { id }`,
+        const posts = await context.prisma.Post.findMany({
+          where: { id: { in: postIds.map(Number) } },
+          select: {
+            id: true,
+            relateds: {
+              select: {
+                id: true,
+              },
+            },
+          },
         })
+
         // 刪掉已經有連結 or 已經沒有連結的
-        const postsToUpdate = posts.filter((post) => {
+        const postsToUpdate = posts.filter((post: any) => {
           const hasRelated = post?.relateds?.some(
-            (post) => post.id.toString() === itemId
+            (post: any) => Number(post.id) === itemId
           )
           return operation === 'connect' ? !hasRelated : hasRelated
         })
+
         if (postsToUpdate.length) {
-          const data = postsToUpdate.map((post) => ({
-            where: { id: post.id.toString() },
-            data: {
-              relateds: {
-                [operation]: { id: itemId },
-              },
-            },
-          }))
-          await context.query.Post.updateMany({ data })
+          const results = await Promise.allSettled(
+            postsToUpdate.map((post: any) =>
+              context.prisma.Post.update({
+                where: {
+                  id: Number(post.id),
+                },
+                data: {
+                  relateds: {
+                    [operation]: {
+                      id: itemId,
+                    },
+                  },
+                },
+              })
+            )
+          )
+
+          results.forEach((result) =>
+            result.status === 'rejected'
+              ? console.error(result.reason)
+              : undefined
+          )
         }
       }
 
@@ -802,19 +841,31 @@ const listConfigurations = list({
 
       if (connect && itemId) {
         updatePostRelations(
-          connect.map((post) => post.id),
+          connect.map((post: any) => post.id),
           'connect'
         )
       }
       if (disconnect && itemId) {
         updatePostRelations(
-          disconnect.map((post) => post.id),
+          disconnect.map((post: any) => post.id),
           'disconnect'
         )
       }
     },
   },
 })
+
+let extendedListConfigurations = utils.addTrackingFields(listConfigurations)
+if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
+  extendedListConfigurations = utils.invalidateCacheAfterOperation(
+    extendedListConfigurations,
+    `${envVar.invalidateCDNCacheServerURL}/story`,
+    (item, originalItem) => ({
+      slug: originalItem?.slug ?? item?.slug,
+    })
+  )
+}
+
 export default utils.addManualOrderRelationshipFields(
   [
     {
@@ -848,5 +899,5 @@ export default utils.addManualOrderRelationshipFields(
       targetListLabelField: 'name',
     },
   ],
-  utils.addTrackingFields(listConfigurations)
+  extendedListConfigurations
 )

@@ -14,6 +14,7 @@ const {
   MEMORY_CACHE_TTL,
   MEMORY_CACHE_SIZE,
   GCS_BASE_URL,
+  INVALID_CDN_CACHE_SERVER_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -36,7 +37,8 @@ export default {
       DATABASE_PROVIDER === 'sqlite'
         ? DatabaseProvider.Sqlite
         : DatabaseProvider.Postgres,
-    url: DATABASE_URL || 'postgres://username:password@localhost:5432/readr-cms',
+    url:
+      DATABASE_URL || 'postgres://username:password@localhost:5432/readr-cms',
   },
   session: {
     secret:
@@ -58,4 +60,5 @@ export default {
     gcsBaseUrl: GCS_BASE_URL || 'https://statics-readr-tw-dev.readr.tw',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
+  invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
 }
