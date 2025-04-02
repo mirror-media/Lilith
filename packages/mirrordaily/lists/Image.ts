@@ -26,6 +26,10 @@ const listConfigurations = list({
         itemView: { fieldMode: 'read' },
       },
     }),
+    defaultImage: checkbox({
+      label: '預設圖',
+      defaultValue: false,
+    }),
     resized: virtual({
       field: graphql.field({
         type: graphql.object<{

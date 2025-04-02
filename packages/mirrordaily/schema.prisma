@@ -214,6 +214,7 @@ model Photo {
   imageFile_height            Int?
   imageFile_id                String?
   waterMark                   Boolean        @default(false)
+  defaultImage                Boolean        @default(false)
   topicKeywords               String         @default("")
   copyRight                   Boolean        @default(false)
   createdAt                   DateTime?
@@ -227,6 +228,7 @@ model Photo {
   from_EditorChoice_heroImage EditorChoice[] @relation("EditorChoice_heroImage")
   from_Event_heroImage        Event[]        @relation("Event_heroImage")
   from_Post_heroImage         Post[]         @relation("Post_heroImage")
+  from_Post_defaultHeroImage  Post[]         @relation("Post_defaultHeroImage")
   from_Post_og_image          Post[]         @relation("Post_og_image")
   from_Section_heroImage      Section[]      @relation("Section_heroImage")
   from_Topic_heroImage        Topic[]        @relation("Topic_heroImage")
@@ -268,6 +270,8 @@ model Post {
   heroVideoId                Int?           @map("heroVideo")
   heroImage                  Photo?         @relation("Post_heroImage", fields: [heroImageId], references: [id])
   heroImageId                Int?           @map("heroImage")
+  defaultHeroImage           Photo?         @relation("Post_defaultHeroImage", fields: [defaultHeroImageId], references: [id])
+  defaultHeroImageId         Int?           @map("defaultHeroImage")
   heroCaption                String         @default("")
   style                      String?        @default("article")
   brief                      Json?
@@ -313,6 +317,7 @@ model Post {
   @@index([publishedDate])
   @@index([heroVideoId])
   @@index([heroImageId])
+  @@index([defaultHeroImageId])
   @@index([style])
   @@index([topicsId])
   @@index([og_imageId])
@@ -352,21 +357,22 @@ model Section {
 }
 
 model Tag {
-  id                  Int         @id @default(autoincrement())
-  slug                String      @unique @default("")
-  name                String      @unique @default("")
-  posts               Post[]      @relation("Post_tags")
-  posts_algo          Post[]      @relation("Post_tags_algo")
-  externals           External[]  @relation("External_tags")
-  topics              Topic[]     @relation("Tag_topics")
-  createdAt           DateTime?
-  updatedAt           DateTime?
-  createdBy           User?       @relation("Tag_createdBy", fields: [createdById], references: [id])
-  createdById         Int?        @map("createdBy")
-  updatedBy           User?       @relation("Tag_updatedBy", fields: [updatedById], references: [id])
-  updatedById         Int?        @map("updatedBy")
-  from_AudioFile_tags AudioFile[] @relation("AudioFile_tags")
-  from_Video_tags     Video[]     @relation("Video_tags")
+  id                      Int          @id @default(autoincrement())
+  slug                    String       @unique @default("")
+  name                    String       @unique @default("")
+  posts                   Post[]       @relation("Post_tags")
+  posts_algo              Post[]       @relation("Post_tags_algo")
+  externals               External[]   @relation("External_tags")
+  topics                  Topic[]      @relation("Tag_topics")
+  createdAt               DateTime?
+  updatedAt               DateTime?
+  createdBy               User?        @relation("Tag_createdBy", fields: [createdById], references: [id])
+  createdById             Int?         @map("createdBy")
+  updatedBy               User?        @relation("Tag_updatedBy", fields: [updatedById], references: [id])
+  updatedById             Int?         @map("updatedBy")
+  from_AudioFile_tags     AudioFile[]  @relation("AudioFile_tags")
+  from_Video_tags         Video[]      @relation("Video_tags")
+  from_PopularTag_choices PopularTag[] @relation("PopularTag_choices")
 
   @@index([createdById])
   @@index([updatedById])
@@ -463,6 +469,8 @@ model User {
   from_Game_updatedBy         Game[]         @relation("Game_updatedBy")
   from_Warning_createdBy      Warning[]      @relation("Warning_createdBy")
   from_Warning_updatedBy      Warning[]      @relation("Warning_updatedBy")
+  from_PopularTag_createdBy   PopularTag[]   @relation("PopularTag_createdBy")
+  from_PopularTag_updatedBy   PopularTag[]   @relation("PopularTag_updatedBy")
 }
 
 model Video {
@@ -554,6 +562,23 @@ model Warning {
   updatedById       Int?      @map("updatedBy")
   from_Post_Warning Post[]    @relation("Post_Warning")
 
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model PopularTag {
+  id          Int       @id @default(autoincrement())
+  order       Int?      @unique
+  choices     Tag?      @relation("PopularTag_choices", fields: [choicesId], references: [id])
+  choicesId   Int?      @map("choices")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("PopularTag_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("PopularTag_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([choicesId])
   @@index([createdById])
   @@index([updatedById])
 }
