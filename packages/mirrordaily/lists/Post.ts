@@ -576,8 +576,8 @@ const listConfigurations = list({
       ui: {
         views: './lists/views/sorted-relationship/index',
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
+        //itemView: { fieldMode: 'hidden' },
+        //listView: { fieldMode: 'hidden' },
       },
     }),
     og_title: text({
