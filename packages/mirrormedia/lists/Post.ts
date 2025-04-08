@@ -293,9 +293,15 @@ const listConfigurations = list({
     brief: customFields.richTextEditor({
       label: '前言',
       disabledButtons: [
+		'bold',
         'code',
+        'header-two',
+        'header-three',
         'header-four',
         'blockquote',
+		'italic',
+		'underline',
+		'link',
         'unordered-list-item',
         'ordered-list-item',
         'code-block',
