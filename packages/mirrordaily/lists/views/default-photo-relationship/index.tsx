@@ -184,7 +184,6 @@ export const Field = ({
                   }
             }
             orderBy={[{ id: 'desc' }]}
-            query={{ defaultImage: { equals: true } }}
           />
           <Stack across gap="small">
             {onChange !== undefined && !field.hideCreate && (
