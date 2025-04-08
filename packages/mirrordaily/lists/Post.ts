@@ -206,6 +206,25 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
+    state: select({
+      label: '狀態',
+      options: [
+        { label: '草稿', value: PostStatus.Draft },
+        { label: '已發布', value: PostStatus.Published },
+        { label: '預約發佈', value: PostStatus.Scheduled },
+        { label: '下線', value: PostStatus.Archived },
+        { label: '前台不可見', value: PostStatus.Invisible },
+      ],
+      defaultValue: PostStatus.Published,
+      isIndexed: true,
+    }),
+    publishedDate: timestamp({
+      isIndexed: true,
+      isFilterable: true,
+      label: '發佈日期',
+      validation: { isRequired: true },
+      defaultValue: { kind: 'now' },
+    }),
     publishedDateString: text({
       label: '發布日期',
       ui: {
@@ -372,10 +391,6 @@ const listConfigurations = list({
       label: '前言',
       disabledButtons: [
         'code',
-		'bold',
-		'italic',
-		'underline',
-		'link',
         'header-two',
         'header-three',
         'header-four',
@@ -513,25 +528,6 @@ const listConfigurations = list({
         labelField: 'title',
       },
     }),
-    state: select({
-      label: '狀態',
-      options: [
-        { label: '草稿', value: PostStatus.Draft },
-        { label: '已發布', value: PostStatus.Published },
-        { label: '預約發佈', value: PostStatus.Scheduled },
-        { label: '下線', value: PostStatus.Archived },
-        { label: '前台不可見', value: PostStatus.Invisible },
-      ],
-      defaultValue: PostStatus.Draft,
-      isIndexed: true,
-    }),
-    publishedDate: timestamp({
-      isIndexed: true,
-      isFilterable: true,
-      label: '發佈日期',
-      validation: { isRequired: true },
-      defaultValue: { kind: 'now' },
-    }),
     from_External_relateds: relationship({
       label: '相關外部文章(發佈後由演算法自動計算)',
       isFilterable: false,
@@ -608,9 +604,6 @@ const listConfigurations = list({
       isFilterable: false,
       ref: 'Photo',
       ui: {
-        createView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
         displayMode: 'cards',
         cardFields: ['imageFile'],
         //linkToItem: true,
@@ -654,9 +647,9 @@ const listConfigurations = list({
       ui: {
         // A module path that is resolved from where `keystone start` is run
         views: './lists/views/link-button',
-        createView: {
-          fieldMode: 'hidden',
-        },
+        //createView: {
+        //  fieldMode: 'hidden',
+        //},
         listView: {
           fieldMode: 'hidden',
         },
@@ -666,24 +659,24 @@ const listConfigurations = list({
       label: '置頂',
       defaultValue: false,
       ui: {
-        //createView: { fieldMode: 'hidden' },
-        //listView: { fieldMode: 'hidden' },
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     isAdvertised: checkbox({
       label: '廣告文案',
       defaultValue: false,
       ui: {
-        //createView: { fieldMode: 'hidden' },
-        //listView: { fieldMode: 'hidden' },
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     hiddenAdvertised: checkbox({
       label: 'google廣告違規',
       defaultValue: false,
       ui: {
-        //createView: { fieldMode: 'hidden' },
-        //listView: { fieldMode: 'hidden' },
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     isAdult: checkbox({
@@ -871,6 +864,7 @@ const listConfigurations = list({
 			  method: 'GET',
 			})
 		  }
+	  }
       if (operation === 'update') {
         await context.prisma.post.update({
           where: { id: Number(item.id) },
