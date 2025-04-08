@@ -1034,8 +1034,6 @@ type Post {
   slug: String
   title: String
   subtitle: String
-  state: String
-  publishedDate: DateTime
   publishedDateString: String
   updateTimeStamp: Boolean
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
@@ -1069,6 +1067,8 @@ type Post {
   topics: Topic
   relateds(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedsCount(where: PostWhereInput! = {}): Int
+  state: String
+  publishedDate: DateTime
   from_External_relateds(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
   from_External_relatedsCount(where: ExternalWhereInput! = {}): Int
   groups(where: GroupWhereInput! = {}, orderBy: [GroupOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GroupWhereUniqueInput): [Group!]
@@ -1119,8 +1119,6 @@ input PostWhereInput {
   lockExpireAt: DateTimeNullableFilter
   title: StringFilter
   subtitle: StringFilter
-  state: StringNullableFilter
-  publishedDate: DateTimeFilter
   publishedDateString: StringFilter
   sections: SectionManyRelationFilter
   categories: CategoryManyRelationFilter
@@ -1137,6 +1135,8 @@ input PostWhereInput {
   isMember: BooleanFilter
   topics: TopicWhereInput
   relateds: PostManyRelationFilter
+  state: StringNullableFilter
+  publishedDate: DateTimeFilter
   tags: TagManyRelationFilter
   og_title: StringFilter
   isFeatured: BooleanFilter
@@ -1170,14 +1170,14 @@ input PostOrderByInput {
   lockExpireAt: OrderDirection
   title: OrderDirection
   subtitle: OrderDirection
-  state: OrderDirection
-  publishedDate: OrderDirection
   publishedDateString: OrderDirection
   updateTimeStamp: OrderDirection
   extend_byline: OrderDirection
   heroCaption: OrderDirection
   style: OrderDirection
   isMember: OrderDirection
+  state: OrderDirection
+  publishedDate: OrderDirection
   og_title: OrderDirection
   og_description: OrderDirection
   isFeatured: OrderDirection
@@ -1197,8 +1197,6 @@ input PostUpdateInput {
   slug: String
   title: String
   subtitle: String
-  state: String
-  publishedDate: DateTime
   publishedDateString: String
   updateTimeStamp: Boolean
   sections: SectionRelateToManyForUpdateInput
@@ -1222,6 +1220,8 @@ input PostUpdateInput {
   isMember: Boolean
   topics: TopicRelateToOneForUpdateInput
   relateds: PostRelateToManyForUpdateInput
+  state: String
+  publishedDate: DateTime
   from_External_relateds: ExternalRelateToManyForUpdateInput
   groups: GroupRelateToManyForUpdateInput
   manualOrderOfRelateds: JSON
@@ -1305,8 +1305,6 @@ input PostCreateInput {
   slug: String
   title: String
   subtitle: String
-  state: String
-  publishedDate: DateTime
   publishedDateString: String
   updateTimeStamp: Boolean
   sections: SectionRelateToManyForCreateInput
@@ -1330,6 +1328,8 @@ input PostCreateInput {
   isMember: Boolean
   topics: TopicRelateToOneForCreateInput
   relateds: PostRelateToManyForCreateInput
+  state: String
+  publishedDate: DateTime
   from_External_relateds: ExternalRelateToManyForCreateInput
   groups: GroupRelateToManyForCreateInput
   manualOrderOfRelateds: JSON

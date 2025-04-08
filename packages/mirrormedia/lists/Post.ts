@@ -293,15 +293,9 @@ const listConfigurations = list({
     brief: customFields.richTextEditor({
       label: '前言',
       disabledButtons: [
-		'bold',
         'code',
-        'header-two',
-        'header-three',
         'header-four',
         'blockquote',
-		'italic',
-		'underline',
-		'link',
         'unordered-list-item',
         'ordered-list-item',
         'code-block',
@@ -521,9 +515,6 @@ const listConfigurations = list({
       isFilterable: false,
       ref: 'Photo',
       ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
         displayMode: 'cards',
         cardFields: ['imageFile'],
         linkToItem: true,
