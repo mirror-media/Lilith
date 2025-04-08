@@ -515,6 +515,9 @@ const listConfigurations = list({
       isFilterable: false,
       ref: 'Photo',
       ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
         displayMode: 'cards',
         cardFields: ['imageFile'],
         linkToItem: true,
@@ -549,9 +552,9 @@ const listConfigurations = list({
       ui: {
         // A module path that is resolved from where `keystone start` is run
         views: './lists/views/link-button',
-        createView: {
-          fieldMode: 'hidden',
-        },
+        //createView: {
+        //  fieldMode: 'hidden',
+        //},
         listView: {
           fieldMode: 'hidden',
         },
