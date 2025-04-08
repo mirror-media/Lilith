@@ -364,6 +364,22 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
       },
     }),
+    defaultHeroImage: relationship({
+      label: '首圖預設圖(選擇此項後，請不要再選首圖)',
+      ref: 'Photo',
+      many: false,
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['imageFile'],
+        //linkToItem: true,
+        inlineCreate: {
+          fields: ['name', 'imageFile', 'waterMark', 'defaultImage'],
+        },
+        inlineConnect: true,
+        views: './lists/views/default-photo-relationship/index',
+      },
+    }),
+
     heroCaption: text({
       label: '首圖圖說',
       isFilterable: false,
@@ -829,6 +845,12 @@ const listConfigurations = list({
         resolvedData.publishedDate = new Date(now.setSeconds(0, 0))
         resolvedData.updatedAt = new Date()
         resolvedData.updateTimeStamp = false
+      }
+      if (
+        (operation === 'create' || operation === 'update') &&
+        resolvedData.defaultHeroImage
+      ) {
+        resolvedData.heroImage = resolvedData.defaultHeroImage
       }
       return resolvedData
     },
