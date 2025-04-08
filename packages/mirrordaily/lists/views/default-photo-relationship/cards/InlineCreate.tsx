@@ -47,12 +47,17 @@ export function InlineCreate({
 
   const [value, setValue] = useState(() => {
     const value: Value = {}
-    Object.keys(fields).forEach((fieldPath) => {
-      value[fieldPath] = {
-        kind: 'value',
-        value: fields[fieldPath].controller.defaultValue,
+    for (const fieldPath in fields) {
+      if (fieldPath === 'defaultImage') {
+        // 對 defaultImage 直接設定 true
+        value[fieldPath] = { kind: 'value', value: true }
+      } else {
+        value[fieldPath] = {
+          kind: 'value',
+          value: fields[fieldPath].controller.defaultValue,
+        }
       }
-    })
+    }
     return value
   })
 

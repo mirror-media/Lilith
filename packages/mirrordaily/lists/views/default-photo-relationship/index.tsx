@@ -547,7 +547,6 @@ export const controller = (
             onChange(newItems.map((item) => item.id).join(','))
           },
         }
-        // const where = { defaultImage: { equals: true } };
         return (
           <RelationshipSelect
             controlShouldRenderValue
@@ -558,7 +557,6 @@ export const controller = (
             isDisabled={onChange === undefined}
             state={state}
             orderBy={[{ id: 'desc' }]}
-            // query={where}
           />
         )
       },
