@@ -215,7 +215,7 @@ const listConfigurations = list({
         { label: '下線', value: PostStatus.Archived },
         { label: '前台不可見', value: PostStatus.Invisible },
       ],
-      defaultValue: PostStatus.Published,
+      defaultValue: PostStatus.Draft,
       isIndexed: true,
     }),
     publishedDate: timestamp({
@@ -302,13 +302,13 @@ const listConfigurations = list({
       },
     }),
     designers: relationship({
-      label: '設計',
+      label: '編輯',
       ref: 'Contact',
       many: true,
       ui: {
-        createView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
+        //createView: { fieldMode: 'hidden' },
+        //listView: { fieldMode: 'hidden' },
+        //itemView: { fieldMode: 'hidden' },
       },
     }),
     engineers: relationship({
@@ -860,9 +860,10 @@ const listConfigurations = list({
     },
     afterOperation: async ({ operation, item, context, resolvedData }) => {
 	  if (resolvedData.state && resolvedData.state === 'published') {
-			return fetch(dataServiceApi, {
+			return fetch(dataServiceApi + "?id=" + item.id, {
 			  method: 'GET',
 			})
+			console.log("auto tagging")
 		  }
       if (operation === 'update') {
         await context.prisma.post.update({
