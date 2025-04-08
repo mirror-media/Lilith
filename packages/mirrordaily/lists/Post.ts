@@ -196,7 +196,7 @@ const listConfigurations = list({
       },
     }),
     title: text({
-      label: '標題',
+      label: '標題（建議字數：28字）',
     }),
     subtitle: text({
       label: '副標',
