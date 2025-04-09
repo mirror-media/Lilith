@@ -343,7 +343,7 @@ const listConfigurations = list({
         cardFields: ['imageFile'],
         //linkToItem: true,
         inlineCreate: {
-          fields: ['name', 'imageFile', 'waterMark', 'defaultImage'],
+          fields: ['name', 'imageFile', 'waterMark'],
         },
         inlineConnect: true,
         views: './lists/views/default-photo-relationship/index',
@@ -377,9 +377,9 @@ const listConfigurations = list({
       label: '前言',
       disabledButtons: [
         'code',
-		'bold',
-		'italic',
-		'underline',
+        'bold',
+        'italic',
+        'underline',
         'header-two',
         'header-three',
         'header-four',
@@ -387,7 +387,7 @@ const listConfigurations = list({
         'unordered-list-item',
         'ordered-list-item',
         'code-block',
-		'link',
+        'link',
         'annotation',
         'divider',
         'embed',
@@ -852,7 +852,9 @@ const listConfigurations = list({
       }
       if (
         (operation === 'create' || operation === 'update') &&
-        resolvedData.defaultHeroImage
+        resolvedData.defaultHeroImage &&
+        Object.hasOwn(resolvedData.defaultHeroImage, 'connect')
+        // 限制更新回 heroImage 的行為僅在新增或更改 defaultHeroImage 的情況
       ) {
         resolvedData.heroImage = resolvedData.defaultHeroImage
       }
@@ -885,12 +887,16 @@ const listConfigurations = list({
       return
     },
     afterOperation: async ({ operation, item, context, resolvedData }) => {
-	  if (resolvedData.state && resolvedData.state === 'published') {
-			return fetch(dataServiceApi + "?id=" + item.id, {
-			  method: 'GET',
-			})
-			console.log("auto tagging")
-		  }
+      if (
+        resolvedData &&
+        resolvedData.state &&
+        resolvedData.state === 'published'
+      ) {
+        // trigger auto tagging service
+        await fetch(envVar.dataServiceApi + '?id=' + item.id, {
+          method: 'GET',
+        })
+      }
       if (operation === 'update') {
         await context.prisma.post.update({
           where: { id: Number(item.id) },
