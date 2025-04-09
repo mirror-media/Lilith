@@ -377,9 +377,9 @@ const listConfigurations = list({
       label: '前言',
       disabledButtons: [
         'code',
-		'bold',
-		'italic',
-		'underline',
+        'bold',
+        'italic',
+        'underline',
         'header-two',
         'header-three',
         'header-four',
@@ -387,7 +387,7 @@ const listConfigurations = list({
         'unordered-list-item',
         'ordered-list-item',
         'code-block',
-		'link',
+        'link',
         'annotation',
         'divider',
         'embed',
@@ -885,12 +885,16 @@ const listConfigurations = list({
       return
     },
     afterOperation: async ({ operation, item, context, resolvedData }) => {
-	  if (resolvedData.state && resolvedData.state === 'published') {
-			return fetch(dataServiceApi + "?id=" + item.id, {
-			  method: 'GET',
-			})
-			console.log("auto tagging")
-		  }
+      if (
+        resolvedData &&
+        resolvedData.state &&
+        resolvedData.state === 'published'
+      ) {
+        // trigger auto tagging service
+        await fetch(envVar.dataServiceApi + '?id=' + item.id, {
+          method: 'GET',
+        })
+      }
       if (operation === 'update') {
         await context.prisma.post.update({
           where: { id: Number(item.id) },
