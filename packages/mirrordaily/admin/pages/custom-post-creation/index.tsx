@@ -26,14 +26,14 @@ const LIST_KEY = 'Post'
 const PICKED_FIELDS = [
   'id',
   'title',
-  'state',
-  'publishedDate',
   'sections',
   'writers',
   'content',
   'heroImage',
   'heroCaption',
   'relateds',
+  'state',
+  'publishedDate',
 ]
 
 type Section = {
