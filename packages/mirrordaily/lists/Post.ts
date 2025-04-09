@@ -243,6 +243,9 @@ const listConfigurations = list({
       label: '作者',
       ref: 'Contact',
       many: true,
+      ui: {
+        views: './lists/views/default-author-relationship/index',
+      },
     }),
     manualOrderOfWriters: json({
       label: '作者手動排序結果',
