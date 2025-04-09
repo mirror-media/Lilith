@@ -1039,7 +1039,6 @@ type Post {
   slug: String
   title: String
   subtitle: String
-  updateTimeStamp: Boolean
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
   manualOrderOfSections: JSON
@@ -1073,6 +1072,7 @@ type Post {
   state: String
   publishedDate: DateTime
   publishedDateString: String
+  updateTimeStamp: Boolean
   relateds(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedsCount(where: PostWhereInput! = {}): Int
   from_External_relateds(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
@@ -1177,7 +1177,6 @@ input PostOrderByInput {
   lockExpireAt: OrderDirection
   title: OrderDirection
   subtitle: OrderDirection
-  updateTimeStamp: OrderDirection
   extend_byline: OrderDirection
   heroCaption: OrderDirection
   style: OrderDirection
@@ -1185,6 +1184,7 @@ input PostOrderByInput {
   state: OrderDirection
   publishedDate: OrderDirection
   publishedDateString: OrderDirection
+  updateTimeStamp: OrderDirection
   og_title: OrderDirection
   og_description: OrderDirection
   isFeatured: OrderDirection
@@ -1204,7 +1204,6 @@ input PostUpdateInput {
   slug: String
   title: String
   subtitle: String
-  updateTimeStamp: Boolean
   sections: SectionRelateToManyForUpdateInput
   manualOrderOfSections: JSON
   categories: CategoryRelateToManyForUpdateInput
@@ -1229,6 +1228,7 @@ input PostUpdateInput {
   state: String
   publishedDate: DateTime
   publishedDateString: String
+  updateTimeStamp: Boolean
   relateds: PostRelateToManyForUpdateInput
   from_External_relateds: ExternalRelateToManyForUpdateInput
   groups: GroupRelateToManyForUpdateInput
@@ -1313,7 +1313,6 @@ input PostCreateInput {
   slug: String
   title: String
   subtitle: String
-  updateTimeStamp: Boolean
   sections: SectionRelateToManyForCreateInput
   manualOrderOfSections: JSON
   categories: CategoryRelateToManyForCreateInput
@@ -1338,6 +1337,7 @@ input PostCreateInput {
   state: String
   publishedDate: DateTime
   publishedDateString: String
+  updateTimeStamp: Boolean
   relateds: PostRelateToManyForCreateInput
   from_External_relateds: ExternalRelateToManyForCreateInput
   groups: GroupRelateToManyForCreateInput

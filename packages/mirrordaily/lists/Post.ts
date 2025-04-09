@@ -206,11 +206,6 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
-    updateTimeStamp: checkbox({
-      label: '下次存檔時自動更改成「現在時間」',
-      isFilterable: false,
-      defaultValue: true,
-    }),
     sections: relationship({
       label: '大分類',
       ref: 'Section.posts',
@@ -539,6 +534,11 @@ const listConfigurations = list({
         },
       },
     }),
+    updateTimeStamp: checkbox({
+      label: '下次存檔時自動更改成「現在時間」',
+      isFilterable: false,
+      defaultValue: true,
+    }),
     relateds: relationship({
       label: '相關文章',
       ref: 'Post',
@@ -624,6 +624,9 @@ const listConfigurations = list({
       isFilterable: false,
       ref: 'Photo',
       ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
         displayMode: 'cards',
         cardFields: ['imageFile'],
         //linkToItem: true,
@@ -667,9 +670,9 @@ const listConfigurations = list({
       ui: {
         // A module path that is resolved from where `keystone start` is run
         views: './lists/views/link-button',
-        //createView: {
-        //  fieldMode: 'hidden',
-        //},
+        createView: {
+          fieldMode: 'hidden',
+        },
         listView: {
           fieldMode: 'hidden',
         },
@@ -687,7 +690,7 @@ const listConfigurations = list({
       label: '廣告文案',
       defaultValue: false,
       ui: {
-        createView: { fieldMode: 'hidden' },
+        //createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
       },
     }),
@@ -695,7 +698,7 @@ const listConfigurations = list({
       label: 'google廣告違規',
       defaultValue: false,
       ui: {
-        createView: { fieldMode: 'hidden' },
+        //createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
       },
     }),
@@ -893,9 +896,11 @@ const listConfigurations = list({
         resolvedData.state === 'published'
       ) {
         // trigger auto tagging service
-        await fetch(envVar.dataServiceApi + '?id=' + item.id, {
+        const result = fetch(envVar.dataServiceApi + '?id=' + item.id, {
           method: 'GET',
         })
+		console.log(envVar.dataServiceApi + '?id=' + item.id)
+		console.log("tagging result :" + result)
       }
       if (operation === 'update') {
         await context.prisma.post.update({
