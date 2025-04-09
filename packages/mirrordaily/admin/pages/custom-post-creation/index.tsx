@@ -19,8 +19,6 @@ import {
   BaseToolbar,
 } from '../../components/common'
 import { useCreateItem } from '../../utils/use-create-item'
-import { useRef } from 'react'
-import { gql, useQuery } from '@keystone-6/core/admin-ui/apollo'
 
 const LIST_KEY = 'Post'
 const PICKED_FIELDS = [
@@ -36,131 +34,9 @@ const PICKED_FIELDS = [
   'publishedDate',
 ]
 
-type Section = {
-  id: string
-  name: string
-}
-
 function CreatePageForm(props: { list: ListMeta }) {
-  const { authenticatedItem } = useKeystone()
   const createItem = useCreateItem(props.list)
   const router = useRouter()
-  // use Ref to prevent infinite re-render
-  const isAssignedRef = useRef(false)
-  const { data } = useQuery(
-    gql`
-      query GetAuthorAndSections(
-        $where: SectionWhereInput! = {}
-        $userId: ID!
-      ) {
-        sections(where: $where) {
-          id
-          name
-        }
-        user(where: { id: $userId }) {
-          author {
-            id
-            name
-            sections {
-              id
-              name
-            }
-          }
-        }
-      }
-    `,
-    {
-      variables: {
-        where: { name: { equals: '即時' } },
-        // @ts-ignore: authenticatedItem.id exists
-        userId: authenticatedItem.id,
-      },
-    }
-  )
-
-  if (isAssignedRef.current === false && data) {
-    const sections: any[] = []
-    const idSet = new Set()
-
-    const iteratorFn = (item: Section) => {
-      const id = item.id
-
-      if (!idSet.has(id)) {
-        idSet.add(id)
-
-        sections.push({
-          id: item.id,
-          label: item.name,
-          data: {
-            __typename: 'Section',
-          },
-        })
-      }
-    }
-
-    if (Array.isArray(data.sections) && data.sections.length > 0) {
-      // set `即時` section as default
-      data.sections.forEach(iteratorFn)
-    }
-
-    if (
-      Array.isArray(data.user?.author?.sections) &&
-      data.user.author.sections.length > 0
-    ) {
-      // add user related sections
-      data.user.author.sections.forEach(iteratorFn)
-    }
-
-    let shouldChange = false
-    const update = Object.assign({}, createItem.props.value)
-
-    if (sections.length > 0) {
-      Object.assign(update, {
-        sections: {
-          ...update.sections,
-          value: {
-            // @ts-ignore: .value exists
-            ...update.sections.value,
-            value: sections,
-          },
-        },
-      })
-
-      shouldChange = true
-    }
-
-    if (data.user?.author) {
-      const item = data.user.author
-
-      Object.assign(update, {
-        writers: {
-          ...update.writers,
-          value: {
-            // @ts-ignore: .value exists
-            ...update.writers.value,
-            value: [
-              {
-                id: item.id,
-                label: item.name,
-                data: {
-                  __typename: 'Contact',
-                },
-              },
-            ],
-          },
-        },
-      })
-
-      shouldChange = true
-    }
-
-    if (shouldChange) {
-      createItem.props.onChange(() => {
-        return update
-      })
-      isAssignedRef.current = true
-    }
-  }
 
   return (
     <Box paddingTop="xlarge">
