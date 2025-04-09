@@ -252,7 +252,6 @@ model Post {
   slug                       String         @default("")
   title                      String         @default("")
   subtitle                   String         @default("")
-  updateTimeStamp            Boolean        @default(true)
   sections                   Section[]      @relation("Post_sections")
   manualOrderOfSections      Json?
   categories                 Category[]     @relation("Category_posts")
@@ -281,6 +280,7 @@ model Post {
   state                      String?        @default("draft")
   publishedDate              DateTime       @default(now())
   publishedDateString        String         @default("")
+  updateTimeStamp            Boolean        @default(true)
   relateds                   Post[]         @relation("Post_relateds")
   from_External_relateds     External[]     @relation("External_relateds")
   groups                     Group[]        @relation("Group_posts")
