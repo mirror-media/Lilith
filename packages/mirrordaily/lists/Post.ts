@@ -504,41 +504,6 @@ const listConfigurations = list({
         labelField: 'name',
       },
     }),
-    state: select({
-      label: '狀態',
-      options: [
-        { label: '草稿', value: PostStatus.Draft },
-        { label: '已發布', value: PostStatus.Published },
-        { label: '預約發佈', value: PostStatus.Scheduled },
-        { label: '下線', value: PostStatus.Archived },
-        { label: '前台不可見', value: PostStatus.Invisible },
-      ],
-      defaultValue: PostStatus.Draft,
-      isIndexed: true,
-    }),
-    publishedDate: timestamp({
-      isIndexed: true,
-      isFilterable: true,
-      label: '發佈日期',
-      validation: { isRequired: true },
-      defaultValue: { kind: 'now' },
-    }),
-    publishedDateString: text({
-      label: '發布日期',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'hidden',
-        },
-      },
-    }),
-    updateTimeStamp: checkbox({
-      label: '下次存檔時自動更改成「現在時間」',
-      isFilterable: false,
-      defaultValue: true,
-    }),
     relateds: relationship({
       label: '相關文章',
       ref: 'Post',
@@ -599,6 +564,41 @@ const listConfigurations = list({
         //itemView: { fieldMode: 'hidden' },
         //listView: { fieldMode: 'hidden' },
       },
+    }),
+    state: select({
+      label: '狀態',
+      options: [
+        { label: '草稿', value: PostStatus.Draft },
+        { label: '已發布', value: PostStatus.Published },
+        { label: '預約發佈', value: PostStatus.Scheduled },
+        { label: '下線', value: PostStatus.Archived },
+        { label: '前台不可見', value: PostStatus.Invisible },
+      ],
+      defaultValue: PostStatus.Draft,
+      isIndexed: true,
+    }),
+    publishedDate: timestamp({
+      isIndexed: true,
+      isFilterable: true,
+      label: '發佈日期',
+      validation: { isRequired: true },
+      defaultValue: { kind: 'now' },
+    }),
+    publishedDateString: text({
+      label: '發布日期',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+    }),
+    updateTimeStamp: checkbox({
+      label: '下次存檔時自動更改成「現在時間」',
+      isFilterable: false,
+      defaultValue: true,
     }),
     og_title: text({
       label: 'FB分享標題',
