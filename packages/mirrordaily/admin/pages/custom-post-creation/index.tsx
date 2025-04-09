@@ -30,9 +30,9 @@ const PICKED_FIELDS = [
   'publishedDate',
   'sections',
   'writers',
-  'heroVideo',
   'content',
   'heroImage',
+  'heroCaption',
   'relateds',
 ]
 
@@ -49,15 +49,22 @@ function CreatePageForm(props: { list: ListMeta }) {
   const isAssignedRef = useRef(false)
   const { data } = useQuery(
     gql`
-      query GetSections($where: SectionWhereInput! = {}, $userId: ID!) {
+      query GetAuthorAndSections(
+        $where: SectionWhereInput! = {}
+        $userId: ID!
+      ) {
         sections(where: $where) {
           id
           name
         }
         user(where: { id: $userId }) {
-          sections {
+          author {
             id
             name
+            sections {
+              id
+              name
+            }
           }
         }
       }
@@ -96,23 +103,60 @@ function CreatePageForm(props: { list: ListMeta }) {
       data.sections.forEach(iteratorFn)
     }
 
-    if (Array.isArray(data.user?.sections) && data.user.sections.length > 0) {
+    if (
+      Array.isArray(data.user?.author?.sections) &&
+      data.user.author.sections.length > 0
+    ) {
       // add user related sections
-      data.user.sections.forEach(iteratorFn)
+      data.user.author.sections.forEach(iteratorFn)
     }
 
+    let shouldChange = false
+    const update = Object.assign({}, createItem.props.value)
+
     if (sections.length > 0) {
-      createItem.props.onChange(() => {
-        return Object.assign({}, createItem.props.value, {
-          sections: {
-            ...createItem.props.value.sections,
-            value: {
-              // @ts-ignore: .value exists
-              ...createItem.props.value.sections.value,
-              value: sections,
-            },
+      Object.assign(update, {
+        sections: {
+          ...update.sections,
+          value: {
+            // @ts-ignore: .value exists
+            ...update.sections.value,
+            value: sections,
           },
-        })
+        },
+      })
+
+      shouldChange = true
+    }
+
+    if (data.user?.author) {
+      const item = data.user.author
+
+      Object.assign(update, {
+        writers: {
+          ...update.writers,
+          value: {
+            // @ts-ignore: .value exists
+            ...update.writers.value,
+            value: [
+              {
+                id: item.id,
+                label: item.name,
+                data: {
+                  __typename: 'Contact',
+                },
+              },
+            ],
+          },
+        },
+      })
+
+      shouldChange = true
+    }
+
+    if (shouldChange) {
+      createItem.props.onChange(() => {
+        return update
       })
       isAssignedRef.current = true
     }
