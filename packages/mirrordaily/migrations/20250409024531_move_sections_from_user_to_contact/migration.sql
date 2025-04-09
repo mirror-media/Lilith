@@ -29,4 +29,4 @@ ALTER TABLE "_Contact_sections" ADD CONSTRAINT "_Contact_sections_B_fkey" FOREIG
 UPDATE "User" AS "U" SET "author" = "T"."id" FROM (SELECT "Contact"."id", "User"."id" AS "User_id" FROM "Contact" LEFT JOIN "User" ON ("Contact"."name" = "User"."name")) AS "T" WHERE "U"."id" = "T"."User_id";
 
 -- Copy User-Section relationship to Contact-Section
-INSERT INTO "_Contact_sections" ("A", "B") SELECT "US"."Section_id", "C"."id" FROM "Contact" AS "C" INNER JOIN (SELECT "User"."name", "Section"."id" AS "Section_id", "Section"."name" AS "Section_name" FROM "_User_sections" LEFT OUTER JOIN "User" ON ("_User_sections"."B" = "User"."id") LEFT OUTER JOIN "Section" ON ("_User_sections"."A" = "Section"."id")) AS "US" ON ("C"."name" = "US"."name");
+INSERT INTO "_Contact_sections" ("A", "B") SELECT "C"."id", "US"."Section_id", FROM "Contact" AS "C" INNER JOIN (SELECT "User"."name", "Section"."id" AS "Section_id", "Section"."name" AS "Section_name" FROM "_User_sections" LEFT OUTER JOIN "User" ON ("_User_sections"."B" = "User"."id") LEFT OUTER JOIN "Section" ON ("_User_sections"."A" = "Section"."id")) AS "US" ON ("C"."name" = "US"."name");
