@@ -30,9 +30,9 @@ const PICKED_FIELDS = [
   'publishedDate',
   'sections',
   'writers',
-  'heroVideo',
   'content',
   'heroImage',
+  'heroCaption',
   'relateds',
 ]
 
