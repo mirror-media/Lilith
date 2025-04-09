@@ -86,11 +86,6 @@ function LinkToRelatedItems({
   )
 }
 
-type Section = {
-  id: string
-  name: string
-}
-
 export const Field = ({
   field,
   autoFocus,
@@ -110,19 +105,16 @@ export const Field = ({
   const isAssignedRef = useRef(value.id !== null)
   const { data } = useQuery(
     gql`
-      query GetAuthorAndSections(
-        $where: SectionWhereInput! = {}
-        $userId: ID!
-      ) {
+      query GetSections($where: SectionWhereInput! = {}, $userId: ID!) {
         sections(where: $where) {
           id
-          name
+          label: name
         }
         user(where: { id: $userId }) {
           author {
             sections {
               id
-              name
+              label: name
             }
           }
         }
@@ -141,7 +133,7 @@ export const Field = ({
     const sections: any[] = []
     const idSet = new Set()
 
-    const iteratorFn = (item: Section) => {
+    const iteratorFn = (item: Value) => {
       const id = item.id
 
       if (!idSet.has(id)) {
@@ -149,7 +141,7 @@ export const Field = ({
 
         sections.push({
           id: item.id,
-          label: item.name,
+          label: item.label,
         })
       }
     }
@@ -419,17 +411,19 @@ export const CardValue: CardValueComponent<typeof controller> = ({
   )
 }
 
+type Value = { label: string; id: string }
+
 type SingleRelationshipValue = {
   kind: 'one'
   id: null | string
-  initialValue: { label: string; id: string } | null
-  value: { label: string; id: string } | null
+  initialValue: Value | null
+  value: Value | null
 }
 type ManyRelationshipValue = {
   kind: 'many'
   id: null | string
-  initialValue: { label: string; id: string }[]
-  value: { label: string; id: string }[]
+  initialValue: Value[]
+  value: Value[]
 }
 type CardsRelationshipValue = {
   kind: 'cards-view'
@@ -619,8 +613,8 @@ export const controller = (
         })
         const state: {
           kind: 'many'
-          value: { label: string; id: string }[]
-          onChange: (newItems: { label: string; id: string }[]) => void
+          value: Value[]
+          onChange: (newItems: Value[]) => void
         } = {
           kind: 'many',
           value: filterValues,
