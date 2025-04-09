@@ -212,6 +212,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         labelField: 'name',
+        views: './lists/views/default-section-relationship/index',
       },
     }),
     manualOrderOfSections: json({
@@ -899,8 +900,8 @@ const listConfigurations = list({
         const result = fetch(envVar.dataServiceApi + '?id=' + item.id, {
           method: 'GET',
         })
-		console.log(envVar.dataServiceApi + '?id=' + item.id)
-		console.log("tagging result :" + result)
+        console.log(envVar.dataServiceApi + '?id=' + item.id)
+        console.log('tagging result :' + result)
       }
       if (operation === 'update') {
         await context.prisma.post.update({
