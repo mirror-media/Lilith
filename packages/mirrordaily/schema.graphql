@@ -329,6 +329,8 @@ type Contact {
   id: ID!
   name: String
   content: String
+  sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -346,6 +348,7 @@ input ContactWhereInput {
   id: IDFilter
   name: StringFilter
   content: StringFilter
+  sections: SectionManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -363,6 +366,7 @@ input ContactOrderByInput {
 input ContactUpdateInput {
   name: String
   content: String
+  sections: SectionRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -377,6 +381,7 @@ input ContactUpdateArgs {
 input ContactCreateInput {
   name: String
   content: String
+  sections: SectionRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1830,6 +1835,7 @@ type User {
   role: String
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
+  author: Contact
   isProtected: Boolean
 }
 
@@ -1851,6 +1857,7 @@ input UserWhereInput {
   email: StringFilter
   role: StringFilter
   sections: SectionManyRelationFilter
+  author: ContactWhereInput
   isProtected: BooleanFilter
 }
 
@@ -1868,7 +1875,14 @@ input UserUpdateInput {
   password: String
   role: String
   sections: SectionRelateToManyForUpdateInput
+  author: ContactRelateToOneForUpdateInput
   isProtected: Boolean
+}
+
+input ContactRelateToOneForUpdateInput {
+  create: ContactCreateInput
+  connect: ContactWhereUniqueInput
+  disconnect: Boolean
 }
 
 input UserUpdateArgs {
@@ -1882,7 +1896,13 @@ input UserCreateInput {
   password: String
   role: String
   sections: SectionRelateToManyForCreateInput
+  author: ContactRelateToOneForCreateInput
   isProtected: Boolean
+}
+
+input ContactRelateToOneForCreateInput {
+  create: ContactCreateInput
+  connect: ContactWhereUniqueInput
 }
 
 type Video {

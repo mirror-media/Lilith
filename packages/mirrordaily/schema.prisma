@@ -62,6 +62,7 @@ model Contact {
   id                      Int       @id @default(autoincrement())
   name                    String    @default("")
   content                 String    @default("")
+  sections                Section[] @relation("Contact_sections")
   createdAt               DateTime?
   updatedAt               DateTime?
   createdBy               User?     @relation("Contact_createdBy", fields: [createdById], references: [id])
@@ -74,6 +75,7 @@ model Contact {
   from_Post_designers     Post[]    @relation("Post_designers")
   from_Post_engineers     Post[]    @relation("Post_engineers")
   from_Post_vocals        Post[]    @relation("Post_vocals")
+  from_User_author        User[]    @relation("User_author")
 
   @@index([name])
   @@index([createdById])
@@ -327,28 +329,29 @@ model Post {
 }
 
 model Section {
-  id                  Int        @id @default(autoincrement())
-  name                String     @unique @default("")
-  description         String     @default("")
-  color               String
-  slug                String     @unique @default("")
-  order               Int?
-  state               String     @default("active")
-  isFeatured          Boolean    @default(false)
-  heroImage           Photo?     @relation("Section_heroImage", fields: [heroImageId], references: [id])
-  heroImageId         Int?       @map("heroImage")
-  categories          Category[] @relation("Category_sections")
-  posts               Post[]     @relation("Post_sections")
-  topics              Topic[]    @relation("Section_topics")
-  createdAt           DateTime?
-  updatedAt           DateTime?
-  createdBy           User?      @relation("Section_createdBy", fields: [createdById], references: [id])
-  createdById         Int?       @map("createdBy")
-  updatedBy           User?      @relation("Section_updatedBy", fields: [updatedById], references: [id])
-  updatedById         Int?       @map("updatedBy")
-  from_Event_sections Event[]    @relation("Event_sections")
-  from_Header_section Header[]   @relation("Header_section")
-  from_User_sections  User[]     @relation("User_sections")
+  id                    Int        @id @default(autoincrement())
+  name                  String     @unique @default("")
+  description           String     @default("")
+  color                 String
+  slug                  String     @unique @default("")
+  order                 Int?
+  state                 String     @default("active")
+  isFeatured            Boolean    @default(false)
+  heroImage             Photo?     @relation("Section_heroImage", fields: [heroImageId], references: [id])
+  heroImageId           Int?       @map("heroImage")
+  categories            Category[] @relation("Category_sections")
+  posts                 Post[]     @relation("Post_sections")
+  topics                Topic[]    @relation("Section_topics")
+  createdAt             DateTime?
+  updatedAt             DateTime?
+  createdBy             User?      @relation("Section_createdBy", fields: [createdById], references: [id])
+  createdById           Int?       @map("createdBy")
+  updatedBy             User?      @relation("Section_updatedBy", fields: [updatedById], references: [id])
+  updatedById           Int?       @map("updatedBy")
+  from_Contact_sections Contact[]  @relation("Contact_sections")
+  from_Event_sections   Event[]    @relation("Event_sections")
+  from_Header_section   Header[]   @relation("Header_section")
+  from_User_sections    User[]     @relation("User_sections")
 
   @@index([state])
   @@index([heroImageId])
@@ -433,6 +436,8 @@ model User {
   password                    String
   role                        String
   sections                    Section[]      @relation("User_sections")
+  author                      Contact?       @relation("User_author", fields: [authorId], references: [id])
+  authorId                    Int?           @map("author")
   isProtected                 Boolean        @default(false)
   from_AudioFile_createdBy    AudioFile[]    @relation("AudioFile_createdBy")
   from_AudioFile_updatedBy    AudioFile[]    @relation("AudioFile_updatedBy")
@@ -471,6 +476,8 @@ model User {
   from_Warning_updatedBy      Warning[]      @relation("Warning_updatedBy")
   from_PopularTag_createdBy   PopularTag[]   @relation("PopularTag_createdBy")
   from_PopularTag_updatedBy   PopularTag[]   @relation("PopularTag_updatedBy")
+
+  @@index([authorId])
 }
 
 model Video {
