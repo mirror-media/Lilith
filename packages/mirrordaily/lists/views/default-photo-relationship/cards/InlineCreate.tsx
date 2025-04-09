@@ -48,14 +48,9 @@ export function InlineCreate({
   const [value, setValue] = useState(() => {
     const value: Value = {}
     for (const fieldPath in fields) {
-      if (fieldPath === 'defaultImage') {
-        // 對 defaultImage 直接設定 true
-        value[fieldPath] = { kind: 'value', value: true }
-      } else {
-        value[fieldPath] = {
-          kind: 'value',
-          value: fields[fieldPath].controller.defaultValue,
-        }
+      value[fieldPath] = {
+        kind: 'value',
+        value: fields[fieldPath].controller.defaultValue,
       }
     }
     return value
@@ -82,6 +77,9 @@ export function InlineCreate({
         Object.assign(data, serialized)
       }
     })
+
+    // 直接指定 defaultImage 為 true
+    Object.assign(data, { defaultImage: true })
 
     createItem({
       variables: {

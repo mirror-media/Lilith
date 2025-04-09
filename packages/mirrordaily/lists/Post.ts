@@ -343,7 +343,7 @@ const listConfigurations = list({
         cardFields: ['imageFile'],
         //linkToItem: true,
         inlineCreate: {
-          fields: ['name', 'imageFile', 'waterMark', 'defaultImage'],
+          fields: ['name', 'imageFile', 'waterMark'],
         },
         inlineConnect: true,
         views: './lists/views/default-photo-relationship/index',
@@ -852,7 +852,9 @@ const listConfigurations = list({
       }
       if (
         (operation === 'create' || operation === 'update') &&
-        resolvedData.defaultHeroImage
+        resolvedData.defaultHeroImage &&
+        Object.hasOwn(resolvedData.defaultHeroImage, 'connect')
+        // 限制更新回 heroImage 的行為僅在新增或更改 defaultHeroImage 的情況
       ) {
         resolvedData.heroImage = resolvedData.defaultHeroImage
       }
