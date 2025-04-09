@@ -168,7 +168,7 @@ const listConfigurations = list({
       isFilterable: false,
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
+        //itemView: { fieldMode: 'read' },
         displayMode: 'cards',
         cardFields: ['name'],
       },
