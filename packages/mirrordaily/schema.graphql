@@ -1074,10 +1074,6 @@ type Post {
   content: JSON
   isMember: Boolean
   topics: Topic
-  state: String
-  publishedDate: DateTime
-  publishedDateString: String
-  updateTimeStamp: Boolean
   relateds(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedsCount(where: PostWhereInput! = {}): Int
   from_External_relateds(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
@@ -1089,6 +1085,10 @@ type Post {
   tagsCount(where: TagWhereInput! = {}): Int
   tags_algo(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tags_algoCount(where: TagWhereInput! = {}): Int
+  state: String
+  publishedDate: DateTime
+  publishedDateString: String
+  updateTimeStamp: Boolean
   og_title: String
   og_description: String
   og_image: Photo
@@ -1145,11 +1145,11 @@ input PostWhereInput {
   style: StringNullableFilter
   isMember: BooleanFilter
   topics: TopicWhereInput
+  relateds: PostManyRelationFilter
+  tags: TagManyRelationFilter
   state: StringNullableFilter
   publishedDate: DateTimeFilter
   publishedDateString: StringFilter
-  relateds: PostManyRelationFilter
-  tags: TagManyRelationFilter
   og_title: StringFilter
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
@@ -1230,16 +1230,16 @@ input PostUpdateInput {
   content: JSON
   isMember: Boolean
   topics: TopicRelateToOneForUpdateInput
-  state: String
-  publishedDate: DateTime
-  publishedDateString: String
-  updateTimeStamp: Boolean
   relateds: PostRelateToManyForUpdateInput
   from_External_relateds: ExternalRelateToManyForUpdateInput
   groups: GroupRelateToManyForUpdateInput
   manualOrderOfRelateds: JSON
   tags: TagRelateToManyForUpdateInput
   tags_algo: TagRelateToManyForUpdateInput
+  state: String
+  publishedDate: DateTime
+  publishedDateString: String
+  updateTimeStamp: Boolean
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForUpdateInput
@@ -1339,16 +1339,16 @@ input PostCreateInput {
   content: JSON
   isMember: Boolean
   topics: TopicRelateToOneForCreateInput
-  state: String
-  publishedDate: DateTime
-  publishedDateString: String
-  updateTimeStamp: Boolean
   relateds: PostRelateToManyForCreateInput
   from_External_relateds: ExternalRelateToManyForCreateInput
   groups: GroupRelateToManyForCreateInput
   manualOrderOfRelateds: JSON
   tags: TagRelateToManyForCreateInput
   tags_algo: TagRelateToManyForCreateInput
+  state: String
+  publishedDate: DateTime
+  publishedDateString: String
+  updateTimeStamp: Boolean
   og_title: String
   og_description: String
   og_image: PhotoRelateToOneForCreateInput
