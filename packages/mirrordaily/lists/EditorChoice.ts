@@ -3,7 +3,7 @@ import { list } from '@keystone-6/core'
 import { relationship, select, integer, text } from '@keystone-6/core/fields'
 import { State } from '../type'
 
-const { allowRoles, admin, moderator, editor } = utils.accessControl
+const { allowRoles, admin } = utils.accessControl
 
 enum EditorChoiceState {
   Draft = State.Draft,
@@ -67,9 +67,9 @@ const listConfigurations = list({
   },
   access: {
     operation: {
-      query: allowRoles(admin, moderator, editor),
-      update: allowRoles(admin, moderator),
-      create: allowRoles(admin, moderator),
+      query: allowRoles(admin),
+      update: allowRoles(admin),
+      create: allowRoles(admin),
       delete: allowRoles(admin),
     },
   },
