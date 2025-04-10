@@ -79,9 +79,42 @@ const listConfigurations = list({
       },
     }),
     sections: relationship({
-      label: '大分類',
+      label: '大分類（即將被棄用，請到對應作者底下做設定）',
       ref: 'Section',
       many: true,
+      ui: {
+        labelField: 'name',
+      },
+      access: {
+        update: async (auth) => {
+          if (admin(auth)) return true
+          else if (moderator(auth)) {
+            if (isOwner(auth)) return true
+            else {
+              const data = await auth.context.prisma.User.findUnique({
+                where: {
+                  id: auth.item.id,
+                },
+                select: {
+                  id: true,
+                  role: true,
+                },
+              })
+
+              if (['editor', 'contributor'].includes(data.role)) {
+                return true
+              }
+
+              return false
+            }
+          } else return false
+        },
+      },
+    }),
+    author: relationship({
+      label: '作者',
+      ref: 'Contact',
+      many: false,
       ui: {
         labelField: 'name',
       },
@@ -119,7 +152,7 @@ const listConfigurations = list({
   ui: {
     labelField: 'name',
     listView: {
-      initialColumns: ['id', 'name', 'role', 'email', 'sections'],
+      initialColumns: ['id', 'name', 'role', 'email', 'author'],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },

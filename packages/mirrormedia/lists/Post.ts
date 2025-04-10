@@ -549,9 +549,9 @@ const listConfigurations = list({
       ui: {
         // A module path that is resolved from where `keystone start` is run
         views: './lists/views/link-button',
-        createView: {
-          fieldMode: 'hidden',
-        },
+        //createView: {
+        //  fieldMode: 'hidden',
+        //},
         listView: {
           fieldMode: 'hidden',
         },

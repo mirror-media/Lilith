@@ -23,12 +23,27 @@ type YoutubeInputType = {
   onCancel: () => void
 }
 
+function getYoutubeId(urlOrId = '') {
+  const youtubeIdRegex =
+    /^(?:https?:\/\/(?:www\.)?youtube\.com\/watch\?v=|https?:\/\/youtu.be\/|\/id\/)?([a-zA-Z0-9_-]{11})/i
+
+  const matches = urlOrId.startsWith('/')
+    ? urlOrId.replace('/', '').match(youtubeIdRegex)
+    : urlOrId.match(youtubeIdRegex)
+
+  if (matches && matches[1]) {
+    return matches[1]
+  }
+
+  return ''
+}
+
 export function YoutubeInput(props: YoutubeInputType) {
   const { isOpen, onChange, onCancel } = props
 
   const initialInputValue = {
     description: '',
-    youtubeId: '',
+    youtubeIdOrUrl: '',
   }
 
   const [inputValue, setInputValue] = useState(initialInputValue)
@@ -54,7 +69,7 @@ export function YoutubeInput(props: YoutubeInputType) {
             action: () => {
               onChange({
                 description: inputValue.description,
-                youtubeId: inputValue.youtubeId,
+                youtubeId: getYoutubeId(inputValue.youtubeIdOrUrl),
               })
               clearInputValue()
             },
@@ -66,7 +81,7 @@ export function YoutubeInput(props: YoutubeInputType) {
           onChange={(e) =>
             setInputValue({
               description: e.target.value,
-              youtubeId: inputValue.youtubeId,
+              youtubeIdOrUrl: inputValue.youtubeIdOrUrl,
             })
           }
           type="text"
@@ -74,18 +89,18 @@ export function YoutubeInput(props: YoutubeInputType) {
           id="description"
           value={inputValue.description}
         />
-        <Label htmlFor="youtubeId">Youtube Videi Id</Label>
+        <Label htmlFor="youtubeId">Youtube Video Id or Url</Label>
         <TextInput
           onChange={(e) =>
             setInputValue({
               description: inputValue.description,
-              youtubeId: e.target.value,
+              youtubeIdOrUrl: e.target.value,
             })
           }
           type="text"
-          placeholder="youtubeId"
-          id="youtubeId"
-          value={inputValue.youtubeId}
+          placeholder="youtubeId or url"
+          id="youtubeIdOrUrl"
+          value={inputValue.youtubeIdOrUrl}
         />
       </Drawer>
     </DrawerController>
