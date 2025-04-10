@@ -808,6 +808,19 @@ const listConfigurations = list({
     },
     filter: {
       query: filterPosts([UserRole.Admin, UserRole.Moderator, UserRole.Editor]),
+      update: async (auth) => {
+        if (admin(auth) || moderator(auth)) return true
+        else {
+          // editor only allow to update posts created by itself
+          return {
+            createdBy: {
+              id: {
+                equals: auth.session.data.id,
+              },
+            },
+          }
+        }
+      },
     },
   },
   hooks: {
@@ -892,8 +905,8 @@ const listConfigurations = list({
       }
       return
     },
-    afterOperation: async ({ operation, item, context, resolvedData }) => {
-	  /*
+    afterOperation: async ({ operation, item, context }) => {
+      /*
       if (
         resolvedData &&
         resolvedData.state &&
