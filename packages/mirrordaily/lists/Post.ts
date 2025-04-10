@@ -893,6 +893,7 @@ const listConfigurations = list({
       return
     },
     afterOperation: async ({ operation, item, context, resolvedData }) => {
+	  /*
       if (
         resolvedData &&
         resolvedData.state &&
@@ -902,9 +903,8 @@ const listConfigurations = list({
         const result = fetch(envVar.dataServiceApi + '?id=' + item.id, {
           method: 'GET',
         })
-        console.log(envVar.dataServiceApi + '?id=' + item.id)
-        console.log('tagging result :' + result)
       }
+	  */
       if (operation === 'update') {
         await context.prisma.post.update({
           where: { id: Number(item.id) },
