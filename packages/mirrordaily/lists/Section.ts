@@ -123,9 +123,9 @@ const listConfigurations = list({
       ref: 'Category.sections',
       label: '分類',
       many: true,
-	  ui: {
-		labelField: 'name',
-	  }
+      ui: {
+        labelField: 'name',
+      },
     }),
     posts: relationship({
       ref: 'Post.sections',
@@ -152,7 +152,7 @@ const listConfigurations = list({
       pageSize: 50,
     },
   },
-/*
+  /*
   hooks: {
     validateInput: async ({
       operation,
@@ -226,8 +226,8 @@ const listConfigurations = list({
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),
-      update: allowRoles(admin, moderator),
-      create: allowRoles(admin, moderator),
+      update: allowRoles(admin),
+      create: allowRoles(admin),
       delete: allowRoles(admin),
     },
     filter: {
