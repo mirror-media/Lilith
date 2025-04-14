@@ -152,6 +152,7 @@ const InfoBoxBody = styled.div<{ contentLayout: ContentLayout }>`
       position: relative;
       counter-increment: list;
       padding-left: 6px;
+      list-style: none;
       &::before {
         content: counter(list) '.';
         position: absolute;
