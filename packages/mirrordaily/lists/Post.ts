@@ -112,7 +112,8 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
   context,
   item,
 }) => {
-  if (session?.data?.role == UserRole.Editor) {
+  // @ts-ignore next line
+  if ([UserRole.Moderator, UserRole.Editor].includes(session?.data?.role)) {
     const { lockBy } = await context.prisma.Post.findUnique({
       where: { id: Number(item.id) },
       select: {
@@ -137,7 +138,7 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
         data: {
           lockBy: {
             connect: {
-              id: Number(session.data?.id),
+              id: Number(session?.data?.id),
             },
           },
           lockExpireAt: lockExpireAt,
@@ -150,8 +151,11 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
           },
         },
       })
-      return updatedPost.lockBy?.id === session.data?.id ? 'edit' : 'read'
-    } else if (lockBy.id == session.data?.id) {
+
+      return Number(updatedPost.lockBy?.id) === Number(session?.data?.id)
+        ? 'edit'
+        : 'read'
+    } else if (Number(lockBy.id) == Number(session?.data?.id)) {
       return 'edit'
     }
     return 'hidden'
