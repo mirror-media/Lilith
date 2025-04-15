@@ -329,6 +329,8 @@ type Contact {
   id: ID!
   name: String
   content: String
+  sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -346,6 +348,7 @@ input ContactWhereInput {
   id: IDFilter
   name: StringFilter
   content: StringFilter
+  sections: SectionManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -363,6 +366,7 @@ input ContactOrderByInput {
 input ContactUpdateInput {
   name: String
   content: String
+  sections: SectionRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -377,6 +381,7 @@ input ContactUpdateArgs {
 input ContactCreateInput {
   name: String
   content: String
+  sections: SectionRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -921,6 +926,7 @@ type Photo {
   name: String
   imageFile: ImageFieldOutput
   waterMark: Boolean
+  defaultImage: Boolean
   resized: ResizedImages
   resizedWebp: ResizedWebPImages
   topicKeywords: String
@@ -976,6 +982,7 @@ input PhotoWhereInput {
   id: IDFilter
   name: StringFilter
   waterMark: BooleanFilter
+  defaultImage: BooleanFilter
   topicKeywords: StringFilter
   copyRight: BooleanFilter
   createdAt: DateTimeNullableFilter
@@ -988,6 +995,7 @@ input PhotoOrderByInput {
   id: OrderDirection
   name: OrderDirection
   waterMark: OrderDirection
+  defaultImage: OrderDirection
   topicKeywords: OrderDirection
   copyRight: OrderDirection
   createdAt: OrderDirection
@@ -998,6 +1006,7 @@ input PhotoUpdateInput {
   name: String
   imageFile: ImageFieldInput
   waterMark: Boolean
+  defaultImage: Boolean
   topicKeywords: String
   copyRight: Boolean
   createdAt: DateTime
@@ -1019,6 +1028,7 @@ input PhotoCreateInput {
   name: String
   imageFile: ImageFieldInput
   waterMark: Boolean
+  defaultImage: Boolean
   topicKeywords: String
   copyRight: Boolean
   createdAt: DateTime
@@ -1034,10 +1044,6 @@ type Post {
   slug: String
   title: String
   subtitle: String
-  state: String
-  publishedDate: DateTime
-  publishedDateString: String
-  updateTimeStamp: Boolean
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
   manualOrderOfSections: JSON
@@ -1060,6 +1066,7 @@ type Post {
   extend_byline: String
   heroVideo: Video
   heroImage: Photo
+  defaultHeroImage: Photo
   heroCaption: String
   style: String
   brief: JSON
@@ -1084,6 +1091,10 @@ type Post {
   related_videos(where: VideoWhereInput! = {}, orderBy: [VideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoWhereUniqueInput): [Video!]
   related_videosCount(where: VideoWhereInput! = {}): Int
   manualOrderOfRelatedVideos: JSON
+  state: String
+  publishedDate: DateTime
+  publishedDateString: String
+  updateTimeStamp: Boolean
   preview: JSON
   isFeatured: Boolean
   isAdvertised: Boolean
@@ -1119,9 +1130,6 @@ input PostWhereInput {
   lockExpireAt: DateTimeNullableFilter
   title: StringFilter
   subtitle: StringFilter
-  state: StringNullableFilter
-  publishedDate: DateTimeFilter
-  publishedDateString: StringFilter
   sections: SectionManyRelationFilter
   categories: CategoryManyRelationFilter
   writers: ContactManyRelationFilter
@@ -1133,12 +1141,17 @@ input PostWhereInput {
   extend_byline: StringFilter
   heroVideo: VideoWhereInput
   heroImage: PhotoWhereInput
+  defaultHeroImage: PhotoWhereInput
   style: StringNullableFilter
   isMember: BooleanFilter
   topics: TopicWhereInput
   relateds: PostManyRelationFilter
   tags: TagManyRelationFilter
+  tags_algo: TagManyRelationFilter
   og_title: StringFilter
+  state: StringNullableFilter
+  publishedDate: DateTimeFilter
+  publishedDateString: StringFilter
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
   hiddenAdvertised: BooleanFilter
@@ -1170,16 +1183,16 @@ input PostOrderByInput {
   lockExpireAt: OrderDirection
   title: OrderDirection
   subtitle: OrderDirection
-  state: OrderDirection
-  publishedDate: OrderDirection
-  publishedDateString: OrderDirection
-  updateTimeStamp: OrderDirection
   extend_byline: OrderDirection
   heroCaption: OrderDirection
   style: OrderDirection
   isMember: OrderDirection
   og_title: OrderDirection
   og_description: OrderDirection
+  state: OrderDirection
+  publishedDate: OrderDirection
+  publishedDateString: OrderDirection
+  updateTimeStamp: OrderDirection
   isFeatured: OrderDirection
   isAdvertised: OrderDirection
   hiddenAdvertised: OrderDirection
@@ -1197,10 +1210,6 @@ input PostUpdateInput {
   slug: String
   title: String
   subtitle: String
-  state: String
-  publishedDate: DateTime
-  publishedDateString: String
-  updateTimeStamp: Boolean
   sections: SectionRelateToManyForUpdateInput
   manualOrderOfSections: JSON
   categories: CategoryRelateToManyForUpdateInput
@@ -1215,6 +1224,7 @@ input PostUpdateInput {
   extend_byline: String
   heroVideo: VideoRelateToOneForUpdateInput
   heroImage: PhotoRelateToOneForUpdateInput
+  defaultHeroImage: PhotoRelateToOneForUpdateInput
   heroCaption: String
   style: String
   brief: JSON
@@ -1232,6 +1242,10 @@ input PostUpdateInput {
   og_image: PhotoRelateToOneForUpdateInput
   related_videos: VideoRelateToManyForUpdateInput
   manualOrderOfRelatedVideos: JSON
+  state: String
+  publishedDate: DateTime
+  publishedDateString: String
+  updateTimeStamp: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
@@ -1305,10 +1319,6 @@ input PostCreateInput {
   slug: String
   title: String
   subtitle: String
-  state: String
-  publishedDate: DateTime
-  publishedDateString: String
-  updateTimeStamp: Boolean
   sections: SectionRelateToManyForCreateInput
   manualOrderOfSections: JSON
   categories: CategoryRelateToManyForCreateInput
@@ -1323,6 +1333,7 @@ input PostCreateInput {
   extend_byline: String
   heroVideo: VideoRelateToOneForCreateInput
   heroImage: PhotoRelateToOneForCreateInput
+  defaultHeroImage: PhotoRelateToOneForCreateInput
   heroCaption: String
   style: String
   brief: JSON
@@ -1340,6 +1351,10 @@ input PostCreateInput {
   og_image: PhotoRelateToOneForCreateInput
   related_videos: VideoRelateToManyForCreateInput
   manualOrderOfRelatedVideos: JSON
+  state: String
+  publishedDate: DateTime
+  publishedDateString: String
+  updateTimeStamp: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
@@ -1821,6 +1836,7 @@ type User {
   role: String
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
+  author: Contact
   isProtected: Boolean
 }
 
@@ -1842,6 +1858,7 @@ input UserWhereInput {
   email: StringFilter
   role: StringFilter
   sections: SectionManyRelationFilter
+  author: ContactWhereInput
   isProtected: BooleanFilter
 }
 
@@ -1859,7 +1876,14 @@ input UserUpdateInput {
   password: String
   role: String
   sections: SectionRelateToManyForUpdateInput
+  author: ContactRelateToOneForUpdateInput
   isProtected: Boolean
+}
+
+input ContactRelateToOneForUpdateInput {
+  create: ContactCreateInput
+  connect: ContactWhereUniqueInput
+  disconnect: Boolean
 }
 
 input UserUpdateArgs {
@@ -1873,7 +1897,13 @@ input UserCreateInput {
   password: String
   role: String
   sections: SectionRelateToManyForCreateInput
+  author: ContactRelateToOneForCreateInput
   isProtected: Boolean
+}
+
+input ContactRelateToOneForCreateInput {
+  create: ContactCreateInput
+  connect: ContactWhereUniqueInput
 }
 
 type Video {
@@ -2198,6 +2228,75 @@ input WarningCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type PopularTag {
+  id: ID!
+  order: Int
+  choices: Tag
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input PopularTagWhereUniqueInput {
+  id: ID
+  order: Int
+}
+
+input PopularTagWhereInput {
+  AND: [PopularTagWhereInput!]
+  OR: [PopularTagWhereInput!]
+  NOT: [PopularTagWhereInput!]
+  id: IDFilter
+  order: IntNullableFilter
+  choices: TagWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PopularTagOrderByInput {
+  id: OrderDirection
+  order: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PopularTagUpdateInput {
+  order: Int
+  choices: TagRelateToOneForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input TagRelateToOneForUpdateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
+  disconnect: Boolean
+}
+
+input PopularTagUpdateArgs {
+  where: PopularTagWhereUniqueInput!
+  data: PopularTagUpdateInput!
+}
+
+input PopularTagCreateInput {
+  order: Int
+  choices: TagRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input TagRelateToOneForCreateInput {
+  create: TagCreateInput
+  connect: TagWhereUniqueInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2312,6 +2411,12 @@ type Mutation {
   updateWarnings(data: [WarningUpdateArgs!]!): [Warning]
   deleteWarning(where: WarningWhereUniqueInput!): Warning
   deleteWarnings(where: [WarningWhereUniqueInput!]!): [Warning]
+  createPopularTag(data: PopularTagCreateInput!): PopularTag
+  createPopularTags(data: [PopularTagCreateInput!]!): [PopularTag]
+  updatePopularTag(where: PopularTagWhereUniqueInput!, data: PopularTagUpdateInput!): PopularTag
+  updatePopularTags(data: [PopularTagUpdateArgs!]!): [PopularTag]
+  deletePopularTag(where: PopularTagWhereUniqueInput!): PopularTag
+  deletePopularTags(where: [PopularTagWhereUniqueInput!]!): [PopularTag]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -2390,6 +2495,9 @@ type Query {
   warnings(where: WarningWhereInput! = {}, orderBy: [WarningOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: WarningWhereUniqueInput): [Warning!]
   warning(where: WarningWhereUniqueInput!): Warning
   warningsCount(where: WarningWhereInput! = {}): Int
+  popularTags(where: PopularTagWhereInput! = {}, orderBy: [PopularTagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PopularTagWhereUniqueInput): [PopularTag!]
+  popularTag(where: PopularTagWhereUniqueInput!): PopularTag
+  popularTagsCount(where: PopularTagWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

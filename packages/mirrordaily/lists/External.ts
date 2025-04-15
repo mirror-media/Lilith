@@ -145,7 +145,7 @@ const listConfigurations = list({
       query: () => true,
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
-      delete: allowRoles(admin),
+      delete: allowRoles(admin, moderator),
     },
     filter: {
       query: filterExternals([

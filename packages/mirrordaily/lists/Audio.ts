@@ -11,7 +11,7 @@ import {
 } from '@keystone-6/core/fields'
 import { getFileURL } from '../utils/common'
 
-const { admin, allowRoles, moderator } = utils.accessControl
+const { admin, allowRoles, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
@@ -99,9 +99,9 @@ const listConfigurations = list({
   access: {
     operation: {
       query: () => true,
-      update: allowRoles(admin, moderator),
-      create: allowRoles(admin, moderator),
-      delete: allowRoles(admin),
+      update: allowRoles(admin, moderator, editor),
+      create: allowRoles(admin, moderator, editor),
+      delete: allowRoles(admin, moderator, editor),
     },
   },
   ui: {

@@ -1,12 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import {
-  relationship,
-  checkbox,
-  select,
-  text,
-  integer,
-} from '@keystone-6/core/fields'
+import { relationship, select, text, integer } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 import { State, ACL, UserRole, type Session } from '../type'
 
@@ -76,9 +70,9 @@ const listConfigurations = list({
     sections: relationship({
       ref: 'Section.categories',
       many: true,
-	  ui: {
-		labelField: 'name',
-	  }
+      ui: {
+        labelField: 'name',
+      },
     }),
     posts: relationship({
       ref: 'Post.categories',
@@ -100,8 +94,8 @@ const listConfigurations = list({
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),
-      update: allowRoles(admin, moderator),
-      create: allowRoles(admin, moderator),
+      update: allowRoles(admin),
+      create: allowRoles(admin),
       delete: allowRoles(admin),
     },
     filter: {

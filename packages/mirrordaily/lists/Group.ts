@@ -2,7 +2,7 @@ import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { text, relationship } from '@keystone-6/core/fields'
 
-const { allowRoles, admin, moderator } = utils.accessControl
+const { allowRoles, admin } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
@@ -38,8 +38,8 @@ const listConfigurations = list({
   access: {
     operation: {
       query: () => true,
-      update: allowRoles(admin, moderator),
-      create: allowRoles(admin, moderator),
+      update: allowRoles(admin),
+      create: allowRoles(admin),
       delete: allowRoles(admin),
     },
   },

@@ -154,7 +154,7 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
     } else if (lockBy.id == session.data?.id) {
       return 'edit'
     }
-    return 'read'
+    return 'hidden'
   }
 
   return 'edit'
@@ -168,7 +168,7 @@ const listConfigurations = list({
       isFilterable: false,
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
+        //itemView: { fieldMode: 'read' },
         displayMode: 'cards',
         cardFields: ['name'],
       },
@@ -196,7 +196,7 @@ const listConfigurations = list({
       },
     }),
     title: text({
-      label: '標題',
+      label: '標題（建議字數：28字）',
     }),
     subtitle: text({
       label: '副標',
@@ -206,47 +206,13 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
-    state: select({
-      label: '狀態',
-      options: [
-        { label: '草稿', value: PostStatus.Draft },
-        { label: '已發布', value: PostStatus.Published },
-        { label: '預約發佈', value: PostStatus.Scheduled },
-        { label: '下線', value: PostStatus.Archived },
-        { label: '前台不可見', value: PostStatus.Invisible },
-      ],
-      defaultValue: PostStatus.Published,
-      isIndexed: true,
-    }),
-    publishedDate: timestamp({
-      isIndexed: true,
-      isFilterable: true,
-      label: '發佈日期',
-      validation: { isRequired: true },
-      defaultValue: { kind: 'now' },
-    }),
-    publishedDateString: text({
-      label: '發布日期',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'hidden',
-        },
-      },
-    }),
-    updateTimeStamp: checkbox({
-      label: '下次存檔時自動更改成「現在時間」',
-      isFilterable: false,
-      defaultValue: true,
-    }),
     sections: relationship({
       label: '大分類',
       ref: 'Section.posts',
       many: true,
       ui: {
         labelField: 'name',
+        views: './lists/views/default-section-relationship/index',
       },
     }),
     manualOrderOfSections: json({
@@ -277,6 +243,9 @@ const listConfigurations = list({
       label: '作者',
       ref: 'Contact',
       many: true,
+      ui: {
+        views: './lists/views/default-author-relationship/index',
+      },
     }),
     manualOrderOfWriters: json({
       label: '作者手動排序結果',
@@ -302,13 +271,13 @@ const listConfigurations = list({
       },
     }),
     designers: relationship({
-      label: '設計',
+      label: '編輯',
       ref: 'Contact',
       many: true,
       ui: {
-        createView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
+        //createView: { fieldMode: 'hidden' },
+        //listView: { fieldMode: 'hidden' },
+        //itemView: { fieldMode: 'hidden' },
       },
     }),
     engineers: relationship({
@@ -364,6 +333,22 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
       },
     }),
+    defaultHeroImage: relationship({
+      label: '首圖預設圖(選擇此項後，請不要再選首圖)',
+      ref: 'Photo',
+      many: false,
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['imageFile'],
+        //linkToItem: true,
+        inlineCreate: {
+          fields: ['name', 'imageFile', 'waterMark'],
+        },
+        inlineConnect: true,
+        views: './lists/views/default-photo-relationship/index',
+      },
+    }),
+
     heroCaption: text({
       label: '首圖圖說',
       isFilterable: false,
@@ -391,6 +376,9 @@ const listConfigurations = list({
       label: '前言',
       disabledButtons: [
         'code',
+        'bold',
+        'italic',
+        'underline',
         'header-two',
         'header-three',
         'header-four',
@@ -398,6 +386,7 @@ const listConfigurations = list({
         'unordered-list-item',
         'ordered-list-item',
         'code-block',
+        'link',
         'annotation',
         'divider',
         'embed',
@@ -570,14 +559,13 @@ const listConfigurations = list({
     }),
     tags_algo: relationship({
       label: '演算法標籤',
-      isFilterable: false,
       ref: 'Tag.posts_algo',
       many: true,
       ui: {
         views: './lists/views/sorted-relationship/index',
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
+        //itemView: { fieldMode: 'hidden' },
+        //listView: { fieldMode: 'hidden' },
       },
     }),
     og_title: text({
@@ -604,6 +592,9 @@ const listConfigurations = list({
       isFilterable: false,
       ref: 'Photo',
       ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
         displayMode: 'cards',
         cardFields: ['imageFile'],
         //linkToItem: true,
@@ -632,6 +623,41 @@ const listConfigurations = list({
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
       },
+    }),
+    state: select({
+      label: '狀態',
+      options: [
+        { label: '草稿', value: PostStatus.Draft },
+        { label: '已發布', value: PostStatus.Published },
+        { label: '預約發佈', value: PostStatus.Scheduled },
+        { label: '下線', value: PostStatus.Archived },
+        { label: '前台不可見', value: PostStatus.Invisible },
+      ],
+      defaultValue: PostStatus.Draft,
+      isIndexed: true,
+    }),
+    publishedDate: timestamp({
+      isIndexed: true,
+      isFilterable: true,
+      label: '發佈日期',
+      validation: { isRequired: true },
+      defaultValue: { kind: 'now' },
+    }),
+    publishedDateString: text({
+      label: '發布日期',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+    }),
+    updateTimeStamp: checkbox({
+      label: '下次存檔時自動更改成「現在時間」',
+      isFilterable: false,
+      defaultValue: true,
     }),
 
     preview: virtual({
@@ -667,7 +693,7 @@ const listConfigurations = list({
       label: '廣告文案',
       defaultValue: false,
       ui: {
-        createView: { fieldMode: 'hidden' },
+        //createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
       },
     }),
@@ -675,7 +701,7 @@ const listConfigurations = list({
       label: 'google廣告違規',
       defaultValue: false,
       ui: {
-        createView: { fieldMode: 'hidden' },
+        //createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
       },
     }),
@@ -782,6 +808,19 @@ const listConfigurations = list({
     },
     filter: {
       query: filterPosts([UserRole.Admin, UserRole.Moderator, UserRole.Editor]),
+      update: async (auth) => {
+        if (admin(auth) || moderator(auth)) return true
+        else {
+          // editor only allow to update posts created by itself
+          return {
+            createdBy: {
+              id: {
+                equals: auth.session.data.id,
+              },
+            },
+          }
+        }
+      },
     },
   },
   hooks: {
@@ -830,6 +869,14 @@ const listConfigurations = list({
         resolvedData.updatedAt = new Date()
         resolvedData.updateTimeStamp = false
       }
+      if (
+        (operation === 'create' || operation === 'update') &&
+        resolvedData.defaultHeroImage &&
+        Object.hasOwn(resolvedData.defaultHeroImage, 'connect')
+        // 限制更新回 heroImage 的行為僅在新增或更改 defaultHeroImage 的情況
+      ) {
+        resolvedData.heroImage = resolvedData.defaultHeroImage
+      }
       return resolvedData
     },
     beforeOperation: async ({ operation, resolvedData }) => {
@@ -859,6 +906,18 @@ const listConfigurations = list({
       return
     },
     afterOperation: async ({ operation, item, context }) => {
+      /*
+      if (
+        resolvedData &&
+        resolvedData.state &&
+        resolvedData.state === 'published'
+      ) {
+        // trigger auto tagging service
+        const result = fetch(envVar.dataServiceApi + '?id=' + item.id, {
+          method: 'GET',
+        })
+      }
+	  */
       if (operation === 'update') {
         await context.prisma.post.update({
           where: { id: Number(item.id) },
