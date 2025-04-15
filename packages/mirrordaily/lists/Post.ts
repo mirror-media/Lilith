@@ -212,7 +212,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         labelField: 'name',
-        views: './lists/views/default-section-relationship/index',
+        views: './lists/views/post/sections/index',
       },
     }),
     manualOrderOfSections: json({
@@ -244,7 +244,7 @@ const listConfigurations = list({
       ref: 'Contact',
       many: true,
       ui: {
-        views: './lists/views/default-author-relationship/index',
+        views: './lists/views/post/contact-relationship/index',
       },
     }),
     manualOrderOfWriters: json({
@@ -345,7 +345,7 @@ const listConfigurations = list({
           fields: ['name', 'imageFile', 'waterMark'],
         },
         inlineConnect: true,
-        views: './lists/views/default-photo-relationship/index',
+        views: './lists/views/post/default-hero-image/index',
       },
     }),
 
