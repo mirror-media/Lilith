@@ -244,7 +244,7 @@ const listConfigurations = list({
       ref: 'Contact',
       many: true,
       ui: {
-        views: './lists/views/default-author-relationship/index',
+        views: './lists/views/post/contact-relationship/index',
       },
     }),
     manualOrderOfWriters: json({
