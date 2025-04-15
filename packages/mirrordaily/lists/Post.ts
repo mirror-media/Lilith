@@ -212,7 +212,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         labelField: 'name',
-        views: './lists/views/default-section-relationship/index',
+        views: './lists/views/post/sections/index',
       },
     }),
     manualOrderOfSections: json({
