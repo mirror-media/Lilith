@@ -599,9 +599,6 @@ const listConfigurations = list({
       isFilterable: false,
       ref: 'Photo',
       ui: {
-        createView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
         displayMode: 'cards',
         cardFields: ['imageFile'],
         //linkToItem: true,
@@ -621,6 +618,7 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     manualOrderOfRelatedVideos: json({
