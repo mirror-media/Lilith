@@ -11,7 +11,8 @@ import {
   useContext,
   useRef,
 } from 'react'
-import { jsx } from '@keystone-ui/core';
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+import { jsx } from '@keystone-ui/core'
 import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields'
 import { validate as validateUUID } from 'uuid'
 import { IdFieldConfig, ListMeta } from '@keystone-6/core/types'

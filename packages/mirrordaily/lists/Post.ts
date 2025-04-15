@@ -345,7 +345,7 @@ const listConfigurations = list({
           fields: ['name', 'imageFile', 'waterMark'],
         },
         inlineConnect: true,
-        views: './lists/views/default-photo-relationship/index',
+        views: './lists/views/post/default-hero-image/index',
       },
     }),
 

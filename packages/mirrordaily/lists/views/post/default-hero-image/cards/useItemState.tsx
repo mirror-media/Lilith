@@ -42,27 +42,28 @@ export function useItemState({
     const itemsArrFromData: DataGetter<{
       id: string
       [key: string]: any
-    }>[] = (isMany
-      ? relationshipGetter.data.map((_: any, i: number) =>
-          relationshipGetter.get(i)
-        )
-      : [relationshipGetter]
+    }>[] = (
+      isMany
+        ? relationshipGetter.data.map((_: any, i: number) =>
+            relationshipGetter.get(i)
+          )
+        : [relationshipGetter]
     ).filter((x: DataGetter<any>) => x.data?.id != null)
     return { relationshipGetter, itemsArrFromData }
   }, [data, error])
   // eslint-disable-next-line
   let [{ items, itemsArrFromData: itemsArrFromDataState }, setItemsState] = useState<{ 
-    itemsArrFromData: DataGetter<any>[]
-    items: Record<
-      string,
-      {
-        current: DataGetter<{ id: string; [key: string]: any }>
-        fromInitialQuery:
-          | DataGetter<{ id: string; [key: string]: any }>
-          | undefined
-      }
-    >
-  }>({ itemsArrFromData: [], items: {} })
+      itemsArrFromData: DataGetter<any>[]
+      items: Record<
+        string,
+        {
+          current: DataGetter<{ id: string; [key: string]: any }>
+          fromInitialQuery:
+            | DataGetter<{ id: string; [key: string]: any }>
+            | undefined
+        }
+      >
+    }>({ itemsArrFromData: [], items: {} })
 
   if (itemsArrFromDataState !== itemsArrFromData) {
     const newItems: Record<
@@ -109,7 +110,7 @@ export function useItemState({
     setItems: useCallback(
       (items: Items) => {
         setItemsState((state) => {
-          const itemsForState: typeof state['items'] = {}
+          const itemsForState: (typeof state)['items'] = {}
           Object.keys(items).forEach((id) => {
             if (items[id] === state.items[id]?.current) {
               itemsForState[id] = state.items[id]
