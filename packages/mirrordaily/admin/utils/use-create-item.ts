@@ -24,7 +24,10 @@ type CreateItemHookResult = {
   create: () => Promise<{ id: string; label: string | null } | undefined>
 }
 
-export function useCreateItem(list: ListMeta): CreateItemHookResult {
+export function useCreateItem(
+  list: ListMeta,
+  customFieldModes?: Record<string, 'edit' | 'hidden'>
+): CreateItemHookResult {
   const toasts = useToasts()
   const { createViewFieldModes } = useKeystone()
 
@@ -54,7 +57,7 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
     Object.keys(value).forEach((fieldPath) => {
       const val = value[fieldPath].value
 
-      const validateFn = list.fields[fieldPath].controller.validate
+      const validateFn = list.fields[fieldPath]?.controller?.validate
       if (validateFn) {
         const result = validateFn(val)
         if (result === false) {
@@ -98,7 +101,11 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
       groups: list.groups,
       fieldModes:
         createViewFieldModes.state === 'loaded'
-          ? createViewFieldModes.lists[list.key]
+          ? Object.assign(
+              {},
+              createViewFieldModes.lists[list.key],
+              customFieldModes ?? {}
+            )
           : null,
       forceValidation,
       invalidFields,
