@@ -25,6 +25,7 @@ import {
   useApolloClient,
   useQuery,
 } from '@keystone-6/core/admin-ui/apollo'
+import { getFilterFromFieldConfig } from './util'
 
 function useIntersectionObserver(
   cb: IntersectionObserverCallback,
@@ -133,6 +134,7 @@ export const RelationshipSelect = ({
   state,
   extraSelection = '',
   orderBy,
+  filterList,
 }: {
   autoFocus?: boolean
   controlShouldRenderValue: boolean
@@ -160,6 +162,7 @@ export const RelationshipSelect = ({
       }
   extraSelection?: string
   orderBy: Record<string, any>[]
+  filterList: ReturnType<typeof getFilterFromFieldConfig>
 }) => {
   const [search, setSearch] = useState('')
   // note it's important that this is in state rather than a ref
@@ -192,7 +195,15 @@ export const RelationshipSelect = ({
   `
 
   const debouncedSearch = useDebouncedValue(search, 200)
-  const where = useFilter(debouncedSearch, list, searchFields)
+  const defaultWhere = useFilter(debouncedSearch, list, searchFields)
+  let where
+  if (Array.isArray(filterList)) {
+    where = {
+      AND: [defaultWhere, { role: { in: filterList } }],
+    }
+  } else {
+    where = defaultWhere
+  }
 
   const link = useApolloClient().link
   // we're using a local apollo client here because writing a global implementation of the typePolicies

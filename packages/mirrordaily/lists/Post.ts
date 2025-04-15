@@ -259,12 +259,16 @@ const listConfigurations = list({
       label: '攝影',
       ref: 'Contact',
       many: true,
+      ui: {
+        views: './lists/views/post/contact-relationship/index',
+      },
     }),
     camera_man: relationship({
       label: '影音',
       ref: 'Contact',
       many: true,
       ui: {
+        views: './lists/views/post/contact-relationship/index',
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
@@ -275,6 +279,7 @@ const listConfigurations = list({
       ref: 'Contact',
       many: true,
       ui: {
+        views: './lists/views/post/contact-relationship/index',
         //createView: { fieldMode: 'hidden' },
         //listView: { fieldMode: 'hidden' },
         //itemView: { fieldMode: 'hidden' },
@@ -285,6 +290,7 @@ const listConfigurations = list({
       ref: 'Contact',
       many: true,
       ui: {
+        views: './lists/views/post/contact-relationship/index',
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
@@ -295,6 +301,7 @@ const listConfigurations = list({
       ref: 'Contact',
       many: true,
       ui: {
+        views: './lists/views/post/contact-relationship/index',
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
