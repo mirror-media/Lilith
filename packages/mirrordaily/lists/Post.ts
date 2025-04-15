@@ -631,6 +631,7 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     state: select({
@@ -747,6 +748,7 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
         displayMode: 'textarea',
       },
     }),
