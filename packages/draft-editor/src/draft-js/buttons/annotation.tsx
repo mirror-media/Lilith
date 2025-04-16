@@ -129,7 +129,6 @@ export function AnnotationButton(props: AnnotationButtonProps) {
         className={className}
         onMouseDown={isActive ? removeAnnotation : promptForAnnotation}
       >
-        <i className="far"></i>
         <span>Annotation</span>
       </div>
     </Fragment>
