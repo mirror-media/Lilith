@@ -1139,7 +1139,6 @@ type Post {
 
 input PostWhereUniqueInput {
   id: ID
-  title: String
 }
 
 input PostWhereInput {

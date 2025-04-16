@@ -25,7 +25,7 @@ import {
   useApolloClient,
   useQuery,
 } from '@keystone-6/core/admin-ui/apollo'
-import { ACL, UserRole, State, type Session } from '../../../type'
+import { State } from '../../../type'
 
 enum PostStatus {
   Published = State.Published,
@@ -254,14 +254,17 @@ export const RelationshipSelect = ({
         data,
       })
     ) || []
-
-  const filteredOptions = useMemo(() => {
-    return options.filter((option) => {
-      const isDraft = option.data?.state === PostStatus.Draft
-      const isCurrent = option.value === currentPostId
-      return !isDraft && !isCurrent
-    })
-  }, [options, currentPostId])
+    const excludeStates = [PostStatus.Draft, PostStatus.Archived, PostStatus.Scheduled];
+    const filteredOptions = useMemo(() => {
+      return options.filter((option) => {
+        const isCurrent = option.value === currentPostId;
+        const optionState = option.data?.state as PostStatus;
+        const shouldExclude = excludeStates.includes(optionState);
+    
+        return !isCurrent && !shouldExclude;
+      });
+    }, [options, currentPostId]);
+    
 
   const loadingIndicatorContextVal = useMemo(
     () => ({
@@ -285,7 +288,7 @@ export const RelationshipSelect = ({
         !loading &&
         skip &&
         isIntersecting &&
-        options.length < count &&
+        filteredOptions.length < count &&
         (lastFetchMore?.extraSelection !== extraSelection ||
           lastFetchMore?.where !== where ||
           lastFetchMore?.list !== list ||

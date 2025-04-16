@@ -99,7 +99,11 @@ export const Field = ({
   const localList = useList(field.listKey)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const router = useRouter()
-  const { id: currentPostId } = router.query
+  const { id: routeId } = router.query
+  const currentPostId =
+    localList.key === 'Post' && typeof routeId === 'string'
+      ? routeId
+      : ''
   if (value.kind === 'cards-view') {
     return (
       <FieldContainer as="fieldset">
@@ -189,7 +193,7 @@ export const Field = ({
             currentPostId={typeof currentPostId === 'string' ? currentPostId : ''}
           />
           <Stack across gap="small">
-            {onChange !== undefined && !field.hideCreate && (
+            {/* {onChange !== undefined && !field.hideCreate && (
               <Button
                 size="small"
                 disabled={isDrawerOpen}
@@ -199,7 +203,7 @@ export const Field = ({
               >
                 Create related {foreignList.singular}
               </Button>
-            )}
+            )} */}
             {onChange !== undefined &&
               authenticatedItem.state === 'authenticated' &&
               authenticatedItem.listKey === field.refListKey &&

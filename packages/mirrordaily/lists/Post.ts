@@ -202,7 +202,6 @@ const listConfigurations = list({
     title: text({
       label: '標題（建議字數：28字）',
       validation: { isRequired: true},
-      isIndexed: 'unique',
     }),
     subtitle: text({
       label: '副標',
