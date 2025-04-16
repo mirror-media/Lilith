@@ -112,7 +112,8 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
   context,
   item,
 }) => {
-  if (session?.data?.role == UserRole.Editor) {
+  // @ts-ignore next line
+  if ([UserRole.Moderator, UserRole.Editor].includes(session?.data?.role)) {
     const { lockBy } = await context.prisma.Post.findUnique({
       where: { id: Number(item.id) },
       select: {
@@ -137,7 +138,7 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
         data: {
           lockBy: {
             connect: {
-              id: Number(session.data?.id),
+              id: Number(session?.data?.id),
             },
           },
           lockExpireAt: lockExpireAt,
@@ -150,8 +151,11 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
           },
         },
       })
-      return updatedPost.lockBy?.id === session.data?.id ? 'edit' : 'read'
-    } else if (lockBy.id == session.data?.id) {
+
+      return Number(updatedPost.lockBy?.id) === Number(session?.data?.id)
+        ? 'edit'
+        : 'read'
+    } else if (Number(lockBy.id) == Number(session?.data?.id)) {
       return 'edit'
     }
     return 'hidden'
@@ -212,7 +216,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         labelField: 'name',
-        views: './lists/views/default-section-relationship/index',
+        views: './lists/views/post/sections/index',
       },
     }),
     manualOrderOfSections: json({
@@ -244,7 +248,7 @@ const listConfigurations = list({
       ref: 'Contact',
       many: true,
       ui: {
-        views: './lists/views/default-author-relationship/index',
+        views: './lists/views/post/contact-relationship/index',
       },
     }),
     manualOrderOfWriters: json({
@@ -259,12 +263,16 @@ const listConfigurations = list({
       label: '攝影',
       ref: 'Contact',
       many: true,
+      ui: {
+        views: './lists/views/post/contact-relationship/index',
+      },
     }),
     camera_man: relationship({
       label: '影音',
       ref: 'Contact',
       many: true,
       ui: {
+        views: './lists/views/post/contact-relationship/index',
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
@@ -275,6 +283,7 @@ const listConfigurations = list({
       ref: 'Contact',
       many: true,
       ui: {
+        views: './lists/views/post/contact-relationship/index',
         //createView: { fieldMode: 'hidden' },
         //listView: { fieldMode: 'hidden' },
         //itemView: { fieldMode: 'hidden' },
@@ -285,6 +294,7 @@ const listConfigurations = list({
       ref: 'Contact',
       many: true,
       ui: {
+        views: './lists/views/post/contact-relationship/index',
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
@@ -295,6 +305,7 @@ const listConfigurations = list({
       ref: 'Contact',
       many: true,
       ui: {
+        views: './lists/views/post/contact-relationship/index',
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
@@ -345,7 +356,7 @@ const listConfigurations = list({
           fields: ['name', 'imageFile', 'waterMark'],
         },
         inlineConnect: true,
-        views: './lists/views/default-photo-relationship/index',
+        views: './lists/views/post/default-hero-image/index',
       },
     }),
 
@@ -592,9 +603,6 @@ const listConfigurations = list({
       isFilterable: false,
       ref: 'Photo',
       ui: {
-        createView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
         displayMode: 'cards',
         cardFields: ['imageFile'],
         //linkToItem: true,
@@ -614,6 +622,7 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     manualOrderOfRelatedVideos: json({
@@ -622,6 +631,7 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     state: select({
@@ -738,6 +748,7 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
         displayMode: 'textarea',
       },
     }),

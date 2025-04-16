@@ -59,23 +59,24 @@ model Category {
 }
 
 model Contact {
-  id                      Int       @id @default(autoincrement())
-  name                    String    @default("")
-  content                 String    @default("")
-  sections                Section[] @relation("Contact_sections")
+  id                      Int              @id @default(autoincrement())
+  name                    String           @default("")
+  role                    ContactRoleType? @default(writer)
+  content                 String           @default("")
+  sections                Section[]        @relation("Contact_sections")
   createdAt               DateTime?
   updatedAt               DateTime?
-  createdBy               User?     @relation("Contact_createdBy", fields: [createdById], references: [id])
-  createdById             Int?      @map("createdBy")
-  updatedBy               User?     @relation("Contact_updatedBy", fields: [updatedById], references: [id])
-  updatedById             Int?      @map("updatedBy")
-  from_Post_writers       Post[]    @relation("Post_writers")
-  from_Post_photographers Post[]    @relation("Post_photographers")
-  from_Post_camera_man    Post[]    @relation("Post_camera_man")
-  from_Post_designers     Post[]    @relation("Post_designers")
-  from_Post_engineers     Post[]    @relation("Post_engineers")
-  from_Post_vocals        Post[]    @relation("Post_vocals")
-  from_User_author        User[]    @relation("User_author")
+  createdBy               User?            @relation("Contact_createdBy", fields: [createdById], references: [id])
+  createdById             Int?             @map("createdBy")
+  updatedBy               User?            @relation("Contact_updatedBy", fields: [updatedById], references: [id])
+  updatedById             Int?             @map("updatedBy")
+  from_Post_writers       Post[]           @relation("Post_writers")
+  from_Post_photographers Post[]           @relation("Post_photographers")
+  from_Post_camera_man    Post[]           @relation("Post_camera_man")
+  from_Post_designers     Post[]           @relation("Post_designers")
+  from_Post_engineers     Post[]           @relation("Post_engineers")
+  from_Post_vocals        Post[]           @relation("Post_vocals")
+  from_User_author        User[]           @relation("User_author")
 
   @@index([name])
   @@index([createdById])
@@ -588,4 +589,11 @@ model PopularTag {
   @@index([choicesId])
   @@index([createdById])
   @@index([updatedById])
+}
+
+enum ContactRoleType {
+  writer
+  photographer
+  camera_man
+  designer
 }
