@@ -24,13 +24,12 @@ import {
 import { Link } from '@keystone-6/core/admin-ui/router'
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 import { gql, useQuery } from '@keystone-6/core/admin-ui/apollo'
-import {
-  CellContainer,
-  CreateItemDrawer,
-} from '@keystone-6/core/admin-ui/components'
+import { CellContainer } from '@keystone-6/core/admin-ui/components'
+import { CreateItemDrawer } from './CreateItemDrawer'
 
 import { Cards } from './cards'
 import { RelationshipSelect } from './RelationshipSelect'
+import { getFilterFromFieldConfig } from './util'
 
 function LinkToRelatedItems({
   itemId,
@@ -97,6 +96,8 @@ export const Field = ({
   const foreignList = useList(field.refListKey)
   const localList = useList(field.listKey)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const filterList = getFilterFromFieldConfig(field.path)
+  const defaultRole = Array.isArray(filterList) ? filterList[0] : undefined
 
   /**
    * use Ref to prevent infinite re-render
@@ -110,6 +111,7 @@ export const Field = ({
           author {
             id
             name
+            role
           }
         }
       }
@@ -122,12 +124,16 @@ export const Field = ({
     }
   )
 
-  if (isAssignedRef.current === false && data) {
+  if (isAssignedRef.current === false && data && Array.isArray(filterList)) {
     const update = Object.assign({}, value)
 
-    if (data.user?.author && typeof onChange === 'function') {
-      const item = data.user.author
+    const item = data.user?.author
 
+    if (
+      typeof onChange === 'function' &&
+      item &&
+      filterList.includes(item.role)
+    ) {
       Object.assign(update, {
         ...update,
         value: [
@@ -229,9 +235,10 @@ export const Field = ({
                   }
             }
             orderBy={[{ id: 'desc' }]}
+            filterList={filterList}
           />
           <Stack across gap="small">
-            {onChange !== undefined && !field.hideCreate && (
+            {onChange !== undefined && !field.hideCreate && defaultRole && (
               <Button
                 size="small"
                 disabled={isDrawerOpen}
@@ -285,10 +292,11 @@ export const Field = ({
             )}
           </Stack>
         </Stack>
-        {onChange !== undefined && (
+        {onChange !== undefined && defaultRole && (
           <DrawerController isOpen={isDrawerOpen}>
             <CreateItemDrawer
               listKey={foreignList.key}
+              defaultRole={defaultRole}
               onClose={() => {
                 setIsDrawerOpen(false)
               }}
@@ -593,6 +601,7 @@ export const controller = (
             onChange(newItems.map((item) => item.id).join(','))
           },
         }
+
         return (
           <RelationshipSelect
             controlShouldRenderValue
@@ -603,6 +612,7 @@ export const controller = (
             isDisabled={onChange === undefined}
             state={state}
             orderBy={[{ id: 'desc' }]}
+            filterList={getFilterFromFieldConfig(config.path)}
           />
         )
       },

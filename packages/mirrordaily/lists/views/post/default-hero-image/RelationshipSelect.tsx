@@ -11,9 +11,8 @@ import {
   useContext,
   useRef,
 } from 'react'
-
-// eslint-disable-next-line
-import { jsx } from '@keystone-ui/core';
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+import { jsx } from '@keystone-ui/core'
 import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields'
 import { validate as validateUUID } from 'uuid'
 import { IdFieldConfig, ListMeta } from '@keystone-6/core/types'
@@ -59,7 +58,6 @@ const idValidators = {
 
 function useDebouncedValue<T>(value: T, limitMs: number): T {
   const [debouncedValue, setDebouncedValue] = useState(() => value)
-
   useEffect(() => {
     const id = setTimeout(() => {
       setDebouncedValue(() => value)
@@ -105,7 +103,6 @@ export function useFilter(
 }
 
 const idFieldAlias = '____id____'
-
 const labelFieldAlias = '____label____'
 
 const LoadingIndicatorContext = createContext<{
@@ -113,27 +110,12 @@ const LoadingIndicatorContext = createContext<{
   ref: (element: HTMLElement | null) => void
 }>({
   count: 0,
-  // To avoid @typescript-eslint/no-empty-function,
-  // add a console log.
   ref: () => {
     console.log('ref function called')
   },
 })
 
-export const RelationshipSelect = ({
-  autoFocus,
-  controlShouldRenderValue,
-  isDisabled,
-  isLoading,
-  labelField,
-  searchFields,
-  list,
-  placeholder,
-  portalMenu,
-  state,
-  extraSelection = '',
-  orderBy,
-}: {
+export type RelationshipSelectProps = {
   autoFocus?: boolean
   controlShouldRenderValue: boolean
   isDisabled: boolean
@@ -142,7 +124,7 @@ export const RelationshipSelect = ({
   searchFields: string[]
   list: ListMeta
   placeholder?: string
-  portalMenu?: true | undefined
+  portalMenu?: true
   state:
     | {
         kind: 'many'
@@ -160,12 +142,28 @@ export const RelationshipSelect = ({
       }
   extraSelection?: string
   orderBy: Record<string, any>[]
-}) => {
+  query?: Record<string, any>
+}
+
+export function RelationshipSelect(
+  props: RelationshipSelectProps
+): JSX.Element {
+  const {
+    autoFocus,
+    controlShouldRenderValue,
+    isDisabled,
+    isLoading,
+    labelField,
+    searchFields,
+    list,
+    placeholder,
+    portalMenu,
+    state,
+    extraSelection = '',
+    orderBy,
+  } = props
+
   const [search, setSearch] = useState('')
-  // note it's important that this is in state rather than a ref
-  // because we want a re-render if the element changes
-  // so that we can register the intersection observer
-  // on the right element
   const [loadingIndicatorElement, setLoadingIndicatorElement] =
     useState<null | HTMLElement>(null)
 
@@ -192,11 +190,12 @@ export const RelationshipSelect = ({
   `
 
   const debouncedSearch = useDebouncedValue(search, 200)
-  const where = useFilter(debouncedSearch, list, searchFields)
+  const defaultWhere = useFilter(debouncedSearch, list, searchFields)
+  const where = {
+    AND: [defaultWhere, { defaultImage: { equals: true } }],
+  }
 
   const link = useApolloClient().link
-  // we're using a local apollo client here because writing a global implementation of the typePolicies
-  // would require making assumptions about how pagination should work which won't always be right
   const apolloClient = useMemo(
     () =>
       new ApolloClient({
@@ -255,8 +254,6 @@ export const RelationshipSelect = ({
     [count]
   )
 
-  // we want to avoid fetching more again and `loading` from Apollo
-  // doesn't seem to become true when fetching more
   const [lastFetchMore, setLastFetchMore] = useState<{
     where: Record<string, any>
     extraSelection: string
@@ -291,14 +288,14 @@ export const RelationshipSelect = ({
             orderBy: Record<string, any>[]
           }
         > = gql`
-              query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!, $orderBy: [${list.gqlNames.listOrderName}!]!) {
-                items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
-                  ${labelFieldAlias}: ${labelField}
-                  ${idFieldAlias}: id
-                  ${extraSelection}
-                }
-              }
-            `
+          query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!, $orderBy: [${list.gqlNames.listOrderName}!]!) {
+            items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
+              ${labelFieldAlias}: ${labelField}
+              ${idFieldAlias}: id
+              ${extraSelection}
+            }
+          }
+        `
         setLastFetchMore({ extraSelection, list, skip, where })
         fetchMore({
           query: QUERY,
@@ -320,10 +317,6 @@ export const RelationshipSelect = ({
     { current: loadingIndicatorElement }
   )
 
-  // TODO: better error UI
-  // TODO: Handle permission errors
-  // (ie; user has permission to read this relationship field, but
-  // not the related list, or some items on the list)
   if (error) {
     return <span>Error</span>
   }
@@ -332,8 +325,6 @@ export const RelationshipSelect = ({
     return (
       <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
         <Select
-          // this is necessary because react-select passes a second argument to onInputChange
-          // and useState setters log a warning if a second argument is passed
           onInputChange={(val) => setSearch(val)}
           isLoading={loading || isLoading}
           autoFocus={autoFocus}
@@ -344,8 +335,6 @@ export const RelationshipSelect = ({
               ? {
                   value: state.value.id,
                   label: state.value.label,
-                  // eslint-disable-next-line
-                  // @ts-ignore
                   data: state.value.data,
                 }
               : null
@@ -373,8 +362,7 @@ export const RelationshipSelect = ({
 
   return (
     <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
-      <MultiSelect // this is necessary because react-select passes a second argument to onInputChange
-        // and useState setters log a warning if a second argument is passed
+      <MultiSelect
         onInputChange={(val) => setSearch(val)}
         isLoading={loading || isLoading}
         autoFocus={autoFocus}
@@ -399,10 +387,6 @@ export const RelationshipSelect = ({
         controlShouldRenderValue={controlShouldRenderValue}
         isClearable={controlShouldRenderValue}
         isDisabled={isDisabled}
-        // The parameter `formatOptionLabel` is added specifically for this project
-        // and is not copied from the codebase of keystone-6/core.
-        // This parameter controls the appearance of element in drop-down list component, make it display image if needed.
-        // See [Pull Request](https://github.com/mirror-media/Lilith/pull/698) to get more details.
         formatOptionLabel={(option) => {
           return (
             <div style={{ display: 'flex', flexDirection: 'row' }}>

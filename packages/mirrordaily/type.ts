@@ -27,3 +27,12 @@ export type Session = {
     role: UserRole
   }
 }
+
+export enum ContactRole {
+  Writer = 'writer',
+  Photographer = 'photographer',
+  CameraMan = 'camera_man',
+  Designer = 'designer',
+  Engineer = 'engineer',
+  Vocal = 'vocal',
+}
