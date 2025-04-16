@@ -29,34 +29,40 @@ export function ImageButton<T>(props: ImageButtonProps<T>) {
   }
 
   const onImageSelectorChange: ImageSelectorOnChangeFn<T> = (
-    selectedImagesWithMeta,
+    selectedImages,
     align
   ) => {
-    const selected = selectedImagesWithMeta?.[0]
-    if (!selected) {
+    if (selectedImages.length === 0) {
       setToShowImageSelector(false)
-      return
     }
 
-    const contentState = editorState.getCurrentContent()
-    const contentStateWithEntity = contentState.createEntity(
-      'image',
-      'IMMUTABLE',
-      {
-        ...selected.image,
-        desc: selected.desc,
-        url: selected.url,
-        alignment: align,
-      }
-    )
-    const entityKey = contentStateWithEntity.getLastCreatedEntityKey()
-    const newEditorState = EditorState.set(editorState, {
-      currentContent: contentStateWithEntity,
-    })
+    let newEditorState = editorState
+    for (const selectedImage of selectedImages) {
+      const contentState = newEditorState.getCurrentContent()
+      const contentStateWithEntity = contentState.createEntity(
+        'image',
+        'IMMUTABLE',
+        {
+          ...selectedImage.image,
+          desc: selectedImage.desc,
+          url: selectedImage.url,
+          alignment: align,
+        }
+      )
+      const entityKey = contentStateWithEntity.getLastCreatedEntityKey()
+      newEditorState = EditorState.set(newEditorState, {
+        currentContent: contentStateWithEntity,
+      })
+      // The third parameter here is a space string, not an empty string
+      // If you set an empty string, you will get an error: Unknown DraftEntity key: null
+      newEditorState = AtomicBlockUtils.insertAtomicBlock(
+        newEditorState,
+        entityKey,
+        ' '
+      )
+    }
 
-    // The third parameter here is a space string, not an empty string
-    // If you set an empty string, you will get an error: Unknown DraftEntity key: null
-    onChange(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '))
+    onChange(newEditorState)
     setToShowImageSelector(false)
   }
 
@@ -68,6 +74,7 @@ export function ImageButton<T>(props: ImageButtonProps<T>) {
           enableCaption={true}
           enableUrl={true}
           enableAlignment={true}
+          enableMultiSelect={true}
         />
       )}
 
