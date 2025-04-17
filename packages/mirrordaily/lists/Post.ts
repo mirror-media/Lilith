@@ -246,6 +246,7 @@ const listConfigurations = list({
     }),
     title: text({
       label: '標題（建議字數：28字）',
+      validation: { isRequired: true},
     }),
     subtitle: text({
       label: '副標',
@@ -569,9 +570,9 @@ const listConfigurations = list({
       ref: 'Post',
       many: true,
       ui: {
-        views: './lists/views/sorted-relationship/index',
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
         labelField: 'title',
-      },
+      }
     }),
     from_External_relateds: relationship({
       label: '相關外部文章(發佈後由演算法自動計算)',
