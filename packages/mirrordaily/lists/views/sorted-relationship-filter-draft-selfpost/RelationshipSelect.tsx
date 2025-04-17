@@ -254,14 +254,14 @@ export const RelationshipSelect = ({
         data,
       })
     ) || []
-    const excludeStates = [PostStatus.Draft, PostStatus.Archived, PostStatus.Scheduled];
+    const includesStates = [PostStatus.Published, PostStatus.Invisible];
     const filteredOptions = useMemo(() => {
       return options.filter((option) => {
         const isCurrent = option.value === currentPostId;
         const optionState = option.data?.state as PostStatus;
-        const shouldExclude = excludeStates.includes(optionState);
+        const shouldInclude = includesStates.includes(optionState);
     
-        return !isCurrent && !shouldExclude;
+        return !isCurrent && shouldInclude;
       });
     }, [options, currentPostId]);
     
