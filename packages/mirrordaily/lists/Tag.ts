@@ -20,7 +20,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         hideCreate: true,
-        views: './lists/views/sorted-relationship/index',
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
       },
     }),
     posts_algo: relationship({
