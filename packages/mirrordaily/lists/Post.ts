@@ -112,36 +112,52 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
   context,
   item,
 }) => {
+  const currentUserId = Number(session?.data?.id)
+  const currentUserRole = session?.data?.role
+
   // @ts-ignore next line
-  if ([UserRole.Moderator, UserRole.Editor].includes(session?.data?.role)) {
-    const { lockBy } = await context.prisma.Post.findUnique({
-      where: { id: Number(item.id) },
-      select: {
-        lockBy: {
-          select: {
-            id: true,
+  if ([UserRole.Moderator, UserRole.Editor].includes(currentUserRole)) {
+    const { lockBy, lockExpireAt, createdBy } =
+      await context.prisma.Post.findUnique({
+        where: { id: Number(item.id) },
+        select: {
+          lockBy: {
+            select: {
+              id: true,
+            },
+          },
+          lockExpireAt: true,
+          createdBy: {
+            select: {
+              id: true,
+            },
           },
         },
-      },
-    })
+      })
+
+    const newLockExpireAt = new Date(
+      new Date().setMinutes(new Date().getMinutes() + envVar.lockDuration, 0, 0)
+    ).toISOString()
 
     if (!lockBy) {
-      const lockExpireAt = new Date(
-        new Date().setMinutes(
-          new Date().getMinutes() + envVar.lockDuration,
-          0,
-          0
-        )
-      ).toISOString()
+      if (createdBy) {
+        if (
+          Number(createdBy.id) !== currentUserId &&
+          currentUserRole === UserRole.Editor
+        ) {
+          return 'read'
+        }
+      }
+
       const updatedPost = await context.prisma.Post.update({
         where: { id: Number(item.id) },
         data: {
           lockBy: {
             connect: {
-              id: Number(session?.data?.id),
+              id: currentUserId,
             },
           },
-          lockExpireAt: lockExpireAt,
+          lockExpireAt: newLockExpireAt,
         },
         select: {
           lockBy: {
@@ -157,6 +173,35 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
         : 'read'
     } else if (Number(lockBy.id) == Number(session?.data?.id)) {
       return 'edit'
+    } else if (new Date(lockExpireAt).valueOf() < Date.now()) {
+      // 過期的自動讓出，讓出對象為 Moderator 或者文章建立者
+      if (
+        currentUserRole === UserRole.Moderator ||
+        currentUserId === Number(createdBy?.id)
+      ) {
+        const updatedPost = await context.prisma.Post.update({
+          where: { id: Number(item.id) },
+          data: {
+            lockBy: {
+              connect: {
+                id: currentUserId,
+              },
+            },
+            lockExpireAt: newLockExpireAt,
+          },
+          select: {
+            lockBy: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        })
+
+        return Number(updatedPost.lockBy?.id) === Number(session?.data?.id)
+          ? 'edit'
+          : 'read'
+      }
     }
     return 'hidden'
   }
@@ -201,6 +246,7 @@ const listConfigurations = list({
     }),
     title: text({
       label: '標題（建議字數：28字）',
+      validation: { isRequired: true},
     }),
     subtitle: text({
       label: '副標',
@@ -524,9 +570,9 @@ const listConfigurations = list({
       ref: 'Post',
       many: true,
       ui: {
-        views: './lists/views/sorted-relationship/index',
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
         labelField: 'title',
-      },
+      }
     }),
     from_External_relateds: relationship({
       label: '相關外部文章(發佈後由演算法自動計算)',
@@ -838,20 +884,24 @@ const listConfigurations = list({
     validateInput: async ({ operation, item, context, addValidationError }) => {
       if (context.session?.data?.role !== UserRole.Admin) {
         if (operation === 'update') {
-          const { lockBy } = await context.prisma.Post.findUnique({
-            where: { id: Number(item.id) },
-            select: {
-              lockBy: {
-                select: {
-                  id: true,
+          const { lockBy, lockExpireAt } = await context.prisma.Post.findUnique(
+            {
+              where: { id: Number(item.id) },
+              select: {
+                lockBy: {
+                  select: {
+                    id: true,
+                  },
                 },
+                lockExpireAt: true,
               },
-            },
-          })
+            }
+          )
 
           if (
             lockBy?.id &&
-            Number(lockBy.id) !== Number(context.session?.data?.id)
+            Number(lockBy.id) !== Number(context.session?.data?.id) &&
+            new Date(lockExpireAt).valueOf() > Date.now()
           ) {
             addValidationError('可能有其他人正在編輯，請重新整理頁面。')
           }

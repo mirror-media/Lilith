@@ -30,7 +30,7 @@ const listConfigurations = list({
       ref: 'Post',
       many: false,
       ui: {
-        views: './lists/views/sorted-relationship/index',
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
         labelField: 'title',
       },
     }),
