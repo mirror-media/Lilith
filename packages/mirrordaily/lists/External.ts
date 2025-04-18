@@ -120,7 +120,7 @@ const listConfigurations = list({
       ref: 'Post.from_External_relateds',
       many: true,
       ui: {
-        views: './lists/views/sorted-relationship/index',
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
       },
     }),
     groups: relationship({
