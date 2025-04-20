@@ -3,9 +3,12 @@ import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { ImageEntity } from './image-selector'
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { convertFilesToImageData, convertStringToFile } from '../utils/image'
+import {
+  convertFilesToImageData,
+  convertStringToFile,
+} from '../utils/file-convert'
 import { Button } from '@keystone-ui/button'
-import { Checkbox } from '@keystone-ui/fields'
+import { Checkbox, TextInput } from '@keystone-ui/fields'
 import _ from 'lodash'
 
 const imagesMutation = gql`
@@ -38,21 +41,6 @@ const imagesMutation = gql`
   }
 `
 
-type ImageFileData = {
-  uid: string
-  originalName: string
-  name: string
-  blobURL: string
-  type: string
-  isSelected: boolean
-  shouldSetWatermark: boolean
-}
-
-export type RawImageFileData = Pick<
-  ImageFileData,
-  'uid' | 'name' | 'blobURL' | 'type'
->
-
 const CustomButton = styled(Button)`
   margin-top: 10px;
 `
@@ -73,7 +61,7 @@ const ImageFilesWrapper = styled.div`
 `
 
 const ImageFileWrapper = styled.div`
-  flex: 0 0 33.3333%;
+  width: 33%;
   cursor: pointer;
   padding: 0 10px 10px;
 `
@@ -95,6 +83,25 @@ const CustomCheckbox = styled(Checkbox)`
   cursor: pointer;
 `
 
+const Label = styled.label`
+  display: block;
+  margin: 10px 0;
+  font-weight: 600;
+`
+
+type ImageFileData = {
+  uid: string
+  name: string
+  blobURL: string
+  type: string
+  shouldSetWatermark: boolean
+}
+
+export type RawImageFileData = Pick<
+  ImageFileData,
+  'uid' | 'name' | 'blobURL' | 'type'
+>
+
 type ImageFileInputProps = {
   onAddImages: (files: RawImageFileData[]) => void
 }
@@ -108,6 +115,7 @@ const AddImages = ({ onAddImages }: ImageFileInputProps) => {
     if (!files) return
 
     const imagesFiles = await convertFilesToImageData(files)
+    console.log('imagesFiles', imagesFiles)
     onAddImages(imagesFiles)
   }
 
@@ -157,11 +165,22 @@ const ImageFile = ({
   return (
     <ImageFileWrapper>
       <Image src={file.blobURL} />
+      <Label htmlFor="name">Image Name</Label>
+      <TextInput
+        id="name"
+        type="text"
+        defaultValue={file.name}
+        onChange={_.debounce((e: ChangeEvent<HTMLInputElement>) => {
+          onChange({
+            ...file,
+            name: e.target.value,
+          })
+        })}
+      />
       <ImageName>{file.name}</ImageName>
       <CustomCheckbox
         defaultChecked={file.shouldSetWatermark}
         onChange={_.debounce((e: ChangeEvent<HTMLInputElement>) => {
-          console.log(e.target.checked)
           onChange({
             ...file,
             shouldSetWatermark: e.target.checked,
@@ -175,7 +194,7 @@ const ImageFile = ({
 }
 
 type AddPhotosMutationResult = {
-  photos: ImageEntity[] // 或者你要手動定義一個正確的型別
+  photos: ImageEntity[]
 }
 
 type AddPhotosMutationVariables = {
@@ -209,8 +228,6 @@ export function ImageUploader({
       .filter((file) => !existedImageUids.has(file.uid))
       .map((rawFile) => ({
         ...rawFile,
-        originalName: rawFile.name,
-        isSelected: false,
         shouldSetWatermark: true,
       }))
 
@@ -218,6 +235,8 @@ export function ImageUploader({
   }
 
   const onConfirm = async () => {
+    if (!files.length) return onChange([])
+
     const tasks = files.map(async (data) => ({
       ...data,
       file: await convertStringToFile(data.blobURL, data.name, data.type),

@@ -7,6 +7,8 @@ import { ImageEntity } from './image-selector'
 import { SearchBox, SearchBoxOnChangeFn } from './search-box'
 import { Pagination } from './pagination'
 import { TextInput } from '@keystone-ui/fields'
+import { VideoUploader, VideoUploaderOnChangeFn } from './video-uploader'
+import { Button } from '@keystone-ui/button'
 
 const videosQuery = gql`
   query Videos($searchText: String!, $take: Int, $skip: Int) {
@@ -20,6 +22,7 @@ const videosQuery = gql`
       id
       name
       videoSrc
+      youtubeUrl
       file {
         filename
         filesize
@@ -55,6 +58,10 @@ const VideoSearchBox = styled(SearchBox)`
   margin-top: 10px;
 `
 
+const CustomButton = styled(Button)`
+  margin-top: 10px;
+`
+
 const VideoSelectionWrapper = styled.div`
   overflow: auto;
   margin-top: 10px;
@@ -67,7 +74,7 @@ const VideoGridsWrapper = styled.div`
 `
 
 const VideoGridWrapper = styled.div`
-  flex: 0 0 33.3333%;
+  width: 33.3333%;
   cursor: pointer;
   padding: 0 10px 10px;
 `
@@ -79,7 +86,7 @@ const VideoMetaGridsWrapper = styled.div`
 `
 
 const VideoMetaGridWrapper = styled.div`
-  flex: 0 0 33.3333%;
+  width: 33.3333%;
   cursor: pointer;
   padding: 0 10px 10px;
 `
@@ -88,7 +95,7 @@ const Video = styled.video`
   display: block;
   width: 100%;
   aspect-ratio: 2;
-  object-fit: cover;
+  object-fit: contain;
 `
 
 const SeparationLine = styled.div`
@@ -247,6 +254,7 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
   const [currentPage, setCurrentPage] = useState(0) // page starts with 1, 0 is used to detect initialization
   const [searchText, setSearchText] = useState('')
   const [selected, setSelected] = useState<VideoEntityWithMeta[]>([])
+  const [showVideoUploader, setShowVideoUploader] = useState(false)
 
   const pageSize = 6
 
@@ -263,6 +271,11 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
   const onSearchBoxChange: SearchBoxOnChangeFn = async (searchInput) => {
     setSearchText(searchInput)
     setCurrentPage(1)
+  }
+
+  const onVideoUploaderChange: VideoUploaderOnChangeFn = (video) => {
+    if (video) setSelected((prev) => [...prev, { video, desc: '' }])
+    setShowVideoUploader(false)
   }
 
   const onVideoMetaChange: VideoMetaOnChangeFn = (videoEntityWithMeta) => {
@@ -359,6 +372,9 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
           width="narrow"
         >
           <div>
+            <CustomButton onClick={() => setShowVideoUploader(true)}>
+              上傳圖片
+            </CustomButton>
             <VideoSearchBox onChange={onSearchBoxChange} />
             <VideoSelectionWrapper>
               <div>{searchResult}</div>
@@ -371,6 +387,7 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
           </div>
         </Drawer>
       </DrawerController>
+      {showVideoUploader && <VideoUploader onChange={onVideoUploaderChange} />}
     </>
   )
 }

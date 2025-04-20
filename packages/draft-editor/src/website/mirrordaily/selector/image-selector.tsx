@@ -80,7 +80,7 @@ const ImageGridsWrapper = styled.div`
 `
 
 const ImageGridWrapper = styled.div`
-  flex: 0 0 33.3333%;
+  width: 33.3333%;
   cursor: pointer;
   padding: 0 10px 10px;
 `
@@ -92,7 +92,7 @@ const ImageMetaGridsWrapper = styled.div`
 `
 
 const ImageMetaGridWrapper = styled.div`
-  flex: 0 0 33.3333%;
+  width: 33.3333%;
   cursor: pointer;
   padding: 0 10px 10px;
 `
@@ -452,10 +452,6 @@ export function ImageSelector(props: {
     return ele.image
   })
 
-  const onOpenImageUploader = () => {
-    setShowImageUploader(true)
-  }
-
   useEffect(() => {
     if (currentPage !== 0) {
       queryImages({
@@ -526,7 +522,9 @@ export function ImageSelector(props: {
           width="narrow"
         >
           <div ref={contentWrapperRef}>
-            <CustomButton onClick={onOpenImageUploader}>上傳圖片</CustomButton>
+            <CustomButton onClick={() => setShowImageUploader(true)}>
+              上傳圖片
+            </CustomButton>
             <ImageSearchBox onChange={onSearchBoxChange} />
             <ImageSelectionWrapper>
               <div>{searchResult}</div>
