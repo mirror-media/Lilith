@@ -12,9 +12,11 @@ import { Button } from '@keystone-ui/button'
 
 const videosQuery = gql`
   query Videos($searchText: String!, $take: Int, $skip: Int) {
-    videosCount(where: { name: { contains: $searchText } })
+    videosCount(
+      where: { name: { contains: $searchText }, state: { equals: "published" } }
+    )
     videos(
-      where: { name: { contains: $searchText } }
+      where: { name: { contains: $searchText }, state: { equals: "published" } }
       orderBy: { id: desc }
       take: $take
       skip: $skip
