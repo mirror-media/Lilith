@@ -967,7 +967,6 @@ const listConfigurations = list({
       return
     },
     afterOperation: async ({ operation, item, context }) => {
-      /*
       if (
         resolvedData &&
         resolvedData.state &&
@@ -978,7 +977,6 @@ const listConfigurations = list({
           method: 'GET',
         })
       }
-	  */
       if (operation === 'update') {
         await context.prisma.post.update({
           where: { id: Number(item.id) },
