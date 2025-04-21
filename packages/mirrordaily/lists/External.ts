@@ -30,7 +30,10 @@ function filterExternals(roles: string[]) {
       case ACL.CMS:
       default: {
         // Expose all externals if user logged in
-        return roles.indexOf(session?.data?.role) > -1
+        return (
+          session?.data?.role !== undefined &&
+          roles.indexOf(session.data.role) > -1
+        )
       }
     }
   }
