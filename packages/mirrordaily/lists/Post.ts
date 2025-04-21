@@ -866,6 +866,7 @@ const listConfigurations = list({
     filter: {
       query: filterPosts([UserRole.Admin, UserRole.Moderator, UserRole.Editor]),
       update: async (auth) => {
+		if (envVar.accessControlStrategy === ACL.GraphQL) return true
         if (admin(auth) || moderator(auth)) return true
         else {
           // editor only allow to update posts created by itself
