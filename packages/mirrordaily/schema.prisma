@@ -35,22 +35,23 @@ model AudioFile {
 }
 
 model Category {
-  id                   Int       @id @default(autoincrement())
-  name                 String    @unique @default("")
-  slug                 String    @unique @default("")
+  id                   Int        @id @default(autoincrement())
+  name                 String     @unique @default("")
+  slug                 String     @unique @default("")
   order                Int?
-  state                String    @default("active")
-  heroImage            Photo?    @relation("Category_heroImage", fields: [heroImageId], references: [id])
-  heroImageId          Int?      @map("heroImage")
-  sections             Section[] @relation("Category_sections")
-  posts                Post[]    @relation("Category_posts")
+  state                String     @default("active")
+  heroImage            Photo?     @relation("Category_heroImage", fields: [heroImageId], references: [id])
+  heroImageId          Int?       @map("heroImage")
+  sections             Section[]  @relation("Category_sections")
+  posts                Post[]     @relation("Category_posts")
+  externals            External[] @relation("Category_externals")
   createdAt            DateTime?
   updatedAt            DateTime?
-  createdBy            User?     @relation("Category_createdBy", fields: [createdById], references: [id])
-  createdById          Int?      @map("createdBy")
-  updatedBy            User?     @relation("Category_updatedBy", fields: [updatedById], references: [id])
-  updatedById          Int?      @map("updatedBy")
-  from_Header_category Header[]  @relation("Header_category")
+  createdBy            User?      @relation("Category_createdBy", fields: [createdById], references: [id])
+  createdById          Int?       @map("createdBy")
+  updatedBy            User?      @relation("Category_updatedBy", fields: [updatedById], references: [id])
+  updatedById          Int?       @map("updatedBy")
+  from_Header_category Header[]   @relation("Header_category")
 
   @@index([state])
   @@index([heroImageId])
@@ -107,32 +108,39 @@ model EditorChoice {
 }
 
 model External {
-  id                  Int       @id @default(autoincrement())
-  slug                String    @default("")
-  partner             Partner?  @relation("External_partner", fields: [partnerId], references: [id])
-  partnerId           Int?      @map("partner")
-  title               String    @default("")
-  state               String?   @default("draft")
-  publishedDate       DateTime?
-  publishedDateString String    @default("")
-  extend_byline       String    @default("")
-  thumb               String    @default("")
-  brief               String    @default("")
-  content             String    @default("")
-  source              String    @default("")
-  tags                Tag[]     @relation("External_tags")
-  relateds            Post[]    @relation("External_relateds")
-  groups              Group[]   @relation("External_groups")
-  createdAt           DateTime?
-  updatedAt           DateTime?
-  createdBy           User?     @relation("External_createdBy", fields: [createdById], references: [id])
-  createdById         Int?      @map("createdBy")
-  updatedBy           User?     @relation("External_updatedBy", fields: [updatedById], references: [id])
-  updatedById         Int?      @map("updatedBy")
+  id                      Int        @id @default(autoincrement())
+  slug                    String     @default("")
+  partner                 Partner?   @relation("External_partner", fields: [partnerId], references: [id])
+  partnerId               Int?       @map("partner")
+  title                   String     @default("")
+  state                   String?    @default("draft")
+  sections                Section[]  @relation("External_sections")
+  manualOrderOfSections   Json?
+  categories              Category[] @relation("Category_externals")
+  manualOrderOfCategories Json?
+  publishedDate           DateTime?
+  publishedDateString     String     @default("")
+  extend_byline           String     @default("")
+  thumb                   String     @default("")
+  brief                   String     @default("")
+  content                 String     @default("")
+  topics                  Topic?     @relation("External_topics", fields: [topicsId], references: [id])
+  topicsId                Int?       @map("topics")
+  source                  String     @default("")
+  tags                    Tag[]      @relation("External_tags")
+  relateds                Post[]     @relation("External_relateds")
+  groups                  Group[]    @relation("External_groups")
+  createdAt               DateTime?
+  updatedAt               DateTime?
+  createdBy               User?      @relation("External_createdBy", fields: [createdById], references: [id])
+  createdById             Int?       @map("createdBy")
+  updatedBy               User?      @relation("External_updatedBy", fields: [updatedById], references: [id])
+  updatedById             Int?       @map("updatedBy")
 
   @@index([partnerId])
   @@index([state])
   @@index([publishedDate])
+  @@index([topicsId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -239,6 +247,7 @@ model Photo {
   from_Topic_og_image         Topic[]        @relation("Topic_og_image")
   from_Video_heroImage        Video[]        @relation("Video_heroImage")
   from_Game_heroImage         Game[]         @relation("Game_heroImage")
+  from_Hot_heroImage          Hot[]          @relation("Hot_heroImage")
 
   @@index([createdById])
   @@index([updatedById])
@@ -313,6 +322,7 @@ model Post {
   updatedById                Int?           @map("updatedBy")
   from_EditorChoice_choices  EditorChoice[] @relation("EditorChoice_choices")
   from_Post_relateds         Post[]         @relation("Post_relateds")
+  from_Hot_hotnews           Hot[]          @relation("Hot_hotnews")
 
   @@index([lockById])
   @@index([lockExpireAt])
@@ -342,6 +352,7 @@ model Section {
   heroImageId           Int?       @map("heroImage")
   categories            Category[] @relation("Category_sections")
   posts                 Post[]     @relation("Post_sections")
+  externals             External[] @relation("External_sections")
   topics                Topic[]    @relation("Section_topics")
   createdAt             DateTime?
   updatedAt             DateTime?
@@ -383,41 +394,42 @@ model Tag {
 }
 
 model Topic {
-  id                           Int       @id @default(autoincrement())
-  name                         String    @unique @default("")
-  slug                         String    @unique @default("")
+  id                           Int        @id @default(autoincrement())
+  name                         String     @unique @default("")
+  slug                         String     @unique @default("")
   sortOrder                    Int?
-  state                        String?   @default("draft")
+  state                        String?    @default("draft")
   brief                        Json?
   apiDataBrief                 Json?
   leading                      String?
-  heroImage                    Photo?    @relation("Topic_heroImage", fields: [heroImageId], references: [id])
-  heroImageId                  Int?      @map("heroImage")
+  heroImage                    Photo?     @relation("Topic_heroImage", fields: [heroImageId], references: [id])
+  heroImageId                  Int?       @map("heroImage")
   heroUrl                      String?
-  heroVideo                    Video?    @relation("Topic_heroVideo", fields: [heroVideoId], references: [id])
-  heroVideoId                  Int?      @map("heroVideo")
-  slideshow_images             Photo[]   @relation("Topic_slideshow_images")
+  heroVideo                    Video?     @relation("Topic_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId                  Int?       @map("heroVideo")
+  slideshow_images             Photo[]    @relation("Topic_slideshow_images")
   manualOrderOfSlideshowImages Json?
-  og_title                     String    @default("")
-  og_description               String    @default("")
-  og_image                     Photo?    @relation("Topic_og_image", fields: [og_imageId], references: [id])
-  og_imageId                   Int?      @map("og_image")
-  type                         String?   @default("list")
-  tags                         Tag[]     @relation("Tag_topics")
-  posts                        Post[]    @relation("Post_topics")
-  style                        String    @default("")
-  isFeatured                   Boolean   @default(false)
-  title_style                  String?   @default("feature")
-  sections                     Section[] @relation("Section_topics")
-  javascript                   String    @default("")
-  dfp                          String    @default("")
-  mobile_dfp                   String    @default("")
+  og_title                     String     @default("")
+  og_description               String     @default("")
+  og_image                     Photo?     @relation("Topic_og_image", fields: [og_imageId], references: [id])
+  og_imageId                   Int?       @map("og_image")
+  type                         String?    @default("list")
+  tags                         Tag[]      @relation("Tag_topics")
+  posts                        Post[]     @relation("Post_topics")
+  externals                    External[] @relation("External_topics")
+  style                        String     @default("")
+  isFeatured                   Boolean    @default(false)
+  title_style                  String?    @default("feature")
+  sections                     Section[]  @relation("Section_topics")
+  javascript                   String     @default("")
+  dfp                          String     @default("")
+  mobile_dfp                   String     @default("")
   createdAt                    DateTime?
   updatedAt                    DateTime?
-  createdBy                    User?     @relation("Topic_createdBy", fields: [createdById], references: [id])
-  createdById                  Int?      @map("createdBy")
-  updatedBy                    User?     @relation("Topic_updatedBy", fields: [updatedById], references: [id])
-  updatedById                  Int?      @map("updatedBy")
+  createdBy                    User?      @relation("Topic_createdBy", fields: [createdById], references: [id])
+  createdById                  Int?       @map("createdBy")
+  updatedBy                    User?      @relation("Topic_updatedBy", fields: [updatedById], references: [id])
+  updatedById                  Int?       @map("updatedBy")
 
   @@index([state])
   @@index([leading])
@@ -477,6 +489,8 @@ model User {
   from_Warning_updatedBy      Warning[]      @relation("Warning_updatedBy")
   from_PopularTag_createdBy   PopularTag[]   @relation("PopularTag_createdBy")
   from_PopularTag_updatedBy   PopularTag[]   @relation("PopularTag_updatedBy")
+  from_Hot_createdBy          Hot[]          @relation("Hot_createdBy")
+  from_Hot_updatedBy          Hot[]          @relation("Hot_updatedBy")
 
   @@index([authorId])
 }
@@ -587,6 +601,29 @@ model PopularTag {
   updatedById Int?      @map("updatedBy")
 
   @@index([choicesId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Hot {
+  id          Int       @id @default(autoincrement())
+  order       Int?      @unique
+  outlink     String    @default("")
+  hotnews     Post?     @relation("Hot_hotnews", fields: [hotnewsId], references: [id])
+  hotnewsId   Int?      @map("hotnews")
+  state       String?   @default("draft")
+  heroImage   Photo?    @relation("Hot_heroImage", fields: [heroImageId], references: [id])
+  heroImageId Int?      @map("heroImage")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("Hot_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("Hot_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([hotnewsId])
+  @@index([state])
+  @@index([heroImageId])
   @@index([createdById])
   @@index([updatedById])
 }

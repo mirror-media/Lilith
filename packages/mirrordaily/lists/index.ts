@@ -17,6 +17,7 @@ import Group from './Group'
 import Game from './Game'
 import Warning from './Warning'
 import PopularTag from './PopularTag'
+import HotNews from './HotNews'
 
 export const listDefinition = {
   AudioFile: Audio,
@@ -37,5 +38,6 @@ export const listDefinition = {
   Group,
   Game,
   Warning,
-  PopularTag
+  PopularTag,
+  Hot: HotNews
 }

@@ -1,6 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { select, text, timestamp, relationship } from '@keystone-6/core/fields'
+import { select, text, timestamp, relationship, json } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 import { ACL, UserRole, State, type Session } from '../type'
 
@@ -71,6 +71,39 @@ const listConfigurations = list({
       defaultValue: ExternalStatus.Draft,
       isIndexed: true,
     }),
+    sections: relationship({
+      label: '大分類',
+      ref: 'Section.externals',
+      many: true,
+      ui: {
+        labelField: 'name',
+        views: './lists/views/post/sections/index',
+      },
+    }),
+    manualOrderOfSections: json({
+      isFilterable: false,
+      label: '大分類手動排序結果',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
+    categories: relationship({
+      label: '小分類',
+      ref: 'Category.externals',
+      many: true,
+      ui: {
+        labelField: 'name',
+      },
+    }),
+    manualOrderOfCategories: json({
+      isFilterable: false,
+      label: '小分類手動排序結果',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
     publishedDate: timestamp({
       label: '發佈日期',
       isIndexed: true,
@@ -102,6 +135,14 @@ const listConfigurations = list({
     content: text({
       label: '內文',
       ui: { displayMode: 'textarea' },
+    }),
+    topics: relationship({
+      label: '專題',
+      ref: 'Topic.externals',
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+        labelField: 'name',
+      },
     }),
     source: text({
       label: '原文網址',
@@ -175,4 +216,23 @@ const listConfigurations = list({
     },
   },
 })
-export default utils.addTrackingFields(listConfigurations)
+
+
+let extendedListConfigurations = utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfSections',
+      targetFieldName: 'sections',
+      targetListName: 'Section',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfCategories',
+      targetFieldName: 'categories',
+      targetListName: 'Category',
+      targetListLabelField: 'name',
+    },
+  ],
+  extendedListConfigurations
+)
