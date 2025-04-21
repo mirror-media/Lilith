@@ -967,11 +967,13 @@ const listConfigurations = list({
       return
     },
     afterOperation: async ({ operation, item, context }) => {
+	  console.log("check the afterOperation")
       if (
         resolvedData &&
         resolvedData.state &&
         resolvedData.state === 'published'
       ) {
+	    console.log("call data service")
         // trigger auto tagging service
         const result = fetch(envVar.dataServiceApi + '?id=' + item.id, {
           method: 'GET',
