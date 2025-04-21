@@ -109,7 +109,7 @@ model EditorChoice {
 
 model External {
   id                      Int        @id @default(autoincrement())
-  slug                    String     @unique @default("")
+  slug                    String     @default("")
   partner                 Partner?   @relation("External_partner", fields: [partnerId], references: [id])
   partnerId               Int?       @map("partner")
   title                   String     @default("")

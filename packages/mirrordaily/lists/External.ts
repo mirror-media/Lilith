@@ -46,7 +46,6 @@ const listConfigurations = list({
       label: 'slug',
       isFilterable: false,
       isOrderable: false,
-	  isIndexed: 'unique',
       ui: {
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
