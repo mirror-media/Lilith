@@ -634,5 +634,5 @@ enum ContactRoleType {
   photographer
   camera_man
   designer
-  vocal
+  engineer
 }

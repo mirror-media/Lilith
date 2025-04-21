@@ -33,14 +33,14 @@ const listConfigurations = list({
           label: '編輯',
           value: ContactRole.Designer,
         },
-        // {
-        //   label: '工程',
-        //   value: ContactRole.Engineer,
-        // },
         {
           label: '總主筆',
-          value: ContactRole.Vocal,
+          value: ContactRole.Engineer,
         },
+        // {
+        //   label: '總主筆',
+        //   value: ContactRole.Vocal,
+        // },
       ],
     }),
     content: text({
