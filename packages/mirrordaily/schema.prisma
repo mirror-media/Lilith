@@ -136,6 +136,7 @@ model External {
   createdById             Int?       @map("createdBy")
   updatedBy               User?      @relation("External_updatedBy", fields: [updatedById], references: [id])
   updatedById             Int?       @map("updatedBy")
+  from_Hot_hotexternal    Hot[]      @relation("Hot_hotexternal")
 
   @@index([partnerId])
   @@index([title])
@@ -607,22 +608,25 @@ model PopularTag {
 }
 
 model Hot {
-  id          Int       @id @default(autoincrement())
-  order       Int?      @unique
-  outlink     String    @default("")
-  hotnews     Post?     @relation("Hot_hotnews", fields: [hotnewsId], references: [id])
-  hotnewsId   Int?      @map("hotnews")
-  state       String?   @default("draft")
-  heroImage   Photo?    @relation("Hot_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?      @map("heroImage")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("Hot_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("Hot_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
+  id            Int       @id @default(autoincrement())
+  order         Int?      @unique
+  outlink       String    @default("")
+  hotnews       Post?     @relation("Hot_hotnews", fields: [hotnewsId], references: [id])
+  hotnewsId     Int?      @map("hotnews")
+  hotexternal   External? @relation("Hot_hotexternal", fields: [hotexternalId], references: [id])
+  hotexternalId Int?      @map("hotexternal")
+  state         String?   @default("draft")
+  heroImage     Photo?    @relation("Hot_heroImage", fields: [heroImageId], references: [id])
+  heroImageId   Int?      @map("heroImage")
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Hot_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Hot_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
 
   @@index([hotnewsId])
+  @@index([hotexternalId])
   @@index([state])
   @@index([heroImageId])
   @@index([createdById])

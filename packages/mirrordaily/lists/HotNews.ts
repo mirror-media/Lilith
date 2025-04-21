@@ -34,6 +34,15 @@ const listConfigurations = list({
         labelField: 'title',
       },
     }),
+    hotexternal: relationship({
+      label: '精選外部文章',
+      ref: 'External',
+      many: false,
+      ui: {
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+        labelField: 'title',
+      },
+    }),
     state: select({
       label: '狀態',
       options: [
