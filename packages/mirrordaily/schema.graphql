@@ -366,6 +366,7 @@ enum ContactRoleType {
   photographer
   camera_man
   designer
+  vocal
 }
 
 input ContactWhereUniqueInput {

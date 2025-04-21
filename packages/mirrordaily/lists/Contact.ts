@@ -37,10 +37,10 @@ const listConfigurations = list({
         //   label: '工程',
         //   value: ContactRole.Engineer,
         // },
-        // {
-        //   label: '主播',
-        //   value: ContactRole.Vocal,
-        // },
+        {
+          label: '總主筆',
+          value: ContactRole.Vocal,
+        },
       ],
     }),
     content: text({

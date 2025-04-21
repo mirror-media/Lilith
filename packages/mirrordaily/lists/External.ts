@@ -43,6 +43,7 @@ const listConfigurations = list({
       label: 'slug',
       isFilterable: false,
       isOrderable: false,
+	  isIndexed: 'unique',
       ui: {
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
@@ -51,12 +52,14 @@ const listConfigurations = list({
     }),
     partner: relationship({
       ref: 'Partner',
+	  inIndexed: true,
       ui: {
         hideCreate: true,
       },
     }),
     title: text({
       label: '標題',
+	  isIndexed: true,
       validation: { isRequired: true },
     }),
     state: select({

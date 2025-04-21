@@ -109,7 +109,7 @@ model EditorChoice {
 
 model External {
   id                      Int        @id @default(autoincrement())
-  slug                    String     @default("")
+  slug                    String     @unique @default("")
   partner                 Partner?   @relation("External_partner", fields: [partnerId], references: [id])
   partnerId               Int?       @map("partner")
   title                   String     @default("")
@@ -138,6 +138,7 @@ model External {
   updatedById             Int?       @map("updatedBy")
 
   @@index([partnerId])
+  @@index([title])
   @@index([state])
   @@index([publishedDate])
   @@index([topicsId])
@@ -633,4 +634,5 @@ enum ContactRoleType {
   photographer
   camera_man
   designer
+  vocal
 }

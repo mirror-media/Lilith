@@ -347,14 +347,14 @@ const listConfigurations = list({
       },
     }),
     vocals: relationship({
-      label: '主播',
+      label: '總主筆',
       ref: 'Contact',
       many: true,
       ui: {
         views: './lists/views/post/contact-relationship/index',
-        createView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
+        //createView: { fieldMode: 'hidden' },
+        //listView: { fieldMode: 'hidden' },
+        //itemView: { fieldMode: 'hidden' },
       },
     }),
     extend_byline: text({
