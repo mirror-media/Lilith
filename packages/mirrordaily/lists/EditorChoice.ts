@@ -85,10 +85,7 @@ const listConfigurations = list({
   hooks: {
     validateInput: ({ resolvedData, addValidationError }) => {
       const { choices,  choiceexternal, outlink } = resolvedData
-	  console.log(choices)
-	  console.log(choiceexternal)
-	  console.log(outlink)
-      if ((typeof(choices) !== 'undefined' && typeof(choiceexternal) !== 'undefined') || (typeof(choice) !== 'undefined' && typeof(outlink) !== 'undefined') || (typeof(choiceexternal) !== 'undefined' && typeof(outline) !== 'undefined')) {
+      if ((typeof(choices) !== 'undefined' && typeof(choiceexternal) !== 'undefined') || (typeof(choice) !== 'undefined' && outlink !== '') || (typeof(choiceexternal) !== 'undefined' && outline !== '')) {
         addValidationError('新聞內容請擇一')
       }
     },

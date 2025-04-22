@@ -88,7 +88,7 @@ const listConfigurations = list({
   hooks: {
     validateInput: ({ resolvedData, addValidationError }) => {
       const { hotnews,  hotexternal, outlink } = resolvedData
-      if ((typeof(hotnews) !== 'undefined' && typeof(hotexternal) !== 'undefined') || (typeof(hotnews) !== 'undefined' && typeof(outlink) !== 'undefined') || (typeof(hotexternal) !== 'undefined' && typeof(outline) !== 'undefined')) {
+      if ((typeof(hotnews) !== 'undefined' && typeof(hotexternal) !== 'undefined') || (typeof(hotnews) !== 'undefined' && outlink !== '') || (typeof(hotexternal) !== 'undefined' && outline !== '')) {
         addValidationError('新聞內容請擇一')
       }
     },
