@@ -163,7 +163,16 @@ const listConfigurations = list({
       label: '文章',
       many: true,
       ui: {
-        views: './lists/views/sorted-relationship/index',
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+        labelField: 'title',
+      },
+    }),
+    externals: relationship({
+      ref: 'External.topics',
+      label: '外部文章',
+      many: true,
+      ui: {
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
         labelField: 'title',
       },
     }),
