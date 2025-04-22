@@ -34,7 +34,7 @@ const listConfigurations = list({
           value: ContactRole.Designer,
         },
         {
-          label: '總主筆',
+          label: '主筆',
           value: ContactRole.Engineer,
         },
         // {

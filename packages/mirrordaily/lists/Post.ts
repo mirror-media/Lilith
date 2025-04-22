@@ -337,7 +337,7 @@ const listConfigurations = list({
     }),
     engineers: relationship({
       //label: '工程',
-      label: '總主筆',
+      label: '主筆',
       ref: 'Contact',
       many: true,
       ui: {
