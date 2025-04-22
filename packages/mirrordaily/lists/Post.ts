@@ -336,18 +336,19 @@ const listConfigurations = list({
       },
     }),
     engineers: relationship({
-      label: '工程',
+      //label: '工程',
+      label: '主筆',
       ref: 'Contact',
       many: true,
       ui: {
         views: './lists/views/post/contact-relationship/index',
-        createView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
+        //createView: { fieldMode: 'hidden' },
+        //listView: { fieldMode: 'hidden' },
+        //itemView: { fieldMode: 'hidden' },
       },
     }),
     vocals: relationship({
-      label: '主播',
+      label: '總主筆',
       ref: 'Contact',
       many: true,
       ui: {
@@ -866,6 +867,7 @@ const listConfigurations = list({
     filter: {
       query: filterPosts([UserRole.Admin, UserRole.Moderator, UserRole.Editor]),
       update: async (auth) => {
+		if (envVar.accessControlStrategy === ACL.GraphQL) return true
         if (admin(auth) || moderator(auth)) return true
         else {
           // editor only allow to update posts created by itself
@@ -966,19 +968,19 @@ const listConfigurations = list({
       }
       return
     },
-    afterOperation: async ({ operation, item, context }) => {
-      /*
+    afterOperation: async ({ operation, item, context, resolvedData }) => {
       if (
         resolvedData &&
         resolvedData.state &&
-        resolvedData.state === 'published'
+        resolvedData.state === 'published' &&
+	    envVar.autotagging === 'true'
       ) {
+	    console.log("call data service for auto tagging")
         // trigger auto tagging service
         const result = fetch(envVar.dataServiceApi + '?id=' + item.id, {
           method: 'GET',
         })
       }
-	  */
       if (operation === 'update') {
         await context.prisma.post.update({
           where: { id: Number(item.id) },

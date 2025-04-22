@@ -23,6 +23,7 @@ const {
   CACHE_CONNECT_TIMEOUT,
   CACHE_MAXAGE,
   DATA_SERVICE_API,
+  AUTO_TAGGING,
   INVALID_CDN_CACHE_SERVER_URL,
 } = process.env
 
@@ -84,5 +85,6 @@ export default {
     maxAge: Number.isNaN(cacheMaxAge) ? 60 : cacheMaxAge, // unit: second
   },
   dataServiceApi: DATA_SERVICE_API,
+  autotagging: AUTO_TAGGING || 'false',
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
 }

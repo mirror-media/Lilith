@@ -5,7 +5,7 @@ import { State } from '../type'
 
 const { allowRoles, admin } = utils.accessControl
 
-enum EditorChoiceState {
+enum HotNewsState {
   Draft = State.Draft,
   Published = State.Published,
   Scheduled = State.Scheduled,
@@ -25,8 +25,8 @@ const listConfigurations = list({
     outlink: text({
       label: '外部連結網址',
     }),
-    choices: relationship({
-      label: '精選文章',
+    hotnews: relationship({
+      label: '快訊文章',
       ref: 'Post',
       many: false,
       ui: {
@@ -34,8 +34,8 @@ const listConfigurations = list({
         labelField: 'title',
       },
     }),
-    choiceexternal: relationship({
-      label: '精選外部文章',
+    hotexternal: relationship({
+      label: '快訊外部文章',
       ref: 'External',
       many: false,
       ui: {
@@ -46,18 +46,21 @@ const listConfigurations = list({
     state: select({
       label: '狀態',
       options: [
-        { label: '草稿', value: EditorChoiceState.Draft },
-        { label: '已發布', value: EditorChoiceState.Published },
-        { label: '預約發佈', value: EditorChoiceState.Scheduled },
-        { label: '下線', value: EditorChoiceState.Archived },
+        { label: '草稿', value: HotNewsState.Draft },
+        { label: '已發布', value: HotNewsState.Published },
+        { label: '預約發佈', value: HotNewsState.Scheduled },
+        { label: '下線', value: HotNewsState.Archived },
       ],
-      defaultValue: EditorChoiceState.Draft,
+      defaultValue: HotNewsState.Draft,
       isIndexed: true,
     }),
     heroImage: relationship({
       label: '首圖',
       ref: 'Photo',
       ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
         displayMode: 'cards',
         cardFields: ['imageFile'],
         linkToItem: true,
@@ -69,7 +72,7 @@ const listConfigurations = list({
   ui: {
     labelField: 'id',
     listView: {
-      initialColumns: ['id', 'order', 'choices'],
+      initialColumns: ['id', 'order', 'hotnews'],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
@@ -84,11 +87,8 @@ const listConfigurations = list({
   },
   hooks: {
     validateInput: ({ resolvedData, addValidationError }) => {
-      const { choices,  choiceexternal, outlink } = resolvedData
-	  console.log(choices)
-	  console.log(choiceexternal)
-	  console.log(outlink)
-      if ((typeof(choices) !== 'undefined' && typeof(choiceexternal) !== 'undefined') || (typeof(choice) !== 'undefined' && typeof(outlink) !== 'undefined') || (typeof(choiceexternal) !== 'undefined' && typeof(outline) !== 'undefined')) {
+      const { hotnews,  hotexternal, outlink } = resolvedData
+      if ((typeof(hotnews) !== 'undefined' && typeof(hotexternal) !== 'undefined') || (typeof(hotnews) !== 'undefined' && typeof(outlink) !== 'undefined') || (typeof(hotexternal) !== 'undefined' && typeof(outline) !== 'undefined')) {
         addValidationError('新聞內容請擇一')
       }
     },
