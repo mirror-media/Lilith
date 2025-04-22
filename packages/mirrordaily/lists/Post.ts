@@ -972,7 +972,8 @@ const listConfigurations = list({
       if (
         resolvedData &&
         resolvedData.state &&
-        resolvedData.state === 'published'
+        resolvedData.state === 'published' &&
+	    envVar.autotagging === 'true'
       ) {
 	    console.log("call data service for auto tagging")
         // trigger auto tagging service
