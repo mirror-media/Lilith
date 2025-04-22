@@ -436,6 +436,7 @@ type EditorChoice {
   order: Int
   outlink: String
   choices: Post
+  choiceexternal: External
   state: String
   heroImage: Photo
   createdAt: DateTime
@@ -457,6 +458,7 @@ input EditorChoiceWhereInput {
   order: IntNullableFilter
   outlink: StringFilter
   choices: PostWhereInput
+  choiceexternal: ExternalWhereInput
   state: StringNullableFilter
   heroImage: PhotoWhereInput
   createdAt: DateTimeNullableFilter
@@ -507,6 +509,7 @@ input EditorChoiceUpdateInput {
   order: Int
   outlink: String
   choices: PostRelateToOneForUpdateInput
+  choiceexternal: ExternalRelateToOneForUpdateInput
   state: String
   heroImage: PhotoRelateToOneForUpdateInput
   createdAt: DateTime
@@ -521,6 +524,12 @@ input PostRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input ExternalRelateToOneForUpdateInput {
+  create: ExternalCreateInput
+  connect: ExternalWhereUniqueInput
+  disconnect: Boolean
+}
+
 input EditorChoiceUpdateArgs {
   where: EditorChoiceWhereUniqueInput!
   data: EditorChoiceUpdateInput!
@@ -530,6 +539,7 @@ input EditorChoiceCreateInput {
   order: Int
   outlink: String
   choices: PostRelateToOneForCreateInput
+  choiceexternal: ExternalRelateToOneForCreateInput
   state: String
   heroImage: PhotoRelateToOneForCreateInput
   createdAt: DateTime
@@ -541,6 +551,11 @@ input EditorChoiceCreateInput {
 input PostRelateToOneForCreateInput {
   create: PostCreateInput
   connect: PostWhereUniqueInput
+}
+
+input ExternalRelateToOneForCreateInput {
+  create: ExternalCreateInput
+  connect: ExternalWhereUniqueInput
 }
 
 type External {
@@ -2412,12 +2427,6 @@ input HotUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input ExternalRelateToOneForUpdateInput {
-  create: ExternalCreateInput
-  connect: ExternalWhereUniqueInput
-  disconnect: Boolean
-}
-
 input HotUpdateArgs {
   where: HotWhereUniqueInput!
   data: HotUpdateInput!
@@ -2434,11 +2443,6 @@ input HotCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input ExternalRelateToOneForCreateInput {
-  create: ExternalCreateInput
-  connect: ExternalWhereUniqueInput
 }
 
 """

@@ -26,7 +26,7 @@ const listConfigurations = list({
       label: '外部連結網址',
     }),
     hotnews: relationship({
-      label: '精選文章',
+      label: '快訊文章',
       ref: 'Post',
       many: false,
       ui: {
@@ -35,7 +35,7 @@ const listConfigurations = list({
       },
     }),
     hotexternal: relationship({
-      label: '精選外部文章',
+      label: '快訊外部文章',
       ref: 'External',
       many: false,
       ui: {

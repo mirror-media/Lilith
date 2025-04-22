@@ -342,9 +342,9 @@ const listConfigurations = list({
       many: true,
       ui: {
         views: './lists/views/post/contact-relationship/index',
-        createView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
+        //createView: { fieldMode: 'hidden' },
+        //listView: { fieldMode: 'hidden' },
+        //itemView: { fieldMode: 'hidden' },
       },
     }),
     vocals: relationship({

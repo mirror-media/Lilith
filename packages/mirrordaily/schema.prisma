@@ -85,22 +85,25 @@ model Contact {
 }
 
 model EditorChoice {
-  id          Int       @id @default(autoincrement())
-  order       Int?      @unique
-  outlink     String    @default("")
-  choices     Post?     @relation("EditorChoice_choices", fields: [choicesId], references: [id])
-  choicesId   Int?      @map("choices")
-  state       String?   @default("draft")
-  heroImage   Photo?    @relation("EditorChoice_heroImage", fields: [heroImageId], references: [id])
-  heroImageId Int?      @map("heroImage")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("EditorChoice_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("EditorChoice_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
+  id               Int       @id @default(autoincrement())
+  order            Int?      @unique
+  outlink          String    @default("")
+  choices          Post?     @relation("EditorChoice_choices", fields: [choicesId], references: [id])
+  choicesId        Int?      @map("choices")
+  choiceexternal   External? @relation("EditorChoice_choiceexternal", fields: [choiceexternalId], references: [id])
+  choiceexternalId Int?      @map("choiceexternal")
+  state            String?   @default("draft")
+  heroImage        Photo?    @relation("EditorChoice_heroImage", fields: [heroImageId], references: [id])
+  heroImageId      Int?      @map("heroImage")
+  createdAt        DateTime?
+  updatedAt        DateTime?
+  createdBy        User?     @relation("EditorChoice_createdBy", fields: [createdById], references: [id])
+  createdById      Int?      @map("createdBy")
+  updatedBy        User?     @relation("EditorChoice_updatedBy", fields: [updatedById], references: [id])
+  updatedById      Int?      @map("updatedBy")
 
   @@index([choicesId])
+  @@index([choiceexternalId])
   @@index([state])
   @@index([heroImageId])
   @@index([createdById])
@@ -108,35 +111,36 @@ model EditorChoice {
 }
 
 model External {
-  id                      Int        @id @default(autoincrement())
-  slug                    String     @default("")
-  partner                 Partner?   @relation("External_partner", fields: [partnerId], references: [id])
-  partnerId               Int?       @map("partner")
-  title                   String     @default("")
-  state                   String?    @default("draft")
-  sections                Section[]  @relation("External_sections")
-  manualOrderOfSections   Json?
-  categories              Category[] @relation("Category_externals")
-  manualOrderOfCategories Json?
-  publishedDate           DateTime?
-  publishedDateString     String     @default("")
-  extend_byline           String     @default("")
-  thumb                   String     @default("")
-  brief                   String     @default("")
-  content                 String     @default("")
-  topics                  Topic?     @relation("External_topics", fields: [topicsId], references: [id])
-  topicsId                Int?       @map("topics")
-  source                  String     @default("")
-  tags                    Tag[]      @relation("External_tags")
-  relateds                Post[]     @relation("External_relateds")
-  groups                  Group[]    @relation("External_groups")
-  createdAt               DateTime?
-  updatedAt               DateTime?
-  createdBy               User?      @relation("External_createdBy", fields: [createdById], references: [id])
-  createdById             Int?       @map("createdBy")
-  updatedBy               User?      @relation("External_updatedBy", fields: [updatedById], references: [id])
-  updatedById             Int?       @map("updatedBy")
-  from_Hot_hotexternal    Hot[]      @relation("Hot_hotexternal")
+  id                               Int            @id @default(autoincrement())
+  slug                             String         @default("")
+  partner                          Partner?       @relation("External_partner", fields: [partnerId], references: [id])
+  partnerId                        Int?           @map("partner")
+  title                            String         @default("")
+  state                            String?        @default("draft")
+  sections                         Section[]      @relation("External_sections")
+  manualOrderOfSections            Json?
+  categories                       Category[]     @relation("Category_externals")
+  manualOrderOfCategories          Json?
+  publishedDate                    DateTime?
+  publishedDateString              String         @default("")
+  extend_byline                    String         @default("")
+  thumb                            String         @default("")
+  brief                            String         @default("")
+  content                          String         @default("")
+  topics                           Topic?         @relation("External_topics", fields: [topicsId], references: [id])
+  topicsId                         Int?           @map("topics")
+  source                           String         @default("")
+  tags                             Tag[]          @relation("External_tags")
+  relateds                         Post[]         @relation("External_relateds")
+  groups                           Group[]        @relation("External_groups")
+  createdAt                        DateTime?
+  updatedAt                        DateTime?
+  createdBy                        User?          @relation("External_createdBy", fields: [createdById], references: [id])
+  createdById                      Int?           @map("createdBy")
+  updatedBy                        User?          @relation("External_updatedBy", fields: [updatedById], references: [id])
+  updatedById                      Int?           @map("updatedBy")
+  from_EditorChoice_choiceexternal EditorChoice[] @relation("EditorChoice_choiceexternal")
+  from_Hot_hotexternal             Hot[]          @relation("Hot_hotexternal")
 
   @@index([partnerId])
   @@index([title])

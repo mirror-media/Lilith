@@ -34,6 +34,15 @@ const listConfigurations = list({
         labelField: 'title',
       },
     }),
+    choiceexternal: relationship({
+      label: '精選外部文章',
+      ref: 'External',
+      many: false,
+      ui: {
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+        labelField: 'title',
+      },
+    }),
     state: select({
       label: '狀態',
       options: [
@@ -71,6 +80,17 @@ const listConfigurations = list({
       update: allowRoles(admin),
       create: allowRoles(admin),
       delete: allowRoles(admin),
+    },
+  },
+  hooks: {
+    validateInput: ({ resolvedData, addValidationError }) => {
+      const { choices,  choiceexternal, outlink } = resolvedData
+	  console.log(choices)
+	  console.log(choiceexternal)
+	  console.log(outlink)
+      if ((typeof(choices) !== 'undefined' && typeof(choiceexternal) !== 'undefined') || (typeof(choice) !== 'undefined' && typeof(outlink) !== 'undefined') || (typeof(choiceexternal) !== 'undefined' && typeof(outline) !== 'undefined')) {
+        addValidationError('新聞內容請擇一')
+      }
     },
   },
 })
