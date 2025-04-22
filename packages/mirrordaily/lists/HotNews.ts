@@ -85,5 +85,13 @@ const listConfigurations = list({
       delete: allowRoles(admin),
     },
   },
+  hooks: {
+    validateInput: ({ resolvedData, addValidationError }) => {
+      const { hotnews,  hotexternal, outlink } = resolvedData
+      if ((typeof(hotnews) !== 'undefined' && typeof(hotexternal) !== 'undefined') || (typeof(hotnews) !== 'undefined' && typeof(outlink) !== 'undefined') || (typeof(hotexternal) !== 'undefined' && typeof(outline) !== 'undefined')) {
+        addValidationError('新聞內容請擇一')
+      }
+    },
+  },
 })
 export default utils.addTrackingFields(listConfigurations)
