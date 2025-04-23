@@ -884,31 +884,33 @@ const listConfigurations = list({
   },
   hooks: {
     validateInput: async ({ operation, item, context, addValidationError }) => {
-      if (context.session?.data?.role !== UserRole.Admin) {
-        if (operation === 'update') {
-          const { lockBy, lockExpireAt } = await context.prisma.Post.findUnique(
-            {
-              where: { id: Number(item.id) },
-              select: {
-                lockBy: {
-                  select: {
-                    id: true,
-                  },
-                },
-                lockExpireAt: true,
-              },
-            }
-          )
+	  if (envVar.accessControlStrategy === ACL.CMS) {
+	    if (context.session?.data?.role !== UserRole.Admin && context.session?.data?.role !== UserRole.Moderator) {
+		  if (operation === 'update') {
+		    const { lockBy, lockExpireAt } = await context.prisma.Post.findUnique(
+			  {
+		        where: { id: Number(item.id) },
+				select: {
+				  lockBy: {
+					select: {
+					  id: true,
+					},
+			      },
+				  lockExpireAt: true,
+				},
+		      }
+			)
 
-          if (
-            lockBy?.id &&
-            Number(lockBy.id) !== Number(context.session?.data?.id) &&
-            new Date(lockExpireAt).valueOf() > Date.now()
-          ) {
-            addValidationError('可能有其他人正在編輯，請重新整理頁面。')
-          }
-        }
-      }
+			if (
+			  lockBy?.id &&
+			  Number(lockBy.id) !== Number(context.session?.data?.id) &&
+			  new Date(lockExpireAt).valueOf() > Date.now()
+			) {
+			  addValidationError('可能有其他人正在編輯，請重新整理頁面。')
+			}
+		  }
+		}
+	  }
     },
     resolveInput: async ({ operation, resolvedData }) => {
       const { publishedDate, content, brief, updateTimeStamp } = resolvedData
