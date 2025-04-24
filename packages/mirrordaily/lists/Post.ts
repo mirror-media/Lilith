@@ -116,7 +116,8 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
   const currentUserRole = session?.data?.role
 
   // @ts-ignore next line
-  if ([UserRole.Moderator, UserRole.Editor].includes(currentUserRole)) {
+  //if ([UserRole.Moderator, UserRole.Editor].includes(currentUserRole)) {
+  if ([UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
     const { lockBy, lockExpireAt, createdBy } =
       await context.prisma.Post.findUnique({
         where: { id: Number(item.id) },
@@ -217,7 +218,7 @@ const listConfigurations = list({
       isFilterable: false,
       ui: {
         createView: { fieldMode: 'hidden' },
-        //itemView: { fieldMode: 'read' },
+        itemView: { fieldMode: 'edit' },
         displayMode: 'cards',
         cardFields: ['name'],
       },
@@ -887,29 +888,29 @@ const listConfigurations = list({
 	  if (envVar.accessControlStrategy === ACL.CMS) {
 	    if (context.session?.data?.role !== UserRole.Admin && context.session?.data?.role !== UserRole.Moderator) {
 		  if (operation === 'update') {
-		    const { lockBy, lockExpireAt } = await context.prisma.Post.findUnique(
-			  {
+            const { lockBy, lockExpireAt } = await context.prisma.Post.findUnique(
+            {
 		        where: { id: Number(item.id) },
-				select: {
-				  lockBy: {
-					select: {
-					  id: true,
-					},
-			      },
-				  lockExpireAt: true,
-				},
-		      }
-			)
+                select: {
+                  lockBy: {
+                    select: {
+                      id: true,
+                    },
+                  },
+                  lockExpireAt: true,
+                },
+              }
+            )
 
-			if (
-			  lockBy?.id &&
-			  Number(lockBy.id) !== Number(context.session?.data?.id) &&
-			  new Date(lockExpireAt).valueOf() > Date.now()
-			) {
-			  addValidationError('可能有其他人正在編輯，請重新整理頁面。')
-			}
-		  }
-		}
+          if (
+            lockBy?.id &&
+            Number(lockBy.id) !== Number(context.session?.data?.id) &&
+            new Date(lockExpireAt).valueOf() > Date.now()
+          ) {
+              addValidationError('可能有其他人正在編輯，請重新整理頁面。')
+            }
+          }
+        }
 	  }
     },
     resolveInput: async ({ operation, resolvedData }) => {
