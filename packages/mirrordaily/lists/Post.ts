@@ -117,7 +117,7 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
 
   // @ts-ignore next line
   //if ([UserRole.Moderator, UserRole.Editor].includes(currentUserRole)) {
-  if ([UserRole.Editor].includes(currentUserRole)) {
+  if ([UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
     const { lockBy, lockExpireAt, createdBy } =
       await context.prisma.Post.findUnique({
         where: { id: Number(item.id) },
