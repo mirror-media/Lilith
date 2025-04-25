@@ -30,7 +30,7 @@ function filterPosts(roles: string[]) {
     switch (envVar.accessControlStrategy) {
       case ACL.GraphQL: {
         // Expose `published`, `scheduled` and `invisible` posts
-        return { state: { in: [PostStatus.Published, PostStatus.Scheduled, PostStatus.Invisible] } }
+        return { state: { in: [PostStatus.Published, PostStatus.Invisible] } }
       }
       case ACL.Preview: {
         // Expose all posts
