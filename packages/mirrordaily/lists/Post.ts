@@ -39,10 +39,12 @@ function filterPosts(roles: string[]) {
       case ACL.CMS:
       default: {
         // Expose all posts if user logged in
-        return (
-          session?.data?.role !== undefined &&
-          roles.indexOf(session.data.role) > -1
-        )
+        // Expose `published`, `scheduled` and `invisible` posts
+        return { state: { in: [PostStatus.Published, PostStatus.Scheduled, PostStatus.Invisible] } }
+        //return (
+        //  session?.data?.role !== undefined &&
+        //  roles.indexOf(session.data.role) > -1
+        //)
       }
     }
   }
