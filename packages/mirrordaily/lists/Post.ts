@@ -218,8 +218,6 @@ const lockByItemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async
 }) => {
   const currentUserId = Number(session?.data?.id)
   const currentUserRole = session?.data?.role
-  console.log(currentUserRole)
-  console.log(item.lockById)
 
   // @ts-ignore next line
   if (currentUserRole === UserRole.Admin) {
@@ -245,6 +243,29 @@ const lockByItemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async
         },
       })
     if (currentUserRole === UserRole.Moderator && lockBy.role === UserRole.Editor) {
+      const newLockExpireAt = new Date(
+        new Date().setMinutes(new Date().getMinutes() + envVar.lockDuration, 0, 0)
+      ).toISOString()
+
+      const updatedPost = await context.prisma.Post.update({
+        where: { id: Number(item.id) },
+        data: {
+          lockBy: {
+            connect: {
+              id: currentUserId,
+            },
+          },
+          lockExpireAt: newLockExpireAt,
+        },
+        select: {
+          lockBy: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      })
+
       return 'edit'
     } else if (currentUserId === lockBy.id) {
       return 'edit'
