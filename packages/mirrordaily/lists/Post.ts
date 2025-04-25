@@ -29,8 +29,8 @@ function filterPosts(roles: string[]) {
   return ({ session }: { session?: Session }) => {
     switch (envVar.accessControlStrategy) {
       case ACL.GraphQL: {
-        // Expose `published` and `invisible` posts
-        return { state: { in: [PostStatus.Published, PostStatus.Invisible] } }
+        // Expose `published`, `scheduled` and `invisible` posts
+        return { state: { in: [PostStatus.Published, PostStatus.Scheduled, PostStatus.Invisible] } }
       }
       case ACL.Preview: {
         // Expose all posts
@@ -210,6 +210,51 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
   return 'edit'
 }
 
+
+const lockByItemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
+  session,
+  context,
+  item,
+}) => {
+  const currentUserId = Number(session?.data?.id)
+  const currentUserRole = session?.data?.role
+  console.log(currentUserRole)
+  console.log(item.lockById)
+
+  // @ts-ignore next line
+  if (currentUserRole === UserRole.Admin) {
+    return 'edit'
+  } else if ([UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
+    const { lockBy, lockExpireAt, createdBy } =
+      await context.prisma.Post.findUnique({
+        where: { id: Number(item.id) },
+        select: {
+          lockBy: {
+            select: {
+              id: true,
+              name: true,
+              role: true,
+            },
+          },
+          lockExpireAt: true,
+          createdBy: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      })
+    if (currentUserRole === UserRole.Moderator && lockBy.role === UserRole.Editor) {
+      return 'edit'
+    } else if (currentUserId === lockBy.id) {
+      return 'edit'
+    } else {
+      return 'read'
+    }
+  }
+  return 'read'
+}
+
 const listConfigurations = list({
   fields: {
     lockBy: relationship({
@@ -218,7 +263,7 @@ const listConfigurations = list({
       isFilterable: false,
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'edit' },
+        itemView: { fieldMode: lockByItemViewFunction },
         displayMode: 'cards',
         cardFields: ['name'],
       },
