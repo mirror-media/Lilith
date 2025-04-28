@@ -445,13 +445,21 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
       },
     }),
-    relateds: relationship({
+    related_posts: relationship({
       label: '相關文章',
       ref: 'Post',
       many: true,
+    }),
+    related_posts_order: json({
+      label: '相關文章順序',
       ui: {
-        views: './lists/views/sorted-relationship/index',
+        views: './lists/views/related-posts-order/index',
       },
+    }),
+    relateds: relationship({
+      label: '相關文章(雙向關聯)',
+      ref: 'Post',
+      many: true,
     }),
     from_External_relateds: relationship({
       label: '相關外部文章(發佈後由演算法自動計算)',
@@ -480,6 +488,10 @@ const listConfigurations = list({
     manualOrderOfRelateds: json({
       label: '相關文章手動排序結果',
       isFilterable: false,
+      ui: {
+        itemView: { fieldMode: 'hidden' },
+        createView: { fieldMode: 'hidden' },
+      },
     }),
     tags: relationship({
       label: '標籤',
@@ -741,6 +753,7 @@ const listConfigurations = list({
         resolvedData.updatedAt = new Date()
         resolvedData.updateTimeStamp = false
       }
+
       return resolvedData
     },
     beforeOperation: async ({ operation, resolvedData }) => {
@@ -769,88 +782,51 @@ const listConfigurations = list({
       }
       return
     },
-    afterOperation: async ({ operation, inputData, item, context }) => {
-      if (operation === 'update') {
-        await context.prisma.post.update({
-          where: { id: Number(item.id) },
-          data: {
-            lockBy: { disconnect: true },
-            lockExpireAt: null,
-          },
-        })
-      }
+    afterOperation: async ({ inputData, item, context }) => {
+      // 取出 user 所設定的相關文章 related_posts
+      const addTwoSidedConnection =
+        (inputData?.related_posts?.connect as { id: string }[]) ?? []
+      const removeTwoSidedConnection =
+        (inputData?.related_posts?.disconnect as { id: string }[]) ?? []
 
-      if (operation === 'delete') return
-
-      const itemId = Number(item?.id)
-
-      const updatePostRelations = async (
-        postIds: string[],
-        operation: 'connect' | 'disconnect'
-      ) => {
-        // 檢查被更新的相關文章
-        const posts = await context.prisma.Post.findMany({
-          where: { id: { in: postIds.map(Number) } },
-          select: {
-            id: true,
-            relateds: {
-              select: {
-                id: true,
+      await context.db.Post.updateMany({
+        data: [
+          // 同步相關文章(雙向關聯) relateds
+          ...addTwoSidedConnection.map(({ id }) => ({
+            where: { id: `${item?.id}` },
+            data: {
+              relateds: {
+                connect: [{ id }],
               },
             },
-          },
-        })
-
-        // 刪掉已經有連結 or 已經沒有連結的
-        const postsToUpdate = posts.filter((post: any) => {
-          const hasRelated = post?.relateds?.some(
-            (post: any) => Number(post.id) === itemId
-          )
-          return operation === 'connect' ? !hasRelated : hasRelated
-        })
-
-        if (postsToUpdate.length) {
-          const results = await Promise.allSettled(
-            postsToUpdate.map((post: any) =>
-              context.prisma.Post.update({
-                where: {
-                  id: Number(post.id),
-                },
-                data: {
-                  relateds: {
-                    [operation]: {
-                      id: itemId,
-                    },
-                  },
-                },
-              })
-            )
-          )
-
-          results.forEach((result) =>
-            result.status === 'rejected'
-              ? console.error(result.reason)
-              : undefined
-          )
-        }
-      }
-
-      const { relateds = {} } = inputData
-      const connect = relateds?.connect
-      const disconnect = relateds?.disconnect
-
-      if (connect && itemId) {
-        updatePostRelations(
-          connect.map((post: any) => post.id),
-          'connect'
-        )
-      }
-      if (disconnect && itemId) {
-        updatePostRelations(
-          disconnect.map((post: any) => post.id),
-          'disconnect'
-        )
-      }
+          })),
+          ...removeTwoSidedConnection.map(({ id }) => ({
+            where: { id: `${item?.id}` },
+            data: {
+              relateds: {
+                disconnect: [{ id }],
+              },
+            },
+          })),
+          // 將 target 文章的 relateds 關聯回 current Post
+          ...addTwoSidedConnection.map(({ id }) => ({
+            where: { id },
+            data: {
+              relateds: {
+                connect: [{ id: item?.id }],
+              },
+            },
+          })),
+          ...removeTwoSidedConnection.map(({ id }) => ({
+            where: { id },
+            data: {
+              relateds: {
+                disconnect: [{ id: item?.id }],
+              },
+            },
+          })),
+        ],
+      })
     },
   },
 })
