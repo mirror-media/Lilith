@@ -789,56 +789,44 @@ const listConfigurations = list({
       const removeTwoSidedConnection =
         (inputData?.related_posts?.disconnect as { id: string }[]) ?? []
 
-      // 同步相關文章(雙向關聯) relateds
-      await Promise.all(
-        addTwoSidedConnection.map(async ({ id }) => {
-          await context.db.Post.updateOne({
+      await context.db.Post.updateMany({
+        data: [
+          // 同步相關文章(雙向關聯) relateds
+          ...addTwoSidedConnection.map(({ id }) => ({
             where: { id: `${item?.id}` },
             data: {
               relateds: {
                 connect: [{ id }],
               },
             },
-          })
-        })
-      )
-      await Promise.all(
-        removeTwoSidedConnection.map(async ({ id }) => {
-          await context.db.Post.updateOne({
+          })),
+          ...removeTwoSidedConnection.map(({ id }) => ({
             where: { id: `${item?.id}` },
             data: {
               relateds: {
                 disconnect: [{ id }],
               },
             },
-          })
-        })
-      )
-      // 將 target 文章的 relateds 關聯回 current Post
-      await Promise.all(
-        addTwoSidedConnection.map(async ({ id }) => {
-          await context.db.Post.updateOne({
+          })),
+          // 將 target 文章的 relateds 關聯回 current Post
+          ...addTwoSidedConnection.map(({ id }) => ({
             where: { id },
             data: {
               relateds: {
                 connect: [{ id: item?.id }],
               },
             },
-          })
-        })
-      )
-      await Promise.all(
-        removeTwoSidedConnection.map(async ({ id }) => {
-          await context.db.Post.updateOne({
+          })),
+          ...removeTwoSidedConnection.map(({ id }) => ({
             where: { id },
             data: {
               relateds: {
                 disconnect: [{ id: item?.id }],
               },
             },
-          })
-        })
-      )
+          })),
+        ],
+      })
     },
   },
 })
