@@ -24,6 +24,11 @@ const listConfigurations = list({
     }),
     outlink: text({
       label: '外部連結網址',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+	  }
     }),
     choices: relationship({
       label: '精選文章',
