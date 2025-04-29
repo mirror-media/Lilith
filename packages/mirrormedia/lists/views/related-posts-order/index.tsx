@@ -1,3 +1,8 @@
+/** @jsxRuntime classic */
+/** @jsx jsx */
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { jsx } from '@keystone-ui/core'
 import { useEffect, useState, Fragment } from 'react'
 import { FieldContainer, FieldLabel, MultiSelect } from '@keystone-ui/fields'
 import type {
