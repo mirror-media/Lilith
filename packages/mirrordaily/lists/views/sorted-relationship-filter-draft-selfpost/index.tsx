@@ -189,7 +189,7 @@ export const Field = ({
                     },
                   }
             }
-            orderBy={[{ id: 'desc' }]}
+            orderBy={[{ publishedDate: 'desc' }]}
             currentPostId={typeof currentPostId === 'string' ? currentPostId : ''}
           />
           <Stack across gap="small">
@@ -562,7 +562,7 @@ export const controller = (
             isLoading={loading}
             isDisabled={onChange === undefined}
             state={state}
-            orderBy={[{ id: 'desc' }]}
+            orderBy={[{ publishedDate: 'desc' }]}
           />
         )
       },
@@ -695,10 +695,11 @@ function useRelationshipFilterValues({
 }) {
   const foreignIds = getForeignIds(value)
   const where = { id: { in: foreignIds } }
+  const orderBy = { publishedDate: desc }
 
   const query = gql`
     query FOREIGNLIST_QUERY($where: ${list.gqlNames.whereInputName}!) {
-      items: ${list.gqlNames.listQueryName}(where: $where) {
+      items: ${list.gqlNames.listQueryName}(where: $where, orderBy: $orderBy) {
         id
         ${list.labelField}
       }
@@ -708,6 +709,7 @@ function useRelationshipFilterValues({
   const { data, loading } = useQuery(query, {
     variables: {
       where,
+	  orderBy,
     },
   })
 
