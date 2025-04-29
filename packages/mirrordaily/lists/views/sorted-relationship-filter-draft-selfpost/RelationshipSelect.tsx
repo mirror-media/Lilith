@@ -254,7 +254,7 @@ export const RelationshipSelect = ({
         data,
       })
     ) || []
-    const includesStates = [PostStatus.Published, PostStatus.Invisible];
+    const includesStates = [PostStatus.Published, PostStatus.Scheduled, PostStatus.Invisible];
     const filteredOptions = useMemo(() => {
       return options.filter((option) => {
         const isCurrent = option.value === currentPostId;

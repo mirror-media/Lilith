@@ -24,6 +24,11 @@ const listConfigurations = list({
     }),
     outlink: text({
       label: '外部連結網址',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+	  }
     }),
     choices: relationship({
       label: '精選文章',
@@ -39,6 +44,9 @@ const listConfigurations = list({
       ref: 'External',
       many: false,
       ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
         views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
         labelField: 'title',
       },
@@ -85,7 +93,7 @@ const listConfigurations = list({
   hooks: {
     validateInput: ({ resolvedData, addValidationError }) => {
       const { choices,  choiceexternal, outlink } = resolvedData
-      if ((typeof(choices) !== 'undefined' && typeof(choiceexternal) !== 'undefined') || (typeof(choice) !== 'undefined' && outlink !== '') || (typeof(choiceexternal) !== 'undefined' && outline !== '')) {
+      if ((typeof(choices) !== 'undefined' && typeof(choiceexternal) !== 'undefined') || (typeof(choice) !== 'undefined' && typeof(outlink) !== 'undefined') || (typeof(choiceexternal) !== 'undefined' && typeof(outline) !== 'undefined')) {
         addValidationError('新聞內容請擇一')
       }
     },
