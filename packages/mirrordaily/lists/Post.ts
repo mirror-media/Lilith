@@ -643,6 +643,14 @@ const listConfigurations = list({
         labelField: 'title',
       }
     }),
+    manualOrderOfRelateds: json({
+      label: '相關文章手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
     from_External_relateds: relationship({
       label: '相關外部文章(發佈後由演算法自動計算)',
       isFilterable: false,
@@ -664,14 +672,6 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-      },
-    }),
-    manualOrderOfRelateds: json({
-      label: '相關文章手動排序結果',
-      isFilterable: false,
-      ui: {
-        createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
       },
     }),
