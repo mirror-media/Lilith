@@ -40,11 +40,11 @@ function filterPosts(roles: string[]) {
       default: {
         // Expose all posts if user logged in
         // Expose `published`, `scheduled` and `invisible` posts
-        return { state: { in: [PostStatus.Published, PostStatus.Scheduled, PostStatus.Invisible] } }
-        //return (
-        //  session?.data?.role !== undefined &&
-        //  roles.indexOf(session.data.role) > -1
-        //)
+        //return { state: { in: [PostStatus.Published, PostStatus.Scheduled, PostStatus.Invisible] } }
+        return (
+          session?.data?.role !== undefined &&
+          roles.indexOf(session.data.role) > -1
+        )
       }
     }
   }
@@ -208,7 +208,6 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
     }
     return 'hidden'
   }
-
   return 'edit'
 }
 
@@ -223,7 +222,7 @@ const lockByItemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async
 
   // @ts-ignore next line
   if (currentUserRole === UserRole.Admin) {
-    return 'edit'
+    return 'read'
   } else if ([UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
     const { lockBy, lockExpireAt, createdBy } =
       await context.prisma.Post.findUnique({
