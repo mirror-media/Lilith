@@ -85,7 +85,7 @@ function checkReadPermission({
       const postIdArr = acl.split(',')
 
       // check the request has the permission to read this field
-      if (postIdArr.indexOf(`${item.id}`) > -1) {
+      if (postIdArr.indexOf(`${item?.id}`) > -1) {
         return true
       }
     }
@@ -122,7 +122,7 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
   if ([UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
     const { lockBy, lockExpireAt, createdBy } =
       await context.prisma.Post.findUnique({
-        where: { id: Number(item.id) },
+        where: { id: Number(item?.id) },
         select: {
           lockBy: {
             select: {
@@ -145,7 +145,7 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
     if (!lockBy) {
       if (createdBy) {
         if (
-          Number(createdBy.id) !== currentUserId &&
+          Number(createdBy?.id) !== currentUserId &&
           currentUserRole === UserRole.Editor
         ) {
           return 'read'
@@ -153,7 +153,7 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
       }
 
       const updatedPost = await context.prisma.Post.update({
-        where: { id: Number(item.id) },
+        where: { id: Number(item?.id) },
         data: {
           lockBy: {
             connect: {
@@ -174,7 +174,7 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
       return Number(updatedPost.lockBy?.id) === Number(session?.data?.id)
         ? 'edit'
         : 'read'
-    } else if (Number(lockBy.id) == Number(session?.data?.id)) {
+    } else if (Number(lockBy?.id) == Number(session?.data?.id)) {
       return 'edit'
     } else if (new Date(lockExpireAt).valueOf() < Date.now()) {
       // 過期的自動讓出，讓出對象為 Moderator 或者文章建立者
@@ -183,7 +183,7 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
         currentUserId === Number(createdBy?.id)
       ) {
         const updatedPost = await context.prisma.Post.update({
-          where: { id: Number(item.id) },
+          where: { id: Number(item?.id) },
           data: {
             lockBy: {
               connect: {
@@ -226,7 +226,7 @@ const lockByItemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async
   } else if ([UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
     const { lockBy, lockExpireAt, createdBy } =
       await context.prisma.Post.findUnique({
-        where: { id: Number(item.id) },
+        where: { id: Number(item?.id) },
         select: {
           lockBy: {
             select: {
@@ -249,7 +249,7 @@ const lockByItemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async
       ).toISOString()
 
       const updatedPost = await context.prisma.Post.update({
-        where: { id: Number(item.id) },
+        where: { id: Number(item?.id) },
         data: {
           lockBy: {
             connect: {
@@ -268,7 +268,7 @@ const lockByItemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async
       })
 
       return 'edit'
-    } else if (currentUserId === lockBy.id) {
+    } else if (currentUserId === lockBy?.id) {
       return 'edit'
     } else {
       return 'read'
