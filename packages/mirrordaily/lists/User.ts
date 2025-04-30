@@ -88,7 +88,7 @@ const listConfigurations = list({
     },
     filter: {
       query: async (auth) => {
-        if (admin(auth)) return true
+        if (admin(auth) || moderator(auth)) return true
         else {
           return {
             id: {

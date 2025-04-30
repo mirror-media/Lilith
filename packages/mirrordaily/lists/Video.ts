@@ -62,7 +62,14 @@ const listConfigurations = list({
       label: '首圖',
       ref: 'Photo',
       ui: {
-        hideCreate: true,
+        displayMode: 'cards',
+        cardFields: ['imageFile'],
+        //linkToItem: true,
+        inlineCreate: {
+          fields: ['name', 'imageFile', 'waterMark'],
+        },
+        inlineConnect: true,
+        views: './lists/views/sorted-relationship/index',
       },
     }),
     uploader: text({
