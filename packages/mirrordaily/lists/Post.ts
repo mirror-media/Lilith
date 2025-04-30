@@ -43,7 +43,7 @@ function filterPosts(roles: string[]) {
         //return { state: { in: [PostStatus.Published, PostStatus.Scheduled, PostStatus.Invisible] } }
         return (
           session?.data?.role !== undefined &&
-          roles.indexOf(session.data.role) > -1
+          roles.indexOf(session?.data?.role) > -1
         )
       }
     }
@@ -243,7 +243,7 @@ const lockByItemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async
           },
         },
       })
-    if (currentUserRole === UserRole.Moderator && lockBy.role === UserRole.Editor) {
+    if (currentUserRole === UserRole.Moderator && lockBy?.role === UserRole.Editor) {
       const newLockExpireAt = new Date(
         new Date().setMinutes(new Date().getMinutes() + envVar.lockDuration, 0, 0)
       ).toISOString()
