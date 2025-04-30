@@ -222,7 +222,7 @@ const lockByItemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async
 
   // @ts-ignore next line
   if (currentUserRole === UserRole.Admin) {
-    return 'read'
+    return 'edit'
   } else if ([UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
     const { lockBy, lockExpireAt, createdBy } =
       await context.prisma.Post.findUnique({
