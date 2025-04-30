@@ -1,3 +1,8 @@
+/** @jsxRuntime classic */
+/** @jsx jsx */
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { jsx } from '@keystone-ui/core'
 import { useEffect, useState, Fragment } from 'react'
 import { FieldContainer, FieldLabel, MultiSelect } from '@keystone-ui/fields'
 import type {
@@ -6,25 +11,35 @@ import type {
   CellComponent,
 } from '@keystone-6/core/types'
 import { useList } from '@keystone-6/core/admin-ui/context'
-import { Link } from '@keystone-6/core/admin-ui/router'
+import { Link, useRouter } from '@keystone-6/core/admin-ui/router'
 import { CellContainer } from '@keystone-6/core/admin-ui/components'
 import { useQuery, gql } from '@keystone-6/core/admin-ui/apollo'
 import { useTheme } from '@keystone-ui/core'
 
 const RELATED_POSTS_QUERY = gql`
-  query {
-    posts {
+  query RelatedPosts($id: ID!) {
+    post(where: { id: $id }) {
       id
       slug
+      related_posts {
+        id
+        slug
+        title
+      }
     }
   }
 `
 
 type RelatedPostsQueryData = {
-  posts: {
+  post: {
     id: string
     slug: string
-  }[]
+    related_posts: {
+      id: string
+      slug: string
+      title: string
+    }[]
+  }
 }
 
 type Selection = {
@@ -38,17 +53,29 @@ export const Field = ({
   autoFocus,
   field,
 }: FieldProps<typeof controller>) => {
-  const { data, error, loading } =
-    useQuery<RelatedPostsQueryData>(RELATED_POSTS_QUERY)
   const [options, setOptions] = useState<Selection[]>([])
+  const [rawData, setRawData] = useState<
+    RelatedPostsQueryData['post']['related_posts']
+  >([])
+  const router = useRouter()
+  const { id } = router.query
+  const { data, error, loading } = useQuery<RelatedPostsQueryData>(
+    RELATED_POSTS_QUERY,
+    {
+      variables: { id },
+      fetchPolicy: 'cache-and-network',
+      skip: !id,
+    }
+  )
 
   useEffect(() => {
-    if (data?.posts) {
-      const formatted = data.posts.map(({ id, slug }) => ({
+    if (data?.post) {
+      const formatted = data.post.related_posts.map(({ id, slug }) => ({
         label: slug,
         value: id,
       }))
       setOptions(formatted)
+      setRawData(data.post.related_posts)
     }
   }, [data])
 
@@ -65,15 +92,15 @@ export const Field = ({
       <FieldLabel>{field.label}</FieldLabel>
       <MultiSelect
         options={options}
-        value={((value as RelatedPostsQueryData['posts']) || []).map(
-          (post) => ({
-            label: post.slug,
-            value: post.id,
-          })
-        )}
+        value={(
+          (value as RelatedPostsQueryData['post']['related_posts']) || []
+        ).map((post) => ({
+          label: post.slug,
+          value: post.id,
+        }))}
         onChange={(newValue) => {
           onChange?.(
-            newValue.map((item) => ({ id: item.value, slug: item.label }))
+            newValue.map((item) => rawData.find((r) => r.id === item.value))
           )
         }}
         autoFocus={autoFocus}
@@ -126,7 +153,7 @@ export const controller = (config: FieldControllerConfig) => ({
   description: config.description || '',
   deserialize: (data: Record<string, unknown>) =>
     Array.isArray(data[config.path]) ? data[config.path] : [],
-  serialize: (value: RelatedPostsQueryData['posts']) => ({
+  serialize: (value: RelatedPostsQueryData['post']['related_posts']) => ({
     [config.path]: value,
   }),
   refListKey: config.listKey,
