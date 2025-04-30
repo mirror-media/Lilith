@@ -24,6 +24,7 @@ const RELATED_POSTS_QUERY = gql`
       related_posts {
         id
         slug
+        title
       }
     }
   }
@@ -36,6 +37,7 @@ type RelatedPostsQueryData = {
     related_posts: {
       id: string
       slug: string
+      title: string
     }[]
   }
 }
@@ -52,6 +54,9 @@ export const Field = ({
   field,
 }: FieldProps<typeof controller>) => {
   const [options, setOptions] = useState<Selection[]>([])
+  const [rawData, setRawData] = useState<
+    RelatedPostsQueryData['post']['related_posts']
+  >([])
   const router = useRouter()
   const { id } = router.query
   const { data, error, loading } = useQuery<RelatedPostsQueryData>(
@@ -70,6 +75,7 @@ export const Field = ({
         value: id,
       }))
       setOptions(formatted)
+      setRawData(data.post.related_posts)
     }
   }, [data])
 
@@ -94,7 +100,7 @@ export const Field = ({
         }))}
         onChange={(newValue) => {
           onChange?.(
-            newValue.map((item) => ({ id: item.value, slug: item.label }))
+            newValue.map((item) => rawData.find((r) => r.id === item.value))
           )
         }}
         autoFocus={autoFocus}
