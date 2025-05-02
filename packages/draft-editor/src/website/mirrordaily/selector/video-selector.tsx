@@ -375,7 +375,7 @@ export function VideoSelector(props: { onChange: VideoSelectorOnChangeFn }) {
         >
           <div>
             <CustomButton onClick={() => setShowVideoUploader(true)}>
-              上傳圖片
+              上傳影片
             </CustomButton>
             <VideoSearchBox onChange={onSearchBoxChange} />
             <VideoSelectionWrapper>

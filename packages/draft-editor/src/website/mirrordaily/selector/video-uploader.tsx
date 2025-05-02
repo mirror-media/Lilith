@@ -62,6 +62,10 @@ const Video = styled.video`
   object-fit: contain;
 `
 
+const VideoName = styled.p`
+  text-align: center;
+`
+
 const Label = styled.label`
   display: block;
   margin: 10px 0;
@@ -209,9 +213,9 @@ export function VideoUploader({
                 defaultValue={file.name}
                 onChange={_.debounce(onVideoNameChange)}
               />
+              <VideoName>{file.name}</VideoName>
             </VideoWrapper>
           )}
-
           {uploadLoading && <HintWrapper>loading</HintWrapper>}
           {uploadError && <HintWrapper>{uploadError.message}</HintWrapper>}
         </div>
