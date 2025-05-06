@@ -29,14 +29,14 @@ function filterExternals(roles: string[]) {
       }
       case ACL.CMS:
       default: {
-        return {
-          state: { in: [ExternalStatus.Published, ExternalStatus.Invisible] },
-        }
+        //return {
+        //  state: { in: [ExternalStatus.Published, ExternalStatus.Invisible] },
+        //}
         // Expose all externals if user logged in
-        //return (
-        //  session?.data?.role !== undefined &&
-        //  roles.indexOf(session.data.role) > -1
-        //)
+        return (
+          session?.data?.role !== undefined &&
+          roles.indexOf(session.data.role) > -1
+        )
       }
     }
   }
