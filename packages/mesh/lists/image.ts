@@ -2,6 +2,7 @@ import envVar from '../environment-variables'
 import { list, graphql } from '@keystone-6/core'
 import { image, text, virtual } from '@keystone-6/core/fields'
 import { utils } from '@mirrormedia/lilith-core'
+import { getFileURL } from '../utils/common'
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
