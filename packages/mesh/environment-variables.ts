@@ -11,8 +11,10 @@ const {
   FILES_STORAGE_PATH,
   IMAGES_BASE_URL,
   IMAGES_STORAGE_PATH,
+  IS_CACHE_ENABLED,
   MEMORY_CACHE_TTL,
   MEMORY_CACHE_SIZE,
+  INVALID_CDN_CACHE_SERVER_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -35,7 +37,7 @@ export default {
       DATABASE_PROVIDER === 'sqlite'
         ? DatabaseProvider.Sqlite
         : DatabaseProvider.Postgres,
-    url: DATABASE_URL || 'postgres://hcchien@localhost:5432/mesh',
+    url: DATABASE_URL || 'postgres://username:password@localhost:5432/mesh',
   },
   session: {
     secret:
@@ -54,4 +56,14 @@ export default {
     baseUrl: IMAGES_BASE_URL || '/images',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
+  cache: {
+    isEnabled: IS_CACHE_ENABLED === 'true',
+    identifier: CACHE_IDENTIFIER ?? 'weekly-cms',
+    url: REDIS_SERVER ?? '',
+    connectTimeOut: Number.isNaN(cacheConnectTimeout)
+      ? 1000 * 10
+      : cacheConnectTimeout, // unit: millisecond
+    maxAge: Number.isNaN(cacheMaxAge) ? 60 : cacheMaxAge, // unit: second
+  },
+  invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
 }
