@@ -2,13 +2,13 @@
 // Modify your Keystone config when you want to change this.
 
 datasource postgresql {
-  url      = env("DATABASE_URL")
-  provider = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider          = "postgresql"
 }
 
 generator client {
   provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
 }
 
 model User {
@@ -522,7 +522,6 @@ model Photo {
   file_extension            String?
   file_width                Int?
   file_height               Int?
-  file_mode                 String?
   file_id                   String?
   urlOriginal               String       @default("")
   createdAt                 DateTime?

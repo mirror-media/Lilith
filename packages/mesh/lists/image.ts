@@ -1,7 +1,7 @@
+import envVar from '../environment-variables'
 import { list, graphql } from '@keystone-6/core'
 import { image, text, virtual } from '@keystone-6/core/fields'
-import { customFields, utils } from '@mirrormedia/lilith-core'
-import config from '../config'
+import { utils } from '@mirrormedia/lilith-core'
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
@@ -13,7 +13,10 @@ const listConfigurations = list({
       label: '標題',
       validation: { isRequired: true },
     }),
-    file: image(),
+    file: image({
+      storage: 'images',
+      ui: { views: './lists/views/custom-image/index' },
+    }),
     resized: virtual({
       field: graphql.field({
         type: graphql.object<{
@@ -71,14 +74,18 @@ const listConfigurations = list({
               : ['w480', 'w800', 'w1200', 'w1600']
 
           resizedTargets.forEach((target) => {
-            rtn[
-              target
-            ] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+            rtn[target] = getFileURL(
+              envVar.gcs.bucket,
+              envVar.images.baseUrl,
+              `${filename}-${target}${extension}`
+            )
           })
 
-          rtn[
-            'original'
-          ] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}${extension}`
+          rtn['original'] = getFileURL(
+            envVar.gcs.bucket,
+            envVar.images.baseUrl,
+            `${filename}${extension}`
+          )
           return Object.assign(empty, rtn)
         },
       }),
@@ -146,14 +153,18 @@ const listConfigurations = list({
               : ['w480', 'w800', 'w1200', 'w1600']
 
           resizedTargets.forEach((target) => {
-            rtn[
-              target
-            ] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}-${target}${extension}`
+            rtn[target] = getFileURL(
+              envVar.gcs.bucket,
+              envVar.images.baseUrl,
+              `${filename}-${target}${extension}`
+            )
           })
 
-          rtn[
-            'original'
-          ] = `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}${extension}`
+          rtn['original'] = getFileURL(
+            envVar.gcs.bucket,
+            envVar.images.baseUrl,
+            `${filename}${extension}`
+          )
           return Object.assign(empty, rtn)
         },
       }),
