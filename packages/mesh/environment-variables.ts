@@ -24,6 +24,9 @@ enum DatabaseProvider {
   Postgres = 'postgresql',
 }
 
+const cacheMaxAge = Number(CACHE_MAXAGE)
+const cacheConnectTimeout = Number(CACHE_CONNECT_TIMEOUT)
+
 export default {
   isUIDisabled: IS_UI_DISABLED === 'true',
   memoryCacheTtl: Number.isNaN(Number(MEMORY_CACHE_TTL))
