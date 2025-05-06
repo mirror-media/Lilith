@@ -1,4 +1,4 @@
-FROM node:16-slim
+FROM node:18-slim
 
 ## Install system dependencies, `gcsfuse` in particular.
 RUN set -e; \
@@ -6,6 +6,7 @@ RUN set -e; \
     curl \
     gnupg2 \
     tini \
+    lsof \
     openssl \
     lsb-release; \
     gcsFuseRepo=gcsfuse-`lsb_release -c -s`; \
@@ -38,6 +39,7 @@ RUN yarn build
 
 RUN yarn cache clean
 
+RUN whereis http2-proxy-server
 ## Ensure the script is executable
 RUN chmod +x run.sh
 
