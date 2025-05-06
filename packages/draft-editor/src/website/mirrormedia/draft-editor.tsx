@@ -444,8 +444,15 @@ const DraftEditorContainer = styled.div<{ isEnlarged: boolean }>`
   }
 `
 
-const ButtonGroup = styled.div`
+const ButtonGroup = styled.div<{ isDisabled?: boolean }>`
   margin: 0 10px 0 0;
+
+  ${({ isDisabled }) =>
+    isDisabled
+      ? css`
+          display: none;
+        `
+      : ''}
 `
 const EnlargeButtonWrapper = styled.div`
   position: absolute;
@@ -770,18 +777,20 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                 </EnlargeButtonWrapper>
               </DraftEditorControlsWrapper>
               <DraftEditorControlsWrapper>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.link)}
+                >
                   <CustomLinkButton
-                    isDisabled={disabledButtons.includes(buttonNames.link)}
                     isActive={entityType === 'LINK'}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.fontColor)}
+                >
                   <CustomFontColorButton
-                    isDisabled={disabledButtons.includes(buttonNames.fontColor)}
                     isActive={Object.prototype.hasOwnProperty.call(
                       customStyle,
                       'color'
@@ -791,18 +800,18 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                     onChange={this.onChange}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.divider)}
+                >
                   <CustomDividerButton
-                    isDisabled={disabledButtons.includes(buttonNames.divider)}
                     editorState={editorState}
                     onChange={this.onChange}
                   ></CustomDividerButton>
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.annotation)}
+                >
                   <CustomAnnotationButton
-                    isDisabled={disabledButtons.includes(
-                      buttonNames.annotation
-                    )}
                     isActive={entityType === 'ANNOTATION'}
                     readOnly={readOnly}
                     editorState={editorState}
@@ -811,53 +820,59 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                     decorators={decorators}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.image)}
+                >
                   <CustomImageButton
-                    isDisabled={disabledButtons.includes(buttonNames.image)}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}
                     ImageSelector={ImageSelector}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.video)}
+                >
                   <CustomVideoButton
-                    isDisabled={disabledButtons.includes(buttonNames.video)}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}
                     VideoSelector={VideoSelector}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.youtube)}
+                >
                   <CustomYoutubeButton
-                    isDisabled={disabledButtons.includes(buttonNames.youtube)}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.audio)}
+                >
                   <CustomAudioButton
-                    isDisabled={disabledButtons.includes(buttonNames.audio)}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}
                     AudioSelector={AudioSelector}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.slideshow)}
+                >
                   <CustomSlideshowButton
-                    isDisabled={disabledButtons.includes(buttonNames.slideshow)}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}
                     ImageSelector={ImageSelector}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.infoBox)}
+                >
                   <CustomInfoBoxButton
-                    isDisabled={disabledButtons.includes(buttonNames.infoBox)}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}
@@ -865,17 +880,19 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                     // decorators={decorators}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.embed)}
+                >
                   <CustomEmbeddedCodeButton
-                    isDisabled={disabledButtons.includes(buttonNames.embed)}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}
                   ></CustomEmbeddedCodeButton>
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.table)}
+                >
                   <CustomTableButton
-                    isDisabled={disabledButtons.includes(buttonNames.table)}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}
@@ -883,9 +900,10 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                 </ButtonGroup>
               </DraftEditorControlsWrapper>
               <DraftEditorControlsWrapper>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.textAlign)}
+                >
                   <CustomAlignLeftButton
-                    isDisabled={disabledButtons.includes(buttonNames.textAlign)}
                     isActive={
                       getSelectionBlockData(editorState, 'textAlign') === 'left'
                     }
@@ -894,9 +912,10 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                     onChange={this.onChange}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.textAlign)}
+                >
                   <CustomAlignCenterButton
-                    isDisabled={disabledButtons.includes(buttonNames.textAlign)}
                     isActive={
                       getSelectionBlockData(editorState, 'textAlign') ===
                       'center'
@@ -906,9 +925,10 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                     onChange={this.onChange}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.colorBox)}
+                >
                   <CustomColorBoxButton
-                    isDisabled={disabledButtons.includes(buttonNames.colorBox)}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}
@@ -916,11 +936,12 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                     // decorators={decorators}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(
+                    buttonNames.backgroundColor
+                  )}
+                >
                   <CustomBackgroundColorButton
-                    isDisabled={disabledButtons.includes(
-                      buttonNames.backgroundColor
-                    )}
                     isActive={Object.prototype.hasOwnProperty.call(
                       customStyle,
                       'backgroundColor'
@@ -930,11 +951,12 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                     onChange={this.onChange}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(
+                    buttonNames.backgroundImage
+                  )}
+                >
                   <CustomBGImageButton
-                    isDisabled={disabledButtons.includes(
-                      buttonNames.backgroundImage
-                    )}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}
@@ -943,11 +965,12 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                     decorators={decorators}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(
+                    buttonNames.backgroundVideo
+                  )}
+                >
                   <CustomBGVideoButton
-                    isDisabled={disabledButtons.includes(
-                      buttonNames.backgroundVideo
-                    )}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}
@@ -956,20 +979,20 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
                     decorators={decorators}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.relatedPost)}
+                >
                   <CustomRelatedPostButton
-                    isDisabled={disabledButtons.includes(
-                      buttonNames.relatedPost
-                    )}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}
                     PostSelector={PostSelector}
                   />
                 </ButtonGroup>
-                <ButtonGroup>
+                <ButtonGroup
+                  isDisabled={disabledButtons.includes(buttonNames.sideIndex)}
+                >
                   <CustomSideIndexButton
-                    isDisabled={disabledButtons.includes(buttonNames.sideIndex)}
                     readOnly={readOnly}
                     editorState={editorState}
                     onChange={this.onChange}

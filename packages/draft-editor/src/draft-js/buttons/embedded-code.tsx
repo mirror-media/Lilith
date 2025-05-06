@@ -104,7 +104,6 @@ export function EmbeddedCodeButton(props: EmbeddedCodeButtonProps) {
         }}
         className={className}
       >
-        <i className="far"></i>
         <span>Embed</span>
       </div>
     </Fragment>
