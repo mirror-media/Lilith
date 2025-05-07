@@ -340,12 +340,10 @@ model Post {
   memberFeed                 Boolean        @default(false)
   topics                     Topic?         @relation("Post_topics", fields: [topicsId], references: [id])
   topicsId                   Int?           @map("topics")
-  related_posts              Post[]         @relation("Post_related_posts")
-  related_posts_order        Json?
   relateds                   Post[]         @relation("Post_relateds")
-  manualOrderOfRelateds      Json?
   from_External_relateds     External[]     @relation("External_relateds")
   groups                     Group[]        @relation("Group_posts")
+  manualOrderOfRelateds      Json?
   tags                       Tag[]          @relation("Post_tags")
   tags_algo                  Tag[]          @relation("Post_tags_algo")
   og_title                   String         @default("")
@@ -370,7 +368,6 @@ model Post {
   updatedBy                  User?          @relation("Post_updatedBy", fields: [updatedById], references: [id])
   updatedById                Int?           @map("updatedBy")
   from_EditorChoice_choices  EditorChoice[] @relation("EditorChoice_choices")
-  from_Post_related_posts    Post[]         @relation("Post_related_posts")
   from_Post_relateds         Post[]         @relation("Post_relateds")
 
   @@index([lockById])

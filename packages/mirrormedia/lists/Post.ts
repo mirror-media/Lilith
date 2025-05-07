@@ -445,36 +445,12 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
       },
     }),
-    related_posts: relationship({
-      label: '相關文章',
-      ref: 'Post',
-      many: true,
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-        views: './lists/views/related-posts-order/index',
-      },
-    }),
-    related_posts_order: json({
-      label: '相關文章順序',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-        views: './lists/views/related-posts-order/index',
-      },
-    }),
     relateds: relationship({
       label: '相關文章',
       ref: 'Post',
       many: true,
-    }),
-    manualOrderOfRelateds: json({
-      label: '相關文章手動排序結果',
-      isFilterable: false,
       ui: {
-        createView: { fieldMode: 'hidden' },
+        views: './lists/views/sorted-relationship/index',
       },
     }),
     from_External_relateds: relationship({
@@ -500,6 +476,10 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
       },
+    }),
+    manualOrderOfRelateds: json({
+      label: '相關文章手動排序結果',
+      isFilterable: false,
     }),
     tags: relationship({
       label: '標籤',
@@ -569,9 +549,9 @@ const listConfigurations = list({
       ui: {
         // A module path that is resolved from where `keystone start` is run
         views: './lists/views/link-button',
-        //createView: {
-        //  fieldMode: 'hidden',
-        //},
+        createView: {
+          fieldMode: 'hidden',
+        },
         listView: {
           fieldMode: 'hidden',
         },
@@ -761,7 +741,6 @@ const listConfigurations = list({
         resolvedData.updatedAt = new Date()
         resolvedData.updateTimeStamp = false
       }
-
       return resolvedData
     },
     beforeOperation: async ({ operation, resolvedData }) => {
@@ -790,54 +769,18 @@ const listConfigurations = list({
       }
       return
     },
-    /*
-    afterOperation: async ({ inputData, item, context }) => {
-      // 取出 user 所設定的相關文章 related_posts
-      const addTwoSidedConnection =
-        (inputData?.related_posts?.connect as { id: string }[]) ?? []
-      const removeTwoSidedConnection =
-        (inputData?.related_posts?.disconnect as { id: string }[]) ?? []
+    afterOperation: async ({ operation, inputData, item, context }) => {
+      if (operation === 'update') {
+        await context.prisma.post.update({
+          where: { id: Number(item.id) },
+          data: {
+            lockBy: { disconnect: true },
+            lockExpireAt: null,
+          },
+        })
+      }
 
-      await context.db.Post.updateMany({
-        data: [
-          // 同步相關文章(雙向關聯) relateds
-          ...addTwoSidedConnection.map(({ id }) => ({
-            where: { id: `${item?.id}` },
-            data: {
-              relateds: {
-                connect: [{ id }],
-              },
-            },
-          })),
-          ...removeTwoSidedConnection.map(({ id }) => ({
-            where: { id: `${item?.id}` },
-            data: {
-              relateds: {
-                disconnect: [{ id }],
-              },
-            },
-          })),
-          // 將 target 文章的 relateds 關聯回 current Post
-          ...addTwoSidedConnection.map(({ id }) => ({
-            where: { id },
-            data: {
-              relateds: {
-                connect: [{ id: item?.id }],
-              },
-            },
-          })),
-          ...removeTwoSidedConnection.map(({ id }) => ({
-            where: { id },
-            data: {
-              relateds: {
-                disconnect: [{ id: item?.id }],
-              },
-            },
-          })),
-        ],
-      })
     },
-    */
   },
 })
 
