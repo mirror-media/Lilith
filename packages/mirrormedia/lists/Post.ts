@@ -782,6 +782,7 @@ const listConfigurations = list({
       }
       return
     },
+    /*
     afterOperation: async ({ inputData, item, context }) => {
       // 取出 user 所設定的相關文章 related_posts
       const addTwoSidedConnection =
@@ -828,6 +829,7 @@ const listConfigurations = list({
         ],
       })
     },
+    */
   },
 })
 
