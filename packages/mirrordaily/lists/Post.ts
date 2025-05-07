@@ -822,7 +822,7 @@ const listConfigurations = list({
         listView: { fieldMode: 'hidden' },
       },
     }),
-    Warningv2: relationship({
+    Warnings: relationship({
       ref: 'Warning',
       many: true,
       label: '警語',

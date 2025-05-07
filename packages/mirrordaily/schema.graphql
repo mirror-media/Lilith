@@ -1210,8 +1210,8 @@ type Post {
   hiddenAdvertised: Boolean
   isAdult: Boolean
   Warning: Warning
-  Warningv2(where: WarningWhereInput! = {}, orderBy: [WarningOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: WarningWhereUniqueInput): [Warning!]
-  Warningv2Count(where: WarningWhereInput! = {}): Int
+  Warnings(where: WarningWhereInput! = {}, orderBy: [WarningOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: WarningWhereUniqueInput): [Warning!]
+  WarningsCount(where: WarningWhereInput! = {}): Int
   redirect: String
   adTrace: String
   css: String
@@ -1268,7 +1268,7 @@ input PostWhereInput {
   hiddenAdvertised: BooleanFilter
   isAdult: BooleanFilter
   Warning: WarningWhereInput
-  Warningv2: WarningManyRelationFilter
+  Warnings: WarningManyRelationFilter
   redirect: StringFilter
   adTrace: StringFilter
   css: StringFilter
@@ -1363,7 +1363,7 @@ input PostUpdateInput {
   hiddenAdvertised: Boolean
   isAdult: Boolean
   Warning: WarningRelateToOneForUpdateInput
-  Warningv2: WarningRelateToManyForUpdateInput
+  Warnings: WarningRelateToManyForUpdateInput
   redirect: String
   adTrace: String
   css: String
@@ -1460,7 +1460,7 @@ input PostCreateInput {
   hiddenAdvertised: Boolean
   isAdult: Boolean
   Warning: WarningRelateToOneForCreateInput
-  Warningv2: WarningRelateToManyForCreateInput
+  Warnings: WarningRelateToManyForCreateInput
   redirect: String
   adTrace: String
   css: String

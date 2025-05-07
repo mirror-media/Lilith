@@ -315,7 +315,7 @@ model Post {
   isAdult                    Boolean        @default(false)
   Warning                    Warning?       @relation("Post_Warning", fields: [WarningId], references: [id])
   WarningId                  Int?           @map("Warning")
-  Warningv2                  Warning[]      @relation("Post_Warningv2")
+  Warnings                   Warning[]      @relation("Post_Warnings")
   redirect                   String         @default("")
   adTrace                    String         @default("")
   css                        String         @default("")
@@ -581,16 +581,16 @@ model Game {
 }
 
 model Warning {
-  id                  Int       @id @default(autoincrement())
-  content             String    @default("")
-  createdAt           DateTime?
-  updatedAt           DateTime?
-  createdBy           User?     @relation("Warning_createdBy", fields: [createdById], references: [id])
-  createdById         Int?      @map("createdBy")
-  updatedBy           User?     @relation("Warning_updatedBy", fields: [updatedById], references: [id])
-  updatedById         Int?      @map("updatedBy")
-  from_Post_Warning   Post[]    @relation("Post_Warning")
-  from_Post_Warningv2 Post[]    @relation("Post_Warningv2")
+  id                 Int       @id @default(autoincrement())
+  content            String    @default("")
+  createdAt          DateTime?
+  updatedAt          DateTime?
+  createdBy          User?     @relation("Warning_createdBy", fields: [createdById], references: [id])
+  createdById        Int?      @map("createdBy")
+  updatedBy          User?     @relation("Warning_updatedBy", fields: [updatedById], references: [id])
+  updatedById        Int?      @map("updatedBy")
+  from_Post_Warning  Post[]    @relation("Post_Warning")
+  from_Post_Warnings Post[]    @relation("Post_Warnings")
 
   @@index([createdById])
   @@index([updatedById])
