@@ -1346,11 +1346,11 @@ type Post {
   related_posts_order: JSON
   relateds(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedsCount(where: PostWhereInput! = {}): Int
+  manualOrderOfRelateds: JSON
   from_External_relateds(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
   from_External_relatedsCount(where: ExternalWhereInput! = {}): Int
   groups(where: GroupWhereInput! = {}, orderBy: [GroupOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GroupWhereUniqueInput): [Group!]
   groupsCount(where: GroupWhereInput! = {}): Int
-  manualOrderOfRelateds: JSON
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   tags_algo(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
@@ -1506,9 +1506,9 @@ input PostUpdateInput {
   related_posts: PostRelateToManyForUpdateInput
   related_posts_order: JSON
   relateds: PostRelateToManyForUpdateInput
+  manualOrderOfRelateds: JSON
   from_External_relateds: ExternalRelateToManyForUpdateInput
   groups: GroupRelateToManyForUpdateInput
-  manualOrderOfRelateds: JSON
   tags: TagRelateToManyForUpdateInput
   tags_algo: TagRelateToManyForUpdateInput
   og_title: String
@@ -1610,9 +1610,9 @@ input PostCreateInput {
   related_posts: PostRelateToManyForCreateInput
   related_posts_order: JSON
   relateds: PostRelateToManyForCreateInput
+  manualOrderOfRelateds: JSON
   from_External_relateds: ExternalRelateToManyForCreateInput
   groups: GroupRelateToManyForCreateInput
-  manualOrderOfRelateds: JSON
   tags: TagRelateToManyForCreateInput
   tags_algo: TagRelateToManyForCreateInput
   og_title: String

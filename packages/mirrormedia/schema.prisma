@@ -343,9 +343,9 @@ model Post {
   related_posts              Post[]         @relation("Post_related_posts")
   related_posts_order        Json?
   relateds                   Post[]         @relation("Post_relateds")
+  manualOrderOfRelateds      Json?
   from_External_relateds     External[]     @relation("External_relateds")
   groups                     Group[]        @relation("Group_posts")
-  manualOrderOfRelateds      Json?
   tags                       Tag[]          @relation("Post_tags")
   tags_algo                  Tag[]          @relation("Post_tags_algo")
   og_title                   String         @default("")

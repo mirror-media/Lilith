@@ -449,17 +449,33 @@ const listConfigurations = list({
       label: '相關文章',
       ref: 'Post',
       many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        views: './lists/views/related-posts-order/index',
+      },
     }),
     related_posts_order: json({
       label: '相關文章順序',
       ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
         views: './lists/views/related-posts-order/index',
       },
     }),
     relateds: relationship({
-      label: '相關文章(雙向關聯)',
+      label: '相關文章',
       ref: 'Post',
       many: true,
+    }),
+    manualOrderOfRelateds: json({
+      label: '相關文章手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+      },
     }),
     from_External_relateds: relationship({
       label: '相關外部文章(發佈後由演算法自動計算)',
@@ -483,14 +499,6 @@ const listConfigurations = list({
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
-      },
-    }),
-    manualOrderOfRelateds: json({
-      label: '相關文章手動排序結果',
-      isFilterable: false,
-      ui: {
-        itemView: { fieldMode: 'hidden' },
-        createView: { fieldMode: 'hidden' },
       },
     }),
     tags: relationship({
