@@ -1,15 +1,21 @@
+import 'dotenv/config'
 import { config } from '@keystone-6/core'
 import { listDefinition as lists } from './lists'
-import appConfig from './config'
 import envVar from './environment-variables'
+import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
-import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache'
+import { createPreviewMiniApp } from './express-mini-apps/preview/app'
+import Keyv from 'keyv'
+import { KeyvAdapter } from '@apollo/utils.keyvadapter'
+import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
+import responseCachePlugin from '@apollo/server-plugin-response-cache'
+import { GraphQLConfig } from '@keystone-6/core/types'
 
 const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
-  sessionData: 'name role',
+  sessionData: 'id name role',
   secretField: 'password',
   initFirstItem: {
     // If there are no items in the database, keystone will ask you to create
@@ -18,13 +24,35 @@ const { withAuth } = createAuth({
   },
 })
 
-const session = statelessSessions(appConfig.session)
+const session = statelessSessions(envVar.session)
+
+const graphqlConfig: GraphQLConfig = {
+  apolloConfig:
+    envVar.accessControlStrategy === 'gql' && envVar.cache.isEnabled
+      ? {
+          plugins: [
+            responseCachePlugin(),
+            ApolloServerPluginCacheControl({
+              defaultMaxAge: envVar.cache.maxAge,
+            }),
+          ],
+          cache: new KeyvAdapter(
+            new Keyv(envVar.cache.url, {
+              lazyConnect: true,
+              namespace: envVar.cache.identifier,
+              connectionName: envVar.cache.identifier,
+              connectTimeout: envVar.cache.connectTimeOut,
+            })
+          ),
+        }
+      : undefined,
+}
 
 export default withAuth(
   config({
     db: {
-      provider: appConfig.database.provider,
-      url: appConfig.database.url,
+      provider: envVar.database.provider,
+      url: envVar.database.url,
       idField: {
         kind: 'autoincrement',
       },
@@ -35,30 +63,50 @@ export default withAuth(
       // For our starter, we check that someone has session data before letting them see the Admin UI.
       isAccessAllowed: (context) => !!context.session?.data,
     },
+    graphql: graphqlConfig,
     lists,
     session,
-    files: {
-      upload: 'local',
-      local: {
-        storagePath: appConfig.files.storagePath,
-        baseUrl: appConfig.files.baseUrl,
+    storage: {
+      files: {
+        kind: 'local',
+        type: 'file',
+        storagePath: envVar.files.storagePath,
+        serverRoute: {
+          path: '/files',
+        },
+        generateUrl: (path) => `${envVar.files.baseUrl}${path}`,
+      },
+      images: {
+        kind: 'local',
+        type: 'image',
+        storagePath: envVar.images.storagePath,
+        serverRoute: {
+          path: '/images',
+        },
+        generateUrl: (path) => `${envVar.images.baseUrl}${path}`,
       },
     },
-    graphql: {
-      apolloConfig: {
-        cache: new InMemoryLRUCache({
-          // ~100MiB
-          maxSize: Math.pow(2, 20) * envVar.memoryCacheSize,
-          // 5 minutes (in milliseconds)
-          ttl: envVar.memoryCacheTtl,
-        }),
+    server: {
+      healthCheck: {
+        path: '/health_check',
+        data: { status: 'healthy' },
       },
-    },
-    images: {
-      upload: 'local',
-      local: {
-        storagePath: appConfig.images.storagePath,
-        baseUrl: appConfig.images.baseUrl,
+      maxFileSize: 2000 * 1024 * 1024,
+      extendExpressApp: (app, context) => {
+        // This middleware is available in Express v4.16.0 onwards
+        // Set to 50mb because DraftJS Editor playload could be really large
+
+        const jsonBodyParser = express.json({ limit: '500mb' })
+        app.use(jsonBodyParser)
+
+        //if (envVar.accessControlStrategy === 'cms') {
+        //  app.use(
+        //    createPreviewMiniApp({
+        //      previewServer: envVar.previewServer,
+        //      keystoneContext: context,
+        //    })
+        //  )
+        //}
       },
     },
   })

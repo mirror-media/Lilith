@@ -244,29 +244,6 @@ const lockByItemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async
         },
       })
     if (currentUserRole === UserRole.Moderator && lockBy?.role === UserRole.Editor) {
-      const newLockExpireAt = new Date(
-        new Date().setMinutes(new Date().getMinutes() + envVar.lockDuration, 0, 0)
-      ).toISOString()
-
-      const updatedPost = await context.prisma.Post.update({
-        where: { id: Number(item?.id) },
-        data: {
-          lockBy: {
-            connect: {
-              id: currentUserId,
-            },
-          },
-          lockExpireAt: newLockExpireAt,
-        },
-        select: {
-          lockBy: {
-            select: {
-              id: true,
-            },
-          },
-        },
-      })
-
       return 'edit'
     } else if (currentUserId === lockBy?.id) {
       return 'edit'
@@ -935,7 +912,7 @@ const listConfigurations = list({
     filter: {
       query: filterPosts([UserRole.Admin, UserRole.Moderator, UserRole.Editor]),
       update: async (auth) => {
-		if (envVar.accessControlStrategy === ACL.GraphQL) return true
+		if (envVar.accessControlStrategy === ACL.GraphQL || envVar.accessControlStrategy === ACL.Preview) return true
         if (admin(auth) || moderator(auth)) return true
         else {
           // editor only allow to update posts created by itself
@@ -1052,13 +1029,38 @@ const listConfigurations = list({
         })
       }
       if (operation === 'update') {
-        await context.prisma.post.update({
-          where: { id: Number(item.id) },
-          data: {
-            lockBy: { disconnect: true },
-            lockExpireAt: null,
-          },
-        })
+        if (resolvedData.lockBy) {  
+          const currentUserId = Number(context.session?.data?.id) 
+          const newLockExpireAt = new Date(
+            new Date().setMinutes(new Date().getMinutes() + envVar.lockDuration, 0, 0)
+          ).toISOString()
+
+          const updatedPost = await context.prisma.Post.update({
+            where: { id: Number(item?.id) },
+            data: {
+              lockBy: {
+                connect: {
+                  id: currentUserId,
+                },
+              },
+              lockExpireAt: newLockExpireAt,
+            },
+            select: {
+              lockBy: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+          })
+        }
+        //await context.prisma.post.update({
+        //  where: { id: Number(item.id) },
+        //  data: {
+        //    lockBy: { disconnect: true },
+        //    lockExpireAt: null,
+        //  },
+        //})
       }
     },
   },
