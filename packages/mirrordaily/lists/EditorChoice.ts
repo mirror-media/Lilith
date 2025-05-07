@@ -44,9 +44,6 @@ const listConfigurations = list({
       ref: 'External',
       many: false,
       ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
         views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
         labelField: 'title',
       },
