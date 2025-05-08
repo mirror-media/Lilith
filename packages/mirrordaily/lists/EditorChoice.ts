@@ -109,23 +109,31 @@ const listConfigurations = list({
 
       // 如果是更新操作（item 存在），且 resolvedData 中有任何欄位被設定，確保其他欄位都被 disconnect
       if (item && newFieldsSet === 1) {
-        if (hasNewChoices && !choiceexternal?.disconnect) {
-          addValidationError('請先清空精選外部文章')
-        }
-        if (hasNewChoices && outlink && outlink.trim() !== '') {
-          addValidationError('請先清空外部連結網址')
-        }
-        if (hasNewChoiceexternal && !choices?.disconnect) {
-          addValidationError('請先清空精選文章')
-        }
-        if (hasNewChoiceexternal && outlink && outlink.trim() !== '') {
-          addValidationError('請先清空外部連結網址')
-        }
-        if (hasNewOutlink && !choices?.disconnect) {
-          addValidationError('請先清空精選文章')
-        }
-        if (hasNewOutlink && !choiceexternal?.disconnect) {
-          addValidationError('請先清空精選外部文章')
+        // 檢查是否要從一個欄位切換到另一個欄位
+        const isSwitchingField = 
+          (hasNewChoices && item.choiceexternal?.id) ||
+          (hasNewChoiceexternal && item.choices?.id) ||
+          (hasNewOutlink && (item.choices?.id || item.choiceexternal?.id))
+
+        if (isSwitchingField) {
+          if (hasNewChoices && !choiceexternal?.disconnect) {
+            addValidationError('請先清空精選外部文章')
+          }
+          if (hasNewChoices && outlink && outlink.trim() !== '') {
+            addValidationError('請先清空外部連結網址')
+          }
+          if (hasNewChoiceexternal && !choices?.disconnect) {
+            addValidationError('請先清空精選文章')
+          }
+          if (hasNewChoiceexternal && outlink && outlink.trim() !== '') {
+            addValidationError('請先清空外部連結網址')
+          }
+          if (hasNewOutlink && !choices?.disconnect) {
+            addValidationError('請先清空精選文章')
+          }
+          if (hasNewOutlink && !choiceexternal?.disconnect) {
+            addValidationError('請先清空精選外部文章')
+          }
         }
         return
       }

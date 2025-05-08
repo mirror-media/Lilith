@@ -112,23 +112,31 @@ const listConfigurations = list({
 
       // 如果是更新操作（item 存在），且 resolvedData 中有任何欄位被設定，確保其他欄位都被 disconnect
       if (item && newFieldsSet === 1) {
-        if (hasNewHotnews && !hotexternal?.disconnect) {
-          addValidationError('請先清空快訊外部文章')
-        }
-        if (hasNewHotnews && outlink && outlink.trim() !== '') {
-          addValidationError('請先清空外部連結網址')
-        }
-        if (hasNewHotexternal && !hotnews?.disconnect) {
-          addValidationError('請先清空快訊文章')
-        }
-        if (hasNewHotexternal && outlink && outlink.trim() !== '') {
-          addValidationError('請先清空外部連結網址')
-        }
-        if (hasNewOutlink && !hotnews?.disconnect) {
-          addValidationError('請先清空快訊文章')
-        }
-        if (hasNewOutlink && !hotexternal?.disconnect) {
-          addValidationError('請先清空快訊外部文章')
+        // 檢查是否要從一個欄位切換到另一個欄位
+        const isSwitchingField = 
+          (hasNewHotnews && item.hotexternal?.id) ||
+          (hasNewHotexternal && item.hotnews?.id) ||
+          (hasNewOutlink && (item.hotnews?.id || item.hotexternal?.id))
+
+        if (isSwitchingField) {
+          if (hasNewHotnews && !hotexternal?.disconnect) {
+            addValidationError('請先清空快訊外部文章')
+          }
+          if (hasNewHotnews && outlink && outlink.trim() !== '') {
+            addValidationError('請先清空外部連結網址')
+          }
+          if (hasNewHotexternal && !hotnews?.disconnect) {
+            addValidationError('請先清空快訊文章')
+          }
+          if (hasNewHotexternal && outlink && outlink.trim() !== '') {
+            addValidationError('請先清空外部連結網址')
+          }
+          if (hasNewOutlink && !hotnews?.disconnect) {
+            addValidationError('請先清空快訊文章')
+          }
+          if (hasNewOutlink && !hotexternal?.disconnect) {
+            addValidationError('請先清空快訊外部文章')
+          }
         }
         return
       }
