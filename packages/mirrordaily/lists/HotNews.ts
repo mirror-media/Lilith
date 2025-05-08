@@ -91,10 +91,63 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    validateInput: ({ resolvedData, addValidationError }) => {
-      const { hotnews,  hotexternal, outlink } = resolvedData
-      if ((typeof(hotnews) !== 'undefined' && typeof(hotexternal) !== 'undefined') || (typeof(hotnews) !== 'undefined' && outlink !== '') || (typeof(hotexternal) !== 'undefined' && outline !== '')) {
-        addValidationError('新聞內容請擇一')
+    validateInput: ({ resolvedData, addValidationError, item }) => {
+      const { hotnews, hotexternal, outlink } = resolvedData
+      
+      // 檢查 resolvedData 中是否有任何欄位被設定
+      const hasNewHotnews = hotnews && 
+        (typeof hotnews === 'object' && 'connect' in hotnews && hotnews.connect?.id)
+      const hasNewHotexternal = hotexternal && 
+        (typeof hotexternal === 'object' && 'connect' in hotexternal && hotexternal.connect?.id)
+      const hasNewOutlink = outlink && outlink.trim() !== ''
+
+      // 計算 resolvedData 中被設定的欄位數量
+      const newFieldsSet = [hasNewHotnews, hasNewHotexternal, hasNewOutlink].filter(Boolean).length
+
+      // 如果 resolvedData 中有多個欄位被設定，顯示錯誤
+      if (newFieldsSet > 1) {
+        addValidationError('新聞內容請擇一：快訊文章、快訊外部文章或外部連結網址')
+        return
+      }
+
+      // 如果是更新操作（item 存在），且 resolvedData 中有任何欄位被設定，確保其他欄位都被 disconnect
+      if (item && newFieldsSet === 1) {
+        if (hasNewHotnews && !hotexternal?.disconnect) {
+          addValidationError('請先清空快訊外部文章')
+        }
+        if (hasNewHotnews && outlink && outlink.trim() !== '') {
+          addValidationError('請先清空外部連結網址')
+        }
+        if (hasNewHotexternal && !hotnews?.disconnect) {
+          addValidationError('請先清空快訊文章')
+        }
+        if (hasNewHotexternal && outlink && outlink.trim() !== '') {
+          addValidationError('請先清空外部連結網址')
+        }
+        if (hasNewOutlink && !hotnews?.disconnect) {
+          addValidationError('請先清空快訊文章')
+        }
+        if (hasNewOutlink && !hotexternal?.disconnect) {
+          addValidationError('請先清空快訊外部文章')
+        }
+        return
+      }
+
+      // 如果是更新操作（item 存在），且 resolvedData 中沒有欄位被設定，檢查 item 中是否有多個欄位同時存在
+      if (item) {
+        const hasExistingHotnews = item?.hotnews?.id
+        const hasExistingHotexternal = item?.hotexternal?.id
+        const hasExistingOutlink = item?.outlink && item.outlink.trim() !== ''
+
+        const existingFieldsSet = [
+          hasExistingHotnews,
+          hasExistingHotexternal,
+          hasExistingOutlink
+        ].filter(Boolean).length
+
+        if (existingFieldsSet > 1) {
+          addValidationError('新聞內容請擇一：快訊文章、快訊外部文章或外部連結網址')
+        }
       }
     },
   },

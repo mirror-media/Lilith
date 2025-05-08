@@ -88,10 +88,63 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    validateInput: ({ resolvedData, addValidationError }) => {
-      const { choices,  choiceexternal, outlink } = resolvedData
-      if ((typeof(choices) !== 'undefined' && typeof(choiceexternal) !== 'undefined') || (typeof(choice) !== 'undefined' && typeof(outlink) !== 'undefined') || (typeof(choiceexternal) !== 'undefined' && typeof(outline) !== 'undefined')) {
-        addValidationError('新聞內容請擇一')
+    validateInput: ({ resolvedData, addValidationError, item }) => {
+      const { choices, choiceexternal, outlink } = resolvedData
+      
+      // 檢查 resolvedData 中是否有任何欄位被設定
+      const hasNewChoices = choices && 
+        (typeof choices === 'object' && 'connect' in choices && choices.connect?.id)
+      const hasNewChoiceexternal = choiceexternal && 
+        (typeof choiceexternal === 'object' && 'connect' in choiceexternal && choiceexternal.connect?.id)
+      const hasNewOutlink = outlink && outlink.trim() !== ''
+
+      // 計算 resolvedData 中被設定的欄位數量
+      const newFieldsSet = [hasNewChoices, hasNewChoiceexternal, hasNewOutlink].filter(Boolean).length
+
+      // 如果 resolvedData 中有多個欄位被設定，顯示錯誤
+      if (newFieldsSet > 1) {
+        addValidationError('新聞內容請擇一：精選文章、精選外部文章或外部連結網址')
+        return
+      }
+
+      // 如果是更新操作（item 存在），且 resolvedData 中有任何欄位被設定，確保其他欄位都被 disconnect
+      if (item && newFieldsSet === 1) {
+        if (hasNewChoices && !choiceexternal?.disconnect) {
+          addValidationError('請先清空精選外部文章')
+        }
+        if (hasNewChoices && outlink && outlink.trim() !== '') {
+          addValidationError('請先清空外部連結網址')
+        }
+        if (hasNewChoiceexternal && !choices?.disconnect) {
+          addValidationError('請先清空精選文章')
+        }
+        if (hasNewChoiceexternal && outlink && outlink.trim() !== '') {
+          addValidationError('請先清空外部連結網址')
+        }
+        if (hasNewOutlink && !choices?.disconnect) {
+          addValidationError('請先清空精選文章')
+        }
+        if (hasNewOutlink && !choiceexternal?.disconnect) {
+          addValidationError('請先清空精選外部文章')
+        }
+        return
+      }
+
+      // 如果是更新操作（item 存在），且 resolvedData 中沒有欄位被設定，檢查 item 中是否有多個欄位同時存在
+      if (item) {
+        const hasExistingChoices = item?.choices?.id
+        const hasExistingChoiceexternal = item?.choiceexternal?.id
+        const hasExistingOutlink = item?.outlink && item.outlink.trim() !== ''
+
+        const existingFieldsSet = [
+          hasExistingChoices,
+          hasExistingChoiceexternal,
+          hasExistingOutlink
+        ].filter(Boolean).length
+
+        if (existingFieldsSet > 1) {
+          addValidationError('新聞內容請擇一：精選文章、精選外部文章或外部連結網址')
+        }
       }
     },
   },
