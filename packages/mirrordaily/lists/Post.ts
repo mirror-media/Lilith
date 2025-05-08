@@ -817,6 +817,17 @@ const listConfigurations = list({
       label: '警語',
       ui: {
         displayMode: 'select',
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
+    Warnings: relationship({
+      ref: 'Warning',
+      many: true,
+      label: '警語',
+      ui: {
+        displayMode: 'select',
       },
     }),
     redirect: text({
