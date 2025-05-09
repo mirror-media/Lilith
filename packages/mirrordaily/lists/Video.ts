@@ -154,10 +154,10 @@ const listConfigurations = list({
   hooks: {
     resolveInput: async ({ operation, resolvedData }) => {
       const { publishedDate, content, brief, updateTimeStamp } = resolvedData
-      if (operation === 'create') {
-        resolvedData.publishedDate = new Date(publishedDate.setSeconds(0, 0))
-        resolvedData.updatedAt = new Date()
-      }
+      //if (operation === 'create') {
+      //  resolvedData.publishedDate = new Date(publishedDate.setSeconds(0, 0))
+      //  resolvedData.updatedAt = new Date()
+      //}
       if (updateTimeStamp) {
         const now = new Date()
         resolvedData.publishedDate = new Date(now.setSeconds(0, 0))
