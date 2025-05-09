@@ -72,9 +72,7 @@ const listConfigurations = list({
       options: [
         { label: '草稿', value: ExternalStatus.Draft },
         { label: '已發布', value: ExternalStatus.Published },
-        { label: '預約發佈', value: ExternalStatus.Scheduled },
         { label: '下線', value: ExternalStatus.Archived },
-        { label: '前台不可見', value: ExternalStatus.Invisible },
       ],
       defaultValue: ExternalStatus.Draft,
       isIndexed: true,
