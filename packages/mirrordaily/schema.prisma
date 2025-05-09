@@ -521,7 +521,7 @@ model Video {
   state                     String?   @default("draft")
   publishedDate             DateTime?
   publishedDateString       String    @default("")
-  updateTimeStamp           Boolean   @default(true)
+  updateTimeStamp           Boolean   @default(false)
   tags                      Tag[]     @relation("Video_tags")
   createdAt                 DateTime?
   updatedAt                 DateTime?
