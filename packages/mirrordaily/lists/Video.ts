@@ -112,8 +112,6 @@ const listConfigurations = list({
       isIndexed: true,
       isFilterable: true,
       label: '發佈日期',
-      validation: { isRequired: true },
-      defaultValue: { kind: 'now' },
     }),
     publishedDateString: text({
       label: '發布日期',

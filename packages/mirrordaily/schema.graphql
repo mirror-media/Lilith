@@ -2050,7 +2050,7 @@ input VideoWhereInput {
   related_posts: PostManyRelationFilter
   videoSection: StringNullableFilter
   state: StringNullableFilter
-  publishedDate: DateTimeFilter
+  publishedDate: DateTimeNullableFilter
   publishedDateString: StringFilter
   tags: TagManyRelationFilter
   createdAt: DateTimeNullableFilter

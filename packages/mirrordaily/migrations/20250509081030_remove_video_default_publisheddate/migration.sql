@@ -5,5 +5,4 @@
 
 */
 -- AlterTable
-ALTER TABLE "Video" ADD COLUMN     "publishedDateString" TEXT NOT NULL DEFAULT '',
-ADD COLUMN     "updateTimeStamp" BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE "Video" ALTER COLUMN "publishedDate" SET NULL;

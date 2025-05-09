@@ -519,7 +519,7 @@ model Video {
   manualOrderOfRelatedPosts Json?
   videoSection              String?   @default("news")
   state                     String?   @default("draft")
-  publishedDate             DateTime  @default(now())
+  publishedDate             DateTime?
   publishedDateString       String    @default("")
   updateTimeStamp           Boolean   @default(true)
   tags                      Tag[]     @relation("Video_tags")
