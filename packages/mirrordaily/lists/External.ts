@@ -168,6 +168,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+        labelField: 'title',
       },
     }),
     groups: relationship({
@@ -175,6 +176,9 @@ const listConfigurations = list({
       ref: 'Group.externals',
       many: true,
       ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
         views: './lists/views/sorted-relationship/index',
       },
     }),
