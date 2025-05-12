@@ -24,11 +24,6 @@ const listConfigurations = list({
     }),
     outlink: text({
       label: '外部連結網址',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-	  }
     }),
     hotnews: relationship({
       label: '快訊文章',
@@ -91,10 +86,88 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    validateInput: ({ resolvedData, addValidationError }) => {
-      const { hotnews,  hotexternal, outlink } = resolvedData
-      if ((typeof(hotnews) !== 'undefined' && typeof(hotexternal) !== 'undefined') || (typeof(hotnews) !== 'undefined' && outlink !== '') || (typeof(hotexternal) !== 'undefined' && outline !== '')) {
-        addValidationError('新聞內容請擇一')
+    validateInput: ({ resolvedData, addValidationError, item }) => {
+      const { hotnews, hotexternal, outlink } = resolvedData
+      
+      // 檢查 resolvedData 中是否有任何欄位被設定
+      const hasNewHotnews = hotnews && 
+        (typeof hotnews === 'object' && 'connect' in hotnews && hotnews.connect?.id)
+      const hasNewHotexternal = hotexternal && 
+        (typeof hotexternal === 'object' && 'connect' in hotexternal && hotexternal.connect?.id)
+      const hasNewOutlink = outlink && outlink.trim() !== ''
+
+      // 檢查是否有 disconnect 操作
+      const isDisconnectHotnews = hotnews?.disconnect
+      const isDisconnectHotexternal = hotexternal?.disconnect
+      const isDisconnectOutlink = outlink === ''
+
+      // 計算 resolvedData 中被設定的欄位數量
+      const newFieldsSet = [hasNewHotnews, hasNewHotexternal, hasNewOutlink].filter(Boolean).length
+
+      // 如果 resolvedData 中有多個欄位被設定，顯示錯誤
+      if (newFieldsSet > 1) {
+        addValidationError('新聞內容請擇一：快訊文章、快訊外部文章或外部連結網址')
+        return
+      }
+
+      // 檢查最終狀態下有多少個欄位有值
+      const finalHotnews = hasNewHotnews ? true : 
+        (item?.hotnewsId && !isDisconnectHotnews)
+      const finalHotexternal = hasNewHotexternal ? true : 
+        (item?.hotexternalId && !isDisconnectHotexternal)
+      const finalOutlink = hasNewOutlink ? true : 
+        (item?.outlink && item.outlink.trim() !== '' && !isDisconnectOutlink)
+
+      const finalFieldsSet = [finalHotnews, finalHotexternal, finalOutlink].filter(Boolean).length
+
+      if (finalFieldsSet > 1) {
+        // 如果是更新操作，且有多個欄位有值
+        if (item) {
+          // 檢查是否要從一個欄位切換到另一個欄位
+          if (hasNewHotnews) {
+            if (finalHotexternal) {
+              addValidationError('請先清空快訊外部文章')
+            }
+            if (finalOutlink) {
+              addValidationError('請先清空外部連結網址')
+            }
+          } else if (hasNewHotexternal) {
+            if (finalHotnews) {
+              addValidationError('請先清空快訊文章')
+            }
+            if (finalOutlink) {
+              addValidationError('請先清空外部連結網址')
+            }
+          } else if (hasNewOutlink) {
+            if (finalHotnews) {
+              addValidationError('請先清空快訊文章')
+            }
+            if (finalHotexternal) {
+              addValidationError('請先清空快訊外部文章')
+            }
+          } else {
+            addValidationError('新聞內容請擇一：快訊文章、快訊外部文章或外部連結網址')
+          }
+        } else {
+          addValidationError('新聞內容請擇一：快訊文章、快訊外部文章或外部連結網址')
+        }
+      }
+
+      // 如果是更新操作，且沒有新的設定，檢查現有資料是否有多個欄位有值
+      if (item && !hasNewHotnews && !hasNewHotexternal && !hasNewOutlink) {
+        const hasExistingHotnews = item?.hotnewsId
+        const hasExistingHotexternal = item?.hotexternalId
+        const hasExistingOutlink = item?.outlink && item.outlink.trim() !== ''
+
+        const existingFieldsSet = [
+          hasExistingHotnews,
+          hasExistingHotexternal,
+          hasExistingOutlink
+        ].filter(Boolean).length
+
+        if (existingFieldsSet > 1) {
+          addValidationError('新聞內容請擇一：快訊文章、快訊外部文章或外部連結網址')
+        }
       }
     },
   },

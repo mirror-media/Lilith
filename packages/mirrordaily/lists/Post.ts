@@ -819,6 +819,17 @@ const listConfigurations = list({
         displayMode: 'select',
       },
     }),
+    Warnings: relationship({
+      ref: 'Warning',
+      many: true,
+      label: '警語',
+      ui: {
+        displayMode: 'select',
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
     redirect: text({
       label: '廣編文轉址 slug',
       ui: {

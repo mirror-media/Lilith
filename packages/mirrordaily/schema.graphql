@@ -1210,6 +1210,8 @@ type Post {
   hiddenAdvertised: Boolean
   isAdult: Boolean
   Warning: Warning
+  Warnings(where: WarningWhereInput! = {}, orderBy: [WarningOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: WarningWhereUniqueInput): [Warning!]
+  WarningsCount(where: WarningWhereInput! = {}): Int
   redirect: String
   adTrace: String
   css: String
@@ -1266,6 +1268,7 @@ input PostWhereInput {
   hiddenAdvertised: BooleanFilter
   isAdult: BooleanFilter
   Warning: WarningWhereInput
+  Warnings: WarningManyRelationFilter
   redirect: StringFilter
   adTrace: StringFilter
   css: StringFilter
@@ -1279,6 +1282,12 @@ input ContactManyRelationFilter {
   every: ContactWhereInput
   some: ContactWhereInput
   none: ContactWhereInput
+}
+
+input WarningManyRelationFilter {
+  every: WarningWhereInput
+  some: WarningWhereInput
+  none: WarningWhereInput
 }
 
 input PostOrderByInput {
@@ -1354,6 +1363,7 @@ input PostUpdateInput {
   hiddenAdvertised: Boolean
   isAdult: Boolean
   Warning: WarningRelateToOneForUpdateInput
+  Warnings: WarningRelateToManyForUpdateInput
   redirect: String
   adTrace: String
   css: String
@@ -1389,6 +1399,13 @@ input WarningRelateToOneForUpdateInput {
   create: WarningCreateInput
   connect: WarningWhereUniqueInput
   disconnect: Boolean
+}
+
+input WarningRelateToManyForUpdateInput {
+  disconnect: [WarningWhereUniqueInput!]
+  set: [WarningWhereUniqueInput!]
+  create: [WarningCreateInput!]
+  connect: [WarningWhereUniqueInput!]
 }
 
 input PostUpdateArgs {
@@ -1443,6 +1460,7 @@ input PostCreateInput {
   hiddenAdvertised: Boolean
   isAdult: Boolean
   Warning: WarningRelateToOneForCreateInput
+  Warnings: WarningRelateToManyForCreateInput
   redirect: String
   adTrace: String
   css: String
@@ -1472,6 +1490,11 @@ input VideoRelateToManyForCreateInput {
 input WarningRelateToOneForCreateInput {
   create: WarningCreateInput
   connect: WarningWhereUniqueInput
+}
+
+input WarningRelateToManyForCreateInput {
+  create: [WarningCreateInput!]
+  connect: [WarningWhereUniqueInput!]
 }
 
 type Section {
@@ -1996,6 +2019,8 @@ type Video {
   videoSection: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
+  updateTimeStamp: Boolean
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   createdAt: DateTime
@@ -2026,6 +2051,7 @@ input VideoWhereInput {
   videoSection: StringNullableFilter
   state: StringNullableFilter
   publishedDate: DateTimeNullableFilter
+  publishedDateString: StringFilter
   tags: TagManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -2045,6 +2071,8 @@ input VideoOrderByInput {
   videoSection: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
+  publishedDateString: OrderDirection
+  updateTimeStamp: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2064,6 +2092,8 @@ input VideoUpdateInput {
   videoSection: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
+  updateTimeStamp: Boolean
   tags: TagRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -2091,6 +2121,8 @@ input VideoCreateInput {
   videoSection: String
   state: String
   publishedDate: DateTime
+  publishedDateString: String
+  updateTimeStamp: Boolean
   tags: TagRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime

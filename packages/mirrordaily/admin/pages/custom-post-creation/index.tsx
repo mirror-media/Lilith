@@ -29,6 +29,7 @@ const PICKED_FIELDS = [
   'content',
   'heroImage',
   'heroCaption',
+  'defaultHeroImage',
   'relateds',
   'state',
   'publishedDate',
