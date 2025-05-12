@@ -817,9 +817,6 @@ const listConfigurations = list({
       label: '警語',
       ui: {
         displayMode: 'select',
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
       },
     }),
     Warnings: relationship({
@@ -828,6 +825,9 @@ const listConfigurations = list({
       label: '警語',
       ui: {
         displayMode: 'select',
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     redirect: text({
