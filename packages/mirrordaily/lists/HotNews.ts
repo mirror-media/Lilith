@@ -24,11 +24,6 @@ const listConfigurations = list({
     }),
     outlink: text({
       label: '外部連結網址',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-	  }
     }),
     hotnews: relationship({
       label: '快訊文章',
@@ -101,6 +96,11 @@ const listConfigurations = list({
         (typeof hotexternal === 'object' && 'connect' in hotexternal && hotexternal.connect?.id)
       const hasNewOutlink = outlink && outlink.trim() !== ''
 
+      // 檢查是否有 disconnect 操作
+      const isDisconnectHotnews = hotnews?.disconnect
+      const isDisconnectHotexternal = hotexternal?.disconnect
+      const isDisconnectOutlink = outlink === ''
+
       // 計算 resolvedData 中被設定的欄位數量
       const newFieldsSet = [hasNewHotnews, hasNewHotexternal, hasNewOutlink].filter(Boolean).length
 
@@ -110,41 +110,53 @@ const listConfigurations = list({
         return
       }
 
-      // 如果是更新操作（item 存在），且 resolvedData 中有任何欄位被設定，確保其他欄位都被 disconnect
-      if (item && newFieldsSet === 1) {
-        // 檢查是否要從一個欄位切換到另一個欄位
-        const isSwitchingField = 
-          (hasNewHotnews && item.hotexternal?.id) ||
-          (hasNewHotexternal && item.hotnews?.id) ||
-          (hasNewOutlink && (item.hotnews?.id || item.hotexternal?.id))
+      // 檢查最終狀態下有多少個欄位有值
+      const finalHotnews = hasNewHotnews ? true : 
+        (item?.hotnewsId && !isDisconnectHotnews)
+      const finalHotexternal = hasNewHotexternal ? true : 
+        (item?.hotexternalId && !isDisconnectHotexternal)
+      const finalOutlink = hasNewOutlink ? true : 
+        (item?.outlink && item.outlink.trim() !== '' && !isDisconnectOutlink)
 
-        if (isSwitchingField) {
-          if (hasNewHotnews && !hotexternal?.disconnect) {
-            addValidationError('請先清空快訊外部文章')
+      const finalFieldsSet = [finalHotnews, finalHotexternal, finalOutlink].filter(Boolean).length
+
+      if (finalFieldsSet > 1) {
+        // 如果是更新操作，且有多個欄位有值
+        if (item) {
+          // 檢查是否要從一個欄位切換到另一個欄位
+          if (hasNewHotnews) {
+            if (finalHotexternal) {
+              addValidationError('請先清空快訊外部文章')
+            }
+            if (finalOutlink) {
+              addValidationError('請先清空外部連結網址')
+            }
+          } else if (hasNewHotexternal) {
+            if (finalHotnews) {
+              addValidationError('請先清空快訊文章')
+            }
+            if (finalOutlink) {
+              addValidationError('請先清空外部連結網址')
+            }
+          } else if (hasNewOutlink) {
+            if (finalHotnews) {
+              addValidationError('請先清空快訊文章')
+            }
+            if (finalHotexternal) {
+              addValidationError('請先清空快訊外部文章')
+            }
+          } else {
+            addValidationError('新聞內容請擇一：快訊文章、快訊外部文章或外部連結網址')
           }
-          if (hasNewHotnews && outlink && outlink.trim() !== '') {
-            addValidationError('請先清空外部連結網址')
-          }
-          if (hasNewHotexternal && !hotnews?.disconnect) {
-            addValidationError('請先清空快訊文章')
-          }
-          if (hasNewHotexternal && outlink && outlink.trim() !== '') {
-            addValidationError('請先清空外部連結網址')
-          }
-          if (hasNewOutlink && !hotnews?.disconnect) {
-            addValidationError('請先清空快訊文章')
-          }
-          if (hasNewOutlink && !hotexternal?.disconnect) {
-            addValidationError('請先清空快訊外部文章')
-          }
+        } else {
+          addValidationError('新聞內容請擇一：快訊文章、快訊外部文章或外部連結網址')
         }
-        return
       }
 
-      // 如果是更新操作（item 存在），且 resolvedData 中沒有欄位被設定，檢查 item 中是否有多個欄位同時存在
-      if (item) {
-        const hasExistingHotnews = item?.hotnews?.id
-        const hasExistingHotexternal = item?.hotexternal?.id
+      // 如果是更新操作，且沒有新的設定，檢查現有資料是否有多個欄位有值
+      if (item && !hasNewHotnews && !hasNewHotexternal && !hasNewOutlink) {
+        const hasExistingHotnews = item?.hotnewsId
+        const hasExistingHotexternal = item?.hotexternalId
         const hasExistingOutlink = item?.outlink && item.outlink.trim() !== ''
 
         const existingFieldsSet = [

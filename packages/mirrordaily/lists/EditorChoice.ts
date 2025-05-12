@@ -24,11 +24,6 @@ const listConfigurations = list({
     }),
     outlink: text({
       label: '外部連結網址',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-	  }
     }),
     choices: relationship({
       label: '精選文章',
@@ -98,6 +93,11 @@ const listConfigurations = list({
         (typeof choiceexternal === 'object' && 'connect' in choiceexternal && choiceexternal.connect?.id)
       const hasNewOutlink = outlink && outlink.trim() !== ''
 
+      // 檢查是否有 disconnect 操作
+      const isDisconnectChoices = choices?.disconnect
+      const isDisconnectChoiceexternal = choiceexternal?.disconnect
+      const isDisconnectOutlink = outlink === ''
+
       // 計算 resolvedData 中被設定的欄位數量
       const newFieldsSet = [hasNewChoices, hasNewChoiceexternal, hasNewOutlink].filter(Boolean).length
 
@@ -107,41 +107,53 @@ const listConfigurations = list({
         return
       }
 
-      // 如果是更新操作（item 存在），且 resolvedData 中有任何欄位被設定，確保其他欄位都被 disconnect
-      if (item && newFieldsSet === 1) {
-        // 檢查是否要從一個欄位切換到另一個欄位
-        const isSwitchingField = 
-          (hasNewChoices && item.choiceexternal?.id) ||
-          (hasNewChoiceexternal && item.choices?.id) ||
-          (hasNewOutlink && (item.choices?.id || item.choiceexternal?.id))
+      // 檢查最終狀態下有多少個欄位有值
+      const finalChoices = hasNewChoices ? true : 
+        (item?.choicesId && !isDisconnectChoices)
+      const finalChoiceexternal = hasNewChoiceexternal ? true : 
+        (item?.choiceexternalId && !isDisconnectChoiceexternal)
+      const finalOutlink = hasNewOutlink ? true : 
+        (item?.outlink && item.outlink.trim() !== '' && !isDisconnectOutlink)
 
-        if (isSwitchingField) {
-          if (hasNewChoices && !choiceexternal?.disconnect) {
-            addValidationError('請先清空精選外部文章')
+      const finalFieldsSet = [finalChoices, finalChoiceexternal, finalOutlink].filter(Boolean).length
+
+      if (finalFieldsSet > 1) {
+        // 如果是更新操作，且有多個欄位有值
+        if (item) {
+          // 檢查是否要從一個欄位切換到另一個欄位
+          if (hasNewChoices) {
+            if (finalChoiceexternal) {
+              addValidationError('請先清空精選外部文章')
+            }
+            if (finalOutlink) {
+              addValidationError('請先清空外部連結網址')
+            }
+          } else if (hasNewChoiceexternal) {
+            if (finalChoices) {
+              addValidationError('請先清空精選文章')
+            }
+            if (finalOutlink) {
+              addValidationError('請先清空外部連結網址')
+            }
+          } else if (hasNewOutlink) {
+            if (finalChoices) {
+              addValidationError('請先清空精選文章')
+            }
+            if (finalChoiceexternal) {
+              addValidationError('請先清空精選外部文章')
+            }
+          } else {
+            addValidationError('新聞內容請擇一：精選文章、精選外部文章或外部連結網址')
           }
-          if (hasNewChoices && outlink && outlink.trim() !== '') {
-            addValidationError('請先清空外部連結網址')
-          }
-          if (hasNewChoiceexternal && !choices?.disconnect) {
-            addValidationError('請先清空精選文章')
-          }
-          if (hasNewChoiceexternal && outlink && outlink.trim() !== '') {
-            addValidationError('請先清空外部連結網址')
-          }
-          if (hasNewOutlink && !choices?.disconnect) {
-            addValidationError('請先清空精選文章')
-          }
-          if (hasNewOutlink && !choiceexternal?.disconnect) {
-            addValidationError('請先清空精選外部文章')
-          }
+        } else {
+          addValidationError('新聞內容請擇一：精選文章、精選外部文章或外部連結網址')
         }
-        return
       }
 
-      // 如果是更新操作（item 存在），且 resolvedData 中沒有欄位被設定，檢查 item 中是否有多個欄位同時存在
-      if (item) {
-        const hasExistingChoices = item?.choices?.id
-        const hasExistingChoiceexternal = item?.choiceexternal?.id
+      // 如果是更新操作，且沒有新的設定，檢查現有資料是否有多個欄位有值
+      if (item && !hasNewChoices && !hasNewChoiceexternal && !hasNewOutlink) {
+        const hasExistingChoices = item?.choicesId
+        const hasExistingChoiceexternal = item?.choiceexternalId
         const hasExistingOutlink = item?.outlink && item.outlink.trim() !== ''
 
         const existingFieldsSet = [

@@ -110,7 +110,24 @@ const listConfigurations = list({
     }),
     publishedDate: timestamp({
       isIndexed: true,
+      isFilterable: true,
       label: '發佈日期',
+    }),
+    publishedDateString: text({
+      label: '發布日期',
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+      },
+    }),
+    updateTimeStamp: checkbox({
+      label: '下次存檔時自動更改成「現在時間」',
+      isFilterable: false,
+      defaultValue: false,
     }),
     tags: relationship({
       label: '標籤',
@@ -134,7 +151,22 @@ const listConfigurations = list({
       delete: allowRoles(admin, moderator, editor),
     },
   },
-  hooks: {},
+  hooks: {
+    resolveInput: async ({ operation, resolvedData }) => {
+      const { publishedDate, content, brief, updateTimeStamp } = resolvedData
+      //if (operation === 'create') {
+      //  resolvedData.publishedDate = new Date(publishedDate.setSeconds(0, 0))
+      //  resolvedData.updatedAt = new Date()
+      //}
+      if (updateTimeStamp) {
+        const now = new Date()
+        resolvedData.publishedDate = new Date(now.setSeconds(0, 0))
+        resolvedData.updatedAt = new Date()
+        resolvedData.updateTimeStamp = false
+      }
+      return resolvedData
+    },
+  },
 })
 
 export default utils.addManualOrderRelationshipFields(
