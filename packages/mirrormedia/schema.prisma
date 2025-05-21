@@ -277,6 +277,7 @@ model Photo {
   imageFile_height            Int?
   imageFile_id                String?
   waterMark                   Boolean     @default(false)
+  watermarkType               String?     @default("mirrormedia")
   file_filesize               Int?
   file_filename               String?
   topicKeywords               String      @default("")

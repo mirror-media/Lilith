@@ -1190,6 +1190,7 @@ type Photo {
   name: String
   imageFile: ImageFieldOutput
   waterMark: Boolean
+  watermarkType: String
   waterMarkDescription: String
   resized: ResizedImages
   resizedWebp: ResizedWebPImages
@@ -1247,6 +1248,7 @@ input PhotoWhereInput {
   id: IDFilter
   name: StringFilter
   waterMark: BooleanFilter
+  watermarkType: StringNullableFilter
   topicKeywords: StringFilter
   copyRight: BooleanFilter
   createdAt: DateTimeNullableFilter
@@ -1259,6 +1261,7 @@ input PhotoOrderByInput {
   id: OrderDirection
   name: OrderDirection
   waterMark: OrderDirection
+  watermarkType: OrderDirection
   topicKeywords: OrderDirection
   copyRight: OrderDirection
   createdAt: OrderDirection
@@ -1269,6 +1272,7 @@ input PhotoUpdateInput {
   name: String
   imageFile: ImageFieldInput
   waterMark: Boolean
+  watermarkType: String
   file: FileFieldInput
   topicKeywords: String
   copyRight: Boolean
@@ -1291,6 +1295,7 @@ input PhotoCreateInput {
   name: String
   imageFile: ImageFieldInput
   waterMark: Boolean
+  watermarkType: String
   file: FileFieldInput
   topicKeywords: String
   copyRight: Boolean
