@@ -798,6 +798,7 @@ type External {
   publishedDateString: String
   extend_byline: String
   thumb: String
+  thumbCaption: String
   brief: String
   content: String
   source: String
@@ -858,6 +859,7 @@ input ExternalOrderByInput {
   publishedDateString: OrderDirection
   extend_byline: OrderDirection
   thumb: OrderDirection
+  thumbCaption: OrderDirection
   brief: OrderDirection
   content: OrderDirection
   source: OrderDirection
@@ -874,6 +876,7 @@ input ExternalUpdateInput {
   publishedDateString: String
   extend_byline: String
   thumb: String
+  thumbCaption: String
   brief: String
   content: String
   source: String
@@ -913,6 +916,7 @@ input ExternalCreateInput {
   publishedDateString: String
   extend_byline: String
   thumb: String
+  thumbCaption: String
   brief: String
   content: String
   source: String

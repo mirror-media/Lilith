@@ -179,6 +179,7 @@ model External {
   publishedDateString String    @default("")
   extend_byline       String    @default("")
   thumb               String    @default("")
+  thumbCaption        String    @default("")
   brief               String    @default("")
   content             String    @default("")
   source              String    @default("")
