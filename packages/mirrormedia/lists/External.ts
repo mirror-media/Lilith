@@ -101,7 +101,11 @@ const listConfigurations = list({
       label: '圖片網址',
       validation: { isRequired: false },
     }),
-
+    thumbCaption: text({
+      label: '首圖圖說',
+      isFilterable: false,
+      validation: { isRequired: false },
+    }),
     brief: text({
       label: '前言',
       ui: { displayMode: 'textarea' },

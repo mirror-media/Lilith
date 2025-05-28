@@ -380,6 +380,23 @@ const listConfigurations = list({
         'related-post',
         'side-index',
       ],
+      hideOnMobileButtons: [
+        'annotation',
+        'unordered-list-item',
+        'ordered-list-item',
+        'header-three',
+        'audio',
+        'blockquote',
+        'code',
+        'code-block',
+        'divider',
+        'embed',
+        'info-box',
+        'link',
+        'slideshow',
+        'table',
+        'youtube',
+      ],
       website: 'mirrormedia',
       access: {
         read: ({

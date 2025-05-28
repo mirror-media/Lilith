@@ -456,6 +456,9 @@ const listConfigurations = list({
       label: '首圖圖說',
       isFilterable: false,
       validation: { isRequired: false },
+	  ui: {
+		displayMode: 'textarea'
+	  }
     }),
     style: select({
       label: '文章樣式',

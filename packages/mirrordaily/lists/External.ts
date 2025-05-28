@@ -133,6 +133,10 @@ const listConfigurations = list({
       label: '圖片網址',
       validation: { isRequired: false },
     }),
+    thumbCaption: text({
+      label: '圖片圖說',
+      validation: { isRequired: false },
+    }),
 
     brief: text({
       label: '前言',

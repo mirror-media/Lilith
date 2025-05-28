@@ -574,6 +574,7 @@ type External {
   publishedDateString: String
   extend_byline: String
   thumb: String
+  thumbCaption: String
   brief: String
   content: String
   topics: Topic
@@ -610,6 +611,7 @@ input ExternalWhereInput {
   publishedDateString: StringFilter
   extend_byline: StringFilter
   thumb: StringFilter
+  thumbCaption: StringFilter
   brief: StringFilter
   content: StringFilter
   topics: TopicWhereInput
@@ -643,6 +645,7 @@ input ExternalOrderByInput {
   publishedDateString: OrderDirection
   extend_byline: OrderDirection
   thumb: OrderDirection
+  thumbCaption: OrderDirection
   brief: OrderDirection
   content: OrderDirection
   source: OrderDirection
@@ -663,6 +666,7 @@ input ExternalUpdateInput {
   publishedDateString: String
   extend_byline: String
   thumb: String
+  thumbCaption: String
   brief: String
   content: String
   topics: TopicRelateToOneForUpdateInput
@@ -720,6 +724,7 @@ input ExternalCreateInput {
   publishedDateString: String
   extend_byline: String
   thumb: String
+  thumbCaption: String
   brief: String
   content: String
   topics: TopicRelateToOneForCreateInput

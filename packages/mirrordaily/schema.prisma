@@ -125,6 +125,7 @@ model External {
   publishedDateString              String         @default("")
   extend_byline                    String         @default("")
   thumb                            String         @default("")
+  thumbCaption                     String         @default("")
   brief                            String         @default("")
   content                          String         @default("")
   topics                           Topic?         @relation("External_topics", fields: [topicsId], references: [id])
