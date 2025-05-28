@@ -5,4 +5,4 @@
 
 */
 -- AlterTable
-ALTER TABLE "Video" ALTER COLUMN "publishedDate" SET NULL;
+ALTER TABLE "Video" ALTER COLUMN "publishedDate" SET DEFAULT NULL;

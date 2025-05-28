@@ -1,7 +1,7 @@
 import envVar from '../environment-variables'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { file, image, text, virtual, checkbox } from '@keystone-6/core/fields'
+import { file, image, text, select, virtual, checkbox } from '@keystone-6/core/fields'
 import { getFileURL } from '../utils/common'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -25,6 +25,15 @@ const listConfigurations = list({
       ui: {
         itemView: { fieldMode: 'hidden' },
       },
+    }),
+    watermarkType: select({
+      label: '',
+      options: [
+        { label: '鏡週刊', value: 'mirrormedia' },
+        { label: '鏡報', value: 'mirrordaily' },
+      ],
+      defaultValue: 'mirrormedia',
+      isIndexed: false,
     }),
     waterMarkDescription: virtual({
       label: '浮水印',
