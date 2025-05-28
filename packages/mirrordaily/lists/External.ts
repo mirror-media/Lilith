@@ -4,7 +4,7 @@ import { select, text, timestamp, relationship, json } from '@keystone-6/core/fi
 import envVar from '../environment-variables'
 import { ACL, UserRole, State, type Session } from '../type'
 
-const { allowRoles, admin, moderator } = utils.accessControl
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 enum ExternalStatus {
   Published = State.Published,
@@ -20,7 +20,7 @@ function filterExternals(roles: string[]) {
       case ACL.GraphQL: {
         // Expose `published` and `invisible` externals
         return {
-          state: { in: [ExternalStatus.Published, ExternalStatus.Invisible] },
+          state: { in: [ExternalStatus.Published] },
         }
       }
       case ACL.Preview: {
@@ -197,7 +197,7 @@ const listConfigurations = list({
   },
   access: {
     operation: {
-      query: () => true,
+      query: allowRoles(admin, moderator, editor), 
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin, moderator),
