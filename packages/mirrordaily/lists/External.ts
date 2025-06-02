@@ -1,6 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core'
-import { select, text, timestamp, relationship, json } from '@keystone-6/core/fields'
+import { graphql, list } from '@keystone-6/core'
+import { select, text, timestamp, relationship, json, virtual } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 import { ACL, UserRole, State, type Session } from '../type'
 
@@ -77,6 +77,20 @@ const listConfigurations = list({
       defaultValue: ExternalStatus.Draft,
       isIndexed: true,
     }),
+	relation_display: virtual({
+	  label: '標題（建議字數：28字',
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>) {
+          return item?.title + ' (' + item?.state + ')'
+        },
+      }),
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+	}),
     sections: relationship({
       label: '大分類',
       ref: 'Section.externals',

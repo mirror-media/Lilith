@@ -31,7 +31,7 @@ const listConfigurations = list({
       many: false,
       ui: {
         views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
-        labelField: 'title',
+        labelField: 'relation_display',
       },
     }),
     choiceexternal: relationship({
