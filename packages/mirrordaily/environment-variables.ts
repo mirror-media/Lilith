@@ -48,7 +48,7 @@ export default {
         ? DatabaseProvider.Sqlite
         : DatabaseProvider.Postgres,
     url:
-      DATABASE_URL || 'postgres://username:password@localhost:5432/mirrordaily',
+      DATABASE_URL || 'postgres://hcchien@localhost:5432/mirrordaily',
   },
   session: {
     secret:

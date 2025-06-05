@@ -84,7 +84,7 @@ const listConfigurations = list({
   },
   hooks: {
     validateInput: ({ resolvedData, addValidationError, item }) => {
-      const { choices, choiceexternal, outlink } = resolvedData
+      const { choices, choiceexternal, outlink, state } = resolvedData
       
       // 檢查 resolvedData 中是否有任何欄位被設定
       const hasNewChoices = choices && 
@@ -164,6 +164,19 @@ const listConfigurations = list({
 
         if (existingFieldsSet > 1) {
           addValidationError('新聞內容請擇一：精選文章、精選外部文章或外部連結網址')
+        }
+      }
+
+      // 檢查是否要發布或已經是發布狀態
+      if (state === 'published') {
+        // 檢查最終狀態下 choices 和 choiceexternal 是否都為空
+        const finalChoicesEmpty = !hasNewChoices && 
+          (!item?.choicesId || isDisconnectChoices)
+        const finalChoiceexternalEmpty = !hasNewChoiceexternal && 
+          (!item?.choiceexternalId || isDisconnectChoiceexternal)
+
+        if (finalChoicesEmpty && finalChoiceexternalEmpty) {
+          addValidationError('發布狀態下，choices 和 choiceexternal 不能同時為空')
         }
       }
     },
