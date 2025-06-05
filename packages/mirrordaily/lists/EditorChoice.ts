@@ -170,12 +170,18 @@ const listConfigurations = list({
       // 檢查是否要發布或已經是發布狀態
       if (state === 'published') {
         // 檢查最終狀態下三個欄位是否都為空
-        const finalChoicesEmpty = !hasNewChoices && 
-          (!item?.choicesId || isDisconnectChoices)
-        const finalChoiceexternalEmpty = !hasNewChoiceexternal && 
-          (!item?.choiceexternalId || isDisconnectChoiceexternal)
-        const finalOutlinkEmpty = !hasNewOutlink && 
-          (!item?.outlink || item.outlink.trim() === '' || isDisconnectOutlink)
+        const finalChoicesEmpty = 
+          (hasNewChoices ? false : 
+            (isDisconnectChoices ? true : 
+              (!item?.choicesId)))
+        const finalChoiceexternalEmpty = 
+          (hasNewChoiceexternal ? false : 
+            (isDisconnectChoiceexternal ? true : 
+              (!item?.choiceexternalId)))
+        const finalOutlinkEmpty = 
+          (hasNewOutlink ? false : 
+            (isDisconnectOutlink ? true : 
+              (!item?.outlink || item.outlink.trim() === '')))
 
         if (finalChoicesEmpty && finalChoiceexternalEmpty && finalOutlinkEmpty) {
           addValidationError('發布狀態下，精選文章、精選外部文章和外部連結網址不能同時為空')
