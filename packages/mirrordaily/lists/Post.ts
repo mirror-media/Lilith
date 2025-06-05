@@ -292,6 +292,9 @@ const listConfigurations = list({
     title: text({
       label: '標題（建議字數：28字）',
       validation: { isRequired: true},
+	  ui: {
+		displayMode: 'textarea'
+	  }
     }),
     subtitle: text({
       label: '副標',
@@ -514,6 +517,20 @@ const listConfigurations = list({
       ],
       website: 'mirrormedia',
     }),
+	relation_display: virtual({
+	  label: '標題（建議字數：28字',
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>) {
+          return item?.title + ' (' + item?.state + ')'
+        },
+      }),
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+	}),
     trimmedContent: virtual({
       label: '擷取前5段的內文（不包括換行）',
       ui: {
@@ -620,7 +637,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
-        labelField: 'title',
+        labelField: 'relation_display',
       }
     }),
     manualOrderOfRelateds: json({
