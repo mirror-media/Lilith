@@ -1047,6 +1047,11 @@ const listConfigurations = list({
       return
     },
     afterOperation: async ({ operation, item, context, resolvedData }) => {
+	  if (item?.topicsId) {
+        const result = fetch(envVar.topicServiceApi + '?topic_id=' + item?.topicsId, {
+          method: 'GET',
+        })
+	  }
       if (
         resolvedData &&
         resolvedData.state &&
