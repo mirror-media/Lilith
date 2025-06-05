@@ -150,46 +150,16 @@ const listConfigurations = list({
         }
       }
 
-      // 如果是更新操作，且沒有新的設定，檢查現有資料是否有多個欄位有值
-      if (item && !hasNewChoices && !hasNewChoiceexternal && !hasNewOutlink) {
-        const hasExistingChoices = item?.choicesId
-        const hasExistingChoiceexternal = item?.choiceexternalId
-        const hasExistingOutlink = item?.outlink && item.outlink.trim() !== ''
-
-        const existingFieldsSet = [
-          hasExistingChoices,
-          hasExistingChoiceexternal,
-          hasExistingOutlink
-        ].filter(Boolean).length
-
-        if (existingFieldsSet > 1) {
-          addValidationError('新聞內容請擇一：精選文章、精選外部文章或外部連結網址')
-        }
-      }
-
       // 檢查是否要發布或已經是發布狀態
-      if (state === 'published') {
-        // 檢查最終狀態下三個欄位是否都為空
-        const finalChoicesEmpty = 
-          (hasNewChoices ? false : 
-            (isDisconnectChoices ? true : 
-              (!item?.choicesId)))
-        const finalChoiceexternalEmpty = 
-          (hasNewChoiceexternal ? false : 
-            (isDisconnectChoiceexternal ? true : 
-              (!item?.choiceexternalId)))
-        const finalOutlinkEmpty = 
-          (hasNewOutlink ? false : 
-            (isDisconnectOutlink ? true : 
-              (!item?.outlink || item.outlink.trim() === '')))
+      if (item?.state === 'published' || state === 'published') {
+        // 檢查是否有任何欄位有值
+        const hasChoicesValue = hasNewChoices || (item?.choicesId && !choices?.disconnect)
+        const hasChoiceexternalValue = hasNewChoiceexternal || (item?.choiceexternalId && !choiceexternal?.disconnect)
+        const hasOutlinkValue = hasNewOutlink || (item?.outlink && item.outlink.trim() !== '' && !isDisconnectOutlink)
 
-        // 檢查是否有任何欄位被設定為空
-        const isSettingAllEmpty = 
-          (choices?.disconnect || (!hasNewChoices && !item?.choicesId)) &&
-          (choiceexternal?.disconnect || (!hasNewChoiceexternal && !item?.choiceexternalId)) &&
-          (isDisconnectOutlink || (!hasNewOutlink && (!item?.outlink || item.outlink.trim() === '')))
+        const hasAnyValue = hasChoicesValue || hasChoiceexternalValue || hasOutlinkValue
 
-        if (isSettingAllEmpty) {
+        if (!hasAnyValue) {
           addValidationError('發布狀態下，精選文章、精選外部文章和外部連結網址不能同時為空')
         }
       }
