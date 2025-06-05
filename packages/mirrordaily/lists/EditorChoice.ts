@@ -183,7 +183,13 @@ const listConfigurations = list({
             (isDisconnectOutlink ? true : 
               (!item?.outlink || item.outlink.trim() === '')))
 
-        if (finalChoicesEmpty && finalChoiceexternalEmpty && finalOutlinkEmpty) {
+        // 檢查是否有任何欄位被設定為空
+        const isSettingAllEmpty = 
+          (choices?.disconnect || (!hasNewChoices && !item?.choicesId)) &&
+          (choiceexternal?.disconnect || (!hasNewChoiceexternal && !item?.choiceexternalId)) &&
+          (isDisconnectOutlink || (!hasNewOutlink && (!item?.outlink || item.outlink.trim() === '')))
+
+        if (isSettingAllEmpty) {
           addValidationError('發布狀態下，精選文章、精選外部文章和外部連結網址不能同時為空')
         }
       }
