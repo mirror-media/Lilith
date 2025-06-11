@@ -51,6 +51,11 @@ const listConfigurations = list({
     heroImage: relationship({
       ref: 'Photo',
       label: '首圖',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+        listView: { fieldMode: 'read' },
+      },
     }),
     content: customFields.richTextEditor({
       label: '敘述',

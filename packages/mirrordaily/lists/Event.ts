@@ -56,6 +56,11 @@ const listConfigurations = list({
     heroImage: relationship({
       ref: 'Photo',
       label: 'image 活動首圖',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+        listView: { fieldMode: 'read' },
+      },
     }),
     link: text({
       label: '連結',
