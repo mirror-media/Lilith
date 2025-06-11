@@ -40,7 +40,7 @@ function CreatePageForm(props: { list: ListMeta }) {
   const router = useRouter()
 
   return (
-    <Box paddingTop="xlarge">
+    <Box paddingTop="xlarge" paddingBottom="xlarge" marginBottom="xxlarge">
       {createItem.error && (
         <GraphQLErrorNotice
           networkError={createItem.error?.networkError}

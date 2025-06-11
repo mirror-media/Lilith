@@ -111,13 +111,12 @@ export function BaseToolbar(props: { children: ReactNode }) {
     <div
       style={{
         background: colors.background,
-        borderTop: `1px solid ${colors.border}`,
         bottom: 0,
         display: 'flex',
         justifyContent: 'space-between',
-        marginTop: spacing.xlarge,
-        paddingBottom: spacing.xlarge,
-        paddingTop: spacing.xlarge,
+        paddingBottom: spacing.small,
+        position: 'fixed',
+        zIndex: 20,
       }}
     >
       {props.children}
