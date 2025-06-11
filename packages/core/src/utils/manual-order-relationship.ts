@@ -118,52 +118,94 @@ function addManualOrderRelationshipFields(
       if (resolvedData?.[targetFieldName]) {
         let currentOrder: Item[] = []
 
-        // update operation due to `item` not being `undefiend`
-        if (item) {
-          const previousOrder = getOrderData(item[fieldName])
+        // 檢查是否要清空所有欄位
+        const isDisconnectAll =
+          resolvedData[targetFieldName]?.disconnect?.length ===
+          (item?.[targetFieldName] as Item[])?.length
+        const isConnectEmpty =
+          !resolvedData[targetFieldName]?.connect ||
+          resolvedData[targetFieldName]?.connect.length === 0
 
-          // user disconnects/removes some relationship items.
-          const disconnectIds =
-            resolvedData[targetFieldName]?.disconnect?.map((obj: Item) =>
-              obj.id.toString()
-            ) || []
-
-          // filtered out to-be-disconnected relationship items
-          currentOrder = previousOrder.filter(({ id }: Item) => {
-            return disconnectIds.indexOf(id) === -1
-          })
-        }
-
-        // user connects/adds some relationship item.
-        const connectedIds: string[] =
-          resolvedData[targetFieldName]?.connect?.map((obj: Item) =>
-            obj.id.toString()
-          ) || []
-
-        if (connectedIds.length > 0) {
-          // Query relationship items from the database.
-          // Therefore, we can have other fields to record in the monitoring field
-          const sfToConnect = await context.db[targetListName].findMany({
-            where: { id: { in: connectedIds } },
-          })
-
-          // Database query results are not sorted.
-          // We need to sort them by ourselves.
-          for (let i = 0; i < connectedIds.length; i++) {
-            const sf = sfToConnect.find((obj) => {
-              return `${obj.id}` === connectedIds[i]
-            })
-            if (sf) {
-              currentOrder.push({
-                id: sf.id.toString(),
-                [targetListLabelField]: sf[targetListLabelField],
+        // 如果是清空所有欄位，則使用 set 操作
+        if (isDisconnectAll && isConnectEmpty) {
+          resolvedData[targetFieldName] = { set: [] }
+          resolvedData[fieldName] = []
+        } else {
+          // 檢查是否有 set 操作
+          if (resolvedData[targetFieldName]?.set !== undefined) {
+            const setItems = resolvedData[targetFieldName].set || []
+            if (setItems.length > 0) {
+              // 如果有 set 操作，則使用 set 的順序
+              const setIds = setItems.map((obj: Item) => obj.id.toString())
+              const sfToSet = await context.db[targetListName].findMany({
+                where: { id: { in: setIds } },
               })
+
+              for (const setItem of setItems) {
+                const sf = sfToSet.find((obj) => {
+                  return `${obj.id}` === setItem.id.toString()
+                })
+                if (sf) {
+                  currentOrder.push({
+                    id: sf.id.toString(),
+                    [targetListLabelField]: sf[targetListLabelField],
+                  })
+                }
+              }
+            }
+          } else {
+            // update operation due to `item` not being `undefiend`
+            if (item) {
+              const previousOrder = getOrderData(item[fieldName])
+
+              // user disconnects/removes some relationship items.
+              const disconnectIds =
+                resolvedData[targetFieldName]?.disconnect?.map((obj: Item) =>
+                  obj.id.toString()
+                ) || []
+
+              // filtered out to-be-disconnected relationship items
+              currentOrder = previousOrder.filter(({ id }: Item) => {
+                return disconnectIds.indexOf(id) === -1
+              })
+            }
+
+            // user connects/adds some relationship item.
+            const connectOrder = resolvedData[targetFieldName]?.connect || []
+
+            if (connectOrder.length > 0) {
+              // Query relationship items from the database.
+              // Therefore, we can have other fields to record in the monitoring field
+              const connectedIds = connectOrder.map((obj: Item) =>
+                obj.id.toString()
+              )
+
+              const sfToConnect = await context.db[targetListName].findMany({
+                where: { id: { in: connectedIds } },
+              })
+
+              // 使用 resolvedData 中的 connect 順序來排序
+              for (const connectItem of connectOrder) {
+                const sf = sfToConnect.find((obj) => {
+                  return `${obj.id}` === connectItem.id.toString()
+                })
+                if (sf) {
+                  currentOrder.push({
+                    id: sf.id.toString(),
+                    [targetListLabelField]: sf[targetListLabelField],
+                  })
+                }
+              }
             }
           }
         }
 
-        // records the order in the monitoring field
-        resolvedData[fieldName] = currentOrder
+        // 更新 monitoring field
+        if (currentOrder.length > 0) {
+          resolvedData[fieldName] = currentOrder
+        } else {
+          resolvedData[fieldName] = []
+        }
       }
     }
     return resolvedData
