@@ -118,8 +118,6 @@ export function BaseToolbar(props: { children: ReactNode }) {
         marginTop: spacing.xlarge,
         paddingBottom: spacing.xlarge,
         paddingTop: spacing.xlarge,
-        position: 'sticky',
-        zIndex: 20,
       }}
     >
       {props.children}
