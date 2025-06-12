@@ -114,9 +114,8 @@ export function BaseToolbar(props: { children: ReactNode }) {
         bottom: 0,
         display: 'flex',
         justifyContent: 'space-between',
-        paddingBottom: spacing.small,
-        position: 'fixed',
-        zIndex: 20,
+        paddingBottom: spacing.medium,
+        paddingTop: spacing.medium,
       }}
     >
       {props.children}
