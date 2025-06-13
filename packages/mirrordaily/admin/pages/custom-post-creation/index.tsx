@@ -19,6 +19,7 @@ import {
   BaseToolbar,
 } from '../../components/common'
 import { useCreateItem } from '../../utils/use-create-item'
+import styled from '@emotion/styled'
 
 const LIST_KEY = 'Post'
 const PICKED_FIELDS = [
@@ -35,19 +36,18 @@ const PICKED_FIELDS = [
   'publishedDate',
 ]
 
+const Wrapper = styled.div`
+  padding-top: 24px;
+  /* workaround: padding-bottom is added to ensure all content is visible on mobile devices */
+  padding-bottom: 160px;
+`
+
 function CreatePageForm(props: { list: ListMeta }) {
   const createItem = useCreateItem(props.list)
   const router = useRouter()
 
   return (
-    <Box
-      style={{
-        paddingTop: 'xlarge',
-        paddingBottom: 'xlarge',
-        marginBottom: 'xxlarge',
-        overflowY: 'auto',
-      }}
-    >
+    <Wrapper>
       {createItem.error && (
         <GraphQLErrorNotice
           networkError={createItem.error?.networkError}
@@ -71,7 +71,7 @@ function CreatePageForm(props: { list: ListMeta }) {
           Create {props.list.singular}
         </Button>
       </BaseToolbar>
-    </Box>
+    </Wrapper>
   )
 }
 
