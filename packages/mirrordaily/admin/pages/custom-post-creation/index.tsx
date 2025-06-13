@@ -8,15 +8,15 @@ import {
   GraphQLErrorNotice,
 } from '@keystone-6/core/admin-ui/components'
 import { Fields } from '@keystone-6/core/admin-ui/utils'
-// import { useRouter } from '@keystone-6/core/admin-ui/router'
+import { useRouter } from '@keystone-6/core/admin-ui/router'
 
 import { Box } from '@keystone-ui/core'
 import { LoadingDots } from '@keystone-ui/loading'
-// import { Button } from '@keystone-ui/button'
+import { Button } from '@keystone-ui/button'
 import {
   ColumnLayout,
   ItemPageHeader,
-  // BaseToolbar,
+  BaseToolbar,
 } from '../../components/common'
 import { useCreateItem } from '../../utils/use-create-item'
 import styled from '@emotion/styled'
@@ -37,41 +37,42 @@ const PICKED_FIELDS = [
 ]
 
 const Wrapper = styled.div`
-  padding-top: 24px;
   /* workaround: padding-bottom is added to ensure all content is visible on mobile devices */
-  padding-bottom: 120px;
+  padding-bottom: 140px;
 `
 
 function CreatePageForm(props: { list: ListMeta }) {
   const createItem = useCreateItem(props.list)
-  // const router = useRouter()
+  const router = useRouter()
 
   return (
-    <Wrapper>
-      {createItem.error && (
-        <GraphQLErrorNotice
-          networkError={createItem.error?.networkError}
-          errors={createItem.error?.graphQLErrors}
-        />
-      )}
+    <Box paddingTop="xlarge">
+      <Wrapper>
+        {createItem.error && (
+          <GraphQLErrorNotice
+            networkError={createItem.error?.networkError}
+            errors={createItem.error?.graphQLErrors}
+          />
+        )}
 
-      <Fields {...createItem.props} />
-      {/* <BaseToolbar>
-        <Button
-          isLoading={createItem.state === 'loading'}
-          weight="bold"
-          tone="active"
-          onClick={async () => {
-            const item = await createItem.create()
-            if (item) {
-              router.push(`/${props.list.path}/${item.id}`)
-            }
-          }}
-        >
-          Create {props.list.singular}
-        </Button>
-      </BaseToolbar> */}
-    </Wrapper>
+        <Fields {...createItem.props} />
+        <BaseToolbar>
+          <Button
+            isLoading={createItem.state === 'loading'}
+            weight="bold"
+            tone="active"
+            onClick={async () => {
+              const item = await createItem.create()
+              if (item) {
+                router.push(`/${props.list.path}/${item.id}`)
+              }
+            }}
+          >
+            Create {props.list.singular}
+          </Button>
+        </BaseToolbar>
+      </Wrapper>
+    </Box>
   )
 }
 
