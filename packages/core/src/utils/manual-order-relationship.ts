@@ -200,11 +200,66 @@ function addManualOrderRelationshipFields(
           }
         }
 
+        // const allTargetItems =
+        //   resolvedData[targetFieldName]?.set ||
+        //   (resolvedData[targetFieldName]?.connect || []).concat(
+        //     ((item?.[targetFieldName] as Item[]) || []).filter(
+        //       (item: Item) =>
+        //         !resolvedData[targetFieldName]?.disconnect?.some(
+        //           (d: Item) => d.id.toString() === item.id.toString()
+        //         )
+        //     )
+        //   ) ||
+        //   (item?.[targetFieldName] as Item[]) ||
+        //   []
+
+        // console.log('All target items:', allTargetItems)
+
         // 更新 monitoring field
         if (currentOrder.length > 0) {
           resolvedData[fieldName] = currentOrder
         } else {
           resolvedData[fieldName] = []
+        }
+      }
+
+      if (item) {
+        const { [targetFieldName]: allTarget } =
+          await context.prisma.Post.findUnique({
+            where: { id: Number(item.id) },
+            include: {
+              [targetFieldName]: {
+                select: {
+                  id: true,
+                  [targetListLabelField]: true,
+                },
+              },
+            },
+          })
+        // 取得目前的 currentOrder
+        const currentOrder = resolvedData[fieldName] || []
+
+        // 找出在 allTarget 中存在但在 currentOrder 中不存在的項目
+        const missingItems = (allTarget || []).filter(
+          (targetItem: { id: number; title: string }) =>
+            !currentOrder.some(
+              (currentItem: { id: number; title: string }) =>
+                currentItem.id.toString() === targetItem.id.toString()
+            )
+        )
+
+        // 將缺少的項目加入到 currentOrder 的最後
+        if (missingItems.length > 0) {
+          const newOrder = [
+            ...currentOrder,
+            ...missingItems.map(
+              (item: { id: number } & Record<string, string>) => ({
+                id: item.id.toString(),
+                [targetListLabelField]: item[targetListLabelField],
+              })
+            ),
+          ]
+          resolvedData[fieldName] = newOrder
         }
       }
     }
