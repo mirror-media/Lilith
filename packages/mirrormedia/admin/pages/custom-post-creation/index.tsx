@@ -19,6 +19,7 @@ import {
   BaseToolbar,
 } from '../../components/common'
 import { useCreateItem } from '../../utils/use-create-item'
+import styled from '@emotion/styled'
 
 const LIST_KEY = 'Post'
 const PICKED_FIELDS = [
@@ -36,35 +37,48 @@ const PICKED_FIELDS = [
   'publishedDate',
 ]
 
+const Wrapper = styled.div`
+  /* workaround: padding-bottom is added to ensure all content is visible on mobile devices */
+  padding-bottom: 140px;
+  padding-right: 50px;
+  max-width: 320px;
+
+  @media (min-width: 575px) {
+    max-width: none;
+  }
+`
+
 function CreatePageForm(props: { list: ListMeta }) {
   const createItem = useCreateItem(props.list)
   const router = useRouter()
 
   return (
-    <Box paddingTop="xlarge" paddingBottom="xlarge" marginBottom="xxlarge">
-      {createItem.error && (
-        <GraphQLErrorNotice
-          networkError={createItem.error?.networkError}
-          errors={createItem.error?.graphQLErrors}
-        />
-      )}
+    <Box paddingTop="xlarge">
+      <Wrapper>
+        {createItem.error && (
+          <GraphQLErrorNotice
+            networkError={createItem.error?.networkError}
+            errors={createItem.error?.graphQLErrors}
+          />
+        )}
 
-      <Fields {...createItem.props} />
-      <BaseToolbar>
-        <Button
-          isLoading={createItem.state === 'loading'}
-          weight="bold"
-          tone="active"
-          onClick={async () => {
-            const item = await createItem.create()
-            if (item) {
-              router.push(`/${props.list.path}/${item.id}`)
-            }
-          }}
-        >
-          Create {props.list.singular}
-        </Button>
-      </BaseToolbar>
+        <Fields {...createItem.props} />
+        <BaseToolbar>
+          <Button
+            isLoading={createItem.state === 'loading'}
+            weight="bold"
+            tone="active"
+            onClick={async () => {
+              const item = await createItem.create()
+              if (item) {
+                router.push(`/${props.list.path}/${item.id}`)
+              }
+            }}
+          >
+            Create {props.list.singular}
+          </Button>
+        </BaseToolbar>
+      </Wrapper>
     </Box>
   )
 }
