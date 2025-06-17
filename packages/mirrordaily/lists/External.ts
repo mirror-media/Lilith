@@ -1,6 +1,12 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { graphql, list } from '@keystone-6/core'
-import { select, text, timestamp, relationship, json, virtual } from '@keystone-6/core/fields'
+import {
+  select,
+  text,
+  timestamp,
+  relationship,
+  virtual,
+} from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 import { ACL, UserRole, State, type Session } from '../type'
 
@@ -57,14 +63,14 @@ const listConfigurations = list({
     }),
     partner: relationship({
       ref: 'Partner',
-	  inIndexed: true,
+      inIndexed: true,
       ui: {
         hideCreate: true,
       },
     }),
     title: text({
       label: '標題',
-	  isIndexed: true,
+      isIndexed: true,
       validation: { isRequired: true },
     }),
     state: select({
@@ -77,8 +83,8 @@ const listConfigurations = list({
       defaultValue: ExternalStatus.Draft,
       isIndexed: true,
     }),
-	relation_display: virtual({
-	  label: '標題（建議字數：28字',
+    relation_display: virtual({
+      label: '標題（建議字數：28字',
       field: graphql.field({
         type: graphql.String,
         resolve(item: Record<string, unknown>) {
@@ -90,7 +96,7 @@ const listConfigurations = list({
         listView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
       },
-	}),
+    }),
     sections: relationship({
       label: '大分類',
       ref: 'Section.externals',
@@ -100,28 +106,12 @@ const listConfigurations = list({
         views: './lists/views/post/sections/index',
       },
     }),
-    manualOrderOfSections: json({
-      isFilterable: false,
-      label: '大分類手動排序結果',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-      },
-    }),
     categories: relationship({
       label: '小分類',
       ref: 'Category.externals',
       many: true,
       ui: {
         labelField: 'name',
-      },
-    }),
-    manualOrderOfCategories: json({
-      isFilterable: false,
-      label: '小分類手動排序結果',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
       },
     }),
     publishedDate: timestamp({
@@ -211,7 +201,7 @@ const listConfigurations = list({
   },
   access: {
     operation: {
-      query: allowRoles(admin, moderator, editor), 
+      query: allowRoles(admin, moderator, editor),
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin, moderator),
@@ -245,8 +235,7 @@ const listConfigurations = list({
   },
 })
 
-
-let extendedListConfigurations = utils.addTrackingFields(listConfigurations)
+const extendedListConfigurations = utils.addTrackingFields(listConfigurations)
 export default utils.addManualOrderRelationshipFields(
   [
     {
