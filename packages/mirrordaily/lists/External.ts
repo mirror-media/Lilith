@@ -235,21 +235,4 @@ const listConfigurations = list({
   },
 })
 
-const extendedListConfigurations = utils.addTrackingFields(listConfigurations)
-export default utils.addManualOrderRelationshipFields(
-  [
-    {
-      fieldName: 'manualOrderOfSections',
-      targetFieldName: 'sections',
-      targetListName: 'Section',
-      targetListLabelField: 'name',
-    },
-    {
-      fieldName: 'manualOrderOfCategories',
-      targetFieldName: 'categories',
-      targetListName: 'Category',
-      targetListLabelField: 'name',
-    },
-  ],
-  extendedListConfigurations
-)
+export default utils.addTrackingFields(listConfigurations)

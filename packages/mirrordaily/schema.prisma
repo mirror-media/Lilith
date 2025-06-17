@@ -118,9 +118,7 @@ model External {
   title                            String         @default("")
   state                            String?        @default("draft")
   sections                         Section[]      @relation("External_sections")
-  manualOrderOfSections            Json?
   categories                       Category[]     @relation("Category_externals")
-  manualOrderOfCategories          Json?
   publishedDate                    DateTime?
   publishedDateString              String         @default("")
   extend_byline                    String         @default("")
