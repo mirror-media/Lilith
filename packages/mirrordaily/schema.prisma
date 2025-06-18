@@ -118,9 +118,7 @@ model External {
   title                            String         @default("")
   state                            String?        @default("draft")
   sections                         Section[]      @relation("External_sections")
-  manualOrderOfSections            Json?
   categories                       Category[]     @relation("Category_externals")
-  manualOrderOfCategories          Json?
   publishedDate                    DateTime?
   publishedDateString              String         @default("")
   extend_byline                    String         @default("")
@@ -295,6 +293,12 @@ model Post {
   topics                     Topic?         @relation("Post_topics", fields: [topicsId], references: [id])
   topicsId                   Int?           @map("topics")
   relateds                   Post[]         @relation("Post_relateds")
+  relatedsOne                Post?          @relation("Post_relatedsOne", fields: [relatedsOneId], references: [id])
+  relatedsOneId              Int?           @map("relatedsOne")
+  relatedsTwo                Post?          @relation("Post_relatedsTwo", fields: [relatedsTwoId], references: [id])
+  relatedsTwoId              Int?           @map("relatedsTwo")
+  relatedsThree              Post?          @relation("Post_relatedsThree", fields: [relatedsThreeId], references: [id])
+  relatedsThreeId            Int?           @map("relatedsThree")
   manualOrderOfRelateds      Json?
   from_External_relateds     External[]     @relation("External_relateds")
   groups                     Group[]        @relation("Group_posts")
@@ -330,6 +334,9 @@ model Post {
   updatedById                Int?           @map("updatedBy")
   from_EditorChoice_choices  EditorChoice[] @relation("EditorChoice_choices")
   from_Post_relateds         Post[]         @relation("Post_relateds")
+  from_Post_relatedsOne      Post[]         @relation("Post_relatedsOne")
+  from_Post_relatedsTwo      Post[]         @relation("Post_relatedsTwo")
+  from_Post_relatedsThree    Post[]         @relation("Post_relatedsThree")
   from_Hot_hotnews           Hot[]          @relation("Hot_hotnews")
 
   @@index([lockById])
@@ -339,6 +346,9 @@ model Post {
   @@index([defaultHeroImageId])
   @@index([style])
   @@index([topicsId])
+  @@index([relatedsOneId])
+  @@index([relatedsTwoId])
+  @@index([relatedsThreeId])
   @@index([og_imageId])
   @@index([state])
   @@index([publishedDate])

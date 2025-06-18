@@ -567,10 +567,8 @@ type External {
   relation_display: String
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
-  manualOrderOfSections: JSON
   categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   categoriesCount(where: CategoryWhereInput! = {}): Int
-  manualOrderOfCategories: JSON
   publishedDate: DateTime
   publishedDateString: String
   extend_byline: String
@@ -590,8 +588,6 @@ type External {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
-  sectionsInInputOrder: [Section]
-  categoriesInInputOrder: [Category]
 }
 
 input ExternalWhereUniqueInput {
@@ -660,9 +656,7 @@ input ExternalUpdateInput {
   title: String
   state: String
   sections: SectionRelateToManyForUpdateInput
-  manualOrderOfSections: JSON
   categories: CategoryRelateToManyForUpdateInput
-  manualOrderOfCategories: JSON
   publishedDate: DateTime
   publishedDateString: String
   extend_byline: String
@@ -718,9 +712,7 @@ input ExternalCreateInput {
   title: String
   state: String
   sections: SectionRelateToManyForCreateInput
-  manualOrderOfSections: JSON
   categories: CategoryRelateToManyForCreateInput
-  manualOrderOfCategories: JSON
   publishedDate: DateTime
   publishedDateString: String
   extend_byline: String
@@ -1192,6 +1184,9 @@ type Post {
   topics: Topic
   relateds(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedsCount(where: PostWhereInput! = {}): Int
+  relatedsOne: Post
+  relatedsTwo: Post
+  relatedsThree: Post
   manualOrderOfRelateds: JSON
   from_External_relateds(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
   from_External_relatedsCount(where: ExternalWhereInput! = {}): Int
@@ -1264,6 +1259,9 @@ input PostWhereInput {
   isMember: BooleanFilter
   topics: TopicWhereInput
   relateds: PostManyRelationFilter
+  relatedsOne: PostWhereInput
+  relatedsTwo: PostWhereInput
+  relatedsThree: PostWhereInput
   tags: TagManyRelationFilter
   tags_algo: TagManyRelationFilter
   og_title: StringFilter
@@ -1351,6 +1349,9 @@ input PostUpdateInput {
   isMember: Boolean
   topics: TopicRelateToOneForUpdateInput
   relateds: PostRelateToManyForUpdateInput
+  relatedsOne: PostRelateToOneForUpdateInput
+  relatedsTwo: PostRelateToOneForUpdateInput
+  relatedsThree: PostRelateToOneForUpdateInput
   manualOrderOfRelateds: JSON
   from_External_relateds: ExternalRelateToManyForUpdateInput
   groups: GroupRelateToManyForUpdateInput
@@ -1448,6 +1449,9 @@ input PostCreateInput {
   isMember: Boolean
   topics: TopicRelateToOneForCreateInput
   relateds: PostRelateToManyForCreateInput
+  relatedsOne: PostRelateToOneForCreateInput
+  relatedsTwo: PostRelateToOneForCreateInput
+  relatedsThree: PostRelateToOneForCreateInput
   manualOrderOfRelateds: JSON
   from_External_relateds: ExternalRelateToManyForCreateInput
   groups: GroupRelateToManyForCreateInput

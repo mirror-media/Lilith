@@ -638,6 +638,36 @@ const listConfigurations = list({
       ui: {
         views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
         labelField: 'relation_display',
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
+    relatedsOne: relationship({
+      label: '相關文章（一）',
+      ref: 'Post',
+      many: false,
+      ui: {
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+        labelField: 'relation_display',
+      },
+    }),
+    relatedsTwo: relationship({
+      label: '相關文章（二）',
+      ref: 'Post',
+      many: false,
+      ui: {
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+        labelField: 'relation_display',
+      },
+    }),
+    relatedsThree: relationship({
+      label: '相關文章（三）',
+      ref: 'Post',
+      many: false,
+      ui: {
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+        labelField: 'relation_display',
       },
     }),
     manualOrderOfRelateds: json({
@@ -646,6 +676,7 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     from_External_relateds: relationship({
