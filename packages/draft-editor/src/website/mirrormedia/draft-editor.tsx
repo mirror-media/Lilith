@@ -90,7 +90,9 @@ export const buttonNames = {
   youtube: 'youtube',
 } as const
 
-const disabledButtonsOnBasicEditor = [
+type ButtonName = (typeof buttonNames)[keyof typeof buttonNames]
+
+const disabledButtonsOnBasicEditor: ButtonName[] = [
   buttonNames.annotation,
   buttonNames.divider,
   buttonNames.embed,
@@ -719,6 +721,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
                 <BlockStyleControls
                   readOnly={readOnly}
                   disabledButtons={disabledButtons}
+                  hideOnMobileButtons={hideOnMobileButtons}
                   editorState={editorState}
                   onToggle={toggleBlockType}
                 />
@@ -727,6 +730,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
                 <InlineStyleControls
                   readOnly={readOnly}
                   disabledButtons={disabledButtons}
+                  hideOnMobileButtons={hideOnMobileButtons}
                   editorState={editorState}
                   onToggle={toggleInlineStyle}
                 />
@@ -962,56 +966,66 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   )
 }
 
-type StyleButtonProps = {
-  active: boolean
+type StyleButtonProps = ButtonStyleProps & {
   label: string
   onToggle: (value: string) => void
   style: string
   icon: string
-  readOnly: boolean
-  isDisabled: boolean
 }
 
-class StyleButton extends React.Component<StyleButtonProps> {
-  onToggle = (e: React.MouseEvent) => {
+const StyleButton = (props: StyleButtonProps) => {
+  const onToggle = (e: React.MouseEvent) => {
     e.preventDefault()
-    this.props.onToggle(this.props.style)
+    props.onToggle(props.style)
   }
 
-  render() {
-    return (
-      <CustomButton
-        isDisabled={this.props.isDisabled}
-        isActive={this.props.active}
-        onMouseDown={this.onToggle}
-        readOnly={this.props.readOnly}
-      >
-        {this.props.icon && <i className={this.props.icon}></i>}
-        <span>{!this.props.icon ? this.props.label : ''}</span>
-      </CustomButton>
-    )
-  }
+  return (
+    <CustomButton
+      isDisabled={props.isDisabled}
+      isActive={props.isActive}
+      onMouseDown={onToggle}
+      readOnly={props.readOnly}
+    >
+      {props.icon && <i className={props.icon}></i>}
+      <span>{!props.icon ? props.label : ''}</span>
+    </CustomButton>
+  )
 }
 
-type StyleControlsProps = {
-  editorState: EditorState
-  disabledButtons: string[]
-  onToggle: (buttonName: string) => void
-  readOnly: boolean
-}
+type StyleControlsProps = Pick<
+  RichTextEditorProps,
+  'editorState' | 'disabledButtons' | 'hideOnMobileButtons'
+> &
+  Pick<ButtonStyleProps, 'readOnly'> & {
+    onToggle: (buttonName: string) => void
+  }
 
 const blockStyles = [
-  { label: 'H2', style: 'header-two', icon: '' },
-  { label: 'H3', style: 'header-three', icon: '' },
-  { label: 'H4', style: 'header-four', icon: '' },
-  { label: 'Blockquote', style: 'blockquote', icon: 'fas fa-quote-right' },
-  { label: 'UL', style: 'unordered-list-item', icon: 'fas fa-list-ul' },
-  { label: 'OL', style: 'ordered-list-item', icon: 'fas fa-list-ol' },
-  { label: 'Code Block', style: 'code-block', icon: 'fas fa-code' },
+  { label: 'H2', style: buttonNames.h2, icon: '' },
+  { label: 'H3', style: buttonNames.h3, icon: '' },
+  { label: 'H4', style: buttonNames.h4, icon: '' },
+  {
+    label: 'Blockquote',
+    style: buttonNames.blockquote,
+    icon: 'fas fa-quote-right',
+  },
+  { label: 'UL', style: buttonNames.ul, icon: 'fas fa-list-ul' },
+  { label: 'OL', style: buttonNames.ol, icon: 'fas fa-list-ol' },
+  { label: 'Code Block', style: buttonNames.codeBlock, icon: 'fas fa-code' },
 ]
 
-const BlockStyleControls = (props: StyleControlsProps) => {
-  const { editorState, disabledButtons, onToggle, readOnly } = props
+const BlockStyleControls = ({
+  editorState,
+  disabledButtons,
+  hideOnMobileButtons,
+  onToggle,
+  readOnly,
+}: StyleControlsProps) => {
+  const checkIsDisabled = useButtonDisabledChecker({
+    mobileBoundary: MOBILE_BOUNDARY,
+    disabledButtons,
+    hideOnMobileButtons,
+  })
   const selection = editorState.getSelection()
   const blockType = editorState
     .getCurrentContent()
@@ -1021,9 +1035,9 @@ const BlockStyleControls = (props: StyleControlsProps) => {
     <Fragment>
       {blockStyles.map((type) => (
         <StyleButton
-          isDisabled={disabledButtons.includes(type.style)}
+          isDisabled={checkIsDisabled(type.style)}
           key={type.label}
-          active={type.style === blockType}
+          isActive={type.style === blockType}
           label={type.label}
           onToggle={onToggle}
           style={type.style}
@@ -1042,20 +1056,31 @@ const inlineStyles = [
   { label: 'Monospace', style: 'CODE', icon: 'fas fa-terminal' },
 ]
 
-const InlineStyleControls = (props: StyleControlsProps) => {
-  const currentStyle = props.editorState.getCurrentInlineStyle()
+const InlineStyleControls = ({
+  editorState,
+  disabledButtons,
+  hideOnMobileButtons,
+  onToggle,
+  readOnly,
+}: StyleControlsProps) => {
+  const checkIsDisabled = useButtonDisabledChecker({
+    mobileBoundary: MOBILE_BOUNDARY,
+    disabledButtons,
+    hideOnMobileButtons,
+  })
+  const currentStyle = editorState.getCurrentInlineStyle()
   return (
     <Fragment>
       {inlineStyles.map((type) => (
         <StyleButton
-          isDisabled={props.disabledButtons.includes(type.style.toLowerCase())}
+          isDisabled={checkIsDisabled(type.style.toLowerCase())}
           key={type.label}
-          active={currentStyle.has(type.style)}
+          isActive={currentStyle.has(type.style)}
           label={type.label}
-          onToggle={props.onToggle}
+          onToggle={onToggle}
           style={type.style}
           icon={type.icon}
-          readOnly={props.readOnly}
+          readOnly={readOnly}
         />
       ))}
     </Fragment>
