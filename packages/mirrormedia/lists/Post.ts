@@ -384,7 +384,7 @@ const listConfigurations = list({
         'annotation',
         'unordered-list-item',
         'ordered-list-item',
-        'header-two',
+        'header-three',
         'audio',
         'blockquote',
         'code',
