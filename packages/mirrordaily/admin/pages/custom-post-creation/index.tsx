@@ -20,7 +20,7 @@ import {
 } from '../../components/common'
 import { useCreateItem } from '../../utils/use-create-item'
 import styled from '@emotion/styled'
-import { mediaSize } from '../../../../draft-editor/src/website/mirrordaily/theme/index'
+import { mediaSize } from '../../../../draft-editor/src/website/mirrordaily/theme'
 
 const LIST_KEY = 'Post'
 const PICKED_FIELDS = [
