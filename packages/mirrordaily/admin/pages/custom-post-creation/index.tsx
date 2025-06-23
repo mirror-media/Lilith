@@ -20,7 +20,6 @@ import {
 } from '../../components/common'
 import { useCreateItem } from '../../utils/use-create-item'
 import styled from '@emotion/styled'
-import { mediaSize } from '../../../../draft-editor/src/website/mirrordaily/theme'
 
 const LIST_KEY = 'Post'
 const PICKED_FIELDS = [
@@ -42,7 +41,7 @@ const Wrapper = styled.div`
   padding-bottom: 140px;
   max-width: 320px;
 
-  @media (min-width: ${mediaSize.sm}px) {
+  @media (min-width: 575px) {
     max-width: none;
     padding-bottom: 0px;
   }
