@@ -448,7 +448,7 @@ const DraftEditorContainer = styled.div<{ isEnlarged: boolean }>`
   }
 `
 
-const ButtonGroup = styled.div``
+// const ButtonGroup = styled.div``
 const EnlargeButtonWrapper = styled.div`
   position: absolute;
   top: 0;
