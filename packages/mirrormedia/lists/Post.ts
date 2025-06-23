@@ -384,7 +384,7 @@ const listConfigurations = list({
         'annotation',
         'unordered-list-item',
         'ordered-list-item',
-        'header-three',
+        'header-two',
         'audio',
         'blockquote',
         'code',
@@ -796,7 +796,6 @@ const listConfigurations = list({
           },
         })
       }
-
     },
   },
 })
