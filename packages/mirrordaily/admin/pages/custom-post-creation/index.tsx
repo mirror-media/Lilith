@@ -20,6 +20,7 @@ import {
 } from '../../components/common'
 import { useCreateItem } from '../../utils/use-create-item'
 import styled from '@emotion/styled'
+import { mediaSize } from '../../../../draft-editor/src/website/mirrordaily/theme/index'
 
 const LIST_KEY = 'Post'
 const PICKED_FIELDS = [
@@ -39,11 +40,11 @@ const PICKED_FIELDS = [
 const Wrapper = styled.div`
   /* workaround: padding-bottom is added to ensure all content is visible on mobile devices */
   padding-bottom: 140px;
-  padding-right: 50px;
   max-width: 320px;
 
-  @media (min-width: 575px) {
+  @media (min-width: ${mediaSize.sm}px) {
     max-width: none;
+    padding-bottom: 0px;
   }
 `
 
