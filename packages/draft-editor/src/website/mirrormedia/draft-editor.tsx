@@ -354,6 +354,7 @@ const DraftEditorControlsWrapper = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   padding-right: 45px;
+  column-gap: 5px;
 `
 
 const TextEditorWrapper = styled.div`
@@ -447,9 +448,7 @@ const DraftEditorContainer = styled.div<{ isEnlarged: boolean }>`
   }
 `
 
-const ButtonGroup = styled.div`
-  margin: 0 10px 0 0;
-`
+const ButtonGroup = styled.div``
 const EnlargeButtonWrapper = styled.div`
   position: absolute;
   top: 0;
@@ -717,24 +716,20 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           />
           <DraftEditorControls>
             <DraftEditorControlsWrapper>
-              <ButtonGroup>
-                <BlockStyleControls
-                  readOnly={readOnly}
-                  disabledButtons={disabledButtons}
-                  hideOnMobileButtons={hideOnMobileButtons}
-                  editorState={editorState}
-                  onToggle={toggleBlockType}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <InlineStyleControls
-                  readOnly={readOnly}
-                  disabledButtons={disabledButtons}
-                  hideOnMobileButtons={hideOnMobileButtons}
-                  editorState={editorState}
-                  onToggle={toggleInlineStyle}
-                />
-              </ButtonGroup>
+              <BlockStyleControls
+                readOnly={readOnly}
+                disabledButtons={disabledButtons}
+                hideOnMobileButtons={hideOnMobileButtons}
+                editorState={editorState}
+                onToggle={toggleBlockType}
+              />
+              <InlineStyleControls
+                readOnly={readOnly}
+                disabledButtons={disabledButtons}
+                hideOnMobileButtons={hideOnMobileButtons}
+                editorState={editorState}
+                onToggle={toggleInlineStyle}
+              />
               <EnlargeButtonWrapper>
                 <CustomEnlargeButton
                   onToggle={toggleEnlarge}
@@ -743,200 +738,160 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               </EnlargeButtonWrapper>
             </DraftEditorControlsWrapper>
             <DraftEditorControlsWrapper>
-              <ButtonGroup>
-                <CustomLinkButton
-                  isDisabled={checkIsDisabled(buttonNames.link)}
-                  isActive={entityType === 'LINK'}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomFontColorButton
-                  isDisabled={checkIsDisabled(buttonNames.fontColor)}
-                  isActive={Object.prototype.hasOwnProperty.call(
-                    customStyle,
-                    'color'
-                  )}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomDividerButton
-                  isDisabled={checkIsDisabled(buttonNames.divider)}
-                  editorState={editorState}
-                  onChange={onChange}
-                ></CustomDividerButton>
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomAnnotationButton
-                  isDisabled={checkIsDisabled(buttonNames.annotation)}
-                  isActive={entityType === 'ANNOTATION'}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                  renderBasicEditor={renderBasicEditor}
-                  decorators={decorators}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomImageButton
-                  isDisabled={checkIsDisabled(buttonNames.image)}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                  ImageSelector={ImageSelector}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomVideoButton
-                  isDisabled={checkIsDisabled(buttonNames.video)}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                  VideoSelector={VideoSelector}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomYoutubeButton
-                  isDisabled={checkIsDisabled(buttonNames.youtube)}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomAudioButton
-                  isDisabled={checkIsDisabled(buttonNames.audio)}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                  AudioSelector={AudioSelector}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomSlideshowButton
-                  isDisabled={checkIsDisabled(buttonNames.slideshow)}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                  ImageSelector={ImageSelector}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomInfoBoxButton
-                  isDisabled={checkIsDisabled(buttonNames.infoBox)}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                  renderBasicEditor={renderBasicEditor}
-                  // decorators={decorators}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomEmbeddedCodeButton
-                  isDisabled={checkIsDisabled(buttonNames.embed)}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                ></CustomEmbeddedCodeButton>
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomTableButton
-                  isDisabled={checkIsDisabled(buttonNames.table)}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                ></CustomTableButton>
-              </ButtonGroup>
+              <CustomLinkButton
+                isDisabled={checkIsDisabled(buttonNames.link)}
+                isActive={entityType === 'LINK'}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
+              <CustomFontColorButton
+                isDisabled={checkIsDisabled(buttonNames.fontColor)}
+                isActive={Object.prototype.hasOwnProperty.call(
+                  customStyle,
+                  'color'
+                )}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
+              <CustomDividerButton
+                isDisabled={checkIsDisabled(buttonNames.divider)}
+                editorState={editorState}
+                onChange={onChange}
+              ></CustomDividerButton>
+              <CustomAnnotationButton
+                isDisabled={checkIsDisabled(buttonNames.annotation)}
+                isActive={entityType === 'ANNOTATION'}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                renderBasicEditor={renderBasicEditor}
+                decorators={decorators}
+              />
+              <CustomImageButton
+                isDisabled={checkIsDisabled(buttonNames.image)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                ImageSelector={ImageSelector}
+              />
+              <CustomVideoButton
+                isDisabled={checkIsDisabled(buttonNames.video)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                VideoSelector={VideoSelector}
+              />
+              <CustomYoutubeButton
+                isDisabled={checkIsDisabled(buttonNames.youtube)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
+              <CustomAudioButton
+                isDisabled={checkIsDisabled(buttonNames.audio)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                AudioSelector={AudioSelector}
+              />
+              <CustomSlideshowButton
+                isDisabled={checkIsDisabled(buttonNames.slideshow)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                ImageSelector={ImageSelector}
+              />
+              <CustomInfoBoxButton
+                isDisabled={checkIsDisabled(buttonNames.infoBox)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                renderBasicEditor={renderBasicEditor}
+                // decorators={decorators}
+              />
+              <CustomEmbeddedCodeButton
+                isDisabled={checkIsDisabled(buttonNames.embed)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              ></CustomEmbeddedCodeButton>
+              <CustomTableButton
+                isDisabled={checkIsDisabled(buttonNames.table)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              ></CustomTableButton>
             </DraftEditorControlsWrapper>
             <DraftEditorControlsWrapper>
-              <ButtonGroup>
-                <CustomAlignLeftButton
-                  isDisabled={checkIsDisabled(buttonNames.textAlign)}
-                  isActive={
-                    getSelectionBlockData(editorState, 'textAlign') === 'left'
-                  }
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomAlignCenterButton
-                  isDisabled={checkIsDisabled(buttonNames.textAlign)}
-                  isActive={
-                    getSelectionBlockData(editorState, 'textAlign') === 'center'
-                  }
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomColorBoxButton
-                  isDisabled={checkIsDisabled(buttonNames.colorBox)}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                  renderBasicEditor={renderBasicEditor}
-                  // decorators={decorators}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomBackgroundColorButton
-                  isDisabled={checkIsDisabled(buttonNames.backgroundColor)}
-                  isActive={Object.prototype.hasOwnProperty.call(
-                    customStyle,
-                    'backgroundColor'
-                  )}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomBGImageButton
-                  isDisabled={checkIsDisabled(buttonNames.backgroundImage)}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                  ImageSelector={ImageSelector}
-                  renderBasicEditor={renderBasicEditor}
-                  decorators={decorators}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomBGVideoButton
-                  isDisabled={checkIsDisabled(buttonNames.backgroundVideo)}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                  VideoSelector={VideoSelector}
-                  renderBasicEditor={renderBasicEditor}
-                  decorators={decorators}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomRelatedPostButton
-                  isDisabled={checkIsDisabled(buttonNames.relatedPost)}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                  PostSelector={PostSelector}
-                />
-              </ButtonGroup>
-              <ButtonGroup>
-                <CustomSideIndexButton
-                  isDisabled={checkIsDisabled(buttonNames.sideIndex)}
-                  readOnly={readOnly}
-                  editorState={editorState}
-                  onChange={onChange}
-                />
-              </ButtonGroup>
+              <CustomAlignLeftButton
+                isDisabled={checkIsDisabled(buttonNames.textAlign)}
+                isActive={
+                  getSelectionBlockData(editorState, 'textAlign') === 'left'
+                }
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
+              <CustomAlignCenterButton
+                isDisabled={checkIsDisabled(buttonNames.textAlign)}
+                isActive={
+                  getSelectionBlockData(editorState, 'textAlign') === 'center'
+                }
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
+              <CustomColorBoxButton
+                isDisabled={checkIsDisabled(buttonNames.colorBox)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                renderBasicEditor={renderBasicEditor}
+                // decorators={decorators}
+              />
+              <CustomBackgroundColorButton
+                isDisabled={checkIsDisabled(buttonNames.backgroundColor)}
+                isActive={Object.prototype.hasOwnProperty.call(
+                  customStyle,
+                  'backgroundColor'
+                )}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
+              <CustomBGImageButton
+                isDisabled={checkIsDisabled(buttonNames.backgroundImage)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                ImageSelector={ImageSelector}
+                renderBasicEditor={renderBasicEditor}
+                decorators={decorators}
+              />
+              <CustomBGVideoButton
+                isDisabled={checkIsDisabled(buttonNames.backgroundVideo)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                VideoSelector={VideoSelector}
+                renderBasicEditor={renderBasicEditor}
+                decorators={decorators}
+              />
+              <CustomRelatedPostButton
+                isDisabled={checkIsDisabled(buttonNames.relatedPost)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                PostSelector={PostSelector}
+              />
+              <CustomSideIndexButton
+                isDisabled={checkIsDisabled(buttonNames.sideIndex)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
             </DraftEditorControlsWrapper>
           </DraftEditorControls>
           <TextEditorWrapper
