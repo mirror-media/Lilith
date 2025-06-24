@@ -39,11 +39,11 @@ const PICKED_FIELDS = [
 const Wrapper = styled.div`
   /* workaround: padding-bottom is added to ensure all content is visible on mobile devices */
   padding-bottom: 140px;
-  padding-right: 50px;
   max-width: 320px;
 
   @media (min-width: 575px) {
     max-width: none;
+    padding-bottom: 0px;
   }
 `
 
