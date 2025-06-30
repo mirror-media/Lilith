@@ -53,6 +53,8 @@ export const buttonNames = {
   // inline styles
   bold: 'bold',
   italic: 'italic',
+  sup: 'sup',
+  sub: 'sub',
   underline: 'underline',
   code: 'code',
 
@@ -457,6 +459,12 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
       fontSize: number
       padding: number
     }
+    SUP: {
+      verticalAlign: string
+    }
+    SUB: {
+      verticalAlign: string
+    }
   }
   constructor(props: RichTextEditorProps) {
     super(props)
@@ -471,6 +479,12 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
         fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
         fontSize: 16,
         padding: 2,
+      },
+      SUP: {
+        verticalAlign: 'super',
+      },
+      SUB: {
+        verticalAlign: 'sub',
       },
     }
   }
@@ -1056,6 +1070,8 @@ const BlockStyleControls = (props: StyleControlsProps) => {
 const inlineStyles = [
   { label: 'Bold', style: 'BOLD', icon: 'fas fa-bold' },
   { label: 'Italic', style: 'ITALIC', icon: 'fas fa-italic' },
+  { label: 'Superscript', style: 'SUP', icon: 'fas fa-superscript' },
+  { label: 'Subscript', style: 'SUB', icon: 'fas fa-subscript' },
   { label: 'Underline', style: 'UNDERLINE', icon: 'fas fa-underline' },
   { label: 'Monospace', style: 'CODE', icon: 'fas fa-terminal' },
 ]
