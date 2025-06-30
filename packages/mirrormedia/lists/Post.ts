@@ -698,9 +698,6 @@ const listConfigurations = list({
       defaultFieldMode: itemViewFunction,
     },
   },
-  graphql: {
-    cacheHint: { maxAge: 0, scope: 'PRIVATE' },
-  },
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),
