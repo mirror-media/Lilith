@@ -1096,8 +1096,8 @@ const listConfigurations = list({
       if (
         resolvedData &&
         resolvedData.state &&
-        (resolvedData.state === 'published' ||
-          resolvedData.state === 'scheduled') &&
+        (resolvedData.state === PostStatus.Published ||
+          resolvedData.state === PostStatus.Scheduled) &&
         envVar.autotagging === 'true'
       ) {
         console.log('call data service for auto tagging')
