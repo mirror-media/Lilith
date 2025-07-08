@@ -6,6 +6,7 @@ import Audio from './Audio'
 import Contact from './Contact'
 import Video from './Video'
 import EditorChoice from './EditorChoice'
+import PromoteVideo from './PromoteVideo'
 import User from './User'
 import Section from './Section'
 import Image from './Image'
@@ -25,6 +26,7 @@ export const listDefinition = {
   Category,
   Contact,
   EditorChoice,
+  PromoteVideo,
   Event,
   External,
   Header,
