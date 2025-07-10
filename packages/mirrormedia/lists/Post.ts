@@ -796,7 +796,6 @@ const listConfigurations = list({
           },
         })
       }
-
     },
   },
 })

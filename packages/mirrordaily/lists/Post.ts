@@ -211,12 +211,10 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
   return 'edit'
 }
 
-
-const lockByItemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
-  session,
-  context,
-  item,
-}) => {
+const lockByItemViewFunction: MaybeItemFunction<
+  FieldMode,
+  ListTypeInfo
+> = async ({ session, context, item }) => {
   const currentUserId = Number(session?.data?.id)
   const currentUserRole = session?.data?.role
 
@@ -224,26 +222,28 @@ const lockByItemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async
   if (currentUserRole === UserRole.Admin) {
     return 'edit'
   } else if ([UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
-    const { lockBy, lockExpireAt, createdBy } =
-      await context.prisma.Post.findUnique({
-        where: { id: Number(item?.id) },
-        select: {
-          lockBy: {
-            select: {
-              id: true,
-              name: true,
-              role: true,
-            },
-          },
-          lockExpireAt: true,
-          createdBy: {
-            select: {
-              id: true,
-            },
+    const { lockBy } = await context.prisma.Post.findUnique({
+      where: { id: Number(item?.id) },
+      select: {
+        lockBy: {
+          select: {
+            id: true,
+            name: true,
+            role: true,
           },
         },
-      })
-    if (currentUserRole === UserRole.Moderator && lockBy?.role === UserRole.Editor) {
+        lockExpireAt: true,
+        createdBy: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    })
+    if (
+      currentUserRole === UserRole.Moderator &&
+      lockBy?.role === UserRole.Editor
+    ) {
       return 'edit'
     } else if (currentUserId === lockBy?.id) {
       return 'edit'
@@ -291,7 +291,10 @@ const listConfigurations = list({
     }),
     title: text({
       label: '標題（建議字數：28字）',
-      validation: { isRequired: true},
+      validation: { isRequired: true },
+      ui: {
+        displayMode: 'textarea',
+      },
     }),
     subtitle: text({
       label: '副標',
@@ -456,9 +459,9 @@ const listConfigurations = list({
       label: '首圖圖說',
       isFilterable: false,
       validation: { isRequired: false },
-	  ui: {
-		displayMode: 'textarea'
-	  }
+      ui: {
+        displayMode: 'textarea',
+      },
     }),
     style: select({
       label: '文章樣式',
@@ -513,6 +516,20 @@ const listConfigurations = list({
         'youtube',
       ],
       website: 'mirrormedia',
+    }),
+    relation_display: virtual({
+      label: '標題（建議字數：28字',
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>) {
+          return item?.title + ' (' + item?.state + ')'
+        },
+      }),
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     trimmedContent: virtual({
       label: '擷取前5段的內文（不包括換行）',
@@ -620,8 +637,38 @@ const listConfigurations = list({
       many: true,
       ui: {
         views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
-        labelField: 'title',
-      }
+        labelField: 'relation_display',
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
+    relatedsOne: relationship({
+      label: '相關文章（一）',
+      ref: 'Post',
+      many: false,
+      ui: {
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+        labelField: 'relation_display',
+      },
+    }),
+    relatedsTwo: relationship({
+      label: '相關文章（二）',
+      ref: 'Post',
+      many: false,
+      ui: {
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+        labelField: 'relation_display',
+      },
+    }),
+    relatedsThree: relationship({
+      label: '相關文章（三）',
+      ref: 'Post',
+      many: false,
+      ui: {
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+        labelField: 'relation_display',
+      },
     }),
     manualOrderOfRelateds: json({
       label: '相關文章手動排序結果',
@@ -629,6 +676,7 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     from_External_relateds: relationship({
@@ -926,7 +974,11 @@ const listConfigurations = list({
     filter: {
       query: filterPosts([UserRole.Admin, UserRole.Moderator, UserRole.Editor]),
       update: async (auth) => {
-		if (envVar.accessControlStrategy === ACL.GraphQL || envVar.accessControlStrategy === ACL.Preview) return true
+        if (
+          envVar.accessControlStrategy === ACL.GraphQL ||
+          envVar.accessControlStrategy === ACL.Preview
+        )
+          return true
         if (admin(auth) || moderator(auth)) return true
         else {
           // editor only allow to update posts created by itself
@@ -943,12 +995,15 @@ const listConfigurations = list({
   },
   hooks: {
     validateInput: async ({ operation, item, context, addValidationError }) => {
-	  if (envVar.accessControlStrategy === ACL.CMS) {
-	    if (context.session?.data?.role !== UserRole.Admin && context.session?.data?.role !== UserRole.Moderator) {
-		  if (operation === 'update') {
-            const { lockBy, lockExpireAt } = await context.prisma.Post.findUnique(
-            {
-		        where: { id: Number(item.id) },
+      if (envVar.accessControlStrategy === ACL.CMS) {
+        if (
+          context.session?.data?.role !== UserRole.Admin &&
+          context.session?.data?.role !== UserRole.Moderator
+        ) {
+          if (operation === 'update') {
+            const { lockBy, lockExpireAt } =
+              await context.prisma.Post.findUnique({
+                where: { id: Number(item.id) },
                 select: {
                   lockBy: {
                     select: {
@@ -957,19 +1012,18 @@ const listConfigurations = list({
                   },
                   lockExpireAt: true,
                 },
-              }
-            )
+              })
 
-          if (
-            lockBy?.id &&
-            Number(lockBy.id) !== Number(context.session?.data?.id) &&
-            new Date(lockExpireAt).valueOf() > Date.now()
-          ) {
+            if (
+              lockBy?.id &&
+              Number(lockBy.id) !== Number(context.session?.data?.id) &&
+              new Date(lockExpireAt).valueOf() > Date.now()
+            ) {
               addValidationError('可能有其他人正在編輯，請重新整理頁面。')
             }
           }
         }
-	  }
+      }
     },
     resolveInput: async ({ operation, resolvedData }) => {
       const { publishedDate, content, brief, updateTimeStamp } = resolvedData
@@ -1030,23 +1084,37 @@ const listConfigurations = list({
       return
     },
     afterOperation: async ({ operation, item, context, resolvedData }) => {
+      if (item?.topicsId) {
+        const result = fetch(
+          envVar.topicServiceApi + '?topic_id=' + item?.topicsId,
+          {
+            method: 'GET',
+          }
+        )
+        console.log(result)
+      }
       if (
         resolvedData &&
         resolvedData.state &&
         resolvedData.state === 'published' &&
-	    envVar.autotagging === 'true'
+        envVar.autotagging === 'true'
       ) {
-	    console.log("call data service for auto tagging")
+        console.log('call data service for auto tagging')
         // trigger auto tagging service
         const result = fetch(envVar.dataServiceApi + '?id=' + item.id, {
           method: 'GET',
         })
+        console.log(result)
       }
       if (operation === 'update') {
-        if (resolvedData.lockBy) {  
-          const currentUserId = Number(context.session?.data?.id) 
+        if (resolvedData.lockBy) {
+          const currentUserId = Number(context.session?.data?.id)
           const newLockExpireAt = new Date(
-            new Date().setMinutes(new Date().getMinutes() + envVar.lockDuration, 0, 0)
+            new Date().setMinutes(
+              new Date().getMinutes() + envVar.lockDuration,
+              0,
+              0
+            )
           ).toISOString()
 
           const updatedPost = await context.prisma.Post.update({
@@ -1067,6 +1135,7 @@ const listConfigurations = list({
               },
             },
           })
+          console.log(updatedPost)
         }
         //await context.prisma.post.update({
         //  where: { id: Number(item.id) },

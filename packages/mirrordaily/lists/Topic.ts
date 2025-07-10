@@ -300,6 +300,13 @@ const listConfigurations = list({
       }
       return resolvedData
     },
+    afterOperation: async ({ operation, item, context, resolvedData }) => {
+	  if (item?.id && item.state == 'published') {
+        const result = fetch(envVar.topicServiceApi + '?topic_id=' + item.id, {
+          method: 'GET',
+        })
+	  }
+	},
   },
 })
 

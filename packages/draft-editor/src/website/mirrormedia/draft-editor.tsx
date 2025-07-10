@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import styled, { css, StyledComponent, ThemeProvider } from 'styled-components'
-import theme from './theme'
+import theme, { mediaSize } from './theme'
 import {
   ContentBlock,
   DraftBlockType,
@@ -50,6 +50,7 @@ import { VideoEntity, VideoSelector } from './selector/video-selector'
 import { PostEntity, PostSelector } from './selector/post-selector'
 import { AudioEntity, AudioSelector } from './selector/audio-selector'
 import { defaultMarginBottom } from './shared-style'
+import { useButtonDisabledChecker } from '../../hooks'
 
 export const buttonNames = {
   // inline styles
@@ -87,9 +88,11 @@ export const buttonNames = {
   video: 'video',
   audio: 'audio',
   youtube: 'youtube',
-}
+} as const
 
-const disabledButtonsOnBasicEditor = [
+type ButtonName = (typeof buttonNames)[keyof typeof buttonNames]
+
+const disabledButtonsOnBasicEditor: ButtonName[] = [
   buttonNames.annotation,
   buttonNames.divider,
   buttonNames.embed,
@@ -351,6 +354,7 @@ const DraftEditorControlsWrapper = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   padding-right: 45px;
+  column-gap: 5px;
 `
 
 const TextEditorWrapper = styled.div`
@@ -444,9 +448,7 @@ const DraftEditorContainer = styled.div<{ isEnlarged: boolean }>`
   }
 `
 
-const ButtonGroup = styled.div`
-  margin: 0 10px 0 0;
-`
+// const ButtonGroup = styled.div``
 const EnlargeButtonWrapper = styled.div`
   position: absolute;
   top: 0;
@@ -458,92 +460,83 @@ type RichTextEditorProps = {
   onChange: (editorState: EditorState) => void
   editorState: EditorState
   disabledButtons: string[]
+  hideOnMobileButtons?: string[]
 }
 
 type BasicEditorProps = Pick<RichTextEditorProps, 'editorState' | 'onChange'>
 
-type State = {
-  isEnlarged?: boolean
-  readOnly: boolean
-}
+const MOBILE_BOUNDARY = mediaSize.md
 
-class RichTextEditor extends React.Component<RichTextEditorProps, State> {
-  customStyleMap: {
+const RichTextEditor: React.FC<RichTextEditorProps> = ({
+  editorState: propEditorState,
+  onChange,
+  disabledButtons = [],
+  hideOnMobileButtons = [],
+}) => {
+  const [isEnlarged, setIsEnlarged] = React.useState(false)
+  const [readOnly, setReadOnly] = React.useState(false)
+  const editorRef = React.useRef<Editor>(null)
+  const checkIsDisabled = useButtonDisabledChecker({
+    mobileBoundary: MOBILE_BOUNDARY,
+    disabledButtons,
+    hideOnMobileButtons,
+  })
+
+  // Custom overrides for "code" style.
+  const customStyleMap = {
     CODE: {
-      backgroundColor: string
-      fontFamily: string
-      fontSize: number
-      padding: number
-    }
-  }
-  constructor(props: RichTextEditorProps) {
-    super(props)
-    this.state = {
-      isEnlarged: false,
-      readOnly: false,
-    }
-    // Custom overrides for "code" style.
-    this.customStyleMap = {
-      CODE: {
-        backgroundColor: 'rgba(0, 0, 0, 0.05)',
-        fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-        fontSize: 16,
-        padding: 2,
-      },
-    }
-  }
-  onChange = (editorState: EditorState) => {
-    this.props.onChange(editorState)
+      backgroundColor: 'rgba(0, 0, 0, 0.05)',
+      fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
+      fontSize: 16,
+      padding: 2,
+    },
   }
 
-  handleKeyCommand = (
+  let editorState = propEditorState
+  if (!(editorState instanceof EditorState)) {
+    editorState = EditorState.createEmpty(decorators)
+  }
+
+  const handleKeyCommand = (
     command: DraftEditorCommand,
     editorState: EditorState
   ): DraftHandleValue => {
     const newState = RichUtils.handleKeyCommand(editorState, command)
     if (newState) {
-      this.onChange(newState)
+      onChange(newState)
       return 'handled'
     }
     return 'not-handled'
   }
 
-  handleReturn = (event: React.KeyboardEvent) => {
+  const handleReturn = (event: React.KeyboardEvent) => {
     if (KeyBindingUtil.isSoftNewlineEvent(event)) {
-      const { onChange, editorState } = this.props
       onChange(RichUtils.insertSoftNewline(editorState))
       return 'handled'
     }
-
     return 'not-handled'
   }
 
-  mapKeyToEditorCommand = (e: React.KeyboardEvent) => {
+  const mapKeyToEditorCommand = (e: React.KeyboardEvent) => {
     if (e.keyCode === 9 /* TAB */) {
-      const newEditorState = RichUtils.onTab(
-        e,
-        this.props.editorState,
-        4 /* maxDepth */
-      )
-      if (newEditorState !== this.props.editorState) {
-        this.onChange(newEditorState)
+      const newEditorState = RichUtils.onTab(e, editorState, 4 /* maxDepth */)
+      if (newEditorState !== editorState) {
+        onChange(newEditorState)
       }
       return null
     }
     return getDefaultKeyBinding(e)
   }
 
-  toggleBlockType = (blockType: DraftBlockType) => {
-    this.onChange(RichUtils.toggleBlockType(this.props.editorState, blockType))
+  const toggleBlockType = (blockType: DraftBlockType) => {
+    onChange(RichUtils.toggleBlockType(editorState, blockType))
   }
 
-  toggleInlineStyle = (inlineStyle: string) => {
-    this.onChange(
-      RichUtils.toggleInlineStyle(this.props.editorState, inlineStyle)
-    )
+  const toggleInlineStyle = (inlineStyle: string) => {
+    onChange(RichUtils.toggleInlineStyle(editorState, inlineStyle))
   }
 
-  getEntityType = (editorState: EditorState) => {
+  const getEntityType = (editorState: EditorState) => {
     const contentState = editorState.getCurrentContent()
     const selection = editorState.getSelection()
     const startOffset = selection.getStartOffset()
@@ -573,8 +566,8 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
     return entityType
   }
 
-  getCustomStyle = (style: DraftInlineStyle) => {
-    return style.reduce((styles, styleName) => {
+  const getCustomStyle = (style: DraftInlineStyle) => {
+    return style.reduce((styles = {}, styleName) => {
       if (styleName?.startsWith(CUSTOM_STYLE_PREFIX_FONT_COLOR)) {
         styles['color'] = styleName.split(CUSTOM_STYLE_PREFIX_FONT_COLOR)[1]
       }
@@ -587,17 +580,15 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
     }, {} as Record<string, any>)
   }
 
-  toggleEnlarge = () => {
-    this.setState({ isEnlarged: !this.state.isEnlarged })
+  const customStyleFn = (style: DraftInlineStyle) => {
+    return getCustomStyle(style)
   }
 
-  customStyleFn = (style: DraftInlineStyle) => {
-    return this.getCustomStyle(style)
+  const toggleEnlarge = () => {
+    setIsEnlarged(!isEnlarged)
   }
 
-  blockStyleFn(block: ContentBlock) {
-    const { editorState } = this.props
-
+  const blockStyleFn = (block: ContentBlock) => {
     const entityKey = block.getEntityAt(0)
     const entity = entityKey
       ? editorState.getCurrentContent().getEntity(entityKey)
@@ -633,22 +624,30 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
     return result
   }
 
-  blockRendererFn = (block: ContentBlock) => {
+  const renderBasicEditor = (propsOfBasicEditor: BasicEditorProps) => {
+    return (
+      <RichTextEditor
+        {...propsOfBasicEditor}
+        disabledButtons={disabledButtonsOnBasicEditor}
+        hideOnMobileButtons={hideOnMobileButtons}
+      />
+    )
+  }
+
+  const blockRendererFn = (block: ContentBlock) => {
     const atomicBlockObj = atomicBlockRenderer(block)
     if (atomicBlockObj) {
       const onEditStart = () => {
-        this.setState({
-          // If custom block renderer requires mouse interaction,
-          // [Draft.js document](https://draftjs.org/docs/advanced-topics-block-components#recommendations-and-other-notes)
-          // suggests that we should temporarily set Editor
-          // to readOnly={true} during the interaction.
-          // In readOnly={true} condition, the user does not
-          // trigger any selection changes within the editor
-          // while interacting with custom block.
-          // If we don't set readOnly={true},
-          // it will cause some subtle bugs in InfoBox button.
-          readOnly: true,
-        })
+        // If custom block renderer requires mouse interaction,
+        // [Draft.js document](https://draftjs.org/docs/advanced-topics-block-components#recommendations-and-other-notes)
+        // suggests that we should temporarily set Editor
+        // to readOnly={true} during the interaction.
+        // In readOnly={true} condition, the user does not
+        // trigger any selection changes within the editor
+        // while interacting with custom block.
+        // If we don't set readOnly={true},
+        // it will cause some subtle bugs in InfoBox button.
+        setReadOnly(true)
       }
       const onEditFinish = ({
         entityKey,
@@ -658,24 +657,21 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
         entityData?: Record<string, unknown>
       }) => {
         if (entityKey && entityData) {
-          const oldContentState = this.props.editorState.getCurrentContent()
+          const oldContentState = editorState.getCurrentContent()
           const newContentState = oldContentState.replaceEntityData(
             entityKey,
             entityData
           )
-          this.onChange(
-            EditorState.set(this.props.editorState, {
+          onChange(
+            EditorState.set(editorState, {
               currentContent: newContentState,
             })
           )
         }
-
         // Custom block interaction is finished.
         // Therefore, we set readOnly={false} to
         // make editor editable.
-        this.setState({
-          readOnly: false,
-        })
+        setReadOnly(false)
       }
 
       // `onEditStart` and `onEditFinish` will be passed
@@ -686,376 +682,305 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
         props: {
           onEditStart,
           onEditFinish,
-          getMainEditorReadOnly: () => this.state.readOnly,
-          renderBasicEditor: (propsOfBasicEditor: BasicEditorProps) => {
-            return (
-              <RichTextEditor
-                {...propsOfBasicEditor}
-                disabledButtons={disabledButtonsOnBasicEditor}
-              />
-            )
-          },
+          getMainEditorReadOnly: () => readOnly,
+          renderBasicEditor: renderBasicEditor,
         },
       })
-
       return extendedAtomicBlockObj
     } else {
       return atomicBlockObj
     }
   }
 
-  render() {
-    const { disabledButtons = [] } = this.props
-    let { editorState } = this.props
+  const entityType = getEntityType(editorState)
+  const customStyle = getCustomStyle(editorState.getCurrentInlineStyle())
 
-    if (!(editorState instanceof EditorState)) {
-      editorState = EditorState.createEmpty(decorators)
-    }
-    const { isEnlarged, readOnly } = this.state
-
-    const entityType = this.getEntityType(editorState)
-    const customStyle = this.getCustomStyle(editorState.getCurrentInlineStyle())
-
-    const renderBasicEditor = (propsOfBasicEditor: BasicEditorProps) => {
-      return (
-        <RichTextEditor
-          {...propsOfBasicEditor}
-          disabledButtons={disabledButtonsOnBasicEditor}
-        />
-      )
-    }
-
-    return (
-      <ThemeProvider theme={theme}>
-        <DraftEditorContainer isEnlarged={Boolean(isEnlarged)}>
-          <DraftEditorWrapper>
-            <link
-              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-              rel="stylesheet"
-              type="text/css"
-            />
-            <link
-              href="https://cdnjs.cloudflare.com/ajax/libs/draft-js/0.11.7/Draft.css"
-              rel="stylesheet"
-              type="text/css"
-            />
-            <link
-              href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
-              rel="stylesheet"
-              type="text/css"
-            />
-            <DraftEditorControls>
-              <DraftEditorControlsWrapper>
-                <ButtonGroup>
-                  <BlockStyleControls
-                    readOnly={readOnly}
-                    disabledButtons={disabledButtons}
-                    editorState={editorState}
-                    onToggle={this.toggleBlockType}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <InlineStyleControls
-                    readOnly={readOnly}
-                    disabledButtons={disabledButtons}
-                    editorState={editorState}
-                    onToggle={this.toggleInlineStyle}
-                  />
-                </ButtonGroup>
-                <EnlargeButtonWrapper>
-                  <CustomEnlargeButton
-                    onToggle={this.toggleEnlarge}
-                    isEnlarged={isEnlarged}
-                  ></CustomEnlargeButton>
-                </EnlargeButtonWrapper>
-              </DraftEditorControlsWrapper>
-              <DraftEditorControlsWrapper>
-                <ButtonGroup>
-                  <CustomLinkButton
-                    isDisabled={disabledButtons.includes(buttonNames.link)}
-                    isActive={entityType === 'LINK'}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomFontColorButton
-                    isDisabled={disabledButtons.includes(buttonNames.fontColor)}
-                    isActive={Object.prototype.hasOwnProperty.call(
-                      customStyle,
-                      'color'
-                    )}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomDividerButton
-                    isDisabled={disabledButtons.includes(buttonNames.divider)}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                  ></CustomDividerButton>
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomAnnotationButton
-                    isDisabled={disabledButtons.includes(
-                      buttonNames.annotation
-                    )}
-                    isActive={entityType === 'ANNOTATION'}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                    renderBasicEditor={renderBasicEditor}
-                    decorators={decorators}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomImageButton
-                    isDisabled={disabledButtons.includes(buttonNames.image)}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                    ImageSelector={ImageSelector}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomVideoButton
-                    isDisabled={disabledButtons.includes(buttonNames.video)}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                    VideoSelector={VideoSelector}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomYoutubeButton
-                    isDisabled={disabledButtons.includes(buttonNames.youtube)}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomAudioButton
-                    isDisabled={disabledButtons.includes(buttonNames.audio)}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                    AudioSelector={AudioSelector}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomSlideshowButton
-                    isDisabled={disabledButtons.includes(buttonNames.slideshow)}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                    ImageSelector={ImageSelector}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomInfoBoxButton
-                    isDisabled={disabledButtons.includes(buttonNames.infoBox)}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                    renderBasicEditor={renderBasicEditor}
-                    // decorators={decorators}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomEmbeddedCodeButton
-                    isDisabled={disabledButtons.includes(buttonNames.embed)}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                  ></CustomEmbeddedCodeButton>
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomTableButton
-                    isDisabled={disabledButtons.includes(buttonNames.table)}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                  ></CustomTableButton>
-                </ButtonGroup>
-              </DraftEditorControlsWrapper>
-              <DraftEditorControlsWrapper>
-                <ButtonGroup>
-                  <CustomAlignLeftButton
-                    isDisabled={disabledButtons.includes(buttonNames.textAlign)}
-                    isActive={
-                      getSelectionBlockData(editorState, 'textAlign') === 'left'
-                    }
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomAlignCenterButton
-                    isDisabled={disabledButtons.includes(buttonNames.textAlign)}
-                    isActive={
-                      getSelectionBlockData(editorState, 'textAlign') ===
-                      'center'
-                    }
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomColorBoxButton
-                    isDisabled={disabledButtons.includes(buttonNames.colorBox)}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                    renderBasicEditor={renderBasicEditor}
-                    // decorators={decorators}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomBackgroundColorButton
-                    isDisabled={disabledButtons.includes(
-                      buttonNames.backgroundColor
-                    )}
-                    isActive={Object.prototype.hasOwnProperty.call(
-                      customStyle,
-                      'backgroundColor'
-                    )}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomBGImageButton
-                    isDisabled={disabledButtons.includes(
-                      buttonNames.backgroundImage
-                    )}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                    ImageSelector={ImageSelector}
-                    renderBasicEditor={renderBasicEditor}
-                    decorators={decorators}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomBGVideoButton
-                    isDisabled={disabledButtons.includes(
-                      buttonNames.backgroundVideo
-                    )}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                    VideoSelector={VideoSelector}
-                    renderBasicEditor={renderBasicEditor}
-                    decorators={decorators}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomRelatedPostButton
-                    isDisabled={disabledButtons.includes(
-                      buttonNames.relatedPost
-                    )}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                    PostSelector={PostSelector}
-                  />
-                </ButtonGroup>
-                <ButtonGroup>
-                  <CustomSideIndexButton
-                    isDisabled={disabledButtons.includes(buttonNames.sideIndex)}
-                    readOnly={readOnly}
-                    editorState={editorState}
-                    onChange={this.onChange}
-                  />
-                </ButtonGroup>
-              </DraftEditorControlsWrapper>
-            </DraftEditorControls>
-            <TextEditorWrapper
-              onClick={() => {
-                // eslint-disable-next-line prettier/prettier
-                (this.refs.editor as HTMLElement)?.focus()
-              }}
-            >
-              <Editor
-                blockStyleFn={this.blockStyleFn.bind(this)}
-                blockRendererFn={this.blockRendererFn}
-                customStyleMap={this.customStyleMap}
-                customStyleFn={this.customStyleFn}
-                editorState={editorState}
-                handleKeyCommand={this.handleKeyCommand}
-                handleReturn={this.handleReturn}
-                keyBindingFn={this.mapKeyToEditorCommand}
-                onChange={this.onChange}
-                placeholder="Tell a story..."
-                ref="editor"
-                spellCheck={true}
+  return (
+    <ThemeProvider theme={theme}>
+      <DraftEditorContainer isEnlarged={Boolean(isEnlarged)}>
+        <DraftEditorWrapper>
+          <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            rel="stylesheet"
+            type="text/css"
+          />
+          <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/draft-js/0.11.7/Draft.css"
+            rel="stylesheet"
+            type="text/css"
+          />
+          <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+            rel="stylesheet"
+            type="text/css"
+          />
+          <DraftEditorControls>
+            <DraftEditorControlsWrapper>
+              <BlockStyleControls
                 readOnly={readOnly}
+                disabledButtons={disabledButtons}
+                hideOnMobileButtons={hideOnMobileButtons}
+                editorState={editorState}
+                onToggle={toggleBlockType}
               />
-            </TextEditorWrapper>
-          </DraftEditorWrapper>
-        </DraftEditorContainer>
-      </ThemeProvider>
-    )
-  }
+              <InlineStyleControls
+                readOnly={readOnly}
+                disabledButtons={disabledButtons}
+                hideOnMobileButtons={hideOnMobileButtons}
+                editorState={editorState}
+                onToggle={toggleInlineStyle}
+              />
+              <EnlargeButtonWrapper>
+                <CustomEnlargeButton
+                  onToggle={toggleEnlarge}
+                  isEnlarged={isEnlarged}
+                ></CustomEnlargeButton>
+              </EnlargeButtonWrapper>
+            </DraftEditorControlsWrapper>
+            <DraftEditorControlsWrapper>
+              <CustomLinkButton
+                isDisabled={checkIsDisabled(buttonNames.link)}
+                isActive={entityType === 'LINK'}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
+              <CustomFontColorButton
+                isDisabled={checkIsDisabled(buttonNames.fontColor)}
+                isActive={Object.prototype.hasOwnProperty.call(
+                  customStyle,
+                  'color'
+                )}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
+              <CustomDividerButton
+                isDisabled={checkIsDisabled(buttonNames.divider)}
+                editorState={editorState}
+                onChange={onChange}
+              ></CustomDividerButton>
+              <CustomAnnotationButton
+                isDisabled={checkIsDisabled(buttonNames.annotation)}
+                isActive={entityType === 'ANNOTATION'}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                renderBasicEditor={renderBasicEditor}
+                decorators={decorators}
+              />
+              <CustomImageButton
+                isDisabled={checkIsDisabled(buttonNames.image)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                ImageSelector={ImageSelector}
+              />
+              <CustomVideoButton
+                isDisabled={checkIsDisabled(buttonNames.video)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                VideoSelector={VideoSelector}
+              />
+              <CustomYoutubeButton
+                isDisabled={checkIsDisabled(buttonNames.youtube)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
+              <CustomAudioButton
+                isDisabled={checkIsDisabled(buttonNames.audio)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                AudioSelector={AudioSelector}
+              />
+              <CustomSlideshowButton
+                isDisabled={checkIsDisabled(buttonNames.slideshow)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                ImageSelector={ImageSelector}
+              />
+              <CustomInfoBoxButton
+                isDisabled={checkIsDisabled(buttonNames.infoBox)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                renderBasicEditor={renderBasicEditor}
+                // decorators={decorators}
+              />
+              <CustomEmbeddedCodeButton
+                isDisabled={checkIsDisabled(buttonNames.embed)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              ></CustomEmbeddedCodeButton>
+              <CustomTableButton
+                isDisabled={checkIsDisabled(buttonNames.table)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              ></CustomTableButton>
+            </DraftEditorControlsWrapper>
+            <DraftEditorControlsWrapper>
+              <CustomAlignLeftButton
+                isDisabled={checkIsDisabled(buttonNames.textAlign)}
+                isActive={
+                  getSelectionBlockData(editorState, 'textAlign') === 'left'
+                }
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
+              <CustomAlignCenterButton
+                isDisabled={checkIsDisabled(buttonNames.textAlign)}
+                isActive={
+                  getSelectionBlockData(editorState, 'textAlign') === 'center'
+                }
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
+              <CustomColorBoxButton
+                isDisabled={checkIsDisabled(buttonNames.colorBox)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                renderBasicEditor={renderBasicEditor}
+                // decorators={decorators}
+              />
+              <CustomBackgroundColorButton
+                isDisabled={checkIsDisabled(buttonNames.backgroundColor)}
+                isActive={Object.prototype.hasOwnProperty.call(
+                  customStyle,
+                  'backgroundColor'
+                )}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
+              <CustomBGImageButton
+                isDisabled={checkIsDisabled(buttonNames.backgroundImage)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                ImageSelector={ImageSelector}
+                renderBasicEditor={renderBasicEditor}
+                decorators={decorators}
+              />
+              <CustomBGVideoButton
+                isDisabled={checkIsDisabled(buttonNames.backgroundVideo)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                VideoSelector={VideoSelector}
+                renderBasicEditor={renderBasicEditor}
+                decorators={decorators}
+              />
+              <CustomRelatedPostButton
+                isDisabled={checkIsDisabled(buttonNames.relatedPost)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+                PostSelector={PostSelector}
+              />
+              <CustomSideIndexButton
+                isDisabled={checkIsDisabled(buttonNames.sideIndex)}
+                readOnly={readOnly}
+                editorState={editorState}
+                onChange={onChange}
+              />
+            </DraftEditorControlsWrapper>
+          </DraftEditorControls>
+          <TextEditorWrapper
+            onClick={() => {
+              editorRef.current?.focus()
+            }}
+          >
+            <Editor
+              blockStyleFn={blockStyleFn}
+              blockRendererFn={blockRendererFn}
+              customStyleMap={customStyleMap}
+              customStyleFn={customStyleFn}
+              editorState={editorState}
+              handleKeyCommand={handleKeyCommand}
+              handleReturn={handleReturn}
+              keyBindingFn={mapKeyToEditorCommand}
+              onChange={onChange}
+              placeholder="Tell a story..."
+              ref={editorRef}
+              spellCheck={true}
+              readOnly={readOnly}
+            />
+          </TextEditorWrapper>
+        </DraftEditorWrapper>
+      </DraftEditorContainer>
+    </ThemeProvider>
+  )
 }
 
-type StyleButtonProps = {
-  active: boolean
+type StyleButtonProps = ButtonStyleProps & {
   label: string
   onToggle: (value: string) => void
   style: string
   icon: string
-  readOnly: boolean
-  isDisabled: boolean
 }
 
-class StyleButton extends React.Component<StyleButtonProps> {
-  onToggle = (e: React.MouseEvent) => {
+const StyleButton = (props: StyleButtonProps) => {
+  const onToggle = (e: React.MouseEvent) => {
     e.preventDefault()
-    this.props.onToggle(this.props.style)
+    props.onToggle(props.style)
   }
 
-  render() {
-    return (
-      <CustomButton
-        isDisabled={this.props.isDisabled}
-        isActive={this.props.active}
-        onMouseDown={this.onToggle}
-        readOnly={this.props.readOnly}
-      >
-        {this.props.icon && <i className={this.props.icon}></i>}
-        <span>{!this.props.icon ? this.props.label : ''}</span>
-      </CustomButton>
-    )
-  }
+  return (
+    <CustomButton
+      isDisabled={props.isDisabled}
+      isActive={props.isActive}
+      onMouseDown={onToggle}
+      readOnly={props.readOnly}
+    >
+      {props.icon && <i className={props.icon}></i>}
+      <span>{!props.icon ? props.label : ''}</span>
+    </CustomButton>
+  )
 }
 
-type StyleControlsProps = {
-  editorState: EditorState
-  disabledButtons: string[]
-  onToggle: (buttonName: string) => void
-  readOnly: boolean
-}
+type StyleControlsProps = Pick<
+  RichTextEditorProps,
+  'editorState' | 'disabledButtons' | 'hideOnMobileButtons'
+> &
+  Pick<ButtonStyleProps, 'readOnly'> & {
+    onToggle: (buttonName: string) => void
+  }
 
 const blockStyles = [
-  { label: 'H2', style: 'header-two', icon: '' },
-  { label: 'H3', style: 'header-three', icon: '' },
-  { label: 'H4', style: 'header-four', icon: '' },
-  { label: 'Blockquote', style: 'blockquote', icon: 'fas fa-quote-right' },
-  { label: 'UL', style: 'unordered-list-item', icon: 'fas fa-list-ul' },
-  { label: 'OL', style: 'ordered-list-item', icon: 'fas fa-list-ol' },
-  { label: 'Code Block', style: 'code-block', icon: 'fas fa-code' },
+  { label: 'H2', style: buttonNames.h2, icon: '' },
+  { label: 'H3', style: buttonNames.h3, icon: '' },
+  { label: 'H4', style: buttonNames.h4, icon: '' },
+  {
+    label: 'Blockquote',
+    style: buttonNames.blockquote,
+    icon: 'fas fa-quote-right',
+  },
+  { label: 'UL', style: buttonNames.ul, icon: 'fas fa-list-ul' },
+  { label: 'OL', style: buttonNames.ol, icon: 'fas fa-list-ol' },
+  { label: 'Code Block', style: buttonNames.codeBlock, icon: 'fas fa-code' },
 ]
 
-const BlockStyleControls = (props: StyleControlsProps) => {
-  const { editorState, disabledButtons, onToggle, readOnly } = props
+const BlockStyleControls = ({
+  editorState,
+  disabledButtons,
+  hideOnMobileButtons,
+  onToggle,
+  readOnly,
+}: StyleControlsProps) => {
+  const checkIsDisabled = useButtonDisabledChecker({
+    mobileBoundary: MOBILE_BOUNDARY,
+    disabledButtons,
+    hideOnMobileButtons,
+  })
   const selection = editorState.getSelection()
   const blockType = editorState
     .getCurrentContent()
@@ -1065,9 +990,9 @@ const BlockStyleControls = (props: StyleControlsProps) => {
     <Fragment>
       {blockStyles.map((type) => (
         <StyleButton
-          isDisabled={disabledButtons.includes(type.style)}
+          isDisabled={checkIsDisabled(type.style)}
           key={type.label}
-          active={type.style === blockType}
+          isActive={type.style === blockType}
           label={type.label}
           onToggle={onToggle}
           style={type.style}
@@ -1086,20 +1011,31 @@ const inlineStyles = [
   { label: 'Monospace', style: 'CODE', icon: 'fas fa-terminal' },
 ]
 
-const InlineStyleControls = (props: StyleControlsProps) => {
-  const currentStyle = props.editorState.getCurrentInlineStyle()
+const InlineStyleControls = ({
+  editorState,
+  disabledButtons,
+  hideOnMobileButtons,
+  onToggle,
+  readOnly,
+}: StyleControlsProps) => {
+  const checkIsDisabled = useButtonDisabledChecker({
+    mobileBoundary: MOBILE_BOUNDARY,
+    disabledButtons,
+    hideOnMobileButtons,
+  })
+  const currentStyle = editorState.getCurrentInlineStyle()
   return (
     <Fragment>
       {inlineStyles.map((type) => (
         <StyleButton
-          isDisabled={props.disabledButtons.includes(type.style.toLowerCase())}
+          isDisabled={checkIsDisabled(type.style.toLowerCase())}
           key={type.label}
-          active={currentStyle.has(type.style)}
+          isActive={currentStyle.has(type.style)}
           label={type.label}
-          onToggle={props.onToggle}
+          onToggle={onToggle}
           style={type.style}
           icon={type.icon}
-          readOnly={props.readOnly}
+          readOnly={readOnly}
         />
       ))}
     </Fragment>

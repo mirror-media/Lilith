@@ -1,10 +1,16 @@
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core'
-import { select, text, timestamp, relationship, json } from '@keystone-6/core/fields'
+import { graphql, list } from '@keystone-6/core'
+import {
+  select,
+  text,
+  timestamp,
+  relationship,
+  virtual,
+} from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 import { ACL, UserRole, State, type Session } from '../type'
 
-const { allowRoles, admin, moderator } = utils.accessControl
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 enum ExternalStatus {
   Published = State.Published,
@@ -20,7 +26,7 @@ function filterExternals(roles: string[]) {
       case ACL.GraphQL: {
         // Expose `published` and `invisible` externals
         return {
-          state: { in: [ExternalStatus.Published, ExternalStatus.Invisible] },
+          state: { in: [ExternalStatus.Published] },
         }
       }
       case ACL.Preview: {
@@ -57,14 +63,14 @@ const listConfigurations = list({
     }),
     partner: relationship({
       ref: 'Partner',
-	  inIndexed: true,
+      inIndexed: true,
       ui: {
         hideCreate: true,
       },
     }),
     title: text({
       label: '標題',
-	  isIndexed: true,
+      isIndexed: true,
       validation: { isRequired: true },
     }),
     state: select({
@@ -77,6 +83,20 @@ const listConfigurations = list({
       defaultValue: ExternalStatus.Draft,
       isIndexed: true,
     }),
+    relation_display: virtual({
+      label: '標題（建議字數：28字',
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>) {
+          return item?.title + ' (' + item?.state + ')'
+        },
+      }),
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
     sections: relationship({
       label: '大分類',
       ref: 'Section.externals',
@@ -86,28 +106,12 @@ const listConfigurations = list({
         views: './lists/views/post/sections/index',
       },
     }),
-    manualOrderOfSections: json({
-      isFilterable: false,
-      label: '大分類手動排序結果',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-      },
-    }),
     categories: relationship({
       label: '小分類',
       ref: 'Category.externals',
       many: true,
       ui: {
         labelField: 'name',
-      },
-    }),
-    manualOrderOfCategories: json({
-      isFilterable: false,
-      label: '小分類手動排序結果',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
       },
     }),
     publishedDate: timestamp({
@@ -197,7 +201,7 @@ const listConfigurations = list({
   },
   access: {
     operation: {
-      query: () => true,
+      query: allowRoles(admin, moderator, editor),
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin, moderator),
@@ -231,22 +235,4 @@ const listConfigurations = list({
   },
 })
 
-
-let extendedListConfigurations = utils.addTrackingFields(listConfigurations)
-export default utils.addManualOrderRelationshipFields(
-  [
-    {
-      fieldName: 'manualOrderOfSections',
-      targetFieldName: 'sections',
-      targetListName: 'Section',
-      targetListLabelField: 'name',
-    },
-    {
-      fieldName: 'manualOrderOfCategories',
-      targetFieldName: 'categories',
-      targetListName: 'Category',
-      targetListLabelField: 'name',
-    },
-  ],
-  extendedListConfigurations
-)
+export default utils.addTrackingFields(listConfigurations)

@@ -21,7 +21,7 @@ import {
   FieldProps,
   ListMeta,
 } from '@keystone-6/core/types'
-import { Link } from '@keystone-6/core/admin-ui/router'
+import { Link as NextLink } from '@keystone-6/core/admin-ui/router'
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 import { gql, useQuery } from '@keystone-6/core/admin-ui/apollo'
 import {
@@ -32,6 +32,8 @@ import {
 import { Cards } from './cards'
 import { RelationshipSelect } from './RelationshipSelect'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
+
+const Link = NextLink as any
 
 function LinkToRelatedItems({
   itemId,
@@ -695,7 +697,7 @@ function useRelationshipFilterValues({
 }) {
   const foreignIds = getForeignIds(value)
   const where = { id: { in: foreignIds } }
-  const orderBy = { publishedDate: desc }
+  const orderBy = { publishedDate: 'desc' }
 
   const query = gql`
     query FOREIGNLIST_QUERY($where: ${list.gqlNames.whereInputName}!) {

@@ -31,7 +31,7 @@ const listConfigurations = list({
       many: false,
       ui: {
         views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
-        labelField: 'title',
+        labelField: 'relation_display',
       },
     }),
     choiceexternal: relationship({
@@ -84,7 +84,7 @@ const listConfigurations = list({
   },
   hooks: {
     validateInput: ({ resolvedData, addValidationError, item }) => {
-      const { choices, choiceexternal, outlink } = resolvedData
+      const { choices, choiceexternal, outlink, state } = resolvedData
       
       // 檢查 resolvedData 中是否有任何欄位被設定
       const hasNewChoices = choices && 
@@ -150,20 +150,17 @@ const listConfigurations = list({
         }
       }
 
-      // 如果是更新操作，且沒有新的設定，檢查現有資料是否有多個欄位有值
-      if (item && !hasNewChoices && !hasNewChoiceexternal && !hasNewOutlink) {
-        const hasExistingChoices = item?.choicesId
-        const hasExistingChoiceexternal = item?.choiceexternalId
-        const hasExistingOutlink = item?.outlink && item.outlink.trim() !== ''
+      // 檢查是否要發布或已經是發布狀態
+      if (item?.state === 'published' || state === 'published') {
+        // 檢查是否有任何欄位有值
+        const hasChoicesValue = hasNewChoices || (item?.choicesId && !choices?.disconnect)
+        const hasChoiceexternalValue = hasNewChoiceexternal || (item?.choiceexternalId && !choiceexternal?.disconnect)
+        const hasOutlinkValue = hasNewOutlink || (item?.outlink && item.outlink.trim() !== '' && !isDisconnectOutlink)
 
-        const existingFieldsSet = [
-          hasExistingChoices,
-          hasExistingChoiceexternal,
-          hasExistingOutlink
-        ].filter(Boolean).length
+        const hasAnyValue = hasChoicesValue || hasChoiceexternalValue || hasOutlinkValue
 
-        if (existingFieldsSet > 1) {
-          addValidationError('新聞內容請擇一：精選文章、精選外部文章或外部連結網址')
+        if (!hasAnyValue) {
+          addValidationError('發布狀態下，精選文章、精選外部文章和外部連結網址不能同時為空')
         }
       }
     },
