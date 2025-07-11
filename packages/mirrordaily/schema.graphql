@@ -1227,7 +1227,6 @@ type Post {
   writersInInputOrder: [Contact]
   sectionsInInputOrder: [Section]
   categoriesInInputOrder: [Category]
-  relatedsInInputOrder: [Post]
   related_videosInInputOrder: [Video]
 }
 
@@ -1781,7 +1780,6 @@ type Topic {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
-  slideshow_imagesInInputOrder: [Photo]
 }
 
 input TopicWhereUniqueInput {

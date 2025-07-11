@@ -138,6 +138,26 @@ model EditorChoice {
   @@index([updatedById])
 }
 
+model PromoteVideo {
+  id            Int       @id @default(autoincrement())
+  order         Int?      @unique
+  videoLink     String    @default("")
+  state         String?   @default("published")
+  publishedDate DateTime?
+  isFixed       Boolean   @default(false)
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("PromoteVideo_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("PromoteVideo_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([state])
+  @@index([publishedDate])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model Event {
   id            Int       @id @default(autoincrement())
   name          String    @default("")
@@ -497,6 +517,8 @@ model User {
   from_Contact_updatedBy           Contact[]           @relation("Contact_updatedBy")
   from_EditorChoice_createdBy      EditorChoice[]      @relation("EditorChoice_createdBy")
   from_EditorChoice_updatedBy      EditorChoice[]      @relation("EditorChoice_updatedBy")
+  from_PromoteVideo_createdBy      PromoteVideo[]      @relation("PromoteVideo_createdBy")
+  from_PromoteVideo_updatedBy      PromoteVideo[]      @relation("PromoteVideo_updatedBy")
   from_Event_createdBy             Event[]             @relation("Event_createdBy")
   from_Event_updatedBy             Event[]             @relation("Event_updatedBy")
   from_External_createdBy          External[]          @relation("External_createdBy")

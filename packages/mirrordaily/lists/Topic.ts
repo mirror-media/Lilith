@@ -127,10 +127,34 @@ const listConfigurations = list({
       ref: 'Photo',
       label: 'slideshow 圖片',
       many: true,
+      ui: {
+        // TODO: 未被使用，移除此欄位
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     manualOrderOfSlideshowImages: json({
       label: 'slideshow 圖片排序結果',
       defaultValue: null,
+      ui: {
+        // TODO: 未被使用，移除此欄位
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     og_title: text({
       label: 'FB分享標題',
@@ -300,6 +324,7 @@ const listConfigurations = list({
       }
       return resolvedData
     },
+    /*
     afterOperation: async ({ operation, item, context, resolvedData }) => {
 	  if (item?.id && item.state == 'published') {
         const result = fetch(envVar.topicServiceApi + '?topic_id=' + item.id, {
@@ -307,17 +332,11 @@ const listConfigurations = list({
         })
 	  }
 	},
+*/
   },
 })
 
 export default utils.addManualOrderRelationshipFields(
-  [
-    {
-      fieldName: 'manualOrderOfSlideshowImages',
-      targetFieldName: 'slideshow_images',
-      targetListName: 'Photo',
-      targetListLabelField: 'name',
-    },
-  ],
+  [],
   utils.addTrackingFields(listConfigurations)
 )
