@@ -1780,7 +1780,6 @@ type Topic {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
-  slideshow_imagesInInputOrder: [Photo]
 }
 
 input TopicWhereUniqueInput {
