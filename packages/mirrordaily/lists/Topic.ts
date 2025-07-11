@@ -104,7 +104,7 @@ const listConfigurations = list({
       label: '標頭樣式',
       options: [
         { label: 'video', value: 'video' },
-        { label: 'slideshow', value: 'slideshow' },
+        //{ label: 'slideshow', value: 'slideshow' },
         { label: 'image', value: 'image' },
       ],
       isIndexed: true,
