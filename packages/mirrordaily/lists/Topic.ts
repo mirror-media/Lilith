@@ -127,10 +127,34 @@ const listConfigurations = list({
       ref: 'Photo',
       label: 'slideshow 圖片',
       many: true,
+      ui: {
+        // TODO: 未被使用，移除此欄位
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     manualOrderOfSlideshowImages: json({
       label: 'slideshow 圖片排序結果',
       defaultValue: null,
+      ui: {
+        // TODO: 未被使用，移除此欄位
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
     }),
     og_title: text({
       label: 'FB分享標題',
