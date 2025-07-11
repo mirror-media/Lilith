@@ -1182,12 +1182,6 @@ export default utils.addManualOrderRelationshipFields(
       targetListLabelField: 'name',
     },
     {
-      fieldName: 'manualOrderOfRelateds',
-      targetFieldName: 'relateds',
-      targetListName: 'Post',
-      targetListLabelField: 'title',
-    },
-    {
       fieldName: 'manualOrderOfRelatedVideos',
       targetFieldName: 'related_videos',
       targetListName: 'Video',

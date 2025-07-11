@@ -1227,7 +1227,6 @@ type Post {
   writersInInputOrder: [Contact]
   sectionsInInputOrder: [Section]
   categoriesInInputOrder: [Category]
-  relatedsInInputOrder: [Post]
   related_videosInInputOrder: [Video]
 }
 
