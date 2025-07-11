@@ -313,13 +313,6 @@ const listConfigurations = list({
 })
 
 export default utils.addManualOrderRelationshipFields(
-  [
-    {
-      fieldName: 'manualOrderOfSlideshowImages',
-      targetFieldName: 'slideshow_images',
-      targetListName: 'Photo',
-      targetListLabelField: 'name',
-    },
-  ],
+  [],
   utils.addTrackingFields(listConfigurations)
 )
