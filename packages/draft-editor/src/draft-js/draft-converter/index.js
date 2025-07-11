@@ -27,6 +27,8 @@ const inlineTagMap = {
   CODE: ['<code>', '</code>'],
   default: ['<span>', '</span>'],
   ITALIC: ['<em>', '</em>'],
+  SUP: ['<sup>', '</sup>'],
+  SUB: ['<sub>', '</sub>'],
   UNDERLINE: ['<u>', '</u>'],
 }
 

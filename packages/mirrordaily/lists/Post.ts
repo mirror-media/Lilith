@@ -1096,7 +1096,7 @@ const listConfigurations = list({
       if (
         resolvedData &&
         resolvedData.state &&
-        resolvedData.state === 'published' &&
+        resolvedData.state === PostStatus.Published &&
         envVar.autotagging === 'true'
       ) {
         console.log('call data service for auto tagging')
@@ -1180,12 +1180,6 @@ export default utils.addManualOrderRelationshipFields(
       targetFieldName: 'categories',
       targetListName: 'Category',
       targetListLabelField: 'name',
-    },
-    {
-      fieldName: 'manualOrderOfRelateds',
-      targetFieldName: 'relateds',
-      targetListName: 'Post',
-      targetListLabelField: 'title',
     },
     {
       fieldName: 'manualOrderOfRelatedVideos',

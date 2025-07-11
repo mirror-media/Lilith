@@ -674,6 +674,80 @@ input PostRelateToOneForCreateInput {
   connect: PostWhereUniqueInput
 }
 
+type PromoteVideo {
+  id: ID!
+  order: Int
+  videoLink: String
+  state: String
+  publishedDate: DateTime
+  isFixed: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input PromoteVideoWhereUniqueInput {
+  id: ID
+  order: Int
+}
+
+input PromoteVideoWhereInput {
+  AND: [PromoteVideoWhereInput!]
+  OR: [PromoteVideoWhereInput!]
+  NOT: [PromoteVideoWhereInput!]
+  id: IDFilter
+  order: IntNullableFilter
+  videoLink: StringFilter
+  state: StringNullableFilter
+  publishedDate: DateTimeNullableFilter
+  isFixed: BooleanFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PromoteVideoOrderByInput {
+  id: OrderDirection
+  order: OrderDirection
+  videoLink: OrderDirection
+  state: OrderDirection
+  publishedDate: OrderDirection
+  isFixed: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PromoteVideoUpdateInput {
+  order: Int
+  videoLink: String
+  state: String
+  publishedDate: DateTime
+  isFixed: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PromoteVideoUpdateArgs {
+  where: PromoteVideoWhereUniqueInput!
+  data: PromoteVideoUpdateInput!
+}
+
+input PromoteVideoCreateInput {
+  order: Int
+  videoLink: String
+  state: String
+  publishedDate: DateTime
+  isFixed: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 type Event {
   id: ID!
   name: String
@@ -2311,6 +2385,12 @@ type Mutation {
   updateEditorChoices(data: [EditorChoiceUpdateArgs!]!): [EditorChoice]
   deleteEditorChoice(where: EditorChoiceWhereUniqueInput!): EditorChoice
   deleteEditorChoices(where: [EditorChoiceWhereUniqueInput!]!): [EditorChoice]
+  createPromoteVideo(data: PromoteVideoCreateInput!): PromoteVideo
+  createPromoteVideos(data: [PromoteVideoCreateInput!]!): [PromoteVideo]
+  updatePromoteVideo(where: PromoteVideoWhereUniqueInput!, data: PromoteVideoUpdateInput!): PromoteVideo
+  updatePromoteVideos(data: [PromoteVideoUpdateArgs!]!): [PromoteVideo]
+  deletePromoteVideo(where: PromoteVideoWhereUniqueInput!): PromoteVideo
+  deletePromoteVideos(where: [PromoteVideoWhereUniqueInput!]!): [PromoteVideo]
   createEvent(data: EventCreateInput!): Event
   createEvents(data: [EventCreateInput!]!): [Event]
   updateEvent(where: EventWhereUniqueInput!, data: EventUpdateInput!): Event
@@ -2431,6 +2511,9 @@ type Query {
   editorChoices(where: EditorChoiceWhereInput! = {}, orderBy: [EditorChoiceOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EditorChoiceWhereUniqueInput): [EditorChoice!]
   editorChoice(where: EditorChoiceWhereUniqueInput!): EditorChoice
   editorChoicesCount(where: EditorChoiceWhereInput! = {}): Int
+  promoteVideos(where: PromoteVideoWhereInput! = {}, orderBy: [PromoteVideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PromoteVideoWhereUniqueInput): [PromoteVideo!]
+  promoteVideo(where: PromoteVideoWhereUniqueInput!): PromoteVideo
+  promoteVideosCount(where: PromoteVideoWhereInput! = {}): Int
   events(where: EventWhereInput! = {}, orderBy: [EventOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EventWhereUniqueInput): [Event!]
   event(where: EventWhereUniqueInput!): Event
   eventsCount(where: EventWhereInput! = {}): Int

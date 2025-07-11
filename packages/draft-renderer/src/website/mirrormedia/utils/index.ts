@@ -109,7 +109,8 @@ function convertToAmpFacebook(embeddedCode) {
   const facebookRegex = /facebook.com\/plugins\/post\.php/i
   if (!facebookRegex.test(embeddedCode)) return embeddedCode
 
-  const urlRegex = /(?:https?:\/\/)?(?:www\.)?facebook\.com\/plugins\/post\.php\?href=([^&"\s]+)/g
+  const urlRegex =
+    /(?:https?:\/\/)?(?:www\.)?facebook\.com\/plugins\/post\.php\?href=([^&"\s]+)/g
   const widthRegex = /width="([^"]+)"/
   const heightRegex = /height="([^"]+)"/
   const urlMatch = urlRegex.exec(embeddedCode)
@@ -136,7 +137,8 @@ function convertToAmpFacebook(embeddedCode) {
 
 function convertEmbeddedToAmp(embeddedCode) {
   // Use regex to replace Instagram embedded code with <amp-instagram>
-  const igEmbedRegex = /<blockquote class="instagram-media"[^>]* data-instgrm-permalink="([^"]+)"[^>]*>[\s\S]*?<\/blockquote>/g
+  const igEmbedRegex =
+    /<blockquote class="instagram-media"[^>]* data-instgrm-permalink="([^"]+)"[^>]*>[\s\S]*?<\/blockquote>/g
   const ampInstagramCode = embeddedCode.replace(
     igEmbedRegex,
     (igEmbedMatch, permalink) => {
@@ -157,7 +159,8 @@ function convertEmbeddedToAmp(embeddedCode) {
   const ampFacebook = convertToAmpFacebook(ampInstagramCode)
 
   // Use regex to match Twitter embedded code
-  const twitterRegex = /<blockquote[^>]* class="twitter-tweet"[^>]*>[\s\S]*?<\/blockquote>/g
+  const twitterRegex =
+    /<blockquote[^>]* class="twitter-tweet"[^>]*>[\s\S]*?<\/blockquote>/g
   const ampTwitterCode = ampFacebook.replace(twitterRegex, (twitterMatch) => {
     // Use regex to extract the value of the data-tweet-id attribute
     const tweetIdMatch = twitterMatch.match(
@@ -227,7 +230,8 @@ function convertEmbeddedToAmp(embeddedCode) {
   })
 
   // Use regex to replace TikTok embedded code with <amp-tiktok>
-  const tiktokRegex = /<blockquote class="tiktok-embed"[^>]* data-video-id="([^"]+)"[^>]*>[\s\S]*?<\/blockquote>/g
+  const tiktokRegex =
+    /<blockquote class="tiktok-embed"[^>]* data-video-id="([^"]+)"[^>]*>[\s\S]*?<\/blockquote>/g
   const ampTikTokCode = ampVideoCode.replace(
     tiktokRegex,
     (tiktokMatch, videoId) => {
@@ -236,8 +240,9 @@ function convertEmbeddedToAmp(embeddedCode) {
   )
 
   // Use regex to replace Google Maps embedded code with <amp-iframe>
-  const googleMapsRegex = /<iframe[^>]*src="https:\/\/www\.google\.com\/maps\/embed\?([^"]+)"[^>]*><\/iframe>/g
-  const ampGoogleMapsCode = ampVideoCode.replace(
+  const googleMapsRegex =
+    /<iframe[^>]*src="https:\/\/www\.google\.com\/maps\/embed\?([^"]+)"[^>]*><\/iframe>/g
+  const ampGoogleMapsCode = ampTikTokCode.replace(
     googleMapsRegex,
     (googleMapsMatch, queryParams) => {
       return `<amp-iframe width="600" height="450" layout="responsive" sandbox="allow-scripts allow-same-origin allow-popups" src="https://www.google.com/maps/embed?${queryParams}"></amp-iframe>`
@@ -268,7 +273,7 @@ function convertEmbeddedToAmp(embeddedCode) {
     `
   }
 
-  const codeWithoutWrongWidth = ampTikTokCode.replace(
+  const codeWithoutWrongWidth = ampGoogleMapsCode.replace(
     /width="auto"|width="100%"/,
     'width="300px"'
   )
