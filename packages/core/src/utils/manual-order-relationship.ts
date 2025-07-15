@@ -224,8 +224,10 @@ function addManualOrderRelationshipFields(
       }
 
       if (item) {
-        const { [targetFieldName]: allTarget } =
-          await context.prisma.Post.findUnique({
+        try {
+          const { [targetFieldName]: allTarget } = await context.prisma?.[
+            targetListName
+          ]?.findUnique({
             where: { id: Number(item.id) },
             include: {
               [targetFieldName]: {
@@ -236,30 +238,33 @@ function addManualOrderRelationshipFields(
               },
             },
           })
-        // 取得目前的 currentOrder
-        const currentOrder = resolvedData[fieldName] || []
+          // 取得目前的 currentOrder
+          const currentOrder = resolvedData[fieldName] || []
 
-        // 找出在 allTarget 中存在但在 currentOrder 中不存在的項目
-        const missingItems = (allTarget || []).filter(
-          (targetItem: { id: number; title: string }) =>
-            !currentOrder.some(
-              (currentItem: { id: number; title: string }) =>
-                currentItem.id.toString() === targetItem.id.toString()
-            )
-        )
+          // 找出在 allTarget 中存在但在 currentOrder 中不存在的項目
+          const missingItems = (allTarget || []).filter(
+            (targetItem: { id: number; title: string }) =>
+              !currentOrder.some(
+                (currentItem: { id: number; title: string }) =>
+                  currentItem.id.toString() === targetItem.id.toString()
+              )
+          )
 
-        // 將缺少的項目加入到 currentOrder 的最後
-        if (missingItems.length > 0) {
-          const newOrder = [
-            ...currentOrder,
-            ...missingItems.map(
-              (item: { id: number } & Record<string, string>) => ({
-                id: item.id.toString(),
-                [targetListLabelField]: item[targetListLabelField],
-              })
-            ),
-          ]
-          resolvedData[fieldName] = newOrder
+          // 將缺少的項目加入到 currentOrder 的最後
+          if (missingItems.length > 0) {
+            const newOrder = [
+              ...currentOrder,
+              ...missingItems.map(
+                (item: { id: number } & Record<string, string>) => ({
+                  id: item.id.toString(),
+                  [targetListLabelField]: item[targetListLabelField],
+                })
+              ),
+            ]
+            resolvedData[fieldName] = newOrder
+          }
+        } catch (error) {
+          console.log(error)
         }
       }
     }
