@@ -33,9 +33,8 @@ steps:
 
         gcr.io/$PROJECT_ID/$_IMAGE_NAME:${BRANCH_NAME}_${SHORT_SHA} \
 
-        -t gcr.io/$PROJECT_ID/$_IMAGE_NAME:latest \
+        -t gcr.io/$PROJECT_ID/$_IMAGE_NAME:latest .
 
-        --cache-from gcr.io/$PROJECT_ID/$_IMAGE_NAME:latest .
     entrypoint: bash
 
   # Push container image to registry
