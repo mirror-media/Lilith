@@ -37,7 +37,7 @@ RUN yarn postinstall
 ## Build application bundles
 RUN yarn build
 
-RUN yarn list | grep draft
+RUN yarn list
 
 RUN yarn cache clean
 
