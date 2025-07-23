@@ -37,6 +37,8 @@ RUN yarn postinstall
 ## Build application bundles
 RUN yarn build
 
+RUN yarn list
+
 RUN yarn cache clean
 
 RUN whereis http2-proxy-server

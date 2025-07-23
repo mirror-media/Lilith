@@ -185,7 +185,6 @@ export function InfoBoxButton(props: InfoBoxButtonProps) {
           setToShowInput(true)
         }}
       >
-        <i className="far"></i>
         <span>InfoBox</span>
       </div>
     </Fragment>
