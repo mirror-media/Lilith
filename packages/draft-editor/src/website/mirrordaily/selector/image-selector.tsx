@@ -7,6 +7,8 @@ import { gql, useLazyQuery } from '@keystone-6/core/admin-ui/apollo'
 import { AlignSelector } from './align-selector'
 import { SearchBox, SearchBoxOnChangeFn } from './search-box'
 import { Pagination } from './pagination'
+import { Button } from '@keystone-ui/button'
+import { ImageUploader, ImageUploaderOnChangeFn } from './image-uploader'
 
 const imagesQuery = gql`
   query Photos($searchText: String!, $take: Int, $skip: Int) {
@@ -60,6 +62,10 @@ const ImageSearchBox = styled(SearchBox)`
   margin-top: 10px;
 `
 
+const CustomButton = styled(Button)`
+  margin-top: 10px;
+`
+
 const ImageSelectionWrapper = styled.div`
   overflow: auto;
   margin-top: 10px;
@@ -74,7 +80,7 @@ const ImageGridsWrapper = styled.div`
 `
 
 const ImageGridWrapper = styled.div`
-  flex: 0 0 33.3333%;
+  width: 33.3333%;
   cursor: pointer;
   padding: 0 10px 10px;
 `
@@ -86,7 +92,7 @@ const ImageMetaGridsWrapper = styled.div`
 `
 
 const ImageMetaGridWrapper = styled.div`
-  flex: 0 0 33.3333%;
+  width: 33.3333%;
   cursor: pointer;
   padding: 0 10px 10px;
 `
@@ -95,7 +101,7 @@ const Image = styled.img`
   display: block;
   width: 100%;
   aspect-ratio: 2;
-  object-fit: cover;
+  object-fit: contain;
 `
 
 const Label = styled.label`
@@ -353,6 +359,7 @@ export function ImageSelector(props: {
     useState<ImageEntityWithMeta[]>(initialSelected)
   const [delay, setDelay] = useState(initialDelay ?? '5')
   const [align, setAlign] = useState(initialAlign)
+  const [showImageUploader, setShowImageUploader] = useState(false)
   const contentWrapperRef = useRef<HTMLDivElement>(null)
 
   const pageSize = 18
@@ -391,6 +398,19 @@ export function ImageSelector(props: {
     if (scrollWrapper) {
       scrollWrapper.scrollTop = scrollWrapper.scrollHeight
     }
+  }
+
+  const onImageUploaderChange: ImageUploaderOnChangeFn = (images) => {
+    setSelected((prev) =>
+      prev.concat(
+        images.map((image) => ({
+          image,
+          desc: '',
+          url: '',
+        }))
+      )
+    )
+    setShowImageUploader(false)
   }
 
   const onImageMetaChange: ImageMetaOnChangeFn = (imageEntityWithMeta) => {
@@ -502,6 +522,9 @@ export function ImageSelector(props: {
           width="narrow"
         >
           <div ref={contentWrapperRef}>
+            <CustomButton onClick={() => setShowImageUploader(true)}>
+              上傳圖片
+            </CustomButton>
             <ImageSearchBox onChange={onSearchBoxChange} />
             <ImageSelectionWrapper>
               <div>{searchResult}</div>
@@ -532,6 +555,7 @@ export function ImageSelector(props: {
           </div>
         </Drawer>
       </DrawerController>
+      {showImageUploader && <ImageUploader onChange={onImageUploaderChange} />}
     </>
   )
 }
