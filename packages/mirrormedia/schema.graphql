@@ -1424,6 +1424,8 @@ type Post {
   isMember: Boolean
   memberFeed: Boolean
   topics: Topic
+  relatedsOne: Post
+  relatedsTwo: Post
   relateds(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedsCount(where: PostWhereInput! = {}): Int
   from_External_relateds(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
@@ -1495,6 +1497,8 @@ input PostWhereInput {
   isMember: BooleanFilter
   memberFeed: BooleanFilter
   topics: TopicWhereInput
+  relatedsOne: PostWhereInput
+  relatedsTwo: PostWhereInput
   relateds: PostManyRelationFilter
   tags: TagManyRelationFilter
   og_title: StringFilter
@@ -1582,6 +1586,8 @@ input PostUpdateInput {
   isMember: Boolean
   memberFeed: Boolean
   topics: TopicRelateToOneForUpdateInput
+  relatedsOne: PostRelateToOneForUpdateInput
+  relatedsTwo: PostRelateToOneForUpdateInput
   relateds: PostRelateToManyForUpdateInput
   from_External_relateds: ExternalRelateToManyForUpdateInput
   groups: GroupRelateToManyForUpdateInput
@@ -1684,6 +1690,8 @@ input PostCreateInput {
   isMember: Boolean
   memberFeed: Boolean
   topics: TopicRelateToOneForCreateInput
+  relatedsOne: PostRelateToOneForCreateInput
+  relatedsTwo: PostRelateToOneForCreateInput
   relateds: PostRelateToManyForCreateInput
   from_External_relateds: ExternalRelateToManyForCreateInput
   groups: GroupRelateToManyForCreateInput
