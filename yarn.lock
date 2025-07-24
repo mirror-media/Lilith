@@ -3817,16 +3817,16 @@
     styled-components "5.3.5"
     zlib "^1.0.5"
 
-"@mirrormedia/lilith-core@3.0.7":
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-3.0.7.tgz#72f64cc83f757373c99a246b0b443aa203ecf71f"
-  integrity sha512-vOIivS106oje4ntC+kZnJwYgSkX7fp2ZUrStN4OirnZlqjmrfd7BotNQyFvgBRakh/OSJSXIH4e6YtXg4x1lKw==
+"@mirrormedia/lilith-core@3.0.10-beta.2":
+  version "3.0.10-beta.2"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-3.0.10-beta.2.tgz#70e89909ce2df3035b69f36c120c2cd310bde382"
+  integrity sha512-W06uF1WwBW6qzm1cEjDvvRgVf0t5ge0SD6WBc/XwkFVPBQ5kAlPCiud6n/aQmk7SuNvC4bCJxyiEOXEvIW6m5g==
   dependencies:
     "@google-cloud/storage" "^5.18.0"
     "@keystone-ui/button" "^7.0.2"
     "@keystone-ui/fields" "^7.2.0"
     "@keystone-ui/modals" "^6.0.3"
-    "@mirrormedia/lilith-draft-editor" "3.0.7"
+    "@mirrormedia/lilith-draft-editor" "^3.0.8-beta.1"
     "@mirrormedia/subscription-webhooks-share" "^1.1.1"
     "@twreporter/errors" "^1.1.1"
     axios "^0.26.0"
@@ -3839,7 +3839,7 @@
     styled-components "5.3.5"
     zlib "^1.0.5"
 
-"@mirrormedia/lilith-core@^3.0.1", "@mirrormedia/lilith-core@^3.0.10":
+"@mirrormedia/lilith-core@^3.0.1":
   version "3.0.10"
   resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-3.0.10.tgz#d9e5360db6c71a4a1cf91f776e68a4bd45e334cd"
   integrity sha512-CVwUOSiYrjsCoep1Lc7/vLHMd/ZjgWEYLWMmIZlwUfMDJK1OtTfBQPm8C0aFMl/NlORpGN3PFkEjJDqz4ZcLaA==
@@ -3868,16 +3868,6 @@
   dependencies:
     "@mirrormedia/lilith-draft-renderer" "1.2.0-alpha.29"
     draft-js "^0.11.7"
-
-"@mirrormedia/lilith-draft-editor@3.0.7":
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-draft-editor/-/lilith-draft-editor-3.0.7.tgz#cef2fa79b498bd778977d1baa205122e95abd70c"
-  integrity sha512-BxwBEiSlCR1J/JvYznzT0GSM8uTRqlqBKauZADd/+KavAkglvTJ40jDIFk6TbjwZuDSZOhqisZ4a3eFLfAlUKA==
-  dependencies:
-    "@mirrormedia/lilith-draft-renderer" "^1.4.3"
-    draft-js "^0.11.7"
-    js-sha256 "^0.11.0"
-    usehooks-ts "^2"
 
 "@mirrormedia/lilith-draft-editor@^3.0.8":
   version "3.0.8"
