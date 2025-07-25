@@ -39,13 +39,7 @@ const ErrorWrapper = styled.p`
   font-size: 20px;
 `
 
-type SubmissionButtonAndModalProps = {
-  waterMarkType?: string
-}
-
-export default function SubmissionButtonAndModal({
-  waterMarkType = 'mirrormedia',
-}: SubmissionButtonAndModalProps) {
+export default function SubmissionButtonAndModal() {
   const dispatch = useDispatch()
   const files = useAppSelector(selectFiles, isEqual)
 
@@ -84,7 +78,6 @@ export default function SubmissionButtonAndModal({
             upload: d.file,
           },
           waterMark: d.shouldSetWatermark,
-          watermarkType: waterMarkType || 'mirrormedia',
         })),
       },
     })
