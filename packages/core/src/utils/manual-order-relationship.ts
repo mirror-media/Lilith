@@ -200,72 +200,51 @@ function addManualOrderRelationshipFields(
           }
         }
 
-        // const allTargetItems =
-        //   resolvedData[targetFieldName]?.set ||
-        //   (resolvedData[targetFieldName]?.connect || []).concat(
-        //     ((item?.[targetFieldName] as Item[]) || []).filter(
-        //       (item: Item) =>
-        //         !resolvedData[targetFieldName]?.disconnect?.some(
-        //           (d: Item) => d.id.toString() === item.id.toString()
-        //         )
-        //     )
-        //   ) ||
-        //   (item?.[targetFieldName] as Item[]) ||
-        //   []
-
-        // console.log('All target items:', allTargetItems)
-
-        // 更新 monitoring field
-        if (currentOrder.length > 0) {
-          resolvedData[fieldName] = currentOrder
-        } else {
-          resolvedData[fieldName] = []
-        }
-      }
-
-      if (item) {
-        try {
-          const { [targetFieldName]: allTarget } = await context.prisma?.[
-            targetListName
-          ]?.findUnique({
-            where: { id: Number(item.id) },
-            include: {
-              [targetFieldName]: {
-                select: {
-                  id: true,
-                  [targetListLabelField]: true,
+        // --- 補全缺失項目邏輯整合於此 ---
+        if (item) {
+          try {
+            const { [targetFieldName]: allTarget } = (await context.prisma?.[
+              targetListName
+            ]?.findUnique({
+              where: { id: Number(item.id) },
+              include: {
+                [targetFieldName]: {
+                  select: {
+                    id: true,
+                    [targetListLabelField]: true,
+                  },
                 },
               },
-            },
-          })
-          // 取得目前的 currentOrder
-          const currentOrder = resolvedData[fieldName] || []
+            })) || { [targetFieldName]: [] }
 
-          // 找出在 allTarget 中存在但在 currentOrder 中不存在的項目
-          const missingItems = (allTarget || []).filter(
-            (targetItem: { id: number; title: string }) =>
-              !currentOrder.some(
-                (currentItem: { id: number; title: string }) =>
-                  currentItem.id.toString() === targetItem.id.toString()
-              )
-          )
+            // 找出在 allTarget 中存在但在 currentOrder 中不存在的項目
+            const missingItems = (allTarget || []).filter(
+              (targetItem: { id: number | string; [k: string]: any }) =>
+                !currentOrder.some(
+                  (currentItem: { id: number | string; [k: string]: any }) =>
+                    currentItem.id.toString() === targetItem.id.toString()
+                )
+            )
 
-          // 將缺少的項目加入到 currentOrder 的最後
-          if (missingItems.length > 0) {
-            const newOrder = [
-              ...currentOrder,
-              ...missingItems.map(
-                (item: { id: number } & Record<string, string>) => ({
-                  id: item.id.toString(),
-                  [targetListLabelField]: item[targetListLabelField],
-                })
-              ),
-            ]
-            resolvedData[fieldName] = newOrder
+            // 將缺少的項目加入到 currentOrder 的最後
+            if (missingItems.length > 0) {
+              currentOrder = [
+                ...currentOrder,
+                ...missingItems.map(
+                  (item: { id: number } & Record<string, string>) => ({
+                    id: item.id.toString(),
+                    [targetListLabelField]: item[targetListLabelField],
+                  })
+                ),
+              ]
+            }
+          } catch (error) {
+            console.log(error)
           }
-        } catch (error) {
-          console.log(error)
         }
+
+        // 更新 monitoring field
+        resolvedData[fieldName] = currentOrder
       }
     }
     return resolvedData

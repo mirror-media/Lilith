@@ -462,6 +462,28 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
       },
     }),
+    relatedsOne: relationship({
+      label: '相關文章（一）',
+      ref: 'Post',
+      many: false,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
+    relatedsTwo: relationship({
+      label: '相關文章（二）',
+      ref: 'Post',
+      many: false,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
     relateds: relationship({
       label: '相關文章',
       ref: 'Post',
