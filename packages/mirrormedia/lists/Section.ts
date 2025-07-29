@@ -62,6 +62,14 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
+    externals: relationship({
+      ref: 'External.sections',
+      many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
     topics: relationship({
       ref: 'Topic.sections',
       many: true,

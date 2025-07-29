@@ -70,23 +70,24 @@ model Announcement {
 }
 
 model Category {
-  id                   Int       @id @default(autoincrement())
-  name                 String    @unique @default("")
-  slug                 String    @unique @default("")
+  id                   Int        @id @default(autoincrement())
+  name                 String     @unique @default("")
+  slug                 String     @unique @default("")
   order                Int?
-  state                String    @default("active")
-  heroImage            Photo?    @relation("Category_heroImage", fields: [heroImageId], references: [id])
-  heroImageId          Int?      @map("heroImage")
-  sections             Section[] @relation("Category_sections")
-  posts                Post[]    @relation("Category_posts")
-  isMemberOnly         Boolean   @default(false)
+  state                String     @default("active")
+  heroImage            Photo?     @relation("Category_heroImage", fields: [heroImageId], references: [id])
+  heroImageId          Int?       @map("heroImage")
+  sections             Section[]  @relation("Category_sections")
+  posts                Post[]     @relation("Category_posts")
+  externals            External[] @relation("Category_externals")
+  isMemberOnly         Boolean    @default(false)
   createdAt            DateTime?
   updatedAt            DateTime?
-  createdBy            User?     @relation("Category_createdBy", fields: [createdById], references: [id])
-  createdById          Int?      @map("createdBy")
-  updatedBy            User?     @relation("Category_updatedBy", fields: [updatedById], references: [id])
-  updatedById          Int?      @map("updatedBy")
-  from_Header_category Header[]  @relation("Header_category")
+  createdBy            User?      @relation("Category_createdBy", fields: [createdById], references: [id])
+  createdById          Int?       @map("createdBy")
+  updatedBy            User?      @relation("Category_updatedBy", fields: [updatedById], references: [id])
+  updatedById          Int?       @map("updatedBy")
+  from_Header_category Header[]   @relation("Header_category")
 
   @@index([state])
   @@index([heroImageId])
@@ -189,29 +190,31 @@ model Event {
 }
 
 model External {
-  id                  Int       @id @default(autoincrement())
-  slug                String    @unique @default("")
-  partner             Partner?  @relation("External_partner", fields: [partnerId], references: [id])
-  partnerId           Int?      @map("partner")
-  title               String    @default("")
-  state               String?   @default("draft")
+  id                  Int        @id @default(autoincrement())
+  slug                String     @unique @default("")
+  partner             Partner?   @relation("External_partner", fields: [partnerId], references: [id])
+  partnerId           Int?       @map("partner")
+  title               String     @default("")
+  state               String?    @default("draft")
   publishedDate       DateTime?
-  publishedDateString String    @default("")
-  extend_byline       String    @default("")
-  thumb               String    @default("")
-  thumbCaption        String    @default("")
-  brief               String    @default("")
-  content             String    @default("")
-  source              String    @default("")
-  tags                Tag[]     @relation("External_tags")
-  relateds            Post[]    @relation("External_relateds")
-  groups              Group[]   @relation("External_groups")
+  publishedDateString String     @default("")
+  sections            Section[]  @relation("External_sections")
+  categories          Category[] @relation("Category_externals")
+  extend_byline       String     @default("")
+  thumb               String     @default("")
+  thumbCaption        String     @default("")
+  brief               String     @default("")
+  content             String     @default("")
+  source              String     @default("")
+  tags                Tag[]      @relation("External_tags")
+  relateds            Post[]     @relation("External_relateds")
+  groups              Group[]    @relation("External_groups")
   createdAt           DateTime?
   updatedAt           DateTime?
-  createdBy           User?     @relation("External_createdBy", fields: [createdById], references: [id])
-  createdById         Int?      @map("createdBy")
-  updatedBy           User?     @relation("External_updatedBy", fields: [updatedById], references: [id])
-  updatedById         Int?      @map("updatedBy")
+  createdBy           User?      @relation("External_createdBy", fields: [createdById], references: [id])
+  createdById         Int?       @map("createdBy")
+  updatedBy           User?      @relation("External_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?       @map("updatedBy")
 
   @@index([partnerId])
   @@index([state])
@@ -425,6 +428,7 @@ model Section {
   heroImageId         Int?       @map("heroImage")
   categories          Category[] @relation("Category_sections")
   posts               Post[]     @relation("Post_sections")
+  externals           External[] @relation("External_sections")
   topics              Topic[]    @relation("Section_topics")
   createdAt           DateTime?
   updatedAt           DateTime?
