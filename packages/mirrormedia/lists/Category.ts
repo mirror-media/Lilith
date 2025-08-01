@@ -55,6 +55,14 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
+    externals: relationship({
+      ref: 'External.categories',
+      many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
     isMemberOnly: checkbox({
       label: '會員文章',
       defaultValue: false,
