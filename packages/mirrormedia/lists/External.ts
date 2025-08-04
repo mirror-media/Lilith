@@ -93,6 +93,16 @@ const listConfigurations = list({
         },
       },
     }),
+    sections: relationship({
+      label: '大分類',
+      ref: 'Section.externals',
+      many: true,
+    }),
+    categories: relationship({
+      label: '小分類',
+      ref: 'Category.externals',
+      many: true,
+    }),
     extend_byline: text({
       label: '作者',
       validation: { isRequired: false },

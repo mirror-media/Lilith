@@ -373,6 +373,8 @@ type Category {
   sectionsCount(where: SectionWhereInput! = {}): Int
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  externals(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
+  externalsCount(where: ExternalWhereInput! = {}): Int
   isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -398,6 +400,7 @@ input CategoryWhereInput {
   heroImage: PhotoWhereInput
   sections: SectionManyRelationFilter
   posts: PostManyRelationFilter
+  externals: ExternalManyRelationFilter
   isMemberOnly: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -428,6 +431,12 @@ input PostManyRelationFilter {
   none: PostWhereInput
 }
 
+input ExternalManyRelationFilter {
+  every: ExternalWhereInput
+  some: ExternalWhereInput
+  none: ExternalWhereInput
+}
+
 input BooleanFilter {
   equals: Boolean
   not: BooleanFilter
@@ -452,6 +461,7 @@ input CategoryUpdateInput {
   heroImage: PhotoRelateToOneForUpdateInput
   sections: SectionRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
+  externals: ExternalRelateToManyForUpdateInput
   isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -473,6 +483,13 @@ input PostRelateToManyForUpdateInput {
   connect: [PostWhereUniqueInput!]
 }
 
+input ExternalRelateToManyForUpdateInput {
+  disconnect: [ExternalWhereUniqueInput!]
+  set: [ExternalWhereUniqueInput!]
+  create: [ExternalCreateInput!]
+  connect: [ExternalWhereUniqueInput!]
+}
+
 input CategoryUpdateArgs {
   where: CategoryWhereUniqueInput!
   data: CategoryUpdateInput!
@@ -486,6 +503,7 @@ input CategoryCreateInput {
   heroImage: PhotoRelateToOneForCreateInput
   sections: SectionRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
+  externals: ExternalRelateToManyForCreateInput
   isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -501,6 +519,11 @@ input SectionRelateToManyForCreateInput {
 input PostRelateToManyForCreateInput {
   create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
+}
+
+input ExternalRelateToManyForCreateInput {
+  create: [ExternalCreateInput!]
+  connect: [ExternalWhereUniqueInput!]
 }
 
 type Contact {
@@ -870,6 +893,10 @@ type External {
   state: String
   publishedDate: DateTime
   publishedDateString: String
+  sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
+  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
+  categoriesCount(where: CategoryWhereInput! = {}): Int
   extend_byline: String
   thumb: String
   thumbCaption: String
@@ -904,6 +931,8 @@ input ExternalWhereInput {
   state: StringNullableFilter
   publishedDate: DateTimeNullableFilter
   publishedDateString: StringFilter
+  sections: SectionManyRelationFilter
+  categories: CategoryManyRelationFilter
   extend_byline: StringFilter
   thumb: StringFilter
   brief: StringFilter
@@ -916,6 +945,12 @@ input ExternalWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input CategoryManyRelationFilter {
+  every: CategoryWhereInput
+  some: CategoryWhereInput
+  none: CategoryWhereInput
 }
 
 input GroupManyRelationFilter {
@@ -948,6 +983,8 @@ input ExternalUpdateInput {
   state: String
   publishedDate: DateTime
   publishedDateString: String
+  sections: SectionRelateToManyForUpdateInput
+  categories: CategoryRelateToManyForUpdateInput
   extend_byline: String
   thumb: String
   thumbCaption: String
@@ -969,6 +1006,13 @@ input PartnerRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input CategoryRelateToManyForUpdateInput {
+  disconnect: [CategoryWhereUniqueInput!]
+  set: [CategoryWhereUniqueInput!]
+  create: [CategoryCreateInput!]
+  connect: [CategoryWhereUniqueInput!]
+}
+
 input GroupRelateToManyForUpdateInput {
   disconnect: [GroupWhereUniqueInput!]
   set: [GroupWhereUniqueInput!]
@@ -988,6 +1032,8 @@ input ExternalCreateInput {
   state: String
   publishedDate: DateTime
   publishedDateString: String
+  sections: SectionRelateToManyForCreateInput
+  categories: CategoryRelateToManyForCreateInput
   extend_byline: String
   thumb: String
   thumbCaption: String
@@ -1006,6 +1052,11 @@ input ExternalCreateInput {
 input PartnerRelateToOneForCreateInput {
   create: PartnerCreateInput
   connect: PartnerWhereUniqueInput
+}
+
+input CategoryRelateToManyForCreateInput {
+  create: [CategoryCreateInput!]
+  connect: [CategoryWhereUniqueInput!]
 }
 
 input GroupRelateToManyForCreateInput {
@@ -1515,12 +1566,6 @@ input PostWhereInput {
   updatedBy: UserWhereInput
 }
 
-input CategoryManyRelationFilter {
-  every: CategoryWhereInput
-  some: CategoryWhereInput
-  none: CategoryWhereInput
-}
-
 input ContactManyRelationFilter {
   every: ContactWhereInput
   some: ContactWhereInput
@@ -1614,13 +1659,6 @@ input PostUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input CategoryRelateToManyForUpdateInput {
-  disconnect: [CategoryWhereUniqueInput!]
-  set: [CategoryWhereUniqueInput!]
-  create: [CategoryCreateInput!]
-  connect: [CategoryWhereUniqueInput!]
-}
-
 input ContactRelateToManyForUpdateInput {
   disconnect: [ContactWhereUniqueInput!]
   set: [ContactWhereUniqueInput!]
@@ -1638,13 +1676,6 @@ input TopicRelateToOneForUpdateInput {
   create: TopicCreateInput
   connect: TopicWhereUniqueInput
   disconnect: Boolean
-}
-
-input ExternalRelateToManyForUpdateInput {
-  disconnect: [ExternalWhereUniqueInput!]
-  set: [ExternalWhereUniqueInput!]
-  create: [ExternalCreateInput!]
-  connect: [ExternalWhereUniqueInput!]
 }
 
 input VideoRelateToManyForUpdateInput {
@@ -1718,11 +1749,6 @@ input PostCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
-input CategoryRelateToManyForCreateInput {
-  create: [CategoryCreateInput!]
-  connect: [CategoryWhereUniqueInput!]
-}
-
 input ContactRelateToManyForCreateInput {
   create: [ContactCreateInput!]
   connect: [ContactWhereUniqueInput!]
@@ -1736,11 +1762,6 @@ input VideoRelateToOneForCreateInput {
 input TopicRelateToOneForCreateInput {
   create: TopicCreateInput
   connect: TopicWhereUniqueInput
-}
-
-input ExternalRelateToManyForCreateInput {
-  create: [ExternalCreateInput!]
-  connect: [ExternalWhereUniqueInput!]
 }
 
 input VideoRelateToManyForCreateInput {
@@ -1761,6 +1782,8 @@ type Section {
   categoriesCount(where: CategoryWhereInput! = {}): Int
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  externals(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
+  externalsCount(where: ExternalWhereInput! = {}): Int
   topics(where: TopicWhereInput! = {}, orderBy: [TopicOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TopicWhereUniqueInput): [Topic!]
   topicsCount(where: TopicWhereInput! = {}): Int
   createdAt: DateTime
@@ -1789,6 +1812,7 @@ input SectionWhereInput {
   heroImage: PhotoWhereInput
   categories: CategoryManyRelationFilter
   posts: PostManyRelationFilter
+  externals: ExternalManyRelationFilter
   topics: TopicManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1824,6 +1848,7 @@ input SectionUpdateInput {
   heroImage: PhotoRelateToOneForUpdateInput
   categories: CategoryRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
+  externals: ExternalRelateToManyForUpdateInput
   topics: TopicRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -1853,6 +1878,7 @@ input SectionCreateInput {
   heroImage: PhotoRelateToOneForCreateInput
   categories: CategoryRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
+  externals: ExternalRelateToManyForCreateInput
   topics: TopicRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -1904,12 +1930,6 @@ input TagWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input ExternalManyRelationFilter {
-  every: ExternalWhereInput
-  some: ExternalWhereInput
-  none: ExternalWhereInput
 }
 
 input TagOrderByInput {

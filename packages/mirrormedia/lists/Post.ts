@@ -468,9 +468,6 @@ const listConfigurations = list({
       many: false,
       ui: {
         views: './lists/views/sorted-relationship/index',
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
       },
     }),
     relatedsTwo: relationship({
@@ -479,9 +476,6 @@ const listConfigurations = list({
       many: false,
       ui: {
         views: './lists/views/sorted-relationship/index',
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
       },
     }),
     relateds: relationship({
