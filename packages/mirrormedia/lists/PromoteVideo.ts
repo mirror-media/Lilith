@@ -59,5 +59,18 @@ const listConfigurations = list({
       delete: allowRoles(admin),
     },
   },
+  hooks: {
+    afterOperation: async ({ operation, item, context, resolvedData }) => {
+      if (item?.topicsId) {
+        const result = fetch(
+          envVar.dataServiceApi + '/gql_to_json?bucket=' + envVar.gcs.bucket + '&dest_file=files/json/promoting-video.json&gql_string=query { promoteVideos( where: { state: { equals: "published" } OR: [ { videoLink: { contains: "youtube.com" } } { videoLink: { contains: "youtu.be" } } ] } take: 6 orderBy: [{ order: asc }]) { id videoLink } }',
+          {
+            method: 'GET',
+          }
+        )
+        console.log(result)
+      }
+    },
+  },
 })
 export default utils.addTrackingFields(listConfigurations)

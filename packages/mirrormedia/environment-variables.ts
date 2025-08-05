@@ -18,6 +18,7 @@ const {
   CACHE_IDENTIFIER,
   CACHE_CONNECT_TIMEOUT,
   CACHE_MAXAGE,
+  DATA_SERVICE_API,
   INVALID_CDN_CACHE_SERVER_URL,
 } = process.env
 
@@ -73,5 +74,6 @@ export default {
       : cacheConnectTimeout, // unit: millisecond
     maxAge: Number.isNaN(cacheMaxAge) ? 60 : cacheMaxAge, // unit: second
   },
+  dataServiceApi: DATA_SERVICE_API,
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
 }
