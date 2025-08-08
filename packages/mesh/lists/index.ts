@@ -25,6 +25,9 @@ import Revenue from './revenue'
 import Statement from './statement'
 import StoryType from './story_type'
 import ActivityPubActor from './activitypub_actor'
+import Activity from './activity'
+import InboxItem from './inbox_item'
+import OutboxItem from './outbox_item'
 
 export const listDefinition = {
   User,
@@ -40,6 +43,9 @@ export const listDefinition = {
   Story,
   StoryType,
   ActivityPubActor,
+  Activity,
+  InboxItem,
+  OutboxItem,
   Tag,
   Member,
   Notify,
