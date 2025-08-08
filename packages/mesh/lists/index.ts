@@ -30,6 +30,9 @@ import InboxItem from './inbox_item'
 import OutboxItem from './outbox_item'
 import FederationInstance from './federation_instance'
 import FederationConnection from './federation_connection'
+import AccountDiscovery from './account_discovery'
+import AccountMapping from './account_mapping'
+import AccountSyncTask from './account_sync_task'
 
 export const listDefinition = {
   User,
@@ -50,6 +53,9 @@ export const listDefinition = {
   OutboxItem,
   FederationInstance,
   FederationConnection,
+  AccountDiscovery,
+  AccountMapping,
+  AccountSyncTask,
   Tag,
   Member,
   Notify,

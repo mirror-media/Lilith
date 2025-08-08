@@ -597,6 +597,7 @@ type Publisher {
   official_site: String
   rss: String
   podcast_url: String
+  youtube_url: String
   summary: String
   logo: String
   description: String
@@ -644,6 +645,7 @@ input PublisherWhereInput {
   official_site: StringFilter
   rss: StringFilter
   podcast_url: StringFilter
+  youtube_url: StringFilter
   summary: StringFilter
   logo: StringFilter
   description: StringFilter
@@ -706,6 +708,7 @@ input PublisherOrderByInput {
   official_site: OrderDirection
   rss: OrderDirection
   podcast_url: OrderDirection
+  youtube_url: OrderDirection
   summary: OrderDirection
   logo: OrderDirection
   description: OrderDirection
@@ -726,6 +729,7 @@ input PublisherUpdateInput {
   official_site: String
   rss: String
   podcast_url: String
+  youtube_url: String
   summary: String
   logo: String
   description: String
@@ -803,6 +807,7 @@ input PublisherCreateInput {
   official_site: String
   rss: String
   podcast_url: String
+  youtube_url: String
   summary: String
   logo: String
   description: String
@@ -1594,6 +1599,1090 @@ input PublisherRelateToManyForCreateInput {
   connect: [PublisherWhereUniqueInput!]
 }
 
+type ActivityPubActor {
+  id: ID!
+  username: String
+  domain: String
+  display_name: String
+  summary: String
+  icon_url: String
+  inbox_url: String
+  outbox_url: String
+  followers_url: String
+  following_url: String
+  public_key_pem: String
+  private_key_pem: String
+  is_local: Boolean
+  mesh_member: Member
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ActivityPubActorWhereUniqueInput {
+  id: ID
+  username: String
+}
+
+input ActivityPubActorWhereInput {
+  AND: [ActivityPubActorWhereInput!]
+  OR: [ActivityPubActorWhereInput!]
+  NOT: [ActivityPubActorWhereInput!]
+  id: IDFilter
+  username: StringFilter
+  domain: StringFilter
+  display_name: StringFilter
+  summary: StringFilter
+  icon_url: StringFilter
+  inbox_url: StringFilter
+  outbox_url: StringFilter
+  followers_url: StringFilter
+  following_url: StringFilter
+  public_key_pem: StringFilter
+  private_key_pem: StringFilter
+  is_local: BooleanFilter
+  mesh_member: MemberWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ActivityPubActorOrderByInput {
+  id: OrderDirection
+  username: OrderDirection
+  domain: OrderDirection
+  display_name: OrderDirection
+  summary: OrderDirection
+  icon_url: OrderDirection
+  inbox_url: OrderDirection
+  outbox_url: OrderDirection
+  followers_url: OrderDirection
+  following_url: OrderDirection
+  public_key_pem: OrderDirection
+  private_key_pem: OrderDirection
+  is_local: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ActivityPubActorUpdateInput {
+  username: String
+  domain: String
+  display_name: String
+  summary: String
+  icon_url: String
+  inbox_url: String
+  outbox_url: String
+  followers_url: String
+  following_url: String
+  public_key_pem: String
+  private_key_pem: String
+  is_local: Boolean
+  mesh_member: MemberRelateToOneForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ActivityPubActorUpdateArgs {
+  where: ActivityPubActorWhereUniqueInput!
+  data: ActivityPubActorUpdateInput!
+}
+
+input ActivityPubActorCreateInput {
+  username: String
+  domain: String
+  display_name: String
+  summary: String
+  icon_url: String
+  inbox_url: String
+  outbox_url: String
+  followers_url: String
+  following_url: String
+  public_key_pem: String
+  private_key_pem: String
+  is_local: Boolean
+  mesh_member: MemberRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Activity {
+  id: ID!
+  activity_id: String
+  activity_type: ActivityActivityTypeType
+  actor: ActivityPubActor
+  object_data: JSON
+  target_data: JSON
+  to: JSON
+  cc: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum ActivityActivityTypeType {
+  Create
+  Like
+  Announce
+  Follow
+}
+
+input ActivityWhereUniqueInput {
+  id: ID
+  activity_id: String
+}
+
+input ActivityWhereInput {
+  AND: [ActivityWhereInput!]
+  OR: [ActivityWhereInput!]
+  NOT: [ActivityWhereInput!]
+  id: IDFilter
+  activity_id: StringFilter
+  activity_type: ActivityActivityTypeTypeNullableFilter
+  actor: ActivityPubActorWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ActivityActivityTypeTypeNullableFilter {
+  equals: ActivityActivityTypeType
+  in: [ActivityActivityTypeType!]
+  notIn: [ActivityActivityTypeType!]
+  not: ActivityActivityTypeTypeNullableFilter
+}
+
+input ActivityOrderByInput {
+  id: OrderDirection
+  activity_id: OrderDirection
+  activity_type: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ActivityUpdateInput {
+  activity_id: String
+  activity_type: ActivityActivityTypeType
+  actor: ActivityPubActorRelateToOneForUpdateInput
+  object_data: JSON
+  target_data: JSON
+  to: JSON
+  cc: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ActivityPubActorRelateToOneForUpdateInput {
+  create: ActivityPubActorCreateInput
+  connect: ActivityPubActorWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ActivityUpdateArgs {
+  where: ActivityWhereUniqueInput!
+  data: ActivityUpdateInput!
+}
+
+input ActivityCreateInput {
+  activity_id: String
+  activity_type: ActivityActivityTypeType
+  actor: ActivityPubActorRelateToOneForCreateInput
+  object_data: JSON
+  target_data: JSON
+  to: JSON
+  cc: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input ActivityPubActorRelateToOneForCreateInput {
+  create: ActivityPubActorCreateInput
+  connect: ActivityPubActorWhereUniqueInput
+}
+
+type InboxItem {
+  id: ID!
+  activity_id: String
+  actor_id: String
+  activity_data: JSON
+  is_processed: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input InboxItemWhereUniqueInput {
+  id: ID
+  activity_id: String
+}
+
+input InboxItemWhereInput {
+  AND: [InboxItemWhereInput!]
+  OR: [InboxItemWhereInput!]
+  NOT: [InboxItemWhereInput!]
+  id: IDFilter
+  activity_id: StringFilter
+  actor_id: StringFilter
+  is_processed: BooleanFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input InboxItemOrderByInput {
+  id: OrderDirection
+  activity_id: OrderDirection
+  actor_id: OrderDirection
+  is_processed: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input InboxItemUpdateInput {
+  activity_id: String
+  actor_id: String
+  activity_data: JSON
+  is_processed: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input InboxItemUpdateArgs {
+  where: InboxItemWhereUniqueInput!
+  data: InboxItemUpdateInput!
+}
+
+input InboxItemCreateInput {
+  activity_id: String
+  actor_id: String
+  activity_data: JSON
+  is_processed: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type OutboxItem {
+  id: ID!
+  activity_id: String
+  actor: ActivityPubActor
+  activity_data: JSON
+  is_delivered: Boolean
+  delivery_attempts: Int
+  delivered_at: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input OutboxItemWhereUniqueInput {
+  id: ID
+  activity_id: String
+}
+
+input OutboxItemWhereInput {
+  AND: [OutboxItemWhereInput!]
+  OR: [OutboxItemWhereInput!]
+  NOT: [OutboxItemWhereInput!]
+  id: IDFilter
+  activity_id: StringFilter
+  actor: ActivityPubActorWhereInput
+  is_delivered: BooleanFilter
+  delivery_attempts: IntNullableFilter
+  delivered_at: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input OutboxItemOrderByInput {
+  id: OrderDirection
+  activity_id: OrderDirection
+  is_delivered: OrderDirection
+  delivery_attempts: OrderDirection
+  delivered_at: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input OutboxItemUpdateInput {
+  activity_id: String
+  actor: ActivityPubActorRelateToOneForUpdateInput
+  activity_data: JSON
+  is_delivered: Boolean
+  delivery_attempts: Int
+  delivered_at: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input OutboxItemUpdateArgs {
+  where: OutboxItemWhereUniqueInput!
+  data: OutboxItemUpdateInput!
+}
+
+input OutboxItemCreateInput {
+  activity_id: String
+  actor: ActivityPubActorRelateToOneForCreateInput
+  activity_data: JSON
+  is_delivered: Boolean
+  delivery_attempts: Int
+  delivered_at: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type FederationInstance {
+  id: ID!
+  domain: String
+  name: String
+  description: String
+  software: String
+  version: String
+  is_active: Boolean
+  is_approved: Boolean
+  is_blocked: Boolean
+  last_seen: DateTime
+  last_successful_connection: DateTime
+  user_count: Int
+  post_count: Int
+  connection_count: Int
+  error_count: Int
+  auto_follow: Boolean
+  auto_announce: Boolean
+  max_followers: Int
+  max_following: Int
+  connection(where: FederationConnectionWhereInput! = {}, orderBy: [FederationConnectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FederationConnectionWhereUniqueInput): [FederationConnection!]
+  connectionCount(where: FederationConnectionWhereInput! = {}): Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input FederationInstanceWhereUniqueInput {
+  id: ID
+  domain: String
+}
+
+input FederationInstanceWhereInput {
+  AND: [FederationInstanceWhereInput!]
+  OR: [FederationInstanceWhereInput!]
+  NOT: [FederationInstanceWhereInput!]
+  id: IDFilter
+  domain: StringFilter
+  name: StringFilter
+  description: StringFilter
+  software: StringFilter
+  version: StringFilter
+  is_active: BooleanFilter
+  is_approved: BooleanFilter
+  is_blocked: BooleanFilter
+  last_seen: DateTimeNullableFilter
+  last_successful_connection: DateTimeNullableFilter
+  user_count: IntNullableFilter
+  post_count: IntNullableFilter
+  connection_count: IntNullableFilter
+  error_count: IntNullableFilter
+  auto_follow: BooleanFilter
+  auto_announce: BooleanFilter
+  max_followers: IntNullableFilter
+  max_following: IntNullableFilter
+  connection: FederationConnectionManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input FederationConnectionManyRelationFilter {
+  every: FederationConnectionWhereInput
+  some: FederationConnectionWhereInput
+  none: FederationConnectionWhereInput
+}
+
+input FederationInstanceOrderByInput {
+  id: OrderDirection
+  domain: OrderDirection
+  name: OrderDirection
+  description: OrderDirection
+  software: OrderDirection
+  version: OrderDirection
+  is_active: OrderDirection
+  is_approved: OrderDirection
+  is_blocked: OrderDirection
+  last_seen: OrderDirection
+  last_successful_connection: OrderDirection
+  user_count: OrderDirection
+  post_count: OrderDirection
+  connection_count: OrderDirection
+  error_count: OrderDirection
+  auto_follow: OrderDirection
+  auto_announce: OrderDirection
+  max_followers: OrderDirection
+  max_following: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input FederationInstanceUpdateInput {
+  domain: String
+  name: String
+  description: String
+  software: String
+  version: String
+  is_active: Boolean
+  is_approved: Boolean
+  is_blocked: Boolean
+  last_seen: DateTime
+  last_successful_connection: DateTime
+  user_count: Int
+  post_count: Int
+  connection_count: Int
+  error_count: Int
+  auto_follow: Boolean
+  auto_announce: Boolean
+  max_followers: Int
+  max_following: Int
+  connection: FederationConnectionRelateToManyForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input FederationConnectionRelateToManyForUpdateInput {
+  disconnect: [FederationConnectionWhereUniqueInput!]
+  set: [FederationConnectionWhereUniqueInput!]
+  create: [FederationConnectionCreateInput!]
+  connect: [FederationConnectionWhereUniqueInput!]
+}
+
+input FederationInstanceUpdateArgs {
+  where: FederationInstanceWhereUniqueInput!
+  data: FederationInstanceUpdateInput!
+}
+
+input FederationInstanceCreateInput {
+  domain: String
+  name: String
+  description: String
+  software: String
+  version: String
+  is_active: Boolean
+  is_approved: Boolean
+  is_blocked: Boolean
+  last_seen: DateTime
+  last_successful_connection: DateTime
+  user_count: Int
+  post_count: Int
+  connection_count: Int
+  error_count: Int
+  auto_follow: Boolean
+  auto_announce: Boolean
+  max_followers: Int
+  max_following: Int
+  connection: FederationConnectionRelateToManyForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input FederationConnectionRelateToManyForCreateInput {
+  create: [FederationConnectionCreateInput!]
+  connect: [FederationConnectionWhereUniqueInput!]
+}
+
+type FederationConnection {
+  id: ID!
+  instance: FederationInstance
+  connection_type: FederationConnectionConnectionTypeType
+  direction: FederationConnectionDirectionType
+  source_actor: String
+  target_actor: String
+  activity_id: String
+  status: FederationConnectionStatusType
+  error_message: String
+  processed_at: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum FederationConnectionConnectionTypeType {
+  http
+  https
+}
+
+enum FederationConnectionDirectionType {
+  inbound
+  outbound
+}
+
+enum FederationConnectionStatusType {
+  pending
+  success
+  failed
+}
+
+input FederationConnectionWhereUniqueInput {
+  id: ID
+}
+
+input FederationConnectionWhereInput {
+  AND: [FederationConnectionWhereInput!]
+  OR: [FederationConnectionWhereInput!]
+  NOT: [FederationConnectionWhereInput!]
+  id: IDFilter
+  instance: FederationInstanceWhereInput
+  connection_type: FederationConnectionConnectionTypeTypeNullableFilter
+  direction: FederationConnectionDirectionTypeNullableFilter
+  source_actor: StringFilter
+  target_actor: StringFilter
+  activity_id: StringFilter
+  status: FederationConnectionStatusTypeNullableFilter
+  error_message: StringFilter
+  processed_at: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input FederationConnectionConnectionTypeTypeNullableFilter {
+  equals: FederationConnectionConnectionTypeType
+  in: [FederationConnectionConnectionTypeType!]
+  notIn: [FederationConnectionConnectionTypeType!]
+  not: FederationConnectionConnectionTypeTypeNullableFilter
+}
+
+input FederationConnectionDirectionTypeNullableFilter {
+  equals: FederationConnectionDirectionType
+  in: [FederationConnectionDirectionType!]
+  notIn: [FederationConnectionDirectionType!]
+  not: FederationConnectionDirectionTypeNullableFilter
+}
+
+input FederationConnectionStatusTypeNullableFilter {
+  equals: FederationConnectionStatusType
+  in: [FederationConnectionStatusType!]
+  notIn: [FederationConnectionStatusType!]
+  not: FederationConnectionStatusTypeNullableFilter
+}
+
+input FederationConnectionOrderByInput {
+  id: OrderDirection
+  connection_type: OrderDirection
+  direction: OrderDirection
+  source_actor: OrderDirection
+  target_actor: OrderDirection
+  activity_id: OrderDirection
+  status: OrderDirection
+  error_message: OrderDirection
+  processed_at: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input FederationConnectionUpdateInput {
+  instance: FederationInstanceRelateToOneForUpdateInput
+  connection_type: FederationConnectionConnectionTypeType
+  direction: FederationConnectionDirectionType
+  source_actor: String
+  target_actor: String
+  activity_id: String
+  status: FederationConnectionStatusType
+  error_message: String
+  processed_at: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input FederationInstanceRelateToOneForUpdateInput {
+  create: FederationInstanceCreateInput
+  connect: FederationInstanceWhereUniqueInput
+  disconnect: Boolean
+}
+
+input FederationConnectionUpdateArgs {
+  where: FederationConnectionWhereUniqueInput!
+  data: FederationConnectionUpdateInput!
+}
+
+input FederationConnectionCreateInput {
+  instance: FederationInstanceRelateToOneForCreateInput
+  connection_type: FederationConnectionConnectionTypeType
+  direction: FederationConnectionDirectionType
+  source_actor: String
+  target_actor: String
+  activity_id: String
+  status: FederationConnectionStatusType
+  error_message: String
+  processed_at: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input FederationInstanceRelateToOneForCreateInput {
+  create: FederationInstanceCreateInput
+  connect: FederationInstanceWhereUniqueInput
+}
+
+type AccountDiscovery {
+  id: ID!
+  mesh_member: Member
+  discovery_method: AccountDiscoveryDiscoveryMethodType
+  search_query: String
+  discovered_actor_id: String
+  discovered_username: String
+  discovered_domain: String
+  discovered_display_name: String
+  discovered_avatar_url: String
+  discovered_summary: String
+  is_successful: AccountDiscoveryIsSuccessfulType
+  confidence_score: Int
+  match_reason: String
+  created_at: DateTime
+}
+
+enum AccountDiscoveryDiscoveryMethodType {
+  webfinger
+  activitypub
+  search
+  profile_url
+  email
+  auto
+}
+
+enum AccountDiscoveryIsSuccessfulType {
+  success
+  failed
+}
+
+input AccountDiscoveryWhereUniqueInput {
+  id: ID
+}
+
+input AccountDiscoveryWhereInput {
+  AND: [AccountDiscoveryWhereInput!]
+  OR: [AccountDiscoveryWhereInput!]
+  NOT: [AccountDiscoveryWhereInput!]
+  id: IDFilter
+  mesh_member: MemberWhereInput
+  discovery_method: AccountDiscoveryDiscoveryMethodTypeNullableFilter
+  search_query: StringFilter
+  discovered_actor_id: StringFilter
+  discovered_username: StringFilter
+  discovered_domain: StringFilter
+  discovered_display_name: StringFilter
+  discovered_avatar_url: StringFilter
+  discovered_summary: StringFilter
+  is_successful: AccountDiscoveryIsSuccessfulTypeNullableFilter
+  confidence_score: IntFilter
+  match_reason: StringFilter
+  created_at: DateTimeFilter
+}
+
+input AccountDiscoveryDiscoveryMethodTypeNullableFilter {
+  equals: AccountDiscoveryDiscoveryMethodType
+  in: [AccountDiscoveryDiscoveryMethodType!]
+  notIn: [AccountDiscoveryDiscoveryMethodType!]
+  not: AccountDiscoveryDiscoveryMethodTypeNullableFilter
+}
+
+input AccountDiscoveryIsSuccessfulTypeNullableFilter {
+  equals: AccountDiscoveryIsSuccessfulType
+  in: [AccountDiscoveryIsSuccessfulType!]
+  notIn: [AccountDiscoveryIsSuccessfulType!]
+  not: AccountDiscoveryIsSuccessfulTypeNullableFilter
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeFilter
+}
+
+input AccountDiscoveryOrderByInput {
+  id: OrderDirection
+  discovery_method: OrderDirection
+  search_query: OrderDirection
+  discovered_actor_id: OrderDirection
+  discovered_username: OrderDirection
+  discovered_domain: OrderDirection
+  discovered_display_name: OrderDirection
+  discovered_avatar_url: OrderDirection
+  discovered_summary: OrderDirection
+  is_successful: OrderDirection
+  confidence_score: OrderDirection
+  match_reason: OrderDirection
+  created_at: OrderDirection
+}
+
+input AccountDiscoveryUpdateInput {
+  mesh_member: MemberRelateToOneForUpdateInput
+  discovery_method: AccountDiscoveryDiscoveryMethodType
+  search_query: String
+  discovered_actor_id: String
+  discovered_username: String
+  discovered_domain: String
+  discovered_display_name: String
+  discovered_avatar_url: String
+  discovered_summary: String
+  is_successful: AccountDiscoveryIsSuccessfulType
+  confidence_score: Int
+  match_reason: String
+  created_at: DateTime
+}
+
+input AccountDiscoveryUpdateArgs {
+  where: AccountDiscoveryWhereUniqueInput!
+  data: AccountDiscoveryUpdateInput!
+}
+
+input AccountDiscoveryCreateInput {
+  mesh_member: MemberRelateToOneForCreateInput
+  discovery_method: AccountDiscoveryDiscoveryMethodType
+  search_query: String
+  discovered_actor_id: String
+  discovered_username: String
+  discovered_domain: String
+  discovered_display_name: String
+  discovered_avatar_url: String
+  discovered_summary: String
+  is_successful: AccountDiscoveryIsSuccessfulType
+  confidence_score: Int
+  match_reason: String
+  created_at: DateTime
+}
+
+type AccountMapping {
+  id: ID!
+  mesh_member: Member
+  remote_actor_id: String
+  remote_username: String
+  remote_domain: String
+  remote_display_name: String
+  remote_avatar_url: String
+  remote_summary: String
+  is_verified: Boolean
+  verification_method: AccountMappingVerificationMethodType
+  verification_date: DateTime
+  sync_enabled: Boolean
+  sync_posts: Boolean
+  sync_follows: Boolean
+  sync_likes: Boolean
+  sync_announces: Boolean
+  last_sync_at: DateTime
+  sync_error_count: Int
+  remote_follower_count: Int
+  remote_following_count: Int
+  remote_post_count: Int
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+enum AccountMappingVerificationMethodType {
+  manual
+  automatic
+  webfinger
+  activitypub
+}
+
+input AccountMappingWhereUniqueInput {
+  id: ID
+}
+
+input AccountMappingWhereInput {
+  AND: [AccountMappingWhereInput!]
+  OR: [AccountMappingWhereInput!]
+  NOT: [AccountMappingWhereInput!]
+  id: IDFilter
+  mesh_member: MemberWhereInput
+  remote_actor_id: StringFilter
+  remote_username: StringFilter
+  remote_domain: StringFilter
+  remote_display_name: StringFilter
+  remote_avatar_url: StringFilter
+  remote_summary: StringFilter
+  is_verified: BooleanFilter
+  verification_method: AccountMappingVerificationMethodTypeNullableFilter
+  verification_date: DateTimeNullableFilter
+  sync_enabled: BooleanFilter
+  sync_posts: BooleanFilter
+  sync_follows: BooleanFilter
+  sync_likes: BooleanFilter
+  sync_announces: BooleanFilter
+  last_sync_at: DateTimeNullableFilter
+  sync_error_count: IntNullableFilter
+  remote_follower_count: IntNullableFilter
+  remote_following_count: IntNullableFilter
+  remote_post_count: IntNullableFilter
+  created_at: DateTimeFilter
+  updated_at: DateTimeFilter
+}
+
+input AccountMappingVerificationMethodTypeNullableFilter {
+  equals: AccountMappingVerificationMethodType
+  in: [AccountMappingVerificationMethodType!]
+  notIn: [AccountMappingVerificationMethodType!]
+  not: AccountMappingVerificationMethodTypeNullableFilter
+}
+
+input AccountMappingOrderByInput {
+  id: OrderDirection
+  remote_actor_id: OrderDirection
+  remote_username: OrderDirection
+  remote_domain: OrderDirection
+  remote_display_name: OrderDirection
+  remote_avatar_url: OrderDirection
+  remote_summary: OrderDirection
+  is_verified: OrderDirection
+  verification_method: OrderDirection
+  verification_date: OrderDirection
+  sync_enabled: OrderDirection
+  sync_posts: OrderDirection
+  sync_follows: OrderDirection
+  sync_likes: OrderDirection
+  sync_announces: OrderDirection
+  last_sync_at: OrderDirection
+  sync_error_count: OrderDirection
+  remote_follower_count: OrderDirection
+  remote_following_count: OrderDirection
+  remote_post_count: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+}
+
+input AccountMappingUpdateInput {
+  mesh_member: MemberRelateToOneForUpdateInput
+  remote_actor_id: String
+  remote_username: String
+  remote_domain: String
+  remote_display_name: String
+  remote_avatar_url: String
+  remote_summary: String
+  is_verified: Boolean
+  verification_method: AccountMappingVerificationMethodType
+  verification_date: DateTime
+  sync_enabled: Boolean
+  sync_posts: Boolean
+  sync_follows: Boolean
+  sync_likes: Boolean
+  sync_announces: Boolean
+  last_sync_at: DateTime
+  sync_error_count: Int
+  remote_follower_count: Int
+  remote_following_count: Int
+  remote_post_count: Int
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+input AccountMappingUpdateArgs {
+  where: AccountMappingWhereUniqueInput!
+  data: AccountMappingUpdateInput!
+}
+
+input AccountMappingCreateInput {
+  mesh_member: MemberRelateToOneForCreateInput
+  remote_actor_id: String
+  remote_username: String
+  remote_domain: String
+  remote_display_name: String
+  remote_avatar_url: String
+  remote_summary: String
+  is_verified: Boolean
+  verification_method: AccountMappingVerificationMethodType
+  verification_date: DateTime
+  sync_enabled: Boolean
+  sync_posts: Boolean
+  sync_follows: Boolean
+  sync_likes: Boolean
+  sync_announces: Boolean
+  last_sync_at: DateTime
+  sync_error_count: Int
+  remote_follower_count: Int
+  remote_following_count: Int
+  remote_post_count: Int
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+type AccountSyncTask {
+  id: ID!
+  mapping: AccountMapping
+  sync_type: AccountSyncTaskSyncTypeType
+  status: AccountSyncTaskStatusType
+  progress: Int
+  items_processed: Int
+  items_synced: Int
+  items_failed: Int
+  since_date: DateTime
+  max_items: Int
+  error_message: String
+  retry_count: Int
+  created_at: DateTime
+  started_at: DateTime
+  completed_at: DateTime
+}
+
+enum AccountSyncTaskSyncTypeType {
+  posts
+  follows
+  likes
+  announces
+  profile
+}
+
+enum AccountSyncTaskStatusType {
+  pending
+  running
+  completed
+  failed
+  cancelled
+}
+
+input AccountSyncTaskWhereUniqueInput {
+  id: ID
+}
+
+input AccountSyncTaskWhereInput {
+  AND: [AccountSyncTaskWhereInput!]
+  OR: [AccountSyncTaskWhereInput!]
+  NOT: [AccountSyncTaskWhereInput!]
+  id: IDFilter
+  mapping: AccountMappingWhereInput
+  sync_type: AccountSyncTaskSyncTypeTypeNullableFilter
+  status: AccountSyncTaskStatusTypeNullableFilter
+  progress: IntFilter
+  items_processed: IntNullableFilter
+  items_synced: IntNullableFilter
+  items_failed: IntNullableFilter
+  since_date: DateTimeNullableFilter
+  max_items: IntNullableFilter
+  error_message: StringFilter
+  retry_count: IntNullableFilter
+  created_at: DateTimeFilter
+  started_at: DateTimeNullableFilter
+  completed_at: DateTimeNullableFilter
+}
+
+input AccountSyncTaskSyncTypeTypeNullableFilter {
+  equals: AccountSyncTaskSyncTypeType
+  in: [AccountSyncTaskSyncTypeType!]
+  notIn: [AccountSyncTaskSyncTypeType!]
+  not: AccountSyncTaskSyncTypeTypeNullableFilter
+}
+
+input AccountSyncTaskStatusTypeNullableFilter {
+  equals: AccountSyncTaskStatusType
+  in: [AccountSyncTaskStatusType!]
+  notIn: [AccountSyncTaskStatusType!]
+  not: AccountSyncTaskStatusTypeNullableFilter
+}
+
+input AccountSyncTaskOrderByInput {
+  id: OrderDirection
+  sync_type: OrderDirection
+  status: OrderDirection
+  progress: OrderDirection
+  items_processed: OrderDirection
+  items_synced: OrderDirection
+  items_failed: OrderDirection
+  since_date: OrderDirection
+  max_items: OrderDirection
+  error_message: OrderDirection
+  retry_count: OrderDirection
+  created_at: OrderDirection
+  started_at: OrderDirection
+  completed_at: OrderDirection
+}
+
+input AccountSyncTaskUpdateInput {
+  mapping: AccountMappingRelateToOneForUpdateInput
+  sync_type: AccountSyncTaskSyncTypeType
+  status: AccountSyncTaskStatusType
+  progress: Int
+  items_processed: Int
+  items_synced: Int
+  items_failed: Int
+  since_date: DateTime
+  max_items: Int
+  error_message: String
+  retry_count: Int
+  created_at: DateTime
+  started_at: DateTime
+  completed_at: DateTime
+}
+
+input AccountMappingRelateToOneForUpdateInput {
+  create: AccountMappingCreateInput
+  connect: AccountMappingWhereUniqueInput
+  disconnect: Boolean
+}
+
+input AccountSyncTaskUpdateArgs {
+  where: AccountSyncTaskWhereUniqueInput!
+  data: AccountSyncTaskUpdateInput!
+}
+
+input AccountSyncTaskCreateInput {
+  mapping: AccountMappingRelateToOneForCreateInput
+  sync_type: AccountSyncTaskSyncTypeType
+  status: AccountSyncTaskStatusType
+  progress: Int
+  items_processed: Int
+  items_synced: Int
+  items_failed: Int
+  since_date: DateTime
+  max_items: Int
+  error_message: String
+  retry_count: Int
+  created_at: DateTime
+  started_at: DateTime
+  completed_at: DateTime
+}
+
+input AccountMappingRelateToOneForCreateInput {
+  create: AccountMappingCreateInput
+  connect: AccountMappingWhereUniqueInput
+}
+
 type Tag {
   id: ID!
   name: String
@@ -1708,6 +2797,10 @@ type Member {
   modify_collectionCount(where: CollectionMemberWhereInput! = {}): Int
   balance: Int
   language: MemberLanguageType
+  activitypub_enabled: Boolean
+  activitypub_auto_follow: Boolean
+  activitypub_public_posts: Boolean
+  activitypub_federation_enabled: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1767,6 +2860,10 @@ input MemberWhereInput {
   modify_collection: CollectionMemberManyRelationFilter
   balance: IntNullableFilter
   language: MemberLanguageTypeNullableFilter
+  activitypub_enabled: BooleanFilter
+  activitypub_auto_follow: BooleanFilter
+  activitypub_public_posts: BooleanFilter
+  activitypub_federation_enabled: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1824,6 +2921,10 @@ input MemberOrderByInput {
   verified: OrderDirection
   balance: OrderDirection
   language: OrderDirection
+  activitypub_enabled: OrderDirection
+  activitypub_auto_follow: OrderDirection
+  activitypub_public_posts: OrderDirection
+  activitypub_federation_enabled: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1860,6 +2961,10 @@ input MemberUpdateInput {
   modify_collection: CollectionMemberRelateToManyForUpdateInput
   balance: Int
   language: MemberLanguageType
+  activitypub_enabled: Boolean
+  activitypub_auto_follow: Boolean
+  activitypub_public_posts: Boolean
+  activitypub_federation_enabled: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1944,6 +3049,10 @@ input MemberCreateInput {
   modify_collection: CollectionMemberRelateToManyForCreateInput
   balance: Int
   language: MemberLanguageType
+  activitypub_enabled: Boolean
+  activitypub_auto_follow: Boolean
+  activitypub_public_posts: Boolean
+  activitypub_federation_enabled: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -3116,6 +4225,60 @@ type Mutation {
   updateStoryTypes(data: [StoryTypeUpdateArgs!]!): [StoryType]
   deleteStoryType(where: StoryTypeWhereUniqueInput!): StoryType
   deleteStoryTypes(where: [StoryTypeWhereUniqueInput!]!): [StoryType]
+  createActivityPubActor(data: ActivityPubActorCreateInput!): ActivityPubActor
+  createActivityPubActors(data: [ActivityPubActorCreateInput!]!): [ActivityPubActor]
+  updateActivityPubActor(where: ActivityPubActorWhereUniqueInput!, data: ActivityPubActorUpdateInput!): ActivityPubActor
+  updateActivityPubActors(data: [ActivityPubActorUpdateArgs!]!): [ActivityPubActor]
+  deleteActivityPubActor(where: ActivityPubActorWhereUniqueInput!): ActivityPubActor
+  deleteActivityPubActors(where: [ActivityPubActorWhereUniqueInput!]!): [ActivityPubActor]
+  createActivity(data: ActivityCreateInput!): Activity
+  createActivities(data: [ActivityCreateInput!]!): [Activity]
+  updateActivity(where: ActivityWhereUniqueInput!, data: ActivityUpdateInput!): Activity
+  updateActivities(data: [ActivityUpdateArgs!]!): [Activity]
+  deleteActivity(where: ActivityWhereUniqueInput!): Activity
+  deleteActivities(where: [ActivityWhereUniqueInput!]!): [Activity]
+  createInboxItem(data: InboxItemCreateInput!): InboxItem
+  createInboxItems(data: [InboxItemCreateInput!]!): [InboxItem]
+  updateInboxItem(where: InboxItemWhereUniqueInput!, data: InboxItemUpdateInput!): InboxItem
+  updateInboxItems(data: [InboxItemUpdateArgs!]!): [InboxItem]
+  deleteInboxItem(where: InboxItemWhereUniqueInput!): InboxItem
+  deleteInboxItems(where: [InboxItemWhereUniqueInput!]!): [InboxItem]
+  createOutboxItem(data: OutboxItemCreateInput!): OutboxItem
+  createOutboxItems(data: [OutboxItemCreateInput!]!): [OutboxItem]
+  updateOutboxItem(where: OutboxItemWhereUniqueInput!, data: OutboxItemUpdateInput!): OutboxItem
+  updateOutboxItems(data: [OutboxItemUpdateArgs!]!): [OutboxItem]
+  deleteOutboxItem(where: OutboxItemWhereUniqueInput!): OutboxItem
+  deleteOutboxItems(where: [OutboxItemWhereUniqueInput!]!): [OutboxItem]
+  createFederationInstance(data: FederationInstanceCreateInput!): FederationInstance
+  createFederationInstances(data: [FederationInstanceCreateInput!]!): [FederationInstance]
+  updateFederationInstance(where: FederationInstanceWhereUniqueInput!, data: FederationInstanceUpdateInput!): FederationInstance
+  updateFederationInstances(data: [FederationInstanceUpdateArgs!]!): [FederationInstance]
+  deleteFederationInstance(where: FederationInstanceWhereUniqueInput!): FederationInstance
+  deleteFederationInstances(where: [FederationInstanceWhereUniqueInput!]!): [FederationInstance]
+  createFederationConnection(data: FederationConnectionCreateInput!): FederationConnection
+  createFederationConnections(data: [FederationConnectionCreateInput!]!): [FederationConnection]
+  updateFederationConnection(where: FederationConnectionWhereUniqueInput!, data: FederationConnectionUpdateInput!): FederationConnection
+  updateFederationConnections(data: [FederationConnectionUpdateArgs!]!): [FederationConnection]
+  deleteFederationConnection(where: FederationConnectionWhereUniqueInput!): FederationConnection
+  deleteFederationConnections(where: [FederationConnectionWhereUniqueInput!]!): [FederationConnection]
+  createAccountDiscovery(data: AccountDiscoveryCreateInput!): AccountDiscovery
+  createAccountDiscoveries(data: [AccountDiscoveryCreateInput!]!): [AccountDiscovery]
+  updateAccountDiscovery(where: AccountDiscoveryWhereUniqueInput!, data: AccountDiscoveryUpdateInput!): AccountDiscovery
+  updateAccountDiscoveries(data: [AccountDiscoveryUpdateArgs!]!): [AccountDiscovery]
+  deleteAccountDiscovery(where: AccountDiscoveryWhereUniqueInput!): AccountDiscovery
+  deleteAccountDiscoveries(where: [AccountDiscoveryWhereUniqueInput!]!): [AccountDiscovery]
+  createAccountMapping(data: AccountMappingCreateInput!): AccountMapping
+  createAccountMappings(data: [AccountMappingCreateInput!]!): [AccountMapping]
+  updateAccountMapping(where: AccountMappingWhereUniqueInput!, data: AccountMappingUpdateInput!): AccountMapping
+  updateAccountMappings(data: [AccountMappingUpdateArgs!]!): [AccountMapping]
+  deleteAccountMapping(where: AccountMappingWhereUniqueInput!): AccountMapping
+  deleteAccountMappings(where: [AccountMappingWhereUniqueInput!]!): [AccountMapping]
+  createAccountSyncTask(data: AccountSyncTaskCreateInput!): AccountSyncTask
+  createAccountSyncTasks(data: [AccountSyncTaskCreateInput!]!): [AccountSyncTask]
+  updateAccountSyncTask(where: AccountSyncTaskWhereUniqueInput!, data: AccountSyncTaskUpdateInput!): AccountSyncTask
+  updateAccountSyncTasks(data: [AccountSyncTaskUpdateArgs!]!): [AccountSyncTask]
+  deleteAccountSyncTask(where: AccountSyncTaskWhereUniqueInput!): AccountSyncTask
+  deleteAccountSyncTasks(where: [AccountSyncTaskWhereUniqueInput!]!): [AccountSyncTask]
   createTag(data: TagCreateInput!): Tag
   createTags(data: [TagCreateInput!]!): [Tag]
   updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag
@@ -3260,6 +4423,33 @@ type Query {
   storyTypes(where: StoryTypeWhereInput! = {}, orderBy: [StoryTypeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: StoryTypeWhereUniqueInput): [StoryType!]
   storyType(where: StoryTypeWhereUniqueInput!): StoryType
   storyTypesCount(where: StoryTypeWhereInput! = {}): Int
+  activityPubActors(where: ActivityPubActorWhereInput! = {}, orderBy: [ActivityPubActorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ActivityPubActorWhereUniqueInput): [ActivityPubActor!]
+  activityPubActor(where: ActivityPubActorWhereUniqueInput!): ActivityPubActor
+  activityPubActorsCount(where: ActivityPubActorWhereInput! = {}): Int
+  activities(where: ActivityWhereInput! = {}, orderBy: [ActivityOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ActivityWhereUniqueInput): [Activity!]
+  activity(where: ActivityWhereUniqueInput!): Activity
+  activitiesCount(where: ActivityWhereInput! = {}): Int
+  inboxItems(where: InboxItemWhereInput! = {}, orderBy: [InboxItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: InboxItemWhereUniqueInput): [InboxItem!]
+  inboxItem(where: InboxItemWhereUniqueInput!): InboxItem
+  inboxItemsCount(where: InboxItemWhereInput! = {}): Int
+  outboxItems(where: OutboxItemWhereInput! = {}, orderBy: [OutboxItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OutboxItemWhereUniqueInput): [OutboxItem!]
+  outboxItem(where: OutboxItemWhereUniqueInput!): OutboxItem
+  outboxItemsCount(where: OutboxItemWhereInput! = {}): Int
+  federationInstances(where: FederationInstanceWhereInput! = {}, orderBy: [FederationInstanceOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FederationInstanceWhereUniqueInput): [FederationInstance!]
+  federationInstance(where: FederationInstanceWhereUniqueInput!): FederationInstance
+  federationInstancesCount(where: FederationInstanceWhereInput! = {}): Int
+  federationConnections(where: FederationConnectionWhereInput! = {}, orderBy: [FederationConnectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FederationConnectionWhereUniqueInput): [FederationConnection!]
+  federationConnection(where: FederationConnectionWhereUniqueInput!): FederationConnection
+  federationConnectionsCount(where: FederationConnectionWhereInput! = {}): Int
+  accountDiscoveries(where: AccountDiscoveryWhereInput! = {}, orderBy: [AccountDiscoveryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AccountDiscoveryWhereUniqueInput): [AccountDiscovery!]
+  accountDiscovery(where: AccountDiscoveryWhereUniqueInput!): AccountDiscovery
+  accountDiscoveriesCount(where: AccountDiscoveryWhereInput! = {}): Int
+  accountMappings(where: AccountMappingWhereInput! = {}, orderBy: [AccountMappingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AccountMappingWhereUniqueInput): [AccountMapping!]
+  accountMapping(where: AccountMappingWhereUniqueInput!): AccountMapping
+  accountMappingsCount(where: AccountMappingWhereInput! = {}): Int
+  accountSyncTasks(where: AccountSyncTaskWhereInput! = {}, orderBy: [AccountSyncTaskOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AccountSyncTaskWhereUniqueInput): [AccountSyncTask!]
+  accountSyncTask(where: AccountSyncTaskWhereUniqueInput!): AccountSyncTask
+  accountSyncTasksCount(where: AccountSyncTaskWhereInput! = {}): Int
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tag(where: TagWhereUniqueInput!): Tag
   tagsCount(where: TagWhereInput! = {}): Int
