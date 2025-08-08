@@ -71,11 +71,6 @@ const listConfigurations = list({
       ref: 'Comment.like',
       many: true,
     }),
-    // 讓 Member 能夠對 Pick 按讚
-    pick_like: relationship({
-      ref: 'Pick.like',
-      many: true,
-    }),
     follower: relationship({
       ref: 'Member.following',
       many: true,
