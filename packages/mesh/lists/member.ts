@@ -71,6 +71,11 @@ const listConfigurations = list({
       ref: 'Comment.like',
       many: true,
     }),
+    // 讓 Member 能夠對 Pick 按讚
+    pick_like: relationship({
+      ref: 'Pick.like',
+      many: true,
+    }),
     follower: relationship({
       ref: 'Member.following',
       many: true,
@@ -141,6 +146,19 @@ const listConfigurations = list({
         {label: "德文-德國", value: "de_DE"},
       ],
       defaultValue: "zh_TW",
+    }),
+    // ActivityPub 設定
+    activitypub_enabled: checkbox({
+      defaultValue: false,
+    }),
+    activitypub_auto_follow: checkbox({
+      defaultValue: true,
+    }),
+    activitypub_public_posts: checkbox({
+      defaultValue: true,
+    }),
+    activitypub_federation_enabled: checkbox({
+      defaultValue: true,
     }),
   },
   ui: {

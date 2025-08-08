@@ -32,6 +32,8 @@ const listConfigurations = list ({
     collection: relationship({ ref: 'Collection.picks', many: false }),
     comment: relationship({ ref: 'Comment', many: false}),
     pick_comment: relationship({ ref: 'Comment', many: true }),
+    // 讓 Pick 支援被 Member 按讚
+    like: relationship({ ref: 'Member.pick_like', many: true }),
 	//posts: relationship({ ref: 'Post.author', many: true }),
 	kind: select({
 	  label: '型態',
