@@ -24,6 +24,7 @@ import ReportRecord from './report_record'
 import Revenue from './revenue'
 import Statement from './statement'
 import StoryType from './story_type'
+import ActivityPubActor from './activitypub_actor'
 
 export const listDefinition = {
   User,
@@ -38,6 +39,7 @@ export const listDefinition = {
   InvitationCode,
   Story,
   StoryType,
+  ActivityPubActor,
   Tag,
   Member,
   Notify,
