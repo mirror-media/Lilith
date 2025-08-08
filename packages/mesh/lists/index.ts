@@ -28,6 +28,8 @@ import ActivityPubActor from './activitypub_actor'
 import Activity from './activity'
 import InboxItem from './inbox_item'
 import OutboxItem from './outbox_item'
+import FederationInstance from './federation_instance'
+import FederationConnection from './federation_connection'
 
 export const listDefinition = {
   User,
@@ -46,6 +48,8 @@ export const listDefinition = {
   Activity,
   InboxItem,
   OutboxItem,
+  FederationInstance,
+  FederationConnection,
   Tag,
   Member,
   Notify,
