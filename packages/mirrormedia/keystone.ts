@@ -31,7 +31,27 @@ const graphqlConfig: GraphQLConfig = {
     envVar.accessControlStrategy === 'gql' && envVar.cache.isEnabled
       ? {
           plugins: [
-            responseCachePlugin(),
+            responseCachePlugin({
+              extraCacheKeyData: async (requestContext) => {
+                const scope = requestContext.request.http?.headers.get(
+                  'x-access-token-scope'
+                )
+                const acl =
+                  typeof scope === 'string'
+                    ? scope.match(/read:member-posts:([^\s]*)/i)?.[1]
+                    : ''
+
+                /**
+                 * 目前僅有文章有權限設定，因此，在 cache 時，需藉由 request 的權限設定，來產生對應的 cache key
+                 *
+                 * @see https://www.apollographql.com/docs/apollo-server/performance/caching#configuring-reads-and-writes
+                 * @see https://github.com/mirror-media/weekly-api-server/blob/226f7a39179901d76e681417442b13ed27db502d/src/middlewares/auth.js#L137
+                 */
+                return {
+                  'member-post-acl': acl,
+                }
+              },
+            }),
             ApolloServerPluginCacheControl({
               defaultMaxAge: envVar.cache.maxAge,
             }),
