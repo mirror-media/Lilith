@@ -11,6 +11,7 @@ import {
   timestamp,
   json,
   virtual,
+  integer,
 } from '@keystone-6/core/fields'
 import { getFileURL } from '../utils/common'
 import { State } from '../type'
@@ -39,6 +40,14 @@ const listConfigurations = list({
     file: file({
       label: '檔案',
       storage: 'videos',
+    }),
+    fileDuration: integer({
+      label: 'GCS影片時長(秒)',
+      defaultValue: 0,
+    }),
+    youtubeDuration: integer({
+      label: 'YouTube影片時長(秒)',
+      defaultValue: 0,
     }),
     videoSrc: virtual({
       field: graphql.field({
