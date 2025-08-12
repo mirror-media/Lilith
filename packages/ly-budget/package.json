@@ -1,7 +1,7 @@
 {
   "name": "@mirrormedia/lilith-ly-budget",
   "version": "0.1.0",
-  "description": "立法院預算管理系統",
+  "description": "ly budget data platform",
   "scripts": {
     "dev": "keystone dev",
     "start": "keystone start",
@@ -12,19 +12,29 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/mirror-media/lilith.git",
-    "directory": "packages/ly-budget"
+    "directory": "packages/mesh"
   },
   "license": "MIT",
   "dependencies": {
+    "@apollo/server-plugin-response-cache": "^4.1.3",
+    "@apollo/utils.keyvadapter": "^3.0.0",
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "11.11.0",
     "@keystone-6/auth": "7.0.0",
     "@keystone-6/core": "5.2.0",
-    "@mirrormedia/lilith-core": "2.0.0-alpha.7",
+    "@keyv/redis": "^2.7.0",
+    "@keystone-6/fields-document": "8.0.0",
+    "@mirrormedia/lilith-core": "3.0.4",
+    "@reduxjs/toolkit": "^2.2.7",
     "express": "^4.17.1",
     "http-proxy-middleware": "^2.0.3",
-    "patch-package": "^6.4.7"
+    "ioredis": "^5.3.2",
+    "keyv": "^4.5.3",
+    "patch-package": "^6.4.7",
+    "redis-errors": "^1.2.0",
+    "redis-parser": "^3.0.0"
   },
   "resolutions": {
-    "**/next": "13.3.4",
     "**/react": "18.2.0",
     "**/react-dom": "18.2.0"
   },
