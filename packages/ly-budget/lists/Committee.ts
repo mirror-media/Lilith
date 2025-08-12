@@ -50,6 +50,9 @@ const listConfigurations = list({
           return `${item.name}(${item.term?.termNumber})`
         },
       },
+      ui: {
+        displayMode: 'text',
+      },
     }),
   },
 
