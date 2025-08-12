@@ -1,5 +1,5 @@
 import { list } from '@keystone-6/core';
-import { text, timestamp, integer, select, relationship } from '@keystone-6/core/fields';
+import { text, timestamp, integer, select, relationship, checkbox } from '@keystone-6/core/fields';
 
 const AccountDiscovery = list({
   access: {
@@ -43,19 +43,10 @@ const AccountDiscovery = list({
     discovered_display_name: text(),
     discovered_avatar_url: text(),
     discovered_summary: text(),
-    is_successful: select({
-      type: 'enum',
-      options: [
-        { label: 'Success', value: 'success' },
-        { label: 'Failed', value: 'failed' },
-      ],
-      defaultValue: 'success',
-      validation: { isRequired: true },
-    }),
-    confidence_score: integer({
-      defaultValue: 80,
-      validation: { isRequired: true, min: 0, max: 100 },
-    }),
+    // 與後端 API 對齊
+    is_successful: checkbox({ defaultValue: true }),
+    // 0-100 信心分數，後端會以百分比整數寫入
+    confidence_score: integer({ defaultValue: 80, validation: { isRequired: true, min: 0, max: 100 } }),
     match_reason: text(),
     created_at: timestamp({
       defaultValue: { kind: 'now' },

@@ -574,7 +574,7 @@ model AccountDiscovery {
   discovered_display_name String                              @default("")
   discovered_avatar_url   String                              @default("")
   discovered_summary      String                              @default("")
-  is_successful           AccountDiscoveryIsSuccessfulType    @default(success)
+  is_successful           Boolean                             @default(true)
   confidence_score        Int                                 @default(80)
   match_reason            String                              @default("")
   created_at              DateTime                            @default(now())
@@ -1022,11 +1022,6 @@ enum AccountDiscoveryDiscoveryMethodType {
   profile_url
   email
   auto
-}
-
-enum AccountDiscoveryIsSuccessfulType {
-  success
-  failed
 }
 
 enum AccountMappingVerificationMethodType {

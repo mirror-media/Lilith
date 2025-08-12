@@ -1295,6 +1295,7 @@ type Story {
   published_date: DateTime
   og_title: String
   og_image: String
+  image: String
   og_description: String
   full_content: Boolean
   paywall: Boolean
@@ -2268,7 +2269,7 @@ type AccountDiscovery {
   discovered_display_name: String
   discovered_avatar_url: String
   discovered_summary: String
-  is_successful: AccountDiscoveryIsSuccessfulType
+  is_successful: Boolean
   confidence_score: Int
   match_reason: String
   created_at: DateTime
@@ -2281,11 +2282,6 @@ enum AccountDiscoveryDiscoveryMethodType {
   profile_url
   email
   auto
-}
-
-enum AccountDiscoveryIsSuccessfulType {
-  success
-  failed
 }
 
 input AccountDiscoveryWhereUniqueInput {
@@ -2306,7 +2302,7 @@ input AccountDiscoveryWhereInput {
   discovered_display_name: StringFilter
   discovered_avatar_url: StringFilter
   discovered_summary: StringFilter
-  is_successful: AccountDiscoveryIsSuccessfulTypeNullableFilter
+  is_successful: BooleanFilter
   confidence_score: IntFilter
   match_reason: StringFilter
   created_at: DateTimeFilter
@@ -2317,13 +2313,6 @@ input AccountDiscoveryDiscoveryMethodTypeNullableFilter {
   in: [AccountDiscoveryDiscoveryMethodType!]
   notIn: [AccountDiscoveryDiscoveryMethodType!]
   not: AccountDiscoveryDiscoveryMethodTypeNullableFilter
-}
-
-input AccountDiscoveryIsSuccessfulTypeNullableFilter {
-  equals: AccountDiscoveryIsSuccessfulType
-  in: [AccountDiscoveryIsSuccessfulType!]
-  notIn: [AccountDiscoveryIsSuccessfulType!]
-  not: AccountDiscoveryIsSuccessfulTypeNullableFilter
 }
 
 input DateTimeFilter {
@@ -2363,7 +2352,7 @@ input AccountDiscoveryUpdateInput {
   discovered_display_name: String
   discovered_avatar_url: String
   discovered_summary: String
-  is_successful: AccountDiscoveryIsSuccessfulType
+  is_successful: Boolean
   confidence_score: Int
   match_reason: String
   created_at: DateTime
@@ -2384,7 +2373,7 @@ input AccountDiscoveryCreateInput {
   discovered_display_name: String
   discovered_avatar_url: String
   discovered_summary: String
-  is_successful: AccountDiscoveryIsSuccessfulType
+  is_successful: Boolean
   confidence_score: Int
   match_reason: String
   created_at: DateTime
