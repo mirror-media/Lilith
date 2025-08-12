@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { timestamp, text, relationship } from '@keystone-6/core/fields'
+import { timestamp, text, relationship, virtual } from '@keystone-6/core/fields'
 
 const { allowRolesForUsers, admin, moderator, editor } = utils.accessControl
 
@@ -40,6 +40,18 @@ const listConfigurations = list({
       },
       ui: {
         displayMode: 'textarea',
+      },
+    }),
+    displayName: virtual({
+      label: '顯示名稱',
+      field: {
+        query: 'name term { termNumber }',
+        resolver: (item) => {
+          return `${item.name}(${item.term?.termNumber})`
+        },
+      },
+      ui: {
+        displayMode: 'text',
       },
     }),
   },

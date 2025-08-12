@@ -1,17 +1,21 @@
+import 'dotenv/config'
 import { config } from '@keystone-6/core'
 import { listDefinition as lists } from './lists'
-import appConfig from './config'
-import { createProxyMiddleware } from 'http-proxy-middleware'
 import envVar from './environment-variables'
 import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
-import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache'
+import { createPreviewMiniApp } from './express-mini-apps/preview/app'
+import Keyv from 'keyv'
+import { KeyvAdapter } from '@apollo/utils.keyvadapter'
+import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
+import responseCachePlugin from '@apollo/server-plugin-response-cache'
+import { GraphQLConfig } from '@keystone-6/core/types'
 
 const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
-  sessionData: 'name role',
+  sessionData: 'id name role',
   secretField: 'password',
   initFirstItem: {
     // If there are no items in the database, keystone will ask you to create
@@ -20,13 +24,35 @@ const { withAuth } = createAuth({
   },
 })
 
-const session = statelessSessions(appConfig.session)
+const session = statelessSessions(envVar.session)
+
+const graphqlConfig: GraphQLConfig = {
+  apolloConfig:
+    envVar.accessControlStrategy === 'gql' && envVar.cache.isEnabled
+      ? {
+          plugins: [
+            responseCachePlugin(),
+            ApolloServerPluginCacheControl({
+              defaultMaxAge: envVar.cache.maxAge,
+            }),
+          ],
+          cache: new KeyvAdapter(
+            new Keyv(envVar.cache.url, {
+              lazyConnect: true,
+              namespace: envVar.cache.identifier,
+              connectionName: envVar.cache.identifier,
+              connectTimeout: envVar.cache.connectTimeOut,
+            })
+          ),
+        }
+      : undefined,
+}
 
 export default withAuth(
   config({
     db: {
-      provider: appConfig.database.provider,
-      url: appConfig.database.url,
+      provider: envVar.database.provider,
+      url: envVar.database.url,
       idField: {
         kind: 'autoincrement',
       },
@@ -37,91 +63,50 @@ export default withAuth(
       // For our starter, we check that someone has session data before letting them see the Admin UI.
       isAccessAllowed: (context) => !!context.session?.data,
     },
+    graphql: graphqlConfig,
     lists,
     session,
     storage: {
       files: {
         kind: 'local',
         type: 'file',
-        storagePath: appConfig.files.storagePath,
+        storagePath: envVar.files.storagePath,
         serverRoute: {
           path: '/files',
         },
-        generateUrl: (path) => `/files${path}`,
+        generateUrl: (path) => `${envVar.files.baseUrl}${path}`,
       },
       images: {
         kind: 'local',
         type: 'image',
-        storagePath: appConfig.images.storagePath,
+        storagePath: envVar.images.storagePath,
         serverRoute: {
           path: '/images',
         },
-        generateUrl: (path) => `/images${path}`,
-      },
-    },
-    graphql: {
-      apolloConfig: {
-        cache: new InMemoryLRUCache({
-          // ~100MiB
-          maxSize: Math.pow(2, 20) * envVar.memoryCacheSize,
-          // 5 minutes (in milliseconds)
-          ttl: envVar.memoryCacheTtl,
-        }),
+        generateUrl: (path) => `${envVar.images.baseUrl}${path}`,
       },
     },
     server: {
-	  healthCheck: {
-	    path: '/healthz',
-	    data: { status: 'healthy' },
-	  },
-      extendExpressApp: (app, createContext) => {
+      healthCheck: {
+        path: '/health_check',
+        data: { status: 'healthy' },
+      },
+      maxFileSize: 2000 * 1024 * 1024,
+      extendExpressApp: (app, context) => {
         // This middleware is available in Express v4.16.0 onwards
         // Set to 50mb because DraftJS Editor playload could be really large
-        const jsonBodyParser = express.json({ limit: '50mb' })
+
+        const jsonBodyParser = express.json({ limit: '500mb' })
         app.use(jsonBodyParser)
 
-        // eslint-disable-next-line
-        // @ts-ignore
-        // Check if the request is sent by an authenticated user
-        const authenticationMw = async (req, res, next) => {
-          const context = await createContext({ req, res })
-          // User has been logged in
-          if (context?.session?.data?.role) {
-            return next()
-          }
-
-          // Otherwise, redirect them to login page
-          res.redirect('/signin')
-        }
-
-        const previewProxyMiddleware = createProxyMiddleware({
-          target: envVar.previewServerOrigin,
-          changeOrigin: true,
-          onProxyRes: (proxyRes) => {
-            // The response from preview nuxt server might be with Cache-Control header.
-            // However, we don't want to get cached responses for `draft` posts.
-            // Therefore, we do not cache html response intentionlly by overwritting the Cache-Control header.
-            proxyRes.headers['cache-control'] = 'no-store'
-          },
-        })
-
-        // Proxy requests with `/story/id` url path to preview nuxt server
-        app.get('/story/:id', authenticationMw, previewProxyMiddleware)
-
-        // Proxy requests with `/event/:slug` url path to preview nuxt server
-        app.get('/event/:slug', authenticationMw, previewProxyMiddleware)
-
-        // Proxy requests with `/news/:id` url path to preview nuxt server
-        app.get('/news/:id', authenticationMw, previewProxyMiddleware)
-
-        // Proxy requests with `/_nuxt/*` url path to preview nuxt server
-        app.use(
-          '/_nuxt/*',
-          createProxyMiddleware({
-            target: envVar.previewServerOrigin,
-            changeOrigin: true,
-          })
-        )
+        //if (envVar.accessControlStrategy === 'cms') {
+        //  app.use(
+        //    createPreviewMiniApp({
+        //      previewServer: envVar.previewServer,
+        //      keystoneContext: context,
+        //    })
+        //  )
+        //}
       },
     },
   })

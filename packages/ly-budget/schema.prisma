@@ -21,17 +21,19 @@ model User {
 }
 
 model Term {
-  id               Int       @id @default(autoincrement())
-  termNumber       Int
-  startDate        DateTime
-  endDate          DateTime?
-  description      String?
-  from_People_term People[]  @relation("People_term")
+  id                  Int         @id @default(autoincrement())
+  termNumber          Int
+  startDate           DateTime
+  endDate             DateTime?
+  description         String?
+  from_Committee_term Committee[] @relation("Committee_term")
+  from_People_term    People[]    @relation("People_term")
 }
 
 model Committee {
   id                     Int       @id @default(autoincrement())
-  termNumber             Int
+  term                   Term?     @relation("Committee_term", fields: [termId], references: [id])
+  termId                 Int?      @map("term")
   startDate              DateTime
   endDate                DateTime?
   session                String    @default("")
@@ -40,6 +42,8 @@ model Committee {
   description            String?
   from_People_committees People[]  @relation("People_committees")
   from_Meeting_committee Meeting[] @relation("Meeting_committee")
+
+  @@index([termId])
 }
 
 model People {

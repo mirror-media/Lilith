@@ -230,7 +230,7 @@ input TermCreateInput {
 
 type Committee {
   id: ID!
-  termNumber: Int
+  term: Term
   startDate: DateTime
   endDate: DateTime
   session: String
@@ -249,7 +249,7 @@ input CommitteeWhereInput {
   OR: [CommitteeWhereInput!]
   NOT: [CommitteeWhereInput!]
   id: IDFilter
-  termNumber: IntFilter
+  term: TermWhereInput
   startDate: DateTimeFilter
   endDate: DateTimeNullableFilter
   session: StringFilter
@@ -266,7 +266,6 @@ input PeopleManyRelationFilter {
 
 input CommitteeOrderByInput {
   id: OrderDirection
-  termNumber: OrderDirection
   startDate: OrderDirection
   endDate: OrderDirection
   session: OrderDirection
@@ -275,13 +274,19 @@ input CommitteeOrderByInput {
 }
 
 input CommitteeUpdateInput {
-  termNumber: Int
+  term: TermRelateToOneForUpdateInput
   startDate: DateTime
   endDate: DateTime
   session: String
   name: String
   members: PeopleRelateToManyForUpdateInput
   description: String
+}
+
+input TermRelateToOneForUpdateInput {
+  create: TermCreateInput
+  connect: TermWhereUniqueInput
+  disconnect: Boolean
 }
 
 input PeopleRelateToManyForUpdateInput {
@@ -297,13 +302,18 @@ input CommitteeUpdateArgs {
 }
 
 input CommitteeCreateInput {
-  termNumber: Int
+  term: TermRelateToOneForCreateInput
   startDate: DateTime
   endDate: DateTime
   session: String
   name: String
   members: PeopleRelateToManyForCreateInput
   description: String
+}
+
+input TermRelateToOneForCreateInput {
+  create: TermCreateInput
+  connect: TermWhereUniqueInput
 }
 
 input PeopleRelateToManyForCreateInput {
@@ -361,12 +371,6 @@ input PeopleUpdateInput {
   description: String
 }
 
-input TermRelateToOneForUpdateInput {
-  create: TermCreateInput
-  connect: TermWhereUniqueInput
-  disconnect: Boolean
-}
-
 input PeopleRelateToOneForUpdateInput {
   create: PeopleCreateInput
   connect: PeopleWhereUniqueInput
@@ -392,11 +396,6 @@ input PeopleCreateInput {
   party: PeopleRelateToOneForCreateInput
   committees: CommitteeRelateToManyForCreateInput
   description: String
-}
-
-input TermRelateToOneForCreateInput {
-  create: TermCreateInput
-  connect: TermWhereUniqueInput
 }
 
 input PeopleRelateToOneForCreateInput {
