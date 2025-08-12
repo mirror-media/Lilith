@@ -1,0 +1,34 @@
+{
+  "name": "@mirrormedia/lilith-ly-budget",
+  "version": "0.1.0",
+  "description": "立法院預算管理系統",
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "db-migrate": "keystone prisma migrate deploy",
+    "build": "keystone build",
+    "postinstall": "test -n \"$WINDOWS_ONLY\" || patch-package && keystone postinstall --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mirror-media/lilith.git",
+    "directory": "packages/ly-budget"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@keystone-6/auth": "7.0.0",
+    "@keystone-6/core": "5.2.0",
+    "@mirrormedia/lilith-core": "2.0.0-alpha.7",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^2.0.3",
+    "patch-package": "^6.4.7"
+  },
+  "resolutions": {
+    "**/next": "13.3.4",
+    "**/react": "18.2.0",
+    "**/react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
+}
