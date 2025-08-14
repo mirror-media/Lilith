@@ -1323,6 +1323,7 @@ enum StoryFullScreenAdType {
 enum StoryStoryTypeType {
   story
   podcast
+  video
 }
 
 input StoryWhereUniqueInput {

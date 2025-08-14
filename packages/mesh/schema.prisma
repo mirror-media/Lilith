@@ -990,6 +990,7 @@ enum StoryFullScreenAdType {
 enum StoryStoryTypeType {
   story
   podcast
+  video
 }
 
 enum ActivityActivityTypeType {

@@ -103,6 +103,7 @@ const listConfigurations = list({
       options: [
         { label: 'Story', value: 'story' },
         { label: 'Podcast', value: 'podcast' },
+        { label: 'Video', value: 'video' },
       ],
       defaultValue: 'story',
       isIndexed: true,
