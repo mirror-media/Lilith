@@ -24,6 +24,15 @@ import ReportRecord from './report_record'
 import Revenue from './revenue'
 import Statement from './statement'
 import StoryType from './story_type'
+import ActivityPubActor from './activitypub_actor'
+import Activity from './activity'
+import InboxItem from './inbox_item'
+import OutboxItem from './outbox_item'
+import FederationInstance from './federation_instance'
+import FederationConnection from './federation_connection'
+import AccountDiscovery from './account_discovery'
+import AccountMapping from './account_mapping'
+import AccountSyncTask from './account_sync_task'
 
 export const listDefinition = {
   User,
@@ -38,6 +47,15 @@ export const listDefinition = {
   InvitationCode,
   Story,
   StoryType,
+  ActivityPubActor,
+  Activity,
+  InboxItem,
+  OutboxItem,
+  FederationInstance,
+  FederationConnection,
+  AccountDiscovery,
+  AccountMapping,
+  AccountSyncTask,
   Tag,
   Member,
   Notify,

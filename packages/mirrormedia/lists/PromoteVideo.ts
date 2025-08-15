@@ -7,6 +7,7 @@ import {
   checkbox,
   timestamp,
 } from '@keystone-6/core/fields'
+import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -57,6 +58,17 @@ const listConfigurations = list({
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
+    },
+  },
+  hooks: {
+    afterOperation: async ({ operation, item, context, resolvedData }) => {
+      const result = fetch(
+        envVar.dataServiceApi + '/gql_to_json?bucket=' + envVar.gcs.bucket + '&dest_file=files/json/promoting-video.json&gql_string=query { promoteVideos( where: { state: { equals: "published" } OR: [ { videoLink: { contains: "youtube.com" } } { videoLink: { contains: "youtu.be" } } ] } take: 6 orderBy: [{ order: asc }]) { id videoLink } }',
+        {
+          method: 'GET',
+        }
+      )
+        console.log(result)
     },
   },
 })

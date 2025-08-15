@@ -12,64 +12,76 @@ generator client {
 }
 
 model User {
-  id                              Int                @id @default(autoincrement())
-  name                            String             @default("")
-  email                           String             @unique @default("")
-  password                        String
-  role                            String
-  publisher                       Publisher?         @relation("User_publisher", fields: [publisherId], references: [id])
-  publisherId                     Int?               @map("publisher")
-  isProtected                     Boolean            @default(false)
-  from_InvalidName_createdBy      InvalidName[]      @relation("InvalidName_createdBy")
-  from_InvalidName_updatedBy      InvalidName[]      @relation("InvalidName_updatedBy")
-  from_Category_createdBy         Category[]         @relation("Category_createdBy")
-  from_Category_updatedBy         Category[]         @relation("Category_updatedBy")
-  from_Comment_createdBy          Comment[]          @relation("Comment_createdBy")
-  from_Comment_updatedBy          Comment[]          @relation("Comment_updatedBy")
-  from_Pick_createdBy             Pick[]             @relation("Pick_createdBy")
-  from_Pick_updatedBy             Pick[]             @relation("Pick_updatedBy")
-  from_Publisher_createdBy        Publisher[]        @relation("Publisher_createdBy")
-  from_Publisher_updatedBy        Publisher[]        @relation("Publisher_updatedBy")
-  from_Collection_createdBy       Collection[]       @relation("Collection_createdBy")
-  from_Collection_updatedBy       Collection[]       @relation("Collection_updatedBy")
-  from_CollectionMember_createdBy CollectionMember[] @relation("CollectionMember_createdBy")
-  from_CollectionMember_updatedBy CollectionMember[] @relation("CollectionMember_updatedBy")
-  from_CollectionPick_createdBy   CollectionPick[]   @relation("CollectionPick_createdBy")
-  from_CollectionPick_updatedBy   CollectionPick[]   @relation("CollectionPick_updatedBy")
-  from_InvitationCode_createdBy   InvitationCode[]   @relation("InvitationCode_createdBy")
-  from_InvitationCode_updatedBy   InvitationCode[]   @relation("InvitationCode_updatedBy")
-  from_Story_createdBy            Story[]            @relation("Story_createdBy")
-  from_Story_updatedBy            Story[]            @relation("Story_updatedBy")
-  from_StoryType_createdBy        StoryType[]        @relation("StoryType_createdBy")
-  from_StoryType_updatedBy        StoryType[]        @relation("StoryType_updatedBy")
-  from_Tag_createdBy              Tag[]              @relation("Tag_createdBy")
-  from_Tag_updatedBy              Tag[]              @relation("Tag_updatedBy")
-  from_Member_createdBy           Member[]           @relation("Member_createdBy")
-  from_Member_updatedBy           Member[]           @relation("Member_updatedBy")
-  from_Notify_createdBy           Notify[]           @relation("Notify_createdBy")
-  from_Notify_updatedBy           Notify[]           @relation("Notify_updatedBy")
-  from_Announcement_createdBy     Announcement[]     @relation("Announcement_createdBy")
-  from_Announcement_updatedBy     Announcement[]     @relation("Announcement_updatedBy")
-  from_Photo_createdBy            Photo[]            @relation("Photo_createdBy")
-  from_Photo_updatedBy            Photo[]            @relation("Photo_updatedBy")
-  from_Policy_createdBy           Policy[]           @relation("Policy_createdBy")
-  from_Policy_updatedBy           Policy[]           @relation("Policy_updatedBy")
-  from_Podcast_createdBy          Podcast[]          @relation("Podcast_createdBy")
-  from_Podcast_updatedBy          Podcast[]          @relation("Podcast_updatedBy")
-  from_Transaction_createdBy      Transaction[]      @relation("Transaction_createdBy")
-  from_Transaction_updatedBy      Transaction[]      @relation("Transaction_updatedBy")
-  from_Sponsorship_createdBy      Sponsorship[]      @relation("Sponsorship_createdBy")
-  from_Sponsorship_updatedBy      Sponsorship[]      @relation("Sponsorship_updatedBy")
-  from_Exchange_createdBy         Exchange[]         @relation("Exchange_createdBy")
-  from_Exchange_updatedBy         Exchange[]         @relation("Exchange_updatedBy")
-  from_ReportReason_createdBy     ReportReason[]     @relation("ReportReason_createdBy")
-  from_ReportReason_updatedBy     ReportReason[]     @relation("ReportReason_updatedBy")
-  from_ReportRecord_createdBy     ReportRecord[]     @relation("ReportRecord_createdBy")
-  from_ReportRecord_updatedBy     ReportRecord[]     @relation("ReportRecord_updatedBy")
-  from_Revenue_createdBy          Revenue[]          @relation("Revenue_createdBy")
-  from_Revenue_updatedBy          Revenue[]          @relation("Revenue_updatedBy")
-  from_Statement_createdBy        Statement[]        @relation("Statement_createdBy")
-  from_Statement_updatedBy        Statement[]        @relation("Statement_updatedBy")
+  id                                  Int                    @id @default(autoincrement())
+  name                                String                 @default("")
+  email                               String                 @unique @default("")
+  password                            String
+  role                                String
+  publisher                           Publisher?             @relation("User_publisher", fields: [publisherId], references: [id])
+  publisherId                         Int?                   @map("publisher")
+  isProtected                         Boolean                @default(false)
+  from_InvalidName_createdBy          InvalidName[]          @relation("InvalidName_createdBy")
+  from_InvalidName_updatedBy          InvalidName[]          @relation("InvalidName_updatedBy")
+  from_Category_createdBy             Category[]             @relation("Category_createdBy")
+  from_Category_updatedBy             Category[]             @relation("Category_updatedBy")
+  from_Comment_createdBy              Comment[]              @relation("Comment_createdBy")
+  from_Comment_updatedBy              Comment[]              @relation("Comment_updatedBy")
+  from_Pick_createdBy                 Pick[]                 @relation("Pick_createdBy")
+  from_Pick_updatedBy                 Pick[]                 @relation("Pick_updatedBy")
+  from_Publisher_createdBy            Publisher[]            @relation("Publisher_createdBy")
+  from_Publisher_updatedBy            Publisher[]            @relation("Publisher_updatedBy")
+  from_Collection_createdBy           Collection[]           @relation("Collection_createdBy")
+  from_Collection_updatedBy           Collection[]           @relation("Collection_updatedBy")
+  from_CollectionMember_createdBy     CollectionMember[]     @relation("CollectionMember_createdBy")
+  from_CollectionMember_updatedBy     CollectionMember[]     @relation("CollectionMember_updatedBy")
+  from_CollectionPick_createdBy       CollectionPick[]       @relation("CollectionPick_createdBy")
+  from_CollectionPick_updatedBy       CollectionPick[]       @relation("CollectionPick_updatedBy")
+  from_InvitationCode_createdBy       InvitationCode[]       @relation("InvitationCode_createdBy")
+  from_InvitationCode_updatedBy       InvitationCode[]       @relation("InvitationCode_updatedBy")
+  from_Story_createdBy                Story[]                @relation("Story_createdBy")
+  from_Story_updatedBy                Story[]                @relation("Story_updatedBy")
+  from_StoryType_createdBy            StoryType[]            @relation("StoryType_createdBy")
+  from_StoryType_updatedBy            StoryType[]            @relation("StoryType_updatedBy")
+  from_ActivityPubActor_createdBy     ActivityPubActor[]     @relation("ActivityPubActor_createdBy")
+  from_ActivityPubActor_updatedBy     ActivityPubActor[]     @relation("ActivityPubActor_updatedBy")
+  from_Activity_createdBy             Activity[]             @relation("Activity_createdBy")
+  from_Activity_updatedBy             Activity[]             @relation("Activity_updatedBy")
+  from_InboxItem_createdBy            InboxItem[]            @relation("InboxItem_createdBy")
+  from_InboxItem_updatedBy            InboxItem[]            @relation("InboxItem_updatedBy")
+  from_OutboxItem_createdBy           OutboxItem[]           @relation("OutboxItem_createdBy")
+  from_OutboxItem_updatedBy           OutboxItem[]           @relation("OutboxItem_updatedBy")
+  from_FederationInstance_createdBy   FederationInstance[]   @relation("FederationInstance_createdBy")
+  from_FederationInstance_updatedBy   FederationInstance[]   @relation("FederationInstance_updatedBy")
+  from_FederationConnection_createdBy FederationConnection[] @relation("FederationConnection_createdBy")
+  from_FederationConnection_updatedBy FederationConnection[] @relation("FederationConnection_updatedBy")
+  from_Tag_createdBy                  Tag[]                  @relation("Tag_createdBy")
+  from_Tag_updatedBy                  Tag[]                  @relation("Tag_updatedBy")
+  from_Member_createdBy               Member[]               @relation("Member_createdBy")
+  from_Member_updatedBy               Member[]               @relation("Member_updatedBy")
+  from_Notify_createdBy               Notify[]               @relation("Notify_createdBy")
+  from_Notify_updatedBy               Notify[]               @relation("Notify_updatedBy")
+  from_Announcement_createdBy         Announcement[]         @relation("Announcement_createdBy")
+  from_Announcement_updatedBy         Announcement[]         @relation("Announcement_updatedBy")
+  from_Photo_createdBy                Photo[]                @relation("Photo_createdBy")
+  from_Photo_updatedBy                Photo[]                @relation("Photo_updatedBy")
+  from_Policy_createdBy               Policy[]               @relation("Policy_createdBy")
+  from_Policy_updatedBy               Policy[]               @relation("Policy_updatedBy")
+  from_Podcast_createdBy              Podcast[]              @relation("Podcast_createdBy")
+  from_Podcast_updatedBy              Podcast[]              @relation("Podcast_updatedBy")
+  from_Transaction_createdBy          Transaction[]          @relation("Transaction_createdBy")
+  from_Transaction_updatedBy          Transaction[]          @relation("Transaction_updatedBy")
+  from_Sponsorship_createdBy          Sponsorship[]          @relation("Sponsorship_createdBy")
+  from_Sponsorship_updatedBy          Sponsorship[]          @relation("Sponsorship_updatedBy")
+  from_Exchange_createdBy             Exchange[]             @relation("Exchange_createdBy")
+  from_Exchange_updatedBy             Exchange[]             @relation("Exchange_updatedBy")
+  from_ReportReason_createdBy         ReportReason[]         @relation("ReportReason_createdBy")
+  from_ReportReason_updatedBy         ReportReason[]         @relation("ReportReason_updatedBy")
+  from_ReportRecord_createdBy         ReportRecord[]         @relation("ReportRecord_createdBy")
+  from_ReportRecord_updatedBy         ReportRecord[]         @relation("ReportRecord_updatedBy")
+  from_Revenue_createdBy              Revenue[]              @relation("Revenue_createdBy")
+  from_Revenue_updatedBy              Revenue[]              @relation("Revenue_updatedBy")
+  from_Statement_createdBy            Statement[]            @relation("Statement_createdBy")
+  from_Statement_updatedBy            Statement[]            @relation("Statement_updatedBy")
 
   @@index([publisherId])
 }
@@ -186,6 +198,7 @@ model Publisher {
   official_site          String        @default("")
   rss                    String        @default("")
   podcast_url            String        @default("")
+  youtube_url            String        @default("")
   summary                String        @default("")
   logo                   String        @default("")
   description            String        @default("")
@@ -403,6 +416,224 @@ model StoryType {
   @@index([updatedById])
 }
 
+model ActivityPubActor {
+  id                    Int          @id @default(autoincrement())
+  username              String       @unique @default("")
+  domain                String       @default("")
+  display_name          String       @default("")
+  summary               String       @default("")
+  icon_url              String       @default("")
+  inbox_url             String       @default("")
+  outbox_url            String       @default("")
+  followers_url         String       @default("")
+  following_url         String       @default("")
+  public_key_pem        String       @default("")
+  private_key_pem       String       @default("")
+  is_local              Boolean      @default(true)
+  mesh_member           Member?      @relation("ActivityPubActor_mesh_member", fields: [mesh_memberId], references: [id])
+  mesh_memberId         Int?         @map("mesh_member")
+  createdAt             DateTime?
+  updatedAt             DateTime?
+  createdBy             User?        @relation("ActivityPubActor_createdBy", fields: [createdById], references: [id])
+  createdById           Int?         @map("createdBy")
+  updatedBy             User?        @relation("ActivityPubActor_updatedBy", fields: [updatedById], references: [id])
+  updatedById           Int?         @map("updatedBy")
+  from_Activity_actor   Activity[]   @relation("Activity_actor")
+  from_OutboxItem_actor OutboxItem[] @relation("OutboxItem_actor")
+
+  @@index([mesh_memberId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Activity {
+  id            Int                       @id @default(autoincrement())
+  activity_id   String                    @unique @default("")
+  activity_type ActivityActivityTypeType?
+  actor         ActivityPubActor?         @relation("Activity_actor", fields: [actorId], references: [id])
+  actorId       Int?                      @map("actor")
+  object_data   Json?
+  target_data   Json?
+  to            Json?
+  cc            Json?
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?                     @relation("Activity_createdBy", fields: [createdById], references: [id])
+  createdById   Int?                      @map("createdBy")
+  updatedBy     User?                     @relation("Activity_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?                      @map("updatedBy")
+
+  @@index([actorId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model InboxItem {
+  id            Int       @id @default(autoincrement())
+  activity_id   String    @unique @default("")
+  actor_id      String    @default("")
+  activity_data Json?
+  is_processed  Boolean   @default(false)
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("InboxItem_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("InboxItem_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model OutboxItem {
+  id                Int               @id @default(autoincrement())
+  activity_id       String            @unique @default("")
+  actor             ActivityPubActor? @relation("OutboxItem_actor", fields: [actorId], references: [id])
+  actorId           Int?              @map("actor")
+  activity_data     Json?
+  is_delivered      Boolean           @default(false)
+  delivery_attempts Int?              @default(0)
+  delivered_at      DateTime?
+  createdAt         DateTime?
+  updatedAt         DateTime?
+  createdBy         User?             @relation("OutboxItem_createdBy", fields: [createdById], references: [id])
+  createdById       Int?              @map("createdBy")
+  updatedBy         User?             @relation("OutboxItem_updatedBy", fields: [updatedById], references: [id])
+  updatedById       Int?              @map("updatedBy")
+
+  @@index([actorId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model FederationInstance {
+  id                         Int                    @id @default(autoincrement())
+  domain                     String                 @unique @default("")
+  name                       String                 @default("")
+  description                String                 @default("")
+  software                   String                 @default("")
+  version                    String                 @default("")
+  is_active                  Boolean                @default(true)
+  is_approved                Boolean                @default(false)
+  is_blocked                 Boolean                @default(false)
+  last_seen                  DateTime?
+  last_successful_connection DateTime?
+  user_count                 Int?                   @default(0)
+  post_count                 Int?                   @default(0)
+  connection_count           Int?                   @default(0)
+  error_count                Int?                   @default(0)
+  auto_follow                Boolean                @default(false)
+  auto_announce              Boolean                @default(true)
+  max_followers              Int?                   @default(1000)
+  max_following              Int?                   @default(1000)
+  connection                 FederationConnection[] @relation("FederationConnection_instance")
+  createdAt                  DateTime?
+  updatedAt                  DateTime?
+  createdBy                  User?                  @relation("FederationInstance_createdBy", fields: [createdById], references: [id])
+  createdById                Int?                   @map("createdBy")
+  updatedBy                  User?                  @relation("FederationInstance_updatedBy", fields: [updatedById], references: [id])
+  updatedById                Int?                   @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model FederationConnection {
+  id              Int                                     @id @default(autoincrement())
+  instance        FederationInstance?                     @relation("FederationConnection_instance", fields: [instanceId], references: [id])
+  instanceId      Int?                                    @map("instance")
+  connection_type FederationConnectionConnectionTypeType?
+  direction       FederationConnectionDirectionType?
+  source_actor    String                                  @default("")
+  target_actor    String                                  @default("")
+  activity_id     String                                  @default("")
+  status          FederationConnectionStatusType?
+  error_message   String                                  @default("")
+  processed_at    DateTime?
+  createdAt       DateTime?
+  updatedAt       DateTime?
+  createdBy       User?                                   @relation("FederationConnection_createdBy", fields: [createdById], references: [id])
+  createdById     Int?                                    @map("createdBy")
+  updatedBy       User?                                   @relation("FederationConnection_updatedBy", fields: [updatedById], references: [id])
+  updatedById     Int?                                    @map("updatedBy")
+
+  @@index([instanceId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model AccountDiscovery {
+  id                      Int                                 @id @default(autoincrement())
+  mesh_member             Member?                             @relation("AccountDiscovery_mesh_member", fields: [mesh_memberId], references: [id])
+  mesh_memberId           Int?                                @map("mesh_member")
+  discovery_method        AccountDiscoveryDiscoveryMethodType
+  search_query            String                              @default("")
+  discovered_actor_id     String                              @default("")
+  discovered_username     String                              @default("")
+  discovered_domain       String                              @default("")
+  discovered_display_name String                              @default("")
+  discovered_avatar_url   String                              @default("")
+  discovered_summary      String                              @default("")
+  is_successful           Boolean                             @default(true)
+  confidence_score        Int                                 @default(80)
+  match_reason            String                              @default("")
+  created_at              DateTime                            @default(now())
+
+  @@index([mesh_memberId])
+}
+
+model AccountMapping {
+  id                           Int                                   @id @default(autoincrement())
+  mesh_member                  Member?                               @relation("AccountMapping_mesh_member", fields: [mesh_memberId], references: [id])
+  mesh_memberId                Int?                                  @map("mesh_member")
+  remote_actor_id              String                                @default("")
+  remote_username              String                                @default("")
+  remote_domain                String                                @default("")
+  remote_display_name          String                                @default("")
+  remote_avatar_url            String                                @default("")
+  remote_summary               String                                @default("")
+  is_verified                  Boolean                               @default(false)
+  verification_method          AccountMappingVerificationMethodType?
+  verification_date            DateTime?
+  sync_enabled                 Boolean                               @default(true)
+  sync_posts                   Boolean                               @default(true)
+  sync_follows                 Boolean                               @default(false)
+  sync_likes                   Boolean                               @default(false)
+  sync_announces               Boolean                               @default(false)
+  last_sync_at                 DateTime?
+  sync_error_count             Int?                                  @default(0)
+  remote_follower_count        Int?                                  @default(0)
+  remote_following_count       Int?                                  @default(0)
+  remote_post_count            Int?                                  @default(0)
+  created_at                   DateTime                              @default(now())
+  updated_at                   DateTime                              @default(now())
+  from_AccountSyncTask_mapping AccountSyncTask[]                     @relation("AccountSyncTask_mapping")
+
+  @@index([mesh_memberId])
+  @@index([remote_actor_id])
+}
+
+model AccountSyncTask {
+  id              Int                         @id @default(autoincrement())
+  mapping         AccountMapping?             @relation("AccountSyncTask_mapping", fields: [mappingId], references: [id])
+  mappingId       Int?                        @map("mapping")
+  sync_type       AccountSyncTaskSyncTypeType
+  status          AccountSyncTaskStatusType   @default(pending)
+  progress        Int                         @default(0)
+  items_processed Int?                        @default(0)
+  items_synced    Int?                        @default(0)
+  items_failed    Int?                        @default(0)
+  since_date      DateTime?
+  max_items       Int?                        @default(100)
+  error_message   String                      @default("")
+  retry_count     Int?                        @default(0)
+  created_at      DateTime                    @default(now())
+  started_at      DateTime?
+  completed_at    DateTime?
+
+  @@index([mappingId])
+}
+
 model Tag {
   id          Int       @id @default(autoincrement())
   name        String    @unique @default("")
@@ -420,53 +651,60 @@ model Tag {
 }
 
 model Member {
-  id                           Int                 @id @default(autoincrement())
-  firebaseId                   String              @unique @default("")
-  customId                     String              @unique @default("")
-  name                         String              @default("")
-  nickname                     String              @default("")
-  avatar                       String              @default("")
-  intro                        String              @default("")
-  avatar_image                 Photo?              @relation("Member_avatar_image", fields: [avatar_imageId], references: [id])
-  avatar_imageId               Int?                @map("avatar_image")
-  wallet                       String              @default("")
-  email                        String              @unique @default("")
-  is_active                    Boolean             @default(true)
-  verified                     Boolean             @default(false)
-  publisher                    Publisher[]         @relation("Publisher_admin")
-  pick                         Pick[]              @relation("Pick_member")
-  sponsor                      Sponsorship[]       @relation("Sponsorship_sponsor")
-  transaction                  Transaction[]       @relation("Transaction_member")
-  comment                      Comment[]           @relation("Comment_member")
-  member_like                  Comment[]           @relation("Comment_like")
-  follower                     Member[]            @relation("Member_follower")
-  following                    Member[]            @relation("Member_follower")
-  block                        Member[]            @relation("Member_block")
-  blocked                      Member[]            @relation("Member_block")
-  following_category           Category[]          @relation("Member_following_category")
-  following_collection         Collection[]        @relation("Member_following_collection")
-  follow_publisher             Publisher[]         @relation("Member_follow_publisher")
-  exclude_publisher            Publisher[]         @relation("Member_exclude_publisher")
-  invited                      InvitationCode[]    @relation("InvitationCode_send")
-  invited_by                   InvitationCode?     @relation("InvitationCode_receive")
-  create_collection            CollectionMember[]  @relation("CollectionMember_added_by")
-  modify_collection            CollectionMember[]  @relation("CollectionMember_updated_by")
-  balance                      Int?                @default(0)
-  language                     MemberLanguageType? @default(zh_TW)
-  createdAt                    DateTime?
-  updatedAt                    DateTime?
-  createdBy                    User?               @relation("Member_createdBy", fields: [createdById], references: [id])
-  createdById                  Int?                @map("createdBy")
-  updatedBy                    User?               @relation("Member_updatedBy", fields: [updatedById], references: [id])
-  updatedById                  Int?                @map("updatedBy")
-  from_Collection_creator      Collection[]        @relation("Collection_creator")
-  from_CollectionMember_member CollectionMember[]  @relation("CollectionMember_member")
-  from_CollectionPick_creator  CollectionPick[]    @relation("CollectionPick_creator")
-  from_Story_author            Story[]             @relation("Story_author")
-  from_Notify_member           Notify[]            @relation("Notify_member")
-  from_Notify_sender           Notify[]            @relation("Notify_sender")
-  from_ReportRecord_informant  ReportRecord[]      @relation("ReportRecord_informant")
-  from_ReportRecord_respondent ReportRecord[]      @relation("ReportRecord_respondent")
+  id                                Int                 @id @default(autoincrement())
+  firebaseId                        String              @unique @default("")
+  customId                          String              @unique @default("")
+  name                              String              @default("")
+  nickname                          String              @default("")
+  avatar                            String              @default("")
+  intro                             String              @default("")
+  avatar_image                      Photo?              @relation("Member_avatar_image", fields: [avatar_imageId], references: [id])
+  avatar_imageId                    Int?                @map("avatar_image")
+  wallet                            String              @default("")
+  email                             String              @unique @default("")
+  is_active                         Boolean             @default(true)
+  verified                          Boolean             @default(false)
+  publisher                         Publisher[]         @relation("Publisher_admin")
+  pick                              Pick[]              @relation("Pick_member")
+  sponsor                           Sponsorship[]       @relation("Sponsorship_sponsor")
+  transaction                       Transaction[]       @relation("Transaction_member")
+  comment                           Comment[]           @relation("Comment_member")
+  member_like                       Comment[]           @relation("Comment_like")
+  follower                          Member[]            @relation("Member_follower")
+  following                         Member[]            @relation("Member_follower")
+  block                             Member[]            @relation("Member_block")
+  blocked                           Member[]            @relation("Member_block")
+  following_category                Category[]          @relation("Member_following_category")
+  following_collection              Collection[]        @relation("Member_following_collection")
+  follow_publisher                  Publisher[]         @relation("Member_follow_publisher")
+  exclude_publisher                 Publisher[]         @relation("Member_exclude_publisher")
+  invited                           InvitationCode[]    @relation("InvitationCode_send")
+  invited_by                        InvitationCode?     @relation("InvitationCode_receive")
+  create_collection                 CollectionMember[]  @relation("CollectionMember_added_by")
+  modify_collection                 CollectionMember[]  @relation("CollectionMember_updated_by")
+  balance                           Int?                @default(0)
+  language                          MemberLanguageType? @default(zh_TW)
+  activitypub_enabled               Boolean             @default(false)
+  activitypub_auto_follow           Boolean             @default(true)
+  activitypub_public_posts          Boolean             @default(true)
+  activitypub_federation_enabled    Boolean             @default(true)
+  createdAt                         DateTime?
+  updatedAt                         DateTime?
+  createdBy                         User?               @relation("Member_createdBy", fields: [createdById], references: [id])
+  createdById                       Int?                @map("createdBy")
+  updatedBy                         User?               @relation("Member_updatedBy", fields: [updatedById], references: [id])
+  updatedById                       Int?                @map("updatedBy")
+  from_Collection_creator           Collection[]        @relation("Collection_creator")
+  from_CollectionMember_member      CollectionMember[]  @relation("CollectionMember_member")
+  from_CollectionPick_creator       CollectionPick[]    @relation("CollectionPick_creator")
+  from_Story_author                 Story[]             @relation("Story_author")
+  from_ActivityPubActor_mesh_member ActivityPubActor[]  @relation("ActivityPubActor_mesh_member")
+  from_AccountDiscovery_mesh_member AccountDiscovery[]  @relation("AccountDiscovery_mesh_member")
+  from_AccountMapping_mesh_member   AccountMapping[]    @relation("AccountMapping_mesh_member")
+  from_Notify_member                Notify[]            @relation("Notify_member")
+  from_Notify_sender                Notify[]            @relation("Notify_sender")
+  from_ReportRecord_informant       ReportRecord[]      @relation("ReportRecord_informant")
+  from_ReportRecord_respondent      ReportRecord[]      @relation("ReportRecord_respondent")
 
   @@index([avatar_imageId])
   @@index([createdById])
@@ -752,6 +990,62 @@ enum StoryFullScreenAdType {
 enum StoryStoryTypeType {
   story
   podcast
+  video
+}
+
+enum ActivityActivityTypeType {
+  Create
+  Like
+  Announce
+  Follow
+}
+
+enum FederationConnectionConnectionTypeType {
+  http
+  https
+}
+
+enum FederationConnectionDirectionType {
+  inbound
+  outbound
+}
+
+enum FederationConnectionStatusType {
+  pending
+  success
+  failed
+}
+
+enum AccountDiscoveryDiscoveryMethodType {
+  webfinger
+  activitypub
+  search
+  profile_url
+  email
+  auto
+}
+
+enum AccountMappingVerificationMethodType {
+  manual
+  automatic
+  webfinger
+  activitypub
+}
+
+enum AccountSyncTaskSyncTypeType {
+  posts
+  follows
+  likes
+  announces
+  profile
+}
+
+enum AccountSyncTaskStatusType {
+  pending
+  running
+  completed
+  failed
+  cancelled
 }
 
 enum MemberLanguageType {
