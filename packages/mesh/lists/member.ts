@@ -142,6 +142,19 @@ const listConfigurations = list({
       ],
       defaultValue: "zh_TW",
     }),
+    // ActivityPub 設定
+    activitypub_enabled: checkbox({
+      defaultValue: false,
+    }),
+    activitypub_auto_follow: checkbox({
+      defaultValue: true,
+    }),
+    activitypub_public_posts: checkbox({
+      defaultValue: true,
+    }),
+    activitypub_federation_enabled: checkbox({
+      defaultValue: true,
+    }),
   },
   ui: {
     listView: {

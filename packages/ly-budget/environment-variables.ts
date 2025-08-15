@@ -2,7 +2,6 @@ const {
   IS_UI_DISABLED,
   ACCESS_CONTROL_STRATEGY,
   PREVIEW_SERVER_ORIGIN,
-  PREVIEW_SERVER_PATH,
   DATABASE_PROVIDER,
   DATABASE_URL,
   SESSION_SECRET,
@@ -12,14 +11,8 @@ const {
   FILES_STORAGE_PATH,
   IMAGES_BASE_URL,
   IMAGES_STORAGE_PATH,
-  LOCK_DURATION,
-  IS_CACHE_ENABLED,
-  REDIS_SERVER,
-  CACHE_IDENTIFIER,
-  CACHE_CONNECT_TIMEOUT,
-  CACHE_MAXAGE,
-  DATA_SERVICE_API,
-  INVALID_CDN_CACHE_SERVER_URL,
+  MEMORY_CACHE_TTL,
+  MEMORY_CACHE_SIZE,
 } = process.env
 
 enum DatabaseProvider {
@@ -27,22 +20,18 @@ enum DatabaseProvider {
   Postgres = 'postgresql',
 }
 
-const cacheMaxAge = Number(CACHE_MAXAGE)
-const cacheConnectTimeout = Number(CACHE_CONNECT_TIMEOUT)
-
 export default {
   isUIDisabled: IS_UI_DISABLED === 'true',
+  memoryCacheTtl: Number(MEMORY_CACHE_TTL) || 300,
+  memoryCacheSize: Number(MEMORY_CACHE_SIZE) || 300,
   accessControlStrategy: ACCESS_CONTROL_STRATEGY || 'cms', // the value could be one of 'cms', 'gql' or 'preview'
-  previewServer: {
-    origin: PREVIEW_SERVER_ORIGIN || 'http://localhost:3001',
-    path: PREVIEW_SERVER_PATH || '/preview-server',
-  },
+  previewServerOrigin: PREVIEW_SERVER_ORIGIN || 'http://localhost:3001',
   database: {
     provider:
       DATABASE_PROVIDER === 'sqlite'
         ? DatabaseProvider.Sqlite
         : DatabaseProvider.Postgres,
-    url: DATABASE_URL || 'postgres://username:password@localhost:5432/mirrormedia',
+    url: DATABASE_URL || 'postgres://username:password@localhost:5432/ly_budget',
   },
   session: {
     secret:
@@ -63,17 +52,4 @@ export default {
     baseUrl: IMAGES_BASE_URL || '/images',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
-  lockDuration:
-    (typeof LOCK_DURATION === 'string' && parseInt(LOCK_DURATION)) || 30,
-  cache: {
-    isEnabled: IS_CACHE_ENABLED === 'true',
-    identifier: CACHE_IDENTIFIER ?? 'weekly-cms',
-    url: REDIS_SERVER ?? '',
-    connectTimeOut: Number.isNaN(cacheConnectTimeout)
-      ? 1000 * 10
-      : cacheConnectTimeout, // unit: millisecond
-    maxAge: Number.isNaN(cacheMaxAge) ? 60 : cacheMaxAge, // unit: second
-  },
-  dataServiceApi: DATA_SERVICE_API,
-  invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
 }

@@ -1,5 +1,5 @@
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core'
+import { list, graphql } from '@keystone-6/core'
 import {
   text,
   relationship,
@@ -7,6 +7,7 @@ import {
   timestamp,
   checkbox,
   json,
+  virtual,
 } from '@keystone-6/core/fields'
 import { checkAccessToken } from '../utils/accessToken'
 
@@ -63,6 +64,13 @@ const listConfigurations = list({
     published_date: timestamp({ validation: { isRequired: false } }),
     og_title: text({ validation: { isRequired: false } }),
     og_image: text({ validation: { isRequired: false } }),
+    // 對外相容欄位：image -> og_image
+    image: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve: (item: any) => (item?.og_image ?? null),
+      }),
+    }),
     og_description: text({ validation: { isRequired: false } }),
     full_content: checkbox({
       defaultValue: false,
@@ -95,6 +103,7 @@ const listConfigurations = list({
       options: [
         { label: 'Story', value: 'story' },
         { label: 'Podcast', value: 'podcast' },
+        { label: 'Video', value: 'video' },
       ],
       defaultValue: 'story',
       isIndexed: true,
