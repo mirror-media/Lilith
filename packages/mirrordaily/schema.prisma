@@ -312,7 +312,6 @@ model Post {
   manualOrderOfRelatedVideos Json?
   state                      String?        @default("draft")
   publishedDate              DateTime       @default(now())
-  publishedDateString        String         @default("")
   updateTimeStamp            Boolean        @default(true)
   isFeatured                 Boolean        @default(false)
   isAdvertised               Boolean        @default(false)
@@ -326,6 +325,7 @@ model Post {
   css                        String         @default("")
   apiDataBrief               Json?
   apiData                    Json?
+  publishedDateString        String         @default("")
   createdAt                  DateTime?
   updatedAt                  DateTime?
   createdBy                  User?          @relation("Post_createdBy", fields: [createdById], references: [id])
