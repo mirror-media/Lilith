@@ -7,6 +7,7 @@ import {
   select,
   integer,
   json,
+  timestamp,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 import { State, ACL, UserRole, type Session } from '../type'
@@ -16,6 +17,7 @@ const { allowRoles, admin, moderator, editor } = utils.accessControl
 enum TopicState {
   Draft = State.Draft,
   Published = State.Published,
+  Scheduled = State.Scheduled,
 }
 
 function filterTopics(roles: string[]) {
@@ -58,9 +60,17 @@ const listConfigurations = list({
       options: [
         { label: '草稿', value: TopicState.Draft },
         { label: '已發布', value: TopicState.Published },
+        { label: '預約發佈', value: TopicState.Scheduled },
       ],
       defaultValue: TopicState.Draft,
       isIndexed: true,
+    }),
+    publishedDate: timestamp({
+      isIndexed: true,
+      isFilterable: true,
+      label: '發佈日期',
+      validation: { isRequired: true },
+      defaultValue: { kind: 'now' },
     }),
     brief: customFields.richTextEditor({
       label: '前言',

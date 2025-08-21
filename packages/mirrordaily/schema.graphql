@@ -1749,6 +1749,7 @@ type Topic {
   slug: String
   sortOrder: Int
   state: String
+  publishedDate: DateTime
   brief: JSON
   apiDataBrief: JSON
   leading: String
@@ -1797,6 +1798,7 @@ input TopicWhereInput {
   slug: StringFilter
   sortOrder: IntNullableFilter
   state: StringNullableFilter
+  publishedDate: DateTimeFilter
   leading: StringNullableFilter
   heroImage: PhotoWhereInput
   heroUrl: StringNullableFilter
@@ -1834,6 +1836,7 @@ input TopicOrderByInput {
   slug: OrderDirection
   sortOrder: OrderDirection
   state: OrderDirection
+  publishedDate: OrderDirection
   leading: OrderDirection
   heroUrl: OrderDirection
   og_title: OrderDirection
@@ -1854,6 +1857,7 @@ input TopicUpdateInput {
   slug: String
   sortOrder: Int
   state: String
+  publishedDate: DateTime
   brief: JSON
   apiDataBrief: JSON
   leading: String
@@ -1899,6 +1903,7 @@ input TopicCreateInput {
   slug: String
   sortOrder: Int
   state: String
+  publishedDate: DateTime
   brief: JSON
   apiDataBrief: JSON
   leading: String
