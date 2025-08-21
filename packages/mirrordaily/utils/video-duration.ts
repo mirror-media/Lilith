@@ -1,7 +1,37 @@
 import envVar from '../environment-variables'
+import * as path from 'path'
+import * as fs from 'fs'
 
-export async function getVideoFileDuration(videoFile: string): Promise<number | null> {
-  return 0;
+export async function getVideoFileDuration(filename: string): Promise<number | null> {
+  try {
+    if (!filename) {
+      console.log('No filename provided')
+      return null
+    }
+
+    const localPath = path.join(process.cwd(), envVar.videos.storagePath, filename)
+    
+    if (!fs.existsSync(localPath)) {
+      console.log('File does not exist at local path')
+      return null
+    }
+
+    const ffmpeg = require('fluent-ffmpeg')
+    
+    return new Promise((resolve) => {
+      ffmpeg.ffprobe(localPath, (err: any, metadata: any) => {
+        if (err) {
+          resolve(null)
+        } else {
+          const duration = Math.floor(metadata?.format?.duration || 0)
+          resolve(duration)
+        }
+      })
+    })
+  } catch (error) {
+    console.error('Error in getVideoFileDuration:', error)
+    return null
+  }
 }
 
 export async function getYouTubeDuration(youtubeUrl: string): Promise<number | null> {
