@@ -15,6 +15,7 @@ import {
 } from '@keystone-6/core/fields'
 import { getFileURL } from '../utils/common'
 import { State } from '../type'
+import { getYouTubeDuration } from '../utils/video-duration'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -42,12 +43,20 @@ const listConfigurations = list({
       storage: 'videos',
     }),
     fileDuration: integer({
-      label: 'GCS影片時長(秒)',
+      label: '影片檔案時長(秒)',
       defaultValue: 0,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
     }),
     youtubeDuration: integer({
       label: 'YouTube影片時長(秒)',
       defaultValue: 0,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
     }),
     videoSrc: virtual({
       field: graphql.field({
@@ -161,12 +170,20 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    resolveInput: async ({ operation, resolvedData }) => {
-      const { publishedDate, content, brief, updateTimeStamp } = resolvedData
-      //if (operation === 'create') {
-      //  resolvedData.publishedDate = new Date(publishedDate.setSeconds(0, 0))
-      //  resolvedData.updatedAt = new Date()
-      //}
+    resolveInput: async ({ operation, resolvedData, item }) => {
+      const { updateTimeStamp, youtubeUrl } = resolvedData
+      
+      if (youtubeUrl && youtubeUrl !== item?.youtubeUrl) {
+        try {
+          const duration = await getYouTubeDuration(youtubeUrl)
+          if (duration !== null) {
+            resolvedData.youtubeDuration = duration
+          }
+        } catch (error) {
+          console.error('Error getting YouTube video duration:', error)
+        }
+      }
+      
       if (updateTimeStamp) {
         const now = new Date()
         resolvedData.publishedDate = new Date(now.setSeconds(0, 0))
