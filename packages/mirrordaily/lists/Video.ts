@@ -15,7 +15,7 @@ import {
 } from '@keystone-6/core/fields'
 import { getFileURL } from '../utils/common'
 import { State } from '../type'
-import { getYouTubeDuration } from '../utils/video-duration'
+import { getYouTubeDuration, getVideoFileDuration } from '../utils/video-duration'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -181,6 +181,21 @@ const listConfigurations = list({
           }
         } catch (error) {
           console.error('Error getting YouTube video duration:', error)
+        }
+      }
+
+      if (file !== undefined) {
+        if (file === null || !file.filename) {
+          resolvedData.fileDuration = 0
+        } else if (file.filename !== item?.file_filename) {
+        try {
+          const duration = await getVideoFileDuration(file.filename)
+          if (duration !== null) {
+            resolvedData.fileDuration = duration
+          }
+        } catch (error) {
+          console.error('Error getting video file duration:', error)
+          }
         }
       }
       
