@@ -27,6 +27,9 @@ const {
   AUTO_TAGGING,
   INVALID_CDN_CACHE_SERVER_URL,
   YOUTUBE_API_KEY,
+  PUBSUB_PROJECT_ID,
+  PUBSUB_VIDEO_TOPIC,
+  PUBSUB_SUBSCRIPTION_NAME,
 } = process.env
 
 enum DatabaseProvider {
@@ -92,5 +95,10 @@ export default {
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
   youtube: {
     apiKey: YOUTUBE_API_KEY,
+  },
+  pubsub: {
+    projectId: PUBSUB_PROJECT_ID,
+    topicName: PUBSUB_VIDEO_TOPIC || 'video-processing',
+    subscriptionName: PUBSUB_SUBSCRIPTION_NAME || 'video-processing-sub',
   },
 }

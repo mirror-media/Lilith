@@ -15,7 +15,8 @@ import {
 } from '@keystone-6/core/fields'
 import { getFileURL } from '../utils/common'
 import { State } from '../type'
-import { getYouTubeDuration, getVideoFileDuration } from '../utils/video-duration'
+import { getYouTubeDuration } from '../utils/video-duration'
+import { publishVideoProcessingMessage } from '../utils/pubsub'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -171,7 +172,7 @@ const listConfigurations = list({
   },
   hooks: {
     resolveInput: async ({ operation, resolvedData, item }) => {
-      const { updateTimeStamp, youtubeUrl } = resolvedData
+      const { updateTimeStamp, youtubeUrl, file } = resolvedData
       
       if (youtubeUrl && youtubeUrl !== item?.youtubeUrl) {
         try {
@@ -184,18 +185,22 @@ const listConfigurations = list({
         }
       }
 
-      if (file !== undefined) {
+      if (file !== undefined && item?.id) {
+        const topicName = process.env.PUBSUB_VIDEO_TOPIC || 'video-processing'
+        const videoId = typeof item.id === 'number' ? item.id : parseInt(item.id.toString())
+        
         if (file === null || !file.filename) {
-          resolvedData.fileDuration = 0
+          await publishVideoProcessingMessage(topicName, {
+            videoId,
+            filename: '',
+            action: 'delete_duration'
+          })
         } else if (file.filename !== item?.file_filename) {
-        try {
-          const duration = await getVideoFileDuration(file.filename)
-          if (duration !== null) {
-            resolvedData.fileDuration = duration
-          }
-        } catch (error) {
-          console.error('Error getting video file duration:', error)
-          }
+          await publishVideoProcessingMessage(topicName, {
+            videoId,
+            filename: file.filename,
+            action: 'process_duration'
+          })
         }
       }
       
