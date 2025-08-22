@@ -15,8 +15,8 @@ import {
 import { getFileURL } from '../utils/common'
 import { State } from '../type'
 import { getYouTubeDuration } from '../utils/video-duration'
-import { publishVideoProcessingMessage } from '../utils/pubsub'
 import { secondsToISO8601Duration } from '../utils/duration-format'
+import { processVideoInBackground } from '../utils/background-video-processing'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -183,25 +183,7 @@ const listConfigurations = list({
         }
       }
 
-      if (file !== undefined && item?.id) {
-        const topicName = process.env.PUBSUB_VIDEO_TOPIC || 'video-processing'
-        const videoId = typeof item.id === 'number' ? item.id : parseInt(item.id.toString())
-        
-        if (file === null || !file.filename) {
-          await publishVideoProcessingMessage(topicName, {
-            videoId,
-            filename: '',
-            action: 'delete_duration'
-          })
-        } else if (file.filename !== item?.file_filename) {
-          await publishVideoProcessingMessage(topicName, {
-            videoId,
-            filename: file.filename,
-            action: 'process_duration'
-          })
-        }
-      }
-      
+
       if (updateTimeStamp) {
         const now = new Date()
         resolvedData.publishedDate = new Date(now.setSeconds(0, 0))
@@ -209,6 +191,33 @@ const listConfigurations = list({
         resolvedData.updateTimeStamp = false
       }
       return resolvedData
+    },
+    
+    afterOperation: async ({ operation, item, originalItem, context }) => {
+      if (operation !== 'create' && operation !== 'update') {
+        return
+      }
+      
+      const oldFilename = originalItem?.file_filename
+      const newFilename = item?.file_filename
+      
+      if (oldFilename === newFilename) {
+        return
+      }
+      
+      if (!newFilename) {
+        processVideoInBackground({
+          videoId: item.id.toString(),
+          filename: null,
+          action: 'delete'
+        }, context)
+      } else {
+        processVideoInBackground({
+          videoId: item.id.toString(),
+          filename: newFilename as string,
+          action: 'process'
+        }, context)
+      }
     },
   },
 })
