@@ -9,11 +9,14 @@ import {
   select,
   checkbox,
   timestamp,
-  json,
   virtual,
+  json,
 } from '@keystone-6/core/fields'
 import { getFileURL } from '../utils/common'
 import { State } from '../type'
+import { getYouTubeDuration } from '../utils/video-duration'
+import { secondsToISO8601Duration } from '../utils/duration-format'
+import { processVideoInBackground } from '../utils/background-video-processing'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -39,6 +42,20 @@ const listConfigurations = list({
     file: file({
       label: '檔案',
       storage: 'videos',
+    }),
+    fileDuration: text({
+      label: '影片檔案時長(ISO 8601)',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
+    }),
+    youtubeDuration: text({
+      label: 'YouTube影片時長(ISO 8601)',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
     }),
     videoSrc: virtual({
       field: graphql.field({
@@ -152,12 +169,21 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    resolveInput: async ({ operation, resolvedData }) => {
-      const { publishedDate, content, brief, updateTimeStamp } = resolvedData
-      //if (operation === 'create') {
-      //  resolvedData.publishedDate = new Date(publishedDate.setSeconds(0, 0))
-      //  resolvedData.updatedAt = new Date()
-      //}
+    resolveInput: async ({ resolvedData, item }) => {
+      const { updateTimeStamp, youtubeUrl, file } = resolvedData
+      
+      if (youtubeUrl && youtubeUrl !== item?.youtubeUrl) {
+        try {
+          const duration = await getYouTubeDuration(youtubeUrl)
+          if (duration !== null) {
+            resolvedData.youtubeDuration = secondsToISO8601Duration(duration)
+          }
+        } catch (error) {
+          console.error('Error getting YouTube video duration:', error)
+        }
+      }
+
+
       if (updateTimeStamp) {
         const now = new Date()
         resolvedData.publishedDate = new Date(now.setSeconds(0, 0))
@@ -165,6 +191,33 @@ const listConfigurations = list({
         resolvedData.updateTimeStamp = false
       }
       return resolvedData
+    },
+    
+    afterOperation: async ({ operation, item, originalItem, context }) => {
+      if (operation !== 'create' && operation !== 'update') {
+        return
+      }
+      
+      const oldFilename = originalItem?.file_filename
+      const newFilename = item?.file_filename
+      
+      if (oldFilename === newFilename) {
+        return
+      }
+      
+      if (!newFilename) {
+        processVideoInBackground({
+          videoId: item.id.toString(),
+          filename: null,
+          action: 'delete'
+        }, context)
+      } else {
+        processVideoInBackground({
+          videoId: item.id.toString(),
+          filename: newFilename as string,
+          action: 'process'
+        }, context)
+      }
     },
   },
 })
