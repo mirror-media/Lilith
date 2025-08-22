@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client'
 import { getVideoFileDuration } from '../../../utils/video-duration'
+import { secondsToISO8601Duration } from '../../../utils/duration-format'
 
 const prisma = new PrismaClient()
 
@@ -26,21 +27,22 @@ async function handleVideoProcessing(message: VideoProcessingMessage): Promise<v
     if (action === 'delete_duration') {
       await prisma.video.update({
         where: { id: videoId },
-        data: { fileDuration: 0 }
+        data: { fileDuration: null }
       })
       console.log(`Cleared duration for video ${videoId}`)
       return
     }
 
     if (action === 'process_duration') {
-      const duration = await getVideoFileDuration(filename)
+      const durationInSeconds = await getVideoFileDuration(filename)
       
-      if (duration !== null) {
+      if (durationInSeconds !== null) {
+        const isoDuration = secondsToISO8601Duration(durationInSeconds)
         await prisma.video.update({
           where: { id: videoId },
-          data: { fileDuration: duration }
+          data: { fileDuration: isoDuration }
         })
-        console.log(`Updated duration for video ${videoId}: ${duration} seconds`)
+        console.log(`Updated duration for video ${videoId}: ${isoDuration}`)
       } else {
         console.warn(`Could not get duration for video ${videoId}`)
       }

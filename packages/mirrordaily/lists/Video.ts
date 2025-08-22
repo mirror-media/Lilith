@@ -9,14 +9,14 @@ import {
   select,
   checkbox,
   timestamp,
-  json,
   virtual,
-  integer,
+  json,
 } from '@keystone-6/core/fields'
 import { getFileURL } from '../utils/common'
 import { State } from '../type'
 import { getYouTubeDuration } from '../utils/video-duration'
 import { publishVideoProcessingMessage } from '../utils/pubsub'
+import { secondsToISO8601Duration } from '../utils/duration-format'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -43,17 +43,15 @@ const listConfigurations = list({
       label: '檔案',
       storage: 'videos',
     }),
-    fileDuration: integer({
-      label: '影片檔案時長(秒)',
-      defaultValue: 0,
+    fileDuration: text({
+      label: '影片檔案時長(ISO 8601)',
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
       },
     }),
-    youtubeDuration: integer({
-      label: 'YouTube影片時長(秒)',
-      defaultValue: 0,
+    youtubeDuration: text({
+      label: 'YouTube影片時長(ISO 8601)',
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
@@ -171,14 +169,14 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    resolveInput: async ({ operation, resolvedData, item }) => {
+    resolveInput: async ({ resolvedData, item }) => {
       const { updateTimeStamp, youtubeUrl, file } = resolvedData
       
       if (youtubeUrl && youtubeUrl !== item?.youtubeUrl) {
         try {
           const duration = await getYouTubeDuration(youtubeUrl)
           if (duration !== null) {
-            resolvedData.youtubeDuration = duration
+            resolvedData.youtubeDuration = secondsToISO8601Duration(duration)
           }
         } catch (error) {
           console.error('Error getting YouTube video duration:', error)

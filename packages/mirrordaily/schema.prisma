@@ -522,8 +522,8 @@ model Video {
   youtubeUrl                String    @default("")
   file_filesize             Int?
   file_filename             String?
-  fileDuration              Int?      @default(0)
-  youtubeDuration           Int?      @default(0)
+  fileDuration              String    @default("")
+  youtubeDuration           String    @default("")
   content                   String    @default("")
   heroImage                 Photo?    @relation("Video_heroImage", fields: [heroImageId], references: [id])
   heroImageId               Int?      @map("heroImage")
