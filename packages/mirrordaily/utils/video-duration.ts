@@ -1,6 +1,8 @@
 import envVar from '../environment-variables'
 import * as path from 'path'
 import * as fs from 'fs'
+import * as os from 'os'
+import { Storage } from '@google-cloud/storage'
 
 export async function getVideoFileDuration(filename: string): Promise<number | null> {
   try {
@@ -11,25 +13,68 @@ export async function getVideoFileDuration(filename: string): Promise<number | n
 
     const localPath = path.join(process.cwd(), envVar.videos.storagePath, filename)
     
-    if (!fs.existsSync(localPath)) {
-      console.log('File does not exist at local path')
+    if (fs.existsSync(localPath)) {
+      return await getVideoDurationFromPath(localPath)
+    }
+
+    const tempPath = await downloadFromGCS(filename)
+    
+    if (!tempPath) {
+      console.log('Failed to download file from GCS')
       return null
     }
 
-    const ffmpeg = require('fluent-ffmpeg')
-    
-    return new Promise((resolve) => {
-      ffmpeg.ffprobe(localPath, (err: any, metadata: any) => {
-        if (err) {
-          resolve(null)
-        } else {
-          const duration = Math.floor(metadata?.format?.duration || 0)
-          resolve(duration)
-        }
-      })
-    })
+    try {
+      const duration = await getVideoDurationFromPath(tempPath)
+      fs.unlinkSync(tempPath)
+      return duration
+    } catch (error) {
+      if (fs.existsSync(tempPath)) {
+        fs.unlinkSync(tempPath)
+      }
+      throw error
+    }
   } catch (error) {
     console.error('Error in getVideoFileDuration:', error)
+    return null
+  }
+}
+
+async function getVideoDurationFromPath(filePath: string): Promise<number | null> {
+  const ffmpeg = require('fluent-ffmpeg')
+  
+  return new Promise((resolve) => {
+    ffmpeg.ffprobe(filePath, (err: any, metadata: any) => {
+      if (err) {
+        resolve(null)
+      } else {
+        const duration = Math.floor(metadata?.format?.duration || 0)
+        resolve(duration)
+      }
+    })
+  })
+}
+
+async function downloadFromGCS(filename: string): Promise<string | null> {
+  try {
+    const storage = new Storage()
+    const bucket = storage.bucket(envVar.gcs.bucket)
+    const gcsPath = `${envVar.videos.storagePath}/${filename}`
+    const file = bucket.file(gcsPath)
+
+    const [exists] = await file.exists()
+    if (!exists) {
+      return null
+    }
+    
+    const tempDir = os.tmpdir()
+    const tempPath = path.join(tempDir, `video_${Date.now()}_${filename}`)
+
+    await file.download({ destination: tempPath })
+    
+    return tempPath
+  } catch (error) {
+    console.error('Error downloading from GCS:', error)
     return null
   }
 }
