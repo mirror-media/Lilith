@@ -55,7 +55,7 @@ model People {
   party                   People?     @relation("People_party", fields: [partyId], references: [id])
   partyId                 Int?        @map("party")
   committees              Committee[] @relation("People_committees")
-  description             String?
+  description             String      @default("")
   from_Committee_members  Committee[] @relation("Committee_members")
   from_People_party       People[]    @relation("People_party")
   from_Proposal_proposers Proposal[]  @relation("Proposal_proposers")

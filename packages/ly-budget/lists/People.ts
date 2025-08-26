@@ -38,9 +38,6 @@ const listConfigurations = list({
     }),
     description: text({
       label: '說明',
-      db: {
-        isNullable: true,
-      },
       ui: {
         displayMode: 'textarea',
       },
