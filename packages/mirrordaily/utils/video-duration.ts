@@ -2,7 +2,7 @@ import envVar from '../environment-variables'
 import * as path from 'path'
 import * as fs from 'fs'
 import * as os from 'os'
-import { Storage } from '@google-cloud/storage'
+import { getFileURL } from './common'
 
 export async function getVideoFileDuration(filename: string): Promise<number | null> {
   try {
@@ -12,15 +12,17 @@ export async function getVideoFileDuration(filename: string): Promise<number | n
     }
 
     const localPath = path.join(process.cwd(), envVar.videos.storagePath, filename)
+    console.log(`[getVideoFileDuration] Checking local path: ${localPath}`)
     
     if (fs.existsSync(localPath)) {
+      console.log(`[getVideoFileDuration] File found locally`)
       return await getVideoDurationFromPath(localPath)
     }
 
     const tempPath = await downloadFromGCS(filename)
     
     if (!tempPath) {
-      console.log('Failed to download file from GCS')
+      console.log(`[getVideoFileDuration] Failed to download file from GCS for filename: ${filename}`)
       return null
     }
 
@@ -60,49 +62,51 @@ async function downloadFromGCS(filename: string): Promise<string | null> {
   const baseDelay = 1000
   const maxTotalTime = 3 * 60 * 1000
   const startTime = Date.now()
+  
+  const videoUrl = getFileURL(envVar.gcs.bucket, envVar.videos.baseUrl, filename)
+  console.log(`[downloadFromGCS] Downloading from URL: ${videoUrl}`)
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      const storage = new Storage()
-      const bucket = storage.bucket(envVar.gcs.bucket)
-      const gcsPath = `${envVar.videos.baseUrl}/${filename}`.replace(/^\//, '')
-      const file = bucket.file(gcsPath)
-
-      const [exists] = await file.exists()
-      if (!exists) {
+      const fetch = require('node-fetch')
+      const response = await fetch(videoUrl)
+      
+      if (!response.ok) {
         const elapsedTime = Date.now() - startTime
         
         if (attempt === maxRetries || elapsedTime >= maxTotalTime) {
-          console.log(`File not found in GCS after ${attempt + 1} attempts: ${gcsPath}`)
+          console.log(`Failed to download after ${attempt + 1} attempts. Status: ${response.status}`)
           return null
         }
         
         const delay = baseDelay * Math.pow(2, attempt)
         const remainingTime = maxTotalTime - elapsedTime
         const actualDelay = Math.min(delay, remainingTime)
-        console.log(`File not found (attempt ${attempt + 1}), retrying in ${actualDelay}ms...`)
+        console.log(`Download failed (${response.status}), retry ${attempt + 1} in ${actualDelay}ms`)
         await new Promise(resolve => setTimeout(resolve, actualDelay))
         continue
       }
       
       const tempDir = os.tmpdir()
       const tempPath = path.join(tempDir, `video_${Date.now()}_${filename}`)
-
-      await file.download({ destination: tempPath })
       
+      const buffer = await response.buffer()
+      fs.writeFileSync(tempPath, buffer)
+      
+      console.log(`Successfully downloaded video to ${tempPath}`)
       return tempPath
     } catch (error) {
       const elapsedTime = Date.now() - startTime
       
       if (attempt === maxRetries || elapsedTime >= maxTotalTime) {
-        console.log(`Failed to download from GCS after ${attempt + 1} attempts or timeout:`, error)
+        console.log(`Failed to download after ${attempt + 1} attempts or timeout:`, error)
         return null
       }
       
       const delay = baseDelay * Math.pow(2, attempt)
       const remainingTime = maxTotalTime - elapsedTime
       const actualDelay = Math.min(delay, remainingTime)
-      console.log(`Download error (attempt ${attempt + 1}), retrying in ${actualDelay}ms...`, error)
+      console.log(`Download error (attempt ${attempt + 1}), retrying in ${actualDelay}ms...`)
       await new Promise(resolve => setTimeout(resolve, actualDelay))
     }
   }
