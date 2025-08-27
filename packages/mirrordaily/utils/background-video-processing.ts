@@ -15,7 +15,7 @@ export function processVideoInBackground(job: VideoProcessingJob, context: any) 
       if (action === 'delete') {
         await context.query.Video.updateOne({
           where: { id: videoId.toString() },
-          data: { fileDuration: null }
+          data: { fileDuration: '' }
         })
         console.log(`[Background] Cleared duration for video ${videoId}`)
         return
@@ -34,7 +34,11 @@ export function processVideoInBackground(job: VideoProcessingJob, context: any) 
           
           console.log(`[Background] Updated duration for video ${videoId}: ${isoDuration}`)
         } else {
-          console.warn(`[Background] Could not get duration for video ${videoId}`)
+          await context.query.Video.updateOne({
+            where: { id: videoId.toString() },
+            data: { fileDuration: '' }
+          })
+          console.warn(`[Background] Could not get duration for video ${videoId}, set to empty string`)
         }
       }
     } catch (error) {
