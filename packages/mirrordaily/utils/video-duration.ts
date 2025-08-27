@@ -56,27 +56,46 @@ async function getVideoDurationFromPath(filePath: string): Promise<number | null
 }
 
 async function downloadFromGCS(filename: string): Promise<string | null> {
-  try {
-    const storage = new Storage()
-    const bucket = storage.bucket(envVar.gcs.bucket)
-    const gcsPath = `${envVar.videos.storagePath}/${filename}`
-    const file = bucket.file(gcsPath)
+  const maxRetries = 8
+  const baseDelay = 1000
+  const maxTotalTime = 3 * 60 * 1000
+  const startTime = Date.now()
 
-    const [exists] = await file.exists()
-    if (!exists) {
-      return null
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const storage = new Storage()
+      const bucket = storage.bucket(envVar.gcs.bucket)
+      const gcsPath = `${envVar.videos.storagePath}/${filename}`
+      const file = bucket.file(gcsPath)
+
+      const [exists] = await file.exists()
+      if (!exists) {
+        return null
+      }
+      
+      const tempDir = os.tmpdir()
+      const tempPath = path.join(tempDir, `video_${Date.now()}_${filename}`)
+
+      await file.download({ destination: tempPath })
+      
+      return tempPath
+    } catch (error) {
+      const elapsedTime = Date.now() - startTime
+      
+      if (attempt === maxRetries || elapsedTime >= maxTotalTime) {
+        console.log(`Failed to download from GCS after ${attempt + 1} attempts or timeout:`, error)
+        return null
+      }
+      
+      const delay = baseDelay * Math.pow(2, attempt)
+      const remainingTime = maxTotalTime - elapsedTime
+      const actualDelay = Math.min(delay, remainingTime)
+      console.log(`Download attempt ${attempt + 1} failed, retrying in ${actualDelay}ms...`)
+      await new Promise(resolve => setTimeout(resolve, actualDelay))
     }
-    
-    const tempDir = os.tmpdir()
-    const tempPath = path.join(tempDir, `video_${Date.now()}_${filename}`)
-
-    await file.download({ destination: tempPath })
-    
-    return tempPath
-  } catch (error) {
-    console.error('Error downloading from GCS:', error)
-    return null
   }
+  
+  return null
 }
 
 export async function getYouTubeDuration(youtubeUrl: string): Promise<number | null> {
