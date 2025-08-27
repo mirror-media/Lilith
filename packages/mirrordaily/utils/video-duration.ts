@@ -65,7 +65,7 @@ async function downloadFromGCS(filename: string): Promise<string | null> {
     try {
       const storage = new Storage()
       const bucket = storage.bucket(envVar.gcs.bucket)
-      const gcsPath = `${envVar.videos.storagePath}/${filename}`
+      const gcsPath = `${envVar.videos.baseUrl}/${filename}`.replace(/^\//, '')
       const file = bucket.file(gcsPath)
 
       const [exists] = await file.exists()
