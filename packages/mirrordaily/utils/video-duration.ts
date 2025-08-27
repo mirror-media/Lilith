@@ -70,7 +70,19 @@ async function downloadFromGCS(filename: string): Promise<string | null> {
 
       const [exists] = await file.exists()
       if (!exists) {
-        return null
+        const elapsedTime = Date.now() - startTime
+        
+        if (attempt === maxRetries || elapsedTime >= maxTotalTime) {
+          console.log(`File not found in GCS after ${attempt + 1} attempts: ${gcsPath}`)
+          return null
+        }
+        
+        const delay = baseDelay * Math.pow(2, attempt)
+        const remainingTime = maxTotalTime - elapsedTime
+        const actualDelay = Math.min(delay, remainingTime)
+        console.log(`File not found (attempt ${attempt + 1}), retrying in ${actualDelay}ms...`)
+        await new Promise(resolve => setTimeout(resolve, actualDelay))
+        continue
       }
       
       const tempDir = os.tmpdir()
@@ -90,7 +102,7 @@ async function downloadFromGCS(filename: string): Promise<string | null> {
       const delay = baseDelay * Math.pow(2, attempt)
       const remainingTime = maxTotalTime - elapsedTime
       const actualDelay = Math.min(delay, remainingTime)
-      console.log(`Download attempt ${attempt + 1} failed, retrying in ${actualDelay}ms...`)
+      console.log(`Download error (attempt ${attempt + 1}), retrying in ${actualDelay}ms...`, error)
       await new Promise(resolve => setTimeout(resolve, actualDelay))
     }
   }
