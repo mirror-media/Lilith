@@ -48,6 +48,7 @@ async function getVideoDurationFromPath(filePath: string): Promise<number | null
   return new Promise((resolve) => {
     ffmpeg.ffprobe(filePath, (err: any, metadata: any) => {
       if (err) {
+        console.error(`[getVideoDurationFromPath] FFprobe error:`, err)
         resolve(null)
       } else {
         const duration = Math.floor(metadata?.format?.duration || 0)
