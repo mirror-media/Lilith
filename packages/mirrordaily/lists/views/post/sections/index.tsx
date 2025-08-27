@@ -523,7 +523,7 @@ export const controller = (
     graphqlSelection:
       config.fieldMeta.displayMode === 'count'
         ? `${config.path}Count`
-        : `${config.path} {
+        : `${config.path}InInputOrder {
               id
               label: ${refLabelField}
             }`,
@@ -579,7 +579,7 @@ export const controller = (
         }
       }
       if (config.fieldMeta.many) {
-        const value = (data[config.path] || []).map((x: any) => ({
+        const value = (data[`${config.path}InInputOrder`] || []).map((x: any) => ({
           id: x.id,
           label: x.label || x.id,
         }))
@@ -590,7 +590,7 @@ export const controller = (
           value,
         }
       }
-      let value = data[config.path]
+      let value = data[`${config.path}InInputOrder`]
       if (value) {
         value = {
           id: value.id,
@@ -688,27 +688,18 @@ export const controller = (
     },
     serialize: (state) => {
       if (state.kind === 'many') {
-        const newAllIds = new Set(state.value.map((x) => x.id))
-        const initialIds = new Set(state.initialValue.map((x) => x.id))
-        const disconnect = state.initialValue
-          .filter((x) => !newAllIds.has(x.id))
-          .map((x) => ({ id: x.id }))
-        const connect = state.value
-          .filter((x) => !initialIds.has(x.id))
-          .map((x) => ({ id: x.id }))
-        if (disconnect.length || connect.length) {
-          const output: any = {}
-
-          if (disconnect.length) {
-            output.disconnect = disconnect
-          }
-
-          if (connect.length) {
-            output.connect = connect
-          }
-
+        const setItems = state.value.map((x) => ({ id: x.id }))
+        
+        const hasChanged = state.value.length !== state.initialValue.length ||
+          state.value.some((item, index) => 
+            !state.initialValue[index] || item.id !== state.initialValue[index].id
+          )
+        
+        if (hasChanged) {
           return {
-            [config.path]: output,
+            [config.path]: {
+              set: setItems,
+            },
           }
         }
       } else if (state.kind === 'one') {
