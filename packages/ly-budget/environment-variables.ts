@@ -52,4 +52,7 @@ export default {
     baseUrl: IMAGES_BASE_URL || '/images',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
+  cache: {
+	isEnabled: IS_CACHE_ENABLED	|| 'false',
+  },
 }
