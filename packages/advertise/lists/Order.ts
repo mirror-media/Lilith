@@ -25,26 +25,20 @@ const listConfigurations = list({
     member: relationship({
       label: '會員',
       ref: 'Member',
-      validation: { isRequired: true },
     }),
     type: select({
       label: '類型',
       options: orderTypeOptions,
-      validation: { isRequired: true },
     }),
     state: select({
       label: '狀態',
       options: orderStateOptions,
       defaultValue: 'paid',
-      validation: { isRequired: true },
     }),
     relatedOrder: relationship({
       label: '訂單更動',
       ref: 'Order',
       many: true,
-      db: {
-        isNullable: true,
-      },
     }),
     paragraphOne: text({
       label: '第一段文字',
@@ -67,29 +61,20 @@ const listConfigurations = list({
     image: relationship({
       label: '圖片素材',
       ref: 'Photo',
-      db: {
-        isNullable: true,
-      },
     }),
     demoImage: relationship({
       label: '成品樣圖',
       ref: 'Photo',
       many: true,
-      db: {
-        isNullable: true,
-      },
     }),
     schedule: text({
       label: '排程播出時間',
-      db: {
-        isNullable: true,
-      },
     }),
   },
 
   ui: {
     listView: {
-      initialColumns: ['member', 'type', 'state', 'schedule', 'createdAt'],
+      initialColumns: ['member', 'type', 'state', 'schedule'],
     },
   },
   access: {
