@@ -56,15 +56,23 @@ const listConfigurations = list({
         isNullable: true,
       },
     }),
-    proposers: relationship({
+    proposers: text({
       label: '提案人',
-      many: true,
-      ref: 'People',
+      db: {
+        isNullable: true,
+      },
+      ui: {
+        displayMode: 'textarea',
+      },
     }),
-    coSigners: relationship({
+    coSigners: text({
       label: '連署人',
-      many: true,
-      ref: 'People',
+      db: {
+        isNullable: true,
+      },
+      ui: {
+        displayMode: 'textarea',
+      },
     }),
     reason: text({
       label: '案由',
@@ -94,7 +102,7 @@ const listConfigurations = list({
       const current = await context.query.RecognitionStatus.findOne({
         where: { id: String(item.id) },
         query:
-          'id type governmentBudgetResult budgetCategoryResult budgetAmountResult budgetTypeResult reductionAmountResult freezeAmountResult reason image { id imageUrl } proposers { id name } coSigners { id name }',
+          'id type governmentBudgetResult budgetCategoryResult budgetAmountResult budgetTypeResult reductionAmountResult freezeAmountResult reason proposers coSigners image { id imageUrl }',
       })
       const imageId = current?.image?.id
       const imageUrl = current?.image?.imageUrl
@@ -104,16 +112,10 @@ const listConfigurations = list({
       const prevList = await context.query.RecognitionStatus.findMany({
         where: { AND: [{ image: { id: { equals: imageId } } }, { id: { not: { equals: String(item.id) } } }] },
         query:
-          'id type governmentBudgetResult budgetCategoryResult budgetAmountResult budgetTypeResult reductionAmountResult freezeAmountResult reason proposers { id } coSigners { id }',
+          'id type governmentBudgetResult budgetCategoryResult budgetAmountResult budgetTypeResult reductionAmountResult freezeAmountResult reason proposers coSigners',
       })
 
       const norm = (v?: string | null) => (v ? String(v).trim() : '')
-      const ids = (arr?: Array<{ id?: string }>) =>
-        (arr || [])
-          .map((x) => String(x.id))
-          .filter(Boolean)
-          .sort()
-
       const isSame = (a: any, b: any) =>
         norm(a.type) === norm(b.type) &&
         norm(a.governmentBudgetResult) === norm(b.governmentBudgetResult) &&
@@ -123,8 +125,8 @@ const listConfigurations = list({
         norm(a.reductionAmountResult) === norm(b.reductionAmountResult) &&
         norm(a.freezeAmountResult) === norm(b.freezeAmountResult) &&
         norm(a.reason) === norm(b.reason) &&
-        JSON.stringify(ids(a.proposers)) === JSON.stringify(ids(b.proposers)) &&
-        JSON.stringify(ids(a.coSigners)) === JSON.stringify(ids(b.coSigners))
+        norm(a.proposers) === norm(b.proposers) &&
+        norm(a.coSigners) === norm(b.coSigners)
 
       const hasSameBefore = prevList.some((p) => isSame(p, current))
       if (!hasSameBefore) return
@@ -180,11 +182,7 @@ const listConfigurations = list({
         return 'other'
       }
 
-      const names = (arr?: Array<{ name?: string }>) =>
-        (arr || [])
-          .map((p) => (p?.name ? String(p.name) : ''))
-          .filter(Boolean)
-          .join('、')
+      const names = (s?: string | null) => (s ? String(s) : '')
 
       const lines: string[] = []
       if (current?.governmentBudgetResult)
@@ -193,9 +191,9 @@ const listConfigurations = list({
         lines.push(`辨識結果-預算科目：${current.budgetCategoryResult}`)
       if (current?.budgetAmountResult)
         lines.push(`辨識結果-預算金額：${current.budgetAmountResult}`)
-      if (current?.proposers?.length)
+      if (current?.proposers)
         lines.push(`提案人：${names(current.proposers)}`)
-      if (current?.coSigners?.length)
+      if (current?.coSigners)
         lines.push(`連署人：${names(current.coSigners)}`)
 
       const data: Record<string, any> = {

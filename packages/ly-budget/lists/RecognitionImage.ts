@@ -101,7 +101,7 @@ const listConfigurations = list({
       const statuses = await context.query.RecognitionStatus.findMany({
         where: { image: { id: { equals: item.id } } },
         query:
-          'type governmentBudgetResult budgetCategoryResult budgetAmountResult budgetTypeResult reductionAmountResult freezeAmountResult reason proposers { id name } coSigners { id name }',
+          'type governmentBudgetResult budgetCategoryResult budgetAmountResult budgetTypeResult reductionAmountResult freezeAmountResult reason proposers coSigners',
       })
       const pick =
         statuses.find((s: any) => s.type === 'verification') || statuses[0]
@@ -121,11 +121,7 @@ const listConfigurations = list({
         return 'other'
       }
 
-      const names = (arr?: Array<{ name?: string }>) =>
-        (arr || [])
-          .map((p) => (p?.name ? String(p.name) : ''))
-          .filter(Boolean)
-          .join('、')
+      const names = (s?: string | null) => (s ? String(s) : '')
 
       const lines: string[] = []
       if (pick?.governmentBudgetResult)
@@ -134,9 +130,9 @@ const listConfigurations = list({
         lines.push(`辨識結果-預算科目：${pick.budgetCategoryResult}`)
       if (pick?.budgetAmountResult)
         lines.push(`辨識結果-預算金額：${pick.budgetAmountResult}`)
-      if (pick?.proposers?.length)
+      if (pick?.proposers)
         lines.push(`提案人：${names(pick.proposers)}`)
-      if (pick?.coSigners?.length)
+      if (pick?.coSigners)
         lines.push(`連署人：${names(pick.coSigners)}`)
 
       const data: Record<string, any> = {
@@ -162,14 +158,7 @@ const listConfigurations = list({
         data.historicalProposals = {
           connect: image.historicalProposals.map((p: any) => ({ id: p.id })),
         }
-      if (pick?.proposers?.length)
-        data.proposers = {
-          connect: pick.proposers.map((p: any) => ({ id: p.id })),
-        }
-      if (pick?.coSigners?.length)
-        data.coSigners = {
-          connect: pick.coSigners.map((p: any) => ({ id: p.id })),
-        }
+      // 提案人/連署人改為文字，直接寫入 recognitionAnswer，不建立關聯
 
       await context.query.Proposal.createOne({
         data,

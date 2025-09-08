@@ -20,12 +20,10 @@ const listConfigurations = list({
     location: select({
       label: '地點',
       options: locationOptions,
-      validation: { isRequired: true },
     }),
     type: select({
       label: '類型',
       options: typeOptions,
-      validation: { isRequired: true },
     }),
     committee: relationship({
       label: '委員會',
@@ -37,13 +35,9 @@ const listConfigurations = list({
     }),
     meetingDate: timestamp({
       label: '會議日期',
-      validation: { isRequired: true },
     }),
     meetingRecordUrl: text({
       label: '會議記錄連結',
-      db: {
-        isNullable: true,
-      },
     }),
     description: text({
       label: '說明',
