@@ -44,8 +44,14 @@ const listConfigurations = list({
         isNullable: true,
       },
     }),
-    freezeReduceAmountResult: text({
-      label: '辨識結果-凍結/刪減金額',
+    reductionAmountResult: text({
+      label: '辨識結果-減列金額',
+      db: {
+        isNullable: true,
+      },
+    }),
+    freezeAmountResult: text({
+      label: '辨識結果-凍結金額',
       db: {
         isNullable: true,
       },
@@ -78,6 +84,154 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
+  },
+
+  hooks: {
+    async afterOperation({ operation, item, context }) {
+      if (operation !== 'create' && operation !== 'update') return
+
+      // 取得目前這筆完整資料
+      const current = await context.query.RecognitionStatus.findOne({
+        where: { id: String(item.id) },
+        query:
+          'id type governmentBudgetResult budgetCategoryResult budgetAmountResult budgetTypeResult reductionAmountResult freezeAmountResult reason image { id imageUrl } proposers { id name } coSigners { id name }',
+      })
+      const imageId = current?.image?.id
+      const imageUrl = current?.image?.imageUrl
+      if (!imageId || !imageUrl) return
+
+      // 找出相同 image 的其他紀錄
+      const prevList = await context.query.RecognitionStatus.findMany({
+        where: { AND: [{ image: { id: { equals: imageId } } }, { id: { not: { equals: String(item.id) } } }] },
+        query:
+          'id type governmentBudgetResult budgetCategoryResult budgetAmountResult budgetTypeResult reductionAmountResult freezeAmountResult reason proposers { id } coSigners { id }',
+      })
+
+      const norm = (v?: string | null) => (v ? String(v).trim() : '')
+      const ids = (arr?: Array<{ id?: string }>) =>
+        (arr || [])
+          .map((x) => String(x.id))
+          .filter(Boolean)
+          .sort()
+
+      const isSame = (a: any, b: any) =>
+        norm(a.type) === norm(b.type) &&
+        norm(a.governmentBudgetResult) === norm(b.governmentBudgetResult) &&
+        norm(a.budgetCategoryResult) === norm(b.budgetCategoryResult) &&
+        norm(a.budgetAmountResult) === norm(b.budgetAmountResult) &&
+        norm(a.budgetTypeResult) === norm(b.budgetTypeResult) &&
+        norm(a.reductionAmountResult) === norm(b.reductionAmountResult) &&
+        norm(a.freezeAmountResult) === norm(b.freezeAmountResult) &&
+        norm(a.reason) === norm(b.reason) &&
+        JSON.stringify(ids(a.proposers)) === JSON.stringify(ids(b.proposers)) &&
+        JSON.stringify(ids(a.coSigners)) === JSON.stringify(ids(b.coSigners))
+
+      const hasSameBefore = prevList.some((p) => isSame(p, current))
+      if (!hasSameBefore) return
+
+      // 將相同 imageUrl 的 RecognitionImage 設為 verified
+      const images = await context.query.RecognitionImage.findMany({
+        where: { imageUrl: { equals: String(imageUrl) } },
+        query: 'id verificationStatus',
+        take: 1,
+      })
+      const target = images[0]
+      if (!target || target.verificationStatus === 'verified') return
+
+      await context.query.RecognitionImage.updateOne({
+        where: { id: String(target.id) },
+        data: { verificationStatus: 'verified' },
+        query: 'id',
+      })
+
+      // 同步建立 Proposal（draft），避免重複建立
+      const image = await context.query.RecognitionImage.findOne({
+        where: { id: String(imageId) },
+        query:
+          'id imageUrl meeting { id } government { id } mergedProposals { id } historicalProposals { id } result',
+      })
+
+      const existing = await context.query.Proposal.findMany({
+        where: {
+          AND: [
+            { budgetImageUrl: { equals: String(image?.imageUrl || '') } },
+            image?.meeting?.id
+              ? { meetings: { some: { id: { equals: image.meeting.id } } } }
+              : {},
+          ],
+        },
+        query: 'id',
+        take: 1,
+      })
+      if (existing && existing.length > 0) return
+
+      const toNumber = (input?: string | null) => {
+        if (!input) return undefined
+        const sanitized = String(input).replace(/[^0-9.-]/g, '')
+        if (sanitized === '') return undefined
+        const n = Number(sanitized)
+        return Number.isFinite(n) ? n : undefined
+      }
+
+      const mapProposalType = (t?: string | null) => {
+        if (!t) return 'other'
+        if (t.includes('凍結')) return 'freeze'
+        if (t.includes('刪減')) return 'reduce'
+        return 'other'
+      }
+
+      const names = (arr?: Array<{ name?: string }>) =>
+        (arr || [])
+          .map((p) => (p?.name ? String(p.name) : ''))
+          .filter(Boolean)
+          .join('、')
+
+      const lines: string[] = []
+      if (current?.governmentBudgetResult)
+        lines.push(`辨識結果-部會預算：${current.governmentBudgetResult}`)
+      if (current?.budgetCategoryResult)
+        lines.push(`辨識結果-預算科目：${current.budgetCategoryResult}`)
+      if (current?.budgetAmountResult)
+        lines.push(`辨識結果-預算金額：${current.budgetAmountResult}`)
+      if (current?.proposers?.length)
+        lines.push(`提案人：${names(current.proposers)}`)
+      if (current?.coSigners?.length)
+        lines.push(`連署人：${names(current.coSigners)}`)
+
+      const data: Record<string, any> = {
+        publishStatus: 'draft',
+        recognitionAnswer: lines.join('\n'),
+        proposalTypes: mapProposalType(current?.budgetTypeResult),
+        reductionAmount: toNumber(current?.reductionAmountResult),
+        freezeAmount: toNumber(current?.freezeAmountResult),
+        reason: current?.reason || undefined,
+        budgetImageUrl: image?.imageUrl || undefined,
+      }
+
+      if (image?.result) data.result = image.result
+      if (image?.government?.id)
+        data.government = { connect: { id: image.government.id } }
+      if (image?.meeting?.id)
+        data.meetings = { connect: [{ id: image.meeting.id }] }
+      if (image?.mergedProposals?.length)
+        data.mergedProposals = {
+          connect: image.mergedProposals.map((p: any) => ({ id: p.id })),
+        }
+      if (image?.historicalProposals?.length)
+        data.historicalProposals = {
+          connect: image.historicalProposals.map((p: any) => ({ id: p.id })),
+        }
+      if (current?.proposers?.length)
+        data.proposers = {
+          connect: current.proposers.map((p: any) => ({ id: p.id })),
+        }
+      if (current?.coSigners?.length)
+        data.coSigners = {
+          connect: current.coSigners.map((p: any) => ({ id: p.id })),
+        }
+
+      await context.query.Proposal.createOne({ data, query: 'id' })
+    },
   },
 
   ui: {

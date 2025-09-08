@@ -114,6 +114,15 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
+    reason: text({
+      label: '案由',
+      db: {
+        isNullable: true,
+      },
+      ui: {
+        displayMode: 'textarea',
+      },
+    }),
     recognitionAnswer: text({
       label: '辨識答案',
       db: {
