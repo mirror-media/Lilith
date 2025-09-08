@@ -1,6 +1,6 @@
-import { list } from '@keystone-6/core'
+import { graphql, list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { timestamp, text, relationship } from '@keystone-6/core/fields'
+import { timestamp, text, relationship, virtual } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -42,9 +42,29 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
+    displayName: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        async resolve(item, args, context) {
+          const data = await context.query.Committee.findOne({
+            where: { id: item.id },
+            query: 'name session term { termNumber }',
+          })
+          const termNumber = data?.term?.termNumber
+          const name = data?.name || ''
+          const session = data?.session || ''
+          return `${name}${termNumber ? ` 第${termNumber}屆` : ''}${session ? ` 第${session}會期` : ''}`
+        },
+      }),
+      ui: {
+        description: '供後台標籤顯示用',
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
   },
 
   ui: {
+    labelField: 'displayName',
     listView: {
       initialColumns: ['displayName', 'session', 'startDate', 'endDate'],
     },

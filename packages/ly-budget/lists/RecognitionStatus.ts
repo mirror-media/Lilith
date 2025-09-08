@@ -50,6 +50,25 @@ const listConfigurations = list({
         isNullable: true,
       },
     }),
+    proposers: relationship({
+      label: '提案人',
+      many: true,
+      ref: 'People',
+    }),
+    coSigners: relationship({
+      label: '連署人',
+      many: true,
+      ref: 'People',
+    }),
+    reason: text({
+      label: '案由',
+      db: {
+        isNullable: true,
+      },
+      ui: {
+        displayMode: 'textarea',
+      },
+    }),
     description: text({
       label: '說明',
       db: {

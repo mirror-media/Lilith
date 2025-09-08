@@ -22,6 +22,11 @@ const unfreezeStatusOptions = [
   { value: 'unfrozen', label: '已解凍' },
 ]
 
+const publishStatusOptions = [
+  { value: 'draft', label: '草稿' },
+  { value: 'published', label: '已發布' },
+]
+
 const listConfigurations = list({
   fields: {
     government: relationship({
@@ -87,9 +92,6 @@ const listConfigurations = list({
     budget: relationship({
       label: '預算科目',
       ref: 'Budget',
-      db: {
-        isNullable: true,
-      },
     }),
     unfreezeStatus: select({
       label: '解凍狀態',
@@ -111,6 +113,21 @@ const listConfigurations = list({
       ui: {
         displayMode: 'textarea',
       },
+    }),
+    recognitionAnswer: text({
+      label: '辨識答案',
+      db: {
+        isNullable: true,
+      },
+      ui: {
+        displayMode: 'textarea',
+      },
+    }),
+    publishStatus: select({
+      label: '發布狀態',
+      options: publishStatusOptions,
+      defaultValue: 'draft',
+      isIndexed: true,
     }),
   },
 

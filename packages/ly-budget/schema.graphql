@@ -238,6 +238,7 @@ type Committee {
   members(where: PeopleWhereInput! = {}, orderBy: [PeopleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PeopleWhereUniqueInput): [People!]
   membersCount(where: PeopleWhereInput! = {}): Int
   description: String
+  displayName: String
 }
 
 input CommitteeWhereUniqueInput {
@@ -569,9 +570,11 @@ type Meeting {
   location: String
   type: String
   committee: Committee
+  government: Government
   meetingDate: DateTime
   meetingRecordUrl: String
   description: String
+  displayName: String
 }
 
 input MeetingWhereUniqueInput {
@@ -586,9 +589,10 @@ input MeetingWhereInput {
   location: StringFilter
   type: StringFilter
   committee: CommitteeWhereInput
+  government: GovernmentWhereInput
   meetingDate: DateTimeFilter
   meetingRecordUrl: StringNullableFilter
-  description: StringNullableFilter
+  description: StringFilter
 }
 
 input MeetingOrderByInput {
@@ -604,6 +608,7 @@ input MeetingUpdateInput {
   location: String
   type: String
   committee: CommitteeRelateToOneForUpdateInput
+  government: GovernmentRelateToOneForUpdateInput
   meetingDate: DateTime
   meetingRecordUrl: String
   description: String
@@ -624,6 +629,7 @@ input MeetingCreateInput {
   location: String
   type: String
   committee: CommitteeRelateToOneForCreateInput
+  government: GovernmentRelateToOneForCreateInput
   meetingDate: DateTime
   meetingRecordUrl: String
   description: String
@@ -657,6 +663,8 @@ type Proposal {
   unfreezeHistory(where: MeetingWhereInput! = {}, orderBy: [MeetingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MeetingWhereUniqueInput): [Meeting!]
   unfreezeHistoryCount(where: MeetingWhereInput! = {}): Int
   description: String
+  recognitionAnswer: String
+  publishStatus: String
 }
 
 input ProposalWhereUniqueInput {
@@ -683,6 +691,8 @@ input ProposalWhereInput {
   unfreezeStatus: StringNullableFilter
   unfreezeHistory: MeetingManyRelationFilter
   description: StringNullableFilter
+  recognitionAnswer: StringNullableFilter
+  publishStatus: StringNullableFilter
 }
 
 input MeetingManyRelationFilter {
@@ -706,6 +716,8 @@ input ProposalOrderByInput {
   budgetImageUrl: OrderDirection
   unfreezeStatus: OrderDirection
   description: OrderDirection
+  recognitionAnswer: OrderDirection
+  publishStatus: OrderDirection
 }
 
 input ProposalUpdateInput {
@@ -724,6 +736,8 @@ input ProposalUpdateInput {
   unfreezeStatus: String
   unfreezeHistory: MeetingRelateToManyForUpdateInput
   description: String
+  recognitionAnswer: String
+  publishStatus: String
 }
 
 input MeetingRelateToManyForUpdateInput {
@@ -767,6 +781,8 @@ input ProposalCreateInput {
   unfreezeStatus: String
   unfreezeHistory: MeetingRelateToManyForCreateInput
   description: String
+  recognitionAnswer: String
+  publishStatus: String
 }
 
 input MeetingRelateToManyForCreateInput {
@@ -788,6 +804,13 @@ type RecognitionImage {
   id: ID!
   meeting: Meeting
   imageUrl: String
+  pageNumber: Int
+  government: Government
+  historicalProposals(where: ProposalWhereInput! = {}, orderBy: [ProposalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProposalWhereUniqueInput): [Proposal!]
+  historicalProposalsCount(where: ProposalWhereInput! = {}): Int
+  mergedProposals(where: ProposalWhereInput! = {}, orderBy: [ProposalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProposalWhereUniqueInput): [Proposal!]
+  mergedProposalsCount(where: ProposalWhereInput! = {}): Int
+  verificationStatus: String
   description: String
 }
 
@@ -802,18 +825,30 @@ input RecognitionImageWhereInput {
   id: IDFilter
   meeting: MeetingWhereInput
   imageUrl: StringFilter
+  pageNumber: IntNullableFilter
+  government: GovernmentWhereInput
+  historicalProposals: ProposalManyRelationFilter
+  mergedProposals: ProposalManyRelationFilter
+  verificationStatus: StringNullableFilter
   description: StringNullableFilter
 }
 
 input RecognitionImageOrderByInput {
   id: OrderDirection
   imageUrl: OrderDirection
+  pageNumber: OrderDirection
+  verificationStatus: OrderDirection
   description: OrderDirection
 }
 
 input RecognitionImageUpdateInput {
   meeting: MeetingRelateToOneForUpdateInput
   imageUrl: String
+  pageNumber: Int
+  government: GovernmentRelateToOneForUpdateInput
+  historicalProposals: ProposalRelateToManyForUpdateInput
+  mergedProposals: ProposalRelateToManyForUpdateInput
+  verificationStatus: String
   description: String
 }
 
@@ -831,6 +866,11 @@ input RecognitionImageUpdateArgs {
 input RecognitionImageCreateInput {
   meeting: MeetingRelateToOneForCreateInput
   imageUrl: String
+  pageNumber: Int
+  government: GovernmentRelateToOneForCreateInput
+  historicalProposals: ProposalRelateToManyForCreateInput
+  mergedProposals: ProposalRelateToManyForCreateInput
+  verificationStatus: String
   description: String
 }
 
@@ -848,6 +888,11 @@ type RecognitionStatus {
   budgetAmountResult: String
   budgetTypeResult: String
   freezeReduceAmountResult: String
+  proposers(where: PeopleWhereInput! = {}, orderBy: [PeopleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PeopleWhereUniqueInput): [People!]
+  proposersCount(where: PeopleWhereInput! = {}): Int
+  coSigners(where: PeopleWhereInput! = {}, orderBy: [PeopleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PeopleWhereUniqueInput): [People!]
+  coSignersCount(where: PeopleWhereInput! = {}): Int
+  reason: String
   description: String
 }
 
@@ -867,6 +912,9 @@ input RecognitionStatusWhereInput {
   budgetAmountResult: StringNullableFilter
   budgetTypeResult: StringNullableFilter
   freezeReduceAmountResult: StringNullableFilter
+  proposers: PeopleManyRelationFilter
+  coSigners: PeopleManyRelationFilter
+  reason: StringNullableFilter
   description: StringNullableFilter
 }
 
@@ -878,6 +926,7 @@ input RecognitionStatusOrderByInput {
   budgetAmountResult: OrderDirection
   budgetTypeResult: OrderDirection
   freezeReduceAmountResult: OrderDirection
+  reason: OrderDirection
   description: OrderDirection
 }
 
@@ -889,6 +938,9 @@ input RecognitionStatusUpdateInput {
   budgetAmountResult: String
   budgetTypeResult: String
   freezeReduceAmountResult: String
+  proposers: PeopleRelateToManyForUpdateInput
+  coSigners: PeopleRelateToManyForUpdateInput
+  reason: String
   description: String
 }
 
@@ -911,6 +963,9 @@ input RecognitionStatusCreateInput {
   budgetAmountResult: String
   budgetTypeResult: String
   freezeReduceAmountResult: String
+  proposers: PeopleRelateToManyForCreateInput
+  coSigners: PeopleRelateToManyForCreateInput
+  reason: String
   description: String
 }
 
