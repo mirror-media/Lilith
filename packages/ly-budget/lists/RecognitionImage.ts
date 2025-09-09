@@ -115,10 +115,12 @@ const listConfigurations = list({
       }
 
       const mapProposalType = (t?: string | null) => {
-        if (!t) return 'other'
-        if (t.includes('凍結')) return 'freeze'
-        if (t.includes('刪減')) return 'reduce'
-        return 'other'
+        if (!t) return ['other']
+        const values: string[] = []
+        if (t.includes('凍結')) values.push('freeze')
+        if (t.includes('刪減')) values.push('reduce')
+        if (values.length === 0) values.push('other')
+        return values
       }
 
       const names = (s?: string | null) => (s ? String(s) : '')

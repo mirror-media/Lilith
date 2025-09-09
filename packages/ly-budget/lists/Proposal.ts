@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { text, select, integer, relationship } from '@keystone-6/core/fields'
+import { text, select, integer, relationship, multiselect } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -58,11 +58,11 @@ const listConfigurations = list({
       many: true,
       ref: 'People',
     }),
-    proposalTypes: select({
+    proposalTypes: multiselect({
       label: '提案類型',
-      type: 'string',
+      type: 'enum',
       options: proposalTypeOptions,
-      validation: { isRequired: true },
+      db: { map: 'proposal_types' },
     }),
     result: select({
       label: '審議結果',

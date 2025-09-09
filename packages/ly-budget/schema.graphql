@@ -653,7 +653,7 @@ type Proposal {
   proposersCount(where: PeopleWhereInput! = {}): Int
   coSigners(where: PeopleWhereInput! = {}, orderBy: [PeopleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PeopleWhereUniqueInput): [People!]
   coSignersCount(where: PeopleWhereInput! = {}): Int
-  proposalTypes: String
+  proposalTypes: [ProposalProposalTypeType!]
   result: String
   reductionAmount: Int
   freezeAmount: Int
@@ -666,6 +666,12 @@ type Proposal {
   reason: String
   recognitionAnswer: String
   publishStatus: String
+}
+
+enum ProposalProposalTypeType {
+  freeze
+  reduce
+  other
 }
 
 input ProposalWhereUniqueInput {
@@ -683,7 +689,6 @@ input ProposalWhereInput {
   historicalProposals: ProposalManyRelationFilter
   proposers: PeopleManyRelationFilter
   coSigners: PeopleManyRelationFilter
-  proposalTypes: StringFilter
   result: StringNullableFilter
   reductionAmount: IntNullableFilter
   freezeAmount: IntNullableFilter
@@ -711,7 +716,6 @@ input ProposalManyRelationFilter {
 
 input ProposalOrderByInput {
   id: OrderDirection
-  proposalTypes: OrderDirection
   result: OrderDirection
   reductionAmount: OrderDirection
   freezeAmount: OrderDirection
@@ -730,7 +734,7 @@ input ProposalUpdateInput {
   historicalProposals: ProposalRelateToManyForUpdateInput
   proposers: PeopleRelateToManyForUpdateInput
   coSigners: PeopleRelateToManyForUpdateInput
-  proposalTypes: String
+  proposalTypes: [ProposalProposalTypeType!]
   result: String
   reductionAmount: Int
   freezeAmount: Int
@@ -776,7 +780,7 @@ input ProposalCreateInput {
   historicalProposals: ProposalRelateToManyForCreateInput
   proposers: PeopleRelateToManyForCreateInput
   coSigners: PeopleRelateToManyForCreateInput
-  proposalTypes: String
+  proposalTypes: [ProposalProposalTypeType!]
   result: String
   reductionAmount: Int
   freezeAmount: Int
