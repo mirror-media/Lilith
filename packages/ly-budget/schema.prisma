@@ -47,21 +47,19 @@ model Committee {
 }
 
 model People {
-  id                               Int                 @id @default(autoincrement())
-  type                             String
-  name                             String              @default("")
-  term                             Term?               @relation("People_term", fields: [termId], references: [id])
-  termId                           Int?                @map("term")
-  party                            People?             @relation("People_party", fields: [partyId], references: [id])
-  partyId                          Int?                @map("party")
-  committees                       Committee[]         @relation("People_committees")
-  description                      String              @default("")
-  from_Committee_members           Committee[]         @relation("Committee_members")
-  from_People_party                People[]            @relation("People_party")
-  from_Proposal_proposers          Proposal[]          @relation("Proposal_proposers")
-  from_Proposal_coSigners          Proposal[]          @relation("Proposal_coSigners")
-  from_RecognitionStatus_proposers RecognitionStatus[] @relation("RecognitionStatus_proposers")
-  from_RecognitionStatus_coSigners RecognitionStatus[] @relation("RecognitionStatus_coSigners")
+  id                      Int         @id @default(autoincrement())
+  type                    String
+  name                    String      @default("")
+  term                    Term?       @relation("People_term", fields: [termId], references: [id])
+  termId                  Int?        @map("term")
+  party                   People?     @relation("People_party", fields: [partyId], references: [id])
+  partyId                 Int?        @map("party")
+  committees              Committee[] @relation("People_committees")
+  description             String      @default("")
+  from_Committee_members  Committee[] @relation("Committee_members")
+  from_People_party       People[]    @relation("People_party")
+  from_Proposal_proposers Proposal[]  @relation("Proposal_proposers")
+  from_Proposal_coSigners Proposal[]  @relation("Proposal_coSigners")
 
   @@index([termId])
   @@index([partyId])
@@ -100,14 +98,14 @@ model Budget {
 
 model Meeting {
   id                            Int                @id @default(autoincrement())
-  location                      String
-  type                          String
+  location                      String?
+  type                          String?
   committee                     Committee?         @relation("Meeting_committee", fields: [committeeId], references: [id])
   committeeId                   Int?               @map("committee")
   government                    Government?        @relation("Meeting_government", fields: [governmentId], references: [id])
   governmentId                  Int?               @map("government")
-  meetingDate                   DateTime
-  meetingRecordUrl              String?
+  meetingDate                   DateTime?
+  meetingRecordUrl              String             @default("")
   description                   String             @default("")
   from_Proposal_meetings        Proposal[]         @relation("Proposal_meetings")
   from_Proposal_unfreezeHistory Proposal[]         @relation("Proposal_unfreezeHistory")
@@ -180,8 +178,8 @@ model RecognitionStatus {
   budgetTypeResult       String?
   reductionAmountResult  String?
   freezeAmountResult     String?
-  proposers              People[]          @relation("RecognitionStatus_proposers")
-  coSigners              People[]          @relation("RecognitionStatus_coSigners")
+  proposers              String?
+  coSigners              String?
   reason                 String?
   description            String?
 
