@@ -82,20 +82,7 @@ const listConfigurations = list({
           'id imageUrl meeting { id } government { id } mergedProposals { id } historicalProposals { id } result',
       })
 
-      // 避免重複建立：用 meeting + imageUrl 作為粗略唯一鍵
-      const existing = await context.query.Proposal.findMany({
-        where: {
-          AND: [
-            { budgetImageUrl: { equals: String(image?.imageUrl || '') } },
-            image?.meeting?.id
-              ? { meetings: { some: { id: { equals: image.meeting.id } } } }
-              : {},
-          ],
-        },
-        query: 'id',
-        take: 1,
-      })
-      if (existing && existing.length > 0) return
+      // 直接建立 Proposal，不做查重
 
       // 取對應的辨識/驗證結果，優先 type = 'verification'
       const statuses = await context.query.RecognitionStatus.findMany({
@@ -146,6 +133,8 @@ const listConfigurations = list({
         reason: pick?.reason || undefined,
         budgetImageUrl: image?.imageUrl || undefined,
       }
+
+      // 一律建立新的 Proposal
 
       if (image?.result) data.result = image.result
       if (image?.government?.id)

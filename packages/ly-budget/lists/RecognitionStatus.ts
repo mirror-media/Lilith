@@ -146,26 +146,14 @@ const listConfigurations = list({
         query: 'id',
       })
 
-      // 同步建立 Proposal（draft），避免重複建立
+      // 同步建立 Proposal（draft），每次直接建立新的
       const image = await context.query.RecognitionImage.findOne({
         where: { id: String(imageId) },
         query:
           'id imageUrl meeting { id } government { id } mergedProposals { id } historicalProposals { id } result',
       })
 
-      const existing = await context.query.Proposal.findMany({
-        where: {
-          AND: [
-            { budgetImageUrl: { equals: String(image?.imageUrl || '') } },
-            image?.meeting?.id
-              ? { meetings: { some: { id: { equals: image.meeting.id } } } }
-              : {},
-          ],
-        },
-        query: 'id',
-        take: 1,
-      })
-      if (existing && existing.length > 0) return
+      // 不查重，直接建立
 
       const toNumber = (input?: string | null) => {
         if (!input) return undefined
