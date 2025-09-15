@@ -312,7 +312,6 @@ model Post {
   manualOrderOfRelatedVideos Json?
   state                      String?        @default("draft")
   publishedDate              DateTime       @default(now())
-  publishedDateString        String         @default("")
   updateTimeStamp            Boolean        @default(true)
   isFeatured                 Boolean        @default(false)
   isAdvertised               Boolean        @default(false)
@@ -326,6 +325,7 @@ model Post {
   css                        String         @default("")
   apiDataBrief               Json?
   apiData                    Json?
+  publishedDateString        String         @default("")
   createdAt                  DateTime?
   updatedAt                  DateTime?
   createdBy                  User?          @relation("Post_createdBy", fields: [createdById], references: [id])
@@ -417,6 +417,7 @@ model Topic {
   slug                         String     @unique @default("")
   sortOrder                    Int?
   state                        String?    @default("draft")
+  publishedDate                DateTime   @default(now())
   brief                        Json?
   apiDataBrief                 Json?
   leading                      String?
@@ -450,6 +451,7 @@ model Topic {
   updatedById                  Int?       @map("updatedBy")
 
   @@index([state])
+  @@index([publishedDate])
   @@index([leading])
   @@index([heroImageId])
   @@index([heroVideoId])

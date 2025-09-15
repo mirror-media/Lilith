@@ -1204,7 +1204,6 @@ type Post {
   manualOrderOfRelatedVideos: JSON
   state: String
   publishedDate: DateTime
-  publishedDateString: String
   updateTimeStamp: Boolean
   preview: JSON
   isFeatured: Boolean
@@ -1219,6 +1218,7 @@ type Post {
   css: String
   apiDataBrief: JSON
   apiData: JSON
+  publishedDateString: String
   trimmedApiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -1266,7 +1266,6 @@ input PostWhereInput {
   og_title: StringFilter
   state: StringNullableFilter
   publishedDate: DateTimeFilter
-  publishedDateString: StringFilter
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
   hiddenAdvertised: BooleanFilter
@@ -1276,6 +1275,7 @@ input PostWhereInput {
   redirect: StringFilter
   adTrace: StringFilter
   css: StringFilter
+  publishedDateString: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1307,7 +1307,6 @@ input PostOrderByInput {
   og_description: OrderDirection
   state: OrderDirection
   publishedDate: OrderDirection
-  publishedDateString: OrderDirection
   updateTimeStamp: OrderDirection
   isFeatured: OrderDirection
   isAdvertised: OrderDirection
@@ -1316,6 +1315,7 @@ input PostOrderByInput {
   redirect: OrderDirection
   adTrace: OrderDirection
   css: OrderDirection
+  publishedDateString: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1363,7 +1363,6 @@ input PostUpdateInput {
   manualOrderOfRelatedVideos: JSON
   state: String
   publishedDate: DateTime
-  publishedDateString: String
   updateTimeStamp: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
@@ -1376,6 +1375,7 @@ input PostUpdateInput {
   css: String
   apiDataBrief: JSON
   apiData: JSON
+  publishedDateString: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1463,7 +1463,6 @@ input PostCreateInput {
   manualOrderOfRelatedVideos: JSON
   state: String
   publishedDate: DateTime
-  publishedDateString: String
   updateTimeStamp: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
@@ -1476,6 +1475,7 @@ input PostCreateInput {
   css: String
   apiDataBrief: JSON
   apiData: JSON
+  publishedDateString: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1749,6 +1749,7 @@ type Topic {
   slug: String
   sortOrder: Int
   state: String
+  publishedDate: DateTime
   brief: JSON
   apiDataBrief: JSON
   leading: String
@@ -1797,6 +1798,7 @@ input TopicWhereInput {
   slug: StringFilter
   sortOrder: IntNullableFilter
   state: StringNullableFilter
+  publishedDate: DateTimeFilter
   leading: StringNullableFilter
   heroImage: PhotoWhereInput
   heroUrl: StringNullableFilter
@@ -1834,6 +1836,7 @@ input TopicOrderByInput {
   slug: OrderDirection
   sortOrder: OrderDirection
   state: OrderDirection
+  publishedDate: OrderDirection
   leading: OrderDirection
   heroUrl: OrderDirection
   og_title: OrderDirection
@@ -1854,6 +1857,7 @@ input TopicUpdateInput {
   slug: String
   sortOrder: Int
   state: String
+  publishedDate: DateTime
   brief: JSON
   apiDataBrief: JSON
   leading: String
@@ -1899,6 +1903,7 @@ input TopicCreateInput {
   slug: String
   sortOrder: Int
   state: String
+  publishedDate: DateTime
   brief: JSON
   apiDataBrief: JSON
   leading: String

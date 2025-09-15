@@ -796,17 +796,6 @@ const listConfigurations = list({
       validation: { isRequired: true },
       defaultValue: { kind: 'now' },
     }),
-    publishedDateString: text({
-      label: '發布日期',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'hidden',
-        },
-      },
-    }),
     updateTimeStamp: checkbox({
       label: '下次存檔時自動更改成「現在時間」',
       isFilterable: false,
@@ -925,6 +914,14 @@ const listConfigurations = list({
       },
       access: {
         read: checkReadPermission,
+      },
+    }),
+    publishedDateString: text({
+      label: '發布日期',
+      ui: {
+        createView: { fieldMode: 'hidden', },
+        itemView: { fieldMode: 'hidden', },
+        listView: { fieldMode: 'hidden', },
       },
     }),
     trimmedApiData: virtual({
