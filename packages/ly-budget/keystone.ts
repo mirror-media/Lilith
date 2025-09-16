@@ -5,7 +5,6 @@ import envVar from './environment-variables'
 import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
-import { createPreviewMiniApp } from './express-mini-apps/preview/app'
 import Keyv from 'keyv'
 import { KeyvAdapter } from '@apollo/utils.keyvadapter'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
@@ -98,6 +97,21 @@ export default withAuth(
 
         const jsonBodyParser = express.json({ limit: '500mb' })
         app.use(jsonBodyParser)
+
+        // Enable CORS for non-production environments
+        if (process.env.NODE_ENV !== 'prod') {
+          app.use((req, res, next) => {
+            res.header('Access-Control-Allow-Origin', '*')
+            res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
+            
+            if (req.method === 'OPTIONS') {
+              res.sendStatus(200)
+            } else {
+              next()
+            }
+          })
+        }
 
         //if (envVar.accessControlStrategy === 'cms') {
         //  app.use(

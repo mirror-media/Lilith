@@ -55,7 +55,7 @@ model People {
   party                   People?     @relation("People_party", fields: [partyId], references: [id])
   partyId                 Int?        @map("party")
   committees              Committee[] @relation("People_committees")
-  description             String?
+  description             String      @default("")
   from_Committee_members  Committee[] @relation("Committee_members")
   from_People_party       People[]    @relation("People_party")
   from_Proposal_proposers Proposal[]  @relation("Proposal_proposers")
@@ -66,12 +66,14 @@ model People {
 }
 
 model Government {
-  id                       Int        @id @default(autoincrement())
-  category                 String     @default("")
-  name                     String     @default("")
-  description              String?
-  from_Budget_government   Budget[]   @relation("Budget_government")
-  from_Proposal_government Proposal[] @relation("Proposal_government")
+  id                               Int                @id @default(autoincrement())
+  category                         String             @default("")
+  name                             String             @default("")
+  description                      String?
+  from_Budget_government           Budget[]           @relation("Budget_government")
+  from_Meeting_government          Meeting[]          @relation("Meeting_government")
+  from_Proposal_government         Proposal[]         @relation("Proposal_government")
+  from_RecognitionImage_government RecognitionImage[] @relation("RecognitionImage_government")
 }
 
 model Budget {
@@ -96,44 +98,53 @@ model Budget {
 
 model Meeting {
   id                            Int                @id @default(autoincrement())
-  location                      String
-  type                          String
+  location                      String?
+  type                          String?
   committee                     Committee?         @relation("Meeting_committee", fields: [committeeId], references: [id])
   committeeId                   Int?               @map("committee")
-  meetingDate                   DateTime
-  meetingRecordUrl              String?
-  description                   String?
+  government                    Government?        @relation("Meeting_government", fields: [governmentId], references: [id])
+  governmentId                  Int?               @map("government")
+  meetingDate                   DateTime?
+  meetingRecordUrl              String             @default("")
+  description                   String             @default("")
   from_Proposal_meetings        Proposal[]         @relation("Proposal_meetings")
   from_Proposal_unfreezeHistory Proposal[]         @relation("Proposal_unfreezeHistory")
   from_RecognitionImage_meeting RecognitionImage[] @relation("RecognitionImage_meeting")
 
   @@index([committeeId])
+  @@index([governmentId])
 }
 
 model Proposal {
-  id                                Int         @id @default(autoincrement())
-  government                        Government? @relation("Proposal_government", fields: [governmentId], references: [id])
-  governmentId                      Int?        @map("government")
-  meetings                          Meeting[]   @relation("Proposal_meetings")
-  mergedProposals                   Proposal[]  @relation("Proposal_mergedProposals")
-  historicalProposals               Proposal[]  @relation("Proposal_historicalProposals")
-  proposers                         People[]    @relation("Proposal_proposers")
-  coSigners                         People[]    @relation("Proposal_coSigners")
-  proposalTypes                     String
-  result                            String?
-  reductionAmount                   Int?
-  freezeAmount                      Int?
-  budgetImageUrl                    String?
-  budget                            Budget?     @relation("Proposal_budget", fields: [budgetId], references: [id])
-  budgetId                          Int?        @map("budget")
-  unfreezeStatus                    String?
-  unfreezeHistory                   Meeting[]   @relation("Proposal_unfreezeHistory")
-  description                       String?
-  from_Proposal_mergedProposals     Proposal[]  @relation("Proposal_mergedProposals")
-  from_Proposal_historicalProposals Proposal[]  @relation("Proposal_historicalProposals")
+  id                                        Int                @id @default(autoincrement())
+  government                                Government?        @relation("Proposal_government", fields: [governmentId], references: [id])
+  governmentId                              Int?               @map("government")
+  meetings                                  Meeting[]          @relation("Proposal_meetings")
+  mergedProposals                           Proposal[]         @relation("Proposal_mergedProposals")
+  historicalProposals                       Proposal[]         @relation("Proposal_historicalProposals")
+  proposers                                 People[]           @relation("Proposal_proposers")
+  coSigners                                 People[]           @relation("Proposal_coSigners")
+  proposalTypes                             Json               @default("[]") @map("proposal_types")
+  result                                    String?
+  reductionAmount                           Int?
+  freezeAmount                              Int?
+  budgetImageUrl                            String?
+  budget                                    Budget?            @relation("Proposal_budget", fields: [budgetId], references: [id])
+  budgetId                                  Int?               @map("budget")
+  unfreezeStatus                            String?
+  unfreezeHistory                           Meeting[]          @relation("Proposal_unfreezeHistory")
+  description                               String?
+  reason                                    String?
+  recognitionAnswer                         String?
+  publishStatus                             String?            @default("draft")
+  from_Proposal_mergedProposals             Proposal[]         @relation("Proposal_mergedProposals")
+  from_Proposal_historicalProposals         Proposal[]         @relation("Proposal_historicalProposals")
+  from_RecognitionImage_historicalProposals RecognitionImage[] @relation("RecognitionImage_historicalProposals")
+  from_RecognitionImage_mergedProposals     RecognitionImage[] @relation("RecognitionImage_mergedProposals")
 
   @@index([governmentId])
   @@index([budgetId])
+  @@index([publishStatus])
 }
 
 model RecognitionImage {
@@ -141,23 +152,36 @@ model RecognitionImage {
   meeting                      Meeting?            @relation("RecognitionImage_meeting", fields: [meetingId], references: [id])
   meetingId                    Int?                @map("meeting")
   imageUrl                     String              @default("")
+  pageNumber                   Int?
+  government                   Government?         @relation("RecognitionImage_government", fields: [governmentId], references: [id])
+  governmentId                 Int?                @map("government")
+  historicalProposals          Proposal[]          @relation("RecognitionImage_historicalProposals")
+  mergedProposals              Proposal[]          @relation("RecognitionImage_mergedProposals")
+  result                       String?
+  verificationStatus           String?             @default("not_verified")
   description                  String?
   from_RecognitionStatus_image RecognitionStatus[] @relation("RecognitionStatus_image")
 
   @@index([meetingId])
+  @@index([governmentId])
+  @@index([verificationStatus])
 }
 
 model RecognitionStatus {
-  id                       Int               @id @default(autoincrement())
-  image                    RecognitionImage? @relation("RecognitionStatus_image", fields: [imageId], references: [id])
-  imageId                  Int?              @map("image")
-  type                     String
-  governmentBudgetResult   String?
-  budgetCategoryResult     String?
-  budgetAmountResult       String?
-  budgetTypeResult         String?
-  freezeReduceAmountResult String?
-  description              String?
+  id                     Int               @id @default(autoincrement())
+  image                  RecognitionImage? @relation("RecognitionStatus_image", fields: [imageId], references: [id])
+  imageId                Int?              @map("image")
+  type                   String
+  governmentBudgetResult String?
+  budgetCategoryResult   String?
+  budgetAmountResult     String?
+  budgetTypeResult       String?
+  reductionAmountResult  String?
+  freezeAmountResult     String?
+  proposers              String?
+  coSigners              String?
+  reason                 String?
+  description            String?
 
   @@index([imageId])
 }

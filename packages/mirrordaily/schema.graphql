@@ -2021,6 +2021,8 @@ type Video {
   isShorts: Boolean
   youtubeUrl: String
   file: FileFieldOutput
+  fileDuration: String
+  youtubeDuration: String
   videoSrc: String
   content: String
   heroImage: Photo
@@ -2056,6 +2058,8 @@ input VideoWhereInput {
   name: StringFilter
   isShorts: BooleanFilter
   youtubeUrl: StringFilter
+  fileDuration: StringFilter
+  youtubeDuration: StringFilter
   content: StringFilter
   heroImage: PhotoWhereInput
   uploader: StringFilter
@@ -2078,6 +2082,8 @@ input VideoOrderByInput {
   name: OrderDirection
   isShorts: OrderDirection
   youtubeUrl: OrderDirection
+  fileDuration: OrderDirection
+  youtubeDuration: OrderDirection
   content: OrderDirection
   uploader: OrderDirection
   uploaderEmail: OrderDirection
@@ -2096,6 +2102,8 @@ input VideoUpdateInput {
   isShorts: Boolean
   youtubeUrl: String
   file: FileFieldInput
+  fileDuration: String
+  youtubeDuration: String
   content: String
   heroImage: PhotoRelateToOneForUpdateInput
   uploader: String
@@ -2125,6 +2133,8 @@ input VideoCreateInput {
   isShorts: Boolean
   youtubeUrl: String
   file: FileFieldInput
+  fileDuration: String
+  youtubeDuration: String
   content: String
   heroImage: PhotoRelateToOneForCreateInput
   uploader: String

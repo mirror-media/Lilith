@@ -8,7 +8,6 @@ RUN set -e; \
     tini \
     lsof \
     openssl \
-    ffmpeg \
     lsb-release; \
     gcsFuseRepo=gcsfuse-`lsb_release -c -s`; \
     echo "deb http://packages.cloud.google.com/apt $gcsFuseRepo main" | \
@@ -40,7 +39,6 @@ RUN yarn build
 
 RUN yarn cache clean
 
-RUN whereis http2-proxy-server
 ## Ensure the script is executable
 RUN chmod +x run.sh
 

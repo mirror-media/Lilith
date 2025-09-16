@@ -11,8 +11,14 @@ const {
   FILES_STORAGE_PATH,
   IMAGES_BASE_URL,
   IMAGES_STORAGE_PATH,
+  CACHE_IDENTIFIER,
+  IS_CACHE_ENABLED,
   MEMORY_CACHE_TTL,
   MEMORY_CACHE_SIZE,
+  REDIS_SERVER,
+  CACHE_MAXAGE,
+  CACHE_CONNECT_TIMEOUT,
+  INVALID_CDN_CACHE_SERVER_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -20,10 +26,17 @@ enum DatabaseProvider {
   Postgres = 'postgresql',
 }
 
+const cacheMaxAge = Number(CACHE_MAXAGE)
+const cacheConnectTimeout = Number(CACHE_CONNECT_TIMEOUT)
+
 export default {
   isUIDisabled: IS_UI_DISABLED === 'true',
-  memoryCacheTtl: Number(MEMORY_CACHE_TTL) || 300,
-  memoryCacheSize: Number(MEMORY_CACHE_SIZE) || 300,
+  memoryCacheTtl: Number.isNaN(Number(MEMORY_CACHE_TTL))
+    ? 300_000
+    : Number(MEMORY_CACHE_TTL),
+  memoryCacheSize: Number.isNaN(Number(MEMORY_CACHE_SIZE))
+    ? 300
+    : Number(MEMORY_CACHE_SIZE),
   accessControlStrategy: ACCESS_CONTROL_STRATEGY || 'cms', // the value could be one of 'cms', 'gql' or 'preview'
   previewServerOrigin: PREVIEW_SERVER_ORIGIN || 'http://localhost:3001',
   database: {
@@ -52,4 +65,14 @@ export default {
     baseUrl: IMAGES_BASE_URL || '/images',
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
+  cache: {
+    isEnabled: IS_CACHE_ENABLED === 'true',
+    identifier: CACHE_IDENTIFIER ?? 'ly-budget-cms',
+    url: REDIS_SERVER ?? '',
+    connectTimeOut: Number.isNaN(cacheConnectTimeout)
+      ? 1000 * 10
+      : cacheConnectTimeout, // unit: millisecond
+    maxAge: Number.isNaN(cacheMaxAge) ? 60 : cacheMaxAge, // unit: second
+  },
+  invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
 }
