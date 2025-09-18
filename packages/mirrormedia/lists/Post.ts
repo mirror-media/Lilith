@@ -730,9 +730,6 @@ const listConfigurations = list({
   },
   hooks: {
     validateInput: async ({ operation, item, context, addValidationError }) => {
-      if (envVar.accessControlStrategy === 'gql') {
-        return
-      }
       if (context.session?.data?.role !== UserRole.Admin) {
         if (operation === 'update') {
           const { lockBy } = await context.prisma.Post.findUnique({
