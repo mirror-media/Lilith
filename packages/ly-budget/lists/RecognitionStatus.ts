@@ -83,6 +83,12 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
+    lineuserid: text({
+      label: 'lineuserid',
+      db: {
+        isNullable: true,
+      },
+    }),
     description: text({
       label: '說明',
       db: {
