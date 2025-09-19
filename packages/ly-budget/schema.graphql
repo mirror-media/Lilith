@@ -906,6 +906,7 @@ type RecognitionStatus {
   proposers: String
   coSigners: String
   reason: String
+  lineuserid: String
   description: String
 }
 
@@ -929,6 +930,7 @@ input RecognitionStatusWhereInput {
   proposers: StringNullableFilter
   coSigners: StringNullableFilter
   reason: StringNullableFilter
+  lineuserid: StringNullableFilter
   description: StringNullableFilter
 }
 
@@ -944,6 +946,7 @@ input RecognitionStatusOrderByInput {
   proposers: OrderDirection
   coSigners: OrderDirection
   reason: OrderDirection
+  lineuserid: OrderDirection
   description: OrderDirection
 }
 
@@ -959,6 +962,7 @@ input RecognitionStatusUpdateInput {
   proposers: String
   coSigners: String
   reason: String
+  lineuserid: String
   description: String
 }
 
@@ -985,6 +989,7 @@ input RecognitionStatusCreateInput {
   proposers: String
   coSigners: String
   reason: String
+  lineuserid: String
   description: String
 }
 

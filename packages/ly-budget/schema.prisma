@@ -181,6 +181,7 @@ model RecognitionStatus {
   proposers              String?
   coSigners              String?
   reason                 String?
+  lineuserid             String?
   description            String?
 
   @@index([imageId])

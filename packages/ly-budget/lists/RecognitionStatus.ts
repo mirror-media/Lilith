@@ -83,6 +83,12 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
+    lineuserid: text({
+      label: 'lineuserid',
+      db: {
+        isNullable: true,
+      },
+    }),
     description: text({
       label: '說明',
       db: {
@@ -209,14 +215,7 @@ const listConfigurations = list({
         data.historicalProposals = {
           connect: image.historicalProposals.map((p: any) => ({ id: p.id })),
         }
-      if (current?.proposers?.length)
-        data.proposers = {
-          connect: current.proposers.map((p: any) => ({ id: p.id })),
-        }
-      if (current?.coSigners?.length)
-        data.coSigners = {
-          connect: current.coSigners.map((p: any) => ({ id: p.id })),
-        }
+      // 提案人/連署人改為文字，直接寫入 recognitionAnswer，不建立關聯
 
       await context.query.Proposal.createOne({ data, query: 'id' })
     },
