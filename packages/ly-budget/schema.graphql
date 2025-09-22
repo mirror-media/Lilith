@@ -464,8 +464,8 @@ type Budget {
   minorCategory: String
   projectName: String
   projectDescription: String
-  budgetAmount: Int
-  lastYearSettlement: Int
+  budgetAmount: Float
+  lastYearSettlement: Float
   budgetUrl: String
   description: String
 }
@@ -487,21 +487,32 @@ input BudgetWhereInput {
   minorCategory: StringFilter
   projectName: StringNullableFilter
   projectDescription: StringNullableFilter
-  budgetAmount: IntFilter
-  lastYearSettlement: IntNullableFilter
+  budgetAmount: FloatFilter
+  lastYearSettlement: FloatNullableFilter
   budgetUrl: StringNullableFilter
   description: StringNullableFilter
 }
 
-input IntNullableFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: IntNullableFilter
+input FloatFilter {
+  equals: Float
+  in: [Float!]
+  notIn: [Float!]
+  lt: Float
+  lte: Float
+  gt: Float
+  gte: Float
+  not: FloatFilter
+}
+
+input FloatNullableFilter {
+  equals: Float
+  in: [Float!]
+  notIn: [Float!]
+  lt: Float
+  lte: Float
+  gt: Float
+  gte: Float
+  not: FloatNullableFilter
 }
 
 input BudgetOrderByInput {
@@ -528,8 +539,8 @@ input BudgetUpdateInput {
   minorCategory: String
   projectName: String
   projectDescription: String
-  budgetAmount: Int
-  lastYearSettlement: Int
+  budgetAmount: Float
+  lastYearSettlement: Float
   budgetUrl: String
   description: String
 }
@@ -554,8 +565,8 @@ input BudgetCreateInput {
   minorCategory: String
   projectName: String
   projectDescription: String
-  budgetAmount: Int
-  lastYearSettlement: Int
+  budgetAmount: Float
+  lastYearSettlement: Float
   budgetUrl: String
   description: String
 }
@@ -712,6 +723,17 @@ input ProposalManyRelationFilter {
   every: ProposalWhereInput
   some: ProposalWhereInput
   none: ProposalWhereInput
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
 }
 
 input ProposalOrderByInput {
