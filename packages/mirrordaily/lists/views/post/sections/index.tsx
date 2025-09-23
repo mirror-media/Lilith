@@ -688,22 +688,27 @@ export const controller = (
     },
     serialize: (state) => {
       if (state.kind === 'many') {
-        const connectItems = state.value.map((x) => ({ id: x.id }))
-        const disconnectItems = state.initialValue
-          .filter((initial) => !state.value.some((current) => current.id === initial.id))
+        const newAllIds = new Set(state.value.map((x) => x.id))
+        const initialIds = new Set(state.initialValue.map((x) => x.id))
+        const disconnect = state.initialValue
+          .filter((x) => !newAllIds.has(x.id))
           .map((x) => ({ id: x.id }))
-        
-        const hasChanged = state.value.length !== state.initialValue.length ||
-          state.value.some((item, index) => 
-            !state.initialValue[index] || item.id !== state.initialValue[index].id
-          )
-        
-        if (hasChanged) {
+        const connect = state.value
+          .filter((x) => !initialIds.has(x.id))
+          .map((x) => ({ id: x.id }))
+        if (disconnect.length || connect.length) {
+          const output: any = {}
+
+          if (disconnect.length) {
+            output.disconnect = disconnect
+          }
+
+          if (connect.length) {
+            output.connect = connect
+          }
+
           return {
-            [config.path]: {
-              connect: connectItems.length ? connectItems : undefined,
-              disconnect: disconnectItems.length ? disconnectItems : undefined,
-            },
+            [config.path]: output,
           }
         }
       } else if (state.kind === 'one') {
