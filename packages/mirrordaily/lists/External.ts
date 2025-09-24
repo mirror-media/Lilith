@@ -103,7 +103,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         labelField: 'name',
-        views: './lists/views/post/sections/index',
+        // views: './lists/views/post/sections/index',
       },
     }),
     categories: relationship({
