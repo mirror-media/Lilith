@@ -87,8 +87,8 @@ model Budget {
   minorCategory        String      @default("")
   projectName          String?
   projectDescription   String?
-  budgetAmount         Int
-  lastYearSettlement   Int?
+  budgetAmount         Float
+  lastYearSettlement   Float?
   budgetUrl            String?
   description          String?
   from_Proposal_budget Proposal[]  @relation("Proposal_budget")

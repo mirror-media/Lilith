@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { text, select, integer, relationship } from '@keystone-6/core/fields'
+import { float, text, select, integer, relationship } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -51,13 +51,17 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
-    budgetAmount: integer({
+    budgetAmount: float({
       label: '編列金額',
-      validation: { isRequired: true },
+      validation: { 
+		max: 9999999999999,
+		isRequired: true 
+	  },
     }),
-    lastYearSettlement: integer({
+    lastYearSettlement: float({
       label: '上年度決算',
       db: {
+		max: 9999999999999,
         isNullable: true,
       },
     }),
