@@ -523,7 +523,7 @@ export const controller = (
     graphqlSelection:
       config.fieldMeta.displayMode === 'count'
         ? `${config.path}Count`
-        : `${config.path} {
+        : `${config.path}InInputOrder {
               id
               label: ${refLabelField}
             }`,
@@ -579,7 +579,7 @@ export const controller = (
         }
       }
       if (config.fieldMeta.many) {
-        const value = (data[config.path] || []).map((x: any) => ({
+        const value = (data[`${config.path}InInputOrder`] || []).map((x: any) => ({
           id: x.id,
           label: x.label || x.id,
         }))
@@ -590,7 +590,7 @@ export const controller = (
           value,
         }
       }
-      let value = data[config.path]
+      let value = data[`${config.path}InInputOrder`]
       if (value) {
         value = {
           id: value.id,

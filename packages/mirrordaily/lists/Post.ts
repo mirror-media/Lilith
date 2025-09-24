@@ -338,7 +338,7 @@ const listConfigurations = list({
       },
     }),
     writers: relationship({
-      label: '作者',
+      label: '記者',
       ref: 'Contact',
       many: true,
       ui: {
@@ -917,7 +917,7 @@ const listConfigurations = list({
       },
     }),
     publishedDateString: text({
-      label: '發布日期',
+      label: '日期',
       ui: {
         createView: { fieldMode: 'hidden', },
         itemView: { fieldMode: 'hidden', },

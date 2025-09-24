@@ -26,6 +26,7 @@ const {
   TOPIC_SERVICE_API,
   AUTO_TAGGING,
   INVALID_CDN_CACHE_SERVER_URL,
+  YOUTUBE_API_KEY,
 } = process.env
 
 enum DatabaseProvider {
@@ -49,7 +50,7 @@ export default {
         ? DatabaseProvider.Sqlite
         : DatabaseProvider.Postgres,
     url:
-      DATABASE_URL || 'postgres://username:password@localhost:5432/mirrordaily',
+      DATABASE_URL || 'postgres://hcchien@localhost:5432/mirrordaily',
   },
   session: {
     secret:
@@ -89,4 +90,7 @@ export default {
   topicServiceApi: TOPIC_SERVICE_API,
   autotagging: AUTO_TAGGING || 'false',
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
+  youtube: {
+    apiKey: YOUTUBE_API_KEY,
+  },
 }

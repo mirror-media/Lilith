@@ -1,8 +1,8 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { text, select, integer, relationship } from '@keystone-6/core/fields'
+import { text, select, integer, relationship, multiselect } from '@keystone-6/core/fields'
 
-const { allowRolesForUsers, admin, moderator, editor } = utils.accessControl
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const proposalTypeOptions = [
   { value: 'freeze', label: '凍結' },
@@ -20,6 +20,11 @@ const unfreezeStatusOptions = [
   { value: 'not_reviewed', label: '尚未審議' },
   { value: 'reviewing', label: '審議中' },
   { value: 'unfrozen', label: '已解凍' },
+]
+
+const publishStatusOptions = [
+  { value: 'draft', label: '草稿' },
+  { value: 'published', label: '已發布' },
 ]
 
 const listConfigurations = list({
@@ -53,11 +58,11 @@ const listConfigurations = list({
       many: true,
       ref: 'People',
     }),
-    proposalTypes: select({
+    proposalTypes: multiselect({
       label: '提案類型',
-      type: 'string',
+      type: 'enum',
       options: proposalTypeOptions,
-      validation: { isRequired: true },
+      db: { map: 'proposal_types' },
     }),
     result: select({
       label: '審議結果',
@@ -87,9 +92,6 @@ const listConfigurations = list({
     budget: relationship({
       label: '預算科目',
       ref: 'Budget',
-      db: {
-        isNullable: true,
-      },
     }),
     unfreezeStatus: select({
       label: '解凍狀態',
@@ -112,6 +114,30 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
+    reason: text({
+      label: '案由',
+      db: {
+        isNullable: true,
+      },
+      ui: {
+        displayMode: 'textarea',
+      },
+    }),
+    recognitionAnswer: text({
+      label: '辨識答案',
+      db: {
+        isNullable: true,
+      },
+      ui: {
+        displayMode: 'textarea',
+      },
+    }),
+    publishStatus: select({
+      label: '發布狀態',
+      options: publishStatusOptions,
+      defaultValue: 'draft',
+      isIndexed: true,
+    }),
   },
 
   ui: {
@@ -121,10 +147,10 @@ const listConfigurations = list({
   },
   access: {
     operation: {
-      query: allowRolesForUsers(admin, moderator, editor),
-      update: allowRolesForUsers(admin, moderator, editor),
-      create: allowRolesForUsers(admin, moderator),
-      delete: allowRolesForUsers(admin),
+      query: allowRoles(admin, moderator, editor),
+      update: allowRoles(admin, moderator),
+      create: allowRoles(admin, moderator),
+      delete: allowRoles(admin),
     },
   },
 })
