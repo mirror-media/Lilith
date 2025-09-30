@@ -1160,12 +1160,14 @@ if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
 
 export default utils.addManualOrderRelationshipFields(
   [
-    {
+    /*
+	{
       fieldName: 'manualOrderOfWriters',
       targetFieldName: 'writers',
       targetListName: 'Contact',
       targetListLabelField: 'name',
     },
+	*/
     {
       fieldName: 'manualOrderOfSections',
       targetFieldName: 'sections',
@@ -1178,12 +1180,14 @@ export default utils.addManualOrderRelationshipFields(
       targetListName: 'Category',
       targetListLabelField: 'name',
     },
+	/*
     {
       fieldName: 'manualOrderOfRelatedVideos',
       targetFieldName: 'related_videos',
       targetListName: 'Video',
       targetListLabelField: 'name',
     },
+	*/
   ],
   extendedListConfigurations
 )
