@@ -1224,10 +1224,8 @@ type Post {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
-  writersInInputOrder: [Contact]
   sectionsInInputOrder: [Section]
   categoriesInInputOrder: [Category]
-  related_videosInInputOrder: [Video]
 }
 
 input PostWhereUniqueInput {

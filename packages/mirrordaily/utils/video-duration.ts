@@ -119,7 +119,7 @@ export async function getYouTubeDuration(youtubeUrl: string): Promise<number | n
   try {
     if (!youtubeUrl) return null
 
-    const videoIdMatch = youtubeUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/)
+    const videoIdMatch = youtubeUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([^&\n?#]+)/)
     if (!videoIdMatch) return null
 
     const videoId = videoIdMatch[1]
