@@ -123,6 +123,22 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
+    react_good: integer({
+      label: '心情—讚',
+	  default: 0
+    }),
+    react_angry: integer({
+      label: '心情—怒',
+	  default: 0
+    }),
+    react_whatever: integer({
+      label: '心情—隨便',
+	  default: 0
+    }),
+    react_disappoint: integer({
+      label: '心情—失望',
+	  default: 0
+    }),
     recognitionAnswer: text({
       label: '辨識答案',
       db: {

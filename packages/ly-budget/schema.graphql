@@ -675,6 +675,10 @@ type Proposal {
   unfreezeHistoryCount(where: MeetingWhereInput! = {}): Int
   description: String
   reason: String
+  react_good: Int
+  react_angry: Int
+  react_whatever: Int
+  react_disappoint: Int
   recognitionAnswer: String
   publishStatus: String
 }
@@ -709,6 +713,10 @@ input ProposalWhereInput {
   unfreezeHistory: MeetingManyRelationFilter
   description: StringNullableFilter
   reason: StringNullableFilter
+  react_good: IntNullableFilter
+  react_angry: IntNullableFilter
+  react_whatever: IntNullableFilter
+  react_disappoint: IntNullableFilter
   recognitionAnswer: StringNullableFilter
   publishStatus: StringNullableFilter
 }
@@ -745,6 +753,10 @@ input ProposalOrderByInput {
   unfreezeStatus: OrderDirection
   description: OrderDirection
   reason: OrderDirection
+  react_good: OrderDirection
+  react_angry: OrderDirection
+  react_whatever: OrderDirection
+  react_disappoint: OrderDirection
   recognitionAnswer: OrderDirection
   publishStatus: OrderDirection
 }
@@ -766,6 +778,10 @@ input ProposalUpdateInput {
   unfreezeHistory: MeetingRelateToManyForUpdateInput
   description: String
   reason: String
+  react_good: Int
+  react_angry: Int
+  react_whatever: Int
+  react_disappoint: Int
   recognitionAnswer: String
   publishStatus: String
 }
@@ -812,6 +828,10 @@ input ProposalCreateInput {
   unfreezeHistory: MeetingRelateToManyForCreateInput
   description: String
   reason: String
+  react_good: Int
+  react_angry: Int
+  react_whatever: Int
+  react_disappoint: Int
   recognitionAnswer: String
   publishStatus: String
 }

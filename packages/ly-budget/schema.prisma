@@ -135,6 +135,10 @@ model Proposal {
   unfreezeHistory                           Meeting[]          @relation("Proposal_unfreezeHistory")
   description                               String?
   reason                                    String?
+  react_good                                Int?
+  react_angry                               Int?
+  react_whatever                            Int?
+  react_disappoint                          Int?
   recognitionAnswer                         String?
   publishStatus                             String?            @default("draft")
   from_Proposal_mergedProposals             Proposal[]         @relation("Proposal_mergedProposals")
