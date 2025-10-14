@@ -372,7 +372,7 @@ input MemberWhereInput {
   NOT: [MemberWhereInput!]
   id: IDFilter
   firebaseID: StringFilter
-  email: StringFilter
+  email: StringNullableFilter
   state: StringFilter
   name: StringNullableFilter
   mobile: StringNullableFilter
@@ -480,14 +480,14 @@ input OrderWhereInput {
   NOT: [OrderWhereInput!]
   id: IDFilter
   member: MemberWhereInput
-  type: StringFilter
-  state: StringFilter
+  type: StringNullableFilter
+  state: StringNullableFilter
   relatedOrder: OrderManyRelationFilter
   paragraphOne: StringNullableFilter
   paragraphTwo: StringNullableFilter
   image: PhotoWhereInput
   demoImage: PhotoManyRelationFilter
-  schedule: StringNullableFilter
+  schedule: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput

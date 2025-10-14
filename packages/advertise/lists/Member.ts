@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { text, select, timestamp, relationship } from '@keystone-6/core/fields'
+import { text, select } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -18,9 +18,11 @@ const listConfigurations = list({
     }),
     email: text({
       label: 'email',
-      validation: { isRequired: true },
       isIndexed: 'unique',
       isFilterable: true,
+      db: {
+        isNullable: true,
+      },
     }),
     state: select({
       label: '狀態',
@@ -41,7 +43,13 @@ const listConfigurations = list({
       },
     }),
   },
-
+  hooks: {
+    validateInput: async ({ resolvedData, addValidationError }) => {
+      if (!resolvedData.email && !resolvedData.mobile) {
+        addValidationError('email 或 mobile 至少需要填寫一個')
+      }
+    },
+  },
   ui: {
     listView: {
       initialColumns: ['firebaseID', 'email', 'state', 'name', 'mobile'],

@@ -80,7 +80,7 @@ model Video {
 model Member {
   id                Int       @id @default(autoincrement())
   firebaseID        String    @unique @default("")
-  email             String    @unique @default("")
+  email             String?   @unique
   state             String    @default("active")
   name              String?
   mobile            String?
@@ -100,15 +100,15 @@ model Order {
   id                      Int       @id @default(autoincrement())
   member                  Member?   @relation("Order_member", fields: [memberId], references: [id])
   memberId                Int?      @map("member")
-  type                    String
-  state                   String    @default("paid")
+  type                    String?
+  state                   String?   @default("paid")
   relatedOrder            Order[]   @relation("Order_relatedOrder")
   paragraphOne            String?
   paragraphTwo            String?
   image                   Photo?    @relation("Order_image", fields: [imageId], references: [id])
   imageId                 Int?      @map("image")
   demoImage               Photo[]   @relation("Order_demoImage")
-  schedule                String?
+  schedule                String    @default("")
   createdAt               DateTime?
   updatedAt               DateTime?
   createdBy               User?     @relation("Order_createdBy", fields: [createdById], references: [id])
