@@ -26,10 +26,12 @@ const listConfigurations = list({
     term: relationship({
       label: '屆',
       ref: 'Term',
+      many: false,
     }),
     party: relationship({
       label: '政黨',
-      ref: 'People',
+      ref: 'Party',
+      many: false,
     }),
     committees: relationship({
       label: '委員會',
@@ -55,6 +57,29 @@ const listConfigurations = list({
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
+    },
+  },
+  hooks: {
+    validateInput: async ({ operation, resolvedData, item, addValidationError, context }) => {
+      // 只在 create 或 update 且有改動 name/term 時檢查
+      const termId = resolvedData.term?.connect?.id ?? item?.termId
+      const name = resolvedData.name ?? item?.name
+
+      if (!termId || !name) return // term 或 name 為空時略過（required 由 field validation 處理）
+
+      // 查詢是否已存在相同 term + name 的記錄（排除自己）
+      const existing = await context.query.People.findMany({
+        where: {
+          term: { id: { equals: termId } },
+          name: { equals: name },
+          ...(operation === 'update' && item?.id ? { id: { not: { equals: String(item.id) } } } : {}),
+        },
+        query: 'id',
+      })
+
+      if (existing.length > 0) {
+        addValidationError('此屆立法院已存在相同姓名的人員')
+      }
     },
   },
 })

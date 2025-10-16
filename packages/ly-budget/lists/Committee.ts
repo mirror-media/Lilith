@@ -9,6 +9,7 @@ const listConfigurations = list({
     term: relationship({
       label: '第幾屆立法院',
       ref: 'Term',
+      many: false,
     }),
     startDate: timestamp({
       label: '起始年月日',
@@ -47,7 +48,7 @@ const listConfigurations = list({
         type: graphql.String,
         async resolve(item, args, context) {
           const data = await context.query.Committee.findOne({
-            where: { id: item.id },
+            where: { id: String(item.id) },
             query: 'name session term { termNumber }',
           })
           const termNumber = data?.term?.termNumber
@@ -75,6 +76,29 @@ const listConfigurations = list({
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
+    },
+  },
+  hooks: {
+    validateInput: async ({ operation, resolvedData, item, addValidationError, context }) => {
+      // 只在 create 或 update 且有改動 term/name 時檢查
+      const termId = resolvedData.term?.connect?.id ?? item?.termId
+      const name = resolvedData.name ?? item?.name
+
+      if (!termId || !name) return // term 或 name 為空時略過（required 由 field validation 處理）
+
+      // 查詢是否已存在相同 term + name 的記錄（排除自己）
+      const existing = await context.query.Committee.findMany({
+        where: {
+          term: { id: { equals: termId } },
+          name: { equals: name },
+          ...(operation === 'update' && item?.id ? { id: { not: { equals: String(item.id) } } } : {}),
+        },
+        query: 'id',
+      })
+
+      if (existing.length > 0) {
+        addValidationError('此屆立法院已存在相同名稱的委員會')
+      }
     },
   },
 })

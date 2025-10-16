@@ -22,7 +22,7 @@ model User {
 
 model Term {
   id                  Int         @id @default(autoincrement())
-  termNumber          Int
+  termNumber          Int         @unique
   startDate           DateTime
   endDate             DateTime?
   description         String?
@@ -52,17 +52,22 @@ model People {
   name                    String      @default("")
   term                    Term?       @relation("People_term", fields: [termId], references: [id])
   termId                  Int?        @map("term")
-  party                   People?     @relation("People_party", fields: [partyId], references: [id])
+  party                   Party?      @relation("People_party", fields: [partyId], references: [id])
   partyId                 Int?        @map("party")
   committees              Committee[] @relation("People_committees")
   description             String      @default("")
   from_Committee_members  Committee[] @relation("Committee_members")
-  from_People_party       People[]    @relation("People_party")
   from_Proposal_proposers Proposal[]  @relation("Proposal_proposers")
   from_Proposal_coSigners Proposal[]  @relation("Proposal_coSigners")
 
   @@index([termId])
   @@index([partyId])
+}
+
+model Party {
+  id                Int      @id @default(autoincrement())
+  name              String   @unique @default("")
+  from_People_party People[] @relation("People_party")
 }
 
 model Government {

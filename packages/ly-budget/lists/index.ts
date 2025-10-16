@@ -2,6 +2,7 @@ import User from './User'
 import Term from './Term'
 import Committee from './Committee'
 import People from './People'
+import Party from './Party'
 import Government from './Government'
 import Budget from './Budget'
 import Meeting from './Meeting'
@@ -14,6 +15,7 @@ export const listDefinition = {
   Term,
   Committee,
   People,
+  Party,
   Government,
   Budget,
   Meeting,

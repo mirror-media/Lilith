@@ -126,6 +126,7 @@ scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339
 
 input TermWhereUniqueInput {
   id: ID
+  termNumber: Int
 }
 
 input TermWhereInput {
@@ -327,7 +328,7 @@ type People {
   type: String
   name: String
   term: Term
-  party: People
+  party: Party
   committees(where: CommitteeWhereInput! = {}, orderBy: [CommitteeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CommitteeWhereUniqueInput): [Committee!]
   committeesCount(where: CommitteeWhereInput! = {}): Int
   description: String
@@ -345,7 +346,7 @@ input PeopleWhereInput {
   type: StringFilter
   name: StringFilter
   term: TermWhereInput
-  party: PeopleWhereInput
+  party: PartyWhereInput
   committees: CommitteeManyRelationFilter
   description: StringFilter
 }
@@ -367,14 +368,14 @@ input PeopleUpdateInput {
   type: String
   name: String
   term: TermRelateToOneForUpdateInput
-  party: PeopleRelateToOneForUpdateInput
+  party: PartyRelateToOneForUpdateInput
   committees: CommitteeRelateToManyForUpdateInput
   description: String
 }
 
-input PeopleRelateToOneForUpdateInput {
-  create: PeopleCreateInput
-  connect: PeopleWhereUniqueInput
+input PartyRelateToOneForUpdateInput {
+  create: PartyCreateInput
+  connect: PartyWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -394,19 +395,55 @@ input PeopleCreateInput {
   type: String
   name: String
   term: TermRelateToOneForCreateInput
-  party: PeopleRelateToOneForCreateInput
+  party: PartyRelateToOneForCreateInput
   committees: CommitteeRelateToManyForCreateInput
   description: String
 }
 
-input PeopleRelateToOneForCreateInput {
-  create: PeopleCreateInput
-  connect: PeopleWhereUniqueInput
+input PartyRelateToOneForCreateInput {
+  create: PartyCreateInput
+  connect: PartyWhereUniqueInput
 }
 
 input CommitteeRelateToManyForCreateInput {
   create: [CommitteeCreateInput!]
   connect: [CommitteeWhereUniqueInput!]
+}
+
+type Party {
+  id: ID!
+  name: String
+}
+
+input PartyWhereUniqueInput {
+  id: ID
+  name: String
+}
+
+input PartyWhereInput {
+  AND: [PartyWhereInput!]
+  OR: [PartyWhereInput!]
+  NOT: [PartyWhereInput!]
+  id: IDFilter
+  name: StringFilter
+}
+
+input PartyOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input PartyUpdateInput {
+  name: String
+}
+
+input PartyUpdateArgs {
+  where: PartyWhereUniqueInput!
+  data: PartyUpdateInput!
+}
+
+input PartyCreateInput {
+  name: String
 }
 
 type Government {
@@ -1070,6 +1107,12 @@ type Mutation {
   updatePeopleList(data: [PeopleUpdateArgs!]!): [People]
   deletePeople(where: PeopleWhereUniqueInput!): People
   deletePeopleList(where: [PeopleWhereUniqueInput!]!): [People]
+  createParty(data: PartyCreateInput!): Party
+  createParties(data: [PartyCreateInput!]!): [Party]
+  updateParty(where: PartyWhereUniqueInput!, data: PartyUpdateInput!): Party
+  updateParties(data: [PartyUpdateArgs!]!): [Party]
+  deleteParty(where: PartyWhereUniqueInput!): Party
+  deleteParties(where: [PartyWhereUniqueInput!]!): [Party]
   createGovernment(data: GovernmentCreateInput!): Government
   createGovernments(data: [GovernmentCreateInput!]!): [Government]
   updateGovernment(where: GovernmentWhereUniqueInput!, data: GovernmentUpdateInput!): Government
@@ -1142,6 +1185,9 @@ type Query {
   peopleList(where: PeopleWhereInput! = {}, orderBy: [PeopleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PeopleWhereUniqueInput): [People!]
   people(where: PeopleWhereUniqueInput!): People
   peopleListCount(where: PeopleWhereInput! = {}): Int
+  parties(where: PartyWhereInput! = {}, orderBy: [PartyOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PartyWhereUniqueInput): [Party!]
+  party(where: PartyWhereUniqueInput!): Party
+  partiesCount(where: PartyWhereInput! = {}): Int
   governments(where: GovernmentWhereInput! = {}, orderBy: [GovernmentOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GovernmentWhereUniqueInput): [Government!]
   government(where: GovernmentWhereUniqueInput!): Government
   governmentsCount(where: GovernmentWhereInput! = {}): Int

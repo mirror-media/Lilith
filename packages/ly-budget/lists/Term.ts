@@ -9,6 +9,7 @@ const listConfigurations = list({
     termNumber: integer({
       label: '第幾屆立法院',
       validation: { isRequired: true },
+      isIndexed: 'unique',
     }),
     startDate: timestamp({
       label: '起始年月日',
