@@ -32,6 +32,7 @@ const listConfigurations = list({
   },
 
   ui: {
+    labelField: 'termNumber',
     listView: {
       initialColumns: ['termNumber', 'startDate', 'endDate'],
     },
