@@ -240,6 +240,7 @@ type Committee {
   membersCount(where: PeopleWhereInput! = {}): Int
   description: String
   displayName: String
+  key: String
 }
 
 input CommitteeWhereUniqueInput {

@@ -40,7 +40,6 @@ model Committee {
   name                   String    @default("")
   members                People[]  @relation("Committee_members")
   description            String?
-  from_People_committees People[]  @relation("People_committees")
   from_Meeting_committee Meeting[] @relation("Meeting_committee")
 
   @@index([termId])
@@ -54,9 +53,8 @@ model People {
   termId                  Int?        @map("term")
   party                   Party?      @relation("People_party", fields: [partyId], references: [id])
   partyId                 Int?        @map("party")
-  committees              Committee[] @relation("People_committees")
+  committees              Committee[] @relation("Committee_members")
   description             String      @default("")
-  from_Committee_members  Committee[] @relation("Committee_members")
   from_Proposal_proposers Proposal[]  @relation("Proposal_proposers")
   from_Proposal_coSigners Proposal[]  @relation("Proposal_coSigners")
 
@@ -140,10 +138,10 @@ model Proposal {
   unfreezeHistory                           Meeting[]          @relation("Proposal_unfreezeHistory")
   description                               String?
   reason                                    String?
-  react_good                                Int?
-  react_angry                               Int?
-  react_whatever                            Int?
-  react_disappoint                          Int?
+  react_good                                Int?               @default(0)
+  react_angry                               Int?               @default(0)
+  react_whatever                            Int?               @default(0)
+  react_disappoint                          Int?               @default(0)
   recognitionAnswer                         String?
   publishStatus                             String?            @default("draft")
   from_Proposal_mergedProposals             Proposal[]         @relation("Proposal_mergedProposals")

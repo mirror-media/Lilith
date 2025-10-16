@@ -32,7 +32,7 @@ const listConfigurations = list({
     members: relationship({
       label: '立委成員',
       many: true,
-      ref: 'People',
+      ref: 'People.committees',
     }),
     description: text({
       label: '說明',
@@ -54,13 +54,28 @@ const listConfigurations = list({
           const termNumber = data?.term?.termNumber
           const name = data?.name || ''
           const session = data?.session || ''
-          return `${name}${termNumber ? ` 第${termNumber}屆` : ''}${session ? ` 第${session}會期` : ''}`
+          return `${termNumber ? `第${termNumber}屆` : ''}${session ? ` 第${session}會期` : ''} ${name}`
         },
       }),
       ui: {
         description: '供後台標籤顯示用',
         listView: { fieldMode: 'hidden' },
       },
+    }),
+    key: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        async resolve(item, args, context) {
+          const data = await context.query.Committee.findOne({
+            where: { id: String(item.id) },
+            query: 'name session term { termNumber }',
+          })
+          const termNumber = data?.term?.termNumber
+          const name = data?.name || ''
+          const session = data?.session || ''
+          return `${termNumber}-${session}-${name}`
+        },
+      }),
     }),
   },
 

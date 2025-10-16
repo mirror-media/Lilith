@@ -36,7 +36,10 @@ const listConfigurations = list({
     committees: relationship({
       label: '委員會',
       many: true,
-      ref: 'Committee',
+      ref: 'Committee.members',
+      ui: {
+        labelField: 'displayName',
+      },
     }),
     description: text({
       label: '說明',
