@@ -18,7 +18,7 @@ import {
   ItemPageHeader,
   BaseToolbar,
 } from '../../components/common'
-import { useCreateItem } from '../../utils/use-create-item'
+import { useCreateItemWithAutoSlug } from '../../utils/use-create-item'
 import styled from '@emotion/styled'
 
 const LIST_KEY = 'Post'
@@ -37,6 +37,10 @@ const PICKED_FIELDS = [
   'publishedDate',
 ]
 
+const CUSTOM_FIELD_MODES = {
+  slug: 'hidden' as const,
+}
+
 const Wrapper = styled.div`
   /* workaround: padding-bottom is added to ensure all content is visible on mobile devices */
   padding-bottom: 140px;
@@ -49,7 +53,7 @@ const Wrapper = styled.div`
 `
 
 function CreatePageForm(props: { list: ListMeta }) {
-  const createItem = useCreateItem(props.list)
+  const createItem = useCreateItemWithAutoSlug(props.list, CUSTOM_FIELD_MODES)
   const router = useRouter()
 
   return (
