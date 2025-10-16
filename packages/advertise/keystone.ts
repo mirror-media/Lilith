@@ -63,6 +63,7 @@ export default withAuth(
 	    path: '/health_check',
 	    data: { status: 'healthy' },
 	  },
+      cors: { origin: true, credentials: true },
       extendExpressApp: (app, commonContext) => {
         // This middleware is available in Express v4.16.0 onwards
         // Set to 50mb because DraftJS Editor playload could be really large
