@@ -7,7 +7,8 @@
     "packages/mirrormedia",
     "packages/readr",
     "packages/openrelationship",
-    "packages/mirrordaily"
+    "packages/mirrordaily",
+    "packages/advertise"
   ],
   "scripts": {
     "prepare": "husky install",
