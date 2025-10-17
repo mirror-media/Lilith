@@ -9,6 +9,7 @@ import {
 } from '@keystone-6/core/admin-ui/components'
 import { Fields } from '@keystone-6/core/admin-ui/utils'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
+import { gql, useQuery } from '@keystone-6/core/admin-ui/apollo'
 
 import { Box } from '@keystone-ui/core'
 import { LoadingDots } from '@keystone-ui/loading'
@@ -20,6 +21,7 @@ import {
 } from '../../components/common'
 import { useCreateItemWithAutoSlug } from '../../utils/use-create-item'
 import styled from '@emotion/styled'
+import { useEffect, useRef } from 'react'
 
 const LIST_KEY = 'Post'
 const PICKED_FIELDS = [
@@ -55,6 +57,80 @@ const Wrapper = styled.div`
 function CreatePageForm(props: { list: ListMeta }) {
   const createItem = useCreateItemWithAutoSlug(props.list, CUSTOM_FIELD_MODES)
   const router = useRouter()
+  const isAssignedRef = useRef(false)
+
+  const writersFieldValue = createItem.props.value.writers?.value
+  const writersIds = writersFieldValue?.value
+    ? writersFieldValue.value.map((w: { id: string }) => w.id)
+    : []
+
+  const { data } = useQuery(
+    gql`
+      query GetContactSections($contactIds: [ID!]!) {
+        contacts(where: { id: { in: $contactIds } }) {
+          id
+          sections {
+            id
+            name
+          }
+        }
+      }
+    `,
+    {
+      variables: {
+        contactIds: writersIds,
+      },
+      skip: writersIds.length === 0,
+    }
+  )
+
+  useEffect(() => {
+    if (data?.contacts && !isAssignedRef.current) {
+      const sections: any[] = []
+      const idSet = new Set()
+
+      data.contacts.forEach((contact: any) => {
+        contact.sections?.forEach((section: { id: string; name: string }) => {
+          if (!idSet.has(section.id)) {
+            idSet.add(section.id)
+            sections.push({
+              id: section.id,
+              label: section.name,
+            })
+          }
+        })
+      })
+
+      const currentValue = createItem.props.value.sections?.value
+
+      if (typeof createItem.props.onChange === 'function') {
+        const existingSections = currentValue?.value || []
+        const existingIdSet = new Set(existingSections.map((s: any) => s.id))
+
+        const mergedSections = [...existingSections]
+        sections.forEach((section) => {
+          if (!existingIdSet.has(section.id)) {
+            mergedSections.push(section)
+          }
+        })
+
+        if (mergedSections.length > 0) {
+          const update = Object.assign({}, currentValue, {
+            value: mergedSections,
+          })
+
+          createItem.props.onChange((oldValue: any) => ({
+            ...oldValue,
+            sections: {
+              kind: 'value',
+              value: update,
+            },
+          }))
+          isAssignedRef.current = true
+        }
+      }
+    }
+  }, [data, createItem.props])
 
   return (
     <Box paddingTop="xlarge">
