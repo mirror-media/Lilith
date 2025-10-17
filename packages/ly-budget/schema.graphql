@@ -620,7 +620,8 @@ type Meeting {
   type: String
   committee(where: CommitteeWhereInput! = {}, orderBy: [CommitteeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CommitteeWhereUniqueInput): [Committee!]
   committeeCount(where: CommitteeWhereInput! = {}): Int
-  government: Government
+  government(where: GovernmentWhereInput! = {}, orderBy: [GovernmentOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GovernmentWhereUniqueInput): [Government!]
+  governmentCount(where: GovernmentWhereInput! = {}): Int
   meetingDate: DateTime
   meetingRecordUrl: String
   description: String
@@ -639,10 +640,16 @@ input MeetingWhereInput {
   location: StringNullableFilter
   type: StringNullableFilter
   committee: CommitteeManyRelationFilter
-  government: GovernmentWhereInput
+  government: GovernmentManyRelationFilter
   meetingDate: DateTimeNullableFilter
   meetingRecordUrl: StringFilter
   description: StringFilter
+}
+
+input GovernmentManyRelationFilter {
+  every: GovernmentWhereInput
+  some: GovernmentWhereInput
+  none: GovernmentWhereInput
 }
 
 input MeetingOrderByInput {
@@ -658,10 +665,17 @@ input MeetingUpdateInput {
   location: String
   type: String
   committee: CommitteeRelateToManyForUpdateInput
-  government: GovernmentRelateToOneForUpdateInput
+  government: GovernmentRelateToManyForUpdateInput
   meetingDate: DateTime
   meetingRecordUrl: String
   description: String
+}
+
+input GovernmentRelateToManyForUpdateInput {
+  disconnect: [GovernmentWhereUniqueInput!]
+  set: [GovernmentWhereUniqueInput!]
+  create: [GovernmentCreateInput!]
+  connect: [GovernmentWhereUniqueInput!]
 }
 
 input MeetingUpdateArgs {
@@ -673,10 +687,15 @@ input MeetingCreateInput {
   location: String
   type: String
   committee: CommitteeRelateToManyForCreateInput
-  government: GovernmentRelateToOneForCreateInput
+  government: GovernmentRelateToManyForCreateInput
   meetingDate: DateTime
   meetingRecordUrl: String
   description: String
+}
+
+input GovernmentRelateToManyForCreateInput {
+  create: [GovernmentCreateInput!]
+  connect: [GovernmentWhereUniqueInput!]
 }
 
 type Proposal {

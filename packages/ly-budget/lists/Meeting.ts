@@ -32,6 +32,7 @@ const listConfigurations = list({
     }),
     government: relationship({
       label: '部會',
+	  many: true,
       ref: 'Government',
     }),
     meetingDate: timestamp({

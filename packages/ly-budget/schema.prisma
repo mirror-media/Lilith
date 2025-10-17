@@ -104,16 +104,13 @@ model Meeting {
   location                      String?
   type                          String?
   committee                     Committee[]        @relation("Meeting_committee")
-  government                    Government?        @relation("Meeting_government", fields: [governmentId], references: [id])
-  governmentId                  Int?               @map("government")
+  government                    Government[]       @relation("Meeting_government")
   meetingDate                   DateTime?
   meetingRecordUrl              String             @default("")
   description                   String             @default("")
   from_Proposal_meetings        Proposal[]         @relation("Proposal_meetings")
   from_Proposal_unfreezeHistory Proposal[]         @relation("Proposal_unfreezeHistory")
   from_RecognitionImage_meeting RecognitionImage[] @relation("RecognitionImage_meeting")
-
-  @@index([governmentId])
 }
 
 model Proposal {
