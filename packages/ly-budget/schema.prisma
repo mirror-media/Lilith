@@ -103,8 +103,7 @@ model Meeting {
   id                            Int                @id @default(autoincrement())
   location                      String?
   type                          String?
-  committee                     Committee?         @relation("Meeting_committee", fields: [committeeId], references: [id])
-  committeeId                   Int?               @map("committee")
+  committee                     Committee[]        @relation("Meeting_committee")
   government                    Government?        @relation("Meeting_government", fields: [governmentId], references: [id])
   governmentId                  Int?               @map("government")
   meetingDate                   DateTime?
@@ -114,7 +113,6 @@ model Meeting {
   from_Proposal_unfreezeHistory Proposal[]         @relation("Proposal_unfreezeHistory")
   from_RecognitionImage_meeting RecognitionImage[] @relation("RecognitionImage_meeting")
 
-  @@index([committeeId])
   @@index([governmentId])
 }
 

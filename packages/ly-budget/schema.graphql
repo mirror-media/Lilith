@@ -618,7 +618,8 @@ type Meeting {
   id: ID!
   location: String
   type: String
-  committee: Committee
+  committee(where: CommitteeWhereInput! = {}, orderBy: [CommitteeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CommitteeWhereUniqueInput): [Committee!]
+  committeeCount(where: CommitteeWhereInput! = {}): Int
   government: Government
   meetingDate: DateTime
   meetingRecordUrl: String
@@ -637,7 +638,7 @@ input MeetingWhereInput {
   id: IDFilter
   location: StringNullableFilter
   type: StringNullableFilter
-  committee: CommitteeWhereInput
+  committee: CommitteeManyRelationFilter
   government: GovernmentWhereInput
   meetingDate: DateTimeNullableFilter
   meetingRecordUrl: StringFilter
@@ -656,17 +657,11 @@ input MeetingOrderByInput {
 input MeetingUpdateInput {
   location: String
   type: String
-  committee: CommitteeRelateToOneForUpdateInput
+  committee: CommitteeRelateToManyForUpdateInput
   government: GovernmentRelateToOneForUpdateInput
   meetingDate: DateTime
   meetingRecordUrl: String
   description: String
-}
-
-input CommitteeRelateToOneForUpdateInput {
-  create: CommitteeCreateInput
-  connect: CommitteeWhereUniqueInput
-  disconnect: Boolean
 }
 
 input MeetingUpdateArgs {
@@ -677,16 +672,11 @@ input MeetingUpdateArgs {
 input MeetingCreateInput {
   location: String
   type: String
-  committee: CommitteeRelateToOneForCreateInput
+  committee: CommitteeRelateToManyForCreateInput
   government: GovernmentRelateToOneForCreateInput
   meetingDate: DateTime
   meetingRecordUrl: String
   description: String
-}
-
-input CommitteeRelateToOneForCreateInput {
-  create: CommitteeCreateInput
-  connect: CommitteeWhereUniqueInput
 }
 
 type Proposal {

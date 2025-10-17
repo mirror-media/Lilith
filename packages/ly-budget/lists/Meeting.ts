@@ -27,6 +27,7 @@ const listConfigurations = list({
     }),
     committee: relationship({
       label: '委員會',
+	  many: true,
       ref: 'Committee',
     }),
     government: relationship({
