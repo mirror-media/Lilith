@@ -63,7 +63,7 @@ model People {
 model Party {
   id                Int      @id @default(autoincrement())
   name              String   @unique @default("")
-  color             String   @unique @default("")
+  color             String   @default("")
   from_People_party People[] @relation("People_party")
 }
 

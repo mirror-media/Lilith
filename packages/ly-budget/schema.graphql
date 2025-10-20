@@ -439,7 +439,6 @@ type Party {
 input PartyWhereUniqueInput {
   id: ID
   name: String
-  color: String
 }
 
 input PartyWhereInput {
