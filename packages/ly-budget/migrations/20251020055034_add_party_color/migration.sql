@@ -12,7 +12,7 @@ ALTER TABLE "People" DROP CONSTRAINT "People_term_fkey";
 DROP INDEX "People_term_idx";
 
 -- AlterTable
-ALTER TABLE "Party" ADD COLUMN     "color" TEXT NULL;
+ALTER TABLE "Party" ADD COLUMN     "color" TEXT NOT NULL DEFAULT '000000';
 
 -- AlterTable
 ALTER TABLE "People" DROP COLUMN "term";
