@@ -328,7 +328,8 @@ type People {
   id: ID!
   type: String
   name: String
-  term: Term
+  term(where: TermWhereInput! = {}, orderBy: [TermOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TermWhereUniqueInput): [Term!]
+  termCount(where: TermWhereInput! = {}): Int
   party: Party
   committees(where: CommitteeWhereInput! = {}, orderBy: [CommitteeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CommitteeWhereUniqueInput): [Committee!]
   committeesCount(where: CommitteeWhereInput! = {}): Int
@@ -346,10 +347,16 @@ input PeopleWhereInput {
   id: IDFilter
   type: StringFilter
   name: StringFilter
-  term: TermWhereInput
+  term: TermManyRelationFilter
   party: PartyWhereInput
   committees: CommitteeManyRelationFilter
   description: StringFilter
+}
+
+input TermManyRelationFilter {
+  every: TermWhereInput
+  some: TermWhereInput
+  none: TermWhereInput
 }
 
 input CommitteeManyRelationFilter {
@@ -368,10 +375,17 @@ input PeopleOrderByInput {
 input PeopleUpdateInput {
   type: String
   name: String
-  term: TermRelateToOneForUpdateInput
+  term: TermRelateToManyForUpdateInput
   party: PartyRelateToOneForUpdateInput
   committees: CommitteeRelateToManyForUpdateInput
   description: String
+}
+
+input TermRelateToManyForUpdateInput {
+  disconnect: [TermWhereUniqueInput!]
+  set: [TermWhereUniqueInput!]
+  create: [TermCreateInput!]
+  connect: [TermWhereUniqueInput!]
 }
 
 input PartyRelateToOneForUpdateInput {
@@ -395,10 +409,15 @@ input PeopleUpdateArgs {
 input PeopleCreateInput {
   type: String
   name: String
-  term: TermRelateToOneForCreateInput
+  term: TermRelateToManyForCreateInput
   party: PartyRelateToOneForCreateInput
   committees: CommitteeRelateToManyForCreateInput
   description: String
+}
+
+input TermRelateToManyForCreateInput {
+  create: [TermCreateInput!]
+  connect: [TermWhereUniqueInput!]
 }
 
 input PartyRelateToOneForCreateInput {
@@ -414,11 +433,13 @@ input CommitteeRelateToManyForCreateInput {
 type Party {
   id: ID!
   name: String
+  color: String
 }
 
 input PartyWhereUniqueInput {
   id: ID
   name: String
+  color: String
 }
 
 input PartyWhereInput {
@@ -427,15 +448,18 @@ input PartyWhereInput {
   NOT: [PartyWhereInput!]
   id: IDFilter
   name: StringFilter
+  color: StringFilter
 }
 
 input PartyOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  color: OrderDirection
 }
 
 input PartyUpdateInput {
   name: String
+  color: String
 }
 
 input PartyUpdateArgs {
@@ -445,6 +469,7 @@ input PartyUpdateArgs {
 
 input PartyCreateInput {
   name: String
+  color: String
 }
 
 type Government {

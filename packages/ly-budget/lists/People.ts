@@ -26,7 +26,7 @@ const listConfigurations = list({
     term: relationship({
       label: '屆',
       ref: 'Term',
-      many: false,
+      many: true,
     }),
     party: relationship({
       label: '政黨',

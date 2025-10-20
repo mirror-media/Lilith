@@ -49,8 +49,7 @@ model People {
   id                      Int         @id @default(autoincrement())
   type                    String
   name                    String      @default("")
-  term                    Term?       @relation("People_term", fields: [termId], references: [id])
-  termId                  Int?        @map("term")
+  term                    Term[]      @relation("People_term")
   party                   Party?      @relation("People_party", fields: [partyId], references: [id])
   partyId                 Int?        @map("party")
   committees              Committee[] @relation("Committee_members")
@@ -58,13 +57,13 @@ model People {
   from_Proposal_proposers Proposal[]  @relation("Proposal_proposers")
   from_Proposal_coSigners Proposal[]  @relation("Proposal_coSigners")
 
-  @@index([termId])
   @@index([partyId])
 }
 
 model Party {
   id                Int      @id @default(autoincrement())
   name              String   @unique @default("")
+  color             String   @unique @default("")
   from_People_party People[] @relation("People_party")
 }
 
