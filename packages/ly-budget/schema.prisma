@@ -118,14 +118,15 @@ model Proposal {
   government                                Government?        @relation("Proposal_government", fields: [governmentId], references: [id])
   governmentId                              Int?               @map("government")
   meetings                                  Meeting[]          @relation("Proposal_meetings")
+  year                                      Int
   mergedProposals                           Proposal[]         @relation("Proposal_mergedProposals")
   historicalProposals                       Proposal[]         @relation("Proposal_historicalProposals")
   proposers                                 People[]           @relation("Proposal_proposers")
   coSigners                                 People[]           @relation("Proposal_coSigners")
   proposalTypes                             Json               @default("[]") @map("proposal_types")
   result                                    String?
-  reductionAmount                           Int?
-  freezeAmount                              Int?
+  reductionAmount                           Float?
+  freezeAmount                              Float?
   budgetImageUrl                            String?
   budget                                    Budget?            @relation("Proposal_budget", fields: [budgetId], references: [id])
   budgetId                                  Int?               @map("budget")

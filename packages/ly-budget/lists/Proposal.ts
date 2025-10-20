@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { text, select, integer, relationship, multiselect } from '@keystone-6/core/fields'
+import { text, float, select, integer, relationship, multiselect } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -38,6 +38,10 @@ const listConfigurations = list({
       many: true,
       ref: 'Meeting',
     }),
+    year: integer({
+      label: '年度',
+      validation: { isRequired: true },
+    }),
     mergedProposals: relationship({
       label: '併案子提案單',
       many: true,
@@ -71,13 +75,13 @@ const listConfigurations = list({
         isNullable: true,
       },
     }),
-    reductionAmount: integer({
+    reductionAmount: float({
       label: '減列金額',
       db: {
         isNullable: true,
       },
     }),
-    freezeAmount: integer({
+    freezeAmount: float({
       label: '凍結金額',
       db: {
         isNullable: true,

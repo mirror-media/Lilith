@@ -703,6 +703,7 @@ type Proposal {
   government: Government
   meetings(where: MeetingWhereInput! = {}, orderBy: [MeetingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MeetingWhereUniqueInput): [Meeting!]
   meetingsCount(where: MeetingWhereInput! = {}): Int
+  year: Int
   mergedProposals(where: ProposalWhereInput! = {}, orderBy: [ProposalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProposalWhereUniqueInput): [Proposal!]
   mergedProposalsCount(where: ProposalWhereInput! = {}): Int
   historicalProposals(where: ProposalWhereInput! = {}, orderBy: [ProposalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProposalWhereUniqueInput): [Proposal!]
@@ -713,8 +714,8 @@ type Proposal {
   coSignersCount(where: PeopleWhereInput! = {}): Int
   proposalTypes: [ProposalProposalTypeType!]
   result: String
-  reductionAmount: Int
-  freezeAmount: Int
+  reductionAmount: Float
+  freezeAmount: Float
   budgetImageUrl: String
   budget: Budget
   unfreezeStatus: String
@@ -747,13 +748,14 @@ input ProposalWhereInput {
   id: IDFilter
   government: GovernmentWhereInput
   meetings: MeetingManyRelationFilter
+  year: IntFilter
   mergedProposals: ProposalManyRelationFilter
   historicalProposals: ProposalManyRelationFilter
   proposers: PeopleManyRelationFilter
   coSigners: PeopleManyRelationFilter
   result: StringNullableFilter
-  reductionAmount: IntNullableFilter
-  freezeAmount: IntNullableFilter
+  reductionAmount: FloatNullableFilter
+  freezeAmount: FloatNullableFilter
   budgetImageUrl: StringNullableFilter
   budget: BudgetWhereInput
   unfreezeStatus: StringNullableFilter
@@ -793,6 +795,7 @@ input IntNullableFilter {
 
 input ProposalOrderByInput {
   id: OrderDirection
+  year: OrderDirection
   result: OrderDirection
   reductionAmount: OrderDirection
   freezeAmount: OrderDirection
@@ -811,14 +814,15 @@ input ProposalOrderByInput {
 input ProposalUpdateInput {
   government: GovernmentRelateToOneForUpdateInput
   meetings: MeetingRelateToManyForUpdateInput
+  year: Int
   mergedProposals: ProposalRelateToManyForUpdateInput
   historicalProposals: ProposalRelateToManyForUpdateInput
   proposers: PeopleRelateToManyForUpdateInput
   coSigners: PeopleRelateToManyForUpdateInput
   proposalTypes: [ProposalProposalTypeType!]
   result: String
-  reductionAmount: Int
-  freezeAmount: Int
+  reductionAmount: Float
+  freezeAmount: Float
   budgetImageUrl: String
   budget: BudgetRelateToOneForUpdateInput
   unfreezeStatus: String
@@ -861,14 +865,15 @@ input ProposalUpdateArgs {
 input ProposalCreateInput {
   government: GovernmentRelateToOneForCreateInput
   meetings: MeetingRelateToManyForCreateInput
+  year: Int
   mergedProposals: ProposalRelateToManyForCreateInput
   historicalProposals: ProposalRelateToManyForCreateInput
   proposers: PeopleRelateToManyForCreateInput
   coSigners: PeopleRelateToManyForCreateInput
   proposalTypes: [ProposalProposalTypeType!]
   result: String
-  reductionAmount: Int
-  freezeAmount: Int
+  reductionAmount: Float
+  freezeAmount: Float
   budgetImageUrl: String
   budget: BudgetRelateToOneForCreateInput
   unfreezeStatus: String
