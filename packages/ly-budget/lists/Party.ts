@@ -13,8 +13,6 @@ const listConfigurations = list({
     }),
     color: text({
       label: '政黨代表色',
-      validation: { isRequired: true },
-      isIndexed: 'unique',
     }),
   },
 

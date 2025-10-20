@@ -12,7 +12,7 @@ ALTER TABLE "People" DROP CONSTRAINT "People_term_fkey";
 DROP INDEX "People_term_idx";
 
 -- AlterTable
-ALTER TABLE "Party" ADD COLUMN     "color" TEXT NOT NULL DEFAULT '';
+ALTER TABLE "Party" ADD COLUMN     "color" TEXT NULL;
 
 -- AlterTable
 ALTER TABLE "People" DROP COLUMN "term";
@@ -28,9 +28,6 @@ CREATE UNIQUE INDEX "_People_term_AB_unique" ON "_People_term"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_People_term_B_index" ON "_People_term"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Party_color_key" ON "Party"("color");
 
 -- AddForeignKey
 ALTER TABLE "_People_term" ADD CONSTRAINT "_People_term_A_fkey" FOREIGN KEY ("A") REFERENCES "People"("id") ON DELETE CASCADE ON UPDATE CASCADE;
