@@ -310,6 +310,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         labelField: 'name',
+        displayMode: 'select',
         views: './lists/views/post/sections/index',
       },
     }),
@@ -327,6 +328,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         labelField: 'name',
+        displayMode: 'select',
         views: './lists/views/post/categories/index',
       },
     }),

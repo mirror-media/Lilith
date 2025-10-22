@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useRef, useState, useEffect } from 'react'
 
 import { Button } from '@keystone-ui/button'
 // eslint-disable-next-line
@@ -23,12 +23,15 @@ import {
 } from '@keystone-6/core/types'
 import { Link } from '@keystone-6/core/admin-ui/router'
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
+import { gql, useQuery } from '@keystone-6/core/admin-ui/apollo'
 import {
   CellContainer,
   CreateItemDrawer,
 } from '@keystone-6/core/admin-ui/components'
 
+import { Cards } from './cards'
 import { RelationshipSelect } from './RelationshipSelect'
+import { sectionsManager } from '../categories/sectionsContext'
 
 function LinkToRelatedItems({
   itemId,
@@ -96,6 +99,108 @@ export const Field = ({
   const localList = useList(field.listKey)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
+  // 當 sections 的值變化時，通知 categories
+  useEffect(() => {
+    if (value.kind === 'many' && Array.isArray(value.value)) {
+      const sectionIds = value.value.map((item: any) => item.id).filter(Boolean)
+      sectionsManager.updateSections(sectionIds)
+    }
+  }, [value])
+
+  /**
+   * use Ref to prevent infinite re-render
+   * autofill only trigger during item creation
+   */
+  const isAssignedRef = useRef(value.id !== null)
+  const { data } = useQuery(
+    gql`
+      query GetSections($where: SectionWhereInput! = {}, $userId: ID!) {
+        sections(where: $where) {
+          id
+          label: name
+        }
+        user(where: { id: $userId }) {
+          author {
+            sections {
+              id
+              label: name
+            }
+          }
+        }
+      }
+    `,
+    {
+      variables: {
+        where: { name: { equals: '即時' } },
+        // @ts-ignore: authenticatedItem.id exists
+        userId: keystone.authenticatedItem.id,
+      },
+    }
+  )
+
+  if (isAssignedRef.current === false && data) {
+    const sections: any[] = []
+    const idSet = new Set()
+
+    const iteratorFn = (item: Value) => {
+      const id = item.id
+
+      if (!idSet.has(id)) {
+        idSet.add(id)
+
+        sections.push({
+          id: item.id,
+          label: item.label,
+        })
+      }
+    }
+
+    if (Array.isArray(data.sections) && data.sections.length > 0) {
+      // set `即時` section as default
+      data.sections.forEach(iteratorFn)
+    }
+
+    if (
+      Array.isArray(data.user?.author?.sections) &&
+      data.user.author.sections.length > 0
+    ) {
+      // add user related sections
+      data.user.author.sections.forEach(iteratorFn)
+    }
+
+    const update = Object.assign({}, value)
+
+    if (sections.length > 0 && typeof onChange === 'function') {
+      Object.assign(update, {
+        ...update,
+        value: sections,
+      })
+
+      onChange(update)
+      isAssignedRef.current = true
+    }
+  }
+
+  if (value.kind === 'cards-view') {
+    return (
+      <FieldContainer as="fieldset">
+        <FieldLegend>{field.label}</FieldLegend>
+        <FieldDescription id={`${field.path}-description`}>
+          {field.description}
+        </FieldDescription>
+        <Cards
+          forceValidation={forceValidation}
+          field={field}
+          id={value.id}
+          value={value}
+          onChange={onChange}
+          foreignList={foreignList}
+          localList={localList}
+        />
+      </FieldContainer>
+    )
+  }
+
   if (value.kind === 'count') {
     return (
       <Stack as="fieldset" gap="medium">
@@ -162,7 +267,6 @@ export const Field = ({
                   }
             }
             orderBy={[{ id: 'desc' }]}
-            currentItemId={value.id}
           />
           <Stack across gap="small">
             {onChange !== undefined && !field.hideCreate && (
@@ -333,19 +437,37 @@ type ManyRelationshipValue = {
   initialValue: Value[]
   value: Value[]
 }
+type CardsRelationshipValue = {
+  kind: 'cards-view'
+  id: null | string
+  itemsBeingEdited: ReadonlySet<string>
+  itemBeingCreated: boolean
+  initialIds: ReadonlySet<string>
+  currentIds: ReadonlySet<string>
+  displayOptions: CardsDisplayModeOptions
+}
 type CountRelationshipValue = {
   kind: 'count'
   id: null | string
   count: number
 }
+type CardsDisplayModeOptions = {
+  cardFields: readonly string[]
+  linkToItem: boolean
+  removeMode: 'disconnect' | 'none'
+  inlineCreate: { fields: readonly string[] } | null
+  inlineEdit: { fields: readonly string[] } | null
+  inlineConnect: boolean
+}
 
 type RelationshipController = FieldController<
   | ManyRelationshipValue
   | SingleRelationshipValue
+  | CardsRelationshipValue
   | CountRelationshipValue,
   string
 > & {
-  display: 'count' | 'select'
+  display: 'count' | 'cards-or-select'
   listKey: string
   refListKey: string
   refFieldKey?: string
@@ -369,11 +491,32 @@ export const controller = (
           displayMode: 'select'
         }
       | {
+          displayMode: 'cards'
+          cardFields: readonly string[]
+          linkToItem: boolean
+          removeMode: 'disconnect' | 'none'
+          inlineCreate: { fields: readonly string[] } | null
+          inlineEdit: { fields: readonly string[] } | null
+          inlineConnect: boolean
+        }
+      | {
           displayMode: 'count'
         }
     )
   >
 ): RelationshipController => {
+  const cardsDisplayOptions =
+    config.fieldMeta.displayMode === 'cards'
+      ? {
+          cardFields: config.fieldMeta.cardFields,
+          inlineCreate: config.fieldMeta.inlineCreate,
+          inlineEdit: config.fieldMeta.inlineEdit,
+          linkToItem: config.fieldMeta.linkToItem,
+          removeMode: config.fieldMeta.removeMode,
+          inlineConnect: config.fieldMeta.inlineConnect,
+        }
+      : undefined
+
   const refLabelField = config.fieldMeta.refLabelField
   const refSearchFields = config.fieldMeta.refSearchFields
 
@@ -385,7 +528,7 @@ export const controller = (
     label: config.label,
     description: config.description,
     display:
-      config.fieldMeta.displayMode === 'count' ? 'count' : 'select',
+      config.fieldMeta.displayMode === 'count' ? 'count' : 'cards-or-select',
     refLabelField,
     refSearchFields,
     refListKey: config.fieldMeta.refListKey,
@@ -397,20 +540,54 @@ export const controller = (
               label: ${refLabelField}
             }`,
     hideCreate: config.fieldMeta.hideCreate,
-    defaultValue: config.fieldMeta.many
-      ? {
-          id: null,
-          kind: 'many',
-          initialValue: [],
-          value: [],
-        }
-      : { id: null, kind: 'one', value: null, initialValue: null },
+    // note we're not making the state kind: 'count' when ui.displayMode is set to 'count'.
+    // that ui.displayMode: 'count' is really just a way to have reasonable performance
+    // because our other UIs don't handle relationships with a large number of items well
+    // but that's not a problem here since we're creating a new item so we might as well them a better UI
+    defaultValue:
+      cardsDisplayOptions !== undefined
+        ? {
+            kind: 'cards-view',
+            currentIds: new Set(),
+            id: null,
+            initialIds: new Set(),
+            itemBeingCreated: false,
+            itemsBeingEdited: new Set(),
+            displayOptions: cardsDisplayOptions,
+          }
+        : config.fieldMeta.many
+        ? {
+            id: null,
+            kind: 'many',
+            initialValue: [],
+            value: [],
+          }
+        : { id: null, kind: 'one', value: null, initialValue: null },
     deserialize: (data) => {
       if (config.fieldMeta.displayMode === 'count') {
         return {
           id: data.id,
           kind: 'count',
           count: data[`${config.path}Count`] ?? 0,
+        }
+      }
+      if (cardsDisplayOptions !== undefined) {
+        const initialIds = new Set<string>(
+          (Array.isArray(data[config.path])
+            ? data[config.path]
+            : data[config.path]
+            ? [data[config.path]]
+            : []
+          ).map((x: any) => x.id)
+        )
+        return {
+          kind: 'cards-view',
+          id: data.id,
+          itemsBeingEdited: new Set(),
+          itemBeingCreated: false,
+          initialIds,
+          currentIds: initialIds,
+          displayOptions: cardsDisplayOptions,
         }
       }
       if (config.fieldMeta.many) {
@@ -440,13 +617,87 @@ export const controller = (
       }
     },
     filter: {
-      Filter: () => null,
-      graphql: () => ({}),
-      Label: () => '',
-      types: {},
+      // @ts-ignore
+      Filter: ({ onChange, value }) => {
+        const foreignList = useList(config.fieldMeta.refListKey)
+        const { filterValues, loading } = useRelationshipFilterValues({
+          value,
+          list: foreignList,
+        })
+        const state: {
+          kind: 'many'
+          value: Value[]
+          onChange: (newItems: Value[]) => void
+        } = {
+          kind: 'many',
+          value: filterValues,
+          onChange(newItems) {
+            onChange(newItems.map((item) => item.id).join(','))
+          },
+        }
+        return (
+          <RelationshipSelect
+            controlShouldRenderValue
+            list={foreignList}
+            labelField={refLabelField}
+            searchFields={refSearchFields}
+            isLoading={loading}
+            isDisabled={onChange === undefined}
+            state={state}
+            orderBy={[{ id: 'desc' }]}
+          />
+        )
+      },
+      graphql: ({ value }) => {
+        const foreignIds = getForeignIds(value)
+        if (config.fieldMeta.many) {
+          return {
+            [config.path]: {
+              some: {
+                id: {
+                  in: foreignIds,
+                },
+              },
+            },
+          }
+        }
+        return {
+          [config.path]: {
+            id: {
+              in: foreignIds,
+            },
+          },
+        }
+      },
+      Label({ value }) {
+        const foreignList = useList(config.fieldMeta.refListKey)
+        const { filterValues } = useRelationshipFilterValues({
+          value,
+          list: foreignList,
+        })
+
+        if (!filterValues.length) {
+          return `has no value`
+        }
+        if (filterValues.length > 1) {
+          const values = filterValues.map((i: any) => i.label).join(', ')
+          return `is in [${values}]`
+        }
+        const optionLabel = filterValues[0].label
+        return `is ${optionLabel}`
+      },
+      types: {
+        matches: {
+          label: 'Matches',
+          initialValue: '',
+        },
+      },
     },
     validate(value) {
-      return true
+      return (
+        value.kind !== 'cards-view' ||
+        (value.itemsBeingEdited.size === 0 && !value.itemBeingCreated)
+      )
     },
     serialize: (state) => {
       if (state.kind === 'many') {
@@ -485,9 +736,78 @@ export const controller = (
             },
           }
         }
+      } else if (state.kind === 'cards-view') {
+        const disconnect = [...state.initialIds]
+          .filter((id) => !state.currentIds.has(id))
+          .map((id) => ({ id }))
+        const connect = [...state.currentIds]
+          .filter((id) => !state.initialIds.has(id))
+          .map((id) => ({ id }))
+
+        if (config.fieldMeta.many) {
+          if (disconnect.length || connect.length) {
+            return {
+              [config.path]: {
+                connect: connect.length ? connect : undefined,
+                disconnect: disconnect.length ? disconnect : undefined,
+              },
+            }
+          }
+        } else if (connect.length) {
+          return {
+            [config.path]: {
+              connect: connect[0],
+            },
+          }
+        } else if (disconnect.length) {
+          return { [config.path]: { disconnect: true } }
+        }
       }
       return {}
     },
   }
 }
 
+function useRelationshipFilterValues({
+  value,
+  list,
+}: {
+  value: string
+  list: ListMeta
+}) {
+  const foreignIds = getForeignIds(value)
+  const where = { id: { in: foreignIds } }
+
+  const query = gql`
+    query FOREIGNLIST_QUERY($where: ${list.gqlNames.whereInputName}!) {
+      items: ${list.gqlNames.listQueryName}(where: $where) {
+        id
+        ${list.labelField}
+      }
+    }
+  `
+
+  const { data, loading } = useQuery(query, {
+    variables: {
+      where,
+    },
+  })
+
+  return {
+    filterValues:
+      data?.items?.map((item: any) => {
+        return {
+          id: item.id,
+          label: item[list.labelField] || item.id,
+        }
+      }) || foreignIds.map((f) => ({ label: f, id: f })),
+    loading: loading,
+  }
+}
+
+function getForeignIds(value: string) {
+  if (typeof value === 'string' && value.length > 0) {
+    return value.split(',')
+  }
+  return []
+}

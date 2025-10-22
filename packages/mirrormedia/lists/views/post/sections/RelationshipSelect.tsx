@@ -25,7 +25,6 @@ import {
   useApolloClient,
   useQuery,
 } from '@keystone-6/core/admin-ui/apollo'
-import { sectionsManager } from './sectionsContext'
 
 function useIntersectionObserver(
   cb: IntersectionObserverCallback,
@@ -114,6 +113,8 @@ const LoadingIndicatorContext = createContext<{
   ref: (element: HTMLElement | null) => void
 }>({
   count: 0,
+  // To avoid @typescript-eslint/no-empty-function,
+  // add a console log.
   ref: () => {
     console.log('ref function called')
   },
@@ -132,7 +133,6 @@ export const RelationshipSelect = ({
   state,
   extraSelection = '',
   orderBy,
-  currentItemId,
 }: {
   autoFocus?: boolean
   controlShouldRenderValue: boolean
@@ -160,53 +160,14 @@ export const RelationshipSelect = ({
       }
   extraSelection?: string
   orderBy: Record<string, any>[]
-  currentItemId: string | null
 }) => {
   const [search, setSearch] = useState('')
+  // note it's important that this is in state rather than a ref
+  // because we want a re-render if the element changes
+  // so that we can register the intersection observer
+  // on the right element
   const [loadingIndicatorElement, setLoadingIndicatorElement] =
     useState<null | HTMLElement>(null)
-
-  // 查詢當前 Post 的 sections（只在初始化時）
-  const { data: postData } = useQuery(
-    gql`
-      query GetPostSections($id: ID!) {
-        post(where: { id: $id }) {
-          id
-          sections {
-            id
-          }
-        }
-      }
-    `,
-    {
-      variables: { id: currentItemId },
-      skip: !currentItemId,
-    }
-  )
-
-  // 使用 state 來追蹤當前的 sections
-  const [currentSections, setCurrentSections] = useState<string[]>(
-    postData?.post?.sections?.map((s: any) => s.id) || []
-  )
-
-  // 當從數據庫查詢到 sections 時，更新 state 並通知 manager
-  useEffect(() => {
-    if (postData?.post?.sections) {
-      const sectionIds = postData.post.sections.map((s: any) => s.id)
-      setCurrentSections(sectionIds)
-      sectionsManager.updateSections(sectionIds)
-    }
-  }, [postData?.post?.sections])
-
-  // 訂閱 sections 的變化（來自用戶在表單中的選擇）
-  useEffect(() => {
-    const unsubscribe = sectionsManager.subscribe((sectionIds) => {
-      setCurrentSections(sectionIds)
-    })
-    return unsubscribe
-  }, [])
-
-  const selectedSections = currentSections
 
   const QUERY: TypedDocumentNode<
     {
@@ -231,32 +192,11 @@ export const RelationshipSelect = ({
   `
 
   const debouncedSearch = useDebouncedValue(search, 200)
-  const searchFilter = useFilter(debouncedSearch, list, searchFields)
-
-  // 建立完整的 where 條件，包括 sections 過濾
-  const where = useMemo(() => {
-    const conditions: any = {}
-    
-    // 如果有搜尋條件，加入搜尋過濾
-    if (searchFilter.OR && searchFilter.OR.length > 0) {
-      Object.assign(conditions, searchFilter)
-    }
-
-    // 如果有選中的 sections，只顯示屬於這些 sections 的 categories
-    if (selectedSections.length > 0) {
-      conditions.sections = {
-        some: {
-          id: {
-            in: selectedSections,
-          },
-        },
-      }
-    }
-
-    return conditions
-  }, [searchFilter, selectedSections])
+  const where = useFilter(debouncedSearch, list, searchFields)
 
   const link = useApolloClient().link
+  // we're using a local apollo client here because writing a global implementation of the typePolicies
+  // would require making assumptions about how pagination should work which won't always be right
   const apolloClient = useMemo(
     () =>
       new ApolloClient({
@@ -315,6 +255,8 @@ export const RelationshipSelect = ({
     [count]
   )
 
+  // we want to avoid fetching more again and `loading` from Apollo
+  // doesn't seem to become true when fetching more
   const [lastFetchMore, setLastFetchMore] = useState<{
     where: Record<string, any>
     extraSelection: string
@@ -378,23 +320,20 @@ export const RelationshipSelect = ({
     { current: loadingIndicatorElement }
   )
 
+  // TODO: better error UI
+  // TODO: Handle permission errors
+  // (ie; user has permission to read this relationship field, but
+  // not the related list, or some items on the list)
   if (error) {
     return <span>Error</span>
-  }
-
-  // 如果沒有選中任何 section，顯示提示訊息
-  if (selectedSections.length === 0) {
-    return (
-      <div style={{ padding: '8px', color: '#666', fontStyle: 'italic' }}>
-        請先選擇大分類（Sections），才能選擇小分類（Categories）
-      </div>
-    )
   }
 
   if (state.kind === 'one') {
     return (
       <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
         <Select
+          // this is necessary because react-select passes a second argument to onInputChange
+          // and useState setters log a warning if a second argument is passed
           onInputChange={(val) => setSearch(val)}
           isLoading={loading || isLoading}
           autoFocus={autoFocus}
@@ -434,7 +373,8 @@ export const RelationshipSelect = ({
 
   return (
     <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
-      <MultiSelect
+      <MultiSelect // this is necessary because react-select passes a second argument to onInputChange
+        // and useState setters log a warning if a second argument is passed
         onInputChange={(val) => setSearch(val)}
         isLoading={loading || isLoading}
         autoFocus={autoFocus}
@@ -459,6 +399,25 @@ export const RelationshipSelect = ({
         controlShouldRenderValue={controlShouldRenderValue}
         isClearable={controlShouldRenderValue}
         isDisabled={isDisabled}
+        // The parameter `formatOptionLabel` is added specifically for this project
+        // and is not copied from the codebase of keystone-6/core.
+        // This parameter controls the appearance of element in drop-down list component, make it display image if needed.
+        // See [Pull Request](https://github.com/mirror-media/Lilith/pull/698) to get more details.
+        formatOptionLabel={(option) => {
+          return (
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <span>{option.label}</span>
+              {list.label === 'Photos' && (
+                <img
+                  src={option?.data?.imageFile?.url}
+                  width={50}
+                  height={50}
+                  style={{ objectFit: 'cover', marginLeft: 'auto' }}
+                ></img>
+              )}
+            </div>
+          )
+        }}
       />
     </LoadingIndicatorContext.Provider>
   )
@@ -479,4 +438,3 @@ const relationshipSelectComponents: Partial<typeof selectComponents> = {
     )
   },
 }
-

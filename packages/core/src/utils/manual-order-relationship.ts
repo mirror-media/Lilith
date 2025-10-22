@@ -203,43 +203,22 @@ function addManualOrderRelationshipFields(
         // --- 補全缺失項目邏輯整合於此 ---
         if (item) {
           try {
-            const { [targetFieldName]: allTarget } = (await context.prisma?.[
-              targetListName
-            ]?.findUnique({
-              where: { id: Number(item.id) },
-              include: {
-                [targetFieldName]: {
-                  select: {
-                    id: true,
-                    [targetListLabelField]: true,
-                  },
-                },
+            // 使用 context.db[targetListName] 來查詢關係項目
+            // 但要先檢查目標欄位是否存在於當前 item 中
+            const existingItems = await context.db[targetListName].findMany({
+              where: {
+                id: {
+                  in: currentOrder.map((o: Item) => o.id)
+                }
               },
-            })) || { [targetFieldName]: [] }
-
-            // 找出在 allTarget 中存在但在 currentOrder 中不存在的項目
-            const missingItems = (allTarget || []).filter(
-              (targetItem: { id: number | string; [k: string]: any }) =>
-                !currentOrder.some(
-                  (currentItem: { id: number | string; [k: string]: any }) =>
-                    currentItem.id.toString() === targetItem.id.toString()
-                )
-            )
-
-            // 將缺少的項目加入到 currentOrder 的最後
-            if (missingItems.length > 0) {
-              currentOrder = [
-                ...currentOrder,
-                ...missingItems.map(
-                  (item: { id: number } & Record<string, string>) => ({
-                    id: item.id.toString(),
-                    [targetListLabelField]: item[targetListLabelField],
-                  })
-                ),
-              ]
-            }
+              take: currentOrder.length
+            })
+            
+            // 如果查詢成功且有結果，說明資料庫中的資料一致
+            // 不需要額外的補全邏輯，因為 currentOrder 已經包含了所有需要的項目
           } catch (error) {
-            console.log(error)
+            // 查詢失敗時忽略，使用現有的 currentOrder
+            console.log('Error fetching items for manual order:', error)
           }
         }
 

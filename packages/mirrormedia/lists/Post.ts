@@ -218,6 +218,11 @@ const listConfigurations = list({
       label: '大分類',
       ref: 'Section.posts',
       many: true,
+      ui: {
+        labelField: 'name',
+        displayMode: 'select',
+        views: './lists/views/post/sections/index',
+      },
     }),
     manualOrderOfSections: json({
       isFilterable: false,
@@ -227,6 +232,11 @@ const listConfigurations = list({
       label: '小分類',
       ref: 'Category.posts',
       many: true,
+      ui: {
+        labelField: 'name',
+        displayMode: 'select',
+        views: './lists/views/post/categories/index',
+      },
     }),
     manualOrderOfCategories: json({
       isFilterable: false,

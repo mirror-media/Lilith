@@ -132,7 +132,7 @@ export const RelationshipSelect = ({
   state,
   extraSelection = '',
   orderBy,
-  currentItemId,
+  selectedSectionIds,
 }: {
   autoFocus?: boolean
   controlShouldRenderValue: boolean
@@ -160,51 +160,29 @@ export const RelationshipSelect = ({
       }
   extraSelection?: string
   orderBy: Record<string, any>[]
-  currentItemId: string | null
+  selectedSectionIds: string[]
 }) => {
   const [search, setSearch] = useState('')
   const [loadingIndicatorElement, setLoadingIndicatorElement] =
     useState<null | HTMLElement>(null)
 
-  // 查詢當前 Post 的 sections（只在初始化時）
-  const { data: postData } = useQuery(
-    gql`
-      query GetPostSections($id: ID!) {
-        post(where: { id: $id }) {
-          id
-          sections {
-            id
-          }
-        }
-      }
-    `,
-    {
-      variables: { id: currentItemId },
-      skip: !currentItemId,
-    }
-  )
+  // 使用 state 來追蹤當前的 sections，這樣當 sections 變化時會重新渲染
+  const [currentSections, setCurrentSections] = useState<string[]>(selectedSectionIds)
 
-  // 使用 state 來追蹤當前的 sections
-  const [currentSections, setCurrentSections] = useState<string[]>(
-    postData?.post?.sections?.map((s: any) => s.id) || []
-  )
-
-  // 當從數據庫查詢到 sections 時，更新 state 並通知 manager
-  useEffect(() => {
-    if (postData?.post?.sections) {
-      const sectionIds = postData.post.sections.map((s: any) => s.id)
-      setCurrentSections(sectionIds)
-      sectionsManager.updateSections(sectionIds)
-    }
-  }, [postData?.post?.sections])
-
-  // 訂閱 sections 的變化（來自用戶在表單中的選擇）
+  // 訂閱 sections 的變化
   useEffect(() => {
     const unsubscribe = sectionsManager.subscribe((sectionIds) => {
       setCurrentSections(sectionIds)
     })
     return unsubscribe
   }, [])
+
+  // 初始化時也設置一次
+  useEffect(() => {
+    if (selectedSectionIds.length > 0) {
+      sectionsManager.updateSections(selectedSectionIds)
+    }
+  }, [selectedSectionIds])
 
   const selectedSections = currentSections
 

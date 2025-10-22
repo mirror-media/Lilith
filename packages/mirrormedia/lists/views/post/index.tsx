@@ -96,6 +96,9 @@ export const Field = ({
   const localList = useList(field.listKey)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
+  // 從 value 中獲取 sections 數據（已在 controller 中配置）
+  const selectedSectionsFromValue = (value as any).sectionsIds || []
+
   if (value.kind === 'count') {
     return (
       <Stack as="fieldset" gap="medium">
@@ -162,7 +165,7 @@ export const Field = ({
                   }
             }
             orderBy={[{ id: 'desc' }]}
-            currentItemId={value.id}
+            selectedSectionIds={selectedSectionsFromValue}
           />
           <Stack across gap="small">
             {onChange !== undefined && !field.hideCreate && (
@@ -395,6 +398,9 @@ export const controller = (
         : `${config.path}InInputOrder {
               id
               label: ${refLabelField}
+            }
+            sections {
+              id
             }`,
     hideCreate: config.fieldMeta.hideCreate,
     defaultValue: config.fieldMeta.many
@@ -406,11 +412,15 @@ export const controller = (
         }
       : { id: null, kind: 'one', value: null, initialValue: null },
     deserialize: (data) => {
+      // 提取 sections 的 IDs
+      const sectionsIds = (data.sections || []).map((s: any) => s.id)
+      
       if (config.fieldMeta.displayMode === 'count') {
         return {
           id: data.id,
           kind: 'count',
           count: data[`${config.path}Count`] ?? 0,
+          sectionsIds,
         }
       }
       if (config.fieldMeta.many) {
@@ -423,6 +433,7 @@ export const controller = (
           id: data.id,
           initialValue: value,
           value,
+          sectionsIds,
         }
       }
       let value = data[`${config.path}InInputOrder`]
@@ -437,6 +448,7 @@ export const controller = (
         id: data.id,
         value,
         initialValue: value,
+        sectionsIds,
       }
     },
     filter: {
