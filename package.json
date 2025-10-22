@@ -1,4 +1,5 @@
 {
+  "private": true,
   "workspaces": [
     "packages/core",
     "packages/draft-editor",
@@ -43,6 +44,7 @@
   },
   "resolutions": {
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "graphql": "^16.8.1"
   }
 }
