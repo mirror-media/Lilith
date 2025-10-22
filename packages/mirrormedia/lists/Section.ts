@@ -83,6 +83,7 @@ const listConfigurations = list({
       label: '顏色色碼',
       type: 'string',
       options: COLOR_OPTIONS,
+      defaultValue: COLOR_OPTIONS[0].value,
       validation: {
         isRequired: true,
       },
