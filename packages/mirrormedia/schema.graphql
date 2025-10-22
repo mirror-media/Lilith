@@ -375,7 +375,6 @@ type Category {
   postsCount(where: PostWhereInput! = {}): Int
   externals(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
   externalsCount(where: ExternalWhereInput! = {}): Int
-  isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -401,7 +400,6 @@ input CategoryWhereInput {
   sections: SectionManyRelationFilter
   posts: PostManyRelationFilter
   externals: ExternalManyRelationFilter
-  isMemberOnly: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -437,18 +435,12 @@ input ExternalManyRelationFilter {
   none: ExternalWhereInput
 }
 
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
-}
-
 input CategoryOrderByInput {
   id: OrderDirection
   name: OrderDirection
   slug: OrderDirection
   order: OrderDirection
   state: OrderDirection
-  isMemberOnly: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -462,7 +454,6 @@ input CategoryUpdateInput {
   sections: SectionRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
   externals: ExternalRelateToManyForUpdateInput
-  isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -504,7 +495,6 @@ input CategoryCreateInput {
   sections: SectionRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
   externals: ExternalRelateToManyForCreateInput
-  isMemberOnly: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -650,6 +640,11 @@ input NestedStringNullableFilter {
   startsWith: String
   endsWith: String
   not: NestedStringNullableFilter
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
 }
 
 input EditorChoiceOrderByInput {
@@ -1778,6 +1773,7 @@ type Section {
   id: ID!
   name: String
   description: String
+  color: String
   slug: String
   order: Int
   state: String
@@ -1810,6 +1806,7 @@ input SectionWhereInput {
   id: IDFilter
   name: StringFilter
   description: StringFilter
+  color: CustomStringFilter
   slug: StringFilter
   order: IntNullableFilter
   state: StringFilter
@@ -1825,6 +1822,35 @@ input SectionWhereInput {
   updatedBy: UserWhereInput
 }
 
+input CustomStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: CustomNestedStringFilter
+}
+
+input CustomNestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: CustomNestedStringFilter
+}
+
 input TopicManyRelationFilter {
   every: TopicWhereInput
   some: TopicWhereInput
@@ -1835,6 +1861,7 @@ input SectionOrderByInput {
   id: OrderDirection
   name: OrderDirection
   description: OrderDirection
+  color: OrderDirection
   slug: OrderDirection
   order: OrderDirection
   state: OrderDirection
@@ -1846,6 +1873,7 @@ input SectionOrderByInput {
 input SectionUpdateInput {
   name: String
   description: String
+  color: String
   slug: String
   order: Int
   state: String
@@ -1876,6 +1904,7 @@ input SectionUpdateArgs {
 input SectionCreateInput {
   name: String
   description: String
+  color: String
   slug: String
   order: Int
   state: String
