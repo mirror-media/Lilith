@@ -18,3 +18,5 @@ gcskeyfile.json
 packages/**/lib
 packages/**/public/*
 packages/**/@types
+
+packages/**/start.sh

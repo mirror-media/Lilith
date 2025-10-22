@@ -354,6 +354,8 @@ type Member {
   state: String
   name: String
   mobile: String
+  orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
+  ordersCount(where: OrderWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -376,6 +378,7 @@ input MemberWhereInput {
   state: StringFilter
   name: StringNullableFilter
   mobile: StringNullableFilter
+  orders: OrderManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -411,6 +414,12 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
+input OrderManyRelationFilter {
+  every: OrderWhereInput
+  some: OrderWhereInput
+  none: OrderWhereInput
+}
+
 input MemberOrderByInput {
   id: OrderDirection
   firebaseID: OrderDirection
@@ -428,10 +437,18 @@ input MemberUpdateInput {
   state: String
   name: String
   mobile: String
+  orders: OrderRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input OrderRelateToManyForUpdateInput {
+  disconnect: [OrderWhereUniqueInput!]
+  set: [OrderWhereUniqueInput!]
+  create: [OrderCreateInput!]
+  connect: [OrderWhereUniqueInput!]
 }
 
 input MemberUpdateArgs {
@@ -445,10 +462,16 @@ input MemberCreateInput {
   state: String
   name: String
   mobile: String
+  orders: OrderRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input OrderRelateToManyForCreateInput {
+  create: [OrderCreateInput!]
+  connect: [OrderWhereUniqueInput!]
 }
 
 type Order {
@@ -494,12 +517,6 @@ input OrderWhereInput {
   updatedBy: UserWhereInput
 }
 
-input OrderManyRelationFilter {
-  every: OrderWhereInput
-  some: OrderWhereInput
-  none: OrderWhereInput
-}
-
 input PhotoManyRelationFilter {
   every: PhotoWhereInput
   some: PhotoWhereInput
@@ -539,13 +556,6 @@ input MemberRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input OrderRelateToManyForUpdateInput {
-  disconnect: [OrderWhereUniqueInput!]
-  set: [OrderWhereUniqueInput!]
-  create: [OrderCreateInput!]
-  connect: [OrderWhereUniqueInput!]
-}
-
 input PhotoRelateToManyForUpdateInput {
   disconnect: [PhotoWhereUniqueInput!]
   set: [PhotoWhereUniqueInput!]
@@ -577,11 +587,6 @@ input OrderCreateInput {
 input MemberRelateToOneForCreateInput {
   create: MemberCreateInput
   connect: MemberWhereUniqueInput
-}
-
-input OrderRelateToManyForCreateInput {
-  create: [OrderCreateInput!]
-  connect: [OrderWhereUniqueInput!]
 }
 
 input PhotoRelateToManyForCreateInput {
