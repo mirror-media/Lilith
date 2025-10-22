@@ -221,7 +221,7 @@ const lockByItemViewFunction: MaybeItemFunction<
   // @ts-ignore next line
   if (currentUserRole === UserRole.Admin) {
     return 'edit'
-  } else if ([UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
+  } else if (currentUserRole && [UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
     const { lockBy } = await context.prisma.Post.findUnique({
       where: { id: Number(item?.id) },
       select: {
@@ -327,6 +327,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         labelField: 'name',
+        views: './lists/views/post/categories/index',
       },
     }),
     manualOrderOfCategories: json({
