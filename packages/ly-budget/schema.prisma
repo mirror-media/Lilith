@@ -12,12 +12,14 @@ generator client {
 }
 
 model User {
-  id          Int     @id @default(autoincrement())
-  name        String  @default("")
-  email       String  @unique @default("")
-  password    String
-  role        String
-  isProtected Boolean @default(false)
+  id                        Int          @id @default(autoincrement())
+  name                      String       @default("")
+  email                     String       @unique @default("")
+  password                  String
+  role                      String
+  isProtected               Boolean      @default(false)
+  from_BudgetYear_createdBy BudgetYear[] @relation("BudgetYear_createdBy")
+  from_BudgetYear_updatedBy BudgetYear[] @relation("BudgetYear_updatedBy")
 }
 
 model Term {
@@ -98,6 +100,23 @@ model Budget {
   @@index([governmentId])
 }
 
+model BudgetYear {
+  id             Int        @id @default(autoincrement())
+  year           Int        @unique
+  budgetProgress String
+  dataProgress   String     @default("in-progress")
+  proposals      Proposal[] @relation("Proposal_year")
+  createdAt      DateTime?
+  updatedAt      DateTime?
+  createdBy      User?      @relation("BudgetYear_createdBy", fields: [createdById], references: [id])
+  createdById    Int?       @map("createdBy")
+  updatedBy      User?      @relation("BudgetYear_updatedBy", fields: [updatedById], references: [id])
+  updatedById    Int?       @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model Meeting {
   id                            Int                @id @default(autoincrement())
   location                      String?
@@ -117,7 +136,8 @@ model Proposal {
   government                                Government?        @relation("Proposal_government", fields: [governmentId], references: [id])
   governmentId                              Int?               @map("government")
   meetings                                  Meeting[]          @relation("Proposal_meetings")
-  year                                      Int
+  year                                      BudgetYear?        @relation("Proposal_year", fields: [yearId], references: [id])
+  yearId                                    Int?               @map("year")
   mergedProposals                           Proposal[]         @relation("Proposal_mergedProposals")
   historicalProposals                       Proposal[]         @relation("Proposal_historicalProposals")
   proposers                                 People[]           @relation("Proposal_proposers")
@@ -145,6 +165,7 @@ model Proposal {
   from_RecognitionImage_mergedProposals     RecognitionImage[] @relation("RecognitionImage_mergedProposals")
 
   @@index([governmentId])
+  @@index([yearId])
   @@index([budgetId])
   @@index([publishStatus])
 }

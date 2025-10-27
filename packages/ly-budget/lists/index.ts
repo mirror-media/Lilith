@@ -5,6 +5,7 @@ import People from './People'
 import Party from './Party'
 import Government from './Government'
 import Budget from './Budget'
+import BudgetYear from './BudgetYear'
 import Meeting from './Meeting'
 import Proposal from './Proposal'
 import RecognitionImage from './RecognitionImage'
@@ -18,6 +19,7 @@ export const listDefinition = {
   Party,
   Government,
   Budget,
+  BudgetYear,
   Meeting,
   Proposal,
   RecognitionImage,

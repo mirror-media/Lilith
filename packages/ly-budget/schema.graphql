@@ -638,6 +638,104 @@ input GovernmentRelateToOneForCreateInput {
   connect: GovernmentWhereUniqueInput
 }
 
+type BudgetYear {
+  id: ID!
+  year: Int
+  budgetProgress: String
+  dataProgress: String
+  proposals(where: ProposalWhereInput! = {}, orderBy: [ProposalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProposalWhereUniqueInput): [Proposal!]
+  proposalsCount(where: ProposalWhereInput! = {}): Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input BudgetYearWhereUniqueInput {
+  id: ID
+  year: Int
+}
+
+input BudgetYearWhereInput {
+  AND: [BudgetYearWhereInput!]
+  OR: [BudgetYearWhereInput!]
+  NOT: [BudgetYearWhereInput!]
+  id: IDFilter
+  year: IntFilter
+  budgetProgress: StringFilter
+  dataProgress: StringFilter
+  proposals: ProposalManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ProposalManyRelationFilter {
+  every: ProposalWhereInput
+  some: ProposalWhereInput
+  none: ProposalWhereInput
+}
+
+input BudgetYearOrderByInput {
+  id: OrderDirection
+  year: OrderDirection
+  budgetProgress: OrderDirection
+  dataProgress: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input BudgetYearUpdateInput {
+  year: Int
+  budgetProgress: String
+  dataProgress: String
+  proposals: ProposalRelateToManyForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ProposalRelateToManyForUpdateInput {
+  disconnect: [ProposalWhereUniqueInput!]
+  set: [ProposalWhereUniqueInput!]
+  create: [ProposalCreateInput!]
+  connect: [ProposalWhereUniqueInput!]
+}
+
+input UserRelateToOneForUpdateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+}
+
+input BudgetYearUpdateArgs {
+  where: BudgetYearWhereUniqueInput!
+  data: BudgetYearUpdateInput!
+}
+
+input BudgetYearCreateInput {
+  year: Int
+  budgetProgress: String
+  dataProgress: String
+  proposals: ProposalRelateToManyForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input ProposalRelateToManyForCreateInput {
+  create: [ProposalCreateInput!]
+  connect: [ProposalWhereUniqueInput!]
+}
+
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+}
+
 type Meeting {
   id: ID!
   location: String
@@ -727,7 +825,7 @@ type Proposal {
   government: Government
   meetings(where: MeetingWhereInput! = {}, orderBy: [MeetingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MeetingWhereUniqueInput): [Meeting!]
   meetingsCount(where: MeetingWhereInput! = {}): Int
-  year: Int
+  year: BudgetYear
   mergedProposals(where: ProposalWhereInput! = {}, orderBy: [ProposalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProposalWhereUniqueInput): [Proposal!]
   mergedProposalsCount(where: ProposalWhereInput! = {}): Int
   historicalProposals(where: ProposalWhereInput! = {}, orderBy: [ProposalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProposalWhereUniqueInput): [Proposal!]
@@ -772,7 +870,7 @@ input ProposalWhereInput {
   id: IDFilter
   government: GovernmentWhereInput
   meetings: MeetingManyRelationFilter
-  year: IntFilter
+  year: BudgetYearWhereInput
   mergedProposals: ProposalManyRelationFilter
   historicalProposals: ProposalManyRelationFilter
   proposers: PeopleManyRelationFilter
@@ -800,12 +898,6 @@ input MeetingManyRelationFilter {
   none: MeetingWhereInput
 }
 
-input ProposalManyRelationFilter {
-  every: ProposalWhereInput
-  some: ProposalWhereInput
-  none: ProposalWhereInput
-}
-
 input IntNullableFilter {
   equals: Int
   in: [Int!]
@@ -819,7 +911,6 @@ input IntNullableFilter {
 
 input ProposalOrderByInput {
   id: OrderDirection
-  year: OrderDirection
   result: OrderDirection
   reductionAmount: OrderDirection
   freezeAmount: OrderDirection
@@ -838,7 +929,7 @@ input ProposalOrderByInput {
 input ProposalUpdateInput {
   government: GovernmentRelateToOneForUpdateInput
   meetings: MeetingRelateToManyForUpdateInput
-  year: Int
+  year: BudgetYearRelateToOneForUpdateInput
   mergedProposals: ProposalRelateToManyForUpdateInput
   historicalProposals: ProposalRelateToManyForUpdateInput
   proposers: PeopleRelateToManyForUpdateInput
@@ -868,11 +959,10 @@ input MeetingRelateToManyForUpdateInput {
   connect: [MeetingWhereUniqueInput!]
 }
 
-input ProposalRelateToManyForUpdateInput {
-  disconnect: [ProposalWhereUniqueInput!]
-  set: [ProposalWhereUniqueInput!]
-  create: [ProposalCreateInput!]
-  connect: [ProposalWhereUniqueInput!]
+input BudgetYearRelateToOneForUpdateInput {
+  create: BudgetYearCreateInput
+  connect: BudgetYearWhereUniqueInput
+  disconnect: Boolean
 }
 
 input BudgetRelateToOneForUpdateInput {
@@ -889,7 +979,7 @@ input ProposalUpdateArgs {
 input ProposalCreateInput {
   government: GovernmentRelateToOneForCreateInput
   meetings: MeetingRelateToManyForCreateInput
-  year: Int
+  year: BudgetYearRelateToOneForCreateInput
   mergedProposals: ProposalRelateToManyForCreateInput
   historicalProposals: ProposalRelateToManyForCreateInput
   proposers: PeopleRelateToManyForCreateInput
@@ -917,9 +1007,9 @@ input MeetingRelateToManyForCreateInput {
   connect: [MeetingWhereUniqueInput!]
 }
 
-input ProposalRelateToManyForCreateInput {
-  create: [ProposalCreateInput!]
-  connect: [ProposalWhereUniqueInput!]
+input BudgetYearRelateToOneForCreateInput {
+  create: BudgetYearCreateInput
+  connect: BudgetYearWhereUniqueInput
 }
 
 input BudgetRelateToOneForCreateInput {
@@ -1164,6 +1254,12 @@ type Mutation {
   updateBudgets(data: [BudgetUpdateArgs!]!): [Budget]
   deleteBudget(where: BudgetWhereUniqueInput!): Budget
   deleteBudgets(where: [BudgetWhereUniqueInput!]!): [Budget]
+  createBudgetYear(data: BudgetYearCreateInput!): BudgetYear
+  createBudgetYears(data: [BudgetYearCreateInput!]!): [BudgetYear]
+  updateBudgetYear(where: BudgetYearWhereUniqueInput!, data: BudgetYearUpdateInput!): BudgetYear
+  updateBudgetYears(data: [BudgetYearUpdateArgs!]!): [BudgetYear]
+  deleteBudgetYear(where: BudgetYearWhereUniqueInput!): BudgetYear
+  deleteBudgetYears(where: [BudgetYearWhereUniqueInput!]!): [BudgetYear]
   createMeeting(data: MeetingCreateInput!): Meeting
   createMeetings(data: [MeetingCreateInput!]!): [Meeting]
   updateMeeting(where: MeetingWhereUniqueInput!, data: MeetingUpdateInput!): Meeting
@@ -1233,6 +1329,9 @@ type Query {
   budgets(where: BudgetWhereInput! = {}, orderBy: [BudgetOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: BudgetWhereUniqueInput): [Budget!]
   budget(where: BudgetWhereUniqueInput!): Budget
   budgetsCount(where: BudgetWhereInput! = {}): Int
+  budgetYears(where: BudgetYearWhereInput! = {}, orderBy: [BudgetYearOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: BudgetYearWhereUniqueInput): [BudgetYear!]
+  budgetYear(where: BudgetYearWhereUniqueInput!): BudgetYear
+  budgetYearsCount(where: BudgetYearWhereInput! = {}): Int
   meetings(where: MeetingWhereInput! = {}, orderBy: [MeetingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MeetingWhereUniqueInput): [Meeting!]
   meeting(where: MeetingWhereUniqueInput!): Meeting
   meetingsCount(where: MeetingWhereInput! = {}): Int

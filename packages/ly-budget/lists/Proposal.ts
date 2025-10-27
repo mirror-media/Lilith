@@ -38,9 +38,14 @@ const listConfigurations = list({
       many: true,
       ref: 'Meeting',
     }),
-    year: integer({
+    year: relationship({
       label: '年度',
-      validation: { isRequired: true },
+      ref: 'BudgetYear.proposals',
+      many: false,
+      ui: {
+        displayMode: 'select',
+        labelField: 'year',
+      },
     }),
     mergedProposals: relationship({
       label: '併案子提案單',
