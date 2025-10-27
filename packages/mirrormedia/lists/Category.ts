@@ -1,6 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import { relationship, select, text, integer } from '@keystone-6/core/fields'
+import { relationship, select, text, integer, checkbox } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 import { State, ACL, UserRole, type Session } from '../type'
 
@@ -90,6 +90,15 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
+      },
+    }),
+    isMemberOnly: checkbox({
+      label: '會員文章',
+      defaultValue: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
   },

@@ -80,6 +80,7 @@ model Category {
   sections             Section[]  @relation("Category_sections")
   posts                Post[]     @relation("Category_posts")
   externals            External[] @relation("Category_externals")
+  isMemberOnly         Boolean    @default(false)
   createdAt            DateTime?
   updatedAt            DateTime?
   createdBy            User?      @relation("Category_createdBy", fields: [createdById], references: [id])
