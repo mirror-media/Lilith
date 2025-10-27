@@ -22,9 +22,6 @@ const listConfigurations = list({
         { label: '預算總統公布', value: 'presidential-promulgation' },
       ],
       validation: { isRequired: true },
-      ui: {
-        displayMode: 'segmented-control',
-      },
     }),
     dataProgress: select({
       label: '資料進度',
