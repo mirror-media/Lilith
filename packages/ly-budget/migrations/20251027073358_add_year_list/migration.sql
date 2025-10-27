@@ -1,4 +1,9 @@
 -- AlterTable
+ALTER TABLE
+  "public"."Proposal" ALTER COLUMN "year"
+DROP
+  NOT NULL;
+
 ALTER TABLE "Party" ALTER COLUMN "color" SET DEFAULT '';
 
 -- CreateTable

@@ -15,8 +15,11 @@ const listConfigurations = list({
       label: '預算進度',
       options: [
         { label: '中央政府提出預算', value: 'government-proposed' },
-        { label: '立法院審議', value: 'legislature-review' },
-        { label: '完成預算審查', value: 'review-completed' },
+        { label: '立法院委員會審議', value: 'committee-review' },
+        { label: '黨團協商', value: 'party-negotiation' },
+        { label: '院會決議', value: 'plenary-decision' },
+        { label: '預算三讀通過', value: 'final-reviewed' },
+        { label: '預算總統公布', value: 'presidential-promulgation' },
       ],
       validation: { isRequired: true },
       ui: {
