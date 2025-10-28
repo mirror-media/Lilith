@@ -477,7 +477,7 @@ input OrderRelateToManyForCreateInput {
 type Order {
   id: ID!
   member: Member
-  type: String
+  orderNumber: String
   state: String
   relatedOrder(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   relatedOrderCount(where: OrderWhereInput! = {}): Int
@@ -495,6 +495,7 @@ type Order {
 
 input OrderWhereUniqueInput {
   id: ID
+  orderNumber: String
 }
 
 input OrderWhereInput {
@@ -503,7 +504,7 @@ input OrderWhereInput {
   NOT: [OrderWhereInput!]
   id: IDFilter
   member: MemberWhereInput
-  type: StringNullableFilter
+  orderNumber: StringFilter
   state: StringNullableFilter
   relatedOrder: OrderManyRelationFilter
   paragraphOne: StringNullableFilter
@@ -525,7 +526,7 @@ input PhotoManyRelationFilter {
 
 input OrderOrderByInput {
   id: OrderDirection
-  type: OrderDirection
+  orderNumber: OrderDirection
   state: OrderDirection
   paragraphOne: OrderDirection
   paragraphTwo: OrderDirection
@@ -536,7 +537,7 @@ input OrderOrderByInput {
 
 input OrderUpdateInput {
   member: MemberRelateToOneForUpdateInput
-  type: String
+  orderNumber: String
   state: String
   relatedOrder: OrderRelateToManyForUpdateInput
   paragraphOne: String
@@ -570,7 +571,7 @@ input OrderUpdateArgs {
 
 input OrderCreateInput {
   member: MemberRelateToOneForCreateInput
-  type: String
+  orderNumber: String
   state: String
   relatedOrder: OrderRelateToManyForCreateInput
   paragraphOne: String
