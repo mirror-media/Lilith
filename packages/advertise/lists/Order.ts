@@ -21,6 +21,14 @@ const orderStateOptions = [
 ]
 
 const listConfigurations = list({
+  hooks: {
+    resolveInput: ({ resolvedData, operation, item }) => {
+      if (operation === 'create' && !item && !resolvedData.updatedAt) {
+        resolvedData.updatedAt = new Date()
+      }
+      return resolvedData
+    },
+  },
   fields: {
     member: relationship({
       label: '會員',
