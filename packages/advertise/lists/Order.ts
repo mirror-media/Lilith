@@ -89,6 +89,10 @@ const listConfigurations = list({
       ref: 'Order',
       many: true,
     }),
+    attachment: relationship({
+      label: '附件',
+      ref: 'Pdf',
+    }),
     paragraphOne: text({
       label: '第一段文字',
       ui: {

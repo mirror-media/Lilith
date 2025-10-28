@@ -105,6 +105,8 @@ model Order {
   orderNumber             String    @unique @default("")
   state                   String?   @default("paid")
   relatedOrder            Order[]   @relation("Order_relatedOrder")
+  attachment              Pdf?      @relation("Order_attachment", fields: [attachmentId], references: [id])
+  attachmentId            Int?      @map("attachment")
   paragraphOne            String    @default("")
   paragraphOneEditable    Boolean   @default(false)
   paragraphTwo            String    @default("")
@@ -124,23 +126,25 @@ model Order {
   from_Order_relatedOrder Order[]   @relation("Order_relatedOrder")
 
   @@index([memberId])
+  @@index([attachmentId])
   @@index([imageId])
   @@index([createdById])
   @@index([updatedById])
 }
 
 model Pdf {
-  id            Int       @id @default(autoincrement())
-  name          String    @default("")
-  description   String    @default("")
-  file_filesize Int?
-  file_filename String?
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?     @relation("Pdf_createdBy", fields: [createdById], references: [id])
-  createdById   Int?      @map("createdBy")
-  updatedBy     User?     @relation("Pdf_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?      @map("updatedBy")
+  id                    Int       @id @default(autoincrement())
+  name                  String    @default("")
+  description           String    @default("")
+  file_filesize         Int?
+  file_filename         String?
+  createdAt             DateTime?
+  updatedAt             DateTime?
+  createdBy             User?     @relation("Pdf_createdBy", fields: [createdById], references: [id])
+  createdById           Int?      @map("createdBy")
+  updatedBy             User?     @relation("Pdf_updatedBy", fields: [updatedById], references: [id])
+  updatedById           Int?      @map("updatedBy")
+  from_Order_attachment Order[]   @relation("Order_attachment")
 
   @@index([createdById])
   @@index([updatedById])
