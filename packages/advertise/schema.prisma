@@ -100,7 +100,7 @@ model Order {
   id                      Int       @id @default(autoincrement())
   member                  Member?   @relation("Order_member", fields: [memberId], references: [id])
   memberId                Int?      @map("member")
-  type                    String?
+  orderNumber             String    @unique @default("")
   state                   String?   @default("paid")
   relatedOrder            Order[]   @relation("Order_relatedOrder")
   paragraphOne            String?

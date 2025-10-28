@@ -4,13 +4,8 @@ import { text, select, relationship } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
-const orderTypeOptions = [
-  { label: '求婚', value: 'proposal' },
-  { label: '成功故事', value: 'success_story' },
-]
-
 const orderStateOptions = [
-  { label: '已付款', value: 'paid' },
+  { label: '待上傳素材', value: 'paid' },
   { label: '已上傳檔案', value: 'file_uploaded' },
   { label: '已確認素材', value: 'material_confirmed' },
   { label: '素材更新', value: 'material_updated' },
@@ -31,9 +26,12 @@ const listConfigurations = list({
       label: '會員',
       ref: 'Member.orders',
     }),
-    type: select({
-      label: '類型',
-      options: orderTypeOptions,
+    orderNumber: text({
+      label: '訂單編號',
+      validation: {
+        isRequired: true,
+      },
+      isIndexed: 'unique',
     }),
     state: select({
       label: '狀態',
@@ -79,7 +77,7 @@ const listConfigurations = list({
 
   ui: {
     listView: {
-      initialColumns: ['member', 'type', 'state', 'schedule'],
+      initialColumns: ['member', 'orderNumber', 'state', 'schedule'],
     },
   },
   access: {
