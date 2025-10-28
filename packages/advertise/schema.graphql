@@ -482,11 +482,15 @@ type Order {
   relatedOrder(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   relatedOrderCount(where: OrderWhereInput! = {}): Int
   paragraphOne: String
+  paragraphOneEditable: Boolean
   paragraphTwo: String
+  paragraphTwoEditable: Boolean
   image: Photo
+  imageEditable: Boolean
   demoImage(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
   demoImageCount(where: PhotoWhereInput! = {}): Int
   schedule: String
+  scheduleEditable: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -507,11 +511,15 @@ input OrderWhereInput {
   orderNumber: StringFilter
   state: StringNullableFilter
   relatedOrder: OrderManyRelationFilter
-  paragraphOne: StringNullableFilter
-  paragraphTwo: StringNullableFilter
+  paragraphOne: StringFilter
+  paragraphOneEditable: BooleanFilter
+  paragraphTwo: StringFilter
+  paragraphTwoEditable: BooleanFilter
   image: PhotoWhereInput
+  imageEditable: BooleanFilter
   demoImage: PhotoManyRelationFilter
   schedule: StringFilter
+  scheduleEditable: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -529,8 +537,12 @@ input OrderOrderByInput {
   orderNumber: OrderDirection
   state: OrderDirection
   paragraphOne: OrderDirection
+  paragraphOneEditable: OrderDirection
   paragraphTwo: OrderDirection
+  paragraphTwoEditable: OrderDirection
+  imageEditable: OrderDirection
   schedule: OrderDirection
+  scheduleEditable: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -541,10 +553,14 @@ input OrderUpdateInput {
   state: String
   relatedOrder: OrderRelateToManyForUpdateInput
   paragraphOne: String
+  paragraphOneEditable: Boolean
   paragraphTwo: String
+  paragraphTwoEditable: Boolean
   image: PhotoRelateToOneForUpdateInput
+  imageEditable: Boolean
   demoImage: PhotoRelateToManyForUpdateInput
   schedule: String
+  scheduleEditable: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -575,10 +591,14 @@ input OrderCreateInput {
   state: String
   relatedOrder: OrderRelateToManyForCreateInput
   paragraphOne: String
+  paragraphOneEditable: Boolean
   paragraphTwo: String
+  paragraphTwoEditable: Boolean
   image: PhotoRelateToOneForCreateInput
+  imageEditable: Boolean
   demoImage: PhotoRelateToManyForCreateInput
   schedule: String
+  scheduleEditable: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
