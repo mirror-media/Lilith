@@ -21,6 +21,52 @@ const orderStateOptions = [
 ]
 
 const listConfigurations = list({
+  hooks: {
+    resolveInput: ({ resolvedData, operation, item }) => {
+      if (operation === 'create' && !item && !resolvedData.updatedAt) {
+        resolvedData.updatedAt = new Date()
+      }
+
+      if (resolvedData.relatedOrder) {
+        const hasRelatedOrder =
+          (resolvedData.relatedOrder.connect &&
+            resolvedData.relatedOrder.connect.length > 0) ||
+          (resolvedData.relatedOrder.set &&
+            resolvedData.relatedOrder.set.length > 0)
+
+        if (hasRelatedOrder) {
+          const currentState = resolvedData.state || item?.state
+          if (currentState !== 'transferred') {
+            resolvedData.state = 'transferred'
+          }
+        }
+      }
+
+      return resolvedData
+    },
+    validateInput: ({ resolvedData, addValidationError, item }) => {
+      const state = resolvedData.state || item?.state
+
+      if (state === 'transferred') {
+        let hasRelatedOrder = false
+
+        if (resolvedData.relatedOrder) {
+          hasRelatedOrder =
+            (resolvedData.relatedOrder.connect &&
+              resolvedData.relatedOrder.connect.length > 0) ||
+            (resolvedData.relatedOrder.set &&
+              resolvedData.relatedOrder.set.length > 0)
+        } else if (item?.relatedOrder) {
+          hasRelatedOrder =
+            Array.isArray(item.relatedOrder) && item.relatedOrder.length > 0
+        }
+
+        if (!hasRelatedOrder) {
+          addValidationError('狀態為「已轉交」時，必須設定訂單更動')
+        }
+      }
+    },
+  },
   fields: {
     member: relationship({
       label: '會員',
