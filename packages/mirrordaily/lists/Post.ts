@@ -920,7 +920,7 @@ const listConfigurations = list({
       },
     }),
     publishedDateString: text({
-      label: '日期',
+      label: '搜尋日期',
       ui: {
         createView: { fieldMode: 'hidden', },
         itemView: { fieldMode: 'hidden', },

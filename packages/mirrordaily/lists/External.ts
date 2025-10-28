@@ -119,7 +119,7 @@ const listConfigurations = list({
       isIndexed: true,
     }),
     publishedDateString: text({
-      label: '發布日期',
+      label: '搜尋日期',
       ui: {
         createView: {
           fieldMode: 'hidden',
