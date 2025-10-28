@@ -79,6 +79,15 @@ const listConfigurations = list({
       },
       isIndexed: 'unique',
     }),
+    name: text({
+      label: '廣告名稱',
+      validation: {
+        isRequired: true,
+        length: {
+          max: 10,
+        },
+      },
+    }),
     state: select({
       label: '狀態',
       options: orderStateOptions,

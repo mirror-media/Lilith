@@ -103,6 +103,7 @@ model Order {
   member                  Member?   @relation("Order_member", fields: [memberId], references: [id])
   memberId                Int?      @map("member")
   orderNumber             String    @unique @default("")
+  name                    String    @default("")
   state                   String?   @default("paid")
   relatedOrder            Order[]   @relation("Order_relatedOrder")
   attachment              Pdf?      @relation("Order_attachment", fields: [attachmentId], references: [id])
