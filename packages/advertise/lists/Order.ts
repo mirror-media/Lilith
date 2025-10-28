@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { text, select, relationship } from '@keystone-6/core/fields'
+import { text, select, relationship, checkbox } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -49,15 +49,27 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
+    paragraphOneEditable: checkbox({
+      label: '第一段文字可否被修改',
+      defaultValue: false,
+    }),
     paragraphTwo: text({
       label: '第二段文字',
       ui: {
         displayMode: 'textarea',
       },
     }),
+    paragraphTwoEditable: checkbox({
+      label: '第二段文字可否被修改',
+      defaultValue: false,
+    }),
     image: relationship({
       label: '圖片素材',
       ref: 'Photo',
+    }),
+    imageEditable: checkbox({
+      label: '圖片可否被修改',
+      defaultValue: false,
     }),
     demoImage: relationship({
       label: '成品樣圖',
@@ -66,6 +78,10 @@ const listConfigurations = list({
     }),
     schedule: text({
       label: '排程播出時間',
+    }),
+    scheduleEditable: checkbox({
+      label: '排播日期可否被修改',
+      defaultValue: false,
     }),
   },
 

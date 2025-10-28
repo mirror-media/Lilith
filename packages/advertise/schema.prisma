@@ -104,11 +104,15 @@ model Order {
   state                   String?   @default("paid")
   relatedOrder            Order[]   @relation("Order_relatedOrder")
   paragraphOne            String    @default("")
+  paragraphOneEditable    Boolean   @default(false)
   paragraphTwo            String    @default("")
+  paragraphTwoEditable    Boolean   @default(false)
   image                   Photo?    @relation("Order_image", fields: [imageId], references: [id])
   imageId                 Int?      @map("image")
+  imageEditable           Boolean   @default(false)
   demoImage               Photo[]   @relation("Order_demoImage")
   schedule                String    @default("")
+  scheduleEditable        Boolean   @default(false)
   createdAt               DateTime?
   updatedAt               DateTime?
   createdBy               User?     @relation("Order_createdBy", fields: [createdById], references: [id])
