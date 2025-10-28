@@ -615,6 +615,68 @@ input PhotoRelateToManyForCreateInput {
   connect: [PhotoWhereUniqueInput!]
 }
 
+type Pdf {
+  id: ID!
+  name: String
+  description: String
+  file: FileFieldOutput
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input PdfWhereUniqueInput {
+  id: ID
+}
+
+input PdfWhereInput {
+  AND: [PdfWhereInput!]
+  OR: [PdfWhereInput!]
+  NOT: [PdfWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  description: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PdfOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  description: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PdfUpdateInput {
+  name: String
+  description: String
+  file: FileFieldInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PdfUpdateArgs {
+  where: PdfWhereUniqueInput!
+  data: PdfUpdateInput!
+}
+
+input PdfCreateInput {
+  name: String
+  description: String
+  file: FileFieldInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -651,6 +713,12 @@ type Mutation {
   updateOrders(data: [OrderUpdateArgs!]!): [Order]
   deleteOrder(where: OrderWhereUniqueInput!): Order
   deleteOrders(where: [OrderWhereUniqueInput!]!): [Order]
+  createPdf(data: PdfCreateInput!): Pdf
+  createPdfs(data: [PdfCreateInput!]!): [Pdf]
+  updatePdf(where: PdfWhereUniqueInput!, data: PdfUpdateInput!): Pdf
+  updatePdfs(data: [PdfUpdateArgs!]!): [Pdf]
+  deletePdf(where: PdfWhereUniqueInput!): Pdf
+  deletePdfs(where: [PdfWhereUniqueInput!]!): [Pdf]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -690,6 +758,9 @@ type Query {
   orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   order(where: OrderWhereUniqueInput!): Order
   ordersCount(where: OrderWhereInput! = {}): Int
+  pdfs(where: PdfWhereInput! = {}, orderBy: [PdfOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PdfWhereUniqueInput): [Pdf!]
+  pdf(where: PdfWhereUniqueInput!): Pdf
+  pdfsCount(where: PdfWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

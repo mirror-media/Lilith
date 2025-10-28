@@ -26,6 +26,8 @@ model User {
   from_Member_updatedBy Member[] @relation("Member_updatedBy")
   from_Order_createdBy  Order[]  @relation("Order_createdBy")
   from_Order_updatedBy  Order[]  @relation("Order_updatedBy")
+  from_Pdf_createdBy    Pdf[]    @relation("Pdf_createdBy")
+  from_Pdf_updatedBy    Pdf[]    @relation("Pdf_updatedBy")
 }
 
 model Photo {
@@ -123,6 +125,23 @@ model Order {
 
   @@index([memberId])
   @@index([imageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Pdf {
+  id            Int       @id @default(autoincrement())
+  name          String    @default("")
+  description   String    @default("")
+  file_filesize Int?
+  file_filename String?
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Pdf_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Pdf_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
   @@index([createdById])
   @@index([updatedById])
 }
