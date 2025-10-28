@@ -45,18 +45,12 @@ const listConfigurations = list({
     }),
     paragraphOne: text({
       label: '第一段文字',
-      db: {
-        isNullable: true,
-      },
       ui: {
         displayMode: 'textarea',
       },
     }),
     paragraphTwo: text({
       label: '第二段文字',
-      db: {
-        isNullable: true,
-      },
       ui: {
         displayMode: 'textarea',
       },

@@ -507,8 +507,8 @@ input OrderWhereInput {
   orderNumber: StringFilter
   state: StringNullableFilter
   relatedOrder: OrderManyRelationFilter
-  paragraphOne: StringNullableFilter
-  paragraphTwo: StringNullableFilter
+  paragraphOne: StringFilter
+  paragraphTwo: StringFilter
   image: PhotoWhereInput
   demoImage: PhotoManyRelationFilter
   schedule: StringFilter

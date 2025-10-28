@@ -103,8 +103,8 @@ model Order {
   orderNumber             String    @unique @default("")
   state                   String?   @default("paid")
   relatedOrder            Order[]   @relation("Order_relatedOrder")
-  paragraphOne            String?
-  paragraphTwo            String?
+  paragraphOne            String    @default("")
+  paragraphTwo            String    @default("")
   image                   Photo?    @relation("Order_image", fields: [imageId], references: [id])
   imageId                 Int?      @map("image")
   demoImage               Photo[]   @relation("Order_demoImage")
