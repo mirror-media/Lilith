@@ -7,7 +7,8 @@
     "packages/mirrormedia",
     "packages/readr",
     "packages/openrelationship",
-    "packages/mirrordaily"
+    "packages/mirrordaily",
+    "packages/advertise"
   ],
   "scripts": {
     "prepare": "husky install",
@@ -42,6 +43,7 @@
   },
   "resolutions": {
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "graphql": "^16.8.1"
   }
 }

@@ -1,12 +1,14 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react'
 import debounce from 'lodash/debounce'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { TextInput } from '@keystone-ui/fields'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { gql, useLazyQuery } from '@keystone-6/core/admin-ui/apollo'
 import { AlignSelector } from './align-selector'
 import { SearchBox, SearchBoxOnChangeFn } from './search-box'
 import { Pagination } from './pagination'
+import { Button } from '@keystone-ui/button'
+import { ImageUploader, ImageUploaderOnChangeFn } from './image-uploader'
 
 const imagesQuery = gql`
   query Photos($searchText: String!, $take: Int, $skip: Int) {
@@ -48,7 +50,19 @@ const _ = {
   debounce,
 }
 
+const GlobalStyle = createGlobalStyle`
+  form {
+    @media (max-width: 575px) {
+      width: 100vw !important;
+    }
+  }
+`
+
 const ImageSearchBox = styled(SearchBox)`
+  margin-top: 10px;
+`
+
+const CustomButton = styled(Button)`
   margin-top: 10px;
 `
 
@@ -66,7 +80,7 @@ const ImageGridsWrapper = styled.div`
 `
 
 const ImageGridWrapper = styled.div`
-  flex: 0 0 33.3333%;
+  width: 33.3333%;
   cursor: pointer;
   padding: 0 10px 10px;
 `
@@ -78,7 +92,7 @@ const ImageMetaGridsWrapper = styled.div`
 `
 
 const ImageMetaGridWrapper = styled.div`
-  flex: 0 0 33.3333%;
+  width: 33.3333%;
   cursor: pointer;
   padding: 0 10px 10px;
 `
@@ -345,6 +359,7 @@ export function ImageSelector(props: {
     useState<ImageEntityWithMeta[]>(initialSelected)
   const [delay, setDelay] = useState(initialDelay ?? '5')
   const [align, setAlign] = useState(initialAlign)
+  const [showImageUploader, setShowImageUploader] = useState(false)
   const contentWrapperRef = useRef<HTMLDivElement>(null)
 
   const pageSize = 18
@@ -383,6 +398,19 @@ export function ImageSelector(props: {
     if (scrollWrapper) {
       scrollWrapper.scrollTop = scrollWrapper.scrollHeight
     }
+  }
+
+  const onImageUploaderChange: ImageUploaderOnChangeFn = (images) => {
+    setSelected((prev) =>
+      prev.concat(
+        images.map((image) => ({
+          image,
+          desc: '',
+          url: '',
+        }))
+      )
+    )
+    setShowImageUploader(false)
   }
 
   const onImageMetaChange: ImageMetaOnChangeFn = (imageEntityWithMeta) => {
@@ -476,50 +504,58 @@ export function ImageSelector(props: {
   }
 
   return (
-    <DrawerController isOpen={true}>
-      <Drawer
-        title="Select image"
-        actions={{
-          cancel: {
-            label: 'Cancel',
-            action: onCancel,
-          },
-          confirm: {
-            label: 'Confirm',
-            action: onSave,
-          },
-        }}
-      >
-        <div ref={contentWrapperRef}>
-          <ImageSearchBox onChange={onSearchBoxChange} />
-          <ImageSelectionWrapper>
-            <div>{searchResult}</div>
-            {!!selected.length && <SeparationLine />}
-            <ImageMetaGrids
-              imageMetas={selected}
-              onChange={onImageMetaChange}
-              enableCaption={enableCaption}
-              enableUrl={enableUrl}
-            />
-          </ImageSelectionWrapper>
-          <ImageBlockMetaWrapper>
-            {(enableDelay || enableAlignment) && <SeparationLine />}
-            {enableDelay && (
-              <DelayInput delay={delay} onChange={onDealyChange} />
-            )}
-            {enableAlignment && (
-              <AlignSelector
-                // @ts-ignore: align could be undefined
-                align={align}
-                // @ts-ignore: option with undefined value
-                options={options}
-                onChange={onAlignSelectChange}
-                onOpen={onAlignSelectOpen}
+    <>
+      <GlobalStyle />
+      <DrawerController isOpen={true}>
+        <Drawer
+          title="Select images"
+          actions={{
+            cancel: {
+              label: 'Cancel',
+              action: onCancel,
+            },
+            confirm: {
+              label: 'Confirm',
+              action: onSave,
+            },
+          }}
+          width="narrow"
+        >
+          <div ref={contentWrapperRef}>
+            <CustomButton onClick={() => setShowImageUploader(true)}>
+              上傳圖片
+            </CustomButton>
+            <ImageSearchBox onChange={onSearchBoxChange} />
+            <ImageSelectionWrapper>
+              <div>{searchResult}</div>
+              {!!selected.length && <SeparationLine />}
+              <ImageMetaGrids
+                imageMetas={selected}
+                onChange={onImageMetaChange}
+                enableCaption={enableCaption}
+                enableUrl={enableUrl}
               />
-            )}
-          </ImageBlockMetaWrapper>
-        </div>
-      </Drawer>
-    </DrawerController>
+            </ImageSelectionWrapper>
+            <ImageBlockMetaWrapper>
+              {(enableDelay || enableAlignment) && <SeparationLine />}
+              {enableDelay && (
+                <DelayInput delay={delay} onChange={onDealyChange} />
+              )}
+              {enableAlignment && (
+                <AlignSelector
+                  // @ts-ignore: align could be undefined
+                  align={align}
+                  // @ts-ignore: option with undefined value
+                  options={options}
+                  onChange={onAlignSelectChange}
+                  onOpen={onAlignSelectOpen}
+                />
+              )}
+            </ImageBlockMetaWrapper>
+          </div>
+        </Drawer>
+      </DrawerController>
+      {showImageUploader && <ImageUploader onChange={onImageUploaderChange} />}
+    </>
   )
 }

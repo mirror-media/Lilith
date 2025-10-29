@@ -530,6 +530,8 @@ type Contact {
   id: ID!
   name: String
   content: String
+  sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -547,6 +549,7 @@ input ContactWhereInput {
   id: IDFilter
   name: StringFilter
   content: StringFilter
+  sections: SectionManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -564,6 +567,7 @@ input ContactOrderByInput {
 input ContactUpdateInput {
   name: String
   content: String
+  sections: SectionRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -578,6 +582,7 @@ input ContactUpdateArgs {
 input ContactCreateInput {
   name: String
   content: String
+  sections: SectionRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -1773,6 +1778,7 @@ type Section {
   id: ID!
   name: String
   description: String
+  color: String
   slug: String
   order: Int
   state: String
@@ -1805,6 +1811,7 @@ input SectionWhereInput {
   id: IDFilter
   name: StringFilter
   description: StringFilter
+  color: CustomStringFilter
   slug: StringFilter
   order: IntNullableFilter
   state: StringFilter
@@ -1820,6 +1827,35 @@ input SectionWhereInput {
   updatedBy: UserWhereInput
 }
 
+input CustomStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: CustomNestedStringFilter
+}
+
+input CustomNestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: CustomNestedStringFilter
+}
+
 input TopicManyRelationFilter {
   every: TopicWhereInput
   some: TopicWhereInput
@@ -1830,6 +1866,7 @@ input SectionOrderByInput {
   id: OrderDirection
   name: OrderDirection
   description: OrderDirection
+  color: OrderDirection
   slug: OrderDirection
   order: OrderDirection
   state: OrderDirection
@@ -1841,6 +1878,7 @@ input SectionOrderByInput {
 input SectionUpdateInput {
   name: String
   description: String
+  color: String
   slug: String
   order: Int
   state: String
@@ -1871,6 +1909,7 @@ input SectionUpdateArgs {
 input SectionCreateInput {
   name: String
   description: String
+  color: String
   slug: String
   order: Int
   state: String

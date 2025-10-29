@@ -1,21 +1,24 @@
 import { getVideoFileDuration } from './video-duration'
 import { secondsToISO8601Duration } from './duration-format'
 
-interface VideoProcessingJob {
+type VideoProcessingJob = {
   videoId: string | number
   filename: string | null
   action: 'process' | 'delete'
 }
 
-export function processVideoInBackground(job: VideoProcessingJob, context: any) {
+export function processVideoInBackground(
+  job: VideoProcessingJob,
+  context: any
+) {
   setImmediate(async () => {
     try {
       const { videoId, filename, action } = job
-      
+
       if (action === 'delete') {
-        await context.query.Video.updateOne({
+        await context.sudo().db.Video.updateOne({
           where: { id: videoId.toString() },
-          data: { fileDuration: '' }
+          data: { fileDuration_internal: 'PT0S' },
         })
         console.log(`[Background] Cleared duration for video ${videoId}`)
         return
@@ -23,22 +26,21 @@ export function processVideoInBackground(job: VideoProcessingJob, context: any) 
 
       if (action === 'process' && filename) {
         const durationInSeconds = await getVideoFileDuration(filename)
-        
-        if (durationInSeconds !== null) {
-          const isoDuration = secondsToISO8601Duration(durationInSeconds)
-          
-          await context.query.Video.updateOne({
-            where: { id: videoId.toString() },
-            data: { fileDuration: isoDuration }
-          })
-          
-          console.log(`[Background] Updated duration for video ${videoId}: ${isoDuration}`)
+        const isoDuration = secondsToISO8601Duration(durationInSeconds)
+
+        await context.sudo().db.Video.updateOne({
+          where: { id: videoId.toString() },
+          data: { fileDuration_internal: isoDuration },
+        })
+
+        if (durationInSeconds === null || durationInSeconds === 0) {
+          console.warn(
+            `[Background] Could not get duration for video ${videoId}, set to PT0S`
+          )
         } else {
-          await context.query.Video.updateOne({
-            where: { id: videoId.toString() },
-            data: { fileDuration: '' }
-          })
-          console.warn(`[Background] Could not get duration for video ${videoId}, set to empty string`)
+          console.log(
+            `[Background] Updated duration for video ${videoId}: ${isoDuration}`
+          )
         }
       }
     } catch (error) {

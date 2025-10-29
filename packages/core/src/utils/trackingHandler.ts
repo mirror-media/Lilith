@@ -112,7 +112,7 @@ function combineResolveInputHooks<T extends ResolveInputHook>(...hooks: T[]) {
 function fillByTrackingField(
   currentUserId: number,
   resolvedData: Record<string, unknown>,
-  item: BaseItem | undefined,
+  _item: BaseItem | undefined,
   operation: string
 ) {
   const relationshipData = { connect: { id: currentUserId } }
@@ -158,6 +158,8 @@ function fillAtTrackingField(
     resolvedData['updatedAt'] = new Date()
   } else {
     // create mode
-    resolvedData['createdAt'] = new Date()
+    const now = new Date()
+    resolvedData['createdAt'] = now
+    resolvedData['updatedAt'] = now
   }
 }

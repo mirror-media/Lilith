@@ -354,6 +354,8 @@ type Member {
   state: String
   name: String
   mobile: String
+  orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
+  ordersCount(where: OrderWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -372,10 +374,11 @@ input MemberWhereInput {
   NOT: [MemberWhereInput!]
   id: IDFilter
   firebaseID: StringFilter
-  email: StringFilter
+  email: StringNullableFilter
   state: StringFilter
   name: StringNullableFilter
   mobile: StringNullableFilter
+  orders: OrderManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -411,6 +414,12 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
+input OrderManyRelationFilter {
+  every: OrderWhereInput
+  some: OrderWhereInput
+  none: OrderWhereInput
+}
+
 input MemberOrderByInput {
   id: OrderDirection
   firebaseID: OrderDirection
@@ -428,10 +437,18 @@ input MemberUpdateInput {
   state: String
   name: String
   mobile: String
+  orders: OrderRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input OrderRelateToManyForUpdateInput {
+  disconnect: [OrderWhereUniqueInput!]
+  set: [OrderWhereUniqueInput!]
+  create: [OrderCreateInput!]
+  connect: [OrderWhereUniqueInput!]
 }
 
 input MemberUpdateArgs {
@@ -445,25 +462,37 @@ input MemberCreateInput {
   state: String
   name: String
   mobile: String
+  orders: OrderRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
 }
 
+input OrderRelateToManyForCreateInput {
+  create: [OrderCreateInput!]
+  connect: [OrderWhereUniqueInput!]
+}
+
 type Order {
   id: ID!
   member: Member
-  type: String
+  orderNumber: String
+  name: String
   state: String
   relatedOrder(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   relatedOrderCount(where: OrderWhereInput! = {}): Int
+  attachment: Pdf
   paragraphOne: String
+  paragraphOneEditable: Boolean
   paragraphTwo: String
+  paragraphTwoEditable: Boolean
   image: Photo
+  imageEditable: Boolean
   demoImage(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
   demoImageCount(where: PhotoWhereInput! = {}): Int
   schedule: String
+  scheduleEditable: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -472,6 +501,7 @@ type Order {
 
 input OrderWhereUniqueInput {
   id: ID
+  orderNumber: String
 }
 
 input OrderWhereInput {
@@ -480,24 +510,24 @@ input OrderWhereInput {
   NOT: [OrderWhereInput!]
   id: IDFilter
   member: MemberWhereInput
-  type: StringFilter
-  state: StringFilter
+  orderNumber: StringFilter
+  name: StringFilter
+  state: StringNullableFilter
   relatedOrder: OrderManyRelationFilter
-  paragraphOne: StringNullableFilter
-  paragraphTwo: StringNullableFilter
+  attachment: PdfWhereInput
+  paragraphOne: StringFilter
+  paragraphOneEditable: BooleanFilter
+  paragraphTwo: StringFilter
+  paragraphTwoEditable: BooleanFilter
   image: PhotoWhereInput
+  imageEditable: BooleanFilter
   demoImage: PhotoManyRelationFilter
-  schedule: StringNullableFilter
+  schedule: StringFilter
+  scheduleEditable: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input OrderManyRelationFilter {
-  every: OrderWhereInput
-  some: OrderWhereInput
-  none: OrderWhereInput
 }
 
 input PhotoManyRelationFilter {
@@ -508,25 +538,36 @@ input PhotoManyRelationFilter {
 
 input OrderOrderByInput {
   id: OrderDirection
-  type: OrderDirection
+  orderNumber: OrderDirection
+  name: OrderDirection
   state: OrderDirection
   paragraphOne: OrderDirection
+  paragraphOneEditable: OrderDirection
   paragraphTwo: OrderDirection
+  paragraphTwoEditable: OrderDirection
+  imageEditable: OrderDirection
   schedule: OrderDirection
+  scheduleEditable: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input OrderUpdateInput {
   member: MemberRelateToOneForUpdateInput
-  type: String
+  orderNumber: String
+  name: String
   state: String
   relatedOrder: OrderRelateToManyForUpdateInput
+  attachment: PdfRelateToOneForUpdateInput
   paragraphOne: String
+  paragraphOneEditable: Boolean
   paragraphTwo: String
+  paragraphTwoEditable: Boolean
   image: PhotoRelateToOneForUpdateInput
+  imageEditable: Boolean
   demoImage: PhotoRelateToManyForUpdateInput
   schedule: String
+  scheduleEditable: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -539,11 +580,10 @@ input MemberRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input OrderRelateToManyForUpdateInput {
-  disconnect: [OrderWhereUniqueInput!]
-  set: [OrderWhereUniqueInput!]
-  create: [OrderCreateInput!]
-  connect: [OrderWhereUniqueInput!]
+input PdfRelateToOneForUpdateInput {
+  create: PdfCreateInput
+  connect: PdfWhereUniqueInput
+  disconnect: Boolean
 }
 
 input PhotoRelateToManyForUpdateInput {
@@ -560,14 +600,20 @@ input OrderUpdateArgs {
 
 input OrderCreateInput {
   member: MemberRelateToOneForCreateInput
-  type: String
+  orderNumber: String
+  name: String
   state: String
   relatedOrder: OrderRelateToManyForCreateInput
+  attachment: PdfRelateToOneForCreateInput
   paragraphOne: String
+  paragraphOneEditable: Boolean
   paragraphTwo: String
+  paragraphTwoEditable: Boolean
   image: PhotoRelateToOneForCreateInput
+  imageEditable: Boolean
   demoImage: PhotoRelateToManyForCreateInput
   schedule: String
+  scheduleEditable: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -579,14 +625,76 @@ input MemberRelateToOneForCreateInput {
   connect: MemberWhereUniqueInput
 }
 
-input OrderRelateToManyForCreateInput {
-  create: [OrderCreateInput!]
-  connect: [OrderWhereUniqueInput!]
+input PdfRelateToOneForCreateInput {
+  create: PdfCreateInput
+  connect: PdfWhereUniqueInput
 }
 
 input PhotoRelateToManyForCreateInput {
   create: [PhotoCreateInput!]
   connect: [PhotoWhereUniqueInput!]
+}
+
+type Pdf {
+  id: ID!
+  name: String
+  description: String
+  file: FileFieldOutput
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input PdfWhereUniqueInput {
+  id: ID
+}
+
+input PdfWhereInput {
+  AND: [PdfWhereInput!]
+  OR: [PdfWhereInput!]
+  NOT: [PdfWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  description: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PdfOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  description: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PdfUpdateInput {
+  name: String
+  description: String
+  file: FileFieldInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PdfUpdateArgs {
+  where: PdfWhereUniqueInput!
+  data: PdfUpdateInput!
+}
+
+input PdfCreateInput {
+  name: String
+  description: String
+  file: FileFieldInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
 }
 
 """
@@ -625,6 +733,12 @@ type Mutation {
   updateOrders(data: [OrderUpdateArgs!]!): [Order]
   deleteOrder(where: OrderWhereUniqueInput!): Order
   deleteOrders(where: [OrderWhereUniqueInput!]!): [Order]
+  createPdf(data: PdfCreateInput!): Pdf
+  createPdfs(data: [PdfCreateInput!]!): [Pdf]
+  updatePdf(where: PdfWhereUniqueInput!, data: PdfUpdateInput!): Pdf
+  updatePdfs(data: [PdfUpdateArgs!]!): [Pdf]
+  deletePdf(where: PdfWhereUniqueInput!): Pdf
+  deletePdfs(where: [PdfWhereUniqueInput!]!): [Pdf]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -664,6 +778,9 @@ type Query {
   orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   order(where: OrderWhereUniqueInput!): Order
   ordersCount(where: OrderWhereInput! = {}): Int
+  pdfs(where: PdfWhereInput! = {}, orderBy: [PdfOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PdfWhereUniqueInput): [Pdf!]
+  pdf(where: PdfWhereUniqueInput!): Pdf
+  pdfsCount(where: PdfWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

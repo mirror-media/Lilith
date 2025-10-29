@@ -1,14 +1,38 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
-import {
-  relationship,
-  checkbox,
-  select,
-  text,
-  integer,
-} from '@keystone-6/core/fields'
+import { relationship, select, text, integer, checkbox } from '@keystone-6/core/fields'
+import envVar from '../environment-variables'
+import { State, ACL, UserRole, type Session } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+enum CategoryState {
+  Active = State.Active,
+  Inactive = State.Inactive,
+}
+
+function filterCategories(roles: string[]) {
+  return ({ session }: { session?: Session }) => {
+    switch (envVar.accessControlStrategy) {
+      case ACL.GraphQL: {
+        // Expose `active` categories
+        return { state: { equals: CategoryState.Active } }
+      }
+      case ACL.Preview: {
+        // Expose all categories
+        return true
+      }
+      case ACL.CMS:
+      default: {
+        // Expose all categories if user logged in
+        return (
+          session?.data?.role !== undefined &&
+          roles.indexOf(session.data.role) > -1
+        )
+      }
+    }
+  }
+}
 
 const listConfigurations = list({
   fields: {
@@ -31,13 +55,13 @@ const listConfigurations = list({
     }),
     state: select({
       options: [
-        { label: 'active', value: 'active' },
-        { label: 'inactive', value: 'inactive' },
+        { label: 'active', value: CategoryState.Active },
+        { label: 'inactive', value: CategoryState.Inactive },
       ],
-	  isIndexed: true,
+      isIndexed: true,
       validation: { isRequired: true },
       ui: { displayMode: 'segmented-control' },
-      defaultValue: 'active',
+      defaultValue: CategoryState.Active,
     }),
     heroImage: relationship({
       label: 'Banner圖片',
@@ -45,7 +69,12 @@ const listConfigurations = list({
     }),
     sections: relationship({
       ref: 'Section.categories',
+      label: 'Sections',
       many: true,
+      ui: {
+        labelField: 'name',
+        displayMode: 'select',
+      },
     }),
     posts: relationship({
       ref: 'Post.categories',
@@ -66,6 +95,11 @@ const listConfigurations = list({
     isMemberOnly: checkbox({
       label: '會員文章',
       defaultValue: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
   },
   ui: {
@@ -79,9 +113,16 @@ const listConfigurations = list({
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor),
-      update: allowRoles(admin, moderator),
-      create: allowRoles(admin, moderator),
+      update: allowRoles(admin),
+      create: allowRoles(admin),
       delete: allowRoles(admin),
+    },
+    filter: {
+      query: filterCategories([
+        UserRole.Admin,
+        UserRole.Moderator,
+        UserRole.Editor,
+      ]),
     },
   },
 })

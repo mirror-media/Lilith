@@ -125,6 +125,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         labelField: 'name',
+        displayMode: 'select',
       },
     }),
     posts: relationship({

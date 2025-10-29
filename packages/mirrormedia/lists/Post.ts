@@ -51,11 +51,27 @@ function filterPosts(roles: string[]) {
       }
       case 'cms':
       default: {
-        // Expose all posts, including `published`, `draft` and `archived` posts if user logged in
-        return (
-          session?.data?.role !== undefined &&
-          roles.indexOf(session.data.role) > -1
-        )
+        if (
+          session?.data?.role === undefined ||
+          roles.indexOf(session.data.role) === -1
+        ) {
+          return false
+        }
+
+        if (
+          session.data.role === UserRole.Admin ||
+          session.data.role === UserRole.Moderator
+        ) {
+          return true
+        }
+
+        if (session.data.role === UserRole.Editor) {
+          return {
+            createdBy: { id: { equals: session.data.id } },
+          }
+        }
+
+        return false
       }
     }
   }
@@ -202,6 +218,11 @@ const listConfigurations = list({
       label: '大分類',
       ref: 'Section.posts',
       many: true,
+      ui: {
+        labelField: 'name',
+        displayMode: 'select',
+        views: './lists/views/post/sections/index',
+      },
     }),
     manualOrderOfSections: json({
       isFilterable: false,
@@ -211,6 +232,11 @@ const listConfigurations = list({
       label: '小分類',
       ref: 'Category.posts',
       many: true,
+      ui: {
+        labelField: 'name',
+        displayMode: 'select',
+        views: './lists/views/post/categories/index',
+      },
     }),
     manualOrderOfCategories: json({
       isFilterable: false,
@@ -726,6 +752,12 @@ const listConfigurations = list({
     },
     filter: {
       query: filterPosts([UserRole.Admin, UserRole.Moderator, UserRole.Editor]),
+      update: filterPosts([
+        UserRole.Admin,
+        UserRole.Moderator,
+        UserRole.Editor,
+      ]),
+      delete: filterPosts([UserRole.Admin]),
     },
   },
   hooks: {
@@ -805,7 +837,7 @@ const listConfigurations = list({
       }
       return
     },
-    afterOperation: async ({ operation, inputData, item, context }) => {
+    afterOperation: async ({ operation, item, context }) => {
       if (operation === 'update') {
         await context.prisma.post.update({
           where: { id: Number(item.id) },

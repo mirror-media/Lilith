@@ -69,9 +69,11 @@ const listConfigurations = list({
     }),
     sections: relationship({
       ref: 'Section.categories',
+      label: 'Sections',
       many: true,
       ui: {
         labelField: 'name',
+        displayMode: 'select',
       },
     }),
     posts: relationship({
