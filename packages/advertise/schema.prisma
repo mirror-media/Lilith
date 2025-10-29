@@ -116,7 +116,8 @@ model Order {
   imageId                 Int?      @map("image")
   imageEditable           Boolean   @default(false)
   demoImage               Photo[]   @relation("Order_demoImage")
-  schedule                String    @default("")
+  scheduleStartDate       DateTime?
+  scheduleEndDate         DateTime?
   scheduleEditable        Boolean   @default(false)
   createdAt               DateTime?
   updatedAt               DateTime?

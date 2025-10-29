@@ -1,6 +1,12 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { text, select, relationship, checkbox } from '@keystone-6/core/fields'
+import {
+  text,
+  select,
+  relationship,
+  checkbox,
+  timestamp,
+} from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -135,8 +141,23 @@ const listConfigurations = list({
       ref: 'Photo',
       many: true,
     }),
-    schedule: text({
-      label: '排程播出時間',
+    scheduleStartDate: timestamp({
+      label: '排播開始日期',
+      db: {
+        isNullable: true,
+      },
+      validation: {
+        isRequired: false,
+      },
+    }),
+    scheduleEndDate: timestamp({
+      label: '排播結束日期',
+      db: {
+        isNullable: true,
+      },
+      validation: {
+        isRequired: false,
+      },
     }),
     scheduleEditable: checkbox({
       label: '排播日期可否被修改',
@@ -146,7 +167,13 @@ const listConfigurations = list({
 
   ui: {
     listView: {
-      initialColumns: ['member', 'orderNumber', 'state', 'schedule'],
+      initialColumns: [
+        'member',
+        'orderNumber',
+        'state',
+        'scheduleStartDate',
+        'scheduleEndDate',
+      ],
     },
   },
   access: {

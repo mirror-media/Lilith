@@ -491,7 +491,8 @@ type Order {
   imageEditable: Boolean
   demoImage(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
   demoImageCount(where: PhotoWhereInput! = {}): Int
-  schedule: String
+  scheduleStartDate: DateTime
+  scheduleEndDate: DateTime
   scheduleEditable: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -522,7 +523,8 @@ input OrderWhereInput {
   image: PhotoWhereInput
   imageEditable: BooleanFilter
   demoImage: PhotoManyRelationFilter
-  schedule: StringFilter
+  scheduleStartDate: DateTimeNullableFilter
+  scheduleEndDate: DateTimeNullableFilter
   scheduleEditable: BooleanFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -546,7 +548,8 @@ input OrderOrderByInput {
   paragraphTwo: OrderDirection
   paragraphTwoEditable: OrderDirection
   imageEditable: OrderDirection
-  schedule: OrderDirection
+  scheduleStartDate: OrderDirection
+  scheduleEndDate: OrderDirection
   scheduleEditable: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -566,7 +569,8 @@ input OrderUpdateInput {
   image: PhotoRelateToOneForUpdateInput
   imageEditable: Boolean
   demoImage: PhotoRelateToManyForUpdateInput
-  schedule: String
+  scheduleStartDate: DateTime
+  scheduleEndDate: DateTime
   scheduleEditable: Boolean
   createdAt: DateTime
   updatedAt: DateTime
@@ -612,7 +616,8 @@ input OrderCreateInput {
   image: PhotoRelateToOneForCreateInput
   imageEditable: Boolean
   demoImage: PhotoRelateToManyForCreateInput
-  schedule: String
+  scheduleStartDate: DateTime
+  scheduleEndDate: DateTime
   scheduleEditable: Boolean
   createdAt: DateTime
   updatedAt: DateTime
