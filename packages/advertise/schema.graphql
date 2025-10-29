@@ -481,8 +481,7 @@ type Order {
   name: String
   nameEditable: Boolean
   state: String
-  relatedOrder(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
-  relatedOrderCount(where: OrderWhereInput! = {}): Int
+  relatedOrder: Order
   paragraphOne: String
   paragraphOneEditable: Boolean
   paragraphTwo: String
@@ -516,7 +515,7 @@ input OrderWhereInput {
   name: StringFilter
   nameEditable: BooleanFilter
   state: StringNullableFilter
-  relatedOrder: OrderManyRelationFilter
+  relatedOrder: OrderWhereInput
   paragraphOne: StringFilter
   paragraphOneEditable: BooleanFilter
   paragraphTwo: StringFilter
@@ -564,7 +563,7 @@ input OrderUpdateInput {
   name: String
   nameEditable: Boolean
   state: String
-  relatedOrder: OrderRelateToManyForUpdateInput
+  relatedOrder: OrderRelateToOneForUpdateInput
   paragraphOne: String
   paragraphOneEditable: Boolean
   paragraphTwo: String
@@ -585,6 +584,12 @@ input OrderUpdateInput {
 input MemberRelateToOneForUpdateInput {
   create: MemberCreateInput
   connect: MemberWhereUniqueInput
+  disconnect: Boolean
+}
+
+input OrderRelateToOneForUpdateInput {
+  create: OrderCreateInput
+  connect: OrderWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -612,7 +617,7 @@ input OrderCreateInput {
   name: String
   nameEditable: Boolean
   state: String
-  relatedOrder: OrderRelateToManyForCreateInput
+  relatedOrder: OrderRelateToOneForCreateInput
   paragraphOne: String
   paragraphOneEditable: Boolean
   paragraphTwo: String
@@ -633,6 +638,11 @@ input OrderCreateInput {
 input MemberRelateToOneForCreateInput {
   create: MemberCreateInput
   connect: MemberWhereUniqueInput
+}
+
+input OrderRelateToOneForCreateInput {
+  create: OrderCreateInput
+  connect: OrderWhereUniqueInput
 }
 
 input PhotoRelateToManyForCreateInput {
