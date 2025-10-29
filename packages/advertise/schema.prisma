@@ -106,8 +106,6 @@ model Order {
   name                    String    @default("")
   state                   String?   @default("paid")
   relatedOrder            Order[]   @relation("Order_relatedOrder")
-  attachment              Pdf?      @relation("Order_attachment", fields: [attachmentId], references: [id])
-  attachmentId            Int?      @map("attachment")
   paragraphOne            String    @default("")
   paragraphOneEditable    Boolean   @default(false)
   paragraphTwo            String    @default("")
@@ -116,6 +114,8 @@ model Order {
   imageId                 Int?      @map("image")
   imageEditable           Boolean   @default(false)
   demoImage               Photo[]   @relation("Order_demoImage")
+  attachment              Pdf?      @relation("Order_attachment", fields: [attachmentId], references: [id])
+  attachmentId            Int?      @map("attachment")
   scheduleStartDate       DateTime?
   scheduleEndDate         DateTime?
   scheduleEditable        Boolean   @default(false)
@@ -128,8 +128,8 @@ model Order {
   from_Order_relatedOrder Order[]   @relation("Order_relatedOrder")
 
   @@index([memberId])
-  @@index([attachmentId])
   @@index([imageId])
+  @@index([attachmentId])
   @@index([createdById])
   @@index([updatedById])
 }

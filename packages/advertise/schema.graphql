@@ -482,7 +482,6 @@ type Order {
   state: String
   relatedOrder(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   relatedOrderCount(where: OrderWhereInput! = {}): Int
-  attachment: Pdf
   paragraphOne: String
   paragraphOneEditable: Boolean
   paragraphTwo: String
@@ -491,6 +490,7 @@ type Order {
   imageEditable: Boolean
   demoImage(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
   demoImageCount(where: PhotoWhereInput! = {}): Int
+  attachment: Pdf
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
   scheduleEditable: Boolean
@@ -515,7 +515,6 @@ input OrderWhereInput {
   name: StringFilter
   state: StringNullableFilter
   relatedOrder: OrderManyRelationFilter
-  attachment: PdfWhereInput
   paragraphOne: StringFilter
   paragraphOneEditable: BooleanFilter
   paragraphTwo: StringFilter
@@ -523,6 +522,7 @@ input OrderWhereInput {
   image: PhotoWhereInput
   imageEditable: BooleanFilter
   demoImage: PhotoManyRelationFilter
+  attachment: PdfWhereInput
   scheduleStartDate: DateTimeNullableFilter
   scheduleEndDate: DateTimeNullableFilter
   scheduleEditable: BooleanFilter
@@ -561,7 +561,6 @@ input OrderUpdateInput {
   name: String
   state: String
   relatedOrder: OrderRelateToManyForUpdateInput
-  attachment: PdfRelateToOneForUpdateInput
   paragraphOne: String
   paragraphOneEditable: Boolean
   paragraphTwo: String
@@ -569,6 +568,7 @@ input OrderUpdateInput {
   image: PhotoRelateToOneForUpdateInput
   imageEditable: Boolean
   demoImage: PhotoRelateToManyForUpdateInput
+  attachment: PdfRelateToOneForUpdateInput
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
   scheduleEditable: Boolean
@@ -584,17 +584,17 @@ input MemberRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input PdfRelateToOneForUpdateInput {
-  create: PdfCreateInput
-  connect: PdfWhereUniqueInput
-  disconnect: Boolean
-}
-
 input PhotoRelateToManyForUpdateInput {
   disconnect: [PhotoWhereUniqueInput!]
   set: [PhotoWhereUniqueInput!]
   create: [PhotoCreateInput!]
   connect: [PhotoWhereUniqueInput!]
+}
+
+input PdfRelateToOneForUpdateInput {
+  create: PdfCreateInput
+  connect: PdfWhereUniqueInput
+  disconnect: Boolean
 }
 
 input OrderUpdateArgs {
@@ -608,7 +608,6 @@ input OrderCreateInput {
   name: String
   state: String
   relatedOrder: OrderRelateToManyForCreateInput
-  attachment: PdfRelateToOneForCreateInput
   paragraphOne: String
   paragraphOneEditable: Boolean
   paragraphTwo: String
@@ -616,6 +615,7 @@ input OrderCreateInput {
   image: PhotoRelateToOneForCreateInput
   imageEditable: Boolean
   demoImage: PhotoRelateToManyForCreateInput
+  attachment: PdfRelateToOneForCreateInput
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
   scheduleEditable: Boolean
@@ -630,14 +630,14 @@ input MemberRelateToOneForCreateInput {
   connect: MemberWhereUniqueInput
 }
 
-input PdfRelateToOneForCreateInput {
-  create: PdfCreateInput
-  connect: PdfWhereUniqueInput
-}
-
 input PhotoRelateToManyForCreateInput {
   create: [PhotoCreateInput!]
   connect: [PhotoWhereUniqueInput!]
+}
+
+input PdfRelateToOneForCreateInput {
+  create: PdfCreateInput
+  connect: PdfWhereUniqueInput
 }
 
 type Pdf {

@@ -104,10 +104,6 @@ const listConfigurations = list({
       ref: 'Order',
       many: true,
     }),
-    attachment: relationship({
-      label: '附件',
-      ref: 'Pdf',
-    }),
     paragraphOne: text({
       label: '第一段文字',
       ui: {
@@ -137,9 +133,13 @@ const listConfigurations = list({
       defaultValue: false,
     }),
     demoImage: relationship({
-      label: '成品樣圖',
+      label: '影片截圖',
       ref: 'Photo',
       many: true,
+    }),
+    attachment: relationship({
+      label: '相關文件',
+      ref: 'Pdf',
     }),
     scheduleStartDate: timestamp({
       label: '排播開始日期',
