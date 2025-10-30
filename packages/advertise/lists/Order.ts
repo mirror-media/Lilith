@@ -26,6 +26,16 @@ const orderStateOptions = [
   { label: '已取消', value: 'cancelled' },
 ]
 
+const extractRelatedOrderLength = (o?: unknown) => {
+  if (!o) return 0
+  if (Array.isArray(o)) return o.length
+  const oo = o as { connect?: unknown[]; set?: unknown[] }
+  if (Array.isArray(oo.connect) && oo.connect.length > 0)
+    return oo.connect.length
+  if (Array.isArray(oo.set) && oo.set.length > 0) return oo.set.length
+  return 0
+}
+
 const listConfigurations = list({
   hooks: {
     resolveInput: ({ resolvedData, operation, item }) => {
@@ -33,16 +43,6 @@ const listConfigurations = list({
         resolvedData.updatedAt = new Date()
       }
 
-      // << 只要 item 或 resolvedData 的 relatedOrder 有內容就自動設為 transferred >>
-      const extractRelatedOrderLength = (o?: unknown) => {
-        if (!o) return 0
-        if (Array.isArray(o)) return o.length
-        const oo = o as { connect?: unknown[]; set?: unknown[] }
-        if (Array.isArray(oo.connect) && oo.connect.length > 0)
-          return oo.connect.length
-        if (Array.isArray(oo.set) && oo.set.length > 0) return oo.set.length
-        return 0
-      }
       if (
         extractRelatedOrderLength(resolvedData.relatedOrder) > 0 ||
         extractRelatedOrderLength(item?.relatedOrder) > 0
@@ -52,18 +52,61 @@ const listConfigurations = list({
 
       return resolvedData
     },
-    validateInput: ({ resolvedData, addValidationError, item }) => {
+    validateInput: async ({
+      resolvedData,
+      addValidationError,
+      item,
+      context,
+    }) => {
       const state = resolvedData.state || item?.state
-      // << 狀態是 transferred 時，不論來自 resolvedData 或 item，必須有 relatedOrder，否則報錯 >>
-      const extractRelatedOrderLength = (o?: unknown) => {
-        if (!o) return 0
-        if (Array.isArray(o)) return o.length
-        const oo = o as { connect?: unknown[]; set?: unknown[] }
-        if (Array.isArray(oo.connect) && oo.connect.length > 0)
-          return oo.connect.length
-        if (Array.isArray(oo.set) && oo.set.length > 0) return oo.set.length
-        return 0
+
+      if (resolvedData.relatedOrder) {
+        const relatedOrderId =
+          resolvedData.relatedOrder.connect?.id ||
+          resolvedData.relatedOrder.connect
+
+        if (relatedOrderId && item?.id && relatedOrderId === item.id) {
+          addValidationError('不能選擇自己作為訂單更動的目標')
+          return
+        }
+
+        if (item?.relatedOrder && relatedOrderId) {
+          addValidationError('此訂單已經轉移過，不能再次修改轉移目標')
+          return
+        }
+
+        if (relatedOrderId) {
+          const targetOrder = await context.query.Order.findOne({
+            where: { id: relatedOrderId },
+            query: 'id state relatedOrder { id }',
+          })
+
+          if (!targetOrder) {
+            addValidationError('目標訂單不存在')
+            return
+          }
+
+          if (targetOrder.relatedOrder) {
+            addValidationError('不能選擇已經轉移出去的訂單作為訂單更動的目標')
+            return
+          }
+
+          const ordersPointingToTarget = await context.query.Order.findMany({
+            where: {
+              relatedOrder: { id: { equals: relatedOrderId } },
+            },
+            query: 'id',
+          })
+
+          if (ordersPointingToTarget && ordersPointingToTarget.length > 0) {
+            addValidationError(
+              '此訂單已經被其他訂單轉移過來，不能再次被選為目標'
+            )
+            return
+          }
+        }
       }
+
       if (state === 'transferred') {
         const len1 = extractRelatedOrderLength(resolvedData.relatedOrder)
         const len2 = extractRelatedOrderLength(item?.relatedOrder)
@@ -106,7 +149,10 @@ const listConfigurations = list({
     relatedOrder: relationship({
       label: '訂單更動',
       ref: 'Order',
-      many: true,
+      ui: {
+        hideCreate: true,
+        displayMode: 'select',
+      },
     }),
     paragraphOne: text({
       label: '第一段文字',
