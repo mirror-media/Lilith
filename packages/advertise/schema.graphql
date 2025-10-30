@@ -479,6 +479,7 @@ type Order {
   member: Member
   orderNumber: String
   name: String
+  nameEditable: Boolean
   state: String
   relatedOrder(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   relatedOrderCount(where: OrderWhereInput! = {}): Int
@@ -513,6 +514,7 @@ input OrderWhereInput {
   member: MemberWhereInput
   orderNumber: StringFilter
   name: StringFilter
+  nameEditable: BooleanFilter
   state: StringNullableFilter
   relatedOrder: OrderManyRelationFilter
   paragraphOne: StringFilter
@@ -542,6 +544,7 @@ input OrderOrderByInput {
   id: OrderDirection
   orderNumber: OrderDirection
   name: OrderDirection
+  nameEditable: OrderDirection
   state: OrderDirection
   paragraphOne: OrderDirection
   paragraphOneEditable: OrderDirection
@@ -559,6 +562,7 @@ input OrderUpdateInput {
   member: MemberRelateToOneForUpdateInput
   orderNumber: String
   name: String
+  nameEditable: Boolean
   state: String
   relatedOrder: OrderRelateToManyForUpdateInput
   paragraphOne: String
@@ -606,6 +610,7 @@ input OrderCreateInput {
   member: MemberRelateToOneForCreateInput
   orderNumber: String
   name: String
+  nameEditable: Boolean
   state: String
   relatedOrder: OrderRelateToManyForCreateInput
   paragraphOne: String

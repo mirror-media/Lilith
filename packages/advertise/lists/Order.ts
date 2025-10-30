@@ -33,41 +33,41 @@ const listConfigurations = list({
         resolvedData.updatedAt = new Date()
       }
 
-      if (resolvedData.relatedOrder) {
-        const hasRelatedOrder =
-          (resolvedData.relatedOrder.connect &&
-            resolvedData.relatedOrder.connect.length > 0) ||
-          (resolvedData.relatedOrder.set &&
-            resolvedData.relatedOrder.set.length > 0)
-
-        if (hasRelatedOrder) {
-          const currentState = resolvedData.state || item?.state
-          if (currentState !== 'transferred') {
-            resolvedData.state = 'transferred'
-          }
-        }
+      // << 只要 item 或 resolvedData 的 relatedOrder 有內容就自動設為 transferred >>
+      const extractRelatedOrderLength = (o?: unknown) => {
+        if (!o) return 0
+        if (Array.isArray(o)) return o.length
+        const oo = o as { connect?: unknown[]; set?: unknown[] }
+        if (Array.isArray(oo.connect) && oo.connect.length > 0)
+          return oo.connect.length
+        if (Array.isArray(oo.set) && oo.set.length > 0) return oo.set.length
+        return 0
+      }
+      if (
+        extractRelatedOrderLength(resolvedData.relatedOrder) > 0 ||
+        extractRelatedOrderLength(item?.relatedOrder) > 0
+      ) {
+        resolvedData.state = 'transferred'
       }
 
       return resolvedData
     },
     validateInput: ({ resolvedData, addValidationError, item }) => {
       const state = resolvedData.state || item?.state
-
+      // << 狀態是 transferred 時，不論來自 resolvedData 或 item，必須有 relatedOrder，否則報錯 >>
+      const extractRelatedOrderLength = (o?: unknown) => {
+        if (!o) return 0
+        if (Array.isArray(o)) return o.length
+        const oo = o as { connect?: unknown[]; set?: unknown[] }
+        if (Array.isArray(oo.connect) && oo.connect.length > 0)
+          return oo.connect.length
+        if (Array.isArray(oo.set) && oo.set.length > 0) return oo.set.length
+        return 0
+      }
       if (state === 'transferred') {
-        let hasRelatedOrder = false
-
-        if (resolvedData.relatedOrder) {
-          hasRelatedOrder =
-            (resolvedData.relatedOrder.connect &&
-              resolvedData.relatedOrder.connect.length > 0) ||
-            (resolvedData.relatedOrder.set &&
-              resolvedData.relatedOrder.set.length > 0)
-        } else if (item?.relatedOrder) {
-          hasRelatedOrder =
-            Array.isArray(item.relatedOrder) && item.relatedOrder.length > 0
-        }
-
-        if (!hasRelatedOrder) {
+        const len1 = extractRelatedOrderLength(resolvedData.relatedOrder)
+        const len2 = extractRelatedOrderLength(item?.relatedOrder)
+        if (len1 + len2 === 0) {
           addValidationError('狀態為「已轉交」時，必須設定訂單更動')
         }
       }
@@ -94,6 +94,10 @@ const listConfigurations = list({
         },
       },
     }),
+    nameEditable: checkbox({
+      label: '廣告名稱客戶可修改',
+      defaultValue: false,
+    }),
     state: select({
       label: '狀態',
       options: orderStateOptions,
@@ -111,7 +115,7 @@ const listConfigurations = list({
       },
     }),
     paragraphOneEditable: checkbox({
-      label: '第一段文字可否被修改',
+      label: '客戶可修改第一段文字',
       defaultValue: false,
     }),
     paragraphTwo: text({
@@ -121,7 +125,7 @@ const listConfigurations = list({
       },
     }),
     paragraphTwoEditable: checkbox({
-      label: '第二段文字可否被修改',
+      label: '客戶可修改第二段文字',
       defaultValue: false,
     }),
     image: relationship({
@@ -129,7 +133,7 @@ const listConfigurations = list({
       ref: 'Photo',
     }),
     imageEditable: checkbox({
-      label: '圖片可否被修改',
+      label: '客戶可修改圖片',
       defaultValue: false,
     }),
     demoImage: relationship({
@@ -160,7 +164,7 @@ const listConfigurations = list({
       },
     }),
     scheduleEditable: checkbox({
-      label: '排播日期可否被修改',
+      label: '客戶可修改排播日期',
       defaultValue: false,
     }),
   },
