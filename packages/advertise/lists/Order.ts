@@ -26,6 +26,16 @@ const orderStateOptions = [
   { label: '已取消', value: 'cancelled' },
 ]
 
+const extractRelatedOrderLength = (o?: unknown) => {
+  if (!o) return 0
+  if (Array.isArray(o)) return o.length
+  const oo = o as { connect?: unknown[]; set?: unknown[] }
+  if (Array.isArray(oo.connect) && oo.connect.length > 0)
+    return oo.connect.length
+  if (Array.isArray(oo.set) && oo.set.length > 0) return oo.set.length
+  return 0
+}
+
 const listConfigurations = list({
   hooks: {
     resolveInput: ({ resolvedData, operation, item }) => {
@@ -33,17 +43,11 @@ const listConfigurations = list({
         resolvedData.updatedAt = new Date()
       }
 
-      if (resolvedData.relatedOrder) {
-        const hasRelatedOrder =
-          resolvedData.relatedOrder.connect?.id ||
-          resolvedData.relatedOrder.connect
-
-        if (hasRelatedOrder) {
-          const currentState = resolvedData.state || item?.state
-          if (currentState !== 'transferred') {
-            resolvedData.state = 'transferred'
-          }
-        }
+      if (
+        extractRelatedOrderLength(resolvedData.relatedOrder) > 0 ||
+        extractRelatedOrderLength(item?.relatedOrder) > 0
+      ) {
+        resolvedData.state = 'transferred'
       }
 
       return resolvedData
@@ -104,18 +108,9 @@ const listConfigurations = list({
       }
 
       if (state === 'transferred') {
-        let hasRelatedOrder = false
-
-        if (resolvedData.relatedOrder) {
-          hasRelatedOrder = !!(
-            resolvedData.relatedOrder.connect?.id ||
-            resolvedData.relatedOrder.connect
-          )
-        } else if (item?.relatedOrder) {
-          hasRelatedOrder = !!item.relatedOrder
-        }
-
-        if (!hasRelatedOrder) {
+        const len1 = extractRelatedOrderLength(resolvedData.relatedOrder)
+        const len2 = extractRelatedOrderLength(item?.relatedOrder)
+        if (len1 + len2 === 0) {
           addValidationError('狀態為「已轉交」時，必須設定訂單更動')
         }
       }
