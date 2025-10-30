@@ -8,6 +8,9 @@ echo "Mounting GCS Fuse."
 gcsfuse --debug_gcs --debug_fuse $GCS_BUCKET $MNT_DIR
 echo "Mounting completed."
 
+mkdir -p $MNT_DIR/files
+mkdir -p $MNT_DIR/images
+
 # Run the web service on container startup on the background.
 yarn run db-migrate
 
