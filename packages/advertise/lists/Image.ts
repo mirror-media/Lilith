@@ -2,13 +2,7 @@ import config from '../config'
 // @ts-ignore: no definition
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import {
-  file,
-  image,
-  text,
-  relationship,
-  virtual,
-} from '@keystone-6/core/fields'
+import { image, text, virtual } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -24,173 +18,30 @@ const listConfigurations = list({
     imageFile: image({
       storage: 'images',
     }),
-    resized: virtual({
+    url: virtual({
+      label: '圖片網址',
       field: graphql.field({
-        type: graphql.object<{
-          original: string
-          w480: string
-          w800: string
-          w1200: string
-          w1600: string
-          w2400: string
-        }>()({
-          name: 'ResizedImages',
-          fields: {
-            original: graphql.field({ type: graphql.String }),
-            w480: graphql.field({ type: graphql.String }),
-            w800: graphql.field({ type: graphql.String }),
-            w1200: graphql.field({ type: graphql.String }),
-            w1600: graphql.field({ type: graphql.String }),
-            w2400: graphql.field({ type: graphql.String }),
-          },
-        }),
-        resolve(item: Record<string, unknown>) {
-          const empty = {
-            original: '',
-            w480: '',
-            w800: '',
-            w1200: '',
-            w1600: '',
-            w2400: '',
-          }
-
+        type: graphql.String,
+        async resolve(item) {
           // For backward compatibility,
           // this image item is uploaded via `GCSFile` custom field.
           if (item?.urlOriginal) {
-            return Object.assign(empty, {
-              original: item.urlOriginal,
-            })
+            return item.urlOriginal as string
           }
 
-          const rtn: Record<string, string> = {}
           const filename = item?.imageFile_id
-
           if (!filename) {
-            return empty
+            return null
           }
 
           const extension = item?.imageFile_extension
             ? '.' + item.imageFile_extension
             : ''
-          const width =
-            typeof item?.imageFile_width === 'number' ? item.imageFile_width : 0
-          const height =
-            typeof item?.imageFile_height === 'number'
-              ? item.imageFile_height
-              : 0
 
-          const resizedTargets =
-            width >= height
-              ? ['w480', 'w800', 'w1600', 'w2400']
-              : ['w480', 'w800', 'w1200', 'w1600']
-
-          resizedTargets.forEach((target) => {
-            rtn[
-              target
-            ] = `${config.images.gcsBaseUrl}/images/${filename}-${target}${extension}`
-          })
-
-          rtn[
-            'original'
-          ] = `${config.images.gcsBaseUrl}/images/${filename}${extension}`
-          return Object.assign(empty, rtn)
+          return `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}${extension}`
         },
       }),
-      ui: {
-        query: '{ original w480 w800 w1200 w1600 w2400 }',
-      },
     }),
-    resizedWebp: virtual({
-      field: graphql.field({
-        type: graphql.object<{
-          original: string
-          w480: string
-          w800: string
-          w1200: string
-          w1600: string
-          w2400: string
-        }>()({
-          name: 'ResizedWebPImages',
-          fields: {
-            original: graphql.field({ type: graphql.String }),
-            w480: graphql.field({ type: graphql.String }),
-            w800: graphql.field({ type: graphql.String }),
-            w1200: graphql.field({ type: graphql.String }),
-            w1600: graphql.field({ type: graphql.String }),
-            w2400: graphql.field({ type: graphql.String }),
-          },
-        }),
-        resolve(item: Record<string, unknown>) {
-          const empty = {
-            original: '',
-            w480: '',
-            w800: '',
-            w1200: '',
-            w1600: '',
-            w2400: '',
-          }
-
-          // For backward compatibility,
-          // this image item is uploaded via `GCSFile` custom field.
-          if (item?.urlOriginal) {
-            return Object.assign(empty, {
-              original: item.urlOriginal,
-            })
-          }
-
-          const rtn: Record<string, string> = {}
-          const filename = item?.imageFile_id
-
-          if (!filename) {
-            return empty
-          }
-
-          const extension = '.webP'
-
-          const width =
-            typeof item?.imageFile_width === 'number' ? item.imageFile_width : 0
-          const height =
-            typeof item?.imageFile_height === 'number'
-              ? item.imageFile_height
-              : 0
-
-          const resizedTargets =
-            width >= height
-              ? ['w480', 'w800', 'w1600', 'w2400']
-              : ['w480', 'w800', 'w1200', 'w1600']
-
-          resizedTargets.forEach((target) => {
-            rtn[
-              target
-            ] = `${config.images.gcsBaseUrl}/images/${filename}-${target}${extension}`
-          })
-
-          rtn[
-            'original'
-          ] = `${config.images.gcsBaseUrl}/images/${filename}${extension}`
-          return Object.assign(empty, rtn)
-        },
-      }),
-      ui: {
-        query: '{ original w480 w800 w1200 w1600 w2400 }',
-      },
-    }),
-    file: file({
-      label: '檔案（建議長邊大於 2000 pixel）',
-      storage: 'files',
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
-        listView: {
-          fieldMode: 'read',
-        },
-      },
-    }),
-
     urlOriginal: text({
       ui: {
         createView: {
