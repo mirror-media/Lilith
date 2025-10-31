@@ -38,8 +38,6 @@ model Photo {
   imageFile_width       Int?
   imageFile_height      Int?
   imageFile_id          String?
-  file_filesize         Int?
-  file_filename         String?
   urlOriginal           String    @default("")
   createdAt             DateTime?
   updatedAt             DateTime?
