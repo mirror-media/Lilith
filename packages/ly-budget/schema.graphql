@@ -126,6 +126,7 @@ scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339
 
 input TermWhereUniqueInput {
   id: ID
+  termNumber: Int
 }
 
 input TermWhereInput {
@@ -239,6 +240,7 @@ type Committee {
   membersCount(where: PeopleWhereInput! = {}): Int
   description: String
   displayName: String
+  key: String
 }
 
 input CommitteeWhereUniqueInput {
@@ -326,8 +328,9 @@ type People {
   id: ID!
   type: String
   name: String
-  term: Term
-  party: People
+  term(where: TermWhereInput! = {}, orderBy: [TermOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TermWhereUniqueInput): [Term!]
+  termCount(where: TermWhereInput! = {}): Int
+  party: Party
   committees(where: CommitteeWhereInput! = {}, orderBy: [CommitteeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CommitteeWhereUniqueInput): [Committee!]
   committeesCount(where: CommitteeWhereInput! = {}): Int
   description: String
@@ -344,10 +347,16 @@ input PeopleWhereInput {
   id: IDFilter
   type: StringFilter
   name: StringFilter
-  term: TermWhereInput
-  party: PeopleWhereInput
+  term: TermManyRelationFilter
+  party: PartyWhereInput
   committees: CommitteeManyRelationFilter
   description: StringFilter
+}
+
+input TermManyRelationFilter {
+  every: TermWhereInput
+  some: TermWhereInput
+  none: TermWhereInput
 }
 
 input CommitteeManyRelationFilter {
@@ -366,15 +375,22 @@ input PeopleOrderByInput {
 input PeopleUpdateInput {
   type: String
   name: String
-  term: TermRelateToOneForUpdateInput
-  party: PeopleRelateToOneForUpdateInput
+  term: TermRelateToManyForUpdateInput
+  party: PartyRelateToOneForUpdateInput
   committees: CommitteeRelateToManyForUpdateInput
   description: String
 }
 
-input PeopleRelateToOneForUpdateInput {
-  create: PeopleCreateInput
-  connect: PeopleWhereUniqueInput
+input TermRelateToManyForUpdateInput {
+  disconnect: [TermWhereUniqueInput!]
+  set: [TermWhereUniqueInput!]
+  create: [TermCreateInput!]
+  connect: [TermWhereUniqueInput!]
+}
+
+input PartyRelateToOneForUpdateInput {
+  create: PartyCreateInput
+  connect: PartyWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -393,20 +409,66 @@ input PeopleUpdateArgs {
 input PeopleCreateInput {
   type: String
   name: String
-  term: TermRelateToOneForCreateInput
-  party: PeopleRelateToOneForCreateInput
+  term: TermRelateToManyForCreateInput
+  party: PartyRelateToOneForCreateInput
   committees: CommitteeRelateToManyForCreateInput
   description: String
 }
 
-input PeopleRelateToOneForCreateInput {
-  create: PeopleCreateInput
-  connect: PeopleWhereUniqueInput
+input TermRelateToManyForCreateInput {
+  create: [TermCreateInput!]
+  connect: [TermWhereUniqueInput!]
+}
+
+input PartyRelateToOneForCreateInput {
+  create: PartyCreateInput
+  connect: PartyWhereUniqueInput
 }
 
 input CommitteeRelateToManyForCreateInput {
   create: [CommitteeCreateInput!]
   connect: [CommitteeWhereUniqueInput!]
+}
+
+type Party {
+  id: ID!
+  name: String
+  color: String
+}
+
+input PartyWhereUniqueInput {
+  id: ID
+  name: String
+}
+
+input PartyWhereInput {
+  AND: [PartyWhereInput!]
+  OR: [PartyWhereInput!]
+  NOT: [PartyWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  color: StringFilter
+}
+
+input PartyOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  color: OrderDirection
+}
+
+input PartyUpdateInput {
+  name: String
+  color: String
+}
+
+input PartyUpdateArgs {
+  where: PartyWhereUniqueInput!
+  data: PartyUpdateInput!
+}
+
+input PartyCreateInput {
+  name: String
+  color: String
 }
 
 type Government {
@@ -576,12 +638,112 @@ input GovernmentRelateToOneForCreateInput {
   connect: GovernmentWhereUniqueInput
 }
 
+type BudgetYear {
+  id: ID!
+  year: Int
+  budgetProgress: String
+  dataProgress: String
+  proposals(where: ProposalWhereInput! = {}, orderBy: [ProposalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProposalWhereUniqueInput): [Proposal!]
+  proposalsCount(where: ProposalWhereInput! = {}): Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input BudgetYearWhereUniqueInput {
+  id: ID
+  year: Int
+}
+
+input BudgetYearWhereInput {
+  AND: [BudgetYearWhereInput!]
+  OR: [BudgetYearWhereInput!]
+  NOT: [BudgetYearWhereInput!]
+  id: IDFilter
+  year: IntFilter
+  budgetProgress: StringFilter
+  dataProgress: StringFilter
+  proposals: ProposalManyRelationFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ProposalManyRelationFilter {
+  every: ProposalWhereInput
+  some: ProposalWhereInput
+  none: ProposalWhereInput
+}
+
+input BudgetYearOrderByInput {
+  id: OrderDirection
+  year: OrderDirection
+  budgetProgress: OrderDirection
+  dataProgress: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input BudgetYearUpdateInput {
+  year: Int
+  budgetProgress: String
+  dataProgress: String
+  proposals: ProposalRelateToManyForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ProposalRelateToManyForUpdateInput {
+  disconnect: [ProposalWhereUniqueInput!]
+  set: [ProposalWhereUniqueInput!]
+  create: [ProposalCreateInput!]
+  connect: [ProposalWhereUniqueInput!]
+}
+
+input UserRelateToOneForUpdateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+}
+
+input BudgetYearUpdateArgs {
+  where: BudgetYearWhereUniqueInput!
+  data: BudgetYearUpdateInput!
+}
+
+input BudgetYearCreateInput {
+  year: Int
+  budgetProgress: String
+  dataProgress: String
+  proposals: ProposalRelateToManyForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input ProposalRelateToManyForCreateInput {
+  create: [ProposalCreateInput!]
+  connect: [ProposalWhereUniqueInput!]
+}
+
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+}
+
 type Meeting {
   id: ID!
   location: String
   type: String
-  committee: Committee
-  government: Government
+  committee(where: CommitteeWhereInput! = {}, orderBy: [CommitteeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CommitteeWhereUniqueInput): [Committee!]
+  committeeCount(where: CommitteeWhereInput! = {}): Int
+  government(where: GovernmentWhereInput! = {}, orderBy: [GovernmentOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GovernmentWhereUniqueInput): [Government!]
+  governmentCount(where: GovernmentWhereInput! = {}): Int
   meetingDate: DateTime
   meetingRecordUrl: String
   description: String
@@ -599,11 +761,17 @@ input MeetingWhereInput {
   id: IDFilter
   location: StringNullableFilter
   type: StringNullableFilter
-  committee: CommitteeWhereInput
-  government: GovernmentWhereInput
+  committee: CommitteeManyRelationFilter
+  government: GovernmentManyRelationFilter
   meetingDate: DateTimeNullableFilter
   meetingRecordUrl: StringFilter
   description: StringFilter
+}
+
+input GovernmentManyRelationFilter {
+  every: GovernmentWhereInput
+  some: GovernmentWhereInput
+  none: GovernmentWhereInput
 }
 
 input MeetingOrderByInput {
@@ -618,17 +786,18 @@ input MeetingOrderByInput {
 input MeetingUpdateInput {
   location: String
   type: String
-  committee: CommitteeRelateToOneForUpdateInput
-  government: GovernmentRelateToOneForUpdateInput
+  committee: CommitteeRelateToManyForUpdateInput
+  government: GovernmentRelateToManyForUpdateInput
   meetingDate: DateTime
   meetingRecordUrl: String
   description: String
 }
 
-input CommitteeRelateToOneForUpdateInput {
-  create: CommitteeCreateInput
-  connect: CommitteeWhereUniqueInput
-  disconnect: Boolean
+input GovernmentRelateToManyForUpdateInput {
+  disconnect: [GovernmentWhereUniqueInput!]
+  set: [GovernmentWhereUniqueInput!]
+  create: [GovernmentCreateInput!]
+  connect: [GovernmentWhereUniqueInput!]
 }
 
 input MeetingUpdateArgs {
@@ -639,16 +808,16 @@ input MeetingUpdateArgs {
 input MeetingCreateInput {
   location: String
   type: String
-  committee: CommitteeRelateToOneForCreateInput
-  government: GovernmentRelateToOneForCreateInput
+  committee: CommitteeRelateToManyForCreateInput
+  government: GovernmentRelateToManyForCreateInput
   meetingDate: DateTime
   meetingRecordUrl: String
   description: String
 }
 
-input CommitteeRelateToOneForCreateInput {
-  create: CommitteeCreateInput
-  connect: CommitteeWhereUniqueInput
+input GovernmentRelateToManyForCreateInput {
+  create: [GovernmentCreateInput!]
+  connect: [GovernmentWhereUniqueInput!]
 }
 
 type Proposal {
@@ -656,6 +825,7 @@ type Proposal {
   government: Government
   meetings(where: MeetingWhereInput! = {}, orderBy: [MeetingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MeetingWhereUniqueInput): [Meeting!]
   meetingsCount(where: MeetingWhereInput! = {}): Int
+  year: BudgetYear
   mergedProposals(where: ProposalWhereInput! = {}, orderBy: [ProposalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProposalWhereUniqueInput): [Proposal!]
   mergedProposalsCount(where: ProposalWhereInput! = {}): Int
   historicalProposals(where: ProposalWhereInput! = {}, orderBy: [ProposalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProposalWhereUniqueInput): [Proposal!]
@@ -666,8 +836,8 @@ type Proposal {
   coSignersCount(where: PeopleWhereInput! = {}): Int
   proposalTypes: [ProposalProposalTypeType!]
   result: String
-  reductionAmount: Int
-  freezeAmount: Int
+  reductionAmount: Float
+  freezeAmount: Float
   budgetImageUrl: String
   budget: Budget
   unfreezeStatus: String
@@ -675,6 +845,10 @@ type Proposal {
   unfreezeHistoryCount(where: MeetingWhereInput! = {}): Int
   description: String
   reason: String
+  react_good: Int
+  react_angry: Int
+  react_whatever: Int
+  react_disappoint: Int
   recognitionAnswer: String
   publishStatus: String
 }
@@ -696,19 +870,24 @@ input ProposalWhereInput {
   id: IDFilter
   government: GovernmentWhereInput
   meetings: MeetingManyRelationFilter
+  year: BudgetYearWhereInput
   mergedProposals: ProposalManyRelationFilter
   historicalProposals: ProposalManyRelationFilter
   proposers: PeopleManyRelationFilter
   coSigners: PeopleManyRelationFilter
   result: StringNullableFilter
-  reductionAmount: IntNullableFilter
-  freezeAmount: IntNullableFilter
+  reductionAmount: FloatNullableFilter
+  freezeAmount: FloatNullableFilter
   budgetImageUrl: StringNullableFilter
   budget: BudgetWhereInput
   unfreezeStatus: StringNullableFilter
   unfreezeHistory: MeetingManyRelationFilter
   description: StringNullableFilter
   reason: StringNullableFilter
+  react_good: IntNullableFilter
+  react_angry: IntNullableFilter
+  react_whatever: IntNullableFilter
+  react_disappoint: IntNullableFilter
   recognitionAnswer: StringNullableFilter
   publishStatus: StringNullableFilter
 }
@@ -717,12 +896,6 @@ input MeetingManyRelationFilter {
   every: MeetingWhereInput
   some: MeetingWhereInput
   none: MeetingWhereInput
-}
-
-input ProposalManyRelationFilter {
-  every: ProposalWhereInput
-  some: ProposalWhereInput
-  none: ProposalWhereInput
 }
 
 input IntNullableFilter {
@@ -745,6 +918,10 @@ input ProposalOrderByInput {
   unfreezeStatus: OrderDirection
   description: OrderDirection
   reason: OrderDirection
+  react_good: OrderDirection
+  react_angry: OrderDirection
+  react_whatever: OrderDirection
+  react_disappoint: OrderDirection
   recognitionAnswer: OrderDirection
   publishStatus: OrderDirection
 }
@@ -752,20 +929,25 @@ input ProposalOrderByInput {
 input ProposalUpdateInput {
   government: GovernmentRelateToOneForUpdateInput
   meetings: MeetingRelateToManyForUpdateInput
+  year: BudgetYearRelateToOneForUpdateInput
   mergedProposals: ProposalRelateToManyForUpdateInput
   historicalProposals: ProposalRelateToManyForUpdateInput
   proposers: PeopleRelateToManyForUpdateInput
   coSigners: PeopleRelateToManyForUpdateInput
   proposalTypes: [ProposalProposalTypeType!]
   result: String
-  reductionAmount: Int
-  freezeAmount: Int
+  reductionAmount: Float
+  freezeAmount: Float
   budgetImageUrl: String
   budget: BudgetRelateToOneForUpdateInput
   unfreezeStatus: String
   unfreezeHistory: MeetingRelateToManyForUpdateInput
   description: String
   reason: String
+  react_good: Int
+  react_angry: Int
+  react_whatever: Int
+  react_disappoint: Int
   recognitionAnswer: String
   publishStatus: String
 }
@@ -777,11 +959,10 @@ input MeetingRelateToManyForUpdateInput {
   connect: [MeetingWhereUniqueInput!]
 }
 
-input ProposalRelateToManyForUpdateInput {
-  disconnect: [ProposalWhereUniqueInput!]
-  set: [ProposalWhereUniqueInput!]
-  create: [ProposalCreateInput!]
-  connect: [ProposalWhereUniqueInput!]
+input BudgetYearRelateToOneForUpdateInput {
+  create: BudgetYearCreateInput
+  connect: BudgetYearWhereUniqueInput
+  disconnect: Boolean
 }
 
 input BudgetRelateToOneForUpdateInput {
@@ -798,20 +979,25 @@ input ProposalUpdateArgs {
 input ProposalCreateInput {
   government: GovernmentRelateToOneForCreateInput
   meetings: MeetingRelateToManyForCreateInput
+  year: BudgetYearRelateToOneForCreateInput
   mergedProposals: ProposalRelateToManyForCreateInput
   historicalProposals: ProposalRelateToManyForCreateInput
   proposers: PeopleRelateToManyForCreateInput
   coSigners: PeopleRelateToManyForCreateInput
   proposalTypes: [ProposalProposalTypeType!]
   result: String
-  reductionAmount: Int
-  freezeAmount: Int
+  reductionAmount: Float
+  freezeAmount: Float
   budgetImageUrl: String
   budget: BudgetRelateToOneForCreateInput
   unfreezeStatus: String
   unfreezeHistory: MeetingRelateToManyForCreateInput
   description: String
   reason: String
+  react_good: Int
+  react_angry: Int
+  react_whatever: Int
+  react_disappoint: Int
   recognitionAnswer: String
   publishStatus: String
 }
@@ -821,9 +1007,9 @@ input MeetingRelateToManyForCreateInput {
   connect: [MeetingWhereUniqueInput!]
 }
 
-input ProposalRelateToManyForCreateInput {
-  create: [ProposalCreateInput!]
-  connect: [ProposalWhereUniqueInput!]
+input BudgetYearRelateToOneForCreateInput {
+  create: BudgetYearCreateInput
+  connect: BudgetYearWhereUniqueInput
 }
 
 input BudgetRelateToOneForCreateInput {
@@ -1050,6 +1236,12 @@ type Mutation {
   updatePeopleList(data: [PeopleUpdateArgs!]!): [People]
   deletePeople(where: PeopleWhereUniqueInput!): People
   deletePeopleList(where: [PeopleWhereUniqueInput!]!): [People]
+  createParty(data: PartyCreateInput!): Party
+  createParties(data: [PartyCreateInput!]!): [Party]
+  updateParty(where: PartyWhereUniqueInput!, data: PartyUpdateInput!): Party
+  updateParties(data: [PartyUpdateArgs!]!): [Party]
+  deleteParty(where: PartyWhereUniqueInput!): Party
+  deleteParties(where: [PartyWhereUniqueInput!]!): [Party]
   createGovernment(data: GovernmentCreateInput!): Government
   createGovernments(data: [GovernmentCreateInput!]!): [Government]
   updateGovernment(where: GovernmentWhereUniqueInput!, data: GovernmentUpdateInput!): Government
@@ -1062,6 +1254,12 @@ type Mutation {
   updateBudgets(data: [BudgetUpdateArgs!]!): [Budget]
   deleteBudget(where: BudgetWhereUniqueInput!): Budget
   deleteBudgets(where: [BudgetWhereUniqueInput!]!): [Budget]
+  createBudgetYear(data: BudgetYearCreateInput!): BudgetYear
+  createBudgetYears(data: [BudgetYearCreateInput!]!): [BudgetYear]
+  updateBudgetYear(where: BudgetYearWhereUniqueInput!, data: BudgetYearUpdateInput!): BudgetYear
+  updateBudgetYears(data: [BudgetYearUpdateArgs!]!): [BudgetYear]
+  deleteBudgetYear(where: BudgetYearWhereUniqueInput!): BudgetYear
+  deleteBudgetYears(where: [BudgetYearWhereUniqueInput!]!): [BudgetYear]
   createMeeting(data: MeetingCreateInput!): Meeting
   createMeetings(data: [MeetingCreateInput!]!): [Meeting]
   updateMeeting(where: MeetingWhereUniqueInput!, data: MeetingUpdateInput!): Meeting
@@ -1122,12 +1320,18 @@ type Query {
   peopleList(where: PeopleWhereInput! = {}, orderBy: [PeopleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PeopleWhereUniqueInput): [People!]
   people(where: PeopleWhereUniqueInput!): People
   peopleListCount(where: PeopleWhereInput! = {}): Int
+  parties(where: PartyWhereInput! = {}, orderBy: [PartyOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PartyWhereUniqueInput): [Party!]
+  party(where: PartyWhereUniqueInput!): Party
+  partiesCount(where: PartyWhereInput! = {}): Int
   governments(where: GovernmentWhereInput! = {}, orderBy: [GovernmentOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GovernmentWhereUniqueInput): [Government!]
   government(where: GovernmentWhereUniqueInput!): Government
   governmentsCount(where: GovernmentWhereInput! = {}): Int
   budgets(where: BudgetWhereInput! = {}, orderBy: [BudgetOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: BudgetWhereUniqueInput): [Budget!]
   budget(where: BudgetWhereUniqueInput!): Budget
   budgetsCount(where: BudgetWhereInput! = {}): Int
+  budgetYears(where: BudgetYearWhereInput! = {}, orderBy: [BudgetYearOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: BudgetYearWhereUniqueInput): [BudgetYear!]
+  budgetYear(where: BudgetYearWhereUniqueInput!): BudgetYear
+  budgetYearsCount(where: BudgetYearWhereInput! = {}): Int
   meetings(where: MeetingWhereInput! = {}, orderBy: [MeetingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MeetingWhereUniqueInput): [Meeting!]
   meeting(where: MeetingWhereUniqueInput!): Meeting
   meetingsCount(where: MeetingWhereInput! = {}): Int

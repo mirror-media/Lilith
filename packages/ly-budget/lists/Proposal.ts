@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { text, select, integer, relationship, multiselect } from '@keystone-6/core/fields'
+import { text, float, select, integer, relationship, multiselect } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -38,6 +38,15 @@ const listConfigurations = list({
       many: true,
       ref: 'Meeting',
     }),
+    year: relationship({
+      label: '年度',
+      ref: 'BudgetYear.proposals',
+      many: false,
+      ui: {
+        displayMode: 'select',
+        labelField: 'year',
+      },
+    }),
     mergedProposals: relationship({
       label: '併案子提案單',
       many: true,
@@ -71,13 +80,13 @@ const listConfigurations = list({
         isNullable: true,
       },
     }),
-    reductionAmount: integer({
+    reductionAmount: float({
       label: '減列金額',
       db: {
         isNullable: true,
       },
     }),
-    freezeAmount: integer({
+    freezeAmount: float({
       label: '凍結金額',
       db: {
         isNullable: true,
@@ -122,6 +131,22 @@ const listConfigurations = list({
       ui: {
         displayMode: 'textarea',
       },
+    }),
+    react_good: integer({
+      label: '心情—讚',
+	    defaultValue: 0,
+    }),
+    react_angry: integer({
+      label: '心情—怒',
+	    defaultValue: 0
+    }),
+    react_whatever: integer({
+      label: '心情—隨便',
+	    defaultValue: 0
+    }),
+    react_disappoint: integer({
+      label: '心情—失望',
+	    defaultValue: 0
     }),
     recognitionAnswer: text({
       label: '辨識答案',

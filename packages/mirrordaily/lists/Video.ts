@@ -43,15 +43,71 @@ const listConfigurations = list({
       label: '檔案',
       storage: 'videos',
     }),
-    fileDuration: text({
+    fileDuration_internal: text({
       label: '影片檔案時長(ISO 8601)',
+      db: {
+        map: 'fileDuration',
+      },
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+      graphql: {
+        omit: true,
+      },
+    }),
+    fileDuration: virtual({
+      label: '影片檔案時長(ISO 8601)',
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>): string {
+          const value = item.fileDuration_internal
+          if (
+            value === '' ||
+            value === '0' ||
+            value === null ||
+            value === undefined
+          ) {
+            return 'PT0S'
+          }
+          return String(value)
+        },
+      }),
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
       },
     }),
-    youtubeDuration: text({
+    youtubeDuration_internal: text({
       label: 'YouTube影片時長(ISO 8601)',
+      db: {
+        map: 'youtubeDuration',
+      },
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+      graphql: {
+        omit: true,
+      },
+    }),
+    youtubeDuration: virtual({
+      label: 'YouTube影片時長(ISO 8601)',
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>): string {
+          const value = item.youtubeDuration_internal
+          if (
+            value === '' ||
+            value === '0' ||
+            value === null ||
+            value === undefined
+          ) {
+            return 'PT0S'
+          }
+          return String(value)
+        },
+      }),
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
@@ -170,19 +226,19 @@ const listConfigurations = list({
   },
   hooks: {
     resolveInput: async ({ resolvedData, item }) => {
-      const { updateTimeStamp, youtubeUrl, file } = resolvedData
-      
+      const { updateTimeStamp, youtubeUrl } = resolvedData
+
       if (youtubeUrl && youtubeUrl !== item?.youtubeUrl) {
         try {
           const duration = await getYouTubeDuration(youtubeUrl)
           if (duration !== null) {
-            resolvedData.youtubeDuration = secondsToISO8601Duration(duration)
+            resolvedData.youtubeDuration_internal =
+              secondsToISO8601Duration(duration)
           }
         } catch (error) {
           console.error('Error getting YouTube video duration:', error)
         }
       }
-
 
       if (updateTimeStamp) {
         const now = new Date()
@@ -192,31 +248,37 @@ const listConfigurations = list({
       }
       return resolvedData
     },
-    
+
     afterOperation: async ({ operation, item, originalItem, context }) => {
       if (operation !== 'create' && operation !== 'update') {
         return
       }
-      
+
       const oldFilename = originalItem?.file_filename
       const newFilename = item?.file_filename
-      
+
       if (oldFilename === newFilename) {
         return
       }
-      
+
       if (!newFilename) {
-        processVideoInBackground({
-          videoId: item.id.toString(),
-          filename: null,
-          action: 'delete'
-        }, context)
+        processVideoInBackground(
+          {
+            videoId: item.id.toString(),
+            filename: null,
+            action: 'delete',
+          },
+          context
+        )
       } else {
-        processVideoInBackground({
-          videoId: item.id.toString(),
-          filename: newFilename as string,
-          action: 'process'
-        }, context)
+        processVideoInBackground(
+          {
+            videoId: item.id.toString(),
+            filename: newFilename as string,
+            action: 'process',
+          },
+          context
+        )
       }
     },
   },

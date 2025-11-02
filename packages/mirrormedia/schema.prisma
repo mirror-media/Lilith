@@ -99,6 +99,7 @@ model Contact {
   id                      Int       @id @default(autoincrement())
   name                    String    @default("")
   content                 String    @default("")
+  sections                Section[] @relation("Contact_sections")
   createdAt               DateTime?
   updatedAt               DateTime?
   createdBy               User?     @relation("Contact_createdBy", fields: [createdById], references: [id])
@@ -417,27 +418,29 @@ model Post {
 }
 
 model Section {
-  id                  Int        @id @default(autoincrement())
-  name                String     @unique @default("")
-  description         String     @default("")
-  slug                String     @unique @default("")
-  order               Int?
-  state               String     @default("active")
-  isFeatured          Boolean    @default(false)
-  heroImage           Photo?     @relation("Section_heroImage", fields: [heroImageId], references: [id])
-  heroImageId         Int?       @map("heroImage")
-  categories          Category[] @relation("Category_sections")
-  posts               Post[]     @relation("Post_sections")
-  externals           External[] @relation("External_sections")
-  topics              Topic[]    @relation("Section_topics")
-  createdAt           DateTime?
-  updatedAt           DateTime?
-  createdBy           User?      @relation("Section_createdBy", fields: [createdById], references: [id])
-  createdById         Int?       @map("createdBy")
-  updatedBy           User?      @relation("Section_updatedBy", fields: [updatedById], references: [id])
-  updatedById         Int?       @map("updatedBy")
-  from_Event_sections Event[]    @relation("Event_sections")
-  from_Header_section Header[]   @relation("Header_section")
+  id                    Int        @id @default(autoincrement())
+  name                  String     @unique @default("")
+  description           String     @default("")
+  color                 String     @default("#FF5A36")
+  slug                  String     @unique @default("")
+  order                 Int?
+  state                 String     @default("active")
+  isFeatured            Boolean    @default(false)
+  heroImage             Photo?     @relation("Section_heroImage", fields: [heroImageId], references: [id])
+  heroImageId           Int?       @map("heroImage")
+  categories            Category[] @relation("Category_sections")
+  posts                 Post[]     @relation("Post_sections")
+  externals             External[] @relation("External_sections")
+  topics                Topic[]    @relation("Section_topics")
+  createdAt             DateTime?
+  updatedAt             DateTime?
+  createdBy             User?      @relation("Section_createdBy", fields: [createdById], references: [id])
+  createdById           Int?       @map("createdBy")
+  updatedBy             User?      @relation("Section_updatedBy", fields: [updatedById], references: [id])
+  updatedById           Int?       @map("updatedBy")
+  from_Contact_sections Contact[]  @relation("Contact_sections")
+  from_Event_sections   Event[]    @relation("Event_sections")
+  from_Header_section   Header[]   @relation("Header_section")
 
   @@index([state])
   @@index([heroImageId])

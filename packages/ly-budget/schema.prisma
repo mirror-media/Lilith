@@ -12,17 +12,19 @@ generator client {
 }
 
 model User {
-  id          Int     @id @default(autoincrement())
-  name        String  @default("")
-  email       String  @unique @default("")
-  password    String
-  role        String
-  isProtected Boolean @default(false)
+  id                        Int          @id @default(autoincrement())
+  name                      String       @default("")
+  email                     String       @unique @default("")
+  password                  String
+  role                      String
+  isProtected               Boolean      @default(false)
+  from_BudgetYear_createdBy BudgetYear[] @relation("BudgetYear_createdBy")
+  from_BudgetYear_updatedBy BudgetYear[] @relation("BudgetYear_updatedBy")
 }
 
 model Term {
   id                  Int         @id @default(autoincrement())
-  termNumber          Int
+  termNumber          Int         @unique
   startDate           DateTime
   endDate             DateTime?
   description         String?
@@ -40,7 +42,6 @@ model Committee {
   name                   String    @default("")
   members                People[]  @relation("Committee_members")
   description            String?
-  from_People_committees People[]  @relation("People_committees")
   from_Meeting_committee Meeting[] @relation("Meeting_committee")
 
   @@index([termId])
@@ -50,19 +51,22 @@ model People {
   id                      Int         @id @default(autoincrement())
   type                    String
   name                    String      @default("")
-  term                    Term?       @relation("People_term", fields: [termId], references: [id])
-  termId                  Int?        @map("term")
-  party                   People?     @relation("People_party", fields: [partyId], references: [id])
+  term                    Term[]      @relation("People_term")
+  party                   Party?      @relation("People_party", fields: [partyId], references: [id])
   partyId                 Int?        @map("party")
-  committees              Committee[] @relation("People_committees")
+  committees              Committee[] @relation("Committee_members")
   description             String      @default("")
-  from_Committee_members  Committee[] @relation("Committee_members")
-  from_People_party       People[]    @relation("People_party")
   from_Proposal_proposers Proposal[]  @relation("Proposal_proposers")
   from_Proposal_coSigners Proposal[]  @relation("Proposal_coSigners")
 
-  @@index([termId])
   @@index([partyId])
+}
+
+model Party {
+  id                Int      @id @default(autoincrement())
+  name              String   @unique @default("")
+  color             String   @default("")
+  from_People_party People[] @relation("People_party")
 }
 
 model Government {
@@ -96,23 +100,35 @@ model Budget {
   @@index([governmentId])
 }
 
+model BudgetYear {
+  id             Int        @id @default(autoincrement())
+  year           Int        @unique
+  budgetProgress String
+  dataProgress   String     @default("in-progress")
+  proposals      Proposal[] @relation("Proposal_year")
+  createdAt      DateTime?
+  updatedAt      DateTime?
+  createdBy      User?      @relation("BudgetYear_createdBy", fields: [createdById], references: [id])
+  createdById    Int?       @map("createdBy")
+  updatedBy      User?      @relation("BudgetYear_updatedBy", fields: [updatedById], references: [id])
+  updatedById    Int?       @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model Meeting {
   id                            Int                @id @default(autoincrement())
   location                      String?
   type                          String?
-  committee                     Committee?         @relation("Meeting_committee", fields: [committeeId], references: [id])
-  committeeId                   Int?               @map("committee")
-  government                    Government?        @relation("Meeting_government", fields: [governmentId], references: [id])
-  governmentId                  Int?               @map("government")
+  committee                     Committee[]        @relation("Meeting_committee")
+  government                    Government[]       @relation("Meeting_government")
   meetingDate                   DateTime?
   meetingRecordUrl              String             @default("")
   description                   String             @default("")
   from_Proposal_meetings        Proposal[]         @relation("Proposal_meetings")
   from_Proposal_unfreezeHistory Proposal[]         @relation("Proposal_unfreezeHistory")
   from_RecognitionImage_meeting RecognitionImage[] @relation("RecognitionImage_meeting")
-
-  @@index([committeeId])
-  @@index([governmentId])
 }
 
 model Proposal {
@@ -120,14 +136,16 @@ model Proposal {
   government                                Government?        @relation("Proposal_government", fields: [governmentId], references: [id])
   governmentId                              Int?               @map("government")
   meetings                                  Meeting[]          @relation("Proposal_meetings")
+  year                                      BudgetYear?        @relation("Proposal_year", fields: [yearId], references: [id])
+  yearId                                    Int?               @map("year")
   mergedProposals                           Proposal[]         @relation("Proposal_mergedProposals")
   historicalProposals                       Proposal[]         @relation("Proposal_historicalProposals")
   proposers                                 People[]           @relation("Proposal_proposers")
   coSigners                                 People[]           @relation("Proposal_coSigners")
   proposalTypes                             Json               @default("[]") @map("proposal_types")
   result                                    String?
-  reductionAmount                           Int?
-  freezeAmount                              Int?
+  reductionAmount                           Float?
+  freezeAmount                              Float?
   budgetImageUrl                            String?
   budget                                    Budget?            @relation("Proposal_budget", fields: [budgetId], references: [id])
   budgetId                                  Int?               @map("budget")
@@ -135,6 +153,10 @@ model Proposal {
   unfreezeHistory                           Meeting[]          @relation("Proposal_unfreezeHistory")
   description                               String?
   reason                                    String?
+  react_good                                Int?               @default(0)
+  react_angry                               Int?               @default(0)
+  react_whatever                            Int?               @default(0)
+  react_disappoint                          Int?               @default(0)
   recognitionAnswer                         String?
   publishStatus                             String?            @default("draft")
   from_Proposal_mergedProposals             Proposal[]         @relation("Proposal_mergedProposals")
@@ -143,6 +165,7 @@ model Proposal {
   from_RecognitionImage_mergedProposals     RecognitionImage[] @relation("RecognitionImage_mergedProposals")
 
   @@index([governmentId])
+  @@index([yearId])
   @@index([budgetId])
   @@index([publishStatus])
 }

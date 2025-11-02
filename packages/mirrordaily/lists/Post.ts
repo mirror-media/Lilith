@@ -221,7 +221,7 @@ const lockByItemViewFunction: MaybeItemFunction<
   // @ts-ignore next line
   if (currentUserRole === UserRole.Admin) {
     return 'edit'
-  } else if ([UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
+  } else if (currentUserRole && [UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
     const { lockBy } = await context.prisma.Post.findUnique({
       where: { id: Number(item?.id) },
       select: {
@@ -310,6 +310,7 @@ const listConfigurations = list({
       many: true,
       ui: {
         labelField: 'name',
+        displayMode: 'select',
         views: './lists/views/post/sections/index',
       },
     }),
@@ -327,6 +328,8 @@ const listConfigurations = list({
       many: true,
       ui: {
         labelField: 'name',
+        displayMode: 'select',
+        views: './lists/views/post/categories/index',
       },
     }),
     manualOrderOfCategories: json({
@@ -917,7 +920,7 @@ const listConfigurations = list({
       },
     }),
     publishedDateString: text({
-      label: '日期',
+      label: '搜尋日期',
       ui: {
         createView: { fieldMode: 'hidden', },
         itemView: { fieldMode: 'hidden', },

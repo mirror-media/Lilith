@@ -53,6 +53,9 @@ const listConfigurations = list({
     slug: text({
       label: 'slug',
       isIndexed: 'unique',
+      ui: {
+        views: './lists/views/auto-slug/index',
+      },
     }),
     sortOrder: integer(),
     state: select({
