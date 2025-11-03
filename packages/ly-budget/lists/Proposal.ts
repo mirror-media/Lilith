@@ -50,7 +50,12 @@ const listConfigurations = list({
     mergedProposals: relationship({
       label: '併案子提案單',
       many: true,
-      ref: 'Proposal',
+      ref: 'Proposal.parentProposals',
+    }),
+    parentProposals: relationship({
+      label: '提案單',
+      many: false,
+      ref: 'Proposal.mergedProposals',
     }),
     historicalProposals: relationship({
       label: '歷史子提案單',

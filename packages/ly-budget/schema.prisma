@@ -138,7 +138,9 @@ model Proposal {
   meetings                                  Meeting[]          @relation("Proposal_meetings")
   year                                      BudgetYear?        @relation("Proposal_year", fields: [yearId], references: [id])
   yearId                                    Int?               @map("year")
-  mergedProposals                           Proposal[]         @relation("Proposal_mergedProposals")
+  mergedProposals                           Proposal[]         @relation("Proposal_parentProposals")
+  parentProposals                           Proposal?          @relation("Proposal_parentProposals", fields: [parentProposalsId], references: [id])
+  parentProposalsId                         Int?               @map("parentProposals")
   historicalProposals                       Proposal[]         @relation("Proposal_historicalProposals")
   proposers                                 People[]           @relation("Proposal_proposers")
   coSigners                                 People[]           @relation("Proposal_coSigners")
@@ -159,13 +161,13 @@ model Proposal {
   react_disappoint                          Int?               @default(0)
   recognitionAnswer                         String?
   publishStatus                             String?            @default("draft")
-  from_Proposal_mergedProposals             Proposal[]         @relation("Proposal_mergedProposals")
   from_Proposal_historicalProposals         Proposal[]         @relation("Proposal_historicalProposals")
   from_RecognitionImage_historicalProposals RecognitionImage[] @relation("RecognitionImage_historicalProposals")
   from_RecognitionImage_mergedProposals     RecognitionImage[] @relation("RecognitionImage_mergedProposals")
 
   @@index([governmentId])
   @@index([yearId])
+  @@index([parentProposalsId])
   @@index([budgetId])
   @@index([publishStatus])
 }

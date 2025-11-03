@@ -828,6 +828,7 @@ type Proposal {
   year: BudgetYear
   mergedProposals(where: ProposalWhereInput! = {}, orderBy: [ProposalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProposalWhereUniqueInput): [Proposal!]
   mergedProposalsCount(where: ProposalWhereInput! = {}): Int
+  parentProposals: Proposal
   historicalProposals(where: ProposalWhereInput! = {}, orderBy: [ProposalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProposalWhereUniqueInput): [Proposal!]
   historicalProposalsCount(where: ProposalWhereInput! = {}): Int
   proposers(where: PeopleWhereInput! = {}, orderBy: [PeopleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PeopleWhereUniqueInput): [People!]
@@ -872,6 +873,7 @@ input ProposalWhereInput {
   meetings: MeetingManyRelationFilter
   year: BudgetYearWhereInput
   mergedProposals: ProposalManyRelationFilter
+  parentProposals: ProposalWhereInput
   historicalProposals: ProposalManyRelationFilter
   proposers: PeopleManyRelationFilter
   coSigners: PeopleManyRelationFilter
@@ -931,6 +933,7 @@ input ProposalUpdateInput {
   meetings: MeetingRelateToManyForUpdateInput
   year: BudgetYearRelateToOneForUpdateInput
   mergedProposals: ProposalRelateToManyForUpdateInput
+  parentProposals: ProposalRelateToOneForUpdateInput
   historicalProposals: ProposalRelateToManyForUpdateInput
   proposers: PeopleRelateToManyForUpdateInput
   coSigners: PeopleRelateToManyForUpdateInput
@@ -965,6 +968,12 @@ input BudgetYearRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input ProposalRelateToOneForUpdateInput {
+  create: ProposalCreateInput
+  connect: ProposalWhereUniqueInput
+  disconnect: Boolean
+}
+
 input BudgetRelateToOneForUpdateInput {
   create: BudgetCreateInput
   connect: BudgetWhereUniqueInput
@@ -981,6 +990,7 @@ input ProposalCreateInput {
   meetings: MeetingRelateToManyForCreateInput
   year: BudgetYearRelateToOneForCreateInput
   mergedProposals: ProposalRelateToManyForCreateInput
+  parentProposals: ProposalRelateToOneForCreateInput
   historicalProposals: ProposalRelateToManyForCreateInput
   proposers: PeopleRelateToManyForCreateInput
   coSigners: PeopleRelateToManyForCreateInput
@@ -1010,6 +1020,11 @@ input MeetingRelateToManyForCreateInput {
 input BudgetYearRelateToOneForCreateInput {
   create: BudgetYearCreateInput
   connect: BudgetYearWhereUniqueInput
+}
+
+input ProposalRelateToOneForCreateInput {
+  create: ProposalCreateInput
+  connect: ProposalWhereUniqueInput
 }
 
 input BudgetRelateToOneForCreateInput {
