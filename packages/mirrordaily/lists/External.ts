@@ -103,7 +103,8 @@ const listConfigurations = list({
       many: true,
       ui: {
         labelField: 'name',
-        // views: './lists/views/post/sections/index',
+        displayMode: 'select',
+        views: './lists/views/post/sections/index',
       },
     }),
     categories: relationship({
@@ -112,6 +113,8 @@ const listConfigurations = list({
       many: true,
       ui: {
         labelField: 'name',
+        displayMode: 'select',
+        views: './lists/views/post/categories/index',
       },
     }),
     publishedDate: timestamp({
