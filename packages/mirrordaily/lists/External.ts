@@ -63,7 +63,6 @@ const listConfigurations = list({
     }),
     partner: relationship({
       ref: 'Partner',
-      inIndexed: true,
       ui: {
         hideCreate: true,
       },

@@ -376,6 +376,11 @@ export const controller = (
 ): RelationshipController => {
   const refLabelField = config.fieldMeta.refLabelField
   const refSearchFields = config.fieldMeta.refSearchFields
+  
+  // 檢查是否有 manualOrder 支援（通過檢查 listKey 是否為 Post）
+  // 如果有 manualOrder，使用 InInputOrder；否則使用原始欄位
+  const hasManualOrder = config.listKey === 'Post'
+  const fieldPath = hasManualOrder ? `${config.path}InInputOrder` : config.path
 
   return {
     refFieldKey: config.fieldMeta.refFieldKey,
@@ -392,9 +397,9 @@ export const controller = (
     graphqlSelection:
       config.fieldMeta.displayMode === 'count'
         ? `${config.path}Count`
-        : `${config.path}InInputOrder {
+        : `${fieldPath} {
               id
-              label: ${refLabelField}
+              ${hasManualOrder ? 'label' : refLabelField}
             }`,
     hideCreate: config.fieldMeta.hideCreate,
     defaultValue: config.fieldMeta.many
@@ -414,9 +419,13 @@ export const controller = (
         }
       }
       if (config.fieldMeta.many) {
-        const value = (data[`${config.path}InInputOrder`] || []).map((x: any) => ({
+        // 根據是否有 manualOrder 決定使用哪個欄位
+        const sourceData = hasManualOrder 
+          ? (data[`${config.path}InInputOrder`] || [])
+          : (data[config.path] || [])
+        const value = (Array.isArray(sourceData) ? sourceData : []).map((x: any) => ({
           id: x.id,
-          label: x.label || x.id,
+          label: hasManualOrder ? (x.label || x.id) : (x[refLabelField] || x.id),
         }))
         return {
           kind: 'many',
@@ -425,11 +434,17 @@ export const controller = (
           value,
         }
       }
-      let value = data[`${config.path}InInputOrder`]
-      if (value) {
+      // 根據是否有 manualOrder 決定使用哪個欄位
+      const sourceValue = hasManualOrder
+        ? data[`${config.path}InInputOrder`]
+        : data[config.path]
+      let value = null
+      if (sourceValue) {
         value = {
-          id: value.id,
-          label: value.label || value.id,
+          id: sourceValue.id,
+          label: hasManualOrder 
+            ? (sourceValue.label || sourceValue.id)
+            : (sourceValue[refLabelField] || sourceValue.id),
         }
       }
       return {
