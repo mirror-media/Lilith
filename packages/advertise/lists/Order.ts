@@ -201,7 +201,6 @@ const listConfigurations = list({
     demoImage: relationship({
       label: '影片截圖',
       ref: 'Photo',
-      many: true,
     }),
     attachment: relationship({
       label: '相關文件',

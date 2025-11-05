@@ -365,8 +365,7 @@ type Order {
   image: Photo
   imageEditable: Boolean
   videoDuration: Int
-  demoImage(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
-  demoImageCount(where: PhotoWhereInput! = {}): Int
+  demoImage: Photo
   attachment: Pdf
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
@@ -400,7 +399,7 @@ input OrderWhereInput {
   image: PhotoWhereInput
   imageEditable: BooleanFilter
   videoDuration: IntNullableFilter
-  demoImage: PhotoManyRelationFilter
+  demoImage: PhotoWhereInput
   attachment: PdfWhereInput
   scheduleStartDate: DateTimeNullableFilter
   scheduleEndDate: DateTimeNullableFilter
@@ -420,12 +419,6 @@ input IntNullableFilter {
   gt: Int
   gte: Int
   not: IntNullableFilter
-}
-
-input PhotoManyRelationFilter {
-  every: PhotoWhereInput
-  some: PhotoWhereInput
-  none: PhotoWhereInput
 }
 
 input OrderOrderByInput {
@@ -461,7 +454,7 @@ input OrderUpdateInput {
   image: PhotoRelateToOneForUpdateInput
   imageEditable: Boolean
   videoDuration: Int
-  demoImage: PhotoRelateToManyForUpdateInput
+  demoImage: PhotoRelateToOneForUpdateInput
   attachment: PdfRelateToOneForUpdateInput
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
@@ -490,13 +483,6 @@ input PhotoRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input PhotoRelateToManyForUpdateInput {
-  disconnect: [PhotoWhereUniqueInput!]
-  set: [PhotoWhereUniqueInput!]
-  create: [PhotoCreateInput!]
-  connect: [PhotoWhereUniqueInput!]
-}
-
 input PdfRelateToOneForUpdateInput {
   create: PdfCreateInput
   connect: PdfWhereUniqueInput
@@ -522,7 +508,7 @@ input OrderCreateInput {
   image: PhotoRelateToOneForCreateInput
   imageEditable: Boolean
   videoDuration: Int
-  demoImage: PhotoRelateToManyForCreateInput
+  demoImage: PhotoRelateToOneForCreateInput
   attachment: PdfRelateToOneForCreateInput
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
@@ -546,11 +532,6 @@ input OrderRelateToOneForCreateInput {
 input PhotoRelateToOneForCreateInput {
   create: PhotoCreateInput
   connect: PhotoWhereUniqueInput
-}
-
-input PhotoRelateToManyForCreateInput {
-  create: [PhotoCreateInput!]
-  connect: [PhotoWhereUniqueInput!]
 }
 
 input PdfRelateToOneForCreateInput {
