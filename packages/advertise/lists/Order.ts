@@ -6,6 +6,7 @@ import {
   relationship,
   checkbox,
   timestamp,
+  integer,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -181,6 +182,21 @@ const listConfigurations = list({
     imageEditable: checkbox({
       label: '客戶可修改圖片',
       defaultValue: false,
+    }),
+    videoDuration: integer({
+      label: '廣告時長（秒）',
+      defaultValue: 0,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
+      validation: {
+        isRequired: false,
+      },
     }),
     demoImage: relationship({
       label: '影片截圖',
