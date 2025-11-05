@@ -228,6 +228,15 @@ const listConfigurations = list({
       label: '客戶可修改排播日期',
       defaultValue: false,
     }),
+    scheduleConfirmDeadline: timestamp({
+      label: '使用者確認截止日期',
+      db: {
+        isNullable: true,
+      },
+      validation: {
+        isRequired: false,
+      },
+    }),
   },
 
   ui: {

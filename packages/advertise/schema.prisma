@@ -95,6 +95,7 @@ model Order {
   scheduleStartDate       DateTime?
   scheduleEndDate         DateTime?
   scheduleEditable        Boolean   @default(false)
+  scheduleConfirmDeadline DateTime?
   createdAt               DateTime?
   updatedAt               DateTime?
   createdBy               User?     @relation("Order_createdBy", fields: [createdById], references: [id])
