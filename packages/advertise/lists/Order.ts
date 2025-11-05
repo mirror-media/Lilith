@@ -237,6 +237,36 @@ const listConfigurations = list({
         isRequired: false,
       },
     }),
+    price: integer({
+      label: '此筆訂單價格',
+      defaultValue: 0,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
+      validation: {
+        isRequired: false,
+      },
+    }),
+    modificationPrice: integer({
+      label: '根據可修改欄位需要的修改金額',
+      defaultValue: 0,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
+      validation: {
+        isRequired: false,
+      },
+    }),
   },
 
   ui: {

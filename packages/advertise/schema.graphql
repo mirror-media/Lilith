@@ -371,6 +371,8 @@ type Order {
   scheduleEndDate: DateTime
   scheduleEditable: Boolean
   scheduleConfirmDeadline: DateTime
+  price: Int
+  modificationPrice: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -406,6 +408,8 @@ input OrderWhereInput {
   scheduleEndDate: DateTimeNullableFilter
   scheduleEditable: BooleanFilter
   scheduleConfirmDeadline: DateTimeNullableFilter
+  price: IntNullableFilter
+  modificationPrice: IntNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -439,6 +443,8 @@ input OrderOrderByInput {
   scheduleEndDate: OrderDirection
   scheduleEditable: OrderDirection
   scheduleConfirmDeadline: OrderDirection
+  price: OrderDirection
+  modificationPrice: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -463,6 +469,8 @@ input OrderUpdateInput {
   scheduleEndDate: DateTime
   scheduleEditable: Boolean
   scheduleConfirmDeadline: DateTime
+  price: Int
+  modificationPrice: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -518,6 +526,8 @@ input OrderCreateInput {
   scheduleEndDate: DateTime
   scheduleEditable: Boolean
   scheduleConfirmDeadline: DateTime
+  price: Int
+  modificationPrice: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
