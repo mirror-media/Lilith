@@ -1,4 +1,4 @@
-import { list } from '@keystone-6/core'
+import { list, graphql } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 import {
   text,
@@ -6,9 +6,19 @@ import {
   relationship,
   checkbox,
   timestamp,
+  integer,
+  virtual,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+const MODIFICATION_PRICE_TABLE = {
+  nameEditable: 100,
+  paragraphOneEditable: 200,
+  paragraphTwoEditable: 200,
+  imageEditable: 300,
+  scheduleEditable: 150,
+}
 
 const orderStateOptions = [
   { label: '待上傳素材', value: 'paid' },
@@ -182,10 +192,24 @@ const listConfigurations = list({
       label: '客戶可修改圖片',
       defaultValue: false,
     }),
+    videoDuration: integer({
+      label: '廣告時長（秒）',
+      defaultValue: 0,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
+      validation: {
+        isRequired: false,
+      },
+    }),
     demoImage: relationship({
       label: '影片截圖',
       ref: 'Photo',
-      many: true,
     }),
     attachment: relationship({
       label: '相關文件',
@@ -212,6 +236,55 @@ const listConfigurations = list({
     scheduleEditable: checkbox({
       label: '客戶可修改排播日期',
       defaultValue: false,
+    }),
+    scheduleConfirmDeadline: timestamp({
+      label: '使用者確認截止日期',
+      db: {
+        isNullable: true,
+      },
+      validation: {
+        isRequired: false,
+      },
+    }),
+    price: integer({
+      label: '此筆訂單價格',
+      defaultValue: 0,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
+      validation: {
+        isRequired: false,
+      },
+    }),
+    modificationPrice: virtual({
+      label: '根據可修改欄位需要的修改金額',
+      field: graphql.field({
+        type: graphql.Int,
+        resolve(item) {
+          let total = 0
+          if (item.nameEditable) {
+            total += MODIFICATION_PRICE_TABLE.nameEditable
+          }
+          if (item.paragraphOneEditable) {
+            total += MODIFICATION_PRICE_TABLE.paragraphOneEditable
+          }
+          if (item.paragraphTwoEditable) {
+            total += MODIFICATION_PRICE_TABLE.paragraphTwoEditable
+          }
+          if (item.imageEditable) {
+            total += MODIFICATION_PRICE_TABLE.imageEditable
+          }
+          if (item.scheduleEditable) {
+            total += MODIFICATION_PRICE_TABLE.scheduleEditable
+          }
+          return total
+        },
+      }),
     }),
   },
 
