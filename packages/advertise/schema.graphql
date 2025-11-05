@@ -223,108 +223,6 @@ input UserRelateToOneForCreateInput {
   connect: UserWhereUniqueInput
 }
 
-type Video {
-  id: ID!
-  name: String
-  youtubeUrl: String
-  file: FileFieldOutput
-  coverPhoto: Photo
-  description: String
-  meta: String
-  url: String
-  duration: String
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: User
-  updatedBy: User
-}
-
-type FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  url: String!
-}
-
-input VideoWhereUniqueInput {
-  id: ID
-}
-
-input VideoWhereInput {
-  AND: [VideoWhereInput!]
-  OR: [VideoWhereInput!]
-  NOT: [VideoWhereInput!]
-  id: IDFilter
-  name: StringFilter
-  youtubeUrl: StringFilter
-  coverPhoto: PhotoWhereInput
-  description: StringFilter
-  meta: StringFilter
-  duration: StringFilter
-  createdAt: DateTimeNullableFilter
-  updatedAt: DateTimeNullableFilter
-  createdBy: UserWhereInput
-  updatedBy: UserWhereInput
-}
-
-input VideoOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  youtubeUrl: OrderDirection
-  description: OrderDirection
-  meta: OrderDirection
-  duration: OrderDirection
-  createdAt: OrderDirection
-  updatedAt: OrderDirection
-}
-
-input VideoUpdateInput {
-  name: String
-  youtubeUrl: String
-  file: FileFieldInput
-  coverPhoto: PhotoRelateToOneForUpdateInput
-  description: String
-  meta: String
-  duration: String
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForUpdateInput
-  updatedBy: UserRelateToOneForUpdateInput
-}
-
-input FileFieldInput {
-  upload: Upload!
-}
-
-input PhotoRelateToOneForUpdateInput {
-  create: PhotoCreateInput
-  connect: PhotoWhereUniqueInput
-  disconnect: Boolean
-}
-
-input VideoUpdateArgs {
-  where: VideoWhereUniqueInput!
-  data: VideoUpdateInput!
-}
-
-input VideoCreateInput {
-  name: String
-  youtubeUrl: String
-  file: FileFieldInput
-  coverPhoto: PhotoRelateToOneForCreateInput
-  description: String
-  meta: String
-  duration: String
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForCreateInput
-  updatedBy: UserRelateToOneForCreateInput
-}
-
-input PhotoRelateToOneForCreateInput {
-  create: PhotoCreateInput
-  connect: PhotoWhereUniqueInput
-}
-
 type Member {
   id: ID!
   firebaseID: String
@@ -571,6 +469,12 @@ input OrderRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input PhotoRelateToOneForUpdateInput {
+  create: PhotoCreateInput
+  connect: PhotoWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PhotoRelateToManyForUpdateInput {
   disconnect: [PhotoWhereUniqueInput!]
   set: [PhotoWhereUniqueInput!]
@@ -623,6 +527,11 @@ input OrderRelateToOneForCreateInput {
   connect: OrderWhereUniqueInput
 }
 
+input PhotoRelateToOneForCreateInput {
+  create: PhotoCreateInput
+  connect: PhotoWhereUniqueInput
+}
+
 input PhotoRelateToManyForCreateInput {
   create: [PhotoCreateInput!]
   connect: [PhotoWhereUniqueInput!]
@@ -643,6 +552,12 @@ type Pdf {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+}
+
+type FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  url: String!
 }
 
 input PdfWhereUniqueInput {
@@ -680,6 +595,10 @@ input PdfUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
+input FileFieldInput {
+  upload: Upload!
+}
+
 input PdfUpdateArgs {
   where: PdfWhereUniqueInput!
   data: PdfUpdateInput!
@@ -713,12 +632,6 @@ type Mutation {
   updatePhotos(data: [PhotoUpdateArgs!]!): [Photo]
   deletePhoto(where: PhotoWhereUniqueInput!): Photo
   deletePhotos(where: [PhotoWhereUniqueInput!]!): [Photo]
-  createVideo(data: VideoCreateInput!): Video
-  createVideos(data: [VideoCreateInput!]!): [Video]
-  updateVideo(where: VideoWhereUniqueInput!, data: VideoUpdateInput!): Video
-  updateVideos(data: [VideoUpdateArgs!]!): [Video]
-  deleteVideo(where: VideoWhereUniqueInput!): Video
-  deleteVideos(where: [VideoWhereUniqueInput!]!): [Video]
   createMember(data: MemberCreateInput!): Member
   createMembers(data: [MemberCreateInput!]!): [Member]
   updateMember(where: MemberWhereUniqueInput!, data: MemberUpdateInput!): Member
@@ -767,9 +680,6 @@ type Query {
   photos(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
   photo(where: PhotoWhereUniqueInput!): Photo
   photosCount(where: PhotoWhereInput! = {}): Int
-  videos(where: VideoWhereInput! = {}, orderBy: [VideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoWhereUniqueInput): [Video!]
-  video(where: VideoWhereUniqueInput!): Video
-  videosCount(where: VideoWhereInput! = {}): Int
   members(where: MemberWhereInput! = {}, orderBy: [MemberOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MemberWhereUniqueInput): [Member!]
   member(where: MemberWhereUniqueInput!): Member
   membersCount(where: MemberWhereInput! = {}): Int
