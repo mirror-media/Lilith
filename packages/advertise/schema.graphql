@@ -409,7 +409,6 @@ input OrderWhereInput {
   scheduleEditable: BooleanFilter
   scheduleConfirmDeadline: DateTimeNullableFilter
   price: IntNullableFilter
-  modificationPrice: IntNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -444,7 +443,6 @@ input OrderOrderByInput {
   scheduleEditable: OrderDirection
   scheduleConfirmDeadline: OrderDirection
   price: OrderDirection
-  modificationPrice: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -470,7 +468,6 @@ input OrderUpdateInput {
   scheduleEditable: Boolean
   scheduleConfirmDeadline: DateTime
   price: Int
-  modificationPrice: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -527,7 +524,6 @@ input OrderCreateInput {
   scheduleEditable: Boolean
   scheduleConfirmDeadline: DateTime
   price: Int
-  modificationPrice: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

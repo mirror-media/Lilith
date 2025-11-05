@@ -1,4 +1,4 @@
-import { list } from '@keystone-6/core'
+import { list, graphql } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 import {
   text,
@@ -7,9 +7,18 @@ import {
   checkbox,
   timestamp,
   integer,
+  virtual,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+const MODIFICATION_PRICE_TABLE = {
+  nameEditable: 100,
+  paragraphOneEditable: 200,
+  paragraphTwoEditable: 200,
+  imageEditable: 300,
+  scheduleEditable: 150,
+}
 
 const orderStateOptions = [
   { label: '待上傳素材', value: 'paid' },
@@ -252,20 +261,30 @@ const listConfigurations = list({
         isRequired: false,
       },
     }),
-    modificationPrice: integer({
+    modificationPrice: virtual({
       label: '根據可修改欄位需要的修改金額',
-      defaultValue: 0,
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
+      field: graphql.field({
+        type: graphql.Int,
+        resolve(item) {
+          let total = 0
+          if (item.nameEditable) {
+            total += MODIFICATION_PRICE_TABLE.nameEditable
+          }
+          if (item.paragraphOneEditable) {
+            total += MODIFICATION_PRICE_TABLE.paragraphOneEditable
+          }
+          if (item.paragraphTwoEditable) {
+            total += MODIFICATION_PRICE_TABLE.paragraphTwoEditable
+          }
+          if (item.imageEditable) {
+            total += MODIFICATION_PRICE_TABLE.imageEditable
+          }
+          if (item.scheduleEditable) {
+            total += MODIFICATION_PRICE_TABLE.scheduleEditable
+          }
+          return total
         },
-        itemView: {
-          fieldMode: 'read',
-        },
-      },
-      validation: {
-        isRequired: false,
-      },
+      }),
     }),
   },
 
