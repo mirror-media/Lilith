@@ -542,7 +542,7 @@ export const controller = (
         ? `${config.path}Count`
         : `${fieldPath} {
               id
-              ${hasManualOrder ? 'label' : refLabelField}
+              ${hasManualOrder ? `label: ${refLabelField}` : refLabelField}
             }`,
     hideCreate: config.fieldMeta.hideCreate,
     // note we're not making the state kind: 'count' when ui.displayMode is set to 'count'.

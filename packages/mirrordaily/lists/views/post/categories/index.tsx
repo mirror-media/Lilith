@@ -399,7 +399,7 @@ export const controller = (
         ? `${config.path}Count`
         : `${fieldPath} {
               id
-              ${hasManualOrder ? 'label' : refLabelField}
+              ${hasManualOrder ? `label: ${refLabelField}` : refLabelField}
             }`,
     hideCreate: config.fieldMeta.hideCreate,
     defaultValue: config.fieldMeta.many
