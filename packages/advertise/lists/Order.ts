@@ -9,6 +9,8 @@ import {
   integer,
   virtual,
 } from '@keystone-6/core/fields'
+import { sendEmailOnStateChange } from '../utils/send-email-on-state-change'
+import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -129,6 +131,13 @@ const listConfigurations = list({
     member: relationship({
       label: '會員',
       ref: 'Member.orders',
+    }),
+    sales: relationship({
+      label: '業務',
+      ref: 'User',
+      ui: {
+        displayMode: 'select',
+      },
     }),
     orderNumber: text({
       label: '訂單編號',
@@ -308,4 +317,6 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+export default utils.addTrackingFields(
+  sendEmailOnStateChange(listConfigurations, envVar.emailApiUrl)
+)
