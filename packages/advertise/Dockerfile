@@ -39,6 +39,7 @@ RUN yarn build
 
 RUN yarn cache clean
 
+RUN whereis http2-proxy-server
 ## Ensure the script is executable
 RUN chmod +x run.sh
 
