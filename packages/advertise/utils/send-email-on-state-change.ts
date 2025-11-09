@@ -21,19 +21,80 @@ type OrderItem = {
   name?: string
 } & BaseItem
 
-const STATE_LABELS: Record<string, string> = {
-  paid: '待上傳素材',
-  file_uploaded: '已上傳檔案',
-  video_wip: '影片製作中',
-  to_be_confirmed: '待確認',
-  scheduled: '待排播',
-  broadcasted: '已播出',
-  modification_request: '提出修改要求',
-  pending_quote_confirmation: '待確認修改報價',
-  pending_broadcast_date: '待設定排播日期',
-  date_reset: '已重新設定排播日期',
-  transferred: '已轉移至新訂單',
-  cancelled: '已作廢',
+const MEMBER_EMAIL_CONTENT: Record<
+  string,
+  { subject: string; body: (data: any) => string }
+> = {
+  video_wip: {
+    subject: '影片製作中',
+    body: () => '您的廣告影片正在製作中，完成後我們會通知您確認。',
+  },
+  to_be_confirmed: {
+    subject: '請確認影片預覽內容和排播時間',
+    body: () => '您的廣告影片已製作完成，請確認影片預覽內容和排播時間。',
+  },
+  scheduled: {
+    subject: '訂單已確認',
+    body: () => '此訂單已確認，會在預定排播日期播出。',
+  },
+  broadcasted: {
+    subject: '訂單已完成',
+    body: () => '此筆訂單已完成，感謝您的支持！',
+  },
+  modification_request: {
+    subject: '修改需求已提出',
+    body: () => '已提出修改需求，業務會直接透過郵件與您聯繫。',
+  },
+  pending_quote_confirmation: {
+    subject: '待加購修改',
+    body: () =>
+      '關於此次修改需要額外費用，請至應援平台購買對應商品後重新上傳素材。業務將透過郵件告知詳細金額與購買項目。',
+  },
+  pending_broadcast_date: {
+    subject: '請重新設定排播日期',
+    body: (data) => `請重新設定訂單 ${data.orderNumber} 的排播時間。`,
+  },
+  transferred: {
+    subject: '訂單已轉移',
+    body: (data) =>
+      data.relatedOrderNumber
+        ? `舊的訂單 ${data.orderNumber} 已經轉移至新訂單 ${data.relatedOrderNumber}，請查看新訂單資訊。`
+        : '舊的訂單已經轉移至新訂單，請查看新訂單資訊。',
+  },
+  cancelled: {
+    subject: '訂單已作廢',
+    body: () => '此訂單已作廢/取消。',
+  },
+}
+
+const SALES_EMAIL_CONTENT: Record<
+  string,
+  { subject: string; body: (data: any) => string }
+> = {
+  file_uploaded: {
+    subject: '用戶已上傳素材',
+    body: () => '用戶已在訂單上完成檔案上傳，請查看並開始處理。',
+  },
+  scheduled: {
+    subject: '用戶已確認訂單',
+    body: () => '用戶已確認訂單內容，請盡快安排播放。',
+  },
+  modification_request: {
+    subject: '用戶提出修改需求',
+    body: () => '用戶提出修改需求，請盡快查看需求並與用戶聯繫。',
+  },
+  date_reset: {
+    subject: '用戶重新設定排播日期',
+    body: () => '用戶重新選好時間，需要重新排播給用戶確認。',
+  },
+  transferred: {
+    subject: '用戶已完成訂單轉移',
+    body: () => '用戶已完成訂單關聯，重新上傳了需要修改的素材。',
+  },
+  cancelled: {
+    subject: '訂單已作廢',
+    body: () => '此訂單已作廢/取消。',
+  },
 }
 
 async function sendEmail(
@@ -76,27 +137,26 @@ async function sendEmailToMember(
     memberEmail: string
     memberName?: string
     orderName?: string
+    relatedOrderNumber?: string
   }
 ) {
-  const previousStateLabel = data.previousState
-    ? STATE_LABELS[data.previousState] || data.previousState
-    : '未知'
-  const newStateLabel = data.newState
-    ? STATE_LABELS[data.newState] || data.newState
-    : '未知'
+  if (!data.newState || !MEMBER_EMAIL_CONTENT[data.newState]) {
+    return
+  }
+
+  const emailContent = MEMBER_EMAIL_CONTENT[data.newState]
+  const body = emailContent.body(data)
 
   const emailPayload = {
     receiver: [data.memberEmail],
-    subject: `鏡電視廣告訂單狀態更新 - ${data.orderNumber}`,
+    subject: `${emailContent.subject} - ${data.orderNumber}`,
     body: `
-      <h2>訂單狀態更新通知</h2>
+      <h2>${emailContent.subject}</h2>
       <p>親愛的 ${data.memberName || '客戶'}，您好：</p>
-      <p>您的訂單狀態已更新</p>
+      <p>${body}</p>
       <ul>
         <li><strong>訂單編號：</strong>${data.orderNumber}</li>
         <li><strong>廣告名稱：</strong>${data.orderName}</li>
-        <li><strong>原狀態：</strong>${previousStateLabel}</li>
-        <li><strong>新狀態：</strong>${newStateLabel}</li>
       </ul>
       <p>如有任何疑問，請與我們聯繫。</p>
       <br>
@@ -120,26 +180,24 @@ async function sendEmailToSales(
     orderName?: string
   }
 ) {
-  const previousStateLabel = data.previousState
-    ? STATE_LABELS[data.previousState] || data.previousState
-    : '未知'
-  const newStateLabel = data.newState
-    ? STATE_LABELS[data.newState] || data.newState
-    : '未知'
+  if (!data.newState || !SALES_EMAIL_CONTENT[data.newState]) {
+    return
+  }
+
+  const emailContent = SALES_EMAIL_CONTENT[data.newState]
+  const body = emailContent.body(data)
 
   const emailPayload = {
     receiver: [data.salesEmail],
-    subject: `訂單狀態更新通知 - ${data.orderNumber}`,
+    subject: `${emailContent.subject} - ${data.orderNumber}`,
     body: `
-      <h2>訂單狀態更新通知</h2>
+      <h2>${emailContent.subject}</h2>
       <p>${data.salesName || '您好'}，</p>
-      <p>您負責的訂單狀態已更新：</p>
+      <p>${body}</p>
       <ul>
         <li><strong>訂單編號：</strong>${data.orderNumber}</li>
         <li><strong>廣告名稱：</strong>${data.orderName}</li>
         <li><strong>會員：</strong>${data.memberName || '未指定'}</li>
-        <li><strong>原狀態：</strong>${previousStateLabel}</li>
-        <li><strong>新狀態：</strong>${newStateLabel}</li>
       </ul>
       <p>此為系統自動通知信件。</p>
       <br>
@@ -193,25 +251,25 @@ export function sendEmailOnStateChange(
       previousItem?.state &&
       currentItem.state !== previousItem.state
     ) {
-      let orderWithMember
+      let orderData
       try {
-        orderWithMember = await context.query.Order.findOne({
+        orderData = await context.query.Order.findOne({
           where: { id: currentItem.id },
           query:
-            'id orderNumber name member { id email name } sales { id email name }',
+            'id orderNumber name member { id email name } sales { id email name } relatedOrder { id orderNumber }',
         })
       } catch (error) {
-        console.error('Error fetching order with member:', error)
+        console.error('Error fetching order data:', error)
         return
       }
 
-      const memberEmail = orderWithMember?.member?.email
-      const memberName = orderWithMember?.member?.name
+      const memberEmail = orderData?.member?.email
+      const memberName = orderData?.member?.name
+      const salesEmail = orderData?.sales?.email
+      const salesName = orderData?.sales?.name
+      const relatedOrderNumber = orderData?.relatedOrder?.orderNumber
 
-      const salesEmail = orderWithMember?.sales?.email
-      const salesName = orderWithMember?.sales?.name
-
-      if (orderWithMember?.member && memberEmail) {
+      if (orderData?.member && memberEmail) {
         sendEmailToMember(emailApiUrl, {
           orderId: currentItem.id,
           orderNumber: currentItem.orderNumber,
@@ -220,13 +278,14 @@ export function sendEmailOnStateChange(
           memberEmail,
           memberName,
           orderName: currentItem.name,
+          relatedOrderNumber,
         }).catch((error) => {
           console.log('Unhandled error sending email to member:', error)
         })
       } else {
         console.log('Skipping email to member - no member or email:', {
           orderId: currentItem.id,
-          hasMember: !!orderWithMember?.member,
+          hasMember: !!orderData?.member,
           hasEmail: !!memberEmail,
         })
       }
@@ -245,7 +304,7 @@ export function sendEmailOnStateChange(
           console.log('Unhandled error sending email to sales:', error)
         })
       } else {
-        console.log('Skipping email to sales - no sales assigned to this order')
+        console.log('Skipping email to sales - no sales assigned')
       }
     }
   }
