@@ -107,15 +107,15 @@ async function sendEmailToMember(
   return sendEmail(emailApiUrl, emailPayload, '會員')
 }
 
-async function sendEmailToUpdater(
+async function sendEmailToSales(
   emailApiUrl: string,
   data: {
     orderId: string
     orderNumber?: string
     previousState?: string
     newState?: string
-    updaterEmail: string
-    updaterName?: string
+    salesEmail: string
+    salesName?: string
     memberName?: string
     orderName?: string
   }
@@ -128,12 +128,12 @@ async function sendEmailToUpdater(
     : '未知'
 
   const emailPayload = {
-    receiver: [data.updaterEmail],
-    subject: `訂單狀態更新確認 - ${data.orderNumber}`,
+    receiver: [data.salesEmail],
+    subject: `訂單狀態更新通知 - ${data.orderNumber}`,
     body: `
-      <h2>訂單狀態更新確認</h2>
-      <p>${data.updaterName || '您好'}，</p>
-      <p>您已成功更新以下訂單的狀態：</p>
+      <h2>訂單狀態更新通知</h2>
+      <p>${data.salesName || '您好'}，</p>
+      <p>您負責的訂單狀態已更新：</p>
       <ul>
         <li><strong>訂單編號：</strong>${data.orderNumber}</li>
         <li><strong>廣告名稱：</strong>${data.orderName}</li>
@@ -147,7 +147,7 @@ async function sendEmailToUpdater(
     `,
   }
 
-  return sendEmail(emailApiUrl, emailPayload, '更新人')
+  return sendEmail(emailApiUrl, emailPayload, '業務')
 }
 
 function combineAfterOperationHooks<T extends AfterOperationHook>(
@@ -197,18 +197,19 @@ export function sendEmailOnStateChange(
       try {
         orderWithMember = await context.query.Order.findOne({
           where: { id: currentItem.id },
-          query: 'id orderNumber name member { id email name }',
+          query:
+            'id orderNumber name member { id email name } sales { id email name }',
         })
       } catch (error) {
-        console.log('Error fetching order with member:', error)
+        console.error('Error fetching order with member:', error)
         return
       }
 
       const memberEmail = orderWithMember?.member?.email
       const memberName = orderWithMember?.member?.name
 
-      const updaterEmail = context.session?.data?.email
-      const updaterName = context.session?.data?.name
+      const salesEmail = orderWithMember?.sales?.email
+      const salesName = orderWithMember?.sales?.name
 
       if (orderWithMember?.member && memberEmail) {
         sendEmailToMember(emailApiUrl, {
@@ -230,21 +231,21 @@ export function sendEmailOnStateChange(
         })
       }
 
-      if (updaterEmail) {
-        sendEmailToUpdater(emailApiUrl, {
+      if (salesEmail) {
+        sendEmailToSales(emailApiUrl, {
           orderId: currentItem.id,
           orderNumber: currentItem.orderNumber,
           previousState: previousItem.state,
           newState: currentItem.state,
-          updaterEmail,
-          updaterName,
+          salesEmail,
+          salesName,
           memberName,
           orderName: currentItem.name,
         }).catch((error) => {
-          console.log('Unhandled error sending email to updater:', error)
+          console.log('Unhandled error sending email to sales:', error)
         })
       } else {
-        console.log('Skipping email to updater - no email in session')
+        console.log('Skipping email to sales - no sales assigned to this order')
       }
     }
   }
