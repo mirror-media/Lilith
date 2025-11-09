@@ -15,6 +15,7 @@ const {
   MEMORY_CACHE_SIZE,
   GCS_BASE_URL,
   INVALID_CDN_CACHE_SERVER_URL,
+  EMAIL_API_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -37,7 +38,8 @@ export default {
       DATABASE_PROVIDER === 'sqlite'
         ? DatabaseProvider.Sqlite
         : DatabaseProvider.Postgres,
-    url: DATABASE_URL || 'postgres://username:password@localhost:5432/advertise',
+    url:
+      DATABASE_URL || 'postgres://username:password@localhost:5432/advertise',
   },
   session: {
     secret:
@@ -60,4 +62,5 @@ export default {
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
+  emailApiUrl: EMAIL_API_URL,
 }

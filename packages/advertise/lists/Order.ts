@@ -9,6 +9,8 @@ import {
   integer,
   virtual,
 } from '@keystone-6/core/fields'
+import { sendEmailOnStateChange } from '../utils/send-email-on-state-change'
+import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -308,4 +310,6 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+export default utils.addTrackingFields(
+  sendEmailOnStateChange(listConfigurations, envVar.emailApiUrl)
+)
