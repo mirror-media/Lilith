@@ -132,6 +132,13 @@ const listConfigurations = list({
       label: '會員',
       ref: 'Member.orders',
     }),
+    sales: relationship({
+      label: '業務',
+      ref: 'User',
+      ui: {
+        displayMode: 'select',
+      },
+    }),
     orderNumber: text({
       label: '訂單編號',
       validation: {
