@@ -25,6 +25,11 @@ const MEMBER_EMAIL_CONTENT: Record<
   string,
   { subject: string; body: (data: any) => string }
 > = {
+  paid: {
+    subject: '訂單已成立，請上傳素材',
+    body: () =>
+      '您的訂單已成立，請至平台上傳廣告素材，以便我們開始製作您的廣告影片。',
+  },
   video_wip: {
     subject: '影片製作中',
     body: () => '您的廣告影片正在製作中，完成後我們會通知您確認。',
@@ -71,6 +76,10 @@ const SALES_EMAIL_CONTENT: Record<
   string,
   { subject: string; body: (data: any) => string }
 > = {
+  paid: {
+    subject: '新訂單已成立',
+    body: () => '新訂單已成立，等待用戶上傳素材。',
+  },
   file_uploaded: {
     subject: '用戶已上傳素材',
     body: () => '用戶已在訂單上完成檔案上傳，請查看並開始處理。',
@@ -239,18 +248,23 @@ export function sendEmailOnStateChange(
     originalItem,
     context,
   }) => {
-    if (operation !== 'update') {
+    if (operation !== 'update' && operation !== 'create') {
       return
     }
 
     const currentItem = item as OrderItem | undefined
     const previousItem = originalItem as OrderItem | undefined
 
-    if (
-      currentItem?.state &&
-      previousItem?.state &&
-      currentItem.state !== previousItem.state
-    ) {
+    // For create operation, send email if the initial state is 'paid'
+    // For update operation, send email if the state has changed
+    const shouldSendEmail =
+      (operation === 'create' && currentItem?.state === 'paid') ||
+      (operation === 'update' &&
+        currentItem?.state &&
+        previousItem?.state &&
+        currentItem.state !== previousItem.state)
+
+    if (shouldSendEmail) {
       let orderData
       try {
         orderData = await context.query.Order.findOne({
@@ -273,7 +287,7 @@ export function sendEmailOnStateChange(
         sendEmailToMember(emailApiUrl, {
           orderId: currentItem.id,
           orderNumber: currentItem.orderNumber,
-          previousState: previousItem.state,
+          previousState: previousItem?.state,
           newState: currentItem.state,
           memberEmail,
           memberName,
@@ -294,7 +308,7 @@ export function sendEmailOnStateChange(
         sendEmailToSales(emailApiUrl, {
           orderId: currentItem.id,
           orderNumber: currentItem.orderNumber,
-          previousState: previousItem.state,
+          previousState: previousItem?.state,
           newState: currentItem.state,
           salesEmail,
           salesName,
