@@ -52,19 +52,21 @@ model Photo {
 }
 
 model Member {
-  id          Int       @id @default(autoincrement())
-  firebaseID  String    @unique @default("")
-  email       String?   @unique
-  state       String    @default("active")
-  name        String?
-  mobile      String?
-  orders      Order[]   @relation("Order_member")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("Member_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("Member_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
+  id                 Int       @id @default(autoincrement())
+  firebaseID         String    @unique @default("")
+  email              String?   @unique
+  state              String    @default("active")
+  name               String?
+  mobile             String?
+  nationalId         String?
+  residentialAddress String?
+  orders             Order[]   @relation("Order_member")
+  createdAt          DateTime?
+  updatedAt          DateTime?
+  createdBy          User?     @relation("Member_createdBy", fields: [createdById], references: [id])
+  createdById        Int?      @map("createdBy")
+  updatedBy          User?     @relation("Member_updatedBy", fields: [updatedById], references: [id])
+  updatedById        Int?      @map("updatedBy")
 
   @@index([createdById])
   @@index([updatedById])

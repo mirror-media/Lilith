@@ -230,6 +230,8 @@ type Member {
   state: String
   name: String
   mobile: String
+  nationalId: String
+  residentialAddress: String
   orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   ordersCount(where: OrderWhereInput! = {}): Int
   createdAt: DateTime
@@ -254,6 +256,8 @@ input MemberWhereInput {
   state: StringFilter
   name: StringNullableFilter
   mobile: StringNullableFilter
+  nationalId: StringNullableFilter
+  residentialAddress: StringNullableFilter
   orders: OrderManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -303,6 +307,8 @@ input MemberOrderByInput {
   state: OrderDirection
   name: OrderDirection
   mobile: OrderDirection
+  nationalId: OrderDirection
+  residentialAddress: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -313,6 +319,8 @@ input MemberUpdateInput {
   state: String
   name: String
   mobile: String
+  nationalId: String
+  residentialAddress: String
   orders: OrderRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -338,6 +346,8 @@ input MemberCreateInput {
   state: String
   name: String
   mobile: String
+  nationalId: String
+  residentialAddress: String
   orders: OrderRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
