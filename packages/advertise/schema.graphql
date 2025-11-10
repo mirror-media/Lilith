@@ -378,7 +378,7 @@ type Order {
   videoDuration: Int
   demoImage: Photo
   attachment: Pdf
-  campaignPeriod: String
+  campaignPeriod: Int
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
   scheduleEditable: Boolean
@@ -417,7 +417,7 @@ input OrderWhereInput {
   videoDuration: IntNullableFilter
   demoImage: PhotoWhereInput
   attachment: PdfWhereInput
-  campaignPeriod: StringNullableFilter
+  campaignPeriod: IntFilter
   scheduleStartDate: DateTimeNullableFilter
   scheduleEndDate: DateTimeNullableFilter
   scheduleEditable: BooleanFilter
@@ -438,6 +438,17 @@ input IntNullableFilter {
   gt: Int
   gte: Int
   not: IntNullableFilter
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
 }
 
 input OrderOrderByInput {
@@ -480,7 +491,7 @@ input OrderUpdateInput {
   videoDuration: Int
   demoImage: PhotoRelateToOneForUpdateInput
   attachment: PdfRelateToOneForUpdateInput
-  campaignPeriod: String
+  campaignPeriod: Int
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
   scheduleEditable: Boolean
@@ -538,7 +549,7 @@ input OrderCreateInput {
   videoDuration: Int
   demoImage: PhotoRelateToOneForCreateInput
   attachment: PdfRelateToOneForCreateInput
-  campaignPeriod: String
+  campaignPeriod: Int
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
   scheduleEditable: Boolean
