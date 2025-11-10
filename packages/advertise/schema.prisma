@@ -20,10 +20,9 @@ model User {
   isProtected           Boolean  @default(false)
   from_Photo_createdBy  Photo[]  @relation("Photo_createdBy")
   from_Photo_updatedBy  Photo[]  @relation("Photo_updatedBy")
-  from_Video_createdBy  Video[]  @relation("Video_createdBy")
-  from_Video_updatedBy  Video[]  @relation("Video_updatedBy")
   from_Member_createdBy Member[] @relation("Member_createdBy")
   from_Member_updatedBy Member[] @relation("Member_updatedBy")
+  from_Order_sales      Order[]  @relation("Order_sales")
   from_Order_createdBy  Order[]  @relation("Order_createdBy")
   from_Order_updatedBy  Order[]  @relation("Order_updatedBy")
   from_Pdf_createdBy    Pdf[]    @relation("Pdf_createdBy")
@@ -31,52 +30,26 @@ model User {
 }
 
 model Photo {
-  id                    Int       @id @default(autoincrement())
-  name                  String    @default("")
-  imageFile_filesize    Int?
-  imageFile_extension   String?
-  imageFile_width       Int?
-  imageFile_height      Int?
-  imageFile_id          String?
-  file_filesize         Int?
-  file_filename         String?
-  urlOriginal           String    @default("")
-  createdAt             DateTime?
-  updatedAt             DateTime?
-  createdBy             User?     @relation("Photo_createdBy", fields: [createdById], references: [id])
-  createdById           Int?      @map("createdBy")
-  updatedBy             User?     @relation("Photo_updatedBy", fields: [updatedById], references: [id])
-  updatedById           Int?      @map("updatedBy")
-  from_Video_coverPhoto Video[]   @relation("Video_coverPhoto")
-  from_Order_image      Order[]   @relation("Order_image")
-  from_Order_demoImage  Order[]   @relation("Order_demoImage")
+  id                   Int       @id @default(autoincrement())
+  name                 String    @default("")
+  imageFile_filesize   Int?
+  imageFile_extension  String?
+  imageFile_width      Int?
+  imageFile_height     Int?
+  imageFile_id         String?
+  urlOriginal          String    @default("")
+  createdAt            DateTime?
+  updatedAt            DateTime?
+  createdBy            User?     @relation("Photo_createdBy", fields: [createdById], references: [id])
+  createdById          Int?      @map("createdBy")
+  updatedBy            User?     @relation("Photo_updatedBy", fields: [updatedById], references: [id])
+  updatedById          Int?      @map("updatedBy")
+  from_Order_image     Order[]   @relation("Order_image")
+  from_Order_demoImage Order[]   @relation("Order_demoImage")
 
   @@index([createdById])
   @@index([updatedById])
   @@map("Image")
-}
-
-model Video {
-  id            Int       @id @default(autoincrement())
-  name          String    @default("")
-  youtubeUrl    String    @default("")
-  file_filesize Int?
-  file_filename String?
-  coverPhoto    Photo?    @relation("Video_coverPhoto", fields: [coverPhotoId], references: [id])
-  coverPhotoId  Int?      @map("coverPhoto")
-  description   String    @default("")
-  meta          String    @default("")
-  duration      String    @default("")
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?     @relation("Video_createdBy", fields: [createdById], references: [id])
-  createdById   Int?      @map("createdBy")
-  updatedBy     User?     @relation("Video_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?      @map("updatedBy")
-
-  @@index([coverPhotoId])
-  @@index([createdById])
-  @@index([updatedById])
 }
 
 model Member {
@@ -102,12 +75,14 @@ model Order {
   id                      Int       @id @default(autoincrement())
   member                  Member?   @relation("Order_member", fields: [memberId], references: [id])
   memberId                Int?      @map("member")
+  sales                   User?     @relation("Order_sales", fields: [salesId], references: [id])
+  salesId                 Int?      @map("sales")
   orderNumber             String    @unique @default("")
   name                    String    @default("")
+  nameEditable            Boolean   @default(false)
   state                   String?   @default("paid")
-  relatedOrder            Order[]   @relation("Order_relatedOrder")
-  attachment              Pdf?      @relation("Order_attachment", fields: [attachmentId], references: [id])
-  attachmentId            Int?      @map("attachment")
+  relatedOrder            Order?    @relation("Order_relatedOrder", fields: [relatedOrderId], references: [id])
+  relatedOrderId          Int?      @map("relatedOrder")
   paragraphOne            String    @default("")
   paragraphOneEditable    Boolean   @default(false)
   paragraphTwo            String    @default("")
@@ -115,9 +90,16 @@ model Order {
   image                   Photo?    @relation("Order_image", fields: [imageId], references: [id])
   imageId                 Int?      @map("image")
   imageEditable           Boolean   @default(false)
-  demoImage               Photo[]   @relation("Order_demoImage")
-  schedule                String    @default("")
+  videoDuration           Int?      @default(0)
+  demoImage               Photo?    @relation("Order_demoImage", fields: [demoImageId], references: [id])
+  demoImageId             Int?      @map("demoImage")
+  attachment              Pdf?      @relation("Order_attachment", fields: [attachmentId], references: [id])
+  attachmentId            Int?      @map("attachment")
+  scheduleStartDate       DateTime?
+  scheduleEndDate         DateTime?
   scheduleEditable        Boolean   @default(false)
+  scheduleConfirmDeadline DateTime?
+  price                   Int?      @default(0)
   createdAt               DateTime?
   updatedAt               DateTime?
   createdBy               User?     @relation("Order_createdBy", fields: [createdById], references: [id])
@@ -127,8 +109,11 @@ model Order {
   from_Order_relatedOrder Order[]   @relation("Order_relatedOrder")
 
   @@index([memberId])
-  @@index([attachmentId])
+  @@index([salesId])
+  @@index([relatedOrderId])
   @@index([imageId])
+  @@index([demoImageId])
+  @@index([attachmentId])
   @@index([createdById])
   @@index([updatedById])
 }
