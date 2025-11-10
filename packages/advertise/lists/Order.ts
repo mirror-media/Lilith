@@ -132,13 +132,6 @@ const listConfigurations = list({
       label: '會員',
       ref: 'Member.orders',
     }),
-    sales: relationship({
-      label: '業務',
-      ref: 'User',
-      ui: {
-        displayMode: 'select',
-      },
-    }),
     orderNumber: text({
       label: '訂單編號',
       validation: {
@@ -318,5 +311,9 @@ const listConfigurations = list({
 })
 
 export default utils.addTrackingFields(
-  sendEmailOnStateChange(listConfigurations, envVar.emailApiUrl)
+  sendEmailOnStateChange(
+    listConfigurations,
+    envVar.emailApiUrl,
+    envVar.advertiseSalesEmail
+  )
 )

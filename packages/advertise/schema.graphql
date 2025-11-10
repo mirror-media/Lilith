@@ -353,7 +353,6 @@ input OrderRelateToManyForCreateInput {
 type Order {
   id: ID!
   member: Member
-  sales: User
   orderNumber: String
   name: String
   nameEditable: Boolean
@@ -391,7 +390,6 @@ input OrderWhereInput {
   NOT: [OrderWhereInput!]
   id: IDFilter
   member: MemberWhereInput
-  sales: UserWhereInput
   orderNumber: StringFilter
   name: StringFilter
   nameEditable: BooleanFilter
@@ -451,7 +449,6 @@ input OrderOrderByInput {
 
 input OrderUpdateInput {
   member: MemberRelateToOneForUpdateInput
-  sales: UserRelateToOneForUpdateInput
   orderNumber: String
   name: String
   nameEditable: Boolean
@@ -508,7 +505,6 @@ input OrderUpdateArgs {
 
 input OrderCreateInput {
   member: MemberRelateToOneForCreateInput
-  sales: UserRelateToOneForCreateInput
   orderNumber: String
   name: String
   nameEditable: Boolean

@@ -178,13 +178,12 @@ async function sendEmailToMember(
 
 async function sendEmailToSales(
   emailApiUrl: string,
+  salesEmail: string,
   data: {
     orderId: string
     orderNumber?: string
     previousState?: string
     newState?: string
-    salesEmail: string
-    salesName?: string
     memberName?: string
     orderName?: string
   }
@@ -197,11 +196,11 @@ async function sendEmailToSales(
   const body = emailContent.body(data)
 
   const emailPayload = {
-    receiver: [data.salesEmail],
+    receiver: [salesEmail],
     subject: `${emailContent.subject} - ${data.orderNumber}`,
     body: `
       <h2>${emailContent.subject}</h2>
-      <p>${data.salesName || '您好'}，</p>
+      <p>您好，</p>
       <p>${body}</p>
       <ul>
         <li><strong>訂單編號：</strong>${data.orderNumber}</li>
@@ -231,13 +230,20 @@ function combineAfterOperationHooks<T extends AfterOperationHook>(
 
 export function sendEmailOnStateChange(
   list: ListConfig<BaseListTypeInfo, BaseFields<BaseListTypeInfo>>,
-  emailApiUrl: string | undefined
+  emailApiUrl: string | undefined,
+  salesEmail: string | undefined
 ) {
   if (!emailApiUrl) {
     console.error(
       'EMAIL_API_URL is not configured, email notifications will be disabled'
     )
     return list
+  }
+
+  if (!salesEmail) {
+    console.error(
+      'ADVERTISE_SALES_EMAIL is not configured, sales email notifications will be disabled'
+    )
   }
 
   const originalAfterOperation = list.hooks?.afterOperation
@@ -270,7 +276,7 @@ export function sendEmailOnStateChange(
         orderData = await context.query.Order.findOne({
           where: { id: currentItem.id },
           query:
-            'id orderNumber name member { id email name } sales { id email name } relatedOrder { id orderNumber }',
+            'id orderNumber name member { id email name } relatedOrder { id orderNumber }',
         })
       } catch (error) {
         console.error('Error fetching order data:', error)
@@ -279,8 +285,6 @@ export function sendEmailOnStateChange(
 
       const memberEmail = orderData?.member?.email
       const memberName = orderData?.member?.name
-      const salesEmail = orderData?.sales?.email
-      const salesName = orderData?.sales?.name
       const relatedOrderNumber = orderData?.relatedOrder?.orderNumber
 
       if (orderData?.member && memberEmail) {
@@ -305,20 +309,18 @@ export function sendEmailOnStateChange(
       }
 
       if (salesEmail) {
-        sendEmailToSales(emailApiUrl, {
+        sendEmailToSales(emailApiUrl, salesEmail, {
           orderId: currentItem.id,
           orderNumber: currentItem.orderNumber,
           previousState: previousItem?.state,
           newState: currentItem.state,
-          salesEmail,
-          salesName,
           memberName,
           orderName: currentItem.name,
         }).catch((error) => {
           console.log('Unhandled error sending email to sales:', error)
         })
       } else {
-        console.log('Skipping email to sales - no sales assigned')
+        console.log('Skipping email to sales - no sales email configured')
       }
     }
   }
