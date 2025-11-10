@@ -220,10 +220,11 @@ const listConfigurations = list({
       label: '相關文件',
       ref: 'Pdf',
     }),
-    campaignPeriod: text({
+    campaignPeriod: integer({
       label: '廣告走期',
-      db: {
-        isNullable: true,
+      defaultValue: 0,
+      validation: {
+        isRequired: true,
       },
     }),
     scheduleStartDate: timestamp({
