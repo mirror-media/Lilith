@@ -132,13 +132,6 @@ const listConfigurations = list({
       label: '會員',
       ref: 'Member.orders',
     }),
-    sales: relationship({
-      label: '業務',
-      ref: 'User',
-      ui: {
-        displayMode: 'select',
-      },
-    }),
     orderNumber: text({
       label: '訂單編號',
       validation: {
@@ -163,6 +156,10 @@ const listConfigurations = list({
       label: '狀態',
       options: orderStateOptions,
       defaultValue: 'paid',
+    }),
+    isUrgent: checkbox({
+      label: '急件',
+      defaultValue: false,
     }),
     relatedOrder: relationship({
       label: '訂單更動',
@@ -222,6 +219,12 @@ const listConfigurations = list({
     attachment: relationship({
       label: '相關文件',
       ref: 'Pdf',
+    }),
+    campaignPeriod: text({
+      label: '廣告走期',
+      db: {
+        isNullable: true,
+      },
     }),
     scheduleStartDate: timestamp({
       label: '排播開始日期',
@@ -318,5 +321,9 @@ const listConfigurations = list({
 })
 
 export default utils.addTrackingFields(
-  sendEmailOnStateChange(listConfigurations, envVar.emailApiUrl)
+  sendEmailOnStateChange(
+    listConfigurations,
+    envVar.emailApiUrl,
+    envVar.advertiseSalesEmail
+  )
 )

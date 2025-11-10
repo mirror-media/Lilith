@@ -16,6 +16,7 @@ const {
   GCS_BASE_URL,
   INVALID_CDN_CACHE_SERVER_URL,
   EMAIL_API_URL,
+  ADVERTISE_SALES_EMAIL,
 } = process.env
 
 enum DatabaseProvider {
@@ -63,4 +64,5 @@ export default {
   },
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
   emailApiUrl: EMAIL_API_URL,
+  advertiseSalesEmail: ADVERTISE_SALES_EMAIL || 'mnews_sales@mnews.com.tw',
 }
