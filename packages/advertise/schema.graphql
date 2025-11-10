@@ -230,6 +230,8 @@ type Member {
   state: String
   name: String
   mobile: String
+  nationalId: String
+  residentialAddress: String
   orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   ordersCount(where: OrderWhereInput! = {}): Int
   createdAt: DateTime
@@ -254,6 +256,8 @@ input MemberWhereInput {
   state: StringFilter
   name: StringNullableFilter
   mobile: StringNullableFilter
+  nationalId: StringNullableFilter
+  residentialAddress: StringNullableFilter
   orders: OrderManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -303,6 +307,8 @@ input MemberOrderByInput {
   state: OrderDirection
   name: OrderDirection
   mobile: OrderDirection
+  nationalId: OrderDirection
+  residentialAddress: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -313,6 +319,8 @@ input MemberUpdateInput {
   state: String
   name: String
   mobile: String
+  nationalId: String
+  residentialAddress: String
   orders: OrderRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -338,6 +346,8 @@ input MemberCreateInput {
   state: String
   name: String
   mobile: String
+  nationalId: String
+  residentialAddress: String
   orders: OrderRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -353,11 +363,11 @@ input OrderRelateToManyForCreateInput {
 type Order {
   id: ID!
   member: Member
-  sales: User
   orderNumber: String
   name: String
   nameEditable: Boolean
   state: String
+  isUrgent: Boolean
   relatedOrder: Order
   paragraphOne: String
   paragraphOneEditable: Boolean
@@ -368,6 +378,7 @@ type Order {
   videoDuration: Int
   demoImage: Photo
   attachment: Pdf
+  campaignPeriod: Int
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
   scheduleEditable: Boolean
@@ -391,11 +402,11 @@ input OrderWhereInput {
   NOT: [OrderWhereInput!]
   id: IDFilter
   member: MemberWhereInput
-  sales: UserWhereInput
   orderNumber: StringFilter
   name: StringFilter
   nameEditable: BooleanFilter
   state: StringNullableFilter
+  isUrgent: BooleanFilter
   relatedOrder: OrderWhereInput
   paragraphOne: StringFilter
   paragraphOneEditable: BooleanFilter
@@ -406,6 +417,7 @@ input OrderWhereInput {
   videoDuration: IntNullableFilter
   demoImage: PhotoWhereInput
   attachment: PdfWhereInput
+  campaignPeriod: IntFilter
   scheduleStartDate: DateTimeNullableFilter
   scheduleEndDate: DateTimeNullableFilter
   scheduleEditable: BooleanFilter
@@ -428,18 +440,31 @@ input IntNullableFilter {
   not: IntNullableFilter
 }
 
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
+}
+
 input OrderOrderByInput {
   id: OrderDirection
   orderNumber: OrderDirection
   name: OrderDirection
   nameEditable: OrderDirection
   state: OrderDirection
+  isUrgent: OrderDirection
   paragraphOne: OrderDirection
   paragraphOneEditable: OrderDirection
   paragraphTwo: OrderDirection
   paragraphTwoEditable: OrderDirection
   imageEditable: OrderDirection
   videoDuration: OrderDirection
+  campaignPeriod: OrderDirection
   scheduleStartDate: OrderDirection
   scheduleEndDate: OrderDirection
   scheduleEditable: OrderDirection
@@ -451,11 +476,11 @@ input OrderOrderByInput {
 
 input OrderUpdateInput {
   member: MemberRelateToOneForUpdateInput
-  sales: UserRelateToOneForUpdateInput
   orderNumber: String
   name: String
   nameEditable: Boolean
   state: String
+  isUrgent: Boolean
   relatedOrder: OrderRelateToOneForUpdateInput
   paragraphOne: String
   paragraphOneEditable: Boolean
@@ -466,6 +491,7 @@ input OrderUpdateInput {
   videoDuration: Int
   demoImage: PhotoRelateToOneForUpdateInput
   attachment: PdfRelateToOneForUpdateInput
+  campaignPeriod: Int
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
   scheduleEditable: Boolean
@@ -508,11 +534,11 @@ input OrderUpdateArgs {
 
 input OrderCreateInput {
   member: MemberRelateToOneForCreateInput
-  sales: UserRelateToOneForCreateInput
   orderNumber: String
   name: String
   nameEditable: Boolean
   state: String
+  isUrgent: Boolean
   relatedOrder: OrderRelateToOneForCreateInput
   paragraphOne: String
   paragraphOneEditable: Boolean
@@ -523,6 +549,7 @@ input OrderCreateInput {
   videoDuration: Int
   demoImage: PhotoRelateToOneForCreateInput
   attachment: PdfRelateToOneForCreateInput
+  campaignPeriod: Int
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
   scheduleEditable: Boolean

@@ -22,7 +22,6 @@ model User {
   from_Photo_updatedBy  Photo[]  @relation("Photo_updatedBy")
   from_Member_createdBy Member[] @relation("Member_createdBy")
   from_Member_updatedBy Member[] @relation("Member_updatedBy")
-  from_Order_sales      Order[]  @relation("Order_sales")
   from_Order_createdBy  Order[]  @relation("Order_createdBy")
   from_Order_updatedBy  Order[]  @relation("Order_updatedBy")
   from_Pdf_createdBy    Pdf[]    @relation("Pdf_createdBy")
@@ -53,19 +52,21 @@ model Photo {
 }
 
 model Member {
-  id          Int       @id @default(autoincrement())
-  firebaseID  String    @unique @default("")
-  email       String?   @unique
-  state       String    @default("active")
-  name        String?
-  mobile      String?
-  orders      Order[]   @relation("Order_member")
-  createdAt   DateTime?
-  updatedAt   DateTime?
-  createdBy   User?     @relation("Member_createdBy", fields: [createdById], references: [id])
-  createdById Int?      @map("createdBy")
-  updatedBy   User?     @relation("Member_updatedBy", fields: [updatedById], references: [id])
-  updatedById Int?      @map("updatedBy")
+  id                 Int       @id @default(autoincrement())
+  firebaseID         String    @unique @default("")
+  email              String?   @unique
+  state              String    @default("active")
+  name               String?
+  mobile             String?
+  nationalId         String?
+  residentialAddress String?
+  orders             Order[]   @relation("Order_member")
+  createdAt          DateTime?
+  updatedAt          DateTime?
+  createdBy          User?     @relation("Member_createdBy", fields: [createdById], references: [id])
+  createdById        Int?      @map("createdBy")
+  updatedBy          User?     @relation("Member_updatedBy", fields: [updatedById], references: [id])
+  updatedById        Int?      @map("updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
@@ -75,12 +76,11 @@ model Order {
   id                      Int       @id @default(autoincrement())
   member                  Member?   @relation("Order_member", fields: [memberId], references: [id])
   memberId                Int?      @map("member")
-  sales                   User?     @relation("Order_sales", fields: [salesId], references: [id])
-  salesId                 Int?      @map("sales")
   orderNumber             String    @unique @default("")
   name                    String    @default("")
   nameEditable            Boolean   @default(false)
   state                   String?   @default("paid")
+  isUrgent                Boolean   @default(false)
   relatedOrder            Order?    @relation("Order_relatedOrder", fields: [relatedOrderId], references: [id])
   relatedOrderId          Int?      @map("relatedOrder")
   paragraphOne            String    @default("")
@@ -95,6 +95,7 @@ model Order {
   demoImageId             Int?      @map("demoImage")
   attachment              Pdf?      @relation("Order_attachment", fields: [attachmentId], references: [id])
   attachmentId            Int?      @map("attachment")
+  campaignPeriod          Int       @default(0)
   scheduleStartDate       DateTime?
   scheduleEndDate         DateTime?
   scheduleEditable        Boolean   @default(false)
@@ -109,7 +110,6 @@ model Order {
   from_Order_relatedOrder Order[]   @relation("Order_relatedOrder")
 
   @@index([memberId])
-  @@index([salesId])
   @@index([relatedOrderId])
   @@index([imageId])
   @@index([demoImageId])
