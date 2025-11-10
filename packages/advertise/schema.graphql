@@ -367,6 +367,7 @@ type Order {
   name: String
   nameEditable: Boolean
   state: String
+  isUrgent: Boolean
   relatedOrder: Order
   paragraphOne: String
   paragraphOneEditable: Boolean
@@ -404,6 +405,7 @@ input OrderWhereInput {
   name: StringFilter
   nameEditable: BooleanFilter
   state: StringNullableFilter
+  isUrgent: BooleanFilter
   relatedOrder: OrderWhereInput
   paragraphOne: StringFilter
   paragraphOneEditable: BooleanFilter
@@ -442,6 +444,7 @@ input OrderOrderByInput {
   name: OrderDirection
   nameEditable: OrderDirection
   state: OrderDirection
+  isUrgent: OrderDirection
   paragraphOne: OrderDirection
   paragraphOneEditable: OrderDirection
   paragraphTwo: OrderDirection
@@ -463,6 +466,7 @@ input OrderUpdateInput {
   name: String
   nameEditable: Boolean
   state: String
+  isUrgent: Boolean
   relatedOrder: OrderRelateToOneForUpdateInput
   paragraphOne: String
   paragraphOneEditable: Boolean
@@ -519,6 +523,7 @@ input OrderCreateInput {
   name: String
   nameEditable: Boolean
   state: String
+  isUrgent: Boolean
   relatedOrder: OrderRelateToOneForCreateInput
   paragraphOne: String
   paragraphOneEditable: Boolean

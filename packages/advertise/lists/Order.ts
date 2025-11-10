@@ -157,6 +157,10 @@ const listConfigurations = list({
       options: orderStateOptions,
       defaultValue: 'paid',
     }),
+    isUrgent: checkbox({
+      label: '急件',
+      defaultValue: false,
+    }),
     relatedOrder: relationship({
       label: '訂單更動',
       ref: 'Order',
