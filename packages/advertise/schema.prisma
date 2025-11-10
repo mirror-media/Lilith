@@ -95,6 +95,7 @@ model Order {
   demoImageId             Int?      @map("demoImage")
   attachment              Pdf?      @relation("Order_attachment", fields: [attachmentId], references: [id])
   attachmentId            Int?      @map("attachment")
+  campaignPeriod          String?
   scheduleStartDate       DateTime?
   scheduleEndDate         DateTime?
   scheduleEditable        Boolean   @default(false)
