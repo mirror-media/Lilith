@@ -6,6 +6,7 @@ import {
   timestamp,
   relationship,
   virtual,
+  json,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 import { ACL, UserRole, State, type Session } from '../type'
@@ -96,6 +97,14 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
+    manualOrderOfSections: json({
+      isFilterable: false,
+      label: '大分類手動排序結果',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
     sections: relationship({
       label: '大分類',
       ref: 'Section.externals',
@@ -104,6 +113,14 @@ const listConfigurations = list({
         labelField: 'name',
         displayMode: 'select',
         views: './lists/views/post/sections/index',
+      },
+    }),
+    manualOrderOfCategories: json({
+      isFilterable: false,
+      label: '小分類手動排序結果',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     categories: relationship({
@@ -237,4 +254,20 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfSections',
+      targetFieldName: 'sections',
+      targetListName: 'Section',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfCategories',
+      targetFieldName: 'categories',
+      targetListName: 'Category',
+      targetListLabelField: 'name',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)
