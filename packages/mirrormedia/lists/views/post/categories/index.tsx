@@ -262,7 +262,9 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
     )
   }
 
-  const data = item[field.path]
+  const hasManualOrder = field.listKey === 'Post'
+  const fieldPath = hasManualOrder ? `${field.path}InInputOrder` : field.path
+  const data = item[fieldPath]
   const items = (Array.isArray(data) ? data : [data]).filter((item) => item)
   const displayItems = items.length < 5 ? items : items.slice(0, 3)
   const overflow = items.length < 5 ? 0 : items.length - 3
@@ -376,6 +378,11 @@ export const controller = (
 ): RelationshipController => {
   const refLabelField = config.fieldMeta.refLabelField
   const refSearchFields = config.fieldMeta.refSearchFields
+
+  // 檢查是否有 manualOrder 支援（通過檢查 listKey 是否為 Post）
+  // 如果有 manualOrder，使用 InInputOrder；否則使用原始欄位
+  const hasManualOrder = config.listKey === 'Post'
+  const fieldPath = hasManualOrder ? `${config.path}InInputOrder` : config.path
 
   return {
     refFieldKey: config.fieldMeta.refFieldKey,
