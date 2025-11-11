@@ -1,6 +1,7 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 import { text } from '@keystone-6/core/fields'
+import { gqlReadOnly } from '../../access'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -22,12 +23,7 @@ const listConfigurations = list({
     },
   },
   access: {
-    operation: {
-      query: allowRoles(admin, moderator, editor),
-      update: allowRoles(admin, moderator),
-      create: allowRoles(admin, moderator),
-      delete: allowRoles(admin),
-    },
+    operation: gqlReadOnly(),
   },
 })
 
