@@ -262,7 +262,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
     )
   }
 
-  const hasManualOrder = field.listKey === 'Post' || field.listKey === 'External'
+  const hasManualOrder = field.listKey === 'Post'
   const fieldPath = hasManualOrder ? `${field.path}InInputOrder` : field.path
   const data = item[fieldPath]
   const items = (Array.isArray(data) ? data : [data]).filter((item) => item)
@@ -381,7 +381,7 @@ export const controller = (
   
   // 檢查是否有 manualOrder 支援（通過檢查 listKey 是否為 Post）
   // 如果有 manualOrder，使用 InInputOrder；否則使用原始欄位
-  const hasManualOrder = config.listKey === 'Post' || config.listKey === 'External'
+  const hasManualOrder = config.listKey === 'Post'
   const fieldPath = hasManualOrder ? `${config.path}InInputOrder` : config.path
 
   return {
