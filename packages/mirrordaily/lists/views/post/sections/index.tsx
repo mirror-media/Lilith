@@ -366,10 +366,13 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
     )
   }
 
-  const data = item[field.path]
+  const hasManualOrder = field.listKey === 'Post'
+  const fieldPath = hasManualOrder ? `${field.path}InInputOrder` : field.path
+  const data = item[fieldPath]
   const items = (Array.isArray(data) ? data : [data]).filter((item) => item)
   const displayItems = items.length < 5 ? items : items.slice(0, 3)
   const overflow = items.length < 5 ? 0 : items.length - 3
+  const labelField = hasManualOrder ? 'label' : field.refLabelField
   const styles = {
     color: colors.foreground,
     textDecoration: 'none',
@@ -389,7 +392,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
             href={`/${list.path}/${item.id}`}
             css={styles}
           >
-            {item.label || item.id}
+            {item[labelField] || item.id}
           </Link>
         </Fragment>
       ))}
