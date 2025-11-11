@@ -1,7 +1,7 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 import { integer, select, relationship } from '@keystone-6/core/fields'
-import { gqlReadOnly } from '../../access'
+import { gqlReadOnly } from '../access'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 

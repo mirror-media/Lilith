@@ -2,7 +2,7 @@ import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 
 import { text, password, select, checkbox } from '@keystone-6/core/fields'
-import { User } from '../../access'
+import { User } from '../access'
 
 const { allowRolesForUsers, admin, moderator, editor } = utils.accessControl
 
