@@ -41,6 +41,11 @@ const listConfigurations = list({
           return `${config.googleCloudStorage.origin}/${config.googleCloudStorage.bucket}/images/${filename}${extension}`
         },
       }),
+      ui: {
+        views: './lists/views/image-url-cell/index',
+        listView: { fieldMode: 'read' },
+        itemView: { fieldMode: 'read' },
+      },
     }),
     urlOriginal: text({
       ui: {
