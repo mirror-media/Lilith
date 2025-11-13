@@ -146,6 +146,14 @@ const listConfigurations = list({
       label: '急件',
       defaultValue: false,
     }),
+    needsModification: checkbox({
+      label: '此筆待修改',
+      defaultValue: false,
+    }),
+    isReviewed: checkbox({
+      label: '是否審核前',
+      defaultValue: false,
+    }),
     relatedOrder: relationship({
       label: '訂單更動',
       ref: 'Order',
