@@ -1,4 +1,4 @@
-import { list, graphql } from '@keystone-6/core'
+import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 import {
   text,
@@ -7,7 +7,6 @@ import {
   checkbox,
   timestamp,
   integer,
-  virtual,
 } from '@keystone-6/core/fields'
 import { sendEmailOnStateChange } from '../utils/send-email-on-state-change'
 import envVar from '../environment-variables'
@@ -249,15 +248,6 @@ const listConfigurations = list({
       validation: {
         isRequired: false,
       },
-    }),
-    modificationPrice: virtual({
-      label: '根據可修改欄位需要的修改金額',
-      field: graphql.field({
-        type: graphql.Int,
-        resolve() {
-          return 0
-        },
-      }),
     }),
   },
 

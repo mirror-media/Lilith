@@ -381,7 +381,6 @@ type Order {
   scheduleEndDate: DateTime
   scheduleConfirmDeadline: DateTime
   price: Int
-  modificationPrice: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
