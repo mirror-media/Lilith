@@ -78,6 +78,7 @@ model Order {
   memberId                Int?      @map("member")
   orderNumber             String    @unique @default("")
   name                    String    @default("")
+  price                   Int?      @default(0)
   state                   String?   @default("paid")
   isUrgent                Boolean   @default(false)
   needsModification       Boolean   @default(false)
@@ -97,7 +98,6 @@ model Order {
   scheduleStartDate       DateTime?
   scheduleEndDate         DateTime?
   scheduleConfirmDeadline DateTime?
-  price                   Int?      @default(0)
   createdAt               DateTime?
   updatedAt               DateTime?
   createdBy               User?     @relation("Order_createdBy", fields: [createdById], references: [id])
