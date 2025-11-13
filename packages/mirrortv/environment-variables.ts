@@ -50,8 +50,7 @@ export default {
       DATABASE_PROVIDER === 'sqlite'
         ? DatabaseProvider.Sqlite
         : DatabaseProvider.Postgres,
-    url:
-      DATABASE_URL || 'postgres://username:password@localhost:5432/mirrordaily',
+    url: DATABASE_URL || 'postgres://username:password@localhost:5432/mirrortv',
   },
   session: {
     secret:
@@ -80,7 +79,7 @@ export default {
     (typeof LOCK_DURATION === 'string' && parseInt(LOCK_DURATION)) || 30,
   cache: {
     isEnabled: IS_CACHE_ENABLED === 'true',
-    identifier: CACHE_IDENTIFIER ?? 'weekly-cms',
+    identifier: CACHE_IDENTIFIER ?? 'mirrortv-cms',
     url: REDIS_SERVER ?? '',
     connectTimeOut: Number.isNaN(cacheConnectTimeout)
       ? 1000 * 10

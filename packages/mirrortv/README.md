@@ -1,4 +1,4 @@
-# @mirrormedia/lilith-mirrordaily
+# @mirrormedia/lilith-mirrortv
 
 ## Preface
 
@@ -17,24 +17,24 @@ cloud runs:
 
 ## Environment Variables
 
-關於 lilith-mirrordaily 中使用到哪些環境變數，可以至 [`environment-variables.ts`](https://github.com/mirror-media/Lilith/blob/main/packages/mirrordaily/environment-variables.ts) 查看。
+關於 lilith-mirrortv 中使用到哪些環境變數，可以至 [`environment-variables.ts`](https://github.com/mirror-media/Lilith/blob/main/packages/mirrortv/environment-variables.ts) 查看。
 
 ## Getting started on local environment
 
 ### Start postgres instance
 
-在起 lilith-mirrordaily 服務前，需要在 local 端先起 postgres database。
+在起 lilith-mirrortv 服務前，需要在 local 端先起 postgres database。
 而我們可以透過 [Docker](https://docs.docker.com/) 快速起 postgres database。
 在電腦上安裝 Docker 的方式，可以參考 [Docker 安裝文件](https://docs.docker.com/engine/install/)。
 安裝 Docker 後，可以執行以下 command 來產生 local 端需要的 postgres 服務。
 
 ```
-docker run -p 5433:5432 --name lilith-mirrordaily -e POSTGRES_PASSWORD=passwd -e POSTGRES_USER=account -e POSTGRES_DB=lilith-mirrordaily -d postgres
+docker run -p {host}:{port} --name lilith-mirrortv -e POSTGRES_PASSWORD=passwd -e POSTGRES_USER=account -e POSTGRES_DB=lilith-mirrortv -d postgres
 ```
 
 註：
 `POSTGRES_PASSWORD`, `POSTGRES_USER` 和 `POSTGRES_DB` 都可更動。
-只是要注意，改了後，在起 lilith-mirrordaily 的服務時，也要更改傳入的 `DATABASE_URL` 環境變數。
+只是要注意，改了後，在起 lilith-mirrortv 的服務時，也要更改傳入的 `DATABASE_URL` 環境變數。
 
 ### Install dependencies
 
@@ -46,7 +46,7 @@ yarn install
 
 ### Start dev instance
 
-確定 postgres 服務起來和相關套件安裝完畢後，可以執行以下 command 來起 lilith-mirrordaily 服務
+確定 postgres 服務起來和相關套件安裝完畢後，可以執行以下 command 來起 lilith-mirrortv 服務
 
 ```
 yarn dev
@@ -67,11 +67,11 @@ DATABASE_URL=postgres://anotherAccount:anotherPasswd@localhost:5433/anotherDatab
 
 ### GraphQL playground
 
-起 lilith-mirrordaily CMS 服務後，我們可以透過 [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql) 來使用 GraphQL playground。
+起 lilith-mirrortv CMS 服務後，我們可以透過 [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql) 來使用 GraphQL playground。
 
 ### Start GraphQL API server only
 
-我們也可以單獨把 lilith-mirrordaily 當作 GraphQL API server 使用。
+我們也可以單獨把 lilith-mirrortv 當作 GraphQL API server 使用。
 透過傳入 `IS_UI_DISABLED` 環境變數，我們可以把 CMS WEB UI 的部分關閉，只留下 GraphQL endpoint `/api/graphql`。
 
 ```
