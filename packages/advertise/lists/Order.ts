@@ -143,9 +143,6 @@ const listConfigurations = list({
       label: '廣告名稱',
       validation: {
         isRequired: true,
-        length: {
-          max: 10,
-        },
       },
     }),
     nameEditable: checkbox({
