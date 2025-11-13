@@ -14,14 +14,6 @@ import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
-const MODIFICATION_PRICE_TABLE = {
-  nameEditable: 100,
-  paragraphOneEditable: 200,
-  paragraphTwoEditable: 200,
-  imageEditable: 300,
-  scheduleEditable: 150,
-}
-
 const orderStateOptions = [
   { label: '待上傳素材', value: 'paid' },
   { label: '已上傳檔案', value: 'file_uploaded' },
@@ -145,10 +137,6 @@ const listConfigurations = list({
         isRequired: true,
       },
     }),
-    nameEditable: checkbox({
-      label: '廣告名稱客戶可修改',
-      defaultValue: false,
-    }),
     state: select({
       label: '狀態',
       options: orderStateOptions,
@@ -172,27 +160,15 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
-    paragraphOneEditable: checkbox({
-      label: '客戶可修改第一段文字',
-      defaultValue: false,
-    }),
     paragraphTwo: text({
       label: '第二段文字',
       ui: {
         displayMode: 'textarea',
       },
     }),
-    paragraphTwoEditable: checkbox({
-      label: '客戶可修改第二段文字',
-      defaultValue: false,
-    }),
     image: relationship({
       label: '圖片素材',
       ref: 'Photo',
-    }),
-    imageEditable: checkbox({
-      label: '客戶可修改圖片',
-      defaultValue: false,
     }),
     videoDuration: integer({
       label: '廣告時長（秒）',
@@ -242,10 +218,6 @@ const listConfigurations = list({
         isRequired: false,
       },
     }),
-    scheduleEditable: checkbox({
-      label: '客戶可修改排播日期',
-      defaultValue: false,
-    }),
     scheduleConfirmDeadline: timestamp({
       label: '使用者確認截止日期',
       db: {
@@ -274,24 +246,8 @@ const listConfigurations = list({
       label: '根據可修改欄位需要的修改金額',
       field: graphql.field({
         type: graphql.Int,
-        resolve(item) {
-          let total = 0
-          if (item.nameEditable) {
-            total += MODIFICATION_PRICE_TABLE.nameEditable
-          }
-          if (item.paragraphOneEditable) {
-            total += MODIFICATION_PRICE_TABLE.paragraphOneEditable
-          }
-          if (item.paragraphTwoEditable) {
-            total += MODIFICATION_PRICE_TABLE.paragraphTwoEditable
-          }
-          if (item.imageEditable) {
-            total += MODIFICATION_PRICE_TABLE.imageEditable
-          }
-          if (item.scheduleEditable) {
-            total += MODIFICATION_PRICE_TABLE.scheduleEditable
-          }
-          return total
+        resolve() {
+          return 0
         },
       }),
     }),

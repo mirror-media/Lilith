@@ -78,18 +78,14 @@ model Order {
   memberId                Int?      @map("member")
   orderNumber             String    @unique @default("")
   name                    String    @default("")
-  nameEditable            Boolean   @default(false)
   state                   String?   @default("paid")
   isUrgent                Boolean   @default(false)
   relatedOrder            Order?    @relation("Order_relatedOrder", fields: [relatedOrderId], references: [id])
   relatedOrderId          Int?      @map("relatedOrder")
   paragraphOne            String    @default("")
-  paragraphOneEditable    Boolean   @default(false)
   paragraphTwo            String    @default("")
-  paragraphTwoEditable    Boolean   @default(false)
   image                   Photo?    @relation("Order_image", fields: [imageId], references: [id])
   imageId                 Int?      @map("image")
-  imageEditable           Boolean   @default(false)
   videoDuration           Int?      @default(0)
   demoImage               Photo?    @relation("Order_demoImage", fields: [demoImageId], references: [id])
   demoImageId             Int?      @map("demoImage")
@@ -98,7 +94,6 @@ model Order {
   campaignPeriod          Int       @default(0)
   scheduleStartDate       DateTime?
   scheduleEndDate         DateTime?
-  scheduleEditable        Boolean   @default(false)
   scheduleConfirmDeadline DateTime?
   price                   Int?      @default(0)
   createdAt               DateTime?
