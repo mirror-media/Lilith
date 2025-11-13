@@ -365,23 +365,18 @@ type Order {
   member: Member
   orderNumber: String
   name: String
-  nameEditable: Boolean
   state: String
   isUrgent: Boolean
   relatedOrder: Order
   paragraphOne: String
-  paragraphOneEditable: Boolean
   paragraphTwo: String
-  paragraphTwoEditable: Boolean
   image: Photo
-  imageEditable: Boolean
   videoDuration: Int
   demoImage: Photo
   attachment: Pdf
   campaignPeriod: Int
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
-  scheduleEditable: Boolean
   scheduleConfirmDeadline: DateTime
   price: Int
   modificationPrice: Int
@@ -404,23 +399,18 @@ input OrderWhereInput {
   member: MemberWhereInput
   orderNumber: StringFilter
   name: StringFilter
-  nameEditable: BooleanFilter
   state: StringNullableFilter
   isUrgent: BooleanFilter
   relatedOrder: OrderWhereInput
   paragraphOne: StringFilter
-  paragraphOneEditable: BooleanFilter
   paragraphTwo: StringFilter
-  paragraphTwoEditable: BooleanFilter
   image: PhotoWhereInput
-  imageEditable: BooleanFilter
   videoDuration: IntNullableFilter
   demoImage: PhotoWhereInput
   attachment: PdfWhereInput
   campaignPeriod: IntFilter
   scheduleStartDate: DateTimeNullableFilter
   scheduleEndDate: DateTimeNullableFilter
-  scheduleEditable: BooleanFilter
   scheduleConfirmDeadline: DateTimeNullableFilter
   price: IntNullableFilter
   createdAt: DateTimeNullableFilter
@@ -455,19 +445,14 @@ input OrderOrderByInput {
   id: OrderDirection
   orderNumber: OrderDirection
   name: OrderDirection
-  nameEditable: OrderDirection
   state: OrderDirection
   isUrgent: OrderDirection
   paragraphOne: OrderDirection
-  paragraphOneEditable: OrderDirection
   paragraphTwo: OrderDirection
-  paragraphTwoEditable: OrderDirection
-  imageEditable: OrderDirection
   videoDuration: OrderDirection
   campaignPeriod: OrderDirection
   scheduleStartDate: OrderDirection
   scheduleEndDate: OrderDirection
-  scheduleEditable: OrderDirection
   scheduleConfirmDeadline: OrderDirection
   price: OrderDirection
   createdAt: OrderDirection
@@ -478,23 +463,18 @@ input OrderUpdateInput {
   member: MemberRelateToOneForUpdateInput
   orderNumber: String
   name: String
-  nameEditable: Boolean
   state: String
   isUrgent: Boolean
   relatedOrder: OrderRelateToOneForUpdateInput
   paragraphOne: String
-  paragraphOneEditable: Boolean
   paragraphTwo: String
-  paragraphTwoEditable: Boolean
   image: PhotoRelateToOneForUpdateInput
-  imageEditable: Boolean
   videoDuration: Int
   demoImage: PhotoRelateToOneForUpdateInput
   attachment: PdfRelateToOneForUpdateInput
   campaignPeriod: Int
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
-  scheduleEditable: Boolean
   scheduleConfirmDeadline: DateTime
   price: Int
   createdAt: DateTime
@@ -536,23 +516,18 @@ input OrderCreateInput {
   member: MemberRelateToOneForCreateInput
   orderNumber: String
   name: String
-  nameEditable: Boolean
   state: String
   isUrgent: Boolean
   relatedOrder: OrderRelateToOneForCreateInput
   paragraphOne: String
-  paragraphOneEditable: Boolean
   paragraphTwo: String
-  paragraphTwoEditable: Boolean
   image: PhotoRelateToOneForCreateInput
-  imageEditable: Boolean
   videoDuration: Int
   demoImage: PhotoRelateToOneForCreateInput
   attachment: PdfRelateToOneForCreateInput
   campaignPeriod: Int
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
-  scheduleEditable: Boolean
   scheduleConfirmDeadline: DateTime
   price: Int
   createdAt: DateTime
