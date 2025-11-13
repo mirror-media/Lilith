@@ -63,6 +63,11 @@ const listConfigurations = list({
         resolvedData.isReviewed = false
       }
 
+      const state = resolvedData.state ?? item?.state
+      if (state === 'to_be_confirmed') {
+        resolvedData.isReviewed = true
+      }
+
       return resolvedData
     },
     validateInput: async ({
