@@ -367,6 +367,8 @@ type Order {
   name: String
   state: String
   isUrgent: Boolean
+  needsModification: Boolean
+  isReviewed: Boolean
   relatedOrder: Order
   paragraphOne: String
   paragraphTwo: String
@@ -401,6 +403,8 @@ input OrderWhereInput {
   name: StringFilter
   state: StringNullableFilter
   isUrgent: BooleanFilter
+  needsModification: BooleanFilter
+  isReviewed: BooleanFilter
   relatedOrder: OrderWhereInput
   paragraphOne: StringFilter
   paragraphTwo: StringFilter
@@ -447,6 +451,8 @@ input OrderOrderByInput {
   name: OrderDirection
   state: OrderDirection
   isUrgent: OrderDirection
+  needsModification: OrderDirection
+  isReviewed: OrderDirection
   paragraphOne: OrderDirection
   paragraphTwo: OrderDirection
   videoDuration: OrderDirection
@@ -465,6 +471,8 @@ input OrderUpdateInput {
   name: String
   state: String
   isUrgent: Boolean
+  needsModification: Boolean
+  isReviewed: Boolean
   relatedOrder: OrderRelateToOneForUpdateInput
   paragraphOne: String
   paragraphTwo: String
@@ -518,6 +526,8 @@ input OrderCreateInput {
   name: String
   state: String
   isUrgent: Boolean
+  needsModification: Boolean
+  isReviewed: Boolean
   relatedOrder: OrderRelateToOneForCreateInput
   paragraphOne: String
   paragraphTwo: String

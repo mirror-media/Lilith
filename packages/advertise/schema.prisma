@@ -80,6 +80,8 @@ model Order {
   name                    String    @default("")
   state                   String?   @default("paid")
   isUrgent                Boolean   @default(false)
+  needsModification       Boolean   @default(false)
+  isReviewed              Boolean   @default(false)
   relatedOrder            Order?    @relation("Order_relatedOrder", fields: [relatedOrderId], references: [id])
   relatedOrderId          Int?      @map("relatedOrder")
   paragraphOne            String    @default("")
