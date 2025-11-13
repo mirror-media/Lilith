@@ -365,6 +365,7 @@ type Order {
   member: Member
   orderNumber: String
   name: String
+  price: Int
   state: String
   isUrgent: Boolean
   needsModification: Boolean
@@ -380,7 +381,6 @@ type Order {
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
   scheduleConfirmDeadline: DateTime
-  price: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -400,6 +400,7 @@ input OrderWhereInput {
   member: MemberWhereInput
   orderNumber: StringFilter
   name: StringFilter
+  price: IntNullableFilter
   state: StringNullableFilter
   isUrgent: BooleanFilter
   needsModification: BooleanFilter
@@ -415,7 +416,6 @@ input OrderWhereInput {
   scheduleStartDate: DateTimeNullableFilter
   scheduleEndDate: DateTimeNullableFilter
   scheduleConfirmDeadline: DateTimeNullableFilter
-  price: IntNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -448,6 +448,7 @@ input OrderOrderByInput {
   id: OrderDirection
   orderNumber: OrderDirection
   name: OrderDirection
+  price: OrderDirection
   state: OrderDirection
   isUrgent: OrderDirection
   needsModification: OrderDirection
@@ -459,7 +460,6 @@ input OrderOrderByInput {
   scheduleStartDate: OrderDirection
   scheduleEndDate: OrderDirection
   scheduleConfirmDeadline: OrderDirection
-  price: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -468,6 +468,7 @@ input OrderUpdateInput {
   member: MemberRelateToOneForUpdateInput
   orderNumber: String
   name: String
+  price: Int
   state: String
   isUrgent: Boolean
   needsModification: Boolean
@@ -483,7 +484,6 @@ input OrderUpdateInput {
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
   scheduleConfirmDeadline: DateTime
-  price: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -523,6 +523,7 @@ input OrderCreateInput {
   member: MemberRelateToOneForCreateInput
   orderNumber: String
   name: String
+  price: Int
   state: String
   isUrgent: Boolean
   needsModification: Boolean
@@ -538,7 +539,6 @@ input OrderCreateInput {
   scheduleStartDate: DateTime
   scheduleEndDate: DateTime
   scheduleConfirmDeadline: DateTime
-  price: Int
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

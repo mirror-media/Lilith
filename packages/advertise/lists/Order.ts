@@ -52,6 +52,17 @@ const listConfigurations = list({
         resolvedData.state = 'transferred'
       }
 
+      const price = resolvedData.price ?? item?.price ?? 0
+
+      if (price === 400 || price === 600) {
+        resolvedData.needsModification = true
+        resolvedData.isReviewed = false
+      } else if (price === 1400 || price === 1600) {
+        resolvedData.needsModification = true
+        resolvedData.isUrgent = true
+        resolvedData.isReviewed = false
+      }
+
       return resolvedData
     },
     validateInput: async ({
@@ -136,6 +147,18 @@ const listConfigurations = list({
         isRequired: true,
       },
     }),
+    price: integer({
+      label: '訂單價格',
+      defaultValue: 0,
+      ui: {
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
+      validation: {
+        isRequired: false,
+      },
+    }),
     state: select({
       label: '狀態',
       options: orderStateOptions,
@@ -144,6 +167,14 @@ const listConfigurations = list({
     isUrgent: checkbox({
       label: '急件',
       defaultValue: false,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
     }),
     needsModification: checkbox({
       label: '此筆待修改',
@@ -152,6 +183,14 @@ const listConfigurations = list({
     isReviewed: checkbox({
       label: '是否審核前',
       defaultValue: false,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
     }),
     relatedOrder: relationship({
       label: '訂單更動',
@@ -229,21 +268,6 @@ const listConfigurations = list({
       label: '使用者確認截止日期',
       db: {
         isNullable: true,
-      },
-      validation: {
-        isRequired: false,
-      },
-    }),
-    price: integer({
-      label: '此筆訂單價格',
-      defaultValue: 0,
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
       },
       validation: {
         isRequired: false,
