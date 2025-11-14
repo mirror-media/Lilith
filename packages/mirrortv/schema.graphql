@@ -225,6 +225,115 @@ input PartnerCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type PromotionVideo {
+  id: ID!
+  name: String
+  sortOrder: Int
+  ytUrl: String
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input PromotionVideoWhereUniqueInput {
+  id: ID
+  sortOrder: Int
+}
+
+input PromotionVideoWhereInput {
+  AND: [PromotionVideoWhereInput!]
+  OR: [PromotionVideoWhereInput!]
+  NOT: [PromotionVideoWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  sortOrder: IntNullableFilter
+  ytUrl: StringFilter
+  state: StringNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input PromotionVideoOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  sortOrder: OrderDirection
+  ytUrl: OrderDirection
+  state: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PromotionVideoUpdateInput {
+  name: String
+  sortOrder: Int
+  ytUrl: String
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PromotionVideoUpdateArgs {
+  where: PromotionVideoWhereUniqueInput!
+  data: PromotionVideoUpdateInput!
+}
+
+input PromotionVideoCreateInput {
+  name: String
+  sortOrder: Int
+  ytUrl: String
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -243,6 +352,12 @@ type Mutation {
   updatePartners(data: [PartnerUpdateArgs!]!): [Partner]
   deletePartner(where: PartnerWhereUniqueInput!): Partner
   deletePartners(where: [PartnerWhereUniqueInput!]!): [Partner]
+  createPromotionVideo(data: PromotionVideoCreateInput!): PromotionVideo
+  createPromotionVideos(data: [PromotionVideoCreateInput!]!): [PromotionVideo]
+  updatePromotionVideo(where: PromotionVideoWhereUniqueInput!, data: PromotionVideoUpdateInput!): PromotionVideo
+  updatePromotionVideos(data: [PromotionVideoUpdateArgs!]!): [PromotionVideo]
+  deletePromotionVideo(where: PromotionVideoWhereUniqueInput!): PromotionVideo
+  deletePromotionVideos(where: [PromotionVideoWhereUniqueInput!]!): [PromotionVideo]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -273,6 +388,9 @@ type Query {
   partners(where: PartnerWhereInput! = {}, orderBy: [PartnerOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PartnerWhereUniqueInput): [Partner!]
   partner(where: PartnerWhereUniqueInput!): Partner
   partnersCount(where: PartnerWhereInput! = {}): Int
+  promotionVideos(where: PromotionVideoWhereInput! = {}, orderBy: [PromotionVideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PromotionVideoWhereUniqueInput): [PromotionVideo!]
+  promotionVideo(where: PromotionVideoWhereUniqueInput!): PromotionVideo
+  promotionVideosCount(where: PromotionVideoWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
