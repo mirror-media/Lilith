@@ -1,6 +1,6 @@
 {
   "name": "@mirrormedia/lilith-core",
-  "version": "3.0.10-beta.4",
+  "version": "3.0.11-beta.1",
   "description": "",
   "main": "lib/index.js",
   "types": "@types/index.d.ts",
