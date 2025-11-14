@@ -13,8 +13,14 @@ import responseCachePlugin from '@apollo/server-plugin-response-cache'
 import { GraphQLConfig } from '@keystone-6/core/types'
 import { utils } from '@mirrormedia/lilith-core'
 
-// 类型断言：确保 createLoginLoggingPlugin 可用
-const createLoginLoggingPlugin = (utils as any).createLoginLoggingPlugin
+// 获取 createLoginLoggingPlugin 函数（兼容新旧版本）
+const createLoginLoggingPlugin =
+  (utils as any).createLoginLoggingPlugin ||
+  require('@mirrormedia/lilith-core/lib/utils/login-logging')?.createLoginLoggingPlugin ||
+  (() => {
+    console.warn('createLoginLoggingPlugin not available, login logging disabled')
+    return {}
+  })
 
 const { withAuth } = createAuth({
   listKey: 'User',
