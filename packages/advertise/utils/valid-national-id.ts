@@ -38,7 +38,7 @@ export function validateTaiwanNationalId(id: string): boolean {
   if (!letterValue) return false
 
   const digits = id.slice(1).split('').map(Number)
-  const weights = [9, 8, 7, 6, 5, 4, 3, 2, 1, 1]
+  const weights = [8, 7, 6, 5, 4, 3, 2, 1, 1]
 
   let sum = Math.floor(letterValue / 10) + (letterValue % 10) * 9
   for (let i = 0; i < digits.length; i++) {
