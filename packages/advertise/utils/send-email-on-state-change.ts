@@ -46,10 +46,6 @@ const MEMBER_EMAIL_CONTENT: Record<
     subject: '訂單已完成',
     body: () => '此筆訂單已完成，感謝您的支持！',
   },
-  modification_request: {
-    subject: '修改需求已提出',
-    body: () => '已提出修改需求，業務會直接透過郵件與您聯繫。',
-  },
   pending_quote_confirmation: {
     subject: '待加購修改',
     body: () =>
@@ -87,10 +83,6 @@ const SALES_EMAIL_CONTENT: Record<
   scheduled: {
     subject: '用戶已確認訂單',
     body: () => '用戶已確認訂單內容，請盡快安排播放。',
-  },
-  modification_request: {
-    subject: '用戶提出修改需求',
-    body: () => '用戶提出修改需求，請盡快查看需求並與用戶聯繫。',
   },
   date_reset: {
     subject: '用戶重新設定排播日期',
