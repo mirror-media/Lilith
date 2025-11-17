@@ -4,7 +4,6 @@ import {
   NavItem,
 } from '@keystone-6/core/admin-ui/components'
 import type { NavigationProps } from '@keystone-6/core/admin-ui/components'
-/* import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon' */
 
 import { Fragment } from 'react'
 export function CustomNavigation({
@@ -14,10 +13,6 @@ export function CustomNavigation({
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
       <NavItem href="/">Dashboard</NavItem>
-      {/* creat post shortcut */}
-      {/* <NavItem key="create-post-shortcut" href="/custom-post-creation">
-        Create Post <PlusIcon size="smallish" color="blue" />
-      </NavItem> */}
       {lists.map((list) => {
         const key = list.key
 

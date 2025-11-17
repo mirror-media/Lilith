@@ -13,8 +13,6 @@ export const Container = ({ children, ...props }: ContainerProps) => (
     style={{
       minWidth: 0, // fix flex text truncation
       maxWidth: 1080,
-      // marginLeft: 'auto',
-      // marginRight: 'auto',
     }}
     {...props}
   >
