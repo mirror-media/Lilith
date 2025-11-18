@@ -45,12 +45,14 @@ const listConfigurations = list({
       label: '已更動前言',
       ui: { itemView: { fieldMode: 'read' } },
       disabledButtons: [],
+      website: 'readr',
     }),
 
     content: customFields.richTextEditor({
       label: '已更動內文',
       ui: { itemView: { fieldMode: 'read' } },
       disabledButtons: [],
+      website: 'readr',
     }),
   },
 
