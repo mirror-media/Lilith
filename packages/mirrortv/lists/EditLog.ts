@@ -45,14 +45,12 @@ const listConfigurations = list({
       label: '已更動前言',
       ui: { itemView: { fieldMode: 'read' } },
       disabledButtons: [],
-      website: 'mirrortv',
     }),
 
     content: customFields.richTextEditor({
       label: '已更動內文',
       ui: { itemView: { fieldMode: 'read' } },
       disabledButtons: [],
-      website: 'mirrortv',
     }),
   },
 
