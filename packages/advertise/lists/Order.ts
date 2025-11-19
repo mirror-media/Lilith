@@ -125,6 +125,16 @@ const listConfigurations = list({
         }
       }
 
+      if (state === 'pending_quote_confirmation') {
+        if (
+          !resolvedData.needsModification &&
+          !resolvedData.needsModification
+        ) {
+          addValidationError('請勾選「此筆待修改」欄位')
+          return
+        }
+      }
+
       if (state === 'transferred') {
         const len1 = extractRelatedOrderLength(resolvedData.relatedOrder)
         const len2 = extractRelatedOrderLength(item?.relatedOrder)
