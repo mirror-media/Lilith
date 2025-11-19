@@ -953,7 +953,7 @@ const listConfigurations = list({
   ui: {
     labelField: 'id',
     listView: {
-      initialColumns: ['id', 'title', 'state', 'publishedDate'],
+      initialColumns: ['id', 'title', 'state', 'publishedDate', 'writers', 'designers', 'engineers'],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
