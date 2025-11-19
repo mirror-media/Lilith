@@ -142,6 +142,31 @@ const listConfigurations = list({
           addValidationError('狀態為「已轉交」時，必須設定訂單更動')
         }
       }
+
+      if (state === 'to_be_confirmed') {
+        const demoImage = resolvedData.demoImage ?? item?.demoImageId
+        const attachment = resolvedData.attachment ?? item?.attachmentId
+        const scheduleConfirmDeadline =
+          resolvedData.scheduleConfirmDeadline ?? item?.scheduleConfirmDeadline
+
+        const missingFields: string[] = []
+
+        if (!demoImage) {
+          missingFields.push('影片截圖')
+        }
+        if (!attachment) {
+          missingFields.push('相關文件')
+        }
+        if (!scheduleConfirmDeadline) {
+          missingFields.push('使用者確認截止日期')
+        }
+
+        if (missingFields.length > 0) {
+          addValidationError(
+            `狀態為「待確認」時，必須填寫以下欄位：${missingFields.join('、')}`
+          )
+        }
+      }
     },
   },
   fields: {
