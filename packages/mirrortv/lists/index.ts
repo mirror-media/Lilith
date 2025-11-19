@@ -4,14 +4,17 @@ import User from './User'
 import PromotionVideo from './PromotionVideo'
 import EditLog from './EditLog'
 import Sale from './Sale'
-import { utils } from '@mirrormedia/lilith-core'
+import Tag from './Tag'
+import Image from './Image'
 
-const { addTrackingFields } = utils
+
 export const listDefinition = {
-  User: addTrackingFields(User),
+  User,
   Partner,
   PromotionVideo,
   EditLog,
+  Image,
   Sale,
   Post,
+  Tag,
 }
