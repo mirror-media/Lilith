@@ -1,4 +1,4 @@
-import { list, graphql } from '@keystone-6/core'
+import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 import {
   text,
@@ -7,20 +7,11 @@ import {
   checkbox,
   timestamp,
   integer,
-  virtual,
 } from '@keystone-6/core/fields'
 import { sendEmailOnStateChange } from '../utils/send-email-on-state-change'
 import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
-
-const MODIFICATION_PRICE_TABLE = {
-  nameEditable: 100,
-  paragraphOneEditable: 200,
-  paragraphTwoEditable: 200,
-  imageEditable: 300,
-  scheduleEditable: 150,
-}
 
 const orderStateOptions = [
   { label: '待上傳素材', value: 'paid' },
@@ -30,7 +21,7 @@ const orderStateOptions = [
   { label: '待排播', value: 'scheduled' },
   { label: '已播出', value: 'broadcasted' },
   { label: '提出修改要求', value: 'modification_request' },
-  { label: '待確認修改報價', value: 'pending_quote_confirmation' },
+  { label: '待加購修改', value: 'pending_quote_confirmation' },
   { label: '待設定排播日期', value: 'pending_broadcast_date' },
   { label: '已重新設定排播日期', value: 'date_reset' },
   { label: '已轉移至新訂單', value: 'transferred' },
@@ -59,6 +50,22 @@ const listConfigurations = list({
         extractRelatedOrderLength(item?.relatedOrder) > 0
       ) {
         resolvedData.state = 'transferred'
+      }
+
+      const price = resolvedData.price ?? item?.price ?? 0
+
+      if (price === 400 || price === 600) {
+        resolvedData.needsModification = true
+        resolvedData.isReviewed = false
+      } else if (price === 1400 || price === 1600) {
+        resolvedData.needsModification = true
+        resolvedData.isUrgent = true
+        resolvedData.isReviewed = false
+      }
+
+      const state = resolvedData.state ?? item?.state
+      if (state === 'to_be_confirmed') {
+        resolvedData.isReviewed = true
       }
 
       return resolvedData
@@ -143,14 +150,19 @@ const listConfigurations = list({
       label: '廣告名稱',
       validation: {
         isRequired: true,
-        length: {
-          max: 10,
-        },
       },
     }),
-    nameEditable: checkbox({
-      label: '廣告名稱客戶可修改',
-      defaultValue: false,
+    price: integer({
+      label: '訂單價格',
+      defaultValue: 0,
+      ui: {
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
+      validation: {
+        isRequired: false,
+      },
     }),
     state: select({
       label: '狀態',
@@ -160,6 +172,30 @@ const listConfigurations = list({
     isUrgent: checkbox({
       label: '急件',
       defaultValue: false,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
+    }),
+    needsModification: checkbox({
+      label: '此筆待修改',
+      defaultValue: false,
+    }),
+    isReviewed: checkbox({
+      label: '是否審核前',
+      defaultValue: false,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
     }),
     relatedOrder: relationship({
       label: '訂單更動',
@@ -175,27 +211,15 @@ const listConfigurations = list({
         displayMode: 'textarea',
       },
     }),
-    paragraphOneEditable: checkbox({
-      label: '客戶可修改第一段文字',
-      defaultValue: false,
-    }),
     paragraphTwo: text({
       label: '第二段文字',
       ui: {
         displayMode: 'textarea',
       },
     }),
-    paragraphTwoEditable: checkbox({
-      label: '客戶可修改第二段文字',
-      defaultValue: false,
-    }),
     image: relationship({
       label: '圖片素材',
       ref: 'Photo',
-    }),
-    imageEditable: checkbox({
-      label: '客戶可修改圖片',
-      defaultValue: false,
     }),
     videoDuration: integer({
       label: '廣告時長（秒）',
@@ -245,10 +269,6 @@ const listConfigurations = list({
         isRequired: false,
       },
     }),
-    scheduleEditable: checkbox({
-      label: '客戶可修改排播日期',
-      defaultValue: false,
-    }),
     scheduleConfirmDeadline: timestamp({
       label: '使用者確認截止日期',
       db: {
@@ -257,46 +277,6 @@ const listConfigurations = list({
       validation: {
         isRequired: false,
       },
-    }),
-    price: integer({
-      label: '此筆訂單價格',
-      defaultValue: 0,
-      ui: {
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'read',
-        },
-      },
-      validation: {
-        isRequired: false,
-      },
-    }),
-    modificationPrice: virtual({
-      label: '根據可修改欄位需要的修改金額',
-      field: graphql.field({
-        type: graphql.Int,
-        resolve(item) {
-          let total = 0
-          if (item.nameEditable) {
-            total += MODIFICATION_PRICE_TABLE.nameEditable
-          }
-          if (item.paragraphOneEditable) {
-            total += MODIFICATION_PRICE_TABLE.paragraphOneEditable
-          }
-          if (item.paragraphTwoEditable) {
-            total += MODIFICATION_PRICE_TABLE.paragraphTwoEditable
-          }
-          if (item.imageEditable) {
-            total += MODIFICATION_PRICE_TABLE.imageEditable
-          }
-          if (item.scheduleEditable) {
-            total += MODIFICATION_PRICE_TABLE.scheduleEditable
-          }
-          return total
-        },
-      }),
     }),
   },
 
