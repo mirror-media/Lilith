@@ -32,6 +32,10 @@ model User {
   from_PromotionVideo_updatedBy PromotionVideo[] @relation("PromotionVideo_updatedBy")
   from_EditLog_createdBy        EditLog[]        @relation("EditLog_createdBy")
   from_EditLog_updatedBy        EditLog[]        @relation("EditLog_updatedBy")
+  from_Sale_createdBy           Sale[]           @relation("Sale_createdBy")
+  from_Sale_updatedBy           Sale[]           @relation("Sale_updatedBy")
+  from_Post_createdBy           Post[]           @relation("Post_createdBy")
+  from_Post_updatedBy           Post[]           @relation("Post_updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
@@ -90,4 +94,59 @@ model EditLog {
   @@index([postSlug])
   @@index([createdById])
   @@index([updatedById])
+}
+
+model Sale {
+  id          Int            @id @default(autoincrement())
+  sortOrder   Int
+  adPost      Post?          @relation("Sale_adPost", fields: [adPostId], references: [id])
+  adPostId    Int?           @map("adPost")
+  state       SaleStateType? @default(draft)
+  startTime   DateTime?
+  endTime     DateTime?
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?          @relation("Sale_createdBy", fields: [createdById], references: [id])
+  createdById Int?           @map("createdBy")
+  updatedBy   User?          @relation("Sale_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?           @map("updatedBy")
+
+  @@index([sortOrder])
+  @@index([adPostId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Post {
+  id               Int            @id @default(autoincrement())
+  slug             String         @unique @default("")
+  name             String         @default("untitled")
+  subtitle         String         @default("")
+  state            PostStateType? @default(draft)
+  publishTime      DateTime?
+  createdAt        DateTime?
+  updatedAt        DateTime?
+  createdBy        User?          @relation("Post_createdBy", fields: [createdById], references: [id])
+  createdById      Int?           @map("createdBy")
+  updatedBy        User?          @relation("Post_updatedBy", fields: [updatedById], references: [id])
+  updatedById      Int?           @map("updatedBy")
+  from_Sale_adPost Sale[]         @relation("Sale_adPost")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+enum SaleStateType {
+  draft
+  published
+  scheduled
+  archived
+}
+
+enum PostStateType {
+  draft
+  published
+  scheduled
+  archived
+  invisible
 }
