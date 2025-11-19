@@ -167,6 +167,20 @@ const listConfigurations = list({
           )
         }
       }
+
+      const scheduleConfirmDeadline =
+        resolvedData.scheduleConfirmDeadline ?? item?.scheduleConfirmDeadline
+      const scheduleStartDate =
+        resolvedData.scheduleStartDate ?? item?.scheduleStartDate
+
+      if (scheduleConfirmDeadline && scheduleStartDate) {
+        const deadline = new Date(scheduleConfirmDeadline)
+        const startDate = new Date(scheduleStartDate)
+
+        if (deadline > startDate) {
+          addValidationError('確認截止日期晚於排播開始日期')
+        }
+      }
     },
   },
   fields: {
