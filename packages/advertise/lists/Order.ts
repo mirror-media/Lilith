@@ -21,7 +21,7 @@ const orderStateOptions = [
   { label: '待排播', value: 'scheduled' },
   { label: '已播出', value: 'broadcasted' },
   { label: '提出修改要求', value: 'modification_request' },
-  { label: '待確認修改報價', value: 'pending_quote_confirmation' },
+  { label: '待加購修改', value: 'pending_quote_confirmation' },
   { label: '待設定排播日期', value: 'pending_broadcast_date' },
   { label: '已重新設定排播日期', value: 'date_reset' },
   { label: '已轉移至新訂單', value: 'transferred' },
