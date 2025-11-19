@@ -1,6 +1,7 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 import { text, float, select, integer, relationship, multiselect } from '@keystone-6/core/fields'
+import { gqlReadOnly } from '../access'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -50,12 +51,22 @@ const listConfigurations = list({
     mergedProposals: relationship({
       label: '併案子提案單',
       many: true,
-      ref: 'Proposal',
+      ref: 'Proposal.mergedParentProposals',
+    }),
+    mergedParentProposals: relationship({
+      label: '併案母提案單',
+      many: false,
+      ref: 'Proposal.mergedProposals',
     }),
     historicalProposals: relationship({
       label: '歷史子提案單',
       many: true,
-      ref: 'Proposal',
+      ref: 'Proposal.historicalParentProposals',
+    }),
+    historicalParentProposals: relationship({
+      label: '歷史母提案單',
+      many: false,
+      ref: 'Proposal.historicalProposals',
     }),
     proposers: relationship({
       label: '提案人',
@@ -171,12 +182,7 @@ const listConfigurations = list({
     },
   },
   access: {
-    operation: {
-      query: allowRoles(admin, moderator, editor),
-      update: allowRoles(admin, moderator),
-      create: allowRoles(admin, moderator),
-      delete: allowRoles(admin),
-    },
+    operation: gqlReadOnly(),
   },
 })
 

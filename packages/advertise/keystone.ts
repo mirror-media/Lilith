@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { config } from '@keystone-6/core'
 import { listDefinition as lists } from './lists'
 import appConfig from './config'
@@ -59,10 +60,10 @@ export default withAuth(
       },
     },
     server: {
-	  healthCheck: {
-	    path: '/health_check',
-	    data: { status: 'healthy' },
-	  },
+      healthCheck: {
+        path: '/health_check',
+        data: { status: 'healthy' },
+      },
       cors: { origin: true, credentials: true },
       extendExpressApp: (app, commonContext) => {
         // This middleware is available in Express v4.16.0 onwards

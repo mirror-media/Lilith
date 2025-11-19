@@ -11,6 +11,16 @@ import { KeyvAdapter } from '@apollo/utils.keyvadapter'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
 import responseCachePlugin from '@apollo/server-plugin-response-cache'
 import { GraphQLConfig } from '@keystone-6/core/types'
+import { utils } from '@mirrormedia/lilith-core'
+
+// 获取 createLoginLoggingPlugin 函数（兼容新旧版本）
+const createLoginLoggingPlugin =
+  (utils as any).createLoginLoggingPlugin ||
+  require('@mirrormedia/lilith-core/lib/utils/login-logging')?.createLoginLoggingPlugin ||
+  (() => {
+    console.warn('createLoginLoggingPlugin not available, login logging disabled')
+    return {}
+  })
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -26,16 +36,21 @@ const { withAuth } = createAuth({
 
 const session = statelessSessions(envVar.session)
 
-const graphqlConfig: GraphQLConfig = {
-  apolloConfig:
-    envVar.accessControlStrategy === 'gql' && envVar.cache.isEnabled
-      ? {
-          plugins: [
+const graphqlConfig = {
+  apolloConfig: {
+    plugins: [
+      createLoginLoggingPlugin(),
+      ...(envVar.accessControlStrategy === 'gql' && envVar.cache.isEnabled
+        ? [
             responseCachePlugin(),
             ApolloServerPluginCacheControl({
               defaultMaxAge: envVar.cache.maxAge,
             }),
-          ],
+          ]
+        : []),
+    ],
+    ...(envVar.accessControlStrategy === 'gql' && envVar.cache.isEnabled
+      ? {
           cache: new KeyvAdapter(
             new Keyv(envVar.cache.url, {
               lazyConnect: true,
@@ -45,8 +60,9 @@ const graphqlConfig: GraphQLConfig = {
             })
           ),
         }
-      : undefined,
-}
+      : {}),
+  } as any,
+} as GraphQLConfig
 
 export default withAuth(
   config({
@@ -63,7 +79,7 @@ export default withAuth(
       // For our starter, we check that someone has session data before letting them see the Admin UI.
       isAccessAllowed: (context) => !!context.session?.data,
     },
-    graphql: graphqlConfig,
+    graphql: graphqlConfig as any,
     lists,
     session,
     storage: {
@@ -98,6 +114,8 @@ export default withAuth(
 
         const jsonBodyParser = express.json({ limit: '500mb' })
         app.use(jsonBodyParser)
+
+        // 登入日誌中間件 - 已由 Apollo Server 插件處理，此處不再重複記錄
 
         //if (envVar.accessControlStrategy === 'cms') {
         //  app.use(

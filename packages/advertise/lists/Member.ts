@@ -1,6 +1,7 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 import { text, select, relationship } from '@keystone-6/core/fields'
+import { validateTaiwanNationalId } from '../utils/valid-national-id'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -42,6 +43,40 @@ const listConfigurations = list({
         isNullable: true,
       },
     }),
+    nationalId: text({
+      label: '身分證字號',
+      db: {
+        isNullable: true,
+      },
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
+    }),
+    residentialAddress: text({
+      label: '戶籍地址',
+      db: {
+        isNullable: true,
+      },
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
+      },
+    }),
     orders: relationship({
       label: '訂單',
       ref: 'Order.member',
@@ -57,6 +92,19 @@ const listConfigurations = list({
         !item?.mobile
       ) {
         addValidationError('email 或 mobile 至少需要填寫一個')
+      }
+
+      const nationalId = resolvedData.nationalId ?? item?.nationalId
+      if (
+        nationalId !== undefined &&
+        nationalId !== null &&
+        nationalId !== ''
+      ) {
+        if (!validateTaiwanNationalId(nationalId)) {
+          addValidationError(
+            '身分證字號格式不正確，請輸入有效的台灣身分證字號（例如：A123456789）'
+          )
+        }
       }
     },
   },

@@ -118,9 +118,7 @@ type Photo {
   id: ID!
   name: String
   imageFile: ImageFieldOutput
-  resized: ResizedImages
-  resizedWebp: ResizedWebPImages
-  file: FileFieldOutput
+  url: String
   urlOriginal: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -142,30 +140,6 @@ enum ImageExtension {
   png
   webp
   gif
-}
-
-type ResizedImages {
-  original: String
-  w480: String
-  w800: String
-  w1200: String
-  w1600: String
-  w2400: String
-}
-
-type ResizedWebPImages {
-  original: String
-  w480: String
-  w800: String
-  w1200: String
-  w1600: String
-  w2400: String
-}
-
-type FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  url: String!
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
@@ -209,7 +183,6 @@ input PhotoOrderByInput {
 input PhotoUpdateInput {
   name: String
   imageFile: ImageFieldInput
-  file: FileFieldInput
   urlOriginal: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -223,10 +196,6 @@ input ImageFieldInput {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
-
-input FileFieldInput {
-  upload: Upload!
-}
 
 input UserRelateToOneForUpdateInput {
   create: UserCreateInput
@@ -242,7 +211,6 @@ input PhotoUpdateArgs {
 input PhotoCreateInput {
   name: String
   imageFile: ImageFieldInput
-  file: FileFieldInput
   urlOriginal: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -255,98 +223,6 @@ input UserRelateToOneForCreateInput {
   connect: UserWhereUniqueInput
 }
 
-type Video {
-  id: ID!
-  name: String
-  youtubeUrl: String
-  file: FileFieldOutput
-  coverPhoto: Photo
-  description: String
-  meta: String
-  url: String
-  duration: String
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: User
-  updatedBy: User
-}
-
-input VideoWhereUniqueInput {
-  id: ID
-}
-
-input VideoWhereInput {
-  AND: [VideoWhereInput!]
-  OR: [VideoWhereInput!]
-  NOT: [VideoWhereInput!]
-  id: IDFilter
-  name: StringFilter
-  youtubeUrl: StringFilter
-  coverPhoto: PhotoWhereInput
-  description: StringFilter
-  meta: StringFilter
-  duration: StringFilter
-  createdAt: DateTimeNullableFilter
-  updatedAt: DateTimeNullableFilter
-  createdBy: UserWhereInput
-  updatedBy: UserWhereInput
-}
-
-input VideoOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  youtubeUrl: OrderDirection
-  description: OrderDirection
-  meta: OrderDirection
-  duration: OrderDirection
-  createdAt: OrderDirection
-  updatedAt: OrderDirection
-}
-
-input VideoUpdateInput {
-  name: String
-  youtubeUrl: String
-  file: FileFieldInput
-  coverPhoto: PhotoRelateToOneForUpdateInput
-  description: String
-  meta: String
-  duration: String
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForUpdateInput
-  updatedBy: UserRelateToOneForUpdateInput
-}
-
-input PhotoRelateToOneForUpdateInput {
-  create: PhotoCreateInput
-  connect: PhotoWhereUniqueInput
-  disconnect: Boolean
-}
-
-input VideoUpdateArgs {
-  where: VideoWhereUniqueInput!
-  data: VideoUpdateInput!
-}
-
-input VideoCreateInput {
-  name: String
-  youtubeUrl: String
-  file: FileFieldInput
-  coverPhoto: PhotoRelateToOneForCreateInput
-  description: String
-  meta: String
-  duration: String
-  createdAt: DateTime
-  updatedAt: DateTime
-  createdBy: UserRelateToOneForCreateInput
-  updatedBy: UserRelateToOneForCreateInput
-}
-
-input PhotoRelateToOneForCreateInput {
-  create: PhotoCreateInput
-  connect: PhotoWhereUniqueInput
-}
-
 type Member {
   id: ID!
   firebaseID: String
@@ -354,6 +230,8 @@ type Member {
   state: String
   name: String
   mobile: String
+  nationalId: String
+  residentialAddress: String
   orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   ordersCount(where: OrderWhereInput! = {}): Int
   createdAt: DateTime
@@ -378,6 +256,8 @@ input MemberWhereInput {
   state: StringFilter
   name: StringNullableFilter
   mobile: StringNullableFilter
+  nationalId: StringNullableFilter
+  residentialAddress: StringNullableFilter
   orders: OrderManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -427,6 +307,8 @@ input MemberOrderByInput {
   state: OrderDirection
   name: OrderDirection
   mobile: OrderDirection
+  nationalId: OrderDirection
+  residentialAddress: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -437,6 +319,8 @@ input MemberUpdateInput {
   state: String
   name: String
   mobile: String
+  nationalId: String
+  residentialAddress: String
   orders: OrderRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -462,6 +346,8 @@ input MemberCreateInput {
   state: String
   name: String
   mobile: String
+  nationalId: String
+  residentialAddress: String
   orders: OrderRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -479,20 +365,22 @@ type Order {
   member: Member
   orderNumber: String
   name: String
+  price: Int
   state: String
-  relatedOrder(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
-  relatedOrderCount(where: OrderWhereInput! = {}): Int
-  attachment: Pdf
+  isUrgent: Boolean
+  needsModification: Boolean
+  isReviewed: Boolean
+  relatedOrder: Order
   paragraphOne: String
-  paragraphOneEditable: Boolean
   paragraphTwo: String
-  paragraphTwoEditable: Boolean
   image: Photo
-  imageEditable: Boolean
-  demoImage(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
-  demoImageCount(where: PhotoWhereInput! = {}): Int
-  schedule: String
-  scheduleEditable: Boolean
+  videoDuration: Int
+  demoImage: Photo
+  attachment: Pdf
+  campaignPeriod: Int
+  scheduleStartDate: DateTime
+  scheduleEndDate: DateTime
+  scheduleConfirmDeadline: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -512,42 +400,66 @@ input OrderWhereInput {
   member: MemberWhereInput
   orderNumber: StringFilter
   name: StringFilter
+  price: IntNullableFilter
   state: StringNullableFilter
-  relatedOrder: OrderManyRelationFilter
-  attachment: PdfWhereInput
+  isUrgent: BooleanFilter
+  needsModification: BooleanFilter
+  isReviewed: BooleanFilter
+  relatedOrder: OrderWhereInput
   paragraphOne: StringFilter
-  paragraphOneEditable: BooleanFilter
   paragraphTwo: StringFilter
-  paragraphTwoEditable: BooleanFilter
   image: PhotoWhereInput
-  imageEditable: BooleanFilter
-  demoImage: PhotoManyRelationFilter
-  schedule: StringFilter
-  scheduleEditable: BooleanFilter
+  videoDuration: IntNullableFilter
+  demoImage: PhotoWhereInput
+  attachment: PdfWhereInput
+  campaignPeriod: IntFilter
+  scheduleStartDate: DateTimeNullableFilter
+  scheduleEndDate: DateTimeNullableFilter
+  scheduleConfirmDeadline: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
 }
 
-input PhotoManyRelationFilter {
-  every: PhotoWhereInput
-  some: PhotoWhereInput
-  none: PhotoWhereInput
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
 }
 
 input OrderOrderByInput {
   id: OrderDirection
   orderNumber: OrderDirection
   name: OrderDirection
+  price: OrderDirection
   state: OrderDirection
+  isUrgent: OrderDirection
+  needsModification: OrderDirection
+  isReviewed: OrderDirection
   paragraphOne: OrderDirection
-  paragraphOneEditable: OrderDirection
   paragraphTwo: OrderDirection
-  paragraphTwoEditable: OrderDirection
-  imageEditable: OrderDirection
-  schedule: OrderDirection
-  scheduleEditable: OrderDirection
+  videoDuration: OrderDirection
+  campaignPeriod: OrderDirection
+  scheduleStartDate: OrderDirection
+  scheduleEndDate: OrderDirection
+  scheduleConfirmDeadline: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -556,18 +468,22 @@ input OrderUpdateInput {
   member: MemberRelateToOneForUpdateInput
   orderNumber: String
   name: String
+  price: Int
   state: String
-  relatedOrder: OrderRelateToManyForUpdateInput
-  attachment: PdfRelateToOneForUpdateInput
+  isUrgent: Boolean
+  needsModification: Boolean
+  isReviewed: Boolean
+  relatedOrder: OrderRelateToOneForUpdateInput
   paragraphOne: String
-  paragraphOneEditable: Boolean
   paragraphTwo: String
-  paragraphTwoEditable: Boolean
   image: PhotoRelateToOneForUpdateInput
-  imageEditable: Boolean
-  demoImage: PhotoRelateToManyForUpdateInput
-  schedule: String
-  scheduleEditable: Boolean
+  videoDuration: Int
+  demoImage: PhotoRelateToOneForUpdateInput
+  attachment: PdfRelateToOneForUpdateInput
+  campaignPeriod: Int
+  scheduleStartDate: DateTime
+  scheduleEndDate: DateTime
+  scheduleConfirmDeadline: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -580,17 +496,22 @@ input MemberRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input OrderRelateToOneForUpdateInput {
+  create: OrderCreateInput
+  connect: OrderWhereUniqueInput
+  disconnect: Boolean
+}
+
+input PhotoRelateToOneForUpdateInput {
+  create: PhotoCreateInput
+  connect: PhotoWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PdfRelateToOneForUpdateInput {
   create: PdfCreateInput
   connect: PdfWhereUniqueInput
   disconnect: Boolean
-}
-
-input PhotoRelateToManyForUpdateInput {
-  disconnect: [PhotoWhereUniqueInput!]
-  set: [PhotoWhereUniqueInput!]
-  create: [PhotoCreateInput!]
-  connect: [PhotoWhereUniqueInput!]
 }
 
 input OrderUpdateArgs {
@@ -602,18 +523,22 @@ input OrderCreateInput {
   member: MemberRelateToOneForCreateInput
   orderNumber: String
   name: String
+  price: Int
   state: String
-  relatedOrder: OrderRelateToManyForCreateInput
-  attachment: PdfRelateToOneForCreateInput
+  isUrgent: Boolean
+  needsModification: Boolean
+  isReviewed: Boolean
+  relatedOrder: OrderRelateToOneForCreateInput
   paragraphOne: String
-  paragraphOneEditable: Boolean
   paragraphTwo: String
-  paragraphTwoEditable: Boolean
   image: PhotoRelateToOneForCreateInput
-  imageEditable: Boolean
-  demoImage: PhotoRelateToManyForCreateInput
-  schedule: String
-  scheduleEditable: Boolean
+  videoDuration: Int
+  demoImage: PhotoRelateToOneForCreateInput
+  attachment: PdfRelateToOneForCreateInput
+  campaignPeriod: Int
+  scheduleStartDate: DateTime
+  scheduleEndDate: DateTime
+  scheduleConfirmDeadline: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -625,14 +550,19 @@ input MemberRelateToOneForCreateInput {
   connect: MemberWhereUniqueInput
 }
 
+input OrderRelateToOneForCreateInput {
+  create: OrderCreateInput
+  connect: OrderWhereUniqueInput
+}
+
+input PhotoRelateToOneForCreateInput {
+  create: PhotoCreateInput
+  connect: PhotoWhereUniqueInput
+}
+
 input PdfRelateToOneForCreateInput {
   create: PdfCreateInput
   connect: PdfWhereUniqueInput
-}
-
-input PhotoRelateToManyForCreateInput {
-  create: [PhotoCreateInput!]
-  connect: [PhotoWhereUniqueInput!]
 }
 
 type Pdf {
@@ -645,6 +575,12 @@ type Pdf {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+}
+
+type FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  url: String!
 }
 
 input PdfWhereUniqueInput {
@@ -682,6 +618,10 @@ input PdfUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
+input FileFieldInput {
+  upload: Upload!
+}
+
 input PdfUpdateArgs {
   where: PdfWhereUniqueInput!
   data: PdfUpdateInput!
@@ -715,12 +655,6 @@ type Mutation {
   updatePhotos(data: [PhotoUpdateArgs!]!): [Photo]
   deletePhoto(where: PhotoWhereUniqueInput!): Photo
   deletePhotos(where: [PhotoWhereUniqueInput!]!): [Photo]
-  createVideo(data: VideoCreateInput!): Video
-  createVideos(data: [VideoCreateInput!]!): [Video]
-  updateVideo(where: VideoWhereUniqueInput!, data: VideoUpdateInput!): Video
-  updateVideos(data: [VideoUpdateArgs!]!): [Video]
-  deleteVideo(where: VideoWhereUniqueInput!): Video
-  deleteVideos(where: [VideoWhereUniqueInput!]!): [Video]
   createMember(data: MemberCreateInput!): Member
   createMembers(data: [MemberCreateInput!]!): [Member]
   updateMember(where: MemberWhereUniqueInput!, data: MemberUpdateInput!): Member
@@ -769,9 +703,6 @@ type Query {
   photos(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
   photo(where: PhotoWhereUniqueInput!): Photo
   photosCount(where: PhotoWhereInput! = {}): Int
-  videos(where: VideoWhereInput! = {}, orderBy: [VideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoWhereUniqueInput): [Video!]
-  video(where: VideoWhereUniqueInput!): Video
-  videosCount(where: VideoWhereInput! = {}): Int
   members(where: MemberWhereInput! = {}, orderBy: [MemberOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MemberWhereUniqueInput): [Member!]
   member(where: MemberWhereUniqueInput!): Member
   membersCount(where: MemberWhereInput! = {}): Int

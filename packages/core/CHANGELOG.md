@@ -1,5 +1,13 @@
 # @mirrormedia/lilith-core Changelog
 
+## 2025-11-14, Version 3.0.11-beta.1
+
+### Notable Changes
+- add `createLoginLoggingPlugin` utility for logging user login events
+
+### Commits
+* Add login logging plugin utility
+
 ## 2025-04-02, Version 3.0.1
 
 ### Notable Changes

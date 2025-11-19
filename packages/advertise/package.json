@@ -22,6 +22,8 @@
     "@keystone-6/core": "5.2.0",
     "@mirrormedia/lilith-core": "^3.0.1",
     "express": "^4.17.1",
+    "finalhandler": "^2.1.0",
+    "google-auth-library": "^10.5.0",
     "http-proxy-middleware": "^2.0.3",
     "http2-proxy": "^5.0.53",
     "patch-package": "^6.4.7"

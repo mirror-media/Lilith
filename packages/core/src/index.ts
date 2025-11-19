@@ -2,6 +2,7 @@ import * as accessControl from './utils/accessControl'
 import addManualOrderRelationshipFields from './utils/manual-order-relationship'
 import { addTrackingFields } from './utils/trackingHandler'
 import { invalidateCacheAfterOperation } from './utils/invalidate-cache-after-operation'
+import { createLoginLoggingPlugin } from './utils/login-logging'
 // @ts-ignore: no type definitions
 import { draftConverter } from '@mirrormedia/lilith-draft-editor'
 import { richTextEditor } from './custom-fields/rich-text-editor'
@@ -18,6 +19,7 @@ export const utils = {
   addManualOrderRelationshipFields,
   addTrackingFields,
   invalidateCacheAfterOperation,
+  createLoginLoggingPlugin,
 }
 
 export default {
