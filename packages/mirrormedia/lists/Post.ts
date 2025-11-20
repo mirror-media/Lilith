@@ -219,7 +219,7 @@ const listConfigurations = list({
       ref: 'Section.posts',
       many: true,
       ui: {
-        labelField: 'name',
+        labelField: 'slug',
         displayMode: 'select',
         views: './lists/views/post/sections/index',
       },
@@ -233,7 +233,7 @@ const listConfigurations = list({
       ref: 'Category.posts',
       many: true,
       ui: {
-        labelField: 'name',
+        labelField: 'slug',
         displayMode: 'select',
         views: './lists/views/post/categories/index',
       },

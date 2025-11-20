@@ -79,7 +79,7 @@ export default withAuth(
       },
       images: {
         kind: 'local',
-        type: 'image',
+        type: 'file',
         storagePath: envVar.images.storagePath,
         serverRoute: {
           path: envVar.images.baseUrl,

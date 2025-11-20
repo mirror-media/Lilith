@@ -117,13 +117,13 @@ export const Field = ({
       query GetSections($where: SectionWhereInput! = {}, $userId: ID!) {
         sections(where: $where) {
           id
-          label: name
+          label: slug
         }
         user(where: { id: $userId }) {
           author {
             sections {
               id
-              label: name
+              label: slug
             }
           }
         }

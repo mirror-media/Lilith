@@ -8,7 +8,7 @@
     "start-http2-proxy-server": "node http2-proxy-server",
     "db-migrate": "keystone prisma migrate deploy",
     "build": "keystone build",
-    "postinstall": "test -n \"$WINDOWS_ONLY\" || patch-package && keystone postinstall --fix"
+    "postinstall": "test -n \"$WINDOWS_ONLY\" || patch-package"
   },
   "repository": {
     "type": "git",

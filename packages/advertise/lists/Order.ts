@@ -21,7 +21,7 @@ const orderStateOptions = [
   { label: '待排播', value: 'scheduled' },
   { label: '已播出', value: 'broadcasted' },
   { label: '提出修改要求', value: 'modification_request' },
-  { label: '待確認修改報價', value: 'pending_quote_confirmation' },
+  { label: '待加購修改', value: 'pending_quote_confirmation' },
   { label: '待設定排播日期', value: 'pending_broadcast_date' },
   { label: '已重新設定排播日期', value: 'date_reset' },
   { label: '已轉移至新訂單', value: 'transferred' },
@@ -125,11 +125,60 @@ const listConfigurations = list({
         }
       }
 
+      if (state === 'pending_quote_confirmation') {
+        if (
+          !resolvedData.needsModification &&
+          !resolvedData.needsModification
+        ) {
+          addValidationError('請勾選「此筆待修改」欄位')
+          return
+        }
+      }
+
       if (state === 'transferred') {
         const len1 = extractRelatedOrderLength(resolvedData.relatedOrder)
         const len2 = extractRelatedOrderLength(item?.relatedOrder)
         if (len1 + len2 === 0) {
           addValidationError('狀態為「已轉交」時，必須設定訂單更動')
+        }
+      }
+
+      if (state === 'to_be_confirmed') {
+        const demoImage = resolvedData.demoImage ?? item?.demoImageId
+        const attachment = resolvedData.attachment ?? item?.attachmentId
+        const scheduleConfirmDeadline =
+          resolvedData.scheduleConfirmDeadline ?? item?.scheduleConfirmDeadline
+
+        const missingFields: string[] = []
+
+        if (!demoImage) {
+          missingFields.push('影片截圖')
+        }
+        if (!attachment) {
+          missingFields.push('相關文件')
+        }
+        if (!scheduleConfirmDeadline) {
+          missingFields.push('使用者確認截止日期')
+        }
+
+        if (missingFields.length > 0) {
+          addValidationError(
+            `狀態為「待確認」時，必須填寫以下欄位：${missingFields.join('、')}`
+          )
+        }
+      }
+
+      const scheduleConfirmDeadline =
+        resolvedData.scheduleConfirmDeadline ?? item?.scheduleConfirmDeadline
+      const scheduleStartDate =
+        resolvedData.scheduleStartDate ?? item?.scheduleStartDate
+
+      if (scheduleConfirmDeadline && scheduleStartDate) {
+        const deadline = new Date(scheduleConfirmDeadline)
+        const startDate = new Date(scheduleStartDate)
+
+        if (deadline > startDate) {
+          addValidationError('確認截止日期晚於排播開始日期')
         }
       }
     },

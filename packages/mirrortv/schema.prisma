@@ -26,13 +26,59 @@ model User {
   updatedById                   Int?             @map("updatedBy")
   from_User_createdBy           User[]           @relation("User_createdBy")
   from_User_updatedBy           User[]           @relation("User_updatedBy")
+  from_Contact_createdBy        Contact[]        @relation("Contact_createdBy")
+  from_Contact_updatedBy        Contact[]        @relation("Contact_updatedBy")
   from_Partner_createdBy        Partner[]        @relation("Partner_createdBy")
   from_Partner_updatedBy        Partner[]        @relation("Partner_updatedBy")
   from_PromotionVideo_createdBy PromotionVideo[] @relation("PromotionVideo_createdBy")
   from_PromotionVideo_updatedBy PromotionVideo[] @relation("PromotionVideo_updatedBy")
   from_EditLog_createdBy        EditLog[]        @relation("EditLog_createdBy")
   from_EditLog_updatedBy        EditLog[]        @relation("EditLog_updatedBy")
+  from_Image_createdBy          Image[]          @relation("Image_createdBy")
+  from_Image_updatedBy          Image[]          @relation("Image_updatedBy")
+  from_Sale_createdBy           Sale[]           @relation("Sale_createdBy")
+  from_Sale_updatedBy           Sale[]           @relation("Sale_updatedBy")
+  from_Post_createdBy           Post[]           @relation("Post_createdBy")
+  from_Post_updatedBy           Post[]           @relation("Post_updatedBy")
+  from_Tag_createdBy            Tag[]            @relation("Tag_createdBy")
+  from_Tag_updatedBy            Tag[]            @relation("Tag_updatedBy")
+  from_Category_createdBy       Category[]       @relation("Category_createdBy")
+  from_Category_updatedBy       Category[]       @relation("Category_updatedBy")
 
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Contact {
+  id            Int       @id @default(autoincrement())
+  sortOrder     Int?      @unique
+  slug          String    @unique @default("")
+  name          String    @default("")
+  email         String    @default("")
+  anchorImg     Image?    @relation("Contact_anchorImg", fields: [anchorImgId], references: [id])
+  anchorImgId   Int?      @map("anchorImg")
+  showhostImg   Image?    @relation("Contact_showhostImg", fields: [showhostImgId], references: [id])
+  showhostImgId Int?      @map("showhostImg")
+  homepage      String    @default("")
+  facebook      String    @default("")
+  instagram     String    @default("")
+  twitter       String    @default("")
+  bio           Json?
+  anchorperson  Boolean   @default(false)
+  host          Boolean   @default(false)
+  international Boolean   @default(false)
+  bioApiData    String    @default("")
+  bioHtml       String    @default("")
+  isResigned    Boolean   @default(false)
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Contact_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Contact_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([anchorImgId])
+  @@index([showhostImgId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -90,4 +136,134 @@ model EditLog {
   @@index([postSlug])
   @@index([createdById])
   @@index([updatedById])
+}
+
+model Image {
+  id                       Int        @id @default(autoincrement())
+  name                     String     @default("")
+  file_filesize            Int?
+  file_filename            String?
+  copyright                String?    @default("Copyrighted")
+  tags                     Tag[]      @relation("Image_tags")
+  needWatermark            Boolean    @default(false)
+  keywords                 String     @default("")
+  meta                     String     @default("")
+  urlOriginal              String     @default("")
+  urlDesktopSized          String     @default("")
+  urlTabletSized           String     @default("")
+  urlMobileSized           String     @default("")
+  urlTinySized             String     @default("")
+  imageApiData             Json?
+  createdAt                DateTime?
+  updatedAt                DateTime?
+  createdBy                User?      @relation("Image_createdBy", fields: [createdById], references: [id])
+  createdById              Int?       @map("createdBy")
+  updatedBy                User?      @relation("Image_updatedBy", fields: [updatedById], references: [id])
+  updatedById              Int?       @map("updatedBy")
+  from_Contact_anchorImg   Contact[]  @relation("Contact_anchorImg")
+  from_Contact_showhostImg Contact[]  @relation("Contact_showhostImg")
+  from_Tag_ogImage         Tag[]      @relation("Tag_ogImage")
+  from_Category_ogImage    Category[] @relation("Category_ogImage")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Sale {
+  id          Int            @id @default(autoincrement())
+  sortOrder   Int
+  adPost      Post?          @relation("Sale_adPost", fields: [adPostId], references: [id])
+  adPostId    Int?           @map("adPost")
+  state       SaleStateType? @default(draft)
+  startTime   DateTime?
+  endTime     DateTime?
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?          @relation("Sale_createdBy", fields: [createdById], references: [id])
+  createdById Int?           @map("createdBy")
+  updatedBy   User?          @relation("Sale_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?           @map("updatedBy")
+
+  @@index([sortOrder])
+  @@index([adPostId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Post {
+  id               Int            @id @default(autoincrement())
+  slug             String         @unique @default("")
+  name             String         @default("untitled")
+  subtitle         String         @default("")
+  state            PostStateType? @default(draft)
+  publishTime      DateTime?
+  createdAt        DateTime?
+  updatedAt        DateTime?
+  createdBy        User?          @relation("Post_createdBy", fields: [createdById], references: [id])
+  createdById      Int?           @map("createdBy")
+  updatedBy        User?          @relation("Post_updatedBy", fields: [updatedById], references: [id])
+  updatedById      Int?           @map("updatedBy")
+  from_Sale_adPost Sale[]         @relation("Sale_adPost")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Tag {
+  id              Int       @id @default(autoincrement())
+  slug            String    @unique @default("")
+  name            String    @unique @default("")
+  ogTitle         String    @default("")
+  ogDescription   String    @default("")
+  ogImage         Image?    @relation("Tag_ogImage", fields: [ogImageId], references: [id])
+  ogImageId       Int?      @map("ogImage")
+  createdAt       DateTime?
+  updatedAt       DateTime?
+  createdBy       User?     @relation("Tag_createdBy", fields: [createdById], references: [id])
+  createdById     Int?      @map("createdBy")
+  updatedBy       User?     @relation("Tag_updatedBy", fields: [updatedById], references: [id])
+  updatedById     Int?      @map("updatedBy")
+  from_Image_tags Image[]   @relation("Image_tags")
+
+  @@index([ogImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Category {
+  id            Int       @id @default(autoincrement())
+  sortOrder     Int       @unique
+  slug          String    @unique @default("")
+  name          String    @default("")
+  ogTitle       String    @default("")
+  ogDescription String    @default("")
+  ogImage       Image?    @relation("Category_ogImage", fields: [ogImageId], references: [id])
+  ogImageId     Int?      @map("ogImage")
+  isFeatured    Boolean   @default(false)
+  style         String?   @default("normal")
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Category_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Category_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([ogImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+enum SaleStateType {
+  draft
+  published
+  scheduled
+  archived
+}
+
+enum PostStateType {
+  draft
+  published
+  scheduled
+  archived
+  invisible
 }
