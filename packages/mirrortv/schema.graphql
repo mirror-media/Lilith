@@ -408,6 +408,146 @@ input EditLogCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Image {
+  id: ID!
+  name: String
+  file: FileFieldOutput
+  copyright: String
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
+  needWatermark: Boolean
+  keywords: String
+  meta: String
+  urlOriginal: String
+  urlDesktopSized: String
+  urlTabletSized: String
+  urlMobileSized: String
+  urlTinySized: String
+  imageApiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+type FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  url: String!
+}
+
+input ImageWhereUniqueInput {
+  id: ID
+}
+
+input ImageWhereInput {
+  AND: [ImageWhereInput!]
+  OR: [ImageWhereInput!]
+  NOT: [ImageWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  copyright: StringNullableFilter
+  tags: TagManyRelationFilter
+  needWatermark: BooleanFilter
+  keywords: StringFilter
+  meta: StringFilter
+  urlOriginal: StringFilter
+  urlDesktopSized: StringFilter
+  urlTabletSized: StringFilter
+  urlMobileSized: StringFilter
+  urlTinySized: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input TagManyRelationFilter {
+  every: TagWhereInput
+  some: TagWhereInput
+  none: TagWhereInput
+}
+
+input ImageOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  copyright: OrderDirection
+  needWatermark: OrderDirection
+  keywords: OrderDirection
+  meta: OrderDirection
+  urlOriginal: OrderDirection
+  urlDesktopSized: OrderDirection
+  urlTabletSized: OrderDirection
+  urlMobileSized: OrderDirection
+  urlTinySized: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ImageUpdateInput {
+  name: String
+  file: FileFieldInput
+  copyright: String
+  tags: TagRelateToManyForUpdateInput
+  needWatermark: Boolean
+  keywords: String
+  meta: String
+  urlOriginal: String
+  urlDesktopSized: String
+  urlTabletSized: String
+  urlMobileSized: String
+  urlTinySized: String
+  imageApiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input FileFieldInput {
+  upload: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input TagRelateToManyForUpdateInput {
+  disconnect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
+}
+
+input ImageUpdateArgs {
+  where: ImageWhereUniqueInput!
+  data: ImageUpdateInput!
+}
+
+input ImageCreateInput {
+  name: String
+  file: FileFieldInput
+  copyright: String
+  tags: TagRelateToManyForCreateInput
+  needWatermark: Boolean
+  keywords: String
+  meta: String
+  urlOriginal: String
+  urlDesktopSized: String
+  urlTabletSized: String
+  urlMobileSized: String
+  urlTinySized: String
+  imageApiData: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input TagRelateToManyForCreateInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
+}
+
 type Sale {
   id: ID!
   sortOrder: Int
@@ -605,6 +745,91 @@ input PostCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Tag {
+  id: ID!
+  slug: String
+  name: String
+  ogTitle: String
+  ogDescription: String
+  ogImage: Image
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input TagWhereUniqueInput {
+  id: ID
+  slug: String
+  name: String
+}
+
+input TagWhereInput {
+  AND: [TagWhereInput!]
+  OR: [TagWhereInput!]
+  NOT: [TagWhereInput!]
+  id: IDFilter
+  slug: StringFilter
+  name: StringFilter
+  ogTitle: StringFilter
+  ogDescription: StringFilter
+  ogImage: ImageWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input TagOrderByInput {
+  id: OrderDirection
+  slug: OrderDirection
+  name: OrderDirection
+  ogTitle: OrderDirection
+  ogDescription: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input TagUpdateInput {
+  slug: String
+  name: String
+  ogTitle: String
+  ogDescription: String
+  ogImage: ImageRelateToOneForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ImageRelateToOneForUpdateInput {
+  create: ImageCreateInput
+  connect: ImageWhereUniqueInput
+  disconnect: Boolean
+}
+
+input TagUpdateArgs {
+  where: TagWhereUniqueInput!
+  data: TagUpdateInput!
+}
+
+input TagCreateInput {
+  slug: String
+  name: String
+  ogTitle: String
+  ogDescription: String
+  ogImage: ImageRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input ImageRelateToOneForCreateInput {
+  create: ImageCreateInput
+  connect: ImageWhereUniqueInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -635,6 +860,12 @@ type Mutation {
   updateEditLogs(data: [EditLogUpdateArgs!]!): [EditLog]
   deleteEditLog(where: EditLogWhereUniqueInput!): EditLog
   deleteEditLogs(where: [EditLogWhereUniqueInput!]!): [EditLog]
+  createImage(data: ImageCreateInput!): Image
+  createImages(data: [ImageCreateInput!]!): [Image]
+  updateImage(where: ImageWhereUniqueInput!, data: ImageUpdateInput!): Image
+  updateImages(data: [ImageUpdateArgs!]!): [Image]
+  deleteImage(where: ImageWhereUniqueInput!): Image
+  deleteImages(where: [ImageWhereUniqueInput!]!): [Image]
   createSale(data: SaleCreateInput!): Sale
   createSales(data: [SaleCreateInput!]!): [Sale]
   updateSale(where: SaleWhereUniqueInput!, data: SaleUpdateInput!): Sale
@@ -647,6 +878,12 @@ type Mutation {
   updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
+  createTag(data: TagCreateInput!): Tag
+  createTags(data: [TagCreateInput!]!): [Tag]
+  updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag
+  updateTags(data: [TagUpdateArgs!]!): [Tag]
+  deleteTag(where: TagWhereUniqueInput!): Tag
+  deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -683,12 +920,18 @@ type Query {
   editLogs(where: EditLogWhereInput! = {}, orderBy: [EditLogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EditLogWhereUniqueInput): [EditLog!]
   editLog(where: EditLogWhereUniqueInput!): EditLog
   editLogsCount(where: EditLogWhereInput! = {}): Int
+  images(where: ImageWhereInput! = {}, orderBy: [ImageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ImageWhereUniqueInput): [Image!]
+  image(where: ImageWhereUniqueInput!): Image
+  imagesCount(where: ImageWhereInput! = {}): Int
   sales(where: SaleWhereInput! = {}, orderBy: [SaleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SaleWhereUniqueInput): [Sale!]
   sale(where: SaleWhereUniqueInput!): Sale
   salesCount(where: SaleWhereInput! = {}): Int
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tag(where: TagWhereUniqueInput!): Tag
+  tagsCount(where: TagWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
