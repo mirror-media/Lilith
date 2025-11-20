@@ -63,21 +63,16 @@ const listConfigurations = list({
       label: '鏡國際',
       defaultValue: false,
     }),
-    // [TODO] enable these relationships after Show and Serie lists are created
-    /*
     relatedShows: relationship({
       label: '關聯藝文節目',
       ref: 'Show.hostName',
       many: true,
     }),
-    */
-    /*
     relatedSeries: relationship({
       label: '關聯節目單元',
-      ref: 'Serie.relatedContacts', 
+      ref: 'Serie.relatedContacts',
       many: true,
     }),
-    */
     bioApiData: text({
       label: 'bio API Data',
       ui: {

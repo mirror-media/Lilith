@@ -38,6 +38,12 @@ model User {
   from_Image_updatedBy          Image[]          @relation("Image_updatedBy")
   from_Sale_createdBy           Sale[]           @relation("Sale_createdBy")
   from_Sale_updatedBy           Sale[]           @relation("Sale_updatedBy")
+  from_Section_createdBy        Section[]        @relation("Section_createdBy")
+  from_Section_updatedBy        Section[]        @relation("Section_updatedBy")
+  from_Serie_createdBy          Serie[]          @relation("Serie_createdBy")
+  from_Serie_updatedBy          Serie[]          @relation("Serie_updatedBy")
+  from_Show_createdBy           Show[]           @relation("Show_createdBy")
+  from_Show_updatedBy           Show[]           @relation("Show_updatedBy")
   from_Post_createdBy           Post[]           @relation("Post_createdBy")
   from_Post_updatedBy           Post[]           @relation("Post_updatedBy")
   from_Tag_createdBy            Tag[]            @relation("Tag_createdBy")
@@ -50,32 +56,36 @@ model User {
 }
 
 model Contact {
-  id            Int       @id @default(autoincrement())
-  sortOrder     Int?      @unique
-  slug          String    @unique @default("")
-  name          String    @default("")
-  email         String    @default("")
-  anchorImg     Image?    @relation("Contact_anchorImg", fields: [anchorImgId], references: [id])
-  anchorImgId   Int?      @map("anchorImg")
-  showhostImg   Image?    @relation("Contact_showhostImg", fields: [showhostImgId], references: [id])
-  showhostImgId Int?      @map("showhostImg")
-  homepage      String    @default("")
-  facebook      String    @default("")
-  instagram     String    @default("")
-  twitter       String    @default("")
-  bio           Json?
-  anchorperson  Boolean   @default(false)
-  host          Boolean   @default(false)
-  international Boolean   @default(false)
-  bioApiData    String    @default("")
-  bioHtml       String    @default("")
-  isResigned    Boolean   @default(false)
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?     @relation("Contact_createdBy", fields: [createdById], references: [id])
-  createdById   Int?      @map("createdBy")
-  updatedBy     User?     @relation("Contact_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?      @map("updatedBy")
+  id                  Int       @id @default(autoincrement())
+  sortOrder           Int?      @unique
+  slug                String    @unique @default("")
+  name                String    @default("")
+  email               String    @default("")
+  anchorImg           Image?    @relation("Contact_anchorImg", fields: [anchorImgId], references: [id])
+  anchorImgId         Int?      @map("anchorImg")
+  showhostImg         Image?    @relation("Contact_showhostImg", fields: [showhostImgId], references: [id])
+  showhostImgId       Int?      @map("showhostImg")
+  homepage            String    @default("")
+  facebook            String    @default("")
+  instagram           String    @default("")
+  twitter             String    @default("")
+  bio                 Json?
+  anchorperson        Boolean   @default(false)
+  host                Boolean   @default(false)
+  international       Boolean   @default(false)
+  relatedShows        Show[]    @relation("Contact_relatedShows")
+  relatedSeries       Serie[]   @relation("Contact_relatedSeries")
+  bioApiData          String    @default("")
+  bioHtml             String    @default("")
+  isResigned          Boolean   @default(false)
+  createdAt           DateTime?
+  updatedAt           DateTime?
+  createdBy           User?     @relation("Contact_createdBy", fields: [createdById], references: [id])
+  createdById         Int?      @map("createdBy")
+  updatedBy           User?     @relation("Contact_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?      @map("updatedBy")
+  from_Section_host   Section[] @relation("Section_host")
+  from_Show_staffName Show[]    @relation("Show_staffName")
 
   @@index([anchorImgId])
   @@index([showhostImgId])
@@ -162,6 +172,9 @@ model Image {
   updatedById              Int?       @map("updatedBy")
   from_Contact_anchorImg   Contact[]  @relation("Contact_anchorImg")
   from_Contact_showhostImg Contact[]  @relation("Contact_showhostImg")
+  from_Serie_heroImage     Serie[]    @relation("Serie_heroImage")
+  from_Show_bannerImg      Show[]     @relation("Show_bannerImg")
+  from_Show_picture        Show[]     @relation("Show_picture")
   from_Tag_ogImage         Tag[]      @relation("Tag_ogImage")
   from_Category_ogImage    Category[] @relation("Category_ogImage")
 
@@ -186,6 +199,84 @@ model Sale {
 
   @@index([sortOrder])
   @@index([adPostId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Section {
+  id           Int       @id @default(autoincrement())
+  slug         String    @unique @default("")
+  name         String    @default("")
+  host         Contact[] @relation("Section_host")
+  show         Show[]    @relation("Section_show")
+  series       Serie[]   @relation("Section_series")
+  introduction String    @default("")
+  style        String?   @default("default")
+  trailerUrl   String    @default("")
+  createdAt    DateTime?
+  updatedAt    DateTime?
+  createdBy    User?     @relation("Section_createdBy", fields: [createdById], references: [id])
+  createdById  Int?      @map("createdBy")
+  updatedBy    User?     @relation("Section_updatedBy", fields: [updatedById], references: [id])
+  updatedById  Int?      @map("updatedBy")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Serie {
+  id                  Int       @id @default(autoincrement())
+  slug                String    @unique @default("")
+  name                String    @default("")
+  heroImage           Image?    @relation("Serie_heroImage", fields: [heroImageId], references: [id])
+  heroImageId         Int?      @map("heroImage")
+  introduction        Json?
+  section             Section[] @relation("Section_series")
+  relatedContacts     Contact[] @relation("Contact_relatedSeries")
+  style               String?   @default("default")
+  introductionApiData String    @default("")
+  introductionHtml    String    @default("")
+  createdAt           DateTime?
+  updatedAt           DateTime?
+  createdBy           User?     @relation("Serie_createdBy", fields: [createdById], references: [id])
+  createdById         Int?      @map("createdBy")
+  updatedBy           User?     @relation("Serie_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?      @map("updatedBy")
+
+  @@index([heroImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Show {
+  id              Int       @id @default(autoincrement())
+  slug            String    @unique @default("")
+  name            String    @default("")
+  sections        Section[] @relation("Section_show")
+  isArtShow       Boolean   @default(false)
+  bannerImg       Image?    @relation("Show_bannerImg", fields: [bannerImgId], references: [id])
+  bannerImgId     Int?      @map("bannerImg")
+  picture         Image?    @relation("Show_picture", fields: [pictureId], references: [id])
+  pictureId       Int?      @map("picture")
+  sortOrder       Int?      @unique
+  introduction    String    @default("")
+  hostName        Contact[] @relation("Contact_relatedShows")
+  staffName       Contact[] @relation("Show_staffName")
+  igUrl           String    @default("")
+  facebookUrl     String    @default("")
+  playList01      String    @default("")
+  playList02      String    @default("")
+  listShow        Boolean   @default(false)
+  trailerPlaylist String    @default("")
+  createdAt       DateTime?
+  updatedAt       DateTime?
+  createdBy       User?     @relation("Show_createdBy", fields: [createdById], references: [id])
+  createdById     Int?      @map("createdBy")
+  updatedBy       User?     @relation("Show_updatedBy", fields: [updatedById], references: [id])
+  updatedById     Int?      @map("updatedBy")
+
+  @@index([bannerImgId])
+  @@index([pictureId])
   @@index([createdById])
   @@index([updatedById])
 }

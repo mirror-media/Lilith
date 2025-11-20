@@ -172,6 +172,10 @@ type Contact {
   anchorperson: Boolean
   host: Boolean
   international: Boolean
+  relatedShows(where: ShowWhereInput! = {}, orderBy: [ShowOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ShowWhereUniqueInput): [Show!]
+  relatedShowsCount(where: ShowWhereInput! = {}): Int
+  relatedSeries(where: SerieWhereInput! = {}, orderBy: [SerieOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SerieWhereUniqueInput): [Serie!]
+  relatedSeriesCount(where: SerieWhereInput! = {}): Int
   bioApiData: String
   bioHtml: String
   isResigned: Boolean
@@ -205,6 +209,8 @@ input ContactWhereInput {
   anchorperson: BooleanFilter
   host: BooleanFilter
   international: BooleanFilter
+  relatedShows: ShowManyRelationFilter
+  relatedSeries: SerieManyRelationFilter
   bioApiData: StringFilter
   bioHtml: StringFilter
   isResigned: BooleanFilter
@@ -223,6 +229,18 @@ input IntNullableFilter {
   gt: Int
   gte: Int
   not: IntNullableFilter
+}
+
+input ShowManyRelationFilter {
+  every: ShowWhereInput
+  some: ShowWhereInput
+  none: ShowWhereInput
+}
+
+input SerieManyRelationFilter {
+  every: SerieWhereInput
+  some: SerieWhereInput
+  none: SerieWhereInput
 }
 
 input ContactOrderByInput {
@@ -260,6 +278,8 @@ input ContactUpdateInput {
   anchorperson: Boolean
   host: Boolean
   international: Boolean
+  relatedShows: ShowRelateToManyForUpdateInput
+  relatedSeries: SerieRelateToManyForUpdateInput
   bioApiData: String
   bioHtml: String
   isResigned: Boolean
@@ -273,6 +293,20 @@ input ImageRelateToOneForUpdateInput {
   create: ImageCreateInput
   connect: ImageWhereUniqueInput
   disconnect: Boolean
+}
+
+input ShowRelateToManyForUpdateInput {
+  disconnect: [ShowWhereUniqueInput!]
+  set: [ShowWhereUniqueInput!]
+  create: [ShowCreateInput!]
+  connect: [ShowWhereUniqueInput!]
+}
+
+input SerieRelateToManyForUpdateInput {
+  disconnect: [SerieWhereUniqueInput!]
+  set: [SerieWhereUniqueInput!]
+  create: [SerieCreateInput!]
+  connect: [SerieWhereUniqueInput!]
 }
 
 input ContactUpdateArgs {
@@ -295,6 +329,8 @@ input ContactCreateInput {
   anchorperson: Boolean
   host: Boolean
   international: Boolean
+  relatedShows: ShowRelateToManyForCreateInput
+  relatedSeries: SerieRelateToManyForCreateInput
   bioApiData: String
   bioHtml: String
   isResigned: Boolean
@@ -307,6 +343,16 @@ input ContactCreateInput {
 input ImageRelateToOneForCreateInput {
   create: ImageCreateInput
   connect: ImageWhereUniqueInput
+}
+
+input ShowRelateToManyForCreateInput {
+  create: [ShowCreateInput!]
+  connect: [ShowWhereUniqueInput!]
+}
+
+input SerieRelateToManyForCreateInput {
+  create: [SerieCreateInput!]
+  connect: [SerieWhereUniqueInput!]
 }
 
 type Partner {
@@ -798,6 +844,350 @@ input PostRelateToOneForCreateInput {
   connect: PostWhereUniqueInput
 }
 
+type Section {
+  id: ID!
+  slug: String
+  name: String
+  host(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
+  hostCount(where: ContactWhereInput! = {}): Int
+  show(where: ShowWhereInput! = {}, orderBy: [ShowOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ShowWhereUniqueInput): [Show!]
+  showCount(where: ShowWhereInput! = {}): Int
+  series(where: SerieWhereInput! = {}, orderBy: [SerieOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SerieWhereUniqueInput): [Serie!]
+  seriesCount(where: SerieWhereInput! = {}): Int
+  introduction: String
+  style: String
+  trailerUrl: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input SectionWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input SectionWhereInput {
+  AND: [SectionWhereInput!]
+  OR: [SectionWhereInput!]
+  NOT: [SectionWhereInput!]
+  id: IDFilter
+  slug: StringFilter
+  name: StringFilter
+  host: ContactManyRelationFilter
+  show: ShowManyRelationFilter
+  series: SerieManyRelationFilter
+  introduction: StringFilter
+  style: StringNullableFilter
+  trailerUrl: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ContactManyRelationFilter {
+  every: ContactWhereInput
+  some: ContactWhereInput
+  none: ContactWhereInput
+}
+
+input SectionOrderByInput {
+  id: OrderDirection
+  slug: OrderDirection
+  name: OrderDirection
+  introduction: OrderDirection
+  style: OrderDirection
+  trailerUrl: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input SectionUpdateInput {
+  slug: String
+  name: String
+  host: ContactRelateToManyForUpdateInput
+  show: ShowRelateToManyForUpdateInput
+  series: SerieRelateToManyForUpdateInput
+  introduction: String
+  style: String
+  trailerUrl: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ContactRelateToManyForUpdateInput {
+  disconnect: [ContactWhereUniqueInput!]
+  set: [ContactWhereUniqueInput!]
+  create: [ContactCreateInput!]
+  connect: [ContactWhereUniqueInput!]
+}
+
+input SectionUpdateArgs {
+  where: SectionWhereUniqueInput!
+  data: SectionUpdateInput!
+}
+
+input SectionCreateInput {
+  slug: String
+  name: String
+  host: ContactRelateToManyForCreateInput
+  show: ShowRelateToManyForCreateInput
+  series: SerieRelateToManyForCreateInput
+  introduction: String
+  style: String
+  trailerUrl: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input ContactRelateToManyForCreateInput {
+  create: [ContactCreateInput!]
+  connect: [ContactWhereUniqueInput!]
+}
+
+type Serie {
+  id: ID!
+  slug: String
+  name: String
+  heroImage: Image
+  introduction: JSON
+  section(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
+  sectionCount(where: SectionWhereInput! = {}): Int
+  relatedContacts(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
+  relatedContactsCount(where: ContactWhereInput! = {}): Int
+  style: String
+  introductionApiData: String
+  introductionHtml: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input SerieWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input SerieWhereInput {
+  AND: [SerieWhereInput!]
+  OR: [SerieWhereInput!]
+  NOT: [SerieWhereInput!]
+  id: IDFilter
+  slug: StringFilter
+  name: StringFilter
+  heroImage: ImageWhereInput
+  section: SectionManyRelationFilter
+  relatedContacts: ContactManyRelationFilter
+  style: StringNullableFilter
+  introductionApiData: StringFilter
+  introductionHtml: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input SectionManyRelationFilter {
+  every: SectionWhereInput
+  some: SectionWhereInput
+  none: SectionWhereInput
+}
+
+input SerieOrderByInput {
+  id: OrderDirection
+  slug: OrderDirection
+  name: OrderDirection
+  style: OrderDirection
+  introductionApiData: OrderDirection
+  introductionHtml: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input SerieUpdateInput {
+  slug: String
+  name: String
+  heroImage: ImageRelateToOneForUpdateInput
+  introduction: JSON
+  section: SectionRelateToManyForUpdateInput
+  relatedContacts: ContactRelateToManyForUpdateInput
+  style: String
+  introductionApiData: String
+  introductionHtml: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input SectionRelateToManyForUpdateInput {
+  disconnect: [SectionWhereUniqueInput!]
+  set: [SectionWhereUniqueInput!]
+  create: [SectionCreateInput!]
+  connect: [SectionWhereUniqueInput!]
+}
+
+input SerieUpdateArgs {
+  where: SerieWhereUniqueInput!
+  data: SerieUpdateInput!
+}
+
+input SerieCreateInput {
+  slug: String
+  name: String
+  heroImage: ImageRelateToOneForCreateInput
+  introduction: JSON
+  section: SectionRelateToManyForCreateInput
+  relatedContacts: ContactRelateToManyForCreateInput
+  style: String
+  introductionApiData: String
+  introductionHtml: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input SectionRelateToManyForCreateInput {
+  create: [SectionCreateInput!]
+  connect: [SectionWhereUniqueInput!]
+}
+
+type Show {
+  id: ID!
+  slug: String
+  name: String
+  sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
+  sectionsCount(where: SectionWhereInput! = {}): Int
+  isArtShow: Boolean
+  bannerImg: Image
+  picture: Image
+  sortOrder: Int
+  introduction: String
+  hostName(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
+  hostNameCount(where: ContactWhereInput! = {}): Int
+  staffName(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
+  staffNameCount(where: ContactWhereInput! = {}): Int
+  igUrl: String
+  facebookUrl: String
+  playList01: String
+  playList02: String
+  listShow: Boolean
+  trailerPlaylist: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ShowWhereUniqueInput {
+  id: ID
+  slug: String
+  sortOrder: Int
+}
+
+input ShowWhereInput {
+  AND: [ShowWhereInput!]
+  OR: [ShowWhereInput!]
+  NOT: [ShowWhereInput!]
+  id: IDFilter
+  slug: StringFilter
+  name: StringFilter
+  sections: SectionManyRelationFilter
+  isArtShow: BooleanFilter
+  bannerImg: ImageWhereInput
+  picture: ImageWhereInput
+  sortOrder: IntNullableFilter
+  introduction: StringFilter
+  hostName: ContactManyRelationFilter
+  staffName: ContactManyRelationFilter
+  igUrl: StringFilter
+  facebookUrl: StringFilter
+  playList01: StringFilter
+  playList02: StringFilter
+  listShow: BooleanFilter
+  trailerPlaylist: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ShowOrderByInput {
+  id: OrderDirection
+  slug: OrderDirection
+  name: OrderDirection
+  isArtShow: OrderDirection
+  sortOrder: OrderDirection
+  introduction: OrderDirection
+  igUrl: OrderDirection
+  facebookUrl: OrderDirection
+  playList01: OrderDirection
+  playList02: OrderDirection
+  listShow: OrderDirection
+  trailerPlaylist: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ShowUpdateInput {
+  slug: String
+  name: String
+  sections: SectionRelateToManyForUpdateInput
+  isArtShow: Boolean
+  bannerImg: ImageRelateToOneForUpdateInput
+  picture: ImageRelateToOneForUpdateInput
+  sortOrder: Int
+  introduction: String
+  hostName: ContactRelateToManyForUpdateInput
+  staffName: ContactRelateToManyForUpdateInput
+  igUrl: String
+  facebookUrl: String
+  playList01: String
+  playList02: String
+  listShow: Boolean
+  trailerPlaylist: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ShowUpdateArgs {
+  where: ShowWhereUniqueInput!
+  data: ShowUpdateInput!
+}
+
+input ShowCreateInput {
+  slug: String
+  name: String
+  sections: SectionRelateToManyForCreateInput
+  isArtShow: Boolean
+  bannerImg: ImageRelateToOneForCreateInput
+  picture: ImageRelateToOneForCreateInput
+  sortOrder: Int
+  introduction: String
+  hostName: ContactRelateToManyForCreateInput
+  staffName: ContactRelateToManyForCreateInput
+  igUrl: String
+  facebookUrl: String
+  playList01: String
+  playList02: String
+  listShow: Boolean
+  trailerPlaylist: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 type Post {
   id: ID!
   slug: String
@@ -1098,6 +1488,24 @@ type Mutation {
   updateSales(data: [SaleUpdateArgs!]!): [Sale]
   deleteSale(where: SaleWhereUniqueInput!): Sale
   deleteSales(where: [SaleWhereUniqueInput!]!): [Sale]
+  createSection(data: SectionCreateInput!): Section
+  createSections(data: [SectionCreateInput!]!): [Section]
+  updateSection(where: SectionWhereUniqueInput!, data: SectionUpdateInput!): Section
+  updateSections(data: [SectionUpdateArgs!]!): [Section]
+  deleteSection(where: SectionWhereUniqueInput!): Section
+  deleteSections(where: [SectionWhereUniqueInput!]!): [Section]
+  createSerie(data: SerieCreateInput!): Serie
+  createSeries(data: [SerieCreateInput!]!): [Serie]
+  updateSerie(where: SerieWhereUniqueInput!, data: SerieUpdateInput!): Serie
+  updateSeries(data: [SerieUpdateArgs!]!): [Serie]
+  deleteSerie(where: SerieWhereUniqueInput!): Serie
+  deleteSeries(where: [SerieWhereUniqueInput!]!): [Serie]
+  createShow(data: ShowCreateInput!): Show
+  createShows(data: [ShowCreateInput!]!): [Show]
+  updateShow(where: ShowWhereUniqueInput!, data: ShowUpdateInput!): Show
+  updateShows(data: [ShowUpdateArgs!]!): [Show]
+  deleteShow(where: ShowWhereUniqueInput!): Show
+  deleteShows(where: [ShowWhereUniqueInput!]!): [Show]
   createPost(data: PostCreateInput!): Post
   createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
@@ -1161,6 +1569,15 @@ type Query {
   sales(where: SaleWhereInput! = {}, orderBy: [SaleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SaleWhereUniqueInput): [Sale!]
   sale(where: SaleWhereUniqueInput!): Sale
   salesCount(where: SaleWhereInput! = {}): Int
+  sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
+  section(where: SectionWhereUniqueInput!): Section
+  sectionsCount(where: SectionWhereInput! = {}): Int
+  series(where: SerieWhereInput! = {}, orderBy: [SerieOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SerieWhereUniqueInput): [Serie!]
+  serie(where: SerieWhereUniqueInput!): Serie
+  seriesCount(where: SerieWhereInput! = {}): Int
+  shows(where: ShowWhereInput! = {}, orderBy: [ShowOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ShowWhereUniqueInput): [Show!]
+  show(where: ShowWhereUniqueInput!): Show
+  showsCount(where: ShowWhereInput! = {}): Int
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
