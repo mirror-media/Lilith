@@ -408,6 +408,203 @@ input EditLogCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Sale {
+  id: ID!
+  sortOrder: Int
+  adPost: Post
+  state: SaleStateType
+  startTime: DateTime
+  endTime: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum SaleStateType {
+  draft
+  published
+  scheduled
+  archived
+}
+
+input SaleWhereUniqueInput {
+  id: ID
+}
+
+input SaleWhereInput {
+  AND: [SaleWhereInput!]
+  OR: [SaleWhereInput!]
+  NOT: [SaleWhereInput!]
+  id: IDFilter
+  sortOrder: IntFilter
+  adPost: PostWhereInput
+  state: SaleStateTypeNullableFilter
+  startTime: DateTimeNullableFilter
+  endTime: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
+}
+
+input SaleStateTypeNullableFilter {
+  equals: SaleStateType
+  in: [SaleStateType!]
+  notIn: [SaleStateType!]
+  not: SaleStateTypeNullableFilter
+}
+
+input SaleOrderByInput {
+  id: OrderDirection
+  sortOrder: OrderDirection
+  state: OrderDirection
+  startTime: OrderDirection
+  endTime: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input SaleUpdateInput {
+  sortOrder: Int
+  adPost: PostRelateToOneForUpdateInput
+  state: SaleStateType
+  startTime: DateTime
+  endTime: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PostRelateToOneForUpdateInput {
+  create: PostCreateInput
+  connect: PostWhereUniqueInput
+  disconnect: Boolean
+}
+
+input SaleUpdateArgs {
+  where: SaleWhereUniqueInput!
+  data: SaleUpdateInput!
+}
+
+input SaleCreateInput {
+  sortOrder: Int
+  adPost: PostRelateToOneForCreateInput
+  state: SaleStateType
+  startTime: DateTime
+  endTime: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input PostRelateToOneForCreateInput {
+  create: PostCreateInput
+  connect: PostWhereUniqueInput
+}
+
+type Post {
+  id: ID!
+  slug: String
+  name: String
+  subtitle: String
+  state: PostStateType
+  publishTime: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+enum PostStateType {
+  draft
+  published
+  scheduled
+  archived
+  invisible
+}
+
+input PostWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+  id: IDFilter
+  slug: StringFilter
+  name: StringFilter
+  subtitle: StringFilter
+  state: PostStateTypeNullableFilter
+  publishTime: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PostStateTypeNullableFilter {
+  equals: PostStateType
+  in: [PostStateType!]
+  notIn: [PostStateType!]
+  not: PostStateTypeNullableFilter
+}
+
+input PostOrderByInput {
+  id: OrderDirection
+  slug: OrderDirection
+  name: OrderDirection
+  subtitle: OrderDirection
+  state: OrderDirection
+  publishTime: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PostUpdateInput {
+  slug: String
+  name: String
+  subtitle: String
+  state: PostStateType
+  publishTime: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PostUpdateArgs {
+  where: PostWhereUniqueInput!
+  data: PostUpdateInput!
+}
+
+input PostCreateInput {
+  slug: String
+  name: String
+  subtitle: String
+  state: PostStateType
+  publishTime: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -438,6 +635,18 @@ type Mutation {
   updateEditLogs(data: [EditLogUpdateArgs!]!): [EditLog]
   deleteEditLog(where: EditLogWhereUniqueInput!): EditLog
   deleteEditLogs(where: [EditLogWhereUniqueInput!]!): [EditLog]
+  createSale(data: SaleCreateInput!): Sale
+  createSales(data: [SaleCreateInput!]!): [Sale]
+  updateSale(where: SaleWhereUniqueInput!, data: SaleUpdateInput!): Sale
+  updateSales(data: [SaleUpdateArgs!]!): [Sale]
+  deleteSale(where: SaleWhereUniqueInput!): Sale
+  deleteSales(where: [SaleWhereUniqueInput!]!): [Sale]
+  createPost(data: PostCreateInput!): Post
+  createPosts(data: [PostCreateInput!]!): [Post]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostUpdateArgs!]!): [Post]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -474,6 +683,12 @@ type Query {
   editLogs(where: EditLogWhereInput! = {}, orderBy: [EditLogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EditLogWhereUniqueInput): [EditLog!]
   editLog(where: EditLogWhereUniqueInput!): EditLog
   editLogsCount(where: EditLogWhereInput! = {}): Int
+  sales(where: SaleWhereInput! = {}, orderBy: [SaleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SaleWhereUniqueInput): [Sale!]
+  sale(where: SaleWhereUniqueInput!): Sale
+  salesCount(where: SaleWhereInput! = {}): Int
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  post(where: PostWhereUniqueInput!): Post
+  postsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
