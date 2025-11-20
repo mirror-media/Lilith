@@ -8,6 +8,9 @@ import Tag from './Tag'
 import Image from './Image'
 import Category from './Category'
 import Contact from './Contact'
+import Show from './Show'
+import Serie from './Serie'
+import Section from './Section'
 
 export const listDefinition = {
   User,
@@ -17,6 +20,9 @@ export const listDefinition = {
   EditLog,
   Image,
   Sale,
+  Section,
+  Serie,
+  Show,
   Post,
   Tag,
   Category,
