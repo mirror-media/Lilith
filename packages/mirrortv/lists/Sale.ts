@@ -10,6 +10,28 @@ import {
 const { allowRoles, admin, moderator, editor, contributor, owner } =
   utils.accessControl
 
+import envVar from '../environment-variables'
+import { ACL, UserRole, type Session } from '../type'
+// 前端匿名或不同環境的 filter
+function filterByServerType(roles: UserRole[]) {
+  return ({ session }: { session?: Session }) => {
+    switch (envVar.accessControlStrategy) {
+      case ACL.GraphQL:
+        // 前端網站只顯示已發布或可見項目
+        return { state: { in: ['published', 'invisible'] } }
+      case ACL.Preview:
+        // Preview 顯示全部
+        return true
+      case ACL.CMS:
+      default:
+        // CMS 只有登入角色可見
+        return (
+          session?.data?.role !== undefined && roles.includes(session.data.role)
+        )
+    }
+  }
+}
+
 const listConfigurations = list({
   fields: {
     sortOrder: integer({
@@ -56,6 +78,15 @@ const listConfigurations = list({
       update: allowRoles(admin, moderator, editor, contributor),
       create: allowRoles(admin, moderator, editor, contributor),
       delete: allowRoles(admin, moderator),
+    },
+    filter: {
+      // 針對前端匿名或不同 server type 做過濾
+      query: filterByServerType([
+        UserRole.Admin,
+        UserRole.Moderator,
+        UserRole.Editor,
+        UserRole.Contributor,
+      ]),
     },
   },
 
