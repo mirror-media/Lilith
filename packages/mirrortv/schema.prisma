@@ -40,6 +40,8 @@ model User {
   from_Post_updatedBy           Post[]           @relation("Post_updatedBy")
   from_Tag_createdBy            Tag[]            @relation("Tag_createdBy")
   from_Tag_updatedBy            Tag[]            @relation("Tag_updatedBy")
+  from_Category_createdBy       Category[]       @relation("Category_createdBy")
+  from_Category_updatedBy       Category[]       @relation("Category_updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
@@ -101,28 +103,29 @@ model EditLog {
 }
 
 model Image {
-  id               Int       @id @default(autoincrement())
-  name             String    @default("")
-  file_filesize    Int?
-  file_filename    String?
-  copyright        String?   @default("Copyrighted")
-  tags             Tag[]     @relation("Image_tags")
-  needWatermark    Boolean   @default(false)
-  keywords         String    @default("")
-  meta             String    @default("")
-  urlOriginal      String    @default("")
-  urlDesktopSized  String    @default("")
-  urlTabletSized   String    @default("")
-  urlMobileSized   String    @default("")
-  urlTinySized     String    @default("")
-  imageApiData     Json?
-  createdAt        DateTime?
-  updatedAt        DateTime?
-  createdBy        User?     @relation("Image_createdBy", fields: [createdById], references: [id])
-  createdById      Int?      @map("createdBy")
-  updatedBy        User?     @relation("Image_updatedBy", fields: [updatedById], references: [id])
-  updatedById      Int?      @map("updatedBy")
-  from_Tag_ogImage Tag[]     @relation("Tag_ogImage")
+  id                    Int        @id @default(autoincrement())
+  name                  String     @default("")
+  file_filesize         Int?
+  file_filename         String?
+  copyright             String?    @default("Copyrighted")
+  tags                  Tag[]      @relation("Image_tags")
+  needWatermark         Boolean    @default(false)
+  keywords              String     @default("")
+  meta                  String     @default("")
+  urlOriginal           String     @default("")
+  urlDesktopSized       String     @default("")
+  urlTabletSized        String     @default("")
+  urlMobileSized        String     @default("")
+  urlTinySized          String     @default("")
+  imageApiData          Json?
+  createdAt             DateTime?
+  updatedAt             DateTime?
+  createdBy             User?      @relation("Image_createdBy", fields: [createdById], references: [id])
+  createdById           Int?       @map("createdBy")
+  updatedBy             User?      @relation("Image_updatedBy", fields: [updatedById], references: [id])
+  updatedById           Int?       @map("updatedBy")
+  from_Tag_ogImage      Tag[]      @relation("Tag_ogImage")
+  from_Category_ogImage Category[] @relation("Category_ogImage")
 
   @@index([createdById])
   @@index([updatedById])
@@ -183,6 +186,29 @@ model Tag {
   updatedBy       User?     @relation("Tag_updatedBy", fields: [updatedById], references: [id])
   updatedById     Int?      @map("updatedBy")
   from_Image_tags Image[]   @relation("Image_tags")
+
+  @@index([ogImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Category {
+  id            Int       @id @default(autoincrement())
+  sortOrder     Int       @unique
+  slug          String    @unique @default("")
+  name          String    @default("")
+  ogTitle       String    @default("")
+  ogDescription String    @default("")
+  ogImage       Image?    @relation("Category_ogImage", fields: [ogImageId], references: [id])
+  ogImageId     Int?      @map("ogImage")
+  isFeatured    Boolean   @default(false)
+  style         String?   @default("normal")
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Category_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Category_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
 
   @@index([ogImageId])
   @@index([createdById])
