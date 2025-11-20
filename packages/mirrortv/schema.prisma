@@ -32,10 +32,14 @@ model User {
   from_PromotionVideo_updatedBy PromotionVideo[] @relation("PromotionVideo_updatedBy")
   from_EditLog_createdBy        EditLog[]        @relation("EditLog_createdBy")
   from_EditLog_updatedBy        EditLog[]        @relation("EditLog_updatedBy")
+  from_Image_createdBy          Image[]          @relation("Image_createdBy")
+  from_Image_updatedBy          Image[]          @relation("Image_updatedBy")
   from_Sale_createdBy           Sale[]           @relation("Sale_createdBy")
   from_Sale_updatedBy           Sale[]           @relation("Sale_updatedBy")
   from_Post_createdBy           Post[]           @relation("Post_createdBy")
   from_Post_updatedBy           Post[]           @relation("Post_updatedBy")
+  from_Tag_createdBy            Tag[]            @relation("Tag_createdBy")
+  from_Tag_updatedBy            Tag[]            @relation("Tag_updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
@@ -96,6 +100,34 @@ model EditLog {
   @@index([updatedById])
 }
 
+model Image {
+  id               Int       @id @default(autoincrement())
+  name             String    @default("")
+  file_filesize    Int?
+  file_filename    String?
+  copyright        String?   @default("Copyrighted")
+  tags             Tag[]     @relation("Image_tags")
+  needWatermark    Boolean   @default(false)
+  keywords         String    @default("")
+  meta             String    @default("")
+  urlOriginal      String    @default("")
+  urlDesktopSized  String    @default("")
+  urlTabletSized   String    @default("")
+  urlMobileSized   String    @default("")
+  urlTinySized     String    @default("")
+  imageApiData     Json?
+  createdAt        DateTime?
+  updatedAt        DateTime?
+  createdBy        User?     @relation("Image_createdBy", fields: [createdById], references: [id])
+  createdById      Int?      @map("createdBy")
+  updatedBy        User?     @relation("Image_updatedBy", fields: [updatedById], references: [id])
+  updatedById      Int?      @map("updatedBy")
+  from_Tag_ogImage Tag[]     @relation("Tag_ogImage")
+
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model Sale {
   id          Int            @id @default(autoincrement())
   sortOrder   Int
@@ -132,6 +164,27 @@ model Post {
   updatedById      Int?           @map("updatedBy")
   from_Sale_adPost Sale[]         @relation("Sale_adPost")
 
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Tag {
+  id              Int       @id @default(autoincrement())
+  slug            String    @unique @default("")
+  name            String    @unique @default("")
+  ogTitle         String    @default("")
+  ogDescription   String    @default("")
+  ogImage         Image?    @relation("Tag_ogImage", fields: [ogImageId], references: [id])
+  ogImageId       Int?      @map("ogImage")
+  createdAt       DateTime?
+  updatedAt       DateTime?
+  createdBy       User?     @relation("Tag_createdBy", fields: [createdById], references: [id])
+  createdById     Int?      @map("createdBy")
+  updatedBy       User?     @relation("Tag_updatedBy", fields: [updatedById], references: [id])
+  updatedById     Int?      @map("updatedBy")
+  from_Image_tags Image[]   @relation("Image_tags")
+
+  @@index([ogImageId])
   @@index([createdById])
   @@index([updatedById])
 }
