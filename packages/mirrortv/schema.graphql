@@ -156,6 +156,159 @@ input UserRelateToOneForCreateInput {
   connect: UserWhereUniqueInput
 }
 
+type Contact {
+  id: ID!
+  sortOrder: Int
+  slug: String
+  name: String
+  email: String
+  anchorImg: Image
+  showhostImg: Image
+  homepage: String
+  facebook: String
+  instagram: String
+  twitter: String
+  bio: JSON
+  anchorperson: Boolean
+  host: Boolean
+  international: Boolean
+  bioApiData: String
+  bioHtml: String
+  isResigned: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ContactWhereUniqueInput {
+  id: ID
+  sortOrder: Int
+  slug: String
+}
+
+input ContactWhereInput {
+  AND: [ContactWhereInput!]
+  OR: [ContactWhereInput!]
+  NOT: [ContactWhereInput!]
+  id: IDFilter
+  sortOrder: IntNullableFilter
+  slug: StringFilter
+  name: StringFilter
+  email: StringFilter
+  anchorImg: ImageWhereInput
+  showhostImg: ImageWhereInput
+  homepage: StringFilter
+  facebook: StringFilter
+  instagram: StringFilter
+  twitter: StringFilter
+  anchorperson: BooleanFilter
+  host: BooleanFilter
+  international: BooleanFilter
+  bioApiData: StringFilter
+  bioHtml: StringFilter
+  isResigned: BooleanFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input ContactOrderByInput {
+  id: OrderDirection
+  sortOrder: OrderDirection
+  slug: OrderDirection
+  name: OrderDirection
+  email: OrderDirection
+  homepage: OrderDirection
+  facebook: OrderDirection
+  instagram: OrderDirection
+  twitter: OrderDirection
+  anchorperson: OrderDirection
+  host: OrderDirection
+  international: OrderDirection
+  bioApiData: OrderDirection
+  bioHtml: OrderDirection
+  isResigned: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ContactUpdateInput {
+  sortOrder: Int
+  slug: String
+  name: String
+  email: String
+  anchorImg: ImageRelateToOneForUpdateInput
+  showhostImg: ImageRelateToOneForUpdateInput
+  homepage: String
+  facebook: String
+  instagram: String
+  twitter: String
+  bio: JSON
+  anchorperson: Boolean
+  host: Boolean
+  international: Boolean
+  bioApiData: String
+  bioHtml: String
+  isResigned: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ImageRelateToOneForUpdateInput {
+  create: ImageCreateInput
+  connect: ImageWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ContactUpdateArgs {
+  where: ContactWhereUniqueInput!
+  data: ContactUpdateInput!
+}
+
+input ContactCreateInput {
+  sortOrder: Int
+  slug: String
+  name: String
+  email: String
+  anchorImg: ImageRelateToOneForCreateInput
+  showhostImg: ImageRelateToOneForCreateInput
+  homepage: String
+  facebook: String
+  instagram: String
+  twitter: String
+  bio: JSON
+  anchorperson: Boolean
+  host: Boolean
+  international: Boolean
+  bioApiData: String
+  bioHtml: String
+  isResigned: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input ImageRelateToOneForCreateInput {
+  create: ImageCreateInput
+  connect: ImageWhereUniqueInput
+}
+
 type Partner {
   id: ID!
   slug: String
@@ -255,17 +408,6 @@ input PromotionVideoWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input IntNullableFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: IntNullableFilter
 }
 
 input StringNullableFilter {
@@ -802,12 +944,6 @@ input TagUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input ImageRelateToOneForUpdateInput {
-  create: ImageCreateInput
-  connect: ImageWhereUniqueInput
-  disconnect: Boolean
-}
-
 input TagUpdateArgs {
   where: TagWhereUniqueInput!
   data: TagUpdateInput!
@@ -823,11 +959,6 @@ input TagCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input ImageRelateToOneForCreateInput {
-  create: ImageCreateInput
-  connect: ImageWhereUniqueInput
 }
 
 type Category {
@@ -931,6 +1062,12 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  createContact(data: ContactCreateInput!): Contact
+  createContacts(data: [ContactCreateInput!]!): [Contact]
+  updateContact(where: ContactWhereUniqueInput!, data: ContactUpdateInput!): Contact
+  updateContacts(data: [ContactUpdateArgs!]!): [Contact]
+  deleteContact(where: ContactWhereUniqueInput!): Contact
+  deleteContacts(where: [ContactWhereUniqueInput!]!): [Contact]
   createPartner(data: PartnerCreateInput!): Partner
   createPartners(data: [PartnerCreateInput!]!): [Partner]
   updatePartner(where: PartnerWhereUniqueInput!, data: PartnerUpdateInput!): Partner
@@ -1006,6 +1143,9 @@ type Query {
   users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
+  contacts(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
+  contact(where: ContactWhereUniqueInput!): Contact
+  contactsCount(where: ContactWhereInput! = {}): Int
   partners(where: PartnerWhereInput! = {}, orderBy: [PartnerOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PartnerWhereUniqueInput): [Partner!]
   partner(where: PartnerWhereUniqueInput!): Partner
   partnersCount(where: PartnerWhereInput! = {}): Int
