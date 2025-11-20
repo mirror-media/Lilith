@@ -19,21 +19,29 @@ RUN set -e; \
     apt-get install -y gcsfuse \
     && apt-get clean
 
-ENV APP_DIR /app
+ENV APP_DIR=/app
 ## Set fallback mount directory
-ENV MNT_DIR /app/gcs
-ENV HOST 0.0.0.0
-ENV PORT 3000
+ENV MNT_DIR=/app/gcs
+ENV HOST=0.0.0.0
+ENV PORT=3000
 
 RUN mkdir -p $APP_DIR
 
 WORKDIR $APP_DIR
 
-COPY . $APP_DIR
+## Copy dependency files
+COPY package.json yarn.lock ./
+COPY patches ./patches
 
 ## Install application dependencies
-RUN yarn install
-RUN yarn postinstall
+## --frozen-lockfile: Ensure consistent dependency versions
+RUN yarn install --frozen-lockfile
+
+## Copy application source code
+COPY . .
+
+## Generates Prisma Client and Keystone artifacts
+RUN yarn keystone postinstall --fix
 
 ## Build application bundles
 RUN yarn build

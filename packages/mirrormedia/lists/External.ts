@@ -163,6 +163,7 @@ const listConfigurations = list({
   },
   access: {
     operation: {
+      query: allowRoles(admin, moderator),
       update: allowRoles(admin, moderator),
       create: allowRoles(admin, moderator),
       delete: allowRoles(admin),
@@ -179,7 +180,7 @@ const listConfigurations = list({
     beforeOperation: async ({ operation, resolvedData }) => {
       /* ... */
       if (operation === 'create' || operation === 'update') {
-        if (resolvedData.publishedDate) {
+        if (resolvedData && resolvedData.publishedDate) {
           resolvedData.publishedDateString = new Date(
             resolvedData.publishedDate
           ).toLocaleDateString('zh-TW', {
@@ -188,10 +189,8 @@ const listConfigurations = list({
             month: '2-digit',
             day: '2-digit',
           })
-          return
         }
       }
-      return 0
     },
   },
 })
