@@ -26,6 +26,8 @@ model User {
   updatedById                   Int?             @map("updatedBy")
   from_User_createdBy           User[]           @relation("User_createdBy")
   from_User_updatedBy           User[]           @relation("User_updatedBy")
+  from_Contact_createdBy        Contact[]        @relation("Contact_createdBy")
+  from_Contact_updatedBy        Contact[]        @relation("Contact_updatedBy")
   from_Partner_createdBy        Partner[]        @relation("Partner_createdBy")
   from_Partner_updatedBy        Partner[]        @relation("Partner_updatedBy")
   from_PromotionVideo_createdBy PromotionVideo[] @relation("PromotionVideo_createdBy")
@@ -43,6 +45,40 @@ model User {
   from_Category_createdBy       Category[]       @relation("Category_createdBy")
   from_Category_updatedBy       Category[]       @relation("Category_updatedBy")
 
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Contact {
+  id            Int       @id @default(autoincrement())
+  sortOrder     Int?      @unique
+  slug          String    @unique @default("")
+  name          String    @default("")
+  email         String    @default("")
+  anchorImg     Image?    @relation("Contact_anchorImg", fields: [anchorImgId], references: [id])
+  anchorImgId   Int?      @map("anchorImg")
+  showhostImg   Image?    @relation("Contact_showhostImg", fields: [showhostImgId], references: [id])
+  showhostImgId Int?      @map("showhostImg")
+  homepage      String    @default("")
+  facebook      String    @default("")
+  instagram     String    @default("")
+  twitter       String    @default("")
+  bio           Json?
+  anchorperson  Boolean   @default(false)
+  host          Boolean   @default(false)
+  international Boolean   @default(false)
+  bioApiData    String    @default("")
+  bioHtml       String    @default("")
+  isResigned    Boolean   @default(false)
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Contact_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Contact_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([anchorImgId])
+  @@index([showhostImgId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -103,29 +139,31 @@ model EditLog {
 }
 
 model Image {
-  id                    Int        @id @default(autoincrement())
-  name                  String     @default("")
-  file_filesize         Int?
-  file_filename         String?
-  copyright             String?    @default("Copyrighted")
-  tags                  Tag[]      @relation("Image_tags")
-  needWatermark         Boolean    @default(false)
-  keywords              String     @default("")
-  meta                  String     @default("")
-  urlOriginal           String     @default("")
-  urlDesktopSized       String     @default("")
-  urlTabletSized        String     @default("")
-  urlMobileSized        String     @default("")
-  urlTinySized          String     @default("")
-  imageApiData          Json?
-  createdAt             DateTime?
-  updatedAt             DateTime?
-  createdBy             User?      @relation("Image_createdBy", fields: [createdById], references: [id])
-  createdById           Int?       @map("createdBy")
-  updatedBy             User?      @relation("Image_updatedBy", fields: [updatedById], references: [id])
-  updatedById           Int?       @map("updatedBy")
-  from_Tag_ogImage      Tag[]      @relation("Tag_ogImage")
-  from_Category_ogImage Category[] @relation("Category_ogImage")
+  id                       Int        @id @default(autoincrement())
+  name                     String     @default("")
+  file_filesize            Int?
+  file_filename            String?
+  copyright                String?    @default("Copyrighted")
+  tags                     Tag[]      @relation("Image_tags")
+  needWatermark            Boolean    @default(false)
+  keywords                 String     @default("")
+  meta                     String     @default("")
+  urlOriginal              String     @default("")
+  urlDesktopSized          String     @default("")
+  urlTabletSized           String     @default("")
+  urlMobileSized           String     @default("")
+  urlTinySized             String     @default("")
+  imageApiData             Json?
+  createdAt                DateTime?
+  updatedAt                DateTime?
+  createdBy                User?      @relation("Image_createdBy", fields: [createdById], references: [id])
+  createdById              Int?       @map("createdBy")
+  updatedBy                User?      @relation("Image_updatedBy", fields: [updatedById], references: [id])
+  updatedById              Int?       @map("updatedBy")
+  from_Contact_anchorImg   Contact[]  @relation("Contact_anchorImg")
+  from_Contact_showhostImg Contact[]  @relation("Contact_showhostImg")
+  from_Tag_ogImage         Tag[]      @relation("Tag_ogImage")
+  from_Category_ogImage    Category[] @relation("Category_ogImage")
 
   @@index([createdById])
   @@index([updatedById])

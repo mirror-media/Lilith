@@ -7,9 +7,11 @@ import Sale from './Sale'
 import Tag from './Tag'
 import Image from './Image'
 import Category from './Category'
+import Contact from './Contact'
 
 export const listDefinition = {
   User,
+  Contact,
   Partner,
   PromotionVideo,
   EditLog,
