@@ -830,6 +830,95 @@ input ImageRelateToOneForCreateInput {
   connect: ImageWhereUniqueInput
 }
 
+type Category {
+  id: ID!
+  sortOrder: Int
+  slug: String
+  name: String
+  ogTitle: String
+  ogDescription: String
+  ogImage: Image
+  isFeatured: Boolean
+  style: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input CategoryWhereUniqueInput {
+  id: ID
+  sortOrder: Int
+  slug: String
+}
+
+input CategoryWhereInput {
+  AND: [CategoryWhereInput!]
+  OR: [CategoryWhereInput!]
+  NOT: [CategoryWhereInput!]
+  id: IDFilter
+  sortOrder: IntFilter
+  slug: StringFilter
+  name: StringFilter
+  ogTitle: StringFilter
+  ogDescription: StringFilter
+  ogImage: ImageWhereInput
+  isFeatured: BooleanFilter
+  style: StringNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input CategoryOrderByInput {
+  id: OrderDirection
+  sortOrder: OrderDirection
+  slug: OrderDirection
+  name: OrderDirection
+  ogTitle: OrderDirection
+  ogDescription: OrderDirection
+  isFeatured: OrderDirection
+  style: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input CategoryUpdateInput {
+  sortOrder: Int
+  slug: String
+  name: String
+  ogTitle: String
+  ogDescription: String
+  ogImage: ImageRelateToOneForUpdateInput
+  isFeatured: Boolean
+  style: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input CategoryUpdateArgs {
+  where: CategoryWhereUniqueInput!
+  data: CategoryUpdateInput!
+}
+
+input CategoryCreateInput {
+  sortOrder: Int
+  slug: String
+  name: String
+  ogTitle: String
+  ogDescription: String
+  ogImage: ImageRelateToOneForCreateInput
+  isFeatured: Boolean
+  style: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -884,6 +973,12 @@ type Mutation {
   updateTags(data: [TagUpdateArgs!]!): [Tag]
   deleteTag(where: TagWhereUniqueInput!): Tag
   deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
+  createCategory(data: CategoryCreateInput!): Category
+  createCategories(data: [CategoryCreateInput!]!): [Category]
+  updateCategory(where: CategoryWhereUniqueInput!, data: CategoryUpdateInput!): Category
+  updateCategories(data: [CategoryUpdateArgs!]!): [Category]
+  deleteCategory(where: CategoryWhereUniqueInput!): Category
+  deleteCategories(where: [CategoryWhereUniqueInput!]!): [Category]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -932,6 +1027,9 @@ type Query {
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tag(where: TagWhereUniqueInput!): Tag
   tagsCount(where: TagWhereInput! = {}): Int
+  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
+  category(where: CategoryWhereUniqueInput!): Category
+  categoriesCount(where: CategoryWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

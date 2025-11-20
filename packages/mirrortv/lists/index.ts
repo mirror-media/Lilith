@@ -6,7 +6,7 @@ import EditLog from './EditLog'
 import Sale from './Sale'
 import Tag from './Tag'
 import Image from './Image'
-
+import Category from './Category'
 
 export const listDefinition = {
   User,
@@ -17,4 +17,5 @@ export const listDefinition = {
   Sale,
   Post,
   Tag,
+  Category,
 }
