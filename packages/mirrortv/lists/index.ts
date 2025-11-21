@@ -1,3 +1,4 @@
+import Audio from './Audio'
 import Post from './Post'
 import Partner from './Partner'
 import User from './User'
@@ -26,4 +27,5 @@ export const listDefinition = {
   Post,
   Tag,
   Category,
+  Audio,
 }

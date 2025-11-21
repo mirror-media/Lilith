@@ -1440,6 +1440,84 @@ input CategoryCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type Audio {
+  id: ID!
+  name: String
+  file: FileFieldOutput
+  coverPhoto: Image
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
+  meta: JSON
+  url: String
+  duration: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input AudioWhereUniqueInput {
+  id: ID
+}
+
+input AudioWhereInput {
+  AND: [AudioWhereInput!]
+  OR: [AudioWhereInput!]
+  NOT: [AudioWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  coverPhoto: ImageWhereInput
+  tags: TagManyRelationFilter
+  url: StringFilter
+  duration: IntNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input AudioOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  url: OrderDirection
+  duration: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input AudioUpdateInput {
+  name: String
+  file: FileFieldInput
+  coverPhoto: ImageRelateToOneForUpdateInput
+  tags: TagRelateToManyForUpdateInput
+  meta: JSON
+  url: String
+  duration: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input AudioUpdateArgs {
+  where: AudioWhereUniqueInput!
+  data: AudioUpdateInput!
+}
+
+input AudioCreateInput {
+  name: String
+  file: FileFieldInput
+  coverPhoto: ImageRelateToOneForCreateInput
+  tags: TagRelateToManyForCreateInput
+  meta: JSON
+  url: String
+  duration: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -1524,6 +1602,12 @@ type Mutation {
   updateCategories(data: [CategoryUpdateArgs!]!): [Category]
   deleteCategory(where: CategoryWhereUniqueInput!): Category
   deleteCategories(where: [CategoryWhereUniqueInput!]!): [Category]
+  createAudio(data: AudioCreateInput!): Audio
+  createAudios(data: [AudioCreateInput!]!): [Audio]
+  updateAudio(where: AudioWhereUniqueInput!, data: AudioUpdateInput!): Audio
+  updateAudios(data: [AudioUpdateArgs!]!): [Audio]
+  deleteAudio(where: AudioWhereUniqueInput!): Audio
+  deleteAudios(where: [AudioWhereUniqueInput!]!): [Audio]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -1587,6 +1671,9 @@ type Query {
   categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   category(where: CategoryWhereUniqueInput!): Category
   categoriesCount(where: CategoryWhereInput! = {}): Int
+  audios(where: AudioWhereInput! = {}, orderBy: [AudioOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AudioWhereUniqueInput): [Audio!]
+  audio(where: AudioWhereUniqueInput!): Audio
+  audiosCount(where: AudioWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
