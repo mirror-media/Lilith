@@ -21,6 +21,8 @@
     "@apollo/utils.keyvadapter": "^3.0.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "11.11.0",
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffprobe-installer/ffprobe": "^2.1.2",
     "@keystone-6/auth": "7.0.0",
     "@keystone-6/core": "5.2.0",
     "@keyv/redis": "^2.7.0",
@@ -50,7 +52,10 @@
     "**/react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.28",
     "@types/lodash-es": "^4.17.12",
+    "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2",
     "typescript": "^4.7.4"
   }
 }
