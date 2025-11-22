@@ -20,14 +20,14 @@ import os from 'os'
 import { pipeline } from 'stream/promises'
 import { Storage } from '@google-cloud/storage'
 
-// 設定 FFmpeg 執行路徑
+// 設定 FFmpeg
 ffmpeg.setFfmpegPath(ffmpegInstaller.path)
 ffmpeg.setFfprobePath(ffprobeInstaller.path)
 
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
 
-// 定義型別問題
+// --- 定義型別 ---
 type GcsConfig = {
   bucket: string
   projectId?: string
@@ -37,7 +37,27 @@ type FileField = {
   filename: string
   filesize: number
 }
+
 const gcsConfig = envVar.gcs as unknown as GcsConfig
+
+// --- 初始化 Storage ---
+let storage: Storage
+let bucket: any
+
+try {
+  let resolvedKeyPath = gcsConfig.keyFilename
+  if (gcsConfig.keyFilename) {
+    // 轉為絕對路徑，確保刪除功能有權限
+    resolvedKeyPath = path.resolve(process.cwd(), gcsConfig.keyFilename)
+  }
+  storage = new Storage({
+    projectId: gcsConfig.projectId,
+    keyFilename: resolvedKeyPath,
+  })
+  bucket = storage.bucket(gcsConfig.bucket)
+} catch (err) {
+  console.error('[Audio] GCS Init Failed:', err)
+}
 
 // 輔助：分析 Audio 檔案
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -116,66 +136,74 @@ const listConfigurations = list({
 
   hooks: {
     resolveInput: async ({ resolvedData }) => {
-      // 檢查 resolvedData.file 是否存在
       const fileData = resolvedData.file as FileField
 
       if (fileData) {
         const filename = fileData.filename
-
-        // 產生隨機 ID 用於暫存檔
         const tempId = Math.random().toString(36).substring(7)
         const tempPath = path.join(os.tmpdir(), `audio-${tempId}-${filename}`)
 
         try {
-          console.log(
-            `[Audio] New file detected: ${filename}. Fetching for analysis...`
-          )
+          console.log(`[Audio] Processing: ${filename}`)
 
-          // 判斷檔案位置 (GCS/Local) 建立讀取串流
-          const localStorageRoot = envVar.files.storagePath || 'public/files'
-          const localFilePath = path.join(
-            process.cwd(),
-            localStorageRoot,
-            filename
-          )
+          // 定義路徑
+          const storageRoot = envVar.files.storagePath || 'public/files'
+          const absoluteStorageRoot = path.isAbsolute(storageRoot)
+            ? storageRoot
+            : path.join(process.cwd(), storageRoot)
+
+          // Keystone 預設路徑
+          const originalLocalPath = path.join(absoluteStorageRoot, filename)
+
+          // 目標路徑 (files/audios/filename)
+          const targetLocalDir = path.join(absoluteStorageRoot, 'audios')
+          const targetLocalPath = path.join(targetLocalDir, filename)
 
           let readStream: NodeJS.ReadableStream
 
-          if (fs.existsSync(localFilePath)) {
-            console.log(`[Audio] Source: Local Filesystem (${localFilePath})`)
-            readStream = fs.createReadStream(localFilePath)
-          }
-          // 本地沒有且有設定 GCS 去 GCS 抓
-          else if (gcsConfig && gcsConfig.bucket) {
-            console.log(`[Audio] Source: GCS Bucket (${gcsConfig.bucket})`)
+          if (fs.existsSync(originalLocalPath)) {
+            console.log(`[Audio] Moving file to /audios...`)
 
-            const storage = new Storage({
-              projectId: gcsConfig.projectId,
-              keyFilename: gcsConfig.keyFilename,
-            })
-            const bucket = storage.bucket(gcsConfig.bucket)
-            const pathPrefix = envVar.files.storagePath
-              ? `${envVar.files.storagePath}/`
-              : ''
-            const gcsFile = bucket.file(`${pathPrefix}${filename}`)
+            if (!fs.existsSync(targetLocalDir)) {
+              fs.mkdirSync(targetLocalDir, { recursive: true })
+            }
+            fs.renameSync(originalLocalPath, targetLocalPath)
+            console.log(`[Audio] Moved to: ${targetLocalPath}`)
 
+            readStream = fs.createReadStream(targetLocalPath)
+          } else if (fs.existsSync(targetLocalPath)) {
+            console.log(`[Audio] File already in /audios.`)
+            readStream = fs.createReadStream(targetLocalPath)
+          } else if (bucket) {
+            // GCS 下載
+            const gcsBase = envVar.files.baseUrl
+              ? envVar.files.baseUrl.replace(/^\//, '')
+              : 'files'
+            const gcsPath = `${gcsBase}/audios/${filename}`
+
+            console.log(`[Audio] Downloading from GCS: ${gcsPath}`)
+            const gcsFile = bucket.file(gcsPath)
+
+            const [exists] = await gcsFile.exists()
+            if (!exists) {
+              throw new Error(
+                `File not found locally AND not found in GCS: ${gcsPath}`
+              )
+            }
             readStream = gcsFile.createReadStream()
           } else {
-            throw new Error(
-              `File not found in local path and no GCS config provided.`
-            )
+            throw new Error(`File not found anywhere.`)
           }
 
-          // 將檔案下載/複製到暫存區 (/tmp)
+          // 複製到 /tmp 進行分析
           await pipeline(readStream, fs.createWriteStream(tempPath))
           console.log(`[Audio] Temp file created at: ${tempPath}`)
 
-          // 使用 FFmpeg 分析暫存檔
           console.log(`[Audio] FFprobe analyzing...`)
           const { duration, raw } = await analyzeMedia(tempPath)
           console.log(`[Audio] Analysis Result: Duration ${duration}s`)
 
-          // 更新資料庫欄位
+          // 更新資料庫
           resolvedData.duration = duration
           resolvedData.meta = {
             originalFilename: filename,
@@ -189,38 +217,33 @@ const listConfigurations = list({
             resolvedData.url = getFileURL(
               gcsConfig.bucket,
               envVar.files.baseUrl,
-              filename
+              `audios/${filename}`
             )
           } else {
-            resolvedData.url = `assets/audios/${filename}`
+            resolvedData.url = `/assets/audios/${filename}`
           }
         } catch (error) {
           console.error('[Audio] Analysis failed:', error)
-          // Given default value if error happens
           resolvedData.duration = 0
           resolvedData.meta = {
             error: 'Metadata analysis failed',
             details: (error as Error).message,
           }
 
-          if (filename) {
-            if (gcsConfig && gcsConfig.bucket) {
-              resolvedData.url = getFileURL(
-                gcsConfig.bucket,
-                envVar.files.baseUrl,
-                filename
-              )
-            } else {
-              resolvedData.url = `/assets/audios/${filename}`
-            }
+          // Fallback URL
+          if (gcsConfig && gcsConfig.bucket) {
+            resolvedData.url = getFileURL(
+              gcsConfig.bucket,
+              envVar.files.baseUrl,
+              `audios/${filename}`
+            )
+          } else {
+            resolvedData.url = `/assets/audios/${filename}`
           }
         } finally {
-          // clean temp file
           fs.unlink(tempPath, (err) => {
             if (err && err.code !== 'ENOENT')
-              console.warn(
-                `[Audio] Warning: Could not delete temp file ${tempPath}`
-              )
+              console.warn(`[Audio] Warning: Could not delete temp file`)
           })
         }
       }
@@ -229,30 +252,28 @@ const listConfigurations = list({
     },
 
     afterOperation: async ({ operation, item }) => {
-      if (operation === 'delete' && item && gcsConfig && gcsConfig.bucket) {
+      if (operation === 'delete' && item && bucket) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const fileData = (item as any).file as FileField
         const filename = fileData?.filename
 
         if (filename) {
           try {
-            const storage = new Storage({
-              projectId: gcsConfig.projectId,
-              keyFilename: gcsConfig.keyFilename,
-            })
-            const bucket = storage.bucket(gcsConfig.bucket)
-            const pathPrefix = envVar.files.storagePath
-              ? `${envVar.files.storagePath}/`
-              : ''
-            const file = bucket.file(`${pathPrefix}${filename}`)
+            // 刪除
+            const gcsBase = envVar.files.baseUrl
+              ? envVar.files.baseUrl.replace(/^\//, '')
+              : 'files'
+            const gcsPath = `${gcsBase}/audios/${filename}`
+
+            const file = bucket.file(gcsPath)
 
             const [exists] = await file.exists()
             if (exists) {
               await file.delete()
-              console.log(`[Audio] Deleted GCS file: ${filename}`)
+              console.log(`[Audio] Deleted GCS file: ${gcsPath}`)
             }
           } catch (e) {
-            console.error(`[Audio] Failed to delete GCS file (non-fatal):`, e)
+            console.error(`[Audio] Failed to delete GCS file:`, e)
           }
         }
       }
