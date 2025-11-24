@@ -6,7 +6,29 @@ import { processAndUploadImages, deleteImagesFromGCS } from './imageProcessing'
 
 // Redis 設定
 const redisUrl = envVar.redis?.url || 'redis://localhost:6379'
-const connection = new IORedis(redisUrl, { maxRetriesPerRequest: null })
+
+// ★ 修改: Connection 設定，防止 Build 階段報錯
+const connection = new IORedis(redisUrl, {
+  maxRetriesPerRequest: null,
+  // 加入 retryStrategy: 限制重試次數
+  retryStrategy: (times) => {
+    // 如果重試超過 5 次，就放棄連線 (這對 build 階段很重要)
+    if (times > 5) {
+      console.warn(
+        '[Redis] Max retries reached. Assuming build environment or Redis down.'
+      )
+      return null
+    }
+    return Math.min(times * 50, 2000)
+  },
+})
+
+// ★ 修改: 捕捉錯誤事件，防止 Node.js 拋出 Unhandled Exception 導致 Build 失敗
+connection.on('error', (err) => {
+  console.warn(
+    `[Redis] Connection error: ${err.message} (This is expected during build step)`
+  )
+})
 
 // 建立 Queue
 export const imageQueue = new Queue('imageProcessingQueue', { connection })
