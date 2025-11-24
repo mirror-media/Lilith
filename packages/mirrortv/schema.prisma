@@ -50,6 +50,8 @@ model User {
   from_Tag_updatedBy            Tag[]            @relation("Tag_updatedBy")
   from_Category_createdBy       Category[]       @relation("Category_createdBy")
   from_Category_updatedBy       Category[]       @relation("Category_updatedBy")
+  from_Audio_createdBy          Audio[]          @relation("Audio_createdBy")
+  from_Audio_updatedBy          Audio[]          @relation("Audio_updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
@@ -177,6 +179,7 @@ model Image {
   from_Show_picture        Show[]     @relation("Show_picture")
   from_Tag_ogImage         Tag[]      @relation("Tag_ogImage")
   from_Category_ogImage    Category[] @relation("Category_ogImage")
+  from_Audio_coverPhoto    Audio[]    @relation("Audio_coverPhoto")
 
   @@index([createdById])
   @@index([updatedById])
@@ -315,6 +318,7 @@ model Tag {
   updatedBy       User?     @relation("Tag_updatedBy", fields: [updatedById], references: [id])
   updatedById     Int?      @map("updatedBy")
   from_Image_tags Image[]   @relation("Image_tags")
+  from_Audio_tags Audio[]   @relation("Audio_tags")
 
   @@index([ogImageId])
   @@index([createdById])
@@ -340,6 +344,29 @@ model Category {
   updatedById   Int?      @map("updatedBy")
 
   @@index([ogImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Audio {
+  id            Int       @id @default(autoincrement())
+  name          String    @default("")
+  file_filesize Int?
+  file_filename String?
+  coverPhoto    Image?    @relation("Audio_coverPhoto", fields: [coverPhotoId], references: [id])
+  coverPhotoId  Int?      @map("coverPhoto")
+  tags          Tag[]     @relation("Audio_tags")
+  meta          Json?
+  url           String    @default("")
+  duration      Int?
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Audio_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Audio_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
+  @@index([coverPhotoId])
   @@index([createdById])
   @@index([updatedById])
 }
