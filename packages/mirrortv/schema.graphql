@@ -612,6 +612,7 @@ type Image {
   urlMobileSized: String
   urlTinySized: String
   imageApiData: JSON
+  resized: ResizedImages
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -622,6 +623,14 @@ type FileFieldOutput {
   filename: String!
   filesize: Int!
   url: String!
+}
+
+type ResizedImages {
+  original: String
+  desktop: String
+  tablet: String
+  mobile: String
+  tiny: String
 }
 
 input ImageWhereUniqueInput {
@@ -1190,23 +1199,65 @@ input ShowCreateInput {
 
 type Post {
   id: ID!
+  lockBy: User
+  lockExpireAt: DateTime
   slug: String
   name: String
   subtitle: String
-  state: PostStateType
+  state: String
   publishTime: DateTime
+  publishedDateString: String
+  updateTimeStamp: Boolean
+  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
+  categoriesCount(where: CategoryWhereInput! = {}): Int
+  writers(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
+  writersCount(where: ContactWhereInput! = {}): Int
+  manualOrderOfWriters: JSON
+  photographers(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
+  photographersCount(where: ContactWhereInput! = {}): Int
+  cameraOperators(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
+  cameraOperatorsCount(where: ContactWhereInput! = {}): Int
+  designers(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
+  designersCount(where: ContactWhereInput! = {}): Int
+  engineers(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
+  engineersCount(where: ContactWhereInput! = {}): Int
+  vocals(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
+  vocalsCount(where: ContactWhereInput! = {}): Int
+  otherbyline: String
+  heroImage: Image
+  heroCaption: String
+  heroImageSize: String
+  style: String
+  brief: JSON
+  content: JSON
+  briefHtml: String
+  briefApiData: JSON
+  contentHtml: String
+  contentApiData: JSON
+  source: String
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
+  audio: Audio
+  relatedPosts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  relatedPostsCount(where: PostWhereInput! = {}): Int
+  manualOrderOfRelatedPosts: JSON
+  ogTitle: String
+  ogDescription: String
+  ogImage: Image
+  adTraceCode: String
+  notFeed: Boolean
+  exclusive: Boolean
+  isFeatured: Boolean
+  isAdult: Boolean
+  isAdvertised: Boolean
+  isAdBlocked: Boolean
+  lockTime: DateTime
+  trimmedApiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
-}
-
-enum PostStateType {
-  draft
-  published
-  scheduled
-  archived
-  invisible
+  relatedPostsInInputOrder: [Post]
 }
 
 input PostWhereUniqueInput {
@@ -1219,45 +1270,162 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
+  lockBy: UserWhereInput
+  lockExpireAt: DateTimeNullableFilter
   slug: StringFilter
   name: StringFilter
   subtitle: StringFilter
-  state: PostStateTypeNullableFilter
+  state: StringNullableFilter
   publishTime: DateTimeNullableFilter
+  publishedDateString: StringFilter
+  updateTimeStamp: BooleanFilter
+  categories: CategoryManyRelationFilter
+  writers: ContactManyRelationFilter
+  photographers: ContactManyRelationFilter
+  cameraOperators: ContactManyRelationFilter
+  designers: ContactManyRelationFilter
+  engineers: ContactManyRelationFilter
+  vocals: ContactManyRelationFilter
+  otherbyline: StringFilter
+  heroImage: ImageWhereInput
+  heroCaption: StringFilter
+  heroImageSize: StringNullableFilter
+  style: StringNullableFilter
+  briefHtml: StringFilter
+  contentHtml: StringFilter
+  source: StringFilter
+  tags: TagManyRelationFilter
+  audio: AudioWhereInput
+  relatedPosts: PostManyRelationFilter
+  ogTitle: StringFilter
+  ogDescription: StringFilter
+  ogImage: ImageWhereInput
+  adTraceCode: StringFilter
+  notFeed: BooleanFilter
+  exclusive: BooleanFilter
+  isFeatured: BooleanFilter
+  isAdult: BooleanFilter
+  isAdvertised: BooleanFilter
+  isAdBlocked: BooleanFilter
+  lockTime: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
 }
 
-input PostStateTypeNullableFilter {
-  equals: PostStateType
-  in: [PostStateType!]
-  notIn: [PostStateType!]
-  not: PostStateTypeNullableFilter
+input CategoryManyRelationFilter {
+  every: CategoryWhereInput
+  some: CategoryWhereInput
+  none: CategoryWhereInput
+}
+
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
 }
 
 input PostOrderByInput {
   id: OrderDirection
+  lockExpireAt: OrderDirection
   slug: OrderDirection
   name: OrderDirection
   subtitle: OrderDirection
   state: OrderDirection
   publishTime: OrderDirection
+  publishedDateString: OrderDirection
+  updateTimeStamp: OrderDirection
+  otherbyline: OrderDirection
+  heroCaption: OrderDirection
+  heroImageSize: OrderDirection
+  style: OrderDirection
+  briefHtml: OrderDirection
+  contentHtml: OrderDirection
+  source: OrderDirection
+  ogTitle: OrderDirection
+  ogDescription: OrderDirection
+  adTraceCode: OrderDirection
+  notFeed: OrderDirection
+  exclusive: OrderDirection
+  isFeatured: OrderDirection
+  isAdult: OrderDirection
+  isAdvertised: OrderDirection
+  isAdBlocked: OrderDirection
+  lockTime: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input PostUpdateInput {
+  lockBy: UserRelateToOneForUpdateInput
+  lockExpireAt: DateTime
   slug: String
   name: String
   subtitle: String
-  state: PostStateType
+  state: String
   publishTime: DateTime
+  publishedDateString: String
+  updateTimeStamp: Boolean
+  categories: CategoryRelateToManyForUpdateInput
+  writers: ContactRelateToManyForUpdateInput
+  manualOrderOfWriters: JSON
+  photographers: ContactRelateToManyForUpdateInput
+  cameraOperators: ContactRelateToManyForUpdateInput
+  designers: ContactRelateToManyForUpdateInput
+  engineers: ContactRelateToManyForUpdateInput
+  vocals: ContactRelateToManyForUpdateInput
+  otherbyline: String
+  heroImage: ImageRelateToOneForUpdateInput
+  heroCaption: String
+  heroImageSize: String
+  style: String
+  brief: JSON
+  content: JSON
+  briefHtml: String
+  briefApiData: JSON
+  contentHtml: String
+  contentApiData: JSON
+  source: String
+  tags: TagRelateToManyForUpdateInput
+  audio: AudioRelateToOneForUpdateInput
+  relatedPosts: PostRelateToManyForUpdateInput
+  manualOrderOfRelatedPosts: JSON
+  ogTitle: String
+  ogDescription: String
+  ogImage: ImageRelateToOneForUpdateInput
+  adTraceCode: String
+  notFeed: Boolean
+  exclusive: Boolean
+  isFeatured: Boolean
+  isAdult: Boolean
+  isAdvertised: Boolean
+  isAdBlocked: Boolean
+  lockTime: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input CategoryRelateToManyForUpdateInput {
+  disconnect: [CategoryWhereUniqueInput!]
+  set: [CategoryWhereUniqueInput!]
+  create: [CategoryCreateInput!]
+  connect: [CategoryWhereUniqueInput!]
+}
+
+input AudioRelateToOneForUpdateInput {
+  create: AudioCreateInput
+  connect: AudioWhereUniqueInput
+  disconnect: Boolean
+}
+
+input PostRelateToManyForUpdateInput {
+  disconnect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 input PostUpdateArgs {
@@ -1266,15 +1434,69 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
+  lockBy: UserRelateToOneForCreateInput
+  lockExpireAt: DateTime
   slug: String
   name: String
   subtitle: String
-  state: PostStateType
+  state: String
   publishTime: DateTime
+  publishedDateString: String
+  updateTimeStamp: Boolean
+  categories: CategoryRelateToManyForCreateInput
+  writers: ContactRelateToManyForCreateInput
+  manualOrderOfWriters: JSON
+  photographers: ContactRelateToManyForCreateInput
+  cameraOperators: ContactRelateToManyForCreateInput
+  designers: ContactRelateToManyForCreateInput
+  engineers: ContactRelateToManyForCreateInput
+  vocals: ContactRelateToManyForCreateInput
+  otherbyline: String
+  heroImage: ImageRelateToOneForCreateInput
+  heroCaption: String
+  heroImageSize: String
+  style: String
+  brief: JSON
+  content: JSON
+  briefHtml: String
+  briefApiData: JSON
+  contentHtml: String
+  contentApiData: JSON
+  source: String
+  tags: TagRelateToManyForCreateInput
+  audio: AudioRelateToOneForCreateInput
+  relatedPosts: PostRelateToManyForCreateInput
+  manualOrderOfRelatedPosts: JSON
+  ogTitle: String
+  ogDescription: String
+  ogImage: ImageRelateToOneForCreateInput
+  adTraceCode: String
+  notFeed: Boolean
+  exclusive: Boolean
+  isFeatured: Boolean
+  isAdult: Boolean
+  isAdvertised: Boolean
+  isAdBlocked: Boolean
+  lockTime: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input CategoryRelateToManyForCreateInput {
+  create: [CategoryCreateInput!]
+  connect: [CategoryWhereUniqueInput!]
+}
+
+input AudioRelateToOneForCreateInput {
+  create: AudioCreateInput
+  connect: AudioWhereUniqueInput
+}
+
+input PostRelateToManyForCreateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 type Tag {

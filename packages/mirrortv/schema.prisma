@@ -44,6 +44,7 @@ model User {
   from_Serie_updatedBy          Serie[]          @relation("Serie_updatedBy")
   from_Show_createdBy           Show[]           @relation("Show_createdBy")
   from_Show_updatedBy           Show[]           @relation("Show_updatedBy")
+  from_Post_lockBy              Post[]           @relation("Post_lockBy")
   from_Post_createdBy           Post[]           @relation("Post_createdBy")
   from_Post_updatedBy           Post[]           @relation("Post_updatedBy")
   from_Tag_createdBy            Tag[]            @relation("Tag_createdBy")
@@ -58,36 +59,42 @@ model User {
 }
 
 model Contact {
-  id                  Int       @id @default(autoincrement())
-  sortOrder           Int?      @unique
-  slug                String    @unique @default("")
-  name                String    @default("")
-  email               String    @default("")
-  anchorImg           Image?    @relation("Contact_anchorImg", fields: [anchorImgId], references: [id])
-  anchorImgId         Int?      @map("anchorImg")
-  showhostImg         Image?    @relation("Contact_showhostImg", fields: [showhostImgId], references: [id])
-  showhostImgId       Int?      @map("showhostImg")
-  homepage            String    @default("")
-  facebook            String    @default("")
-  instagram           String    @default("")
-  twitter             String    @default("")
-  bio                 Json?
-  anchorperson        Boolean   @default(false)
-  host                Boolean   @default(false)
-  international       Boolean   @default(false)
-  relatedShows        Show[]    @relation("Contact_relatedShows")
-  relatedSeries       Serie[]   @relation("Contact_relatedSeries")
-  bioApiData          String    @default("")
-  bioHtml             String    @default("")
-  isResigned          Boolean   @default(false)
-  createdAt           DateTime?
-  updatedAt           DateTime?
-  createdBy           User?     @relation("Contact_createdBy", fields: [createdById], references: [id])
-  createdById         Int?      @map("createdBy")
-  updatedBy           User?     @relation("Contact_updatedBy", fields: [updatedById], references: [id])
-  updatedById         Int?      @map("updatedBy")
-  from_Section_host   Section[] @relation("Section_host")
-  from_Show_staffName Show[]    @relation("Show_staffName")
+  id                        Int       @id @default(autoincrement())
+  sortOrder                 Int?      @unique
+  slug                      String    @unique @default("")
+  name                      String    @default("")
+  email                     String    @default("")
+  anchorImg                 Image?    @relation("Contact_anchorImg", fields: [anchorImgId], references: [id])
+  anchorImgId               Int?      @map("anchorImg")
+  showhostImg               Image?    @relation("Contact_showhostImg", fields: [showhostImgId], references: [id])
+  showhostImgId             Int?      @map("showhostImg")
+  homepage                  String    @default("")
+  facebook                  String    @default("")
+  instagram                 String    @default("")
+  twitter                   String    @default("")
+  bio                       Json?
+  anchorperson              Boolean   @default(false)
+  host                      Boolean   @default(false)
+  international             Boolean   @default(false)
+  relatedShows              Show[]    @relation("Contact_relatedShows")
+  relatedSeries             Serie[]   @relation("Contact_relatedSeries")
+  bioApiData                String    @default("")
+  bioHtml                   String    @default("")
+  isResigned                Boolean   @default(false)
+  createdAt                 DateTime?
+  updatedAt                 DateTime?
+  createdBy                 User?     @relation("Contact_createdBy", fields: [createdById], references: [id])
+  createdById               Int?      @map("createdBy")
+  updatedBy                 User?     @relation("Contact_updatedBy", fields: [updatedById], references: [id])
+  updatedById               Int?      @map("updatedBy")
+  from_Section_host         Section[] @relation("Section_host")
+  from_Show_staffName       Show[]    @relation("Show_staffName")
+  from_Post_writers         Post[]    @relation("Post_writers")
+  from_Post_photographers   Post[]    @relation("Post_photographers")
+  from_Post_cameraOperators Post[]    @relation("Post_cameraOperators")
+  from_Post_designers       Post[]    @relation("Post_designers")
+  from_Post_engineers       Post[]    @relation("Post_engineers")
+  from_Post_vocals          Post[]    @relation("Post_vocals")
 
   @@index([anchorImgId])
   @@index([showhostImgId])
@@ -177,12 +184,15 @@ model Image {
   from_Serie_heroImage     Serie[]    @relation("Serie_heroImage")
   from_Show_bannerImg      Show[]     @relation("Show_bannerImg")
   from_Show_picture        Show[]     @relation("Show_picture")
+  from_Post_heroImage      Post[]     @relation("Post_heroImage")
+  from_Post_ogImage        Post[]     @relation("Post_ogImage")
   from_Tag_ogImage         Tag[]      @relation("Tag_ogImage")
   from_Category_ogImage    Category[] @relation("Category_ogImage")
   from_Audio_coverPhoto    Audio[]    @relation("Audio_coverPhoto")
 
   @@index([createdById])
   @@index([updatedById])
+  @@map("Image")
 }
 
 model Sale {
@@ -285,20 +295,69 @@ model Show {
 }
 
 model Post {
-  id               Int            @id @default(autoincrement())
-  slug             String         @unique @default("")
-  name             String         @default("untitled")
-  subtitle         String         @default("")
-  state            PostStateType? @default(draft)
-  publishTime      DateTime?
-  createdAt        DateTime?
-  updatedAt        DateTime?
-  createdBy        User?          @relation("Post_createdBy", fields: [createdById], references: [id])
-  createdById      Int?           @map("createdBy")
-  updatedBy        User?          @relation("Post_updatedBy", fields: [updatedById], references: [id])
-  updatedById      Int?           @map("updatedBy")
-  from_Sale_adPost Sale[]         @relation("Sale_adPost")
+  id                        Int        @id @default(autoincrement())
+  lockBy                    User?      @relation("Post_lockBy", fields: [lockById], references: [id])
+  lockById                  Int?       @map("lockBy")
+  lockExpireAt              DateTime?
+  slug                      String     @unique @default("")
+  name                      String     @default("untitled")
+  subtitle                  String     @default("")
+  state                     String?    @default("draft")
+  publishTime               DateTime?
+  publishedDateString       String     @default("")
+  updateTimeStamp           Boolean    @default(false)
+  categories                Category[] @relation("Post_categories")
+  writers                   Contact[]  @relation("Post_writers")
+  manualOrderOfWriters      Json?
+  photographers             Contact[]  @relation("Post_photographers")
+  cameraOperators           Contact[]  @relation("Post_cameraOperators")
+  designers                 Contact[]  @relation("Post_designers")
+  engineers                 Contact[]  @relation("Post_engineers")
+  vocals                    Contact[]  @relation("Post_vocals")
+  otherbyline               String     @default("")
+  heroImage                 Image?     @relation("Post_heroImage", fields: [heroImageId], references: [id])
+  heroImageId               Int?       @map("heroImage")
+  heroCaption               String     @default("")
+  heroImageSize             String?    @default("normal")
+  style                     String?    @default("article")
+  brief                     Json?
+  content                   Json?
+  briefHtml                 String     @default("")
+  briefApiData              Json?
+  contentHtml               String     @default("")
+  contentApiData            Json?
+  source                    String     @default("")
+  tags                      Tag[]      @relation("Post_tags")
+  audio                     Audio?     @relation("Post_audio", fields: [audioId], references: [id])
+  audioId                   Int?       @map("audio")
+  relatedPosts              Post[]     @relation("Post_relatedPosts")
+  manualOrderOfRelatedPosts Json?
+  ogTitle                   String     @default("")
+  ogDescription             String     @default("")
+  ogImage                   Image?     @relation("Post_ogImage", fields: [ogImageId], references: [id])
+  ogImageId                 Int?       @map("ogImage")
+  adTraceCode               String     @default("")
+  notFeed                   Boolean    @default(false)
+  exclusive                 Boolean    @default(false)
+  isFeatured                Boolean    @default(false)
+  isAdult                   Boolean    @default(false)
+  isAdvertised              Boolean    @default(false)
+  isAdBlocked               Boolean    @default(false)
+  lockTime                  DateTime?
+  createdAt                 DateTime?
+  updatedAt                 DateTime?
+  createdBy                 User?      @relation("Post_createdBy", fields: [createdById], references: [id])
+  createdById               Int?       @map("createdBy")
+  updatedBy                 User?      @relation("Post_updatedBy", fields: [updatedById], references: [id])
+  updatedById               Int?       @map("updatedBy")
+  from_Sale_adPost          Sale[]     @relation("Sale_adPost")
+  from_Post_relatedPosts    Post[]     @relation("Post_relatedPosts")
 
+  @@index([lockById])
+  @@index([state])
+  @@index([heroImageId])
+  @@index([audioId])
+  @@index([ogImageId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -318,6 +377,7 @@ model Tag {
   updatedBy       User?     @relation("Tag_updatedBy", fields: [updatedById], references: [id])
   updatedById     Int?      @map("updatedBy")
   from_Image_tags Image[]   @relation("Image_tags")
+  from_Post_tags  Post[]    @relation("Post_tags")
   from_Audio_tags Audio[]   @relation("Audio_tags")
 
   @@index([ogImageId])
@@ -326,22 +386,23 @@ model Tag {
 }
 
 model Category {
-  id            Int       @id @default(autoincrement())
-  sortOrder     Int       @unique
-  slug          String    @unique @default("")
-  name          String    @default("")
-  ogTitle       String    @default("")
-  ogDescription String    @default("")
-  ogImage       Image?    @relation("Category_ogImage", fields: [ogImageId], references: [id])
-  ogImageId     Int?      @map("ogImage")
-  isFeatured    Boolean   @default(false)
-  style         String?   @default("normal")
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?     @relation("Category_createdBy", fields: [createdById], references: [id])
-  createdById   Int?      @map("createdBy")
-  updatedBy     User?     @relation("Category_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?      @map("updatedBy")
+  id                   Int       @id @default(autoincrement())
+  sortOrder            Int       @unique
+  slug                 String    @unique @default("")
+  name                 String    @default("")
+  ogTitle              String    @default("")
+  ogDescription        String    @default("")
+  ogImage              Image?    @relation("Category_ogImage", fields: [ogImageId], references: [id])
+  ogImageId            Int?      @map("ogImage")
+  isFeatured           Boolean   @default(false)
+  style                String?   @default("normal")
+  createdAt            DateTime?
+  updatedAt            DateTime?
+  createdBy            User?     @relation("Category_createdBy", fields: [createdById], references: [id])
+  createdById          Int?      @map("createdBy")
+  updatedBy            User?     @relation("Category_updatedBy", fields: [updatedById], references: [id])
+  updatedById          Int?      @map("updatedBy")
+  from_Post_categories Post[]    @relation("Post_categories")
 
   @@index([ogImageId])
   @@index([createdById])
@@ -349,22 +410,23 @@ model Category {
 }
 
 model Audio {
-  id            Int       @id @default(autoincrement())
-  name          String    @default("")
-  file_filesize Int?
-  file_filename String?
-  coverPhoto    Image?    @relation("Audio_coverPhoto", fields: [coverPhotoId], references: [id])
-  coverPhotoId  Int?      @map("coverPhoto")
-  tags          Tag[]     @relation("Audio_tags")
-  meta          Json?
-  url           String    @default("")
-  duration      Int?
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?     @relation("Audio_createdBy", fields: [createdById], references: [id])
-  createdById   Int?      @map("createdBy")
-  updatedBy     User?     @relation("Audio_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?      @map("updatedBy")
+  id              Int       @id @default(autoincrement())
+  name            String    @default("")
+  file_filesize   Int?
+  file_filename   String?
+  coverPhoto      Image?    @relation("Audio_coverPhoto", fields: [coverPhotoId], references: [id])
+  coverPhotoId    Int?      @map("coverPhoto")
+  tags            Tag[]     @relation("Audio_tags")
+  meta            Json?
+  url             String    @default("")
+  duration        Int?
+  createdAt       DateTime?
+  updatedAt       DateTime?
+  createdBy       User?     @relation("Audio_createdBy", fields: [createdById], references: [id])
+  createdById     Int?      @map("createdBy")
+  updatedBy       User?     @relation("Audio_updatedBy", fields: [updatedById], references: [id])
+  updatedById     Int?      @map("updatedBy")
+  from_Post_audio Post[]    @relation("Post_audio")
 
   @@index([coverPhotoId])
   @@index([createdById])
@@ -376,12 +438,4 @@ enum SaleStateType {
   published
   scheduled
   archived
-}
-
-enum PostStateType {
-  draft
-  published
-  scheduled
-  archived
-  invisible
 }
