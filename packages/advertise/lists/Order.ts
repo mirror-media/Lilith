@@ -297,7 +297,7 @@ const listConfigurations = list({
       },
     }),
     isReviewed: checkbox({
-      label: '是否審核前',
+      label: '客戶是否已確認過影片預覽',
       defaultValue: false,
       ui: {
         createView: {
