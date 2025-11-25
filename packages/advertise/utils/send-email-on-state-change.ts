@@ -85,14 +85,14 @@ const MEMBER_EMAIL_CONTENT: Record<
     body: () =>
       `您的廣告影片已製作完成，請確認影片預覽內容，並重新設定排播時間。`,
   },
-  transferred: {
-    subject: (data) =>
-      `【鏡新聞個人廣告系統】訂單 ${data.orderNumber} 已經轉移至新訂單 ${data.relatedOrderNumber}`,
-    bodyTitle: (data) =>
-      `訂單 ${data.orderNumber} 已經轉移至新訂單 ${data.relatedOrderNumber}`,
-    body: (data) =>
-      `您的訂單修改需求系統已收到，新訂單編號：${data.relatedOrderNumber}。`,
-  },
+  // transferred: {
+  //   subject: (data) =>
+  //     `【鏡新聞個人廣告系統】訂單 ${data.orderNumber} 已經轉移至新訂單 ${data.relatedOrderNumber}`,
+  //   bodyTitle: (data) =>
+  //     `訂單 ${data.orderNumber} 已經轉移至新訂單 ${data.relatedOrderNumber}`,
+  //   body: (data) =>
+  //     `您的訂單修改需求系統已收到，新訂單編號：${data.relatedOrderNumber}。`,
+  // },
   cancelled: {
     subject: () => `【鏡新聞個人廣告系統】您的訂單已取消`,
     bodyTitle: (data) => `您的 訂單 ${data.orderNumber} 已取消`,
@@ -127,11 +127,11 @@ const SALES_EMAIL_CONTENT: Record<
     subject: '用戶已重新設定排播時間',
     body: () => '用戶針對一筆訂單重新設定排播時間，請盡快至CMS更改訂單狀態。',
   },
-  transferred: {
-    subject: (data) =>
-      `訂單 ${data.orderNumber} 已轉移至新訂單 ${data.relatedOrderNumber}`,
-    body: () => '用戶已完成需修改素材上傳，請盡快至CMS確認素材。',
-  },
+  // transferred: {
+  //   subject: (data) =>
+  //     `訂單 ${data.orderNumber} 已轉移至新訂單 ${data.relatedOrderNumber}`,
+  //   body: () => '用戶已完成需修改素材上傳，請盡快至CMS確認素材。',
+  // },
   cancelled: {
     subject: '訂單已取消',
     body: () => '此訂單已作廢/取消。',
