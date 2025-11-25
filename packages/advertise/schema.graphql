@@ -370,6 +370,7 @@ type Order {
   isUrgent: Boolean
   needsModification: Boolean
   isReviewed: Boolean
+  parentOrder: Order
   relatedOrder: Order
   paragraphOne: String
   paragraphTwo: String
@@ -405,6 +406,7 @@ input OrderWhereInput {
   isUrgent: BooleanFilter
   needsModification: BooleanFilter
   isReviewed: BooleanFilter
+  parentOrder: OrderWhereInput
   relatedOrder: OrderWhereInput
   paragraphOne: StringFilter
   paragraphTwo: StringFilter
@@ -473,6 +475,7 @@ input OrderUpdateInput {
   isUrgent: Boolean
   needsModification: Boolean
   isReviewed: Boolean
+  parentOrder: OrderRelateToOneForUpdateInput
   relatedOrder: OrderRelateToOneForUpdateInput
   paragraphOne: String
   paragraphTwo: String
@@ -528,6 +531,7 @@ input OrderCreateInput {
   isUrgent: Boolean
   needsModification: Boolean
   isReviewed: Boolean
+  parentOrder: OrderRelateToOneForCreateInput
   relatedOrder: OrderRelateToOneForCreateInput
   paragraphOne: String
   paragraphTwo: String

@@ -28,28 +28,11 @@ const orderStateOptions = [
   { label: '已作廢', value: 'cancelled' },
 ]
 
-const extractRelatedOrderLength = (o?: unknown) => {
-  if (!o) return 0
-  if (Array.isArray(o)) return o.length
-  const oo = o as { connect?: unknown[]; set?: unknown[] }
-  if (Array.isArray(oo.connect) && oo.connect.length > 0)
-    return oo.connect.length
-  if (Array.isArray(oo.set) && oo.set.length > 0) return oo.set.length
-  return 0
-}
-
 const listConfigurations = list({
   hooks: {
     resolveInput: ({ resolvedData, operation, item }) => {
       if (operation === 'create' && !item && !resolvedData.updatedAt) {
         resolvedData.updatedAt = new Date()
-      }
-
-      if (
-        extractRelatedOrderLength(resolvedData.relatedOrder) > 0 ||
-        extractRelatedOrderLength(item?.relatedOrder) > 0
-      ) {
-        resolvedData.state = 'transferred'
       }
 
       const price = resolvedData.price ?? item?.price ?? 0
@@ -70,6 +53,36 @@ const listConfigurations = list({
 
       return resolvedData
     },
+    afterOperation: async ({ operation, item, context, originalItem }) => {
+      if (operation !== 'create' && operation !== 'update') return
+
+      const relatedOrderChanged =
+        operation === 'create'
+          ? item.relatedOrderId
+          : originalItem?.relatedOrderId !== item.relatedOrderId
+
+      const parentOrderChanged =
+        operation === 'create'
+          ? item.parentOrderId
+          : originalItem?.parentOrderId !== item.parentOrderId
+
+      if (relatedOrderChanged && item.relatedOrderId) {
+        await context.prisma.order.update({
+          where: { id: Number(item.relatedOrderId) },
+          data: { parentOrderId: Number(item.id) },
+        })
+      }
+
+      if (parentOrderChanged && item.parentOrderId) {
+        await context.prisma.order.update({
+          where: { id: Number(item.parentOrderId) },
+          data: {
+            relatedOrderId: Number(item.id),
+            state: 'transferred',
+          },
+        })
+      }
+    },
     validateInput: async ({
       resolvedData,
       addValidationError,
@@ -78,24 +91,44 @@ const listConfigurations = list({
     }) => {
       const state = resolvedData.state || item?.state
 
-      if (resolvedData.relatedOrder) {
-        const relatedOrderId =
-          resolvedData.relatedOrder.connect?.id ||
-          resolvedData.relatedOrder.connect
+      if (resolvedData.parentOrder?.disconnect) {
+        addValidationError('不能取消已設定的母訂單')
+        return
+      }
 
-        if (relatedOrderId && item?.id && relatedOrderId === item.id) {
-          addValidationError('不能選擇自己作為訂單更動的目標')
+      if (resolvedData.relatedOrder?.disconnect) {
+        addValidationError('不能取消已設定的子訂單')
+        return
+      }
+
+      if (resolvedData.parentOrder?.connect) {
+        const parentOrderId =
+          resolvedData.parentOrder.connect.id ||
+          resolvedData.parentOrder.connect
+
+        if (parentOrderId && item?.id && parentOrderId === item.id) {
+          addValidationError('不能選擇自己作為母訂單')
           return
         }
 
-        if (item?.relatedOrder && relatedOrderId) {
-          addValidationError('此訂單已經轉移過，不能再次修改轉移目標')
+        if (item?.parentOrderId) {
+          addValidationError('此訂單已經設定過母訂單，不能再次修改')
           return
         }
 
-        if (relatedOrderId) {
+        if (item?.relatedOrderId) {
+          addValidationError('此訂單已經是其他訂單的母訂單，不能再設定母訂單')
+          return
+        }
+
+        if (item?.state === 'transferred') {
+          addValidationError('已轉移至新訂單的訂單不能再設定母訂單')
+          return
+        }
+
+        if (parentOrderId) {
           const targetOrder = await context.query.Order.findOne({
-            where: { id: relatedOrderId },
+            where: { id: parentOrderId },
             query: 'id state relatedOrder { id }',
           })
 
@@ -105,21 +138,45 @@ const listConfigurations = list({
           }
 
           if (targetOrder.relatedOrder) {
-            addValidationError('不能選擇已經轉移出去的訂單作為訂單更動的目標')
+            addValidationError('此訂單已經有子訂單，不能再設定為母訂單')
+            return
+          }
+        }
+      }
+
+      if (resolvedData.relatedOrder?.connect) {
+        const childOrderId =
+          resolvedData.relatedOrder.connect.id ||
+          resolvedData.relatedOrder.connect
+
+        if (childOrderId && item?.id && childOrderId === item.id) {
+          addValidationError('不能選擇自己作為子訂單')
+          return
+        }
+
+        if (item?.relatedOrderId) {
+          addValidationError('此訂單已經設定過子訂單，不能再次修改')
+          return
+        }
+
+        if (item?.parentOrderId) {
+          addValidationError('此訂單已經是其他訂單的子訂單，不能再設定子訂單')
+          return
+        }
+
+        if (childOrderId) {
+          const targetOrder = await context.query.Order.findOne({
+            where: { id: childOrderId },
+            query: 'id state parentOrder { id }',
+          })
+
+          if (!targetOrder) {
+            addValidationError('目標訂單不存在')
             return
           }
 
-          const ordersPointingToTarget = await context.query.Order.findMany({
-            where: {
-              relatedOrder: { id: { equals: relatedOrderId } },
-            },
-            query: 'id',
-          })
-
-          if (ordersPointingToTarget && ordersPointingToTarget.length > 0) {
-            addValidationError(
-              '此訂單已經被其他訂單轉移過來，不能再次被選為目標'
-            )
+          if (targetOrder.parentOrder) {
+            addValidationError('目標訂單已經有母訂單，不能再設定為子訂單')
             return
           }
         }
@@ -135,11 +192,18 @@ const listConfigurations = list({
         }
       }
 
-      if (state === 'transferred') {
-        const len1 = extractRelatedOrderLength(resolvedData.relatedOrder)
-        const len2 = extractRelatedOrderLength(item?.relatedOrder)
-        if (len1 + len2 === 0) {
-          addValidationError('狀態為「已轉交」時，必須設定訂單更動')
+      if (state === 'transferred' && item?.id) {
+        const childOrders = await context.query.Order.findMany({
+          where: {
+            parentOrder: { id: { equals: item.id } },
+          },
+          query: 'id',
+        })
+
+        if (!childOrders || childOrders.length === 0) {
+          addValidationError(
+            '狀態為「已轉交」時，必須有子訂單（有其他訂單設定此訂單為母訂單）'
+          )
         }
       }
 
@@ -246,12 +310,29 @@ const listConfigurations = list({
         },
       },
     }),
-    relatedOrder: relationship({
-      label: '訂單更動',
+    parentOrder: relationship({
+      label: '母訂單',
       ref: 'Order',
       ui: {
         hideCreate: true,
         displayMode: 'select',
+      },
+    }),
+    relatedOrder: relationship({
+      label: '子訂單',
+      ref: 'Order',
+      ui: {
+        hideCreate: true,
+        displayMode: 'select',
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'hidden',
+        },
+        listView: {
+          fieldMode: 'hidden',
+        },
       },
     }),
     paragraphOne: text({
