@@ -317,8 +317,7 @@ export function sendEmailOnStateChange(
       try {
         orderData = await context.query.Order.findOne({
           where: { id: currentItem.id },
-          query:
-            'id orderNumber name member { id email name } relatedOrder { id orderNumber }',
+          query: 'id orderNumber name member { id email name }',
         })
       } catch (error) {
         console.error('Error fetching order data:', error)
@@ -327,7 +326,22 @@ export function sendEmailOnStateChange(
 
       const memberEmail = orderData?.member?.email
       const memberName = orderData?.member?.name
-      const relatedOrderNumber = orderData?.relatedOrder?.orderNumber
+
+      let relatedOrderNumber
+      if (currentItem.state === 'transferred') {
+        try {
+          const childOrders = await context.query.Order.findMany({
+            where: {
+              parentOrder: { id: { equals: currentItem.id } },
+            },
+            query: 'id orderNumber',
+            take: 1,
+          })
+          relatedOrderNumber = childOrders?.[0]?.orderNumber
+        } catch (error) {
+          console.error('Error fetching child order:', error)
+        }
+      }
 
       if (orderData?.member && memberEmail) {
         sendEmailToMember(emailApiUrl, {

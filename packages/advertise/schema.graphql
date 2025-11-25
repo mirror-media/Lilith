@@ -371,7 +371,6 @@ type Order {
   needsModification: Boolean
   isReviewed: Boolean
   parentOrder: Order
-  relatedOrder: Order
   paragraphOne: String
   paragraphTwo: String
   image: Photo
@@ -407,7 +406,6 @@ input OrderWhereInput {
   needsModification: BooleanFilter
   isReviewed: BooleanFilter
   parentOrder: OrderWhereInput
-  relatedOrder: OrderWhereInput
   paragraphOne: StringFilter
   paragraphTwo: StringFilter
   image: PhotoWhereInput
@@ -476,7 +474,6 @@ input OrderUpdateInput {
   needsModification: Boolean
   isReviewed: Boolean
   parentOrder: OrderRelateToOneForUpdateInput
-  relatedOrder: OrderRelateToOneForUpdateInput
   paragraphOne: String
   paragraphTwo: String
   image: PhotoRelateToOneForUpdateInput
@@ -532,7 +529,6 @@ input OrderCreateInput {
   needsModification: Boolean
   isReviewed: Boolean
   parentOrder: OrderRelateToOneForCreateInput
-  relatedOrder: OrderRelateToOneForCreateInput
   paragraphOne: String
   paragraphTwo: String
   image: PhotoRelateToOneForCreateInput
