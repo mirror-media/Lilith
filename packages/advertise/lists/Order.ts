@@ -47,7 +47,7 @@ const listConfigurations = list({
       }
 
       const state = resolvedData.state ?? item?.state
-      if (state === 'to_be_confirmed') {
+      if (state === 'scheduled') {
         resolvedData.isReviewed = true
       }
 
@@ -182,16 +182,6 @@ const listConfigurations = list({
         }
       }
 
-      if (state === 'pending_quote_confirmation') {
-        if (
-          !resolvedData.needsModification &&
-          !resolvedData.needsModification
-        ) {
-          addValidationError('請勾選「此筆待修改」欄位')
-          return
-        }
-      }
-
       if (state === 'transferred' && item?.id) {
         const childOrders = await context.query.Order.findMany({
           where: {
@@ -295,11 +285,19 @@ const listConfigurations = list({
       },
     }),
     needsModification: checkbox({
-      label: '此筆待修改',
+      label: '此為修改訂單',
       defaultValue: false,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
     }),
     isReviewed: checkbox({
-      label: '是否審核前',
+      label: '客戶是否已確認過影片預覽',
       defaultValue: false,
       ui: {
         createView: {
