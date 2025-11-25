@@ -285,8 +285,16 @@ const listConfigurations = list({
       },
     }),
     needsModification: checkbox({
-      label: '此筆待修改',
+      label: '此為修改訂單',
       defaultValue: false,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
     }),
     isReviewed: checkbox({
       label: '是否審核前',
