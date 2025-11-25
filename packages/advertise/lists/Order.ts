@@ -182,16 +182,6 @@ const listConfigurations = list({
         }
       }
 
-      if (state === 'pending_quote_confirmation') {
-        if (
-          !resolvedData.needsModification &&
-          !resolvedData.needsModification
-        ) {
-          addValidationError('請勾選「此筆待修改」欄位')
-          return
-        }
-      }
-
       if (state === 'transferred' && item?.id) {
         const childOrders = await context.query.Order.findMany({
           where: {
