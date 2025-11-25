@@ -125,12 +125,15 @@ export default withAuth(
         // } catch (error) {
         //   console.error('Failed to start Video Duration Worker:', error)
         // }
-        try {
-          startImageWorker(context)
-          console.log('Image Processing Worker started')
-        } catch (error) {
-          console.error('Failed to start Image Worker:', error)
+        const initWorker = async () => {
+          try {
+            await startImageWorker(context)
+            console.log('Image Processing Worker started')
+          } catch (error) {
+            console.error('Failed to start Image Worker:', error)
+          }
         }
+        initWorker()
       },
     },
   })

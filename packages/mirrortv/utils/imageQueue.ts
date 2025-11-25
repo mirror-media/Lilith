@@ -3,39 +3,64 @@ import IORedis from 'ioredis'
 import path from 'path'
 import envVar from '../environment-variables'
 import { processAndUploadImages, deleteImagesFromGCS } from './imageProcessing'
+import { KeystoneContext } from '@keystone-6/core/types'
 
-// Redis 設定
-const redisUrl = envVar.redis?.url || 'redis://localhost:6379'
+let connection: IORedis | null = null
+let imageQueue: Queue | null = null
 
-// ★ 修改: Connection 設定，防止 Build 階段報錯
-const connection = new IORedis(redisUrl, {
-  maxRetriesPerRequest: null,
-  // 加入 retryStrategy: 限制重試次數
-  retryStrategy: (times) => {
-    // 如果重試超過 5 次，就放棄連線 (這對 build 階段很重要)
-    if (times > 5) {
-      console.warn(
-        '[Redis] Max retries reached. Assuming build environment or Redis down.'
-      )
-      return null
-    }
-    return Math.min(times * 50, 2000)
-  },
-})
+// 初始化 Queue 函式
+const initializeQueue = async () => {
+  if (imageQueue) return imageQueue
 
-// ★ 修改: 捕捉錯誤事件，防止 Node.js 拋出 Unhandled Exception 導致 Build 失敗
-connection.on('error', (err) => {
-  console.warn(
-    `[Redis] Connection error: ${err.message} (This is expected during build step)`
-  )
-})
+  const redisUrl = envVar.redis?.url
 
-// 建立 Queue
-export const imageQueue = new Queue('imageProcessingQueue', { connection })
+  if (!redisUrl) {
+    throw new Error('[Redis] Redis URL not configured')
+  }
+
+  if (redisUrl.includes('127.0.0.1') || redisUrl.includes('localhost')) {
+    console.warn(
+      '[Redis] Using localhost Redis - this should only be in development'
+    )
+  }
+
+  connection = new IORedis(redisUrl, {
+    // 防止在初始化時立即連線
+    lazyConnect: true,
+    // 防止在連線失敗時無限重試
+    maxRetriesPerRequest: null,
+    retryStrategy: (times) => {
+      if (times > 5) {
+        console.warn('[Redis] Max retries reached')
+        return null
+      }
+      return Math.min(times * 50, 2000)
+    },
+  })
+
+  connection.on('error', (err) => {
+    console.warn(`[Redis] Connection error: ${err.message}`)
+  })
+
+  await connection.connect()
+  console.log('[Redis] Connected successfully')
+
+  // 建立 Queue
+  imageQueue = new Queue('imageProcessingQueue', { connection })
+  return imageQueue
+}
+
+export { imageQueue }
 
 // 啟動 Worker
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const startImageWorker = (context: any) => {
+export const startImageWorker = async (context: KeystoneContext) => {
+  await initializeQueue()
+
+  if (!connection || !imageQueue) {
+    throw new Error('[Redis] Connection not established')
+  }
+
   const worker = new Worker(
     'imageProcessingQueue',
     async (job: Job) => {
