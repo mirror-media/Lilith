@@ -35,7 +35,7 @@ const listConfigurations = list({
     }),
     minorCategory: text({
       label: '小科目名稱',
-      validation: { isRequired: true },
+      validation: { isRequired: false },
     }),
     projectName: text({
       label: '計畫名稱',
