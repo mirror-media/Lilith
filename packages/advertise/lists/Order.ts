@@ -116,21 +116,6 @@ const listConfigurations = list({
         }
       }
 
-      if (state === 'transferred' && item?.id) {
-        const childOrders = await context.query.Order.findMany({
-          where: {
-            parentOrder: { id: { equals: item.id } },
-          },
-          query: 'id',
-        })
-
-        if (!childOrders || childOrders.length === 0) {
-          addValidationError(
-            '狀態為「已轉交」時，必須有子訂單（有其他訂單設定此訂單為母訂單）'
-          )
-        }
-      }
-
       if (state === 'to_be_confirmed') {
         const demoImage = resolvedData.demoImage ?? item?.demoImageId
         const attachment = resolvedData.attachment ?? item?.attachmentId
