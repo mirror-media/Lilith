@@ -47,7 +47,7 @@ const listConfigurations = list({
       }
 
       const state = resolvedData.state ?? item?.state
-      if (state === 'to_be_confirmed') {
+      if (state === 'scheduled') {
         resolvedData.isReviewed = true
       }
 
