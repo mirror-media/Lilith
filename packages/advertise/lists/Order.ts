@@ -56,28 +56,15 @@ const listConfigurations = list({
     afterOperation: async ({ operation, item, context, originalItem }) => {
       if (operation !== 'create' && operation !== 'update') return
 
-      const relatedOrderChanged =
-        operation === 'create'
-          ? item.relatedOrderId
-          : originalItem?.relatedOrderId !== item.relatedOrderId
-
       const parentOrderChanged =
         operation === 'create'
           ? item.parentOrderId
           : originalItem?.parentOrderId !== item.parentOrderId
 
-      if (relatedOrderChanged && item.relatedOrderId) {
-        await context.prisma.order.update({
-          where: { id: Number(item.relatedOrderId) },
-          data: { parentOrderId: Number(item.id) },
-        })
-      }
-
       if (parentOrderChanged && item.parentOrderId) {
         await context.prisma.order.update({
           where: { id: Number(item.parentOrderId) },
           data: {
-            relatedOrderId: Number(item.id),
             state: 'transferred',
           },
         })
@@ -96,11 +83,6 @@ const listConfigurations = list({
         return
       }
 
-      if (resolvedData.relatedOrder?.disconnect) {
-        addValidationError('不能取消已設定的子訂單')
-        return
-      }
-
       if (resolvedData.parentOrder?.connect) {
         const parentOrderId =
           resolvedData.parentOrder.connect.id ||
@@ -116,11 +98,6 @@ const listConfigurations = list({
           return
         }
 
-        if (item?.relatedOrderId) {
-          addValidationError('此訂單已經是其他訂單的母訂單，不能再設定母訂單')
-          return
-        }
-
         if (item?.state === 'transferred') {
           addValidationError('已轉移至新訂單的訂單不能再設定母訂單')
           return
@@ -129,71 +106,13 @@ const listConfigurations = list({
         if (parentOrderId) {
           const targetOrder = await context.query.Order.findOne({
             where: { id: parentOrderId },
-            query: 'id state relatedOrder { id }',
+            query: 'id state',
           })
 
           if (!targetOrder) {
             addValidationError('目標訂單不存在')
             return
           }
-
-          if (targetOrder.relatedOrder) {
-            addValidationError('此訂單已經有子訂單，不能再設定為母訂單')
-            return
-          }
-        }
-      }
-
-      if (resolvedData.relatedOrder?.connect) {
-        const childOrderId =
-          resolvedData.relatedOrder.connect.id ||
-          resolvedData.relatedOrder.connect
-
-        if (childOrderId && item?.id && childOrderId === item.id) {
-          addValidationError('不能選擇自己作為子訂單')
-          return
-        }
-
-        if (item?.relatedOrderId) {
-          addValidationError('此訂單已經設定過子訂單，不能再次修改')
-          return
-        }
-
-        if (item?.parentOrderId) {
-          addValidationError('此訂單已經是其他訂單的子訂單，不能再設定子訂單')
-          return
-        }
-
-        if (childOrderId) {
-          const targetOrder = await context.query.Order.findOne({
-            where: { id: childOrderId },
-            query: 'id state parentOrder { id }',
-          })
-
-          if (!targetOrder) {
-            addValidationError('目標訂單不存在')
-            return
-          }
-
-          if (targetOrder.parentOrder) {
-            addValidationError('目標訂單已經有母訂單，不能再設定為子訂單')
-            return
-          }
-        }
-      }
-
-      if (state === 'transferred' && item?.id) {
-        const childOrders = await context.query.Order.findMany({
-          where: {
-            parentOrder: { id: { equals: item.id } },
-          },
-          query: 'id',
-        })
-
-        if (!childOrders || childOrders.length === 0) {
-          addValidationError(
-            '狀態為「已轉交」時，必須有子訂單（有其他訂單設定此訂單為母訂單）'
-          )
         }
       }
 
@@ -314,23 +233,6 @@ const listConfigurations = list({
       ui: {
         hideCreate: true,
         displayMode: 'select',
-      },
-    }),
-    relatedOrder: relationship({
-      label: '子訂單',
-      ref: 'Order',
-      ui: {
-        hideCreate: true,
-        displayMode: 'select',
-        createView: {
-          fieldMode: 'hidden',
-        },
-        itemView: {
-          fieldMode: 'hidden',
-        },
-        listView: {
-          fieldMode: 'hidden',
-        },
       },
     }),
     paragraphOne: text({

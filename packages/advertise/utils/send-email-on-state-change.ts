@@ -85,14 +85,14 @@ const MEMBER_EMAIL_CONTENT: Record<
     body: () =>
       `您的廣告影片已製作完成，請確認影片預覽內容，並重新設定排播時間。`,
   },
-  transferred: {
-    subject: (data) =>
-      `【鏡新聞個人廣告系統】訂單 ${data.orderNumber} 已經轉移至新訂單 ${data.relatedOrderNumber}`,
-    bodyTitle: (data) =>
-      `訂單 ${data.orderNumber} 已經轉移至新訂單 ${data.relatedOrderNumber}`,
-    body: (data) =>
-      `您的訂單修改需求系統已收到，新訂單編號：${data.relatedOrderNumber}。`,
-  },
+  // transferred: {
+  //   subject: (data) =>
+  //     `【鏡新聞個人廣告系統】訂單 ${data.orderNumber} 已經轉移至新訂單 ${data.relatedOrderNumber}`,
+  //   bodyTitle: (data) =>
+  //     `訂單 ${data.orderNumber} 已經轉移至新訂單 ${data.relatedOrderNumber}`,
+  //   body: (data) =>
+  //     `您的訂單修改需求系統已收到，新訂單編號：${data.relatedOrderNumber}。`,
+  // },
   cancelled: {
     subject: () => `【鏡新聞個人廣告系統】您的訂單已取消`,
     bodyTitle: (data) => `您的 訂單 ${data.orderNumber} 已取消`,
@@ -127,11 +127,11 @@ const SALES_EMAIL_CONTENT: Record<
     subject: '用戶已重新設定排播時間',
     body: () => '用戶針對一筆訂單重新設定排播時間，請盡快至CMS更改訂單狀態。',
   },
-  transferred: {
-    subject: (data) =>
-      `訂單 ${data.orderNumber} 已轉移至新訂單 ${data.relatedOrderNumber}`,
-    body: () => '用戶已完成需修改素材上傳，請盡快至CMS確認素材。',
-  },
+  // transferred: {
+  //   subject: (data) =>
+  //     `訂單 ${data.orderNumber} 已轉移至新訂單 ${data.relatedOrderNumber}`,
+  //   body: () => '用戶已完成需修改素材上傳，請盡快至CMS確認素材。',
+  // },
   cancelled: {
     subject: '訂單已取消',
     body: () => '此訂單已作廢/取消。',
@@ -186,17 +186,16 @@ async function sendEmailToMember(
   }
 
   const emailContent = MEMBER_EMAIL_CONTENT[data.newState]
+  const subject = emailContent.subject(data)
   const body = emailContent.body(data)
-  const subjectText = emailContent.subject(data)
-  const bodyTitle = emailContent.bodyTitle(data)
 
   const emailPayload = {
     receiver: [data.memberEmail],
-    subject: `${subjectText}${
+    subject: `${subject}${
       data.newState === 'transferred' ? '' : ' - ' + data.orderNumber
     }`,
     body: `
-      <h2>${bodyTitle}</h2>
+      <h2>${subject}</h2>
       <p>親愛的 ${data.memberName || '客戶'}，您好：</p>
       <p dangerouslySetInnerHTML={{ __html: ${body} }}></p>
       <ul>
@@ -229,6 +228,10 @@ async function sendEmailToSales(
   }
 
   const emailContent = SALES_EMAIL_CONTENT[data.newState]
+  const subject =
+    typeof emailContent.subject === 'function'
+      ? emailContent.subject(data)
+      : emailContent.subject
   const body = emailContent.body(data)
   const subjectText =
     typeof emailContent.subject === 'function'
@@ -237,11 +240,11 @@ async function sendEmailToSales(
 
   const emailPayload = {
     receiver: [salesEmail],
-    subject: `${subjectText}${
+    subject: `${subject}${
       data.newState === 'transferred' ? '' : ' - ' + data.orderNumber
     }`,
     body: `
-      <h2>${subjectText}</h2>
+      <h2>${subject}</h2>
       <p>您好，</p>
       <p>${body}</p>
       <ul>
@@ -317,8 +320,7 @@ export function sendEmailOnStateChange(
       try {
         orderData = await context.query.Order.findOne({
           where: { id: currentItem.id },
-          query:
-            'id orderNumber name member { id email name } relatedOrder { id orderNumber }',
+          query: 'id orderNumber name member { id email name }',
         })
       } catch (error) {
         console.error('Error fetching order data:', error)
@@ -327,7 +329,22 @@ export function sendEmailOnStateChange(
 
       const memberEmail = orderData?.member?.email
       const memberName = orderData?.member?.name
-      const relatedOrderNumber = orderData?.relatedOrder?.orderNumber
+
+      let relatedOrderNumber
+      if (currentItem.state === 'transferred') {
+        try {
+          const childOrders = await context.query.Order.findMany({
+            where: {
+              parentOrder: { id: { equals: currentItem.id } },
+            },
+            query: 'id orderNumber',
+            take: 1,
+          })
+          relatedOrderNumber = childOrders?.[0]?.orderNumber
+        } catch (error) {
+          console.error('Error fetching child order:', error)
+        }
+      }
 
       if (orderData?.member && memberEmail) {
         sendEmailToMember(emailApiUrl, {
