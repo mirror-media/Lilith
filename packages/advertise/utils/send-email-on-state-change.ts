@@ -187,14 +187,16 @@ async function sendEmailToMember(
 
   const emailContent = MEMBER_EMAIL_CONTENT[data.newState]
   const body = emailContent.body(data)
+  const subjectText = emailContent.subject(data)
+  const bodyTitle = emailContent.bodyTitle(data)
 
   const emailPayload = {
     receiver: [data.memberEmail],
-    subject: `${emailContent.subject}${
+    subject: `${subjectText}${
       data.newState === 'transferred' ? '' : ' - ' + data.orderNumber
     }`,
     body: `
-      <h2>${emailContent.subject}</h2>
+      <h2>${bodyTitle}</h2>
       <p>親愛的 ${data.memberName || '客戶'}，您好：</p>
       <p dangerouslySetInnerHTML={{ __html: ${body} }}></p>
       <ul>
@@ -228,14 +230,18 @@ async function sendEmailToSales(
 
   const emailContent = SALES_EMAIL_CONTENT[data.newState]
   const body = emailContent.body(data)
+  const subjectText =
+    typeof emailContent.subject === 'function'
+      ? emailContent.subject(data)
+      : emailContent.subject
 
   const emailPayload = {
     receiver: [salesEmail],
-    subject: `${emailContent.subject}${
+    subject: `${subjectText}${
       data.newState === 'transferred' ? '' : ' - ' + data.orderNumber
     }`,
     body: `
-      <h2>${emailContent.subject}</h2>
+      <h2>${subjectText}</h2>
       <p>您好，</p>
       <p>${body}</p>
       <ul>
