@@ -35,7 +35,7 @@ COPY patches ./patches
 
 ## Install application dependencies
 ## --frozen-lockfile: Ensure consistent dependency versions
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
 ## Copy application source code
 COPY . .

@@ -31,11 +31,11 @@ const listConfigurations = list({
     }),
     mediumCategory: text({
       label: '中科目名稱',
-      validation: { isRequired: true },
+      validation: { isRequired: false },
     }),
     minorCategory: text({
       label: '小科目名稱',
-      validation: { isRequired: true },
+      validation: { isRequired: false },
     }),
     projectName: text({
       label: '計畫名稱',

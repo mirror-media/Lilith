@@ -21,56 +21,91 @@ type OrderItem = {
   name?: string
 } & BaseItem
 
+const domain =
+  'https://tabris-tv-ad-admin-next-dev-439405143478.asia-east1.run.app/'
+
+const formatDateToMonthDay = (
+  date: string | Date | null | undefined
+): string => {
+  if (!date) return ''
+  const dateObj = typeof date === 'string' ? new Date(date) : date
+  if (isNaN(dateObj.getTime())) return ''
+  const month = dateObj.getMonth() + 1
+  const day = dateObj.getDate()
+  return `${month}月${day}日`
+}
+
 const MEMBER_EMAIL_CONTENT: Record<
   string,
-  { subject: string; body: (data: any) => string }
+  {
+    subject: (data: any) => string
+    bodyTitle: (data: any) => string
+    body: (data: any) => string
+  }
 > = {
   paid: {
-    subject: '訂單已成立，請上傳素材',
-    body: () =>
-      '您的訂單已成立，請至平台上傳廣告素材，以便我們開始製作您的廣告影片。',
+    subject: () => '【鏡新聞個人廣告系統】訂單已成立，請上傳素材',
+    bodyTitle: () => '新訂單已成立 - 請上傳素材',
+    body: (data) =>
+      `您的新訂單已成立，請登入鏡新聞個人廣告後台上傳素材。連結如下：${domain}/order/${data.orderNumber}<br/>上傳素材成功後，您將收到訂單確認信，屆時廣告將開始正式製作。`,
   },
   video_wip: {
-    subject: '影片製作中',
+    subject: () => '【鏡新聞個人廣告系統】訂單已確認，廣告影片製作中',
+    bodyTitle: () => '影片製作中',
     body: () => '您的廣告影片正在製作中，完成後我們會通知您確認。',
   },
   to_be_confirmed: {
-    subject: '請確認影片預覽內容和排播時間',
-    body: () => '您的廣告影片已製作完成，請確認影片預覽內容和排播時間。',
+    subject: () => '【鏡新聞個人廣告系統】請確認影片預覽內容和排播時間',
+    bodyTitle: () => '請確認影片預覽內容和排播時間',
+    body: (data) =>
+      `您的廣告影片已製作完成，請確認影片預覽內容和排播時間。連結如下：${domain}/order/${data.orderNumber}`,
   },
   scheduled: {
-    subject: '訂單已確認',
+    subject: () => '【鏡新聞個人廣告系統】廣告排播時間已確認，將安排播出',
+    bodyTitle: () => '廣告排播時間已確認',
     body: () => '此訂單已確認，會在預定排播日期播出。',
   },
   broadcasted: {
-    subject: '訂單已完成',
-    body: () => '此筆訂單已完成，感謝您的支持！',
+    subject: () => '【鏡新聞個人廣告系統】訂單已完成，廣告撥出完畢',
+    bodyTitle: () => '訂單已完成-廣告播出完畢',
+    body: (data) =>
+      `此筆訂單已完成，感謝您的支持！廣告已於 ${formatDateToMonthDay(
+        data.broadcastDate
+      )} 播放完畢。`,
   },
-  pending_quote_confirmation: {
-    subject: '待加購修改',
-    body: () =>
-      '關於此次修改需要額外費用，請至應援平台購買對應商品後重新上傳素材。業務將透過郵件告知詳細金額與購買項目。',
+  modification_request: {
+    subject: () => '【鏡新聞個人廣告系統】訂單修改請求已送出',
+    bodyTitle: () => '訂單已提出修改需求',
+    body: () => '您的修改需求已提出，業務將會審核需求後直接回覆。',
   },
   pending_broadcast_date: {
-    subject: '請重新設定排播日期',
-    body: (data) => `請重新設定訂單 ${data.orderNumber} 的排播時間。`,
+    subject: () =>
+      '【鏡新聞個人廣告系統】廣告排播時間逾時未確認，請重新設定排播時間',
+    bodyTitle: () => '請確認影片預覽內容和排播時間',
+    body: () =>
+      `您的廣告影片已製作完成，請確認影片預覽內容，並重新設定排播時間。`,
   },
-  transferred: {
-    subject: '訂單已轉移',
-    body: (data) =>
-      data.relatedOrderNumber
-        ? `舊的訂單 ${data.orderNumber} 已經轉移至新訂單 ${data.relatedOrderNumber}，請查看新訂單資訊。`
-        : '舊的訂單已經轉移至新訂單，請查看新訂單資訊。',
-  },
+  // transferred: {
+  //   subject: (data) =>
+  //     `【鏡新聞個人廣告系統】訂單 ${data.orderNumber} 已經轉移至新訂單 ${data.relatedOrderNumber}`,
+  //   bodyTitle: (data) =>
+  //     `訂單 ${data.orderNumber} 已經轉移至新訂單 ${data.relatedOrderNumber}`,
+  //   body: (data) =>
+  //     `您的訂單修改需求系統已收到，新訂單編號：${data.relatedOrderNumber}。`,
+  // },
   cancelled: {
-    subject: '訂單已作廢',
-    body: () => '此訂單已作廢/取消。',
+    subject: () => `【鏡新聞個人廣告系統】您的訂單已取消`,
+    bodyTitle: (data) => `您的 訂單 ${data.orderNumber} 已取消`,
+    body: () => '您的訂單已取消。',
   },
 }
 
 const SALES_EMAIL_CONTENT: Record<
   string,
-  { subject: string; body: (data: any) => string }
+  {
+    subject: string | ((data: any) => string)
+    body: (data: any) => string
+  }
 > = {
   paid: {
     subject: '新訂單已成立',
@@ -81,19 +116,24 @@ const SALES_EMAIL_CONTENT: Record<
     body: () => '用戶已在訂單上完成檔案上傳，請查看並開始處理。',
   },
   scheduled: {
-    subject: '用戶已確認訂單',
+    subject: '用戶已確認訂單影片內容',
     body: () => '用戶已確認訂單內容，請盡快安排播放。',
   },
+  modification_request: {
+    subject: '用戶已提出修改需求',
+    body: () => '用戶針對一筆訂單提出修改需求，請盡快至CMS更改訂單狀態。',
+  },
   date_reset: {
-    subject: '用戶重新設定排播日期',
-    body: () => '用戶重新選好時間，需要重新排播給用戶確認。',
+    subject: '用戶已重新設定排播時間',
+    body: () => '用戶針對一筆訂單重新設定排播時間，請盡快至CMS更改訂單狀態。',
   },
-  transferred: {
-    subject: '用戶已完成訂單轉移',
-    body: () => '用戶已完成訂單關聯，重新上傳了需要修改的素材。',
-  },
+  // transferred: {
+  //   subject: (data) =>
+  //     `訂單 ${data.orderNumber} 已轉移至新訂單 ${data.relatedOrderNumber}`,
+  //   body: () => '用戶已完成需修改素材上傳，請盡快至CMS確認素材。',
+  // },
   cancelled: {
-    subject: '訂單已作廢',
+    subject: '訂單已取消',
     body: () => '此訂單已作廢/取消。',
   },
 }
@@ -146,20 +186,23 @@ async function sendEmailToMember(
   }
 
   const emailContent = MEMBER_EMAIL_CONTENT[data.newState]
+  const subject = emailContent.subject(data)
   const body = emailContent.body(data)
 
   const emailPayload = {
     receiver: [data.memberEmail],
-    subject: `${emailContent.subject} - ${data.orderNumber}`,
+    subject: `${subject}${
+      data.newState === 'transferred' ? '' : ' - ' + data.orderNumber
+    }`,
     body: `
-      <h2>${emailContent.subject}</h2>
+      <h2>${subject}</h2>
       <p>親愛的 ${data.memberName || '客戶'}，您好：</p>
-      <p>${body}</p>
+      <p dangerouslySetInnerHTML={{ __html: ${body} }}></p>
       <ul>
         <li><strong>訂單編號：</strong>${data.orderNumber}</li>
         <li><strong>廣告名稱：</strong>${data.orderName}</li>
       </ul>
-      <p>如有任何疑問，請與我們聯繫。</p>
+      <p>此為系統自動通知信件，請勿回覆此郵件，如需要聯繫客服，請寫信至 mnews_sales@mnews.tw</p>
       <br>
       <p>鏡電視廣告團隊</p>
     `,
@@ -185,13 +228,23 @@ async function sendEmailToSales(
   }
 
   const emailContent = SALES_EMAIL_CONTENT[data.newState]
+  const subject =
+    typeof emailContent.subject === 'function'
+      ? emailContent.subject(data)
+      : emailContent.subject
   const body = emailContent.body(data)
+  const subjectText =
+    typeof emailContent.subject === 'function'
+      ? emailContent.subject(data)
+      : emailContent.subject
 
   const emailPayload = {
     receiver: [salesEmail],
-    subject: `${emailContent.subject} - ${data.orderNumber}`,
+    subject: `${subject}${
+      data.newState === 'transferred' ? '' : ' - ' + data.orderNumber
+    }`,
     body: `
-      <h2>${emailContent.subject}</h2>
+      <h2>${subject}</h2>
       <p>您好，</p>
       <p>${body}</p>
       <ul>
@@ -199,7 +252,7 @@ async function sendEmailToSales(
         <li><strong>廣告名稱：</strong>${data.orderName}</li>
         <li><strong>會員：</strong>${data.memberName || '未指定'}</li>
       </ul>
-      <p>此為系統自動通知信件。</p>
+      <p>此為系統自動通知信件，請勿回覆此郵件。</p>
       <br>
       <p>鏡電視廣告系統</p>
     `,
@@ -267,8 +320,7 @@ export function sendEmailOnStateChange(
       try {
         orderData = await context.query.Order.findOne({
           where: { id: currentItem.id },
-          query:
-            'id orderNumber name member { id email name } relatedOrder { id orderNumber }',
+          query: 'id orderNumber name member { id email name }',
         })
       } catch (error) {
         console.error('Error fetching order data:', error)
@@ -277,7 +329,22 @@ export function sendEmailOnStateChange(
 
       const memberEmail = orderData?.member?.email
       const memberName = orderData?.member?.name
-      const relatedOrderNumber = orderData?.relatedOrder?.orderNumber
+
+      let relatedOrderNumber
+      if (currentItem.state === 'transferred') {
+        try {
+          const childOrders = await context.query.Order.findMany({
+            where: {
+              parentOrder: { id: { equals: currentItem.id } },
+            },
+            query: 'id orderNumber',
+            take: 1,
+          })
+          relatedOrderNumber = childOrders?.[0]?.orderNumber
+        } catch (error) {
+          console.error('Error fetching child order:', error)
+        }
+      }
 
       if (orderData?.member && memberEmail) {
         sendEmailToMember(emailApiUrl, {

@@ -12,6 +12,8 @@ import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheContr
 import responseCachePlugin from '@apollo/server-plugin-response-cache'
 import { GraphQLConfig } from '@keystone-6/core/types'
 import { ACL } from './type'
+// import { startVideoWorker } from './utils/videoQueue'
+import { startImageWorker } from './utils/imageQueue'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -79,7 +81,7 @@ export default withAuth(
       },
       images: {
         kind: 'local',
-        type: 'image',
+        type: 'file',
         storagePath: envVar.images.storagePath,
         serverRoute: {
           path: envVar.images.baseUrl,
@@ -117,6 +119,21 @@ export default withAuth(
             })
           )
         }
+        // try {
+        //   startVideoWorker(context)
+        //   console.log('Video Duration Processing Worker started')
+        // } catch (error) {
+        //   console.error('Failed to start Video Duration Worker:', error)
+        // }
+        const initWorker = async () => {
+          try {
+            await startImageWorker(context)
+            console.log('Image Processing Worker started')
+          } catch (error) {
+            console.error('Failed to start Image Worker:', error)
+          }
+        }
+        initWorker()
       },
     },
   })

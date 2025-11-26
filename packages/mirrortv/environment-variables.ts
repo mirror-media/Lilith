@@ -61,7 +61,7 @@ export default {
       60 * 60 * 24 * 1, // 1 days
   },
   gcs: {
-    bucket: GCS_BUCKET || 'static-vision-tw-dev',
+    bucket: GCS_BUCKET || 'v2-static-mnews-tw-dev',
   },
   files: {
     baseUrl: FILES_BASE_URL || '/files',
@@ -77,6 +77,10 @@ export default {
   },
   lockDuration:
     (typeof LOCK_DURATION === 'string' && parseInt(LOCK_DURATION)) || 30,
+  redis: {
+    // 優先使用環境變數 REDIS_SERVER，如果沒有則使用 Local 預設值
+    url: REDIS_SERVER || 'redis://127.0.0.1:6379',
+  },
   cache: {
     isEnabled: IS_CACHE_ENABLED === 'true',
     identifier: CACHE_IDENTIFIER ?? 'mirrortv-cms',
