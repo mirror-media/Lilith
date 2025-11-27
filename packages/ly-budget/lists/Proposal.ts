@@ -117,7 +117,7 @@ const listConfigurations = list({
       label: '編列金額（用於排序）',
       field: graphql.field({
         type: graphql.Float,
-        async resolve(item, args, context) {
+        async resolve(item: Record<string, any>, args, context) {
           // 如果 item.budget 已經包含 budgetAmount（在 GraphQL query 中已查詢），直接使用
           if (item.budget && typeof item.budget === 'object' && 'budgetAmount' in item.budget) {
             return item.budget.budgetAmount as number | null
@@ -126,8 +126,9 @@ const listConfigurations = list({
           // 否則通過 ID 查詢關聯的 Budget
           if (item.budget && typeof item.budget === 'object' && 'id' in item.budget) {
             try {
+              const budgetId = String(item.budget.id)
               const budgetData = await context.query.Budget.findOne({
-                where: { id: item.budget.id },
+                where: { id: budgetId },
                 query: 'budgetAmount',
               })
               return budgetData?.budgetAmount ?? null
@@ -155,8 +156,8 @@ const listConfigurations = list({
         },
       }),
       ui: {
-        // 確保在查詢時包含 budget 字段及其 budgetAmount
-        query: '{ id budget { id budgetAmount } }',
+        // 確保在查詢時包含 budget 字段，讓 Keystone 自動處理 relationship 查詢
+        query: '{ id budget }',
         listView: { fieldMode: 'read' },
         itemView: { fieldMode: 'read' },
         createView: { fieldMode: 'hidden' },
@@ -231,7 +232,7 @@ const listConfigurations = list({
     },
   },
   access: {
-    operation: gqlReadOnly(),
+    operation: gqlReadOnly() as any,
   },
 })
 
