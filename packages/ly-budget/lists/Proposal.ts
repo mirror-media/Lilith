@@ -1,6 +1,6 @@
-import { list } from '@keystone-6/core'
+import { list, graphql } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { text, float, select, integer, relationship, multiselect } from '@keystone-6/core/fields'
+import { text, float, select, integer, relationship, multiselect, virtual } from '@keystone-6/core/fields'
 import { gqlReadOnly } from '../access'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -112,6 +112,55 @@ const listConfigurations = list({
     budget: relationship({
       label: '預算科目',
       ref: 'Budget',
+    }),
+    budgetAmount: virtual({
+      label: '編列金額（用於排序）',
+      field: graphql.field({
+        type: graphql.Float,
+        async resolve(item, args, context) {
+          // 如果 item.budget 已經包含 budgetAmount（在 GraphQL query 中已查詢），直接使用
+          if (item.budget && typeof item.budget === 'object' && 'budgetAmount' in item.budget) {
+            return item.budget.budgetAmount as number | null
+          }
+          
+          // 否則通過 ID 查詢關聯的 Budget
+          if (item.budget && typeof item.budget === 'object' && 'id' in item.budget) {
+            try {
+              const budgetData = await context.query.Budget.findOne({
+                where: { id: item.budget.id },
+                query: 'budgetAmount',
+              })
+              return budgetData?.budgetAmount ?? null
+            } catch (error) {
+              console.error('查詢 Budget budgetAmount 錯誤:', error)
+              return null
+            }
+          }
+          
+          // 如果 budget 是 ID 字符串
+          if (item.budget && typeof item.budget === 'string') {
+            try {
+              const budgetData = await context.query.Budget.findOne({
+                where: { id: item.budget },
+                query: 'budgetAmount',
+              })
+              return budgetData?.budgetAmount ?? null
+            } catch (error) {
+              console.error('查詢 Budget budgetAmount 錯誤:', error)
+              return null
+            }
+          }
+          
+          return null
+        },
+      }),
+      ui: {
+        // 確保在查詢時包含 budget 字段及其 budgetAmount
+        query: '{ id budget { id budgetAmount } }',
+        listView: { fieldMode: 'read' },
+        itemView: { fieldMode: 'read' },
+        createView: { fieldMode: 'hidden' },
+      },
     }),
     unfreezeStatus: select({
       label: '解凍狀態',
