@@ -118,46 +118,52 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.Float,
         async resolve(item: Record<string, any>, args, context) {
-          // 如果 item.budget 已經包含 budgetAmount（在 GraphQL query 中已查詢），直接使用
-          if (item.budget && typeof item.budget === 'object' && 'budgetAmount' in item.budget) {
-            return item.budget.budgetAmount as number | null
-          }
+          // 獲取 budget 的 ID
+          let budgetId: string | null = null
           
-          // 否則通過 ID 查詢關聯的 Budget
-          if (item.budget && typeof item.budget === 'object' && 'id' in item.budget) {
-            try {
-              const budgetId = String(item.budget.id)
-              const budgetData = await context.query.Budget.findOne({
-                where: { id: budgetId },
-                query: 'budgetAmount',
-              })
-              return budgetData?.budgetAmount ?? null
-            } catch (error) {
-              console.error('查詢 Budget budgetAmount 錯誤:', error)
-              return null
+          // 嘗試從 item.budget 獲取 ID
+          if (item.budget) {
+            if (typeof item.budget === 'object' && item.budget !== null && 'id' in item.budget) {
+              budgetId = String(item.budget.id)
+            } else if (typeof item.budget === 'string') {
+              budgetId = item.budget
             }
           }
           
-          // 如果 budget 是 ID 字符串
-          if (item.budget && typeof item.budget === 'string') {
+          // 如果 item.budget 沒有 ID，嘗試通過查詢 Proposal 來獲取 budget ID
+          if (!budgetId && item.id) {
             try {
-              const budgetData = await context.query.Budget.findOne({
-                where: { id: item.budget },
-                query: 'budgetAmount',
+              const proposalData = await context.query.Proposal.findOne({
+                where: { id: String(item.id) },
+                query: 'budget { id }',
               })
-              return budgetData?.budgetAmount ?? null
+              if (proposalData?.budget?.id) {
+                budgetId = String(proposalData.budget.id)
+              }
             } catch (error) {
-              console.error('查詢 Budget budgetAmount 錯誤:', error)
-              return null
+              console.error('查詢 Proposal budget 錯誤:', error)
             }
           }
           
-          return null
+          // 如果沒有 budget ID，返回 null
+          if (!budgetId) {
+            return null
+          }
+          
+          // 查詢關聯的 Budget
+          try {
+            const budgetData = await context.query.Budget.findOne({
+              where: { id: budgetId },
+              query: 'budgetAmount',
+            })
+            return budgetData?.budgetAmount ?? null
+          } catch (error) {
+            console.error('查詢 Budget budgetAmount 錯誤:', error)
+            return null
+          }
         },
       }),
       ui: {
-        // 確保在查詢時包含 budget 字段，讓 Keystone 自動處理 relationship 查詢
-        query: '{ id budget }',
         listView: { fieldMode: 'read' },
         itemView: { fieldMode: 'read' },
         createView: { fieldMode: 'hidden' },
