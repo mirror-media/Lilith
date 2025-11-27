@@ -40,14 +40,16 @@ const MEMBER_EMAIL_CONTENT: Record<
   {
     subject: (data: any) => string
     bodyTitle: (data: any) => string
-    body: (data: any) => string
+    body: (data: any) => string | string[]
   }
 > = {
   paid: {
     subject: () => '【鏡新聞個人廣告系統】訂單已成立，請上傳素材',
     bodyTitle: () => '新訂單已成立 - 請上傳素材',
-    body: (data) =>
-      `您的新訂單已成立，請登入鏡新聞個人廣告後台上傳素材。連結如下：${domain}/order/${data.orderNumber}<br/>上傳素材成功後，您將收到訂單確認信，屆時廣告將開始正式製作。`,
+    body: (data) => [
+      `您的新訂單已成立，請登入鏡新聞個人廣告後台上傳素材。連結如下：${domain}/order/${data.orderNumber}`,
+      `上傳素材成功後，您將收到訂單確認信，屆時廣告將開始正式製作。`,
+    ],
   },
   video_wip: {
     subject: () => '【鏡新聞個人廣告系統】訂單已確認，廣告影片製作中',
@@ -197,7 +199,7 @@ async function sendEmailToMember(
     body: `
       <h2>${subject}</h2>
       <p>親愛的 ${data.memberName || '客戶'}，您好：</p>
-      <p dangerouslySetInnerHTML={{ __html: ${body} }}></p>
+      <p>${typeof body === 'string' ? body : body.join('<br/>')}</p>
       <ul>
         <li><strong>訂單編號：</strong>${data.orderNumber}</li>
         <li><strong>廣告名稱：</strong>${data.orderName}</li>
@@ -233,10 +235,10 @@ async function sendEmailToSales(
       ? emailContent.subject(data)
       : emailContent.subject
   const body = emailContent.body(data)
-  const subjectText =
-    typeof emailContent.subject === 'function'
-      ? emailContent.subject(data)
-      : emailContent.subject
+  // const subjectText =
+  //   typeof emailContent.subject === 'function'
+  //     ? emailContent.subject(data)
+  //     : emailContent.subject
 
   const emailPayload = {
     receiver: [salesEmail],
