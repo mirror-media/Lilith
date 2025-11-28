@@ -16,6 +16,8 @@ import Section from './Section'
 import Event from './Event'
 import External from './External'
 import EditorChoice from './EditorChoice'
+import Topic from './Topic'
+import Sponsor from './Sponsor'
 
 export const listDefinition = {
   User,
@@ -36,4 +38,6 @@ export const listDefinition = {
   Event,
   External,
   EditorChoice,
+  Topic,
+  Sponsor,
 }
