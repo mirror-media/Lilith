@@ -75,11 +75,11 @@ const MEMBER_EMAIL_CONTENT: Record<
         data.broadcastDate
       )} 播放完畢。`,
   },
-  modification_request: {
-    subject: () => '【鏡新聞個人廣告系統】訂單修改請求已送出',
-    bodyTitle: () => '訂單已提出修改需求',
-    body: () => '您的修改需求已提出，業務將會審核需求後直接回覆。',
-  },
+  // modification_request: {
+  //   subject: () => '【鏡新聞個人廣告系統】訂單修改請求已送出',
+  //   bodyTitle: () => '訂單已提出修改需求',
+  //   body: () => '您的修改需求已提出，業務將會審核需求後直接回覆。',
+  // },
   pending_broadcast_date: {
     subject: () =>
       '【鏡新聞個人廣告系統】廣告排播時間逾時未確認，請重新設定排播時間',
@@ -121,10 +121,10 @@ const SALES_EMAIL_CONTENT: Record<
     subject: '用戶已確認訂單影片內容',
     body: () => '用戶已確認訂單內容，請盡快安排播放。',
   },
-  modification_request: {
-    subject: '用戶已提出修改需求',
-    body: () => '用戶針對一筆訂單提出修改需求，請盡快至CMS更改訂單狀態。',
-  },
+  // modification_request: {
+  //   subject: '用戶已提出修改需求',
+  //   body: () => '用戶針對一筆訂單提出修改需求，請盡快至CMS更改訂單狀態。',
+  // },
   date_reset: {
     subject: '用戶已重新設定排播時間',
     body: () => '用戶針對一筆訂單重新設定排播時間，請盡快至CMS更改訂單狀態。',
