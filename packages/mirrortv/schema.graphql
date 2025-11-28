@@ -2464,6 +2464,67 @@ input TopicRelateToOneForCreateInput {
   connect: TopicWhereUniqueInput
 }
 
+type Download {
+  id: ID!
+  name: String
+  file: FileFieldOutput
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input DownloadWhereUniqueInput {
+  id: ID
+}
+
+input DownloadWhereInput {
+  AND: [DownloadWhereInput!]
+  OR: [DownloadWhereInput!]
+  NOT: [DownloadWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  url: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input DownloadOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  url: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input DownloadUpdateInput {
+  name: String
+  file: FileFieldInput
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input DownloadUpdateArgs {
+  where: DownloadWhereUniqueInput!
+  data: DownloadUpdateInput!
+}
+
+input DownloadCreateInput {
+  name: String
+  file: FileFieldInput
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2590,6 +2651,12 @@ type Mutation {
   updateSponsors(data: [SponsorUpdateArgs!]!): [Sponsor]
   deleteSponsor(where: SponsorWhereUniqueInput!): Sponsor
   deleteSponsors(where: [SponsorWhereUniqueInput!]!): [Sponsor]
+  createDownload(data: DownloadCreateInput!): Download
+  createDownloads(data: [DownloadCreateInput!]!): [Download]
+  updateDownload(where: DownloadWhereUniqueInput!, data: DownloadUpdateInput!): Download
+  updateDownloads(data: [DownloadUpdateArgs!]!): [Download]
+  deleteDownload(where: DownloadWhereUniqueInput!): Download
+  deleteDownloads(where: [DownloadWhereUniqueInput!]!): [Download]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -2674,6 +2741,9 @@ type Query {
   sponsors(where: SponsorWhereInput! = {}, orderBy: [SponsorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SponsorWhereUniqueInput): [Sponsor!]
   sponsor(where: SponsorWhereUniqueInput!): Sponsor
   sponsorsCount(where: SponsorWhereInput! = {}): Int
+  downloads(where: DownloadWhereInput! = {}, orderBy: [DownloadOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DownloadWhereUniqueInput): [Download!]
+  download(where: DownloadWhereUniqueInput!): Download
+  downloadsCount(where: DownloadWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

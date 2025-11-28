@@ -65,6 +65,8 @@ model User {
   from_Topic_updatedBy          Topic[]          @relation("Topic_updatedBy")
   from_Sponsor_createdBy        Sponsor[]        @relation("Sponsor_createdBy")
   from_Sponsor_updatedBy        Sponsor[]        @relation("Sponsor_updatedBy")
+  from_Download_createdBy       Download[]       @relation("Download_createdBy")
+  from_Download_updatedBy       Download[]       @relation("Download_updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
@@ -646,6 +648,23 @@ model Sponsor {
   @@index([logoId])
   @@index([mobileId])
   @@index([tabletId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Download {
+  id            Int       @id @default(autoincrement())
+  name          String    @default("")
+  file_filesize Int?
+  file_filename String?
+  url           String    @default("")
+  createdAt     DateTime?
+  updatedAt     DateTime?
+  createdBy     User?     @relation("Download_createdBy", fields: [createdById], references: [id])
+  createdById   Int?      @map("createdBy")
+  updatedBy     User?     @relation("Download_updatedBy", fields: [updatedById], references: [id])
+  updatedById   Int?      @map("updatedBy")
+
   @@index([createdById])
   @@index([updatedById])
 }
