@@ -61,6 +61,10 @@ model User {
   from_External_updatedBy       External[]       @relation("External_updatedBy")
   from_EditorChoice_createdBy   EditorChoice[]   @relation("EditorChoice_createdBy")
   from_EditorChoice_updatedBy   EditorChoice[]   @relation("EditorChoice_updatedBy")
+  from_Topic_createdBy          Topic[]          @relation("Topic_createdBy")
+  from_Topic_updatedBy          Topic[]          @relation("Topic_updatedBy")
+  from_Sponsor_createdBy        Sponsor[]        @relation("Sponsor_createdBy")
+  from_Sponsor_updatedBy        Sponsor[]        @relation("Sponsor_updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
@@ -201,6 +205,11 @@ model Image {
   from_Audio_coverPhoto    Audio[]    @relation("Audio_coverPhoto")
   from_ArtShow_heroImage   ArtShow[]  @relation("ArtShow_heroImage")
   from_Event_image         Event[]    @relation("Event_image")
+  from_Topic_heroImage     Topic[]    @relation("Topic_heroImage")
+  from_Topic_ogImage       Topic[]    @relation("Topic_ogImage")
+  from_Sponsor_logo        Sponsor[]  @relation("Sponsor_logo")
+  from_Sponsor_mobile      Sponsor[]  @relation("Sponsor_mobile")
+  from_Sponsor_tablet      Sponsor[]  @relation("Sponsor_tablet")
 
   @@index([createdById])
   @@index([updatedById])
@@ -368,6 +377,8 @@ model Post {
   from_Sale_adPost          Sale[]         @relation("Sale_adPost")
   from_Post_relatedPosts    Post[]         @relation("Post_relatedPosts")
   from_EditorChoice_choice  EditorChoice[] @relation("EditorChoice_choice")
+  from_Topic_slideshow      Topic[]        @relation("Topic_slideshow")
+  from_Topic_post           Topic[]        @relation("Topic_post")
 
   @@index([lockById])
   @@index([state])
@@ -396,6 +407,7 @@ model Tag {
   from_Post_tags     Post[]     @relation("Post_tags")
   from_Audio_tags    Audio[]    @relation("Audio_tags")
   from_External_tags External[] @relation("External_tags")
+  from_Topic_tags    Topic[]    @relation("Topic_tags")
 
   @@index([ogImageId])
   @@index([createdById])
@@ -422,6 +434,7 @@ model Category {
   from_Post_categories     Post[]     @relation("Post_categories")
   from_Event_categories    Event[]    @relation("Event_categories")
   from_External_categories External[] @relation("External_categories")
+  from_Topic_categories    Topic[]    @relation("Topic_categories")
 
   @@index([ogImageId])
   @@index([createdById])
@@ -564,6 +577,75 @@ model EditorChoice {
   @@index([choiceId])
   @@index([externalChoiceId])
   @@index([state])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Topic {
+  id                 Int        @id @default(autoincrement())
+  slug               String     @unique @default("")
+  sortOrder          Int?       @unique
+  name               String     @default("")
+  leading            String?    @default("image")
+  heroImage          Image?     @relation("Topic_heroImage", fields: [heroImageId], references: [id])
+  heroImageId        Int?       @map("heroImage")
+  slideshow          Post[]     @relation("Topic_slideshow")
+  post               Post[]     @relation("Topic_post")
+  sortDir            String?    @default("desc")
+  categories         Category[] @relation("Topic_categories")
+  tags               Tag[]      @relation("Topic_tags")
+  state              String?    @default("draft")
+  brief              Json?
+  briefApiData       Json?
+  briefHtml          String     @default("")
+  facebook           String     @default("")
+  instagram          String     @default("")
+  line               String     @default("")
+  ogTitle            String     @default("")
+  ogDescription      String     @default("")
+  ogImage            Image?     @relation("Topic_ogImage", fields: [ogImageId], references: [id])
+  ogImageId          Int?       @map("ogImage")
+  isFeatured         Boolean    @default(false)
+  createdAt          DateTime?
+  updatedAt          DateTime?
+  createdBy          User?      @relation("Topic_createdBy", fields: [createdById], references: [id])
+  createdById        Int?       @map("createdBy")
+  updatedBy          User?      @relation("Topic_updatedBy", fields: [updatedById], references: [id])
+  updatedById        Int?       @map("updatedBy")
+  from_Sponsor_topic Sponsor[]  @relation("Sponsor_topic")
+
+  @@index([heroImageId])
+  @@index([state])
+  @@index([ogImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Sponsor {
+  id          Int       @id @default(autoincrement())
+  title       String    @default("")
+  sortOrder   Int?      @unique
+  state       String?   @default("draft")
+  topic       Topic?    @relation("Sponsor_topic", fields: [topicId], references: [id])
+  topicId     Int?      @map("topic")
+  url         String    @default("")
+  logo        Image?    @relation("Sponsor_logo", fields: [logoId], references: [id])
+  logoId      Int?      @map("logo")
+  mobile      Image?    @relation("Sponsor_mobile", fields: [mobileId], references: [id])
+  mobileId    Int?      @map("mobile")
+  tablet      Image?    @relation("Sponsor_tablet", fields: [tabletId], references: [id])
+  tabletId    Int?      @map("tablet")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("Sponsor_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("Sponsor_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([topicId])
+  @@index([logoId])
+  @@index([mobileId])
+  @@index([tabletId])
   @@index([createdById])
   @@index([updatedById])
 }

@@ -2219,6 +2219,251 @@ input ExternalRelateToOneForCreateInput {
   connect: ExternalWhereUniqueInput
 }
 
+type Topic {
+  id: ID!
+  slug: String
+  sortOrder: Int
+  name: String
+  leading: String
+  heroImage: Image
+  slideshow(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  slideshowCount(where: PostWhereInput! = {}): Int
+  post(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  postCount(where: PostWhereInput! = {}): Int
+  sortDir: String
+  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
+  categoriesCount(where: CategoryWhereInput! = {}): Int
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
+  state: String
+  brief: JSON
+  briefApiData: JSON
+  briefHtml: String
+  facebook: String
+  instagram: String
+  line: String
+  ogTitle: String
+  ogDescription: String
+  ogImage: Image
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input TopicWhereUniqueInput {
+  id: ID
+  slug: String
+  sortOrder: Int
+}
+
+input TopicWhereInput {
+  AND: [TopicWhereInput!]
+  OR: [TopicWhereInput!]
+  NOT: [TopicWhereInput!]
+  id: IDFilter
+  slug: StringFilter
+  sortOrder: IntNullableFilter
+  name: StringFilter
+  leading: StringNullableFilter
+  heroImage: ImageWhereInput
+  slideshow: PostManyRelationFilter
+  post: PostManyRelationFilter
+  sortDir: StringNullableFilter
+  categories: CategoryManyRelationFilter
+  tags: TagManyRelationFilter
+  state: StringNullableFilter
+  briefHtml: StringFilter
+  facebook: StringFilter
+  instagram: StringFilter
+  line: StringFilter
+  ogTitle: StringFilter
+  ogDescription: StringFilter
+  ogImage: ImageWhereInput
+  isFeatured: BooleanFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input TopicOrderByInput {
+  id: OrderDirection
+  slug: OrderDirection
+  sortOrder: OrderDirection
+  name: OrderDirection
+  leading: OrderDirection
+  sortDir: OrderDirection
+  state: OrderDirection
+  briefHtml: OrderDirection
+  facebook: OrderDirection
+  instagram: OrderDirection
+  line: OrderDirection
+  ogTitle: OrderDirection
+  ogDescription: OrderDirection
+  isFeatured: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input TopicUpdateInput {
+  slug: String
+  sortOrder: Int
+  name: String
+  leading: String
+  heroImage: ImageRelateToOneForUpdateInput
+  slideshow: PostRelateToManyForUpdateInput
+  post: PostRelateToManyForUpdateInput
+  sortDir: String
+  categories: CategoryRelateToManyForUpdateInput
+  tags: TagRelateToManyForUpdateInput
+  state: String
+  brief: JSON
+  briefApiData: JSON
+  briefHtml: String
+  facebook: String
+  instagram: String
+  line: String
+  ogTitle: String
+  ogDescription: String
+  ogImage: ImageRelateToOneForUpdateInput
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input TopicUpdateArgs {
+  where: TopicWhereUniqueInput!
+  data: TopicUpdateInput!
+}
+
+input TopicCreateInput {
+  slug: String
+  sortOrder: Int
+  name: String
+  leading: String
+  heroImage: ImageRelateToOneForCreateInput
+  slideshow: PostRelateToManyForCreateInput
+  post: PostRelateToManyForCreateInput
+  sortDir: String
+  categories: CategoryRelateToManyForCreateInput
+  tags: TagRelateToManyForCreateInput
+  state: String
+  brief: JSON
+  briefApiData: JSON
+  briefHtml: String
+  facebook: String
+  instagram: String
+  line: String
+  ogTitle: String
+  ogDescription: String
+  ogImage: ImageRelateToOneForCreateInput
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Sponsor {
+  id: ID!
+  title: String
+  sortOrder: Int
+  state: String
+  topic: Topic
+  url: String
+  logo: Image
+  mobile: Image
+  tablet: Image
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input SponsorWhereUniqueInput {
+  id: ID
+  sortOrder: Int
+}
+
+input SponsorWhereInput {
+  AND: [SponsorWhereInput!]
+  OR: [SponsorWhereInput!]
+  NOT: [SponsorWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  sortOrder: IntNullableFilter
+  state: StringNullableFilter
+  topic: TopicWhereInput
+  url: StringFilter
+  logo: ImageWhereInput
+  mobile: ImageWhereInput
+  tablet: ImageWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input SponsorOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  sortOrder: OrderDirection
+  state: OrderDirection
+  url: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input SponsorUpdateInput {
+  title: String
+  sortOrder: Int
+  state: String
+  topic: TopicRelateToOneForUpdateInput
+  url: String
+  logo: ImageRelateToOneForUpdateInput
+  mobile: ImageRelateToOneForUpdateInput
+  tablet: ImageRelateToOneForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input TopicRelateToOneForUpdateInput {
+  create: TopicCreateInput
+  connect: TopicWhereUniqueInput
+  disconnect: Boolean
+}
+
+input SponsorUpdateArgs {
+  where: SponsorWhereUniqueInput!
+  data: SponsorUpdateInput!
+}
+
+input SponsorCreateInput {
+  title: String
+  sortOrder: Int
+  state: String
+  topic: TopicRelateToOneForCreateInput
+  url: String
+  logo: ImageRelateToOneForCreateInput
+  mobile: ImageRelateToOneForCreateInput
+  tablet: ImageRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input TopicRelateToOneForCreateInput {
+  create: TopicCreateInput
+  connect: TopicWhereUniqueInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2333,6 +2578,18 @@ type Mutation {
   updateEditorChoices(data: [EditorChoiceUpdateArgs!]!): [EditorChoice]
   deleteEditorChoice(where: EditorChoiceWhereUniqueInput!): EditorChoice
   deleteEditorChoices(where: [EditorChoiceWhereUniqueInput!]!): [EditorChoice]
+  createTopic(data: TopicCreateInput!): Topic
+  createTopics(data: [TopicCreateInput!]!): [Topic]
+  updateTopic(where: TopicWhereUniqueInput!, data: TopicUpdateInput!): Topic
+  updateTopics(data: [TopicUpdateArgs!]!): [Topic]
+  deleteTopic(where: TopicWhereUniqueInput!): Topic
+  deleteTopics(where: [TopicWhereUniqueInput!]!): [Topic]
+  createSponsor(data: SponsorCreateInput!): Sponsor
+  createSponsors(data: [SponsorCreateInput!]!): [Sponsor]
+  updateSponsor(where: SponsorWhereUniqueInput!, data: SponsorUpdateInput!): Sponsor
+  updateSponsors(data: [SponsorUpdateArgs!]!): [Sponsor]
+  deleteSponsor(where: SponsorWhereUniqueInput!): Sponsor
+  deleteSponsors(where: [SponsorWhereUniqueInput!]!): [Sponsor]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -2411,6 +2668,12 @@ type Query {
   editorChoices(where: EditorChoiceWhereInput! = {}, orderBy: [EditorChoiceOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EditorChoiceWhereUniqueInput): [EditorChoice!]
   editorChoice(where: EditorChoiceWhereUniqueInput!): EditorChoice
   editorChoicesCount(where: EditorChoiceWhereInput! = {}): Int
+  topics(where: TopicWhereInput! = {}, orderBy: [TopicOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TopicWhereUniqueInput): [Topic!]
+  topic(where: TopicWhereUniqueInput!): Topic
+  topicsCount(where: TopicWhereInput! = {}): Int
+  sponsors(where: SponsorWhereInput! = {}, orderBy: [SponsorOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SponsorWhereUniqueInput): [Sponsor!]
+  sponsor(where: SponsorWhereUniqueInput!): Sponsor
+  sponsorsCount(where: SponsorWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
