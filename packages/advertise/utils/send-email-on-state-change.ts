@@ -6,6 +6,7 @@ import type {
   ListHooks,
 } from '@keystone-6/core/types'
 import { GoogleAuth } from 'google-auth-library'
+import envVar from '../environment-variables'
 
 type AfterOperationHook = ListHooks<BaseListTypeInfo>['afterOperation']
 
@@ -23,7 +24,7 @@ type OrderItem = {
   name?: string
 } & BaseItem
 
-const domain = `https://tabris-tv-ad-admin-next-${process.env.ENV}-439405143478.asia-east1.run.app`
+const domain = `https://tabris-tv-ad-admin-next-${envVar.env}-439405143478.asia-east1.run.app`
 
 const formatDateToMonthDay = (
   date: string | Date | null | undefined,
