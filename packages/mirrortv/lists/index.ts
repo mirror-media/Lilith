@@ -18,6 +18,7 @@ import External from './External'
 import EditorChoice from './EditorChoice'
 import Topic from './Topic'
 import Sponsor from './Sponsor'
+import Download from './Download'
 
 export const listDefinition = {
   User,
@@ -40,4 +41,5 @@ export const listDefinition = {
   EditorChoice,
   Topic,
   Sponsor,
+  Download,
 }
