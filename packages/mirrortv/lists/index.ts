@@ -14,6 +14,8 @@ import Show from './Show'
 import Serie from './Serie'
 import Section from './Section'
 import Event from './Event'
+import External from './External'
+import EditorChoice from './EditorChoice'
 
 export const listDefinition = {
   User,
@@ -32,4 +34,6 @@ export const listDefinition = {
   Audio,
   ArtShow,
   Event,
+  External,
+  EditorChoice,
 }

@@ -859,6 +859,8 @@ type Section {
   name: String
   host(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   hostCount(where: ContactWhereInput! = {}): Int
+  artshow(where: ArtShowWhereInput! = {}, orderBy: [ArtShowOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ArtShowWhereUniqueInput): [ArtShow!]
+  artshowCount(where: ArtShowWhereInput! = {}): Int
   show(where: ShowWhereInput! = {}, orderBy: [ShowOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ShowWhereUniqueInput): [Show!]
   showCount(where: ShowWhereInput! = {}): Int
   series(where: SerieWhereInput! = {}, orderBy: [SerieOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SerieWhereUniqueInput): [Serie!]
@@ -885,6 +887,7 @@ input SectionWhereInput {
   slug: StringFilter
   name: StringFilter
   host: ContactManyRelationFilter
+  artshow: ArtShowManyRelationFilter
   show: ShowManyRelationFilter
   series: SerieManyRelationFilter
   introduction: StringFilter
@@ -902,6 +905,12 @@ input ContactManyRelationFilter {
   none: ContactWhereInput
 }
 
+input ArtShowManyRelationFilter {
+  every: ArtShowWhereInput
+  some: ArtShowWhereInput
+  none: ArtShowWhereInput
+}
+
 input SectionOrderByInput {
   id: OrderDirection
   slug: OrderDirection
@@ -917,6 +926,7 @@ input SectionUpdateInput {
   slug: String
   name: String
   host: ContactRelateToManyForUpdateInput
+  artshow: ArtShowRelateToManyForUpdateInput
   show: ShowRelateToManyForUpdateInput
   series: SerieRelateToManyForUpdateInput
   introduction: String
@@ -935,6 +945,13 @@ input ContactRelateToManyForUpdateInput {
   connect: [ContactWhereUniqueInput!]
 }
 
+input ArtShowRelateToManyForUpdateInput {
+  disconnect: [ArtShowWhereUniqueInput!]
+  set: [ArtShowWhereUniqueInput!]
+  create: [ArtShowCreateInput!]
+  connect: [ArtShowWhereUniqueInput!]
+}
+
 input SectionUpdateArgs {
   where: SectionWhereUniqueInput!
   data: SectionUpdateInput!
@@ -944,6 +961,7 @@ input SectionCreateInput {
   slug: String
   name: String
   host: ContactRelateToManyForCreateInput
+  artshow: ArtShowRelateToManyForCreateInput
   show: ShowRelateToManyForCreateInput
   series: SerieRelateToManyForCreateInput
   introduction: String
@@ -958,6 +976,11 @@ input SectionCreateInput {
 input ContactRelateToManyForCreateInput {
   create: [ContactCreateInput!]
   connect: [ContactWhereUniqueInput!]
+}
+
+input ArtShowRelateToManyForCreateInput {
+  create: [ArtShowCreateInput!]
+  connect: [ArtShowWhereUniqueInput!]
 }
 
 type Serie {
@@ -1012,12 +1035,6 @@ input SectionManyRelationFilter {
   none: SectionWhereInput
 }
 
-input ArtShowManyRelationFilter {
-  every: ArtShowWhereInput
-  some: ArtShowWhereInput
-  none: ArtShowWhereInput
-}
-
 input SerieOrderByInput {
   id: OrderDirection
   slug: OrderDirection
@@ -1053,13 +1070,6 @@ input SectionRelateToManyForUpdateInput {
   connect: [SectionWhereUniqueInput!]
 }
 
-input ArtShowRelateToManyForUpdateInput {
-  disconnect: [ArtShowWhereUniqueInput!]
-  set: [ArtShowWhereUniqueInput!]
-  create: [ArtShowCreateInput!]
-  connect: [ArtShowWhereUniqueInput!]
-}
-
 input SerieUpdateArgs {
   where: SerieWhereUniqueInput!
   data: SerieUpdateInput!
@@ -1085,11 +1095,6 @@ input SerieCreateInput {
 input SectionRelateToManyForCreateInput {
   create: [SectionCreateInput!]
   connect: [SectionWhereUniqueInput!]
-}
-
-input ArtShowRelateToManyForCreateInput {
-  create: [ArtShowCreateInput!]
-  connect: [ArtShowWhereUniqueInput!]
 }
 
 type Show {
@@ -1974,6 +1979,246 @@ input EventCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type External {
+  id: ID!
+  slug: String
+  partner: Partner
+  name: String
+  subtitle: String
+  state: String
+  publishTime: DateTime
+  byline: String
+  thumbnail: String
+  heroCaption: String
+  brief_original: String
+  content_original: String
+  brief: String
+  content: String
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
+  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
+  categoriesCount(where: CategoryWhereInput! = {}): Int
+  source: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ExternalWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input ExternalWhereInput {
+  AND: [ExternalWhereInput!]
+  OR: [ExternalWhereInput!]
+  NOT: [ExternalWhereInput!]
+  id: IDFilter
+  slug: StringFilter
+  partner: PartnerWhereInput
+  name: StringFilter
+  subtitle: StringFilter
+  state: StringNullableFilter
+  publishTime: DateTimeNullableFilter
+  byline: StringFilter
+  thumbnail: StringFilter
+  heroCaption: StringFilter
+  brief_original: StringFilter
+  content_original: StringFilter
+  brief: StringFilter
+  content: StringFilter
+  tags: TagManyRelationFilter
+  categories: CategoryManyRelationFilter
+  source: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ExternalOrderByInput {
+  id: OrderDirection
+  slug: OrderDirection
+  name: OrderDirection
+  subtitle: OrderDirection
+  state: OrderDirection
+  publishTime: OrderDirection
+  byline: OrderDirection
+  thumbnail: OrderDirection
+  heroCaption: OrderDirection
+  brief_original: OrderDirection
+  content_original: OrderDirection
+  brief: OrderDirection
+  content: OrderDirection
+  source: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ExternalUpdateInput {
+  slug: String
+  partner: PartnerRelateToOneForUpdateInput
+  name: String
+  subtitle: String
+  state: String
+  publishTime: DateTime
+  byline: String
+  thumbnail: String
+  heroCaption: String
+  brief_original: String
+  content_original: String
+  brief: String
+  content: String
+  tags: TagRelateToManyForUpdateInput
+  categories: CategoryRelateToManyForUpdateInput
+  source: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PartnerRelateToOneForUpdateInput {
+  create: PartnerCreateInput
+  connect: PartnerWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ExternalUpdateArgs {
+  where: ExternalWhereUniqueInput!
+  data: ExternalUpdateInput!
+}
+
+input ExternalCreateInput {
+  slug: String
+  partner: PartnerRelateToOneForCreateInput
+  name: String
+  subtitle: String
+  state: String
+  publishTime: DateTime
+  byline: String
+  thumbnail: String
+  heroCaption: String
+  brief_original: String
+  content_original: String
+  brief: String
+  content: String
+  tags: TagRelateToManyForCreateInput
+  categories: CategoryRelateToManyForCreateInput
+  source: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input PartnerRelateToOneForCreateInput {
+  create: PartnerCreateInput
+  connect: PartnerWhereUniqueInput
+}
+
+type EditorChoice {
+  id: ID!
+  sortOrder: Int
+  choice: Post
+  externalChoice: External
+  publishedDate: CalendarDay
+  expiredDate: CalendarDay
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+scalar CalendarDay @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+
+input EditorChoiceWhereUniqueInput {
+  id: ID
+  sortOrder: Int
+}
+
+input EditorChoiceWhereInput {
+  AND: [EditorChoiceWhereInput!]
+  OR: [EditorChoiceWhereInput!]
+  NOT: [EditorChoiceWhereInput!]
+  id: IDFilter
+  sortOrder: IntNullableFilter
+  choice: PostWhereInput
+  externalChoice: ExternalWhereInput
+  publishedDate: CalendarDayNullableFilter
+  expiredDate: CalendarDayNullableFilter
+  state: StringNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input CalendarDayNullableFilter {
+  equals: CalendarDay
+  in: [CalendarDay!]
+  notIn: [CalendarDay!]
+  lt: CalendarDay
+  lte: CalendarDay
+  gt: CalendarDay
+  gte: CalendarDay
+  not: CalendarDayNullableFilter
+}
+
+input EditorChoiceOrderByInput {
+  id: OrderDirection
+  sortOrder: OrderDirection
+  publishedDate: OrderDirection
+  expiredDate: OrderDirection
+  state: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input EditorChoiceUpdateInput {
+  sortOrder: Int
+  choice: PostRelateToOneForUpdateInput
+  externalChoice: ExternalRelateToOneForUpdateInput
+  publishedDate: CalendarDay
+  expiredDate: CalendarDay
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ExternalRelateToOneForUpdateInput {
+  create: ExternalCreateInput
+  connect: ExternalWhereUniqueInput
+  disconnect: Boolean
+}
+
+input EditorChoiceUpdateArgs {
+  where: EditorChoiceWhereUniqueInput!
+  data: EditorChoiceUpdateInput!
+}
+
+input EditorChoiceCreateInput {
+  sortOrder: Int
+  choice: PostRelateToOneForCreateInput
+  externalChoice: ExternalRelateToOneForCreateInput
+  publishedDate: CalendarDay
+  expiredDate: CalendarDay
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input ExternalRelateToOneForCreateInput {
+  create: ExternalCreateInput
+  connect: ExternalWhereUniqueInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2076,6 +2321,18 @@ type Mutation {
   updateEvents(data: [EventUpdateArgs!]!): [Event]
   deleteEvent(where: EventWhereUniqueInput!): Event
   deleteEvents(where: [EventWhereUniqueInput!]!): [Event]
+  createExternal(data: ExternalCreateInput!): External
+  createExternals(data: [ExternalCreateInput!]!): [External]
+  updateExternal(where: ExternalWhereUniqueInput!, data: ExternalUpdateInput!): External
+  updateExternals(data: [ExternalUpdateArgs!]!): [External]
+  deleteExternal(where: ExternalWhereUniqueInput!): External
+  deleteExternals(where: [ExternalWhereUniqueInput!]!): [External]
+  createEditorChoice(data: EditorChoiceCreateInput!): EditorChoice
+  createEditorChoices(data: [EditorChoiceCreateInput!]!): [EditorChoice]
+  updateEditorChoice(where: EditorChoiceWhereUniqueInput!, data: EditorChoiceUpdateInput!): EditorChoice
+  updateEditorChoices(data: [EditorChoiceUpdateArgs!]!): [EditorChoice]
+  deleteEditorChoice(where: EditorChoiceWhereUniqueInput!): EditorChoice
+  deleteEditorChoices(where: [EditorChoiceWhereUniqueInput!]!): [EditorChoice]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -2148,6 +2405,12 @@ type Query {
   events(where: EventWhereInput! = {}, orderBy: [EventOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EventWhereUniqueInput): [Event!]
   event(where: EventWhereUniqueInput!): Event
   eventsCount(where: EventWhereInput! = {}): Int
+  externals(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
+  external(where: ExternalWhereUniqueInput!): External
+  externalsCount(where: ExternalWhereInput! = {}): Int
+  editorChoices(where: EditorChoiceWhereInput! = {}, orderBy: [EditorChoiceOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EditorChoiceWhereUniqueInput): [EditorChoice!]
+  editorChoice(where: EditorChoiceWhereUniqueInput!): EditorChoice
+  editorChoicesCount(where: EditorChoiceWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
