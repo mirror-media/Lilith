@@ -11,6 +11,8 @@ type AfterOperationHook = ListHooks<BaseListTypeInfo>['afterOperation']
 
 type OrderItem = {
   id: string
+  scheduleConfirmDeadline?: string
+  scheduleEndDate?: string
   orderNumber?: string
   state?: string
   member?: {
@@ -21,18 +23,20 @@ type OrderItem = {
   name?: string
 } & BaseItem
 
-const domain =
-  'https://tabris-tv-ad-admin-next-dev-439405143478.asia-east1.run.app/'
+const domain = `https://tabris-tv-ad-admin-next-${process.env.ENV}-439405143478.asia-east1.run.app`
 
 const formatDateToMonthDay = (
-  date: string | Date | null | undefined
+  date: string | Date | null | undefined,
+  showTime = false
 ): string => {
   if (!date) return ''
   const dateObj = typeof date === 'string' ? new Date(date) : date
   if (isNaN(dateObj.getTime())) return ''
   const month = dateObj.getMonth() + 1
   const day = dateObj.getDate()
-  return `${month}月${day}日`
+  return `${month}月${day}日${
+    showTime ? `，${dateObj.getHours()}:${dateObj.getMinutes()}` : ''
+  }`
 }
 
 const MEMBER_EMAIL_CONTENT: Record<
@@ -41,6 +45,7 @@ const MEMBER_EMAIL_CONTENT: Record<
     subject: (data: any) => string
     bodyTitle: (data: any) => string
     body: (data: any) => string | string[]
+    afterBody?: (data: any) => string
   }
 > = {
   paid: {
@@ -61,6 +66,11 @@ const MEMBER_EMAIL_CONTENT: Record<
     bodyTitle: () => '請確認影片預覽內容和排播時間',
     body: (data) =>
       `您的廣告影片已製作完成，請確認影片預覽內容和排播時間。連結如下：${domain}/order/${data.orderNumber}`,
+    afterBody: (data) =>
+      `請最晚在 ${formatDateToMonthDay(
+        data.scheduleConfirmDeadline,
+        true
+      )} 前完成確認，若逾時未確認，廣告將不會播出，您需重新申請新的排播時間。`,
   },
   scheduled: {
     subject: () => '【鏡新聞個人廣告系統】廣告排播時間已確認，將安排播出',
@@ -84,8 +94,8 @@ const MEMBER_EMAIL_CONTENT: Record<
     subject: () =>
       '【鏡新聞個人廣告系統】廣告排播時間逾時未確認，請重新設定排播時間',
     bodyTitle: () => '請確認影片預覽內容和排播時間',
-    body: () =>
-      `您的廣告影片已製作完成，請確認影片預覽內容，並重新設定排播時間。`,
+    body: (data) =>
+      `您的廣告影片已製作完成，請確認影片預覽內容，並重新設定排播時間。連結如下：${domain}/order/${data.orderNumber}`,
   },
   // transferred: {
   //   subject: (data) =>
@@ -181,6 +191,8 @@ async function sendEmailToMember(
     memberName?: string
     orderName?: string
     relatedOrderNumber?: string
+    scheduleConfirmDeadline?: string
+    broadcastDate?: string
   }
 ) {
   if (!data.newState || !MEMBER_EMAIL_CONTENT[data.newState]) {
@@ -190,6 +202,7 @@ async function sendEmailToMember(
   const emailContent = MEMBER_EMAIL_CONTENT[data.newState]
   const subject = emailContent.subject(data)
   const body = emailContent.body(data)
+  const afterBody = emailContent.afterBody ? emailContent.afterBody(data) : ''
 
   const emailPayload = {
     receiver: [data.memberEmail],
@@ -204,6 +217,7 @@ async function sendEmailToMember(
         <li><strong>訂單編號：</strong>${data.orderNumber}</li>
         <li><strong>廣告名稱：</strong>${data.orderName}</li>
       </ul>
+      ${afterBody ? `<p>${afterBody}</p>` : ''}
       <p>此為系統自動通知信件，請勿回覆此郵件，如需要聯繫客服，請寫信至 mnews_sales@mnews.tw</p>
       <br>
       <p>鏡電視廣告團隊</p>
@@ -322,7 +336,8 @@ export function sendEmailOnStateChange(
       try {
         orderData = await context.query.Order.findOne({
           where: { id: currentItem.id },
-          query: 'id orderNumber name member { id email name }',
+          query:
+            'id orderNumber name scheduleConfirmDeadline scheduleEndDate member { id email name }',
         })
       } catch (error) {
         console.error('Error fetching order data:', error)
@@ -358,6 +373,8 @@ export function sendEmailOnStateChange(
           memberName,
           orderName: currentItem.name,
           relatedOrderNumber,
+          scheduleConfirmDeadline: orderData.scheduleConfirmDeadline,
+          broadcastDate: orderData.scheduleEndDate,
         }).catch((error) => {
           console.log('Unhandled error sending email to member:', error)
         })
