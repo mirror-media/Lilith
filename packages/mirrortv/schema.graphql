@@ -2525,6 +2525,79 @@ input DownloadCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type VideoEditorChoice {
+  id: ID!
+  order: Float
+  videoEditor: Post
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input VideoEditorChoiceWhereUniqueInput {
+  id: ID
+}
+
+input VideoEditorChoiceWhereInput {
+  AND: [VideoEditorChoiceWhereInput!]
+  OR: [VideoEditorChoiceWhereInput!]
+  NOT: [VideoEditorChoiceWhereInput!]
+  id: IDFilter
+  order: FloatNullableFilter
+  videoEditor: PostWhereInput
+  state: StringNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input FloatNullableFilter {
+  equals: Float
+  in: [Float!]
+  notIn: [Float!]
+  lt: Float
+  lte: Float
+  gt: Float
+  gte: Float
+  not: FloatNullableFilter
+}
+
+input VideoEditorChoiceOrderByInput {
+  id: OrderDirection
+  order: OrderDirection
+  state: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input VideoEditorChoiceUpdateInput {
+  order: Float
+  videoEditor: PostRelateToOneForUpdateInput
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input VideoEditorChoiceUpdateArgs {
+  where: VideoEditorChoiceWhereUniqueInput!
+  data: VideoEditorChoiceUpdateInput!
+}
+
+input VideoEditorChoiceCreateInput {
+  order: Float
+  videoEditor: PostRelateToOneForCreateInput
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2657,6 +2730,12 @@ type Mutation {
   updateDownloads(data: [DownloadUpdateArgs!]!): [Download]
   deleteDownload(where: DownloadWhereUniqueInput!): Download
   deleteDownloads(where: [DownloadWhereUniqueInput!]!): [Download]
+  createVideoEditorChoice(data: VideoEditorChoiceCreateInput!): VideoEditorChoice
+  createVideoEditorChoices(data: [VideoEditorChoiceCreateInput!]!): [VideoEditorChoice]
+  updateVideoEditorChoice(where: VideoEditorChoiceWhereUniqueInput!, data: VideoEditorChoiceUpdateInput!): VideoEditorChoice
+  updateVideoEditorChoices(data: [VideoEditorChoiceUpdateArgs!]!): [VideoEditorChoice]
+  deleteVideoEditorChoice(where: VideoEditorChoiceWhereUniqueInput!): VideoEditorChoice
+  deleteVideoEditorChoices(where: [VideoEditorChoiceWhereUniqueInput!]!): [VideoEditorChoice]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -2744,6 +2823,9 @@ type Query {
   downloads(where: DownloadWhereInput! = {}, orderBy: [DownloadOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DownloadWhereUniqueInput): [Download!]
   download(where: DownloadWhereUniqueInput!): Download
   downloadsCount(where: DownloadWhereInput! = {}): Int
+  videoEditorChoices(where: VideoEditorChoiceWhereInput! = {}, orderBy: [VideoEditorChoiceOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoEditorChoiceWhereUniqueInput): [VideoEditorChoice!]
+  videoEditorChoice(where: VideoEditorChoiceWhereUniqueInput!): VideoEditorChoice
+  videoEditorChoicesCount(where: VideoEditorChoiceWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
