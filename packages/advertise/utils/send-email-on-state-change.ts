@@ -28,15 +28,31 @@ const domain = `https://tabris-tv-ad-admin-next-${envVar.env}-439405143478.asia-
 
 const formatDateToMonthDay = (
   date: string | Date | null | undefined,
-  showTime = false
+  showTime = false,
+  showYear = false
 ): string => {
   if (!date) return ''
   const dateObj = typeof date === 'string' ? new Date(date) : date
   if (isNaN(dateObj.getTime())) return ''
-  const month = dateObj.getMonth() + 1
-  const day = dateObj.getDate()
-  return `${month}月${day}日${
-    showTime ? `，${dateObj.getHours()}:${dateObj.getMinutes()}` : ''
+
+  // Convert to Taiwan time (UTC+8) using Intl.DateTimeFormat
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Taipei',
+    month: 'numeric',
+    day: 'numeric',
+    ...(showYear && { year: 'numeric' }),
+    ...(showTime && { hour: 'numeric', minute: 'numeric', hour12: false }),
+  })
+
+  const parts = formatter.formatToParts(dateObj)
+  const year = showYear ? parts.find((p) => p.type === 'year')?.value : null
+  const month = parts.find((p) => p.type === 'month')?.value
+  const day = parts.find((p) => p.type === 'day')?.value
+  const hour = showTime ? parts.find((p) => p.type === 'hour')?.value : null
+  const minute = showTime ? parts.find((p) => p.type === 'minute')?.value : null
+
+  return `${showYear ? `${year}年` : ''}${month}月${day}日${
+    showTime ? `，${hour}:${String(minute || '').padStart(2, '0')}` : ''
   }`
 }
 
@@ -83,7 +99,9 @@ const MEMBER_EMAIL_CONTENT: Record<
     bodyTitle: () => '訂單已完成-廣告播出完畢',
     body: (data) =>
       `此筆訂單已完成，感謝您的支持！廣告已於 ${formatDateToMonthDay(
-        data.broadcastDate
+        data.broadcastDate,
+        false,
+        true
       )} 播放完畢。`,
   },
   // modification_request: {
