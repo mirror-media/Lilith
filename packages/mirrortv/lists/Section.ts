@@ -20,14 +20,11 @@ const listConfigurations = list({
       ref: 'Contact',
       many: true,
     }),
-    // [TODO] enable when ArtShow list is ready
-    /*
     artshow: relationship({
-        label: '相關正片',
-        ref: 'ArtShow',
-        many: true,
-    },
-    */
+      label: '相關正片',
+      ref: 'ArtShow',
+      many: true,
+    }),
     show: relationship({
       label: '相關節目',
       ref: 'Show.sections',

@@ -6,11 +6,14 @@ import type {
   ListHooks,
 } from '@keystone-6/core/types'
 import { GoogleAuth } from 'google-auth-library'
+import ENV_VARS from '../environment-variables'
 
 type AfterOperationHook = ListHooks<BaseListTypeInfo>['afterOperation']
 
 type OrderItem = {
   id: string
+  scheduleConfirmDeadline?: string
+  scheduleEndDate?: string
   orderNumber?: string
   state?: string
   member?: {
@@ -21,18 +24,36 @@ type OrderItem = {
   name?: string
 } & BaseItem
 
-const domain =
-  'https://tabris-tv-ad-admin-next-dev-439405143478.asia-east1.run.app/'
+const domain = ENV_VARS.advertiseRedirectUrl
 
 const formatDateToMonthDay = (
-  date: string | Date | null | undefined
+  date: string | Date | null | undefined,
+  showTime = false,
+  showYear = false
 ): string => {
   if (!date) return ''
   const dateObj = typeof date === 'string' ? new Date(date) : date
   if (isNaN(dateObj.getTime())) return ''
-  const month = dateObj.getMonth() + 1
-  const day = dateObj.getDate()
-  return `${month}月${day}日`
+
+  // Convert to Taiwan time (UTC+8) using Intl.DateTimeFormat
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Taipei',
+    month: 'numeric',
+    day: 'numeric',
+    ...(showYear && { year: 'numeric' }),
+    ...(showTime && { hour: 'numeric', minute: 'numeric', hour12: false }),
+  })
+
+  const parts = formatter.formatToParts(dateObj)
+  const year = showYear ? parts.find((p) => p.type === 'year')?.value : null
+  const month = parts.find((p) => p.type === 'month')?.value
+  const day = parts.find((p) => p.type === 'day')?.value
+  const hour = showTime ? parts.find((p) => p.type === 'hour')?.value : null
+  const minute = showTime ? parts.find((p) => p.type === 'minute')?.value : null
+
+  return `${showYear ? `${year}年` : ''}${month}月${day}日${
+    showTime ? `，${hour}:${String(minute || '').padStart(2, '0')}` : ''
+  }`
 }
 
 const MEMBER_EMAIL_CONTENT: Record<
@@ -40,14 +61,17 @@ const MEMBER_EMAIL_CONTENT: Record<
   {
     subject: (data: any) => string
     bodyTitle: (data: any) => string
-    body: (data: any) => string
+    body: (data: any) => string | string[]
+    afterBody?: (data: any) => string
   }
 > = {
   paid: {
     subject: () => '【鏡新聞個人廣告系統】訂單已成立，請上傳素材',
     bodyTitle: () => '新訂單已成立 - 請上傳素材',
-    body: (data) =>
-      `您的新訂單已成立，請登入鏡新聞個人廣告後台上傳素材。連結如下：${domain}/order/${data.orderNumber}<br/>上傳素材成功後，您將收到訂單確認信，屆時廣告將開始正式製作。`,
+    body: (data) => [
+      `您的新訂單已成立，請登入鏡新聞個人廣告後台上傳素材。連結如下：${domain}/order/${data.orderNumber}`,
+      `上傳素材成功後，您將收到訂單確認信，屆時廣告將開始正式製作。`,
+    ],
   },
   video_wip: {
     subject: () => '【鏡新聞個人廣告系統】訂單已確認，廣告影片製作中',
@@ -59,6 +83,11 @@ const MEMBER_EMAIL_CONTENT: Record<
     bodyTitle: () => '請確認影片預覽內容和排播時間',
     body: (data) =>
       `您的廣告影片已製作完成，請確認影片預覽內容和排播時間。連結如下：${domain}/order/${data.orderNumber}`,
+    afterBody: (data) =>
+      `請最晚在 ${formatDateToMonthDay(
+        data.scheduleConfirmDeadline,
+        true
+      )} 前完成確認，若逾時未確認，廣告將不會播出，您需重新申請新的排播時間。`,
   },
   scheduled: {
     subject: () => '【鏡新聞個人廣告系統】廣告排播時間已確認，將安排播出',
@@ -70,20 +99,22 @@ const MEMBER_EMAIL_CONTENT: Record<
     bodyTitle: () => '訂單已完成-廣告播出完畢',
     body: (data) =>
       `此筆訂單已完成，感謝您的支持！廣告已於 ${formatDateToMonthDay(
-        data.broadcastDate
+        data.broadcastDate,
+        false,
+        true
       )} 播放完畢。`,
   },
-  modification_request: {
-    subject: () => '【鏡新聞個人廣告系統】訂單修改請求已送出',
-    bodyTitle: () => '訂單已提出修改需求',
-    body: () => '您的修改需求已提出，業務將會審核需求後直接回覆。',
-  },
+  // modification_request: {
+  //   subject: () => '【鏡新聞個人廣告系統】訂單修改請求已送出',
+  //   bodyTitle: () => '訂單已提出修改需求',
+  //   body: () => '您的修改需求已提出，業務將會審核需求後直接回覆。',
+  // },
   pending_broadcast_date: {
     subject: () =>
       '【鏡新聞個人廣告系統】廣告排播時間逾時未確認，請重新設定排播時間',
     bodyTitle: () => '請確認影片預覽內容和排播時間',
-    body: () =>
-      `您的廣告影片已製作完成，請確認影片預覽內容，並重新設定排播時間。`,
+    body: (data) =>
+      `您的廣告影片已製作完成，請確認影片預覽內容，並重新設定排播時間。連結如下：${domain}/order/${data.orderNumber}`,
   },
   // transferred: {
   //   subject: (data) =>
@@ -119,10 +150,10 @@ const SALES_EMAIL_CONTENT: Record<
     subject: '用戶已確認訂單影片內容',
     body: () => '用戶已確認訂單內容，請盡快安排播放。',
   },
-  modification_request: {
-    subject: '用戶已提出修改需求',
-    body: () => '用戶針對一筆訂單提出修改需求，請盡快至CMS更改訂單狀態。',
-  },
+  // modification_request: {
+  //   subject: '用戶已提出修改需求',
+  //   body: () => '用戶針對一筆訂單提出修改需求，請盡快至CMS更改訂單狀態。',
+  // },
   date_reset: {
     subject: '用戶已重新設定排播時間',
     body: () => '用戶針對一筆訂單重新設定排播時間，請盡快至CMS更改訂單狀態。',
@@ -179,6 +210,8 @@ async function sendEmailToMember(
     memberName?: string
     orderName?: string
     relatedOrderNumber?: string
+    scheduleConfirmDeadline?: string
+    broadcastDate?: string
   }
 ) {
   if (!data.newState || !MEMBER_EMAIL_CONTENT[data.newState]) {
@@ -188,6 +221,7 @@ async function sendEmailToMember(
   const emailContent = MEMBER_EMAIL_CONTENT[data.newState]
   const subject = emailContent.subject(data)
   const body = emailContent.body(data)
+  const afterBody = emailContent.afterBody ? emailContent.afterBody(data) : ''
 
   const emailPayload = {
     receiver: [data.memberEmail],
@@ -197,11 +231,12 @@ async function sendEmailToMember(
     body: `
       <h2>${subject}</h2>
       <p>親愛的 ${data.memberName || '客戶'}，您好：</p>
-      <p dangerouslySetInnerHTML={{ __html: ${body} }}></p>
+      <p>${typeof body === 'string' ? body : body.join('<br/>')}</p>
       <ul>
         <li><strong>訂單編號：</strong>${data.orderNumber}</li>
         <li><strong>廣告名稱：</strong>${data.orderName}</li>
       </ul>
+      ${afterBody ? `<p>${afterBody}</p>` : ''}
       <p>此為系統自動通知信件，請勿回覆此郵件，如需要聯繫客服，請寫信至 mnews_sales@mnews.tw</p>
       <br>
       <p>鏡電視廣告團隊</p>
@@ -233,10 +268,10 @@ async function sendEmailToSales(
       ? emailContent.subject(data)
       : emailContent.subject
   const body = emailContent.body(data)
-  const subjectText =
-    typeof emailContent.subject === 'function'
-      ? emailContent.subject(data)
-      : emailContent.subject
+  // const subjectText =
+  //   typeof emailContent.subject === 'function'
+  //     ? emailContent.subject(data)
+  //     : emailContent.subject
 
   const emailPayload = {
     receiver: [salesEmail],
@@ -320,7 +355,8 @@ export function sendEmailOnStateChange(
       try {
         orderData = await context.query.Order.findOne({
           where: { id: currentItem.id },
-          query: 'id orderNumber name member { id email name }',
+          query:
+            'id orderNumber name scheduleConfirmDeadline scheduleEndDate member { id email name }',
         })
       } catch (error) {
         console.error('Error fetching order data:', error)
@@ -356,6 +392,8 @@ export function sendEmailOnStateChange(
           memberName,
           orderName: currentItem.name,
           relatedOrderNumber,
+          scheduleConfirmDeadline: orderData.scheduleConfirmDeadline,
+          broadcastDate: orderData.scheduleEndDate,
         }).catch((error) => {
           console.log('Unhandled error sending email to member:', error)
         })
