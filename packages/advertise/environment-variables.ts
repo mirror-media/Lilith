@@ -17,7 +17,7 @@ const {
   INVALID_CDN_CACHE_SERVER_URL,
   EMAIL_API_URL,
   ADVERTISE_SALES_EMAIL,
-  BRANCH_NAME,
+  ADVERTISE_REDIRECT_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -66,5 +66,7 @@ export default {
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
   emailApiUrl: EMAIL_API_URL,
   advertiseSalesEmail: ADVERTISE_SALES_EMAIL || 'mnews_sales@mnews.com.tw',
-  env: BRANCH_NAME === 'main' ? 'dev' : BRANCH_NAME,
+  advertiseRedirectUrl:
+    ADVERTISE_REDIRECT_URL ||
+    'https://tabris-tv-ad-admin-next-dev-439405143478.asia-east1.run.app',
 }
