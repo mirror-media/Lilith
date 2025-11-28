@@ -1,4 +1,5 @@
 import Audio from './Audio'
+import ArtShow from './ArtShow'
 import Post from './Post'
 import Partner from './Partner'
 import User from './User'
@@ -12,6 +13,7 @@ import Contact from './Contact'
 import Show from './Show'
 import Serie from './Serie'
 import Section from './Section'
+import Event from './Event'
 
 export const listDefinition = {
   User,
@@ -28,4 +30,6 @@ export const listDefinition = {
   Tag,
   Category,
   Audio,
+  ArtShow,
+  Event,
 }
