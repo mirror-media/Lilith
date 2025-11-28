@@ -29,14 +29,11 @@ const listConfigurations = list({
       ref: 'Section.series',
       many: true,
     }),
-    // [TODO] enable when ArtShow list is ready
-    /*
     post: relationship({
-        label: '相關單集',
-        ref: 'ArtShow.series',
-        many: true,
+      label: '相關單集',
+      ref: 'ArtShow.series',
+      many: true,
     }),
-    */
     relatedContacts: relationship({
       label: '關聯主持人',
       ref: 'Contact.relatedSeries',

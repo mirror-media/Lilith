@@ -968,6 +968,8 @@ type Serie {
   introduction: JSON
   section(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionCount(where: SectionWhereInput! = {}): Int
+  post(where: ArtShowWhereInput! = {}, orderBy: [ArtShowOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ArtShowWhereUniqueInput): [ArtShow!]
+  postCount(where: ArtShowWhereInput! = {}): Int
   relatedContacts(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   relatedContactsCount(where: ContactWhereInput! = {}): Int
   style: String
@@ -993,6 +995,7 @@ input SerieWhereInput {
   name: StringFilter
   heroImage: ImageWhereInput
   section: SectionManyRelationFilter
+  post: ArtShowManyRelationFilter
   relatedContacts: ContactManyRelationFilter
   style: StringNullableFilter
   introductionApiData: StringFilter
@@ -1007,6 +1010,12 @@ input SectionManyRelationFilter {
   every: SectionWhereInput
   some: SectionWhereInput
   none: SectionWhereInput
+}
+
+input ArtShowManyRelationFilter {
+  every: ArtShowWhereInput
+  some: ArtShowWhereInput
+  none: ArtShowWhereInput
 }
 
 input SerieOrderByInput {
@@ -1026,6 +1035,7 @@ input SerieUpdateInput {
   heroImage: ImageRelateToOneForUpdateInput
   introduction: JSON
   section: SectionRelateToManyForUpdateInput
+  post: ArtShowRelateToManyForUpdateInput
   relatedContacts: ContactRelateToManyForUpdateInput
   style: String
   introductionApiData: String
@@ -1043,6 +1053,13 @@ input SectionRelateToManyForUpdateInput {
   connect: [SectionWhereUniqueInput!]
 }
 
+input ArtShowRelateToManyForUpdateInput {
+  disconnect: [ArtShowWhereUniqueInput!]
+  set: [ArtShowWhereUniqueInput!]
+  create: [ArtShowCreateInput!]
+  connect: [ArtShowWhereUniqueInput!]
+}
+
 input SerieUpdateArgs {
   where: SerieWhereUniqueInput!
   data: SerieUpdateInput!
@@ -1054,6 +1071,7 @@ input SerieCreateInput {
   heroImage: ImageRelateToOneForCreateInput
   introduction: JSON
   section: SectionRelateToManyForCreateInput
+  post: ArtShowRelateToManyForCreateInput
   relatedContacts: ContactRelateToManyForCreateInput
   style: String
   introductionApiData: String
@@ -1067,6 +1085,11 @@ input SerieCreateInput {
 input SectionRelateToManyForCreateInput {
   create: [SectionCreateInput!]
   connect: [SectionWhereUniqueInput!]
+}
+
+input ArtShowRelateToManyForCreateInput {
+  create: [ArtShowCreateInput!]
+  connect: [ArtShowWhereUniqueInput!]
 }
 
 type Show {
@@ -1740,6 +1763,217 @@ input AudioCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type ArtShow {
+  id: ID!
+  slug: String
+  name: String
+  state: String
+  publishTime: DateTime
+  heroImage: Image
+  content: JSON
+  author(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
+  authorCount(where: ContactWhereInput! = {}): Int
+  series(where: SerieWhereInput! = {}, orderBy: [SerieOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SerieWhereUniqueInput): [Serie!]
+  seriesCount(where: SerieWhereInput! = {}): Int
+  show: Show
+  contentApiData: JSON
+  contentHtml: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input ArtShowWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input ArtShowWhereInput {
+  AND: [ArtShowWhereInput!]
+  OR: [ArtShowWhereInput!]
+  NOT: [ArtShowWhereInput!]
+  id: IDFilter
+  slug: StringFilter
+  name: StringFilter
+  state: StringNullableFilter
+  publishTime: DateTimeNullableFilter
+  heroImage: ImageWhereInput
+  author: ContactManyRelationFilter
+  series: SerieManyRelationFilter
+  show: ShowWhereInput
+  contentHtml: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input ArtShowOrderByInput {
+  id: OrderDirection
+  slug: OrderDirection
+  name: OrderDirection
+  state: OrderDirection
+  publishTime: OrderDirection
+  contentHtml: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ArtShowUpdateInput {
+  slug: String
+  name: String
+  state: String
+  publishTime: DateTime
+  heroImage: ImageRelateToOneForUpdateInput
+  content: JSON
+  author: ContactRelateToManyForUpdateInput
+  series: SerieRelateToManyForUpdateInput
+  show: ShowRelateToOneForUpdateInput
+  contentApiData: JSON
+  contentHtml: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input ShowRelateToOneForUpdateInput {
+  create: ShowCreateInput
+  connect: ShowWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ArtShowUpdateArgs {
+  where: ArtShowWhereUniqueInput!
+  data: ArtShowUpdateInput!
+}
+
+input ArtShowCreateInput {
+  slug: String
+  name: String
+  state: String
+  publishTime: DateTime
+  heroImage: ImageRelateToOneForCreateInput
+  content: JSON
+  author: ContactRelateToManyForCreateInput
+  series: SerieRelateToManyForCreateInput
+  show: ShowRelateToOneForCreateInput
+  contentApiData: JSON
+  contentHtml: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+input ShowRelateToOneForCreateInput {
+  create: ShowCreateInput
+  connect: ShowWhereUniqueInput
+}
+
+type Event {
+  id: ID!
+  name: String
+  state: String
+  publishTime: DateTime
+  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
+  categoriesCount(where: CategoryWhereInput! = {}): Int
+  eventType: String
+  startTime: DateTime
+  endTime: DateTime
+  image: Image
+  embedCode: String
+  link: String
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input EventWhereUniqueInput {
+  id: ID
+}
+
+input EventWhereInput {
+  AND: [EventWhereInput!]
+  OR: [EventWhereInput!]
+  NOT: [EventWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  state: StringNullableFilter
+  publishTime: DateTimeNullableFilter
+  categories: CategoryManyRelationFilter
+  eventType: StringNullableFilter
+  startTime: DateTimeNullableFilter
+  endTime: DateTimeNullableFilter
+  image: ImageWhereInput
+  embedCode: StringFilter
+  link: StringFilter
+  isFeatured: BooleanFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input EventOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  state: OrderDirection
+  publishTime: OrderDirection
+  eventType: OrderDirection
+  startTime: OrderDirection
+  endTime: OrderDirection
+  embedCode: OrderDirection
+  link: OrderDirection
+  isFeatured: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input EventUpdateInput {
+  name: String
+  state: String
+  publishTime: DateTime
+  categories: CategoryRelateToManyForUpdateInput
+  eventType: String
+  startTime: DateTime
+  endTime: DateTime
+  image: ImageRelateToOneForUpdateInput
+  embedCode: String
+  link: String
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input EventUpdateArgs {
+  where: EventWhereUniqueInput!
+  data: EventUpdateInput!
+}
+
+input EventCreateInput {
+  name: String
+  state: String
+  publishTime: DateTime
+  categories: CategoryRelateToManyForCreateInput
+  eventType: String
+  startTime: DateTime
+  endTime: DateTime
+  image: ImageRelateToOneForCreateInput
+  embedCode: String
+  link: String
+  isFeatured: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -1830,6 +2064,18 @@ type Mutation {
   updateAudios(data: [AudioUpdateArgs!]!): [Audio]
   deleteAudio(where: AudioWhereUniqueInput!): Audio
   deleteAudios(where: [AudioWhereUniqueInput!]!): [Audio]
+  createArtShow(data: ArtShowCreateInput!): ArtShow
+  createArtShows(data: [ArtShowCreateInput!]!): [ArtShow]
+  updateArtShow(where: ArtShowWhereUniqueInput!, data: ArtShowUpdateInput!): ArtShow
+  updateArtShows(data: [ArtShowUpdateArgs!]!): [ArtShow]
+  deleteArtShow(where: ArtShowWhereUniqueInput!): ArtShow
+  deleteArtShows(where: [ArtShowWhereUniqueInput!]!): [ArtShow]
+  createEvent(data: EventCreateInput!): Event
+  createEvents(data: [EventCreateInput!]!): [Event]
+  updateEvent(where: EventWhereUniqueInput!, data: EventUpdateInput!): Event
+  updateEvents(data: [EventUpdateArgs!]!): [Event]
+  deleteEvent(where: EventWhereUniqueInput!): Event
+  deleteEvents(where: [EventWhereUniqueInput!]!): [Event]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -1896,6 +2142,12 @@ type Query {
   audios(where: AudioWhereInput! = {}, orderBy: [AudioOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AudioWhereUniqueInput): [Audio!]
   audio(where: AudioWhereUniqueInput!): Audio
   audiosCount(where: AudioWhereInput! = {}): Int
+  artShows(where: ArtShowWhereInput! = {}, orderBy: [ArtShowOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ArtShowWhereUniqueInput): [ArtShow!]
+  artShow(where: ArtShowWhereUniqueInput!): ArtShow
+  artShowsCount(where: ArtShowWhereInput! = {}): Int
+  events(where: EventWhereInput! = {}, orderBy: [EventOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EventWhereUniqueInput): [Event!]
+  event(where: EventWhereUniqueInput!): Event
+  eventsCount(where: EventWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
