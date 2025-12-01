@@ -41,7 +41,7 @@
     "jsonwebtoken": "^9.0.0",
     "keyv": "^4.5.3",
     "lodash-es": "^4.17.21",
-    "node-fetch": "^3.3.2",
+    "node-fetch": "^2.7.0",
     "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.1.0",
     "react-redux": "^9.1.2",

@@ -59,10 +59,10 @@ const listConfigurations = list({
       label: '結束時間',
     }),
 
-    // video: relationship({
-    //     label: '影片',
-    //     ref: 'Video',
-    // }),
+    video: relationship({
+      label: '影片',
+      ref: 'Video',
+    }),
 
     image: relationship({
       label: '圖片',
