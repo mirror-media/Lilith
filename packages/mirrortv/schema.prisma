@@ -69,6 +69,8 @@ model User {
   from_Download_updatedBy          Download[]          @relation("Download_updatedBy")
   from_VideoEditorChoice_createdBy VideoEditorChoice[] @relation("VideoEditorChoice_createdBy")
   from_VideoEditorChoice_updatedBy VideoEditorChoice[] @relation("VideoEditorChoice_updatedBy")
+  from_Video_createdBy             Video[]             @relation("Video_createdBy")
+  from_Video_updatedBy             Video[]             @relation("Video_updatedBy")
 
   @@index([createdById])
   @@index([updatedById])
@@ -413,6 +415,7 @@ model Tag {
   from_Audio_tags    Audio[]    @relation("Audio_tags")
   from_External_tags External[] @relation("External_tags")
   from_Topic_tags    Topic[]    @relation("Topic_tags")
+  from_Video_tags    Video[]    @relation("Video_tags")
 
   @@index([ogImageId])
   @@index([createdById])
@@ -440,6 +443,7 @@ model Category {
   from_Event_categories    Event[]    @relation("Event_categories")
   from_External_categories External[] @relation("External_categories")
   from_Topic_categories    Topic[]    @relation("Topic_categories")
+  from_Video_categories    Video[]    @relation("Video_categories")
 
   @@index([ogImageId])
   @@index([createdById])
@@ -478,6 +482,8 @@ model ArtShow {
   publishTime          DateTime?
   heroImage            Image?    @relation("ArtShow_heroImage", fields: [heroImageId], references: [id])
   heroImageId          Int?      @map("heroImage")
+  heroVideo            Video?    @relation("ArtShow_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId          Int?      @map("heroVideo")
   content              Json?
   author               Contact[] @relation("ArtShow_author")
   series               Serie[]   @relation("ArtShow_series")
@@ -495,6 +501,7 @@ model ArtShow {
 
   @@index([state])
   @@index([heroImageId])
+  @@index([heroVideoId])
   @@index([showId])
   @@index([createdById])
   @@index([updatedById])
@@ -509,6 +516,8 @@ model Event {
   eventType   String?
   startTime   DateTime?
   endTime     DateTime?
+  video       Video?     @relation("Event_video", fields: [videoId], references: [id])
+  videoId     Int?       @map("video")
   image       Image?     @relation("Event_image", fields: [imageId], references: [id])
   imageId     Int?       @map("image")
   embedCode   String     @default("")
@@ -524,6 +533,7 @@ model Event {
   @@index([state])
   @@index([publishTime])
   @@index([eventType])
+  @@index([videoId])
   @@index([imageId])
   @@index([createdById])
   @@index([updatedById])
@@ -594,7 +604,10 @@ model Topic {
   leading            String?    @default("image")
   heroImage          Image?     @relation("Topic_heroImage", fields: [heroImageId], references: [id])
   heroImageId        Int?       @map("heroImage")
+  heroVideo          Video?     @relation("Topic_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId        Int?       @map("heroVideo")
   slideshow          Post[]     @relation("Topic_slideshow")
+  multivideo         Video[]    @relation("Topic_multivideo")
   post               Post[]     @relation("Topic_post")
   sortDir            String?    @default("desc")
   categories         Category[] @relation("Topic_categories")
@@ -620,6 +633,7 @@ model Topic {
   from_Sponsor_topic Sponsor[]  @relation("Sponsor_topic")
 
   @@index([heroImageId])
+  @@index([heroVideoId])
   @@index([state])
   @@index([ogImageId])
   @@index([createdById])
@@ -686,6 +700,35 @@ model VideoEditorChoice {
   updatedById   Int?      @map("updatedBy")
 
   @@index([videoEditorId])
+  @@index([state])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model Video {
+  id                       Int        @id @default(autoincrement())
+  name                     String     @default("")
+  youtubeUrl               String     @default("")
+  file_filesize            Int?
+  file_filename            String?
+  duration                 Int?       @default(0)
+  fileDuration_internal    String     @default("")
+  youtubeDuration_internal String     @default("")
+  categories               Category[] @relation("Video_categories")
+  tags                     Tag[]      @relation("Video_tags")
+  state                    String?    @default("draft")
+  publishTime              DateTime?
+  createdAt                DateTime?
+  updatedAt                DateTime?
+  createdBy                User?      @relation("Video_createdBy", fields: [createdById], references: [id])
+  createdById              Int?       @map("createdBy")
+  updatedBy                User?      @relation("Video_updatedBy", fields: [updatedById], references: [id])
+  updatedById              Int?       @map("updatedBy")
+  from_ArtShow_heroVideo   ArtShow[]  @relation("ArtShow_heroVideo")
+  from_Event_video         Event[]    @relation("Event_video")
+  from_Topic_heroVideo     Topic[]    @relation("Topic_heroVideo")
+  from_Topic_multivideo    Topic[]    @relation("Topic_multivideo")
+
   @@index([state])
   @@index([createdById])
   @@index([updatedById])
