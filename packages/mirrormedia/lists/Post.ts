@@ -839,7 +839,23 @@ const listConfigurations = list({
       }
       return
     },
-    afterOperation: async ({ operation, item, context }) => {
+    afterOperation: async ({ operation, item, context, resolvedData }) => {
+      if (
+        resolvedData &&
+        resolvedData.state &&
+        resolvedData.state === PostStatus.Published &&
+        envVar.autotagging
+      ) {
+        console.log('call data service for auto tagging')
+        // trigger auto tagging service
+        const result = fetch(
+          envVar.dataServiceApi + '/post_tagging?id=' + item.id,
+          {
+            method: 'GET',
+          }
+        )
+        console.log(result)
+      }
       if (operation === 'update') {
         await context.prisma.post.update({
           where: { id: Number(item.id) },
