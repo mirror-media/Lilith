@@ -1,7 +1,8 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 import { text, password, select, checkbox } from '@keystone-6/core/fields'
-const { allowRolesForUsers, admin, moderator, editor } = utils.accessControl
+const { allowRolesForUsers, allowAllRoles, admin, moderator } =
+  utils.accessControl
 
 const listConfigurations = list({
   fields: {
@@ -54,7 +55,7 @@ const listConfigurations = list({
 
   access: {
     operation: {
-      query: allowRolesForUsers(admin, moderator, editor),
+      query: allowAllRoles(),
       update: allowRolesForUsers(admin),
       create: allowRolesForUsers(admin),
       delete: allowRolesForUsers(admin),
