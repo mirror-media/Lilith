@@ -28,6 +28,37 @@ const publishStatusOptions = [
   { value: 'published', label: '已發布' },
 ]
 
+// 輔助函數：獲取 budget ID
+async function getBudgetId(item: Record<string, any>, context: any): Promise<string | null> {
+  let budgetId: string | null = null
+  
+  // 嘗試從 item.budget 獲取 ID
+  if (item.budget) {
+    if (typeof item.budget === 'object' && item.budget !== null && 'id' in item.budget) {
+      budgetId = String(item.budget.id)
+    } else if (typeof item.budget === 'string') {
+      budgetId = item.budget
+    }
+  }
+  
+  // 如果 item.budget 沒有 ID，嘗試通過查詢 Proposal 來獲取 budget ID
+  if (!budgetId && item.id) {
+    try {
+      const proposalData = await context.query.Proposal.findOne({
+        where: { id: String(item.id) },
+        query: 'budget { id }',
+      })
+      if (proposalData?.budget?.id) {
+        budgetId = String(proposalData.budget.id)
+      }
+    } catch (error) {
+      console.error('查詢 Proposal budget 錯誤:', error)
+    }
+  }
+  
+  return budgetId
+}
+
 const listConfigurations = list({
   fields: {
     government: relationship({
@@ -118,39 +149,11 @@ const listConfigurations = list({
       field: graphql.field({
         type: graphql.Float,
         async resolve(item: Record<string, any>, args, context) {
-          // 獲取 budget 的 ID
-          let budgetId: string | null = null
-          
-          // 嘗試從 item.budget 獲取 ID
-          if (item.budget) {
-            if (typeof item.budget === 'object' && item.budget !== null && 'id' in item.budget) {
-              budgetId = String(item.budget.id)
-            } else if (typeof item.budget === 'string') {
-              budgetId = item.budget
-            }
-          }
-          
-          // 如果 item.budget 沒有 ID，嘗試通過查詢 Proposal 來獲取 budget ID
-          if (!budgetId && item.id) {
-            try {
-              const proposalData = await context.query.Proposal.findOne({
-                where: { id: String(item.id) },
-                query: 'budget { id }',
-              })
-              if (proposalData?.budget?.id) {
-                budgetId = String(proposalData.budget.id)
-              }
-            } catch (error) {
-              console.error('查詢 Proposal budget 錯誤:', error)
-            }
-          }
-          
-          // 如果沒有 budget ID，返回 null
+          const budgetId = await getBudgetId(item, context)
           if (!budgetId) {
             return null
           }
           
-          // 查詢關聯的 Budget
           try {
             const budgetData = await context.query.Budget.findOne({
               where: { id: budgetId },
@@ -166,6 +169,174 @@ const listConfigurations = list({
       ui: {
         listView: { fieldMode: 'read' },
         itemView: { fieldMode: 'read' },
+        createView: { fieldMode: 'hidden' },
+      },
+    }),
+    budgetMajorCategory: virtual({
+      label: '大科目名稱（用於過濾）',
+      field: graphql.field({
+        type: graphql.String,
+        async resolve(item: Record<string, any>, args, context) {
+          const budgetId = await getBudgetId(item, context)
+          if (!budgetId) {
+            return null
+          }
+          
+          try {
+            const budgetData = await context.query.Budget.findOne({
+              where: { id: budgetId },
+              query: 'majorCategory',
+            })
+            return budgetData?.majorCategory ?? null
+          } catch (error) {
+            console.error('查詢 Budget majorCategory 錯誤:', error)
+            return null
+          }
+        },
+      }),
+      ui: {
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        createView: { fieldMode: 'hidden' },
+      },
+    }),
+    budgetMediumCategory: virtual({
+      label: '中科目名稱（用於過濾）',
+      field: graphql.field({
+        type: graphql.String,
+        async resolve(item: Record<string, any>, args, context) {
+          const budgetId = await getBudgetId(item, context)
+          if (!budgetId) {
+            return null
+          }
+          
+          try {
+            const budgetData = await context.query.Budget.findOne({
+              where: { id: budgetId },
+              query: 'mediumCategory',
+            })
+            return budgetData?.mediumCategory ?? null
+          } catch (error) {
+            console.error('查詢 Budget mediumCategory 錯誤:', error)
+            return null
+          }
+        },
+      }),
+      ui: {
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        createView: { fieldMode: 'hidden' },
+      },
+    }),
+    budgetMinorCategory: virtual({
+      label: '小科目名稱（用於過濾）',
+      field: graphql.field({
+        type: graphql.String,
+        async resolve(item: Record<string, any>, args, context) {
+          const budgetId = await getBudgetId(item, context)
+          if (!budgetId) {
+            return null
+          }
+          
+          try {
+            const budgetData = await context.query.Budget.findOne({
+              where: { id: budgetId },
+              query: 'minorCategory',
+            })
+            return budgetData?.minorCategory ?? null
+          } catch (error) {
+            console.error('查詢 Budget minorCategory 錯誤:', error)
+            return null
+          }
+        },
+      }),
+      ui: {
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        createView: { fieldMode: 'hidden' },
+      },
+    }),
+    budgetProjectName: virtual({
+      label: '計畫名稱（用於過濾）',
+      field: graphql.field({
+        type: graphql.String,
+        async resolve(item: Record<string, any>, args, context) {
+          const budgetId = await getBudgetId(item, context)
+          if (!budgetId) {
+            return null
+          }
+          
+          try {
+            const budgetData = await context.query.Budget.findOne({
+              where: { id: budgetId },
+              query: 'projectName',
+            })
+            return budgetData?.projectName ?? null
+          } catch (error) {
+            console.error('查詢 Budget projectName 錯誤:', error)
+            return null
+          }
+        },
+      }),
+      ui: {
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        createView: { fieldMode: 'hidden' },
+      },
+    }),
+    budgetType: virtual({
+      label: '預算類型（用於過濾）',
+      field: graphql.field({
+        type: graphql.String,
+        async resolve(item: Record<string, any>, args, context) {
+          const budgetId = await getBudgetId(item, context)
+          if (!budgetId) {
+            return null
+          }
+          
+          try {
+            const budgetData = await context.query.Budget.findOne({
+              where: { id: budgetId },
+              query: 'type',
+            })
+            return budgetData?.type ?? null
+          } catch (error) {
+            console.error('查詢 Budget type 錯誤:', error)
+            return null
+          }
+        },
+      }),
+      ui: {
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        createView: { fieldMode: 'hidden' },
+      },
+    }),
+    budgetYear: virtual({
+      label: '預算年度（用於過濾）',
+      field: graphql.field({
+        type: graphql.Int,
+        async resolve(item: Record<string, any>, args, context) {
+          const budgetId = await getBudgetId(item, context)
+          if (!budgetId) {
+            return null
+          }
+          
+          try {
+            const budgetData = await context.query.Budget.findOne({
+              where: { id: budgetId },
+              query: 'year',
+            })
+            return budgetData?.year ?? null
+          } catch (error) {
+            console.error('查詢 Budget year 錯誤:', error)
+            return null
+          }
+        },
+      }),
+      ui: {
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
         createView: { fieldMode: 'hidden' },
       },
     }),

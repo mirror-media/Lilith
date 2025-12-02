@@ -293,7 +293,9 @@ const listConfigurations = list({
       ui: {
         displayMode: 'cards',
         cardFields: ['imageFile'],
-        linkToItem: true,
+        inlineCreate: {
+          fields: ['name', 'imageFile', 'waterMark'],
+        },
         inlineConnect: true,
         views: './lists/views/sorted-relationship/index',
       },
