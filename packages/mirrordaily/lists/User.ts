@@ -9,8 +9,7 @@ import {
   relationship,
 } from '@keystone-6/core/fields'
 
-const { allowRolesForUsers, allowAllRoles, admin, moderator } =
-  utils.accessControl
+const { allowRolesForUsers, admin, moderator, editor } = utils.accessControl
 
 const listConfigurations = list({
   fields: {
@@ -82,7 +81,7 @@ const listConfigurations = list({
   },
   access: {
     operation: {
-      query: allowAllRoles(),
+      query: allowRolesForUsers(admin, moderator, editor),
       update: allowRolesForUsers(admin),
       create: allowRolesForUsers(admin),
       delete: allowRolesForUsers(admin),
