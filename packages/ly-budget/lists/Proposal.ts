@@ -1,6 +1,6 @@
-import { list } from '@keystone-6/core'
+import { list, graphql } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { text, float, select, integer, relationship, multiselect } from '@keystone-6/core/fields'
+import { text, float, select, integer, relationship, multiselect, virtual } from '@keystone-6/core/fields'
 import { gqlReadOnly } from '../access'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -113,6 +113,62 @@ const listConfigurations = list({
       label: '預算科目',
       ref: 'Budget',
     }),
+    budgetAmount: virtual({
+      label: '編列金額（用於排序）',
+      field: graphql.field({
+        type: graphql.Float,
+        async resolve(item: Record<string, any>, args, context) {
+          // 獲取 budget 的 ID
+          let budgetId: string | null = null
+          
+          // 嘗試從 item.budget 獲取 ID
+          if (item.budget) {
+            if (typeof item.budget === 'object' && item.budget !== null && 'id' in item.budget) {
+              budgetId = String(item.budget.id)
+            } else if (typeof item.budget === 'string') {
+              budgetId = item.budget
+            }
+          }
+          
+          // 如果 item.budget 沒有 ID，嘗試通過查詢 Proposal 來獲取 budget ID
+          if (!budgetId && item.id) {
+            try {
+              const proposalData = await context.query.Proposal.findOne({
+                where: { id: String(item.id) },
+                query: 'budget { id }',
+              })
+              if (proposalData?.budget?.id) {
+                budgetId = String(proposalData.budget.id)
+              }
+            } catch (error) {
+              console.error('查詢 Proposal budget 錯誤:', error)
+            }
+          }
+          
+          // 如果沒有 budget ID，返回 null
+          if (!budgetId) {
+            return null
+          }
+          
+          // 查詢關聯的 Budget
+          try {
+            const budgetData = await context.query.Budget.findOne({
+              where: { id: budgetId },
+              query: 'budgetAmount',
+            })
+            return budgetData?.budgetAmount ?? null
+          } catch (error) {
+            console.error('查詢 Budget budgetAmount 錯誤:', error)
+            return null
+          }
+        },
+      }),
+      ui: {
+        listView: { fieldMode: 'read' },
+        itemView: { fieldMode: 'read' },
+        createView: { fieldMode: 'hidden' },
+      },
+    }),
     unfreezeStatus: select({
       label: '解凍狀態',
       options: unfreezeStatusOptions,
@@ -182,7 +238,7 @@ const listConfigurations = list({
     },
   },
   access: {
-    operation: gqlReadOnly(),
+    operation: gqlReadOnly() as any,
   },
 })
 

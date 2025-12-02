@@ -112,4 +112,4 @@ const listConfigurations = list({
   },
 })
 
-export default listConfigurations
+export default utils.addTrackingFields(listConfigurations)

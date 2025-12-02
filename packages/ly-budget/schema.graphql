@@ -842,6 +842,7 @@ type Proposal {
   freezeAmount: Float
   budgetImageUrl: String
   budget: Budget
+  budgetAmount: Float
   unfreezeStatus: String
   unfreezeHistory(where: MeetingWhereInput! = {}, orderBy: [MeetingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MeetingWhereUniqueInput): [Meeting!]
   unfreezeHistoryCount(where: MeetingWhereInput! = {}): Int

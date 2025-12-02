@@ -28,28 +28,11 @@ const orderStateOptions = [
   { label: '已作廢', value: 'cancelled' },
 ]
 
-const extractRelatedOrderLength = (o?: unknown) => {
-  if (!o) return 0
-  if (Array.isArray(o)) return o.length
-  const oo = o as { connect?: unknown[]; set?: unknown[] }
-  if (Array.isArray(oo.connect) && oo.connect.length > 0)
-    return oo.connect.length
-  if (Array.isArray(oo.set) && oo.set.length > 0) return oo.set.length
-  return 0
-}
-
 const listConfigurations = list({
   hooks: {
     resolveInput: ({ resolvedData, operation, item }) => {
       if (operation === 'create' && !item && !resolvedData.updatedAt) {
         resolvedData.updatedAt = new Date()
-      }
-
-      if (
-        extractRelatedOrderLength(resolvedData.relatedOrder) > 0 ||
-        extractRelatedOrderLength(item?.relatedOrder) > 0
-      ) {
-        resolvedData.state = 'transferred'
       }
 
       const price = resolvedData.price ?? item?.price ?? 0
@@ -64,11 +47,28 @@ const listConfigurations = list({
       }
 
       const state = resolvedData.state ?? item?.state
-      if (state === 'to_be_confirmed') {
+      if (state === 'scheduled') {
         resolvedData.isReviewed = true
       }
 
       return resolvedData
+    },
+    afterOperation: async ({ operation, item, context, originalItem }) => {
+      if (operation !== 'create' && operation !== 'update') return
+
+      const parentOrderChanged =
+        operation === 'create'
+          ? item.parentOrderId
+          : originalItem?.parentOrderId !== item.parentOrderId
+
+      if (parentOrderChanged && item.parentOrderId) {
+        await context.prisma.order.update({
+          where: { id: Number(item.parentOrderId) },
+          data: {
+            state: 'transferred',
+          },
+        })
+      }
     },
     validateInput: async ({
       resolvedData,
@@ -78,58 +78,80 @@ const listConfigurations = list({
     }) => {
       const state = resolvedData.state || item?.state
 
-      if (resolvedData.relatedOrder) {
-        const relatedOrderId =
-          resolvedData.relatedOrder.connect?.id ||
-          resolvedData.relatedOrder.connect
+      if (resolvedData.parentOrder?.disconnect) {
+        addValidationError('不能取消已設定的母訂單')
+        return
+      }
 
-        if (relatedOrderId && item?.id && relatedOrderId === item.id) {
-          addValidationError('不能選擇自己作為訂單更動的目標')
+      if (resolvedData.parentOrder?.connect) {
+        const parentOrderId =
+          resolvedData.parentOrder.connect.id ||
+          resolvedData.parentOrder.connect
+
+        if (parentOrderId && item?.id && parentOrderId === item.id) {
+          addValidationError('不能選擇自己作為母訂單')
           return
         }
 
-        if (item?.relatedOrder && relatedOrderId) {
-          addValidationError('此訂單已經轉移過，不能再次修改轉移目標')
+        if (item?.parentOrderId) {
+          addValidationError('此訂單已經設定過母訂單，不能再次修改')
           return
         }
 
-        if (relatedOrderId) {
+        if (item?.state === 'transferred') {
+          addValidationError('已轉移至新訂單的訂單不能再設定母訂單')
+          return
+        }
+
+        if (parentOrderId) {
           const targetOrder = await context.query.Order.findOne({
-            where: { id: relatedOrderId },
-            query: 'id state relatedOrder { id }',
+            where: { id: parentOrderId },
+            query: 'id state',
           })
 
           if (!targetOrder) {
             addValidationError('目標訂單不存在')
             return
           }
-
-          if (targetOrder.relatedOrder) {
-            addValidationError('不能選擇已經轉移出去的訂單作為訂單更動的目標')
-            return
-          }
-
-          const ordersPointingToTarget = await context.query.Order.findMany({
-            where: {
-              relatedOrder: { id: { equals: relatedOrderId } },
-            },
-            query: 'id',
-          })
-
-          if (ordersPointingToTarget && ordersPointingToTarget.length > 0) {
-            addValidationError(
-              '此訂單已經被其他訂單轉移過來，不能再次被選為目標'
-            )
-            return
-          }
         }
       }
 
-      if (state === 'transferred') {
-        const len1 = extractRelatedOrderLength(resolvedData.relatedOrder)
-        const len2 = extractRelatedOrderLength(item?.relatedOrder)
-        if (len1 + len2 === 0) {
-          addValidationError('狀態為「已轉交」時，必須設定訂單更動')
+      if (state === 'to_be_confirmed') {
+        const demoImage = resolvedData.demoImage ?? item?.demoImageId
+        const attachment = resolvedData.attachment ?? item?.attachmentId
+        const scheduleConfirmDeadline =
+          resolvedData.scheduleConfirmDeadline ?? item?.scheduleConfirmDeadline
+
+        const missingFields: string[] = []
+
+        if (!demoImage) {
+          missingFields.push('影片截圖')
+        }
+        if (!attachment) {
+          missingFields.push('相關文件')
+        }
+        if (!scheduleConfirmDeadline) {
+          missingFields.push('使用者確認截止日期')
+        }
+
+        if (missingFields.length > 0) {
+          addValidationError(
+            `狀態為「待確認」時，必須填寫以下欄位：${missingFields.join('、')}`
+          )
+        }
+      }
+
+      const scheduleConfirmDeadline =
+        resolvedData.scheduleConfirmDeadline ?? item?.scheduleConfirmDeadline
+      const scheduleStartDate =
+        resolvedData.scheduleStartDate ?? item?.scheduleStartDate
+
+      if (scheduleConfirmDeadline && scheduleStartDate) {
+        const deadline = new Date(scheduleConfirmDeadline)
+        const startDate = new Date(scheduleStartDate)
+
+        if (deadline > startDate) {
+          addValidationError('確認截止日期晚於排播開始日期')
         }
       }
     },
@@ -182,11 +204,7 @@ const listConfigurations = list({
       },
     }),
     needsModification: checkbox({
-      label: '此筆待修改',
-      defaultValue: false,
-    }),
-    isReviewed: checkbox({
-      label: '是否審核前',
+      label: '此為修改訂單',
       defaultValue: false,
       ui: {
         createView: {
@@ -197,8 +215,20 @@ const listConfigurations = list({
         },
       },
     }),
-    relatedOrder: relationship({
-      label: '訂單更動',
+    isReviewed: checkbox({
+      label: '客戶是否已確認過影片預覽',
+      defaultValue: false,
+      ui: {
+        createView: {
+          fieldMode: 'hidden',
+        },
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
+    }),
+    parentOrder: relationship({
+      label: '母訂單',
       ref: 'Order',
       ui: {
         hideCreate: true,
