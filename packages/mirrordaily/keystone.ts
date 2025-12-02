@@ -109,7 +109,20 @@ export default withAuth(
         const jsonBodyParser = express.json({ limit: '500mb' })
         app.use(jsonBodyParser)
 
+        // Apply X-Robots-Tag header to all Keystone backend responses
+        app.use((_, res, next) => {
+          res.set('X-Robots-Tag', 'noindex, nofollow, noimageindex')
+          next()
+        })
+
         if (envVar.accessControlStrategy === ACL.CMS) {
+          // Serve robots.txt only in CMS domain to block all crawlers.
+          app.get('/robots.txt', (_, res) => {
+            res.type('text/plain')
+            res.send(`User-agent: *
+Disallow: /`)
+          })
+
           app.use(
             createPreviewMiniApp({
               previewServer: envVar.previewServer,
