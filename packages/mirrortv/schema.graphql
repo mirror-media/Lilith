@@ -1775,6 +1775,7 @@ type ArtShow {
   state: String
   publishTime: DateTime
   heroImage: Image
+  heroVideo: Video
   content: JSON
   author(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   authorCount(where: ContactWhereInput! = {}): Int
@@ -1804,6 +1805,7 @@ input ArtShowWhereInput {
   state: StringNullableFilter
   publishTime: DateTimeNullableFilter
   heroImage: ImageWhereInput
+  heroVideo: VideoWhereInput
   author: ContactManyRelationFilter
   series: SerieManyRelationFilter
   show: ShowWhereInput
@@ -1831,6 +1833,7 @@ input ArtShowUpdateInput {
   state: String
   publishTime: DateTime
   heroImage: ImageRelateToOneForUpdateInput
+  heroVideo: VideoRelateToOneForUpdateInput
   content: JSON
   author: ContactRelateToManyForUpdateInput
   series: SerieRelateToManyForUpdateInput
@@ -1841,6 +1844,12 @@ input ArtShowUpdateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
   updatedBy: UserRelateToOneForUpdateInput
+}
+
+input VideoRelateToOneForUpdateInput {
+  create: VideoCreateInput
+  connect: VideoWhereUniqueInput
+  disconnect: Boolean
 }
 
 input ShowRelateToOneForUpdateInput {
@@ -1860,6 +1869,7 @@ input ArtShowCreateInput {
   state: String
   publishTime: DateTime
   heroImage: ImageRelateToOneForCreateInput
+  heroVideo: VideoRelateToOneForCreateInput
   content: JSON
   author: ContactRelateToManyForCreateInput
   series: SerieRelateToManyForCreateInput
@@ -1870,6 +1880,11 @@ input ArtShowCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input VideoRelateToOneForCreateInput {
+  create: VideoCreateInput
+  connect: VideoWhereUniqueInput
 }
 
 input ShowRelateToOneForCreateInput {
@@ -1887,6 +1902,7 @@ type Event {
   eventType: String
   startTime: DateTime
   endTime: DateTime
+  video: Video
   image: Image
   embedCode: String
   link: String
@@ -1913,6 +1929,7 @@ input EventWhereInput {
   eventType: StringNullableFilter
   startTime: DateTimeNullableFilter
   endTime: DateTimeNullableFilter
+  video: VideoWhereInput
   image: ImageWhereInput
   embedCode: StringFilter
   link: StringFilter
@@ -1946,6 +1963,7 @@ input EventUpdateInput {
   eventType: String
   startTime: DateTime
   endTime: DateTime
+  video: VideoRelateToOneForUpdateInput
   image: ImageRelateToOneForUpdateInput
   embedCode: String
   link: String
@@ -1969,6 +1987,7 @@ input EventCreateInput {
   eventType: String
   startTime: DateTime
   endTime: DateTime
+  video: VideoRelateToOneForCreateInput
   image: ImageRelateToOneForCreateInput
   embedCode: String
   link: String
@@ -2226,8 +2245,11 @@ type Topic {
   name: String
   leading: String
   heroImage: Image
+  heroVideo: Video
   slideshow(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   slideshowCount(where: PostWhereInput! = {}): Int
+  multivideo(where: VideoWhereInput! = {}, orderBy: [VideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoWhereUniqueInput): [Video!]
+  multivideoCount(where: VideoWhereInput! = {}): Int
   post(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postCount(where: PostWhereInput! = {}): Int
   sortDir: String
@@ -2268,7 +2290,9 @@ input TopicWhereInput {
   name: StringFilter
   leading: StringNullableFilter
   heroImage: ImageWhereInput
+  heroVideo: VideoWhereInput
   slideshow: PostManyRelationFilter
+  multivideo: VideoManyRelationFilter
   post: PostManyRelationFilter
   sortDir: StringNullableFilter
   categories: CategoryManyRelationFilter
@@ -2286,6 +2310,12 @@ input TopicWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input VideoManyRelationFilter {
+  every: VideoWhereInput
+  some: VideoWhereInput
+  none: VideoWhereInput
 }
 
 input TopicOrderByInput {
@@ -2313,7 +2343,9 @@ input TopicUpdateInput {
   name: String
   leading: String
   heroImage: ImageRelateToOneForUpdateInput
+  heroVideo: VideoRelateToOneForUpdateInput
   slideshow: PostRelateToManyForUpdateInput
+  multivideo: VideoRelateToManyForUpdateInput
   post: PostRelateToManyForUpdateInput
   sortDir: String
   categories: CategoryRelateToManyForUpdateInput
@@ -2335,6 +2367,13 @@ input TopicUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
+input VideoRelateToManyForUpdateInput {
+  disconnect: [VideoWhereUniqueInput!]
+  set: [VideoWhereUniqueInput!]
+  create: [VideoCreateInput!]
+  connect: [VideoWhereUniqueInput!]
+}
+
 input TopicUpdateArgs {
   where: TopicWhereUniqueInput!
   data: TopicUpdateInput!
@@ -2346,7 +2385,9 @@ input TopicCreateInput {
   name: String
   leading: String
   heroImage: ImageRelateToOneForCreateInput
+  heroVideo: VideoRelateToOneForCreateInput
   slideshow: PostRelateToManyForCreateInput
+  multivideo: VideoRelateToManyForCreateInput
   post: PostRelateToManyForCreateInput
   sortDir: String
   categories: CategoryRelateToManyForCreateInput
@@ -2366,6 +2407,11 @@ input TopicCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input VideoRelateToManyForCreateInput {
+  create: [VideoCreateInput!]
+  connect: [VideoWhereUniqueInput!]
 }
 
 type Sponsor {
@@ -2525,6 +2571,178 @@ input DownloadCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type VideoEditorChoice {
+  id: ID!
+  order: Float
+  videoEditor: Post
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input VideoEditorChoiceWhereUniqueInput {
+  id: ID
+}
+
+input VideoEditorChoiceWhereInput {
+  AND: [VideoEditorChoiceWhereInput!]
+  OR: [VideoEditorChoiceWhereInput!]
+  NOT: [VideoEditorChoiceWhereInput!]
+  id: IDFilter
+  order: FloatNullableFilter
+  videoEditor: PostWhereInput
+  state: StringNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input FloatNullableFilter {
+  equals: Float
+  in: [Float!]
+  notIn: [Float!]
+  lt: Float
+  lte: Float
+  gt: Float
+  gte: Float
+  not: FloatNullableFilter
+}
+
+input VideoEditorChoiceOrderByInput {
+  id: OrderDirection
+  order: OrderDirection
+  state: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input VideoEditorChoiceUpdateInput {
+  order: Float
+  videoEditor: PostRelateToOneForUpdateInput
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input VideoEditorChoiceUpdateArgs {
+  where: VideoEditorChoiceWhereUniqueInput!
+  data: VideoEditorChoiceUpdateInput!
+}
+
+input VideoEditorChoiceCreateInput {
+  order: Float
+  videoEditor: PostRelateToOneForCreateInput
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
+type Video {
+  id: ID!
+  name: String
+  youtubeUrl: String
+  file: FileFieldOutput
+  duration: Int
+  fileDuration_internal: String
+  youtubeDuration_internal: String
+  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
+  categoriesCount(where: CategoryWhereInput! = {}): Int
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tagsCount(where: TagWhereInput! = {}): Int
+  state: String
+  publishTime: DateTime
+  fileDuration: String
+  youtubeDuration: String
+  videoSrc: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input VideoWhereUniqueInput {
+  id: ID
+}
+
+input VideoWhereInput {
+  AND: [VideoWhereInput!]
+  OR: [VideoWhereInput!]
+  NOT: [VideoWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  youtubeUrl: StringFilter
+  duration: IntNullableFilter
+  fileDuration_internal: StringFilter
+  youtubeDuration_internal: StringFilter
+  categories: CategoryManyRelationFilter
+  tags: TagManyRelationFilter
+  state: StringNullableFilter
+  publishTime: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input VideoOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  youtubeUrl: OrderDirection
+  duration: OrderDirection
+  fileDuration_internal: OrderDirection
+  youtubeDuration_internal: OrderDirection
+  state: OrderDirection
+  publishTime: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input VideoUpdateInput {
+  name: String
+  youtubeUrl: String
+  file: FileFieldInput
+  duration: Int
+  fileDuration_internal: String
+  youtubeDuration_internal: String
+  categories: CategoryRelateToManyForUpdateInput
+  tags: TagRelateToManyForUpdateInput
+  state: String
+  publishTime: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input VideoUpdateArgs {
+  where: VideoWhereUniqueInput!
+  data: VideoUpdateInput!
+}
+
+input VideoCreateInput {
+  name: String
+  youtubeUrl: String
+  file: FileFieldInput
+  duration: Int
+  fileDuration_internal: String
+  youtubeDuration_internal: String
+  categories: CategoryRelateToManyForCreateInput
+  tags: TagRelateToManyForCreateInput
+  state: String
+  publishTime: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2657,6 +2875,18 @@ type Mutation {
   updateDownloads(data: [DownloadUpdateArgs!]!): [Download]
   deleteDownload(where: DownloadWhereUniqueInput!): Download
   deleteDownloads(where: [DownloadWhereUniqueInput!]!): [Download]
+  createVideoEditorChoice(data: VideoEditorChoiceCreateInput!): VideoEditorChoice
+  createVideoEditorChoices(data: [VideoEditorChoiceCreateInput!]!): [VideoEditorChoice]
+  updateVideoEditorChoice(where: VideoEditorChoiceWhereUniqueInput!, data: VideoEditorChoiceUpdateInput!): VideoEditorChoice
+  updateVideoEditorChoices(data: [VideoEditorChoiceUpdateArgs!]!): [VideoEditorChoice]
+  deleteVideoEditorChoice(where: VideoEditorChoiceWhereUniqueInput!): VideoEditorChoice
+  deleteVideoEditorChoices(where: [VideoEditorChoiceWhereUniqueInput!]!): [VideoEditorChoice]
+  createVideo(data: VideoCreateInput!): Video
+  createVideos(data: [VideoCreateInput!]!): [Video]
+  updateVideo(where: VideoWhereUniqueInput!, data: VideoUpdateInput!): Video
+  updateVideos(data: [VideoUpdateArgs!]!): [Video]
+  deleteVideo(where: VideoWhereUniqueInput!): Video
+  deleteVideos(where: [VideoWhereUniqueInput!]!): [Video]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -2744,6 +2974,12 @@ type Query {
   downloads(where: DownloadWhereInput! = {}, orderBy: [DownloadOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DownloadWhereUniqueInput): [Download!]
   download(where: DownloadWhereUniqueInput!): Download
   downloadsCount(where: DownloadWhereInput! = {}): Int
+  videoEditorChoices(where: VideoEditorChoiceWhereInput! = {}, orderBy: [VideoEditorChoiceOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoEditorChoiceWhereUniqueInput): [VideoEditorChoice!]
+  videoEditorChoice(where: VideoEditorChoiceWhereUniqueInput!): VideoEditorChoice
+  videoEditorChoicesCount(where: VideoEditorChoiceWhereInput! = {}): Int
+  videos(where: VideoWhereInput! = {}, orderBy: [VideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoWhereUniqueInput): [Video!]
+  video(where: VideoWhereUniqueInput!): Video
+  videosCount(where: VideoWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

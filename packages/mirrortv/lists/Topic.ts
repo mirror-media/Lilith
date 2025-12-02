@@ -71,20 +71,20 @@ const listConfigurations = list({
       label: '首圖',
       ref: 'Image',
     }),
-    // heroVideo: relationship({
-    //     label: '影片',
-    //     ref: 'Video',
-    // }),
+    heroVideo: relationship({
+      label: '影片',
+      ref: 'Video',
+    }),
     slideshow: relationship({
       label: '輪播文章',
       ref: 'Post',
       many: true,
     }),
-    // multivideo: relationship({
-    //     label: '輪播影片',
-    //     ref: 'Video',
-    //     many: true,
-    // }),
+    multivideo: relationship({
+      label: '輪播影片',
+      ref: 'Video',
+      many: true,
+    }),
     post: relationship({
       label: 'POST',
       ref: 'Post',

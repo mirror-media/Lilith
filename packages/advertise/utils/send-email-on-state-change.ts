@@ -68,8 +68,8 @@ const MEMBER_EMAIL_CONTENT: Record<
   paid: {
     subject: () => '【鏡新聞個人廣告系統】訂單已成立，請上傳素材',
     bodyTitle: () => '新訂單已成立 - 請上傳素材',
-    body: (data) => [
-      `您的新訂單已成立，請登入鏡新聞個人廣告後台上傳素材。連結如下：${domain}/order/${data.orderNumber}`,
+    body: () => [
+      `您的新訂單已成立，請登入鏡新聞個人廣告後台上傳素材。連結如下：${domain}/upload`,
       `上傳素材成功後，您將收到訂單確認信，屆時廣告將開始正式製作。`,
     ],
   },

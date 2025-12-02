@@ -61,10 +61,10 @@ const listConfigurations = list({
       label: '首圖',
       ref: 'Image',
     }),
-    // heroVideo: relationship({
-    //     label: '影片',
-    //     ref: 'Video',
-    // }),
+    heroVideo: relationship({
+      label: '影片',
+      ref: 'Video',
+    }),
     content: customFields.richTextEditor({
       label: '內文',
       website: 'mirrormedia',

@@ -19,6 +19,8 @@ import EditorChoice from './EditorChoice'
 import Topic from './Topic'
 import Sponsor from './Sponsor'
 import Download from './Download'
+import VideoEditorChoice from './VideoEditorChoice'
+import Video from './Video'
 
 export const listDefinition = {
   User,
@@ -42,4 +44,6 @@ export const listDefinition = {
   Topic,
   Sponsor,
   Download,
+  VideoEditorChoice,
+  Video,
 }

@@ -12,7 +12,8 @@ import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheContr
 import responseCachePlugin from '@apollo/server-plugin-response-cache'
 import { GraphQLConfig } from '@keystone-6/core/types'
 import { ACL } from './type'
-// import { startVideoWorker } from './utils/videoQueue'
+
+import { startVideoWorker } from './utils/videoQueue'
 import { startImageWorker } from './utils/imageQueue'
 
 const { withAuth } = createAuth({
@@ -119,18 +120,21 @@ export default withAuth(
             })
           )
         }
-        // try {
-        //   startVideoWorker(context)
-        //   console.log('Video Duration Processing Worker started')
-        // } catch (error) {
-        //   console.error('Failed to start Video Duration Worker:', error)
-        // }
+
         const initWorker = async () => {
+          // 啟動 Image Worker
           try {
             await startImageWorker(context)
             console.log('Image Processing Worker started')
           } catch (error) {
             console.error('Failed to start Image Worker:', error)
+          }
+          // 啟動 Video Worker
+          try {
+            await startVideoWorker(context)
+            console.log('Video Duration Processing Worker started')
+          } catch (error) {
+            console.error('Failed to start Video Duration Worker:', error)
           }
         }
         initWorker()
