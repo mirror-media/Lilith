@@ -558,8 +558,6 @@ const listConfigurations = list({
       ui: {
         views: './lists/views/sorted-relationship/index',
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
       },
     }),
     og_title: text({
@@ -847,14 +845,24 @@ const listConfigurations = list({
         envVar.autotagging
       ) {
         console.log('call data service for auto tagging')
-        // trigger auto tagging service
-        const result = fetch(
-          envVar.dataServiceApi + '/post_tagging?id=' + item.id,
-          {
-            method: 'GET',
+        try {
+          // trigger auto tagging and auto relation service
+          const response = await fetch(
+            envVar.dataServiceApi + '/post_tagging_with_relation?id=' + item.id,
+            {
+              method: 'GET',
+            }
+          )
+          if (!response.ok) {
+            console.error(
+              `[AUTO-TAG-RELATION] Failed: ${response.status} ${response.statusText}`
+            )
+          } else {
+            console.log(`[AUTO-TAG-RELATION] Success for Post ${item.id}`)
           }
-        )
-        console.log(result)
+        } catch (error) {
+          console.error(`[AUTO-TAG-RELATION] Error:`, error)
+        }
       }
       if (operation === 'update') {
         await context.prisma.post.update({
