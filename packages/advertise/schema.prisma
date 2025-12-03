@@ -54,7 +54,7 @@ model Photo {
 model Member {
   id                 Int       @id @default(autoincrement())
   firebaseID         String    @unique @default("")
-  email              String?   @unique
+  email              String    @unique @default("")
   state              String    @default("active")
   name               String?
   mobile             String?
