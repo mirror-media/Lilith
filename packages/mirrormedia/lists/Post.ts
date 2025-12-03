@@ -844,7 +844,6 @@ const listConfigurations = list({
         resolvedData.state === PostStatus.Published &&
         envVar.autotagging
       ) {
-        console.log('call data service for auto tagging')
         try {
           // trigger auto tagging and auto relation service
           const response = await fetch(
@@ -857,8 +856,6 @@ const listConfigurations = list({
             console.error(
               `[AUTO-TAG-RELATION] Failed: ${response.status} ${response.statusText}`
             )
-          } else {
-            console.log(`[AUTO-TAG-RELATION] Success for Post ${item.id}`)
           }
         } catch (error) {
           console.error(`[AUTO-TAG-RELATION] Error:`, error)
