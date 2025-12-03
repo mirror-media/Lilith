@@ -20,6 +20,7 @@ const {
   CACHE_MAXAGE,
   DATA_SERVICE_API,
   INVALID_CDN_CACHE_SERVER_URL,
+  AUTO_TAGGING,
 } = process.env
 
 enum DatabaseProvider {
@@ -42,7 +43,8 @@ export default {
       DATABASE_PROVIDER === 'sqlite'
         ? DatabaseProvider.Sqlite
         : DatabaseProvider.Postgres,
-    url: DATABASE_URL || 'postgres://username:password@localhost:5432/mirrormedia',
+    url:
+      DATABASE_URL || 'postgres://username:password@localhost:5432/mirrormedia',
   },
   session: {
     secret:
@@ -75,5 +77,6 @@ export default {
     maxAge: Number.isNaN(cacheMaxAge) ? 60 : cacheMaxAge, // unit: second
   },
   dataServiceApi: DATA_SERVICE_API,
+  autotagging: AUTO_TAGGING === 'true',
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
 }
