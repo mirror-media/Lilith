@@ -252,7 +252,7 @@ input MemberWhereInput {
   NOT: [MemberWhereInput!]
   id: IDFilter
   firebaseID: StringFilter
-  email: StringNullableFilter
+  email: StringFilter
   state: StringFilter
   name: StringNullableFilter
   mobile: StringNullableFilter
