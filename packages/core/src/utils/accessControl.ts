@@ -18,6 +18,13 @@ type ListACLFunction = (
   ...args: ACLCheckFunction[]
 ) => ListOperationAccessControl<AccessOperation, BaseListTypeInfo>
 
+// Role configuration
+const ROLES = ['admin', 'moderator', 'editor', 'contributor'] as const
+// TODO: Add owner when implemented
+// const ROLES = ['admin', 'moderator', 'editor', 'contributor', 'owner'] as const
+
+export type Role = (typeof ROLES)[number]
+
 export const allowRoles: ListACLFunction = (...args) => {
   // 此function會返回Boolean到list.access中, true為能夠存取, false則是無存取權
   switch (accessControlStrategy) {
@@ -47,6 +54,13 @@ export const allowRolesForUsers: ListACLFunction = (...args) => {
   }
 }
 
+export const allowAllRoles: ListACLFunction = (...additionalRoles) => {
+  // Allow all roles defined in ROLES plus any additional roles passed as arguments
+  // To add new roles, add them to ROLES above
+  const roles = [...allStandardRoles, ...additionalRoles]
+  return allowRoles(...roles)
+}
+
 const isNeedToTurnOffAccessControl: ACLCheckFunction = async (auth) => {
   // if no users in db, then turn off access-control for creating first user
   const users = await auth.context.prisma.user.findMany()
@@ -74,28 +88,27 @@ async function checkAccessControl(
   return accessControlResult
 }
 
-export const admin: ACLCheckFunction = (auth) => {
-  // 我們可以在auth.session.data取得當下登入使用者的資料，用此來對比使用者的role
-  // 預設auth.session.data只有user.name
-  // 若要取得user.role或是其他user資料，可至auth.ts中的sessionData調整
-  const user = auth?.session?.data
-  return Boolean(user && user.role === 'admin')
+// Create a role checker function for a specific role
+const createRoleChecker = (role: Role): ACLCheckFunction => {
+  return (auth) => {
+    // 我們可以在auth.session.data取得當下登入使用者的資料，用此來對比使用者的role
+    // 預設auth.session.data只有user.name
+    // 若要取得user.role或是其他user資料，可至auth.ts中的sessionData調整
+    const user = auth?.session?.data
+    return Boolean(user && user.role === role)
+  }
 }
 
-export const moderator: ACLCheckFunction = (auth) => {
-  const user = auth?.session?.data
-  return Boolean(user && user.role === 'moderator')
-}
+// Auto-generate role checker functions from ROLES
+const roleCheckersMap = ROLES.reduce((acc, role) => {
+  acc[role] = createRoleChecker(role)
+  return acc
+}, {} as Record<Role, ACLCheckFunction>)
 
-export const editor: ACLCheckFunction = (auth) => {
-  const user = auth?.session?.data
-  return Boolean(user && user.role === 'editor')
-}
-
-export const contributor: ACLCheckFunction = (auth) => {
-  const user = auth?.session?.data
-  return Boolean(user && user.role === 'contributor')
-}
+// Export individual role checker functions for convenience (backward compatibility)
+// Note: When adding new roles, you can use roleCheckers.newRole directly without adding here
+// Or add it here if you want direct export: export const { admin, moderator, editor, contributor, newRole } = roleCheckersMap
+export const { admin, moderator, editor, contributor } = roleCheckersMap
 
 // TODO: 完成owner
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -110,3 +123,13 @@ export const owner: ACLCheckFunction = async (auth) => {
 
   return false
 }
+
+// Role checkers mapping - automatically generated from ROLES
+// Export for programmatic access: roleCheckers.admin, roleCheckers.moderator, etc.
+export const roleCheckers: Record<Role, ACLCheckFunction> = roleCheckersMap
+
+// All roles array - automatically generated from ROLES
+// All roles defined in ROLES are included
+const allStandardRoles: ACLCheckFunction[] = ROLES.map(
+  (role) => roleCheckers[role]
+)
