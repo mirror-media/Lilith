@@ -153,6 +153,7 @@ model Proposal {
   budgetImageUrl                            String?
   budget                                    Budget?            @relation("Proposal_budget", fields: [budgetId], references: [id])
   budgetId                                  Int?               @map("budget")
+  budgetAmount                              Float?
   unfreezeStatus                            String?
   unfreezeHistory                           Meeting[]          @relation("Proposal_unfreezeHistory")
   description                               String?
