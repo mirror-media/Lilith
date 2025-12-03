@@ -16,6 +16,11 @@ const listConfigurations = list({
       label: 'firebase id',
       validation: { isRequired: true },
       isIndexed: 'unique',
+      ui: {
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
     }),
     email: text({
       label: 'email',
