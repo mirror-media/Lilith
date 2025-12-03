@@ -160,6 +160,11 @@ const listConfigurations = list({
     member: relationship({
       label: '會員',
       ref: 'Member.orders',
+      ui: {
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
     }),
     orderNumber: text({
       label: '訂單編號',
@@ -167,6 +172,11 @@ const listConfigurations = list({
         isRequired: true,
       },
       isIndexed: 'unique',
+      ui: {
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
     }),
     name: text({
       label: '廣告名稱',
