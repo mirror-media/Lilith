@@ -175,6 +175,9 @@ const listConfigurations = list({
     }),
     title: text({
       label: '標題',
+      ui: {
+        displayMode: 'textarea',
+      },
     }),
     subtitle: text({
       label: '副標',
@@ -304,6 +307,9 @@ const listConfigurations = list({
       label: '首圖圖說',
       isFilterable: false,
       validation: { isRequired: false },
+      ui: {
+        displayMode: 'textarea',
+      },
     }),
     style: select({
       label: '文章樣式',
