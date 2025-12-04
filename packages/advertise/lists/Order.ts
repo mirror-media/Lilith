@@ -125,20 +125,25 @@ const listConfigurations = list({
         const missingFields: string[] = []
 
         let hasDemoImage = false
-        if (demoImage !== undefined) {
-          if (demoImage.connect || demoImage.create) {
-            const connectCount = demoImage.connect?.length || 0
-            const createCount = demoImage.create?.length || 0
-            hasDemoImage = connectCount + createCount > 0
-          }
-        }
 
-        if (item?.id && !hasDemoImage) {
+        let existingCount = 0
+        if (item?.id) {
           const existingOrder = await context.query.Order.findOne({
             where: { id: item.id.toString() },
             query: 'demoImage { id }',
           })
-          hasDemoImage = existingOrder?.demoImage?.length > 0
+          existingCount = existingOrder?.demoImage?.length || 0
+        }
+
+        if (demoImage !== undefined) {
+          const connectCount = demoImage.connect?.length || 0
+          const createCount = demoImage.create?.length || 0
+          const disconnectCount = demoImage.disconnect?.length || 0
+          const finalCount =
+            existingCount + connectCount + createCount - disconnectCount
+          hasDemoImage = finalCount > 0
+        } else {
+          hasDemoImage = existingCount > 0
         }
 
         if (!hasDemoImage) {
