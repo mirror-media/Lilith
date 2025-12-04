@@ -16,14 +16,17 @@ const listConfigurations = list({
       label: 'firebase id',
       validation: { isRequired: true },
       isIndexed: 'unique',
+      ui: {
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
     }),
     email: text({
       label: 'email',
       isIndexed: 'unique',
       isFilterable: true,
-      db: {
-        isNullable: true,
-      },
+      validation: { isRequired: true },
     }),
     state: select({
       label: '狀態',
@@ -85,15 +88,6 @@ const listConfigurations = list({
   },
   hooks: {
     validateInput: async ({ resolvedData, addValidationError, item }) => {
-      if (
-        !resolvedData.email &&
-        !resolvedData.mobile &&
-        !item?.email &&
-        !item?.mobile
-      ) {
-        addValidationError('email 或 mobile 至少需要填寫一個')
-      }
-
       const nationalId = resolvedData.nationalId ?? item?.nationalId
       if (
         nationalId !== undefined &&

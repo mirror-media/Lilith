@@ -117,14 +117,29 @@ const listConfigurations = list({
       }
 
       if (state === 'to_be_confirmed') {
-        const demoImage = resolvedData.demoImage ?? item?.demoImageId
+        const demoImage = resolvedData.demoImage
         const attachment = resolvedData.attachment ?? item?.attachmentId
         const scheduleConfirmDeadline =
           resolvedData.scheduleConfirmDeadline ?? item?.scheduleConfirmDeadline
 
         const missingFields: string[] = []
 
-        if (!demoImage) {
+        let hasDemoImage = false
+        if (demoImage !== undefined) {
+          if (demoImage.connect || demoImage.create) {
+            const connectCount = demoImage.connect?.length || 0
+            const createCount = demoImage.create?.length || 0
+            hasDemoImage = connectCount + createCount > 0
+          }
+        } else if (item?.id) {
+          const existingOrder = await context.query.Order.findOne({
+            where: { id: item.id.toString() },
+            query: 'demoImage { id }',
+          })
+          hasDemoImage = existingOrder?.demoImage?.length > 0
+        }
+
+        if (!hasDemoImage) {
           missingFields.push('影片截圖')
         }
         if (!attachment) {
@@ -160,6 +175,11 @@ const listConfigurations = list({
     member: relationship({
       label: '會員',
       ref: 'Member.orders',
+      ui: {
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
     }),
     orderNumber: text({
       label: '訂單編號',
@@ -167,6 +187,11 @@ const listConfigurations = list({
         isRequired: true,
       },
       isIndexed: 'unique',
+      ui: {
+        itemView: {
+          fieldMode: 'read',
+        },
+      },
     }),
     name: text({
       label: '廣告名稱',
@@ -269,6 +294,7 @@ const listConfigurations = list({
     demoImage: relationship({
       label: '影片截圖',
       ref: 'Photo',
+      many: true,
     }),
     attachment: relationship({
       label: '相關文件',

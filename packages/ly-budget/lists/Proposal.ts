@@ -144,32 +144,18 @@ const listConfigurations = list({
       label: '預算科目',
       ref: 'Budget',
     }),
-    budgetAmount: virtual({
+    budgetAmount: float({
       label: '編列金額（用於排序）',
-      field: graphql.field({
-        type: graphql.Float,
-        async resolve(item: Record<string, any>, args, context) {
-          const budgetId = await getBudgetId(item, context)
-          if (!budgetId) {
-            return null
-          }
-          
-          try {
-            const budgetData = await context.query.Budget.findOne({
-              where: { id: budgetId },
-              query: 'budgetAmount',
-            })
-            return budgetData?.budgetAmount ?? null
-          } catch (error) {
-            console.error('查詢 Budget budgetAmount 錯誤:', error)
-            return null
-          }
-        },
-      }),
+      db: {
+        isNullable: true,
+      },
       ui: {
-        listView: { fieldMode: 'read' },
-        itemView: { fieldMode: 'read' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
         createView: { fieldMode: 'hidden' },
+      },
+      graphql: {
+        omit: { create: true, update: true },
       },
     }),
     budgetMajorCategory: virtual({
@@ -401,6 +387,50 @@ const listConfigurations = list({
       defaultValue: 'draft',
       isIndexed: true,
     }),
+  },
+
+  hooks: {
+    afterOperation: async ({ operation, item, context }) => {
+      if (!item?.id || (operation !== 'create' && operation !== 'update')) {
+        return
+      }
+
+      const budgetId = await getBudgetId(item, context)
+      let syncedBudgetAmount: number | null = null
+
+      if (budgetId) {
+        try {
+          const budgetData = await context.query.Budget.findOne({
+            where: { id: budgetId },
+            query: 'budgetAmount',
+          })
+          syncedBudgetAmount = budgetData?.budgetAmount ?? null
+        } catch (error) {
+          console.error('查詢 Budget budgetAmount 錯誤:', error)
+        }
+      }
+
+      if (item.budgetAmount === syncedBudgetAmount) {
+        return
+      }
+
+      const proposalId =
+        typeof item.id === 'number' ? item.id : Number(item.id)
+
+      if (Number.isNaN(proposalId)) {
+        console.error('同步 Proposal budgetAmount 錯誤: 無效的 Proposal ID', item.id)
+        return
+      }
+
+      try {
+        await context.prisma.proposal.update({
+          where: { id: proposalId },
+          data: { budgetAmount: syncedBudgetAmount },
+        })
+      } catch (error) {
+        console.error('同步 Proposal budgetAmount 錯誤:', error)
+      }
+    },
   },
 
   ui: {

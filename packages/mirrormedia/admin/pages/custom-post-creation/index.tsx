@@ -34,7 +34,6 @@ const PICKED_FIELDS = [
   'heroImage',
   'heroCaption',
   'defaultHeroImage',
-  'relateds',
   'state',
   'publishedDate',
 ]

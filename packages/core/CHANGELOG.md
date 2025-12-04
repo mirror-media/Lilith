@@ -1,5 +1,16 @@
 # @mirrormedia/lilith-core Changelog
 
+## 2025-12-02, Version 3.0.11-beta.2
+
+### Notable Changes
+- refactor: simplify role configuration and add `allowAllRoles` function
+- add centralized ROLES array configuration for role management
+- auto-generate role checker functions from ROLES array
+- export `roleCheckers` object for programmatic access
+
+### Commits
+* \[[`21a345e59f30d4107d3ca35ef8fe6f2e019ac637`](https://github.com/mirror-media/Lilith/commit/21a345e59f30d4107d3ca35ef8fe6f2e019ac637)] - **refactor(lilith-core)**: simplify role configuration and add allowAllRoles function
+
 ## 2025-11-14, Version 3.0.11-beta.1
 
 ### Notable Changes

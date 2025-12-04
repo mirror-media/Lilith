@@ -252,7 +252,7 @@ input MemberWhereInput {
   NOT: [MemberWhereInput!]
   id: IDFilter
   firebaseID: StringFilter
-  email: StringNullableFilter
+  email: StringFilter
   state: StringFilter
   name: StringNullableFilter
   mobile: StringNullableFilter
@@ -375,7 +375,8 @@ type Order {
   paragraphTwo: String
   image: Photo
   videoDuration: Int
-  demoImage: Photo
+  demoImage(where: PhotoWhereInput! = {}, orderBy: [PhotoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhotoWhereUniqueInput): [Photo!]
+  demoImageCount(where: PhotoWhereInput! = {}): Int
   attachment: Pdf
   campaignPeriod: Int
   scheduleStartDate: DateTime
@@ -410,7 +411,7 @@ input OrderWhereInput {
   paragraphTwo: StringFilter
   image: PhotoWhereInput
   videoDuration: IntNullableFilter
-  demoImage: PhotoWhereInput
+  demoImage: PhotoManyRelationFilter
   attachment: PdfWhereInput
   campaignPeriod: IntFilter
   scheduleStartDate: DateTimeNullableFilter
@@ -431,6 +432,12 @@ input IntNullableFilter {
   gt: Int
   gte: Int
   not: IntNullableFilter
+}
+
+input PhotoManyRelationFilter {
+  every: PhotoWhereInput
+  some: PhotoWhereInput
+  none: PhotoWhereInput
 }
 
 input IntFilter {
@@ -478,7 +485,7 @@ input OrderUpdateInput {
   paragraphTwo: String
   image: PhotoRelateToOneForUpdateInput
   videoDuration: Int
-  demoImage: PhotoRelateToOneForUpdateInput
+  demoImage: PhotoRelateToManyForUpdateInput
   attachment: PdfRelateToOneForUpdateInput
   campaignPeriod: Int
   scheduleStartDate: DateTime
@@ -508,6 +515,13 @@ input PhotoRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input PhotoRelateToManyForUpdateInput {
+  disconnect: [PhotoWhereUniqueInput!]
+  set: [PhotoWhereUniqueInput!]
+  create: [PhotoCreateInput!]
+  connect: [PhotoWhereUniqueInput!]
+}
+
 input PdfRelateToOneForUpdateInput {
   create: PdfCreateInput
   connect: PdfWhereUniqueInput
@@ -533,7 +547,7 @@ input OrderCreateInput {
   paragraphTwo: String
   image: PhotoRelateToOneForCreateInput
   videoDuration: Int
-  demoImage: PhotoRelateToOneForCreateInput
+  demoImage: PhotoRelateToManyForCreateInput
   attachment: PdfRelateToOneForCreateInput
   campaignPeriod: Int
   scheduleStartDate: DateTime
@@ -558,6 +572,11 @@ input OrderRelateToOneForCreateInput {
 input PhotoRelateToOneForCreateInput {
   create: PhotoCreateInput
   connect: PhotoWhereUniqueInput
+}
+
+input PhotoRelateToManyForCreateInput {
+  create: [PhotoCreateInput!]
+  connect: [PhotoWhereUniqueInput!]
 }
 
 input PdfRelateToOneForCreateInput {
