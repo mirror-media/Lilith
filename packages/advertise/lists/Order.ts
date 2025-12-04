@@ -131,6 +131,12 @@ const listConfigurations = list({
             const createCount = demoImage.create?.length || 0
             hasDemoImage = connectCount + createCount > 0
           }
+        } else if (item?.id) {
+          const existingOrder = await context.query.Order.findOne({
+            where: { id: item.id.toString() },
+            query: 'demoImage { id }',
+          })
+          hasDemoImage = existingOrder?.demoImage?.length > 0
         }
 
         if (!hasDemoImage) {
