@@ -175,6 +175,9 @@ const listConfigurations = list({
     }),
     title: text({
       label: '標題',
+      ui: {
+        displayMode: 'textarea',
+      },
     }),
     subtitle: text({
       label: '副標',
@@ -304,6 +307,9 @@ const listConfigurations = list({
       label: '首圖圖說',
       isFilterable: false,
       validation: { isRequired: false },
+      ui: {
+        displayMode: 'textarea',
+      },
     }),
     style: select({
       label: '文章樣式',
@@ -558,8 +564,6 @@ const listConfigurations = list({
       ui: {
         views: './lists/views/sorted-relationship/index',
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
       },
     }),
     og_title: text({
@@ -839,7 +843,30 @@ const listConfigurations = list({
       }
       return
     },
-    afterOperation: async ({ operation, item, context }) => {
+    afterOperation: async ({ operation, item, context, resolvedData }) => {
+      if (
+        resolvedData &&
+        resolvedData.state &&
+        resolvedData.state === PostStatus.Published &&
+        envVar.autotagging
+      ) {
+        try {
+          // trigger auto tagging and auto relation service
+          const response = await fetch(
+            envVar.dataServiceApi + '/post_tagging_with_relation?id=' + item.id,
+            {
+              method: 'GET',
+            }
+          )
+          if (!response.ok) {
+            console.error(
+              `[AUTO-TAG-RELATION] Failed: ${response.status} ${response.statusText}`
+            )
+          }
+        } catch (error) {
+          console.error(`[AUTO-TAG-RELATION] Error:`, error)
+        }
+      }
       if (operation === 'update') {
         await context.prisma.post.update({
           where: { id: Number(item.id) },

@@ -891,6 +891,7 @@ input ProposalWhereInput {
   freezeAmount: FloatNullableFilter
   budgetImageUrl: StringNullableFilter
   budget: BudgetWhereInput
+  budgetAmount: FloatNullableFilter
   unfreezeStatus: StringNullableFilter
   unfreezeHistory: MeetingManyRelationFilter
   description: StringNullableFilter
@@ -926,6 +927,7 @@ input ProposalOrderByInput {
   reductionAmount: OrderDirection
   freezeAmount: OrderDirection
   budgetImageUrl: OrderDirection
+  budgetAmount: OrderDirection
   unfreezeStatus: OrderDirection
   description: OrderDirection
   reason: OrderDirection
