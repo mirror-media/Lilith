@@ -5,12 +5,19 @@ import {
 } from '@keystone-6/core/admin-ui/components'
 import type { NavigationProps } from '@keystone-6/core/admin-ui/components'
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon'
+import { Fragment, useEffect } from 'react'
 
-import { Fragment } from 'react'
 export function CustomNavigation({
   lists,
   authenticatedItem,
 }: NavigationProps) {
+  // Workaround for site title
+  useEffect(() => {
+    const currentTitle = document.title
+    const newTitle = currentTitle.replace('Keystone', '鏡報')
+    if (newTitle !== currentTitle) document.title = newTitle
+  })
+
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
       <NavItem href="/">Dashboard</NavItem>
