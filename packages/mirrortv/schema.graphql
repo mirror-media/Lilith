@@ -1267,6 +1267,7 @@ type Post {
   vocals(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   vocalsCount(where: ContactWhereInput! = {}): Int
   otherbyline: String
+  heroVideo: Video
   heroImage: Image
   heroCaption: String
   heroImageSize: String
@@ -1278,12 +1279,16 @@ type Post {
   contentHtml: String
   contentApiData: JSON
   source: String
+  topics: Topic
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   audio: Audio
+  download(where: DownloadWhereInput! = {}, orderBy: [DownloadOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DownloadWhereUniqueInput): [Download!]
+  downloadCount(where: DownloadWhereInput! = {}): Int
   relatedPosts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedPostsCount(where: PostWhereInput! = {}): Int
   manualOrderOfRelatedPosts: JSON
+  relatedTopic: Topic
   ogTitle: String
   ogDescription: String
   ogImage: Image
@@ -1330,6 +1335,7 @@ input PostWhereInput {
   engineers: ContactManyRelationFilter
   vocals: ContactManyRelationFilter
   otherbyline: StringFilter
+  heroVideo: VideoWhereInput
   heroImage: ImageWhereInput
   heroCaption: StringFilter
   heroImageSize: StringNullableFilter
@@ -1337,9 +1343,12 @@ input PostWhereInput {
   briefHtml: StringFilter
   contentHtml: StringFilter
   source: StringFilter
+  topics: TopicWhereInput
   tags: TagManyRelationFilter
   audio: AudioWhereInput
+  download: DownloadManyRelationFilter
   relatedPosts: PostManyRelationFilter
+  relatedTopic: TopicWhereInput
   ogTitle: StringFilter
   ogDescription: StringFilter
   ogImage: ImageWhereInput
@@ -1361,6 +1370,12 @@ input CategoryManyRelationFilter {
   every: CategoryWhereInput
   some: CategoryWhereInput
   none: CategoryWhereInput
+}
+
+input DownloadManyRelationFilter {
+  every: DownloadWhereInput
+  some: DownloadWhereInput
+  none: DownloadWhereInput
 }
 
 input PostManyRelationFilter {
@@ -1419,6 +1434,7 @@ input PostUpdateInput {
   engineers: ContactRelateToManyForUpdateInput
   vocals: ContactRelateToManyForUpdateInput
   otherbyline: String
+  heroVideo: VideoRelateToOneForUpdateInput
   heroImage: ImageRelateToOneForUpdateInput
   heroCaption: String
   heroImageSize: String
@@ -1430,10 +1446,13 @@ input PostUpdateInput {
   contentHtml: String
   contentApiData: JSON
   source: String
+  topics: TopicRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
   audio: AudioRelateToOneForUpdateInput
+  download: DownloadRelateToManyForUpdateInput
   relatedPosts: PostRelateToManyForUpdateInput
   manualOrderOfRelatedPosts: JSON
+  relatedTopic: TopicRelateToOneForUpdateInput
   ogTitle: String
   ogDescription: String
   ogImage: ImageRelateToOneForUpdateInput
@@ -1458,10 +1477,23 @@ input CategoryRelateToManyForUpdateInput {
   connect: [CategoryWhereUniqueInput!]
 }
 
+input VideoRelateToOneForUpdateInput {
+  create: VideoCreateInput
+  connect: VideoWhereUniqueInput
+  disconnect: Boolean
+}
+
 input AudioRelateToOneForUpdateInput {
   create: AudioCreateInput
   connect: AudioWhereUniqueInput
   disconnect: Boolean
+}
+
+input DownloadRelateToManyForUpdateInput {
+  disconnect: [DownloadWhereUniqueInput!]
+  set: [DownloadWhereUniqueInput!]
+  create: [DownloadCreateInput!]
+  connect: [DownloadWhereUniqueInput!]
 }
 
 input PostRelateToManyForUpdateInput {
@@ -1495,6 +1527,7 @@ input PostCreateInput {
   engineers: ContactRelateToManyForCreateInput
   vocals: ContactRelateToManyForCreateInput
   otherbyline: String
+  heroVideo: VideoRelateToOneForCreateInput
   heroImage: ImageRelateToOneForCreateInput
   heroCaption: String
   heroImageSize: String
@@ -1506,10 +1539,13 @@ input PostCreateInput {
   contentHtml: String
   contentApiData: JSON
   source: String
+  topics: TopicRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
   audio: AudioRelateToOneForCreateInput
+  download: DownloadRelateToManyForCreateInput
   relatedPosts: PostRelateToManyForCreateInput
   manualOrderOfRelatedPosts: JSON
+  relatedTopic: TopicRelateToOneForCreateInput
   ogTitle: String
   ogDescription: String
   ogImage: ImageRelateToOneForCreateInput
@@ -1532,9 +1568,19 @@ input CategoryRelateToManyForCreateInput {
   connect: [CategoryWhereUniqueInput!]
 }
 
+input VideoRelateToOneForCreateInput {
+  create: VideoCreateInput
+  connect: VideoWhereUniqueInput
+}
+
 input AudioRelateToOneForCreateInput {
   create: AudioCreateInput
   connect: AudioWhereUniqueInput
+}
+
+input DownloadRelateToManyForCreateInput {
+  create: [DownloadCreateInput!]
+  connect: [DownloadWhereUniqueInput!]
 }
 
 input PostRelateToManyForCreateInput {
@@ -1861,12 +1907,6 @@ input ArtShowUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input VideoRelateToOneForUpdateInput {
-  create: VideoCreateInput
-  connect: VideoWhereUniqueInput
-  disconnect: Boolean
-}
-
 input ShowRelateToOneForUpdateInput {
   create: ShowCreateInput
   connect: ShowWhereUniqueInput
@@ -1895,11 +1935,6 @@ input ArtShowCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input VideoRelateToOneForCreateInput {
-  create: VideoCreateInput
-  connect: VideoWhereUniqueInput
 }
 
 input ShowRelateToOneForCreateInput {
