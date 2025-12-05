@@ -601,6 +601,7 @@ type Image {
   name: String
   file: FileFieldOutput
   copyright: String
+  topic: Topic
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   needWatermark: Boolean
@@ -644,6 +645,7 @@ input ImageWhereInput {
   id: IDFilter
   name: StringFilter
   copyright: StringNullableFilter
+  topic: TopicWhereInput
   tags: TagManyRelationFilter
   needWatermark: BooleanFilter
   keywords: StringFilter
@@ -685,6 +687,7 @@ input ImageUpdateInput {
   name: String
   file: FileFieldInput
   copyright: String
+  topic: TopicRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
   needWatermark: Boolean
   keywords: String
@@ -708,6 +711,12 @@ input FileFieldInput {
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
+input TopicRelateToOneForUpdateInput {
+  create: TopicCreateInput
+  connect: TopicWhereUniqueInput
+  disconnect: Boolean
+}
+
 input TagRelateToManyForUpdateInput {
   disconnect: [TagWhereUniqueInput!]
   set: [TagWhereUniqueInput!]
@@ -724,6 +733,7 @@ input ImageCreateInput {
   name: String
   file: FileFieldInput
   copyright: String
+  topic: TopicRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
   needWatermark: Boolean
   keywords: String
@@ -738,6 +748,11 @@ input ImageCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
+}
+
+input TopicRelateToOneForCreateInput {
+  create: TopicCreateInput
+  connect: TopicWhereUniqueInput
 }
 
 input TagRelateToManyForCreateInput {
@@ -2479,12 +2494,6 @@ input SponsorUpdateInput {
   updatedBy: UserRelateToOneForUpdateInput
 }
 
-input TopicRelateToOneForUpdateInput {
-  create: TopicCreateInput
-  connect: TopicWhereUniqueInput
-  disconnect: Boolean
-}
-
 input SponsorUpdateArgs {
   where: SponsorWhereUniqueInput!
   data: SponsorUpdateInput!
@@ -2503,11 +2512,6 @@ input SponsorCreateInput {
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
   updatedBy: UserRelateToOneForCreateInput
-}
-
-input TopicRelateToOneForCreateInput {
-  create: TopicCreateInput
-  connect: TopicWhereUniqueInput
 }
 
 type Download {

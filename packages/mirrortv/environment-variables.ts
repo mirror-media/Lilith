@@ -28,6 +28,10 @@ const {
   AUTO_TAGGING,
   INVALID_CDN_CACHE_SERVER_URL,
   YOUTUBE_API_KEY,
+
+  // Image Resize
+  GOOGLE_CLOUD_PROJECT,
+  IMAGE_RESIZE_TOPIC,
 } = process.env
 
 enum DatabaseProvider {
@@ -59,6 +63,10 @@ export default {
     maxAge:
       (typeof SESSION_MAX_AGE === 'string' && parseInt(SESSION_MAX_AGE)) ||
       60 * 60 * 24 * 1, // 1 days
+  },
+  googleCloud: {
+    projectId: GOOGLE_CLOUD_PROJECT || 'mirror-tv-275709',
+    imageResizeTopic: IMAGE_RESIZE_TOPIC || 'image-processor-dev',
   },
   gcs: {
     bucket: GCS_BUCKET || 'v2-static-mnews-tw-dev',

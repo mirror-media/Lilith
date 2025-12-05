@@ -183,6 +183,8 @@ model Image {
   file_filesize            Int?
   file_filename            String?
   copyright                String?    @default("Copyrighted")
+  topic                    Topic?     @relation("Image_topic", fields: [topicId], references: [id])
+  topicId                  Int?       @map("topic")
   tags                     Tag[]      @relation("Image_tags")
   needWatermark            Boolean    @default(false)
   keywords                 String     @default("")
@@ -217,6 +219,7 @@ model Image {
   from_Sponsor_mobile      Sponsor[]  @relation("Sponsor_mobile")
   from_Sponsor_tablet      Sponsor[]  @relation("Sponsor_tablet")
 
+  @@index([topicId])
   @@index([createdById])
   @@index([updatedById])
   @@map("Image")
@@ -630,6 +633,7 @@ model Topic {
   createdById        Int?       @map("createdBy")
   updatedBy          User?      @relation("Topic_updatedBy", fields: [updatedById], references: [id])
   updatedById        Int?       @map("updatedBy")
+  from_Image_topic   Image[]    @relation("Image_topic")
   from_Sponsor_topic Sponsor[]  @relation("Sponsor_topic")
 
   @@index([heroImageId])

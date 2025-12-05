@@ -9,12 +9,56 @@ import {
   json,
   virtual,
 } from '@keystone-6/core/fields'
-import { imageQueue } from '../utils/imageQueue'
 import path from 'path'
+import envVar from '../environment-variables'
+import { PubSub } from '@google-cloud/pubsub'
 
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
 const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.gif']
+
+const TEST_MODE = false
+// Pub/Sub client
+let pubSubClient: PubSub | null = null
+if (!TEST_MODE) {
+  pubSubClient = new PubSub({ projectId: envVar.googleCloud.projectId })
+}
+const topicName = envVar.googleCloud.imageResizeTopic
+// 發送訊息到 Pub/Sub
+export async function publishImageTask(taskData: any) {
+  if (TEST_MODE) {
+    console.log(
+      '[Pub/Sub][TEST MODE] Would publish message:',
+      JSON.stringify(taskData, null, 2)
+    )
+    return 'test-message-id'
+  }
+
+  if (!pubSubClient) {
+    throw new Error('[Pub/Sub] PubSub client not initialized')
+  }
+
+  try {
+    const topic = pubSubClient.topic(topicName)
+    const messageBuffer = Buffer.from(JSON.stringify(taskData))
+
+    const messageId = await topic.publishMessage({
+      data: messageBuffer,
+      attributes: {
+        type: taskData.type,
+        itemId: taskData.itemId || '',
+      },
+    })
+
+    console.log(
+      `[Pub/Sub] Message ${messageId} published for ${taskData.type} operation`
+    )
+    return messageId
+  } catch (error) {
+    console.error('[Pub/Sub] Error publishing message:', error)
+    throw error
+  }
+}
 
 const listConfigurations = list({
   db: {
@@ -37,10 +81,10 @@ const listConfigurations = list({
       ],
       defaultValue: 'Copyrighted',
     }),
-    // topic: relationship({
-    //   label: '專題',
-    //   ref: 'Topic',
-    // }),
+    topic: relationship({
+      label: '專題',
+      ref: 'Topic',
+    }),
     tags: relationship({
       label: '標籤',
       ref: 'Tag',
@@ -198,7 +242,8 @@ const listConfigurations = list({
             oldFileId = oldParsed.name
             oldExtension = oldParsed.ext.replace('.', '')
           }
-          await imageQueue.add('processImage', {
+          // 發送訊息到 Pub/Sub
+          await publishImageTask({
             type: 'upload',
             itemId: newItem.id,
             fileId: fileId,
@@ -214,7 +259,8 @@ const listConfigurations = list({
       if (operation === 'delete' && oldItem?.file_filename) {
         const parsed = path.parse(oldItem.file_filename)
 
-        await imageQueue.add('deleteImage', {
+        // 發送刪除訊息到 Pub/Sub
+        await publishImageTask({
           type: 'delete',
           oldFileId: parsed.name,
           oldExtension: parsed.ext.replace('.', ''),
