@@ -52,7 +52,7 @@ function handleGenerateSource(
   }
 }
 
-function filterPosts() {
+function filterPosts(roles: UserRole[]) {
   return ({ session }: { session?: Record<string, any> }) => {
     switch (envVar.accessControlStrategy) {
       case 'gql':
@@ -61,14 +61,14 @@ function filterPosts() {
         return true
       case 'cms':
       default:
-        // Admin, Moderator 可看所有
-        if (
-          session?.data?.role === UserRole.Admin ||
-          session?.data?.role === UserRole.Moderator
-        ) {
+        if (!session?.data?.role)
+          return { state: { in: [PostState.Published] } }
+
+        if (roles.includes(session.data.role)) {
           return true
         }
-        return true
+
+        return { state: { in: [PostState.Published] } }
     }
   }
 }
@@ -194,7 +194,7 @@ const listConfigurations = list({
     vocals: relationship({ label: '主播', ref: 'Contact', many: true }),
     otherbyline: text({ label: '作者（其他）' }),
 
-    // heroVideo: relationship({ label: '影片', ref: 'Video' }),
+    heroVideo: relationship({ label: '影片', ref: 'Video' }),
     heroImage: relationship({
       label: '首圖',
       ref: 'Image',
@@ -288,10 +288,17 @@ const listConfigurations = list({
     }),
 
     // --- Others ---
-    // topics: relationship({ label: '專題', ref: 'Topic', ui: { createView: { fieldMode: 'hidden' }, itemView: { fieldMode: 'read' } } }),
+    topics: relationship({
+      label: '專題',
+      ref: 'Topic',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
+    }),
     tags: relationship({ label: '標籤', ref: 'Tag', many: true }),
     audio: relationship({ label: '音檔', ref: 'Audio' }),
-    // download: relationship({ label: '附加檔案', ref: 'Download', many: true }),
+    download: relationship({ label: '附加檔案', ref: 'Download', many: true }),
 
     relatedPosts: relationship({ label: '相關文章', ref: 'Post', many: true }),
     manualOrderOfRelatedPosts: json({
@@ -302,7 +309,14 @@ const listConfigurations = list({
       },
     }),
 
-    // relatedTopic: relationship({ label: '相關專題', ref: 'Topic', ui: { createView: { fieldMode: 'hidden' }, itemView: { fieldMode: 'read' } } }),
+    relatedTopic: relationship({
+      label: '相關專題',
+      ref: 'Topic',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
+    }),
 
     ogTitle: text({ label: 'FB 分享標題' }),
     ogDescription: text({ label: 'FB 分享說明' }),
