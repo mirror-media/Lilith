@@ -231,11 +231,17 @@ function createButtonWithoutProps<T extends React.FC<any>>(
 
   return (
     isLongForm
-      ? styled(component)`
+      ? styled(component).withConfig({
+          shouldForwardProp: (prop) =>
+            !['isActive', 'isDisabled', 'readOnly'].includes(prop),
+        })`
           ${longFormButtonStyle}
           ${additionalCSS}
         `
-      : styled(component)`
+      : styled(component).withConfig({
+          shouldForwardProp: (prop) =>
+            !['isActive', 'isDisabled', 'readOnly'].includes(prop),
+        })`
           ${buttonStyle}
           ${additionalCSS}
         `
@@ -968,7 +974,7 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
             <TextEditorWrapper
               onClick={() => {
                 // eslint-disable-next-line prettier/prettier
-              (this.refs.editor as HTMLElement)?.focus()
+                (this.refs.editor as HTMLElement)?.focus()
               }}
             >
               <Editor

@@ -238,11 +238,17 @@ function createButtonWithoutProps<T extends React.FC<any>>(
 
   return (
     isLongForm
-      ? styled(component)`
+      ? styled(component).withConfig({
+          shouldForwardProp: (prop) =>
+            !['isActive', 'isDisabled', 'readOnly'].includes(prop),
+        })`
           ${longFormButtonStyle}
           ${additionalCSS}
         `
-      : styled(component)`
+      : styled(component).withConfig({
+          shouldForwardProp: (prop) =>
+            !['isActive', 'isDisabled', 'readOnly'].includes(prop),
+        })`
           ${buttonStyle}
           ${additionalCSS}
         `
