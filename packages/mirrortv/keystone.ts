@@ -14,7 +14,6 @@ import { GraphQLConfig } from '@keystone-6/core/types'
 import { ACL } from './type'
 
 import { startVideoWorker } from './utils/videoQueue'
-import { startImageWorker } from './utils/imageQueue'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -82,7 +81,7 @@ export default withAuth(
       },
       images: {
         kind: 'local',
-        type: 'file',
+        type: 'image',
         storagePath: envVar.images.storagePath,
         serverRoute: {
           path: envVar.images.baseUrl,
@@ -122,13 +121,6 @@ export default withAuth(
         }
 
         const initWorker = async () => {
-          // 啟動 Image Worker
-          try {
-            await startImageWorker(context)
-            console.log('Image Processing Worker started')
-          } catch (error) {
-            console.error('Failed to start Image Worker:', error)
-          }
           // 啟動 Video Worker
           try {
             await startVideoWorker(context)

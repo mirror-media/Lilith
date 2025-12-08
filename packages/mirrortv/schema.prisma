@@ -181,17 +181,17 @@ model Image {
   id                       Int        @id @default(autoincrement())
   name                     String     @default("")
   file_filesize            Int?
-  file_filename            String?
+  file_extension           String?
+  file_width               Int?
+  file_height              Int?
+  file_id                  String?
   copyright                String?    @default("Copyrighted")
+  topic                    Topic?     @relation("Image_topic", fields: [topicId], references: [id])
+  topicId                  Int?       @map("topic")
   tags                     Tag[]      @relation("Image_tags")
   needWatermark            Boolean    @default(false)
   keywords                 String     @default("")
   meta                     String     @default("")
-  urlOriginal              String     @default("")
-  urlDesktopSized          String     @default("")
-  urlTabletSized           String     @default("")
-  urlMobileSized           String     @default("")
-  urlTinySized             String     @default("")
   imageApiData             Json?
   createdAt                DateTime?
   updatedAt                DateTime?
@@ -217,6 +217,7 @@ model Image {
   from_Sponsor_mobile      Sponsor[]  @relation("Sponsor_mobile")
   from_Sponsor_tablet      Sponsor[]  @relation("Sponsor_tablet")
 
+  @@index([topicId])
   @@index([createdById])
   @@index([updatedById])
   @@map("Image")
@@ -345,6 +346,8 @@ model Post {
   engineers                          Contact[]           @relation("Post_engineers")
   vocals                             Contact[]           @relation("Post_vocals")
   otherbyline                        String              @default("")
+  heroVideo                          Video?              @relation("Post_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId                        Int?                @map("heroVideo")
   heroImage                          Image?              @relation("Post_heroImage", fields: [heroImageId], references: [id])
   heroImageId                        Int?                @map("heroImage")
   heroCaption                        String              @default("")
@@ -357,11 +360,16 @@ model Post {
   contentHtml                        String              @default("")
   contentApiData                     Json?
   source                             String              @default("")
+  topics                             Topic?              @relation("Post_topics", fields: [topicsId], references: [id])
+  topicsId                           Int?                @map("topics")
   tags                               Tag[]               @relation("Post_tags")
   audio                              Audio?              @relation("Post_audio", fields: [audioId], references: [id])
   audioId                            Int?                @map("audio")
+  download                           Download[]          @relation("Post_download")
   relatedPosts                       Post[]              @relation("Post_relatedPosts")
   manualOrderOfRelatedPosts          Json?
+  relatedTopic                       Topic?              @relation("Post_relatedTopic", fields: [relatedTopicId], references: [id])
+  relatedTopicId                     Int?                @map("relatedTopic")
   ogTitle                            String              @default("")
   ogDescription                      String              @default("")
   ogImage                            Image?              @relation("Post_ogImage", fields: [ogImageId], references: [id])
@@ -389,8 +397,11 @@ model Post {
 
   @@index([lockById])
   @@index([state])
+  @@index([heroVideoId])
   @@index([heroImageId])
+  @@index([topicsId])
   @@index([audioId])
+  @@index([relatedTopicId])
   @@index([ogImageId])
   @@index([createdById])
   @@index([updatedById])
@@ -597,40 +608,43 @@ model EditorChoice {
 }
 
 model Topic {
-  id                 Int        @id @default(autoincrement())
-  slug               String     @unique @default("")
-  sortOrder          Int?       @unique
-  name               String     @default("")
-  leading            String?    @default("image")
-  heroImage          Image?     @relation("Topic_heroImage", fields: [heroImageId], references: [id])
-  heroImageId        Int?       @map("heroImage")
-  heroVideo          Video?     @relation("Topic_heroVideo", fields: [heroVideoId], references: [id])
-  heroVideoId        Int?       @map("heroVideo")
-  slideshow          Post[]     @relation("Topic_slideshow")
-  multivideo         Video[]    @relation("Topic_multivideo")
-  post               Post[]     @relation("Topic_post")
-  sortDir            String?    @default("desc")
-  categories         Category[] @relation("Topic_categories")
-  tags               Tag[]      @relation("Topic_tags")
-  state              String?    @default("draft")
-  brief              Json?
-  briefApiData       Json?
-  briefHtml          String     @default("")
-  facebook           String     @default("")
-  instagram          String     @default("")
-  line               String     @default("")
-  ogTitle            String     @default("")
-  ogDescription      String     @default("")
-  ogImage            Image?     @relation("Topic_ogImage", fields: [ogImageId], references: [id])
-  ogImageId          Int?       @map("ogImage")
-  isFeatured         Boolean    @default(false)
-  createdAt          DateTime?
-  updatedAt          DateTime?
-  createdBy          User?      @relation("Topic_createdBy", fields: [createdById], references: [id])
-  createdById        Int?       @map("createdBy")
-  updatedBy          User?      @relation("Topic_updatedBy", fields: [updatedById], references: [id])
-  updatedById        Int?       @map("updatedBy")
-  from_Sponsor_topic Sponsor[]  @relation("Sponsor_topic")
+  id                     Int        @id @default(autoincrement())
+  slug                   String     @unique @default("")
+  sortOrder              Int?       @unique
+  name                   String     @default("")
+  leading                String?    @default("image")
+  heroImage              Image?     @relation("Topic_heroImage", fields: [heroImageId], references: [id])
+  heroImageId            Int?       @map("heroImage")
+  heroVideo              Video?     @relation("Topic_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId            Int?       @map("heroVideo")
+  slideshow              Post[]     @relation("Topic_slideshow")
+  multivideo             Video[]    @relation("Topic_multivideo")
+  post                   Post[]     @relation("Topic_post")
+  sortDir                String?    @default("desc")
+  categories             Category[] @relation("Topic_categories")
+  tags                   Tag[]      @relation("Topic_tags")
+  state                  String?    @default("draft")
+  brief                  Json?
+  briefApiData           Json?
+  briefHtml              String     @default("")
+  facebook               String     @default("")
+  instagram              String     @default("")
+  line                   String     @default("")
+  ogTitle                String     @default("")
+  ogDescription          String     @default("")
+  ogImage                Image?     @relation("Topic_ogImage", fields: [ogImageId], references: [id])
+  ogImageId              Int?       @map("ogImage")
+  isFeatured             Boolean    @default(false)
+  createdAt              DateTime?
+  updatedAt              DateTime?
+  createdBy              User?      @relation("Topic_createdBy", fields: [createdById], references: [id])
+  createdById            Int?       @map("createdBy")
+  updatedBy              User?      @relation("Topic_updatedBy", fields: [updatedById], references: [id])
+  updatedById            Int?       @map("updatedBy")
+  from_Image_topic       Image[]    @relation("Image_topic")
+  from_Post_topics       Post[]     @relation("Post_topics")
+  from_Post_relatedTopic Post[]     @relation("Post_relatedTopic")
+  from_Sponsor_topic     Sponsor[]  @relation("Sponsor_topic")
 
   @@index([heroImageId])
   @@index([heroVideoId])
@@ -670,17 +684,18 @@ model Sponsor {
 }
 
 model Download {
-  id            Int       @id @default(autoincrement())
-  name          String    @default("")
-  file_filesize Int?
-  file_filename String?
-  url           String    @default("")
-  createdAt     DateTime?
-  updatedAt     DateTime?
-  createdBy     User?     @relation("Download_createdBy", fields: [createdById], references: [id])
-  createdById   Int?      @map("createdBy")
-  updatedBy     User?     @relation("Download_updatedBy", fields: [updatedById], references: [id])
-  updatedById   Int?      @map("updatedBy")
+  id                 Int       @id @default(autoincrement())
+  name               String    @default("")
+  file_filesize      Int?
+  file_filename      String?
+  url                String    @default("")
+  createdAt          DateTime?
+  updatedAt          DateTime?
+  createdBy          User?     @relation("Download_createdBy", fields: [createdById], references: [id])
+  createdById        Int?      @map("createdBy")
+  updatedBy          User?     @relation("Download_updatedBy", fields: [updatedById], references: [id])
+  updatedById        Int?      @map("updatedBy")
+  from_Post_download Post[]    @relation("Post_download")
 
   @@index([createdById])
   @@index([updatedById])
@@ -724,6 +739,7 @@ model Video {
   createdById              Int?       @map("createdBy")
   updatedBy                User?      @relation("Video_updatedBy", fields: [updatedById], references: [id])
   updatedById              Int?       @map("updatedBy")
+  from_Post_heroVideo      Post[]     @relation("Post_heroVideo")
   from_ArtShow_heroVideo   ArtShow[]  @relation("ArtShow_heroVideo")
   from_Event_video         Event[]    @relation("Event_video")
   from_Topic_heroVideo     Topic[]    @relation("Topic_heroVideo")
