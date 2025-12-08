@@ -45,7 +45,8 @@
   "resolutions": {
     "**/next": "13.3.4",
     "**/react": "18.2.0",
-    "**/react-dom": "18.2.0"
+    "**/react-dom": "18.2.0",
+    "@mirrormedia/lilith-draft-editor": "3.0.8-beta.2"
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.12",
