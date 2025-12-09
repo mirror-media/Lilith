@@ -10,6 +10,7 @@ import {
   virtual,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
+import { getFileURL } from '../utils/common'
 
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
@@ -115,10 +116,20 @@ const listConfigurations = list({
           const rtn: Record<string, string> = {}
 
           resizedTargets.forEach((target) => {
-            rtn[target] = `${baseUrl}${fileId}-${target}${ext}`
+            // rtn[target] = `${baseUrl}/${fileId}-${target}${ext}`
+            rtn[target] = getFileURL(
+              envVar.gcs.bucket,
+              baseUrl,
+              `${fileId}-${target}${ext}`
+            )
           })
 
-          rtn['original'] = `${baseUrl}${fileId}${ext}`
+          // rtn['original'] = `${baseUrl}/${fileId}${ext}`
+          rtn['original'] = getFileURL(
+            envVar.gcs.bucket,
+            baseUrl,
+            `${fileId}${ext}`
+          )
           return Object.assign(empty, rtn)
         },
       }),
@@ -177,10 +188,20 @@ const listConfigurations = list({
           const rtn: Record<string, string> = {}
 
           resizedTargets.forEach((target) => {
-            rtn[target] = `${baseUrl}${fileId}-${target}${ext}`
+            // rtn[target] = `${baseUrl}/${fileId}-${target}${ext}`
+            rtn[target] = getFileURL(
+              envVar.gcs.bucket,
+              baseUrl,
+              `${fileId}-${target}${ext}`
+            )
           })
 
-          rtn['original'] = `${baseUrl}${fileId}${ext}`
+          // rtn['original'] = `${baseUrl}/${fileId}${ext}`
+          rtn['original'] = getFileURL(
+            envVar.gcs.bucket,
+            baseUrl,
+            `${fileId}${ext}`
+          )
           return Object.assign(empty, rtn)
         },
       }),
