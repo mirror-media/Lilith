@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { config } from '@keystone-6/core'
+import { config, graphql } from '@keystone-6/core'
 import { listDefinition as lists } from './lists'
 import envVar from './environment-variables'
 import express from 'express'
@@ -16,9 +16,13 @@ import { utils } from '@mirrormedia/lilith-core'
 // 获取 createLoginLoggingPlugin 函数（兼容新旧版本）
 const createLoginLoggingPlugin =
   (utils as any).createLoginLoggingPlugin ||
-  require('@mirrormedia/lilith-core/lib/utils/login-logging')?.createLoginLoggingPlugin ||
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require('@mirrormedia/lilith-core/lib/utils/login-logging')
+    ?.createLoginLoggingPlugin ||
   (() => {
-    console.warn('createLoginLoggingPlugin not available, login logging disabled')
+    console.warn(
+      'createLoginLoggingPlugin not available, login logging disabled'
+    )
     return {}
   })
 
@@ -82,6 +86,77 @@ export default withAuth(
     graphql: graphqlConfig as any,
     lists,
     session,
+    // Extended GraphQL schema for related posts selection (bypass access filter)
+    extendGraphqlSchema: graphql.extend(() => {
+      // Define a minimal type for relationship selection (only expose necessary fields)
+      const PostForRelation = graphql.object<{
+        id: string
+        title: string
+        slug: string
+      }>()({
+        name: 'PostForRelation',
+        fields: {
+          id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
+          title: graphql.field({ type: graphql.String }),
+          slug: graphql.field({ type: graphql.String }),
+        },
+      })
+
+      return {
+        query: {
+          // Query to get posts for relation field (bypasses access filter)
+          // Security: Only returns minimal fields (id, title, slug) for dropdown display
+          allPostsForRelation: graphql.field({
+            type: graphql.list(graphql.nonNull(PostForRelation)),
+            args: {
+              where: graphql.arg({ type: graphql.JSON }),
+              take: graphql.arg({ type: graphql.Int }),
+              skip: graphql.arg({ type: graphql.Int }),
+              orderBy: graphql.arg({ type: graphql.JSON }),
+            },
+            resolve: async (_root, args, context) => {
+              // Security: Require authentication
+              if (!context.session?.data) {
+                throw new Error('Authentication required')
+              }
+
+              const sudoContext = context.sudo()
+              const posts = await sudoContext.db.Post.findMany({
+                where: args.where ?? undefined,
+                take: args.take ?? undefined,
+                skip: args.skip ?? undefined,
+                orderBy: args.orderBy ?? undefined,
+              })
+
+              // Only return minimal fields through the GraphQL type
+              return posts.map((post) => ({
+                id: String(post.id),
+                title: post.title,
+                slug: post.slug,
+              }))
+            },
+          }),
+          // Count query for pagination
+          allPostsForRelationCount: graphql.field({
+            type: graphql.Int,
+            args: {
+              where: graphql.arg({ type: graphql.JSON }),
+            },
+            resolve: async (_root, args, context) => {
+              // Security: Require authentication
+              if (!context.session?.data) {
+                throw new Error('Authentication required')
+              }
+
+              const sudoContext = context.sudo()
+              return sudoContext.db.Post.count({
+                where: args.where ?? undefined,
+              })
+            },
+          }),
+        },
+      }
+    }),
     storage: {
       files: {
         kind: 'local',

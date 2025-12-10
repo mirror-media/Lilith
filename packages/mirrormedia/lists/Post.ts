@@ -39,7 +39,13 @@ type Session = {
 }
 
 function filterPosts(roles: string[]) {
-  return ({ session }: { session?: Session }) => {
+  return ({
+    session,
+    context,
+  }: {
+    session?: Session
+    context: KeystoneContext
+  }) => {
     switch (envVar.accessControlStrategy) {
       case 'gql': {
         // Expose `published` and `invisible` posts
@@ -66,6 +72,27 @@ function filterPosts(roles: string[]) {
         }
 
         if (session.data.role === UserRole.Editor) {
+          const reqBody = (
+            context.req as { body?: { query?: string; variables?: unknown } }
+          )?.body
+          const query = reqBody?.query
+          const variables = reqBody?.variables as
+            | Record<string, unknown>
+            | undefined
+
+          if (
+            query &&
+            typeof query === 'string' &&
+            query.trim().startsWith('mutation')
+          ) {
+            return true
+          }
+
+          const hasTake = variables?.take !== undefined
+          if (!hasTake) {
+            return true
+          }
+
           return {
             createdBy: { id: { equals: session.data.id } },
           }
@@ -501,7 +528,7 @@ const listConfigurations = list({
       ref: 'Post',
       many: false,
       ui: {
-        views: './lists/views/sorted-relationship/index',
+        views: './lists/views/related-posts-all/index',
       },
     }),
     relatedsTwo: relationship({
@@ -509,7 +536,7 @@ const listConfigurations = list({
       ref: 'Post',
       many: false,
       ui: {
-        views: './lists/views/sorted-relationship/index',
+        views: './lists/views/related-posts-all/index',
       },
     }),
     relateds: relationship({
@@ -517,7 +544,7 @@ const listConfigurations = list({
       ref: 'Post',
       many: true,
       ui: {
-        views: './lists/views/sorted-relationship/index',
+        views: './lists/views/related-posts-all/index',
       },
     }),
     from_External_relateds: relationship({
