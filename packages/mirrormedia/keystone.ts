@@ -102,6 +102,22 @@ export default withAuth(
         },
       })
 
+      // Allowed roles for accessing Post (same as Post.access.operation.query)
+      const allowedRoles = ['admin', 'moderator', 'editor']
+
+      // Helper function to validate authentication and role
+      const validateAccess = (context: {
+        session?: { data?: { role?: string } }
+      }) => {
+        if (!context.session?.data) {
+          throw new Error('Authentication required')
+        }
+        const userRole = context.session.data.role
+        if (!userRole || !allowedRoles.includes(userRole)) {
+          throw new Error('Access denied: insufficient permissions')
+        }
+      }
+
       return {
         query: {
           // Query to get posts for relation field (bypasses access filter)
@@ -115,10 +131,7 @@ export default withAuth(
               orderBy: graphql.arg({ type: graphql.JSON }),
             },
             resolve: async (_root, args, context) => {
-              // Security: Require authentication
-              if (!context.session?.data) {
-                throw new Error('Authentication required')
-              }
+              validateAccess(context)
 
               const sudoContext = context.sudo()
               const posts = await sudoContext.db.Post.findMany({
@@ -143,10 +156,7 @@ export default withAuth(
               where: graphql.arg({ type: graphql.JSON }),
             },
             resolve: async (_root, args, context) => {
-              // Security: Require authentication
-              if (!context.session?.data) {
-                throw new Error('Authentication required')
-              }
+              validateAccess(context)
 
               const sudoContext = context.sudo()
               return sudoContext.db.Post.count({
