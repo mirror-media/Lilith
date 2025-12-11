@@ -8,6 +8,7 @@ import {
   timestamp,
   virtual,
   integer,
+  checkbox,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 import { getYouTubeDuration } from '../utils/video-duration'
@@ -34,6 +35,9 @@ type VideoItem = {
   fileDuration_internal?: string | null
   youtubeDuration_internal?: string | null
   duration?: number
+  state?: VideoState | string
+  meta?: string | null
+  url?: string | null
 }
 
 const listConfigurations = list({
@@ -48,6 +52,42 @@ const listConfigurations = list({
     file: file({
       label: '檔案',
       storage: 'videos',
+    }),
+    coverPhoto: relationship({
+      label: '封面照片',
+      ref: 'Image',
+    }),
+    description: text({
+      label: '敘述',
+      ui: {
+        displayMode: 'textarea',
+      },
+    }),
+    relatedPosts: relationship({
+      label: '相關文章',
+      ref: 'Post',
+      many: true,
+    }),
+    isFeed: checkbox({
+      label: '供稿',
+      defaultValue: true,
+    }),
+    thumbnail: text({
+      label: '縮圖網址',
+    }),
+    meta: text({
+      label: '中繼資料',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
+    }),
+    url: text({
+      label: '檔案網址',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
     }),
     duration: integer({
       label: '影片長度（秒）',
@@ -90,6 +130,10 @@ const listConfigurations = list({
       ],
       defaultValue: VideoState.Draft,
       isIndexed: true,
+      access: {
+        create: allowRoles(admin, moderator, editor),
+        update: allowRoles(admin, moderator, editor),
+      },
     }),
     publishTime: timestamp({
       label: '發佈時間',
@@ -167,7 +211,26 @@ const listConfigurations = list({
   },
 
   hooks: {
-    validateInput: async ({ resolvedData, addValidationError }) => {
+    validateInput: async ({
+      resolvedData,
+      addValidationError,
+      item,
+      context,
+      operation,
+    }) => {
+      // Contributor 不能更新已發布的內容
+      if (operation === 'update' && item) {
+        const videoItem = item as unknown as VideoItem
+        if (videoItem.state === 'published') {
+          const user = context.session?.data as { role?: string } | undefined
+          if (user?.role === 'contributor') {
+            addValidationError("You don't have the permission")
+            return
+          }
+        }
+      }
+
+      // 驗證不能同時有 YouTube URL 和檔案
       const hasYoutube =
         typeof resolvedData.youtubeUrl === 'string' &&
         resolvedData.youtubeUrl.length > 0
@@ -191,7 +254,7 @@ const listConfigurations = list({
         return inputData
       }
 
-      //  YouTube URL logic
+      // YouTube URL logic
       if (typeof inputData.youtubeUrl === 'string') {
         const url = inputData.youtubeUrl.trim()
 
@@ -202,6 +265,10 @@ const listConfigurations = list({
           const existingItem = item as unknown as VideoItem | undefined
           if (existingItem?.youtubeUrl) {
             inputData.duration = 0
+            // 清空 meta 當 YouTube URL 被移除
+            if (existingItem) {
+              inputData.meta = ''
+            }
           }
           return inputData
         }
@@ -220,10 +287,20 @@ const listConfigurations = list({
               inputData.duration = duration
               inputData.youtubeDuration_internal =
                 secondsToISO8601Duration(duration)
+              inputData.url = url // 設定 url 欄位
             } else {
               inputData.duration = 0
               inputData.youtubeDuration_internal = 'PT0S'
             }
+
+            // 清空 meta 當 YouTube URL 改變
+            if (existingItem) {
+              inputData.meta = ''
+            }
+
+            console.log(
+              `[Video Hook] YouTube URL processed: ${url}, Duration: ${duration}s`
+            )
           } catch (error) {
             console.error(
               '[Video Hook] Error fetching YouTube duration:',
@@ -234,6 +311,7 @@ const listConfigurations = list({
           }
         }
 
+        // 當設定 YouTube URL 時，清除檔案
         if (inputData.file === undefined) {
           if (existingItem?.file_filename) {
             inputData.file = null
@@ -244,7 +322,7 @@ const listConfigurations = list({
 
         inputData.fileDuration_internal = 'PT0S'
       }
-      console.log(inputData)
+
       return inputData
     },
 
@@ -271,10 +349,27 @@ const listConfigurations = list({
             videoId: newItem.id,
             filename: newFilename,
           })
+
+          // 更新 url 欄位為檔案的 GCS URL
+          const fileUrl = getFileURL(
+            envVar.gcs.bucket,
+            envVar.videos.baseUrl,
+            newFilename
+          )
+
+          await context.db.Video.updateOne({
+            where: { id: String(newItem.id) },
+            data: {
+              url: fileUrl,
+              youtubeDuration_internal: 'PT0S',
+            },
+          })
         } catch (error) {
           console.error('[Video Hook] Failed to add job to queue:', error)
         }
       }
+
+      // 檔案被移除
       const isFileRemoved = oldFilename && !newFilename
       if (isFileRemoved) {
         console.log(`[Video Hook] File removed. Resetting duration to 0.`)
@@ -284,6 +379,8 @@ const listConfigurations = list({
           data: {
             duration: 0,
             fileDuration_internal: 'PT0S',
+            url: '',
+            meta: '',
           },
         })
       }
