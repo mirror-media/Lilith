@@ -76,21 +76,20 @@ function filterPosts(roles: string[]) {
             context.req as { body?: { query?: string; variables?: unknown } }
           )?.body
           const query = reqBody?.query
-          const variables = reqBody?.variables as
-            | Record<string, unknown>
-            | undefined
 
-          if (
-            query &&
-            typeof query === 'string' &&
-            query.trim().startsWith('mutation')
-          ) {
-            return true
-          }
+          if (query && typeof query === 'string') {
+            // Mutations: allow all posts (for connecting relationships)
+            if (query.trim().startsWith('mutation')) {
+              return true
+            }
 
-          const hasTake = variables?.take !== undefined
-          if (!hasTake) {
-            return true
+            // Single-item query (edit page): allow all posts (for relationship loading)
+            // Check if query uses 'post(' (singular) instead of 'posts(' (plural)
+            const isSingleItemQuery =
+              /\bpost\s*\(/.test(query) && !/\bposts\s*\(/.test(query)
+            if (isSingleItemQuery) {
+              return true
+            }
           }
 
           return {
