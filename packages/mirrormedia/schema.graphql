@@ -2622,6 +2622,14 @@ type Query {
   groupsCount(where: GroupWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
+  allPostsForRelation(where: JSON, take: Int, skip: Int, orderBy: JSON): [PostForRelation!]
+  allPostsForRelationCount(where: JSON): Int
+}
+
+type PostForRelation {
+  id: ID!
+  title: String
+  slug: String
 }
 
 union AuthenticatedItem = User
