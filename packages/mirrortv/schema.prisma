@@ -216,6 +216,7 @@ model Image {
   from_Sponsor_logo        Sponsor[]  @relation("Sponsor_logo")
   from_Sponsor_mobile      Sponsor[]  @relation("Sponsor_mobile")
   from_Sponsor_tablet      Sponsor[]  @relation("Sponsor_tablet")
+  from_Video_coverPhoto    Video[]    @relation("Video_coverPhoto")
 
   @@index([topicId])
   @@index([createdById])
@@ -394,6 +395,7 @@ model Post {
   from_Topic_slideshow               Topic[]             @relation("Topic_slideshow")
   from_Topic_post                    Topic[]             @relation("Topic_post")
   from_VideoEditorChoice_videoEditor VideoEditorChoice[] @relation("VideoEditorChoice_videoEditor")
+  from_Video_relatedPosts            Video[]             @relation("Video_relatedPosts")
 
   @@index([lockById])
   @@index([state])
@@ -726,6 +728,14 @@ model Video {
   youtubeUrl               String     @default("")
   file_filesize            Int?
   file_filename            String?
+  coverPhoto               Image?     @relation("Video_coverPhoto", fields: [coverPhotoId], references: [id])
+  coverPhotoId             Int?       @map("coverPhoto")
+  description              String     @default("")
+  relatedPosts             Post[]     @relation("Video_relatedPosts")
+  isFeed                   Boolean    @default(true)
+  thumbnail                String     @default("")
+  meta                     String     @default("")
+  url                      String     @default("")
   duration                 Int?       @default(0)
   fileDuration_internal    String     @default("")
   youtubeDuration_internal String     @default("")
@@ -745,6 +755,7 @@ model Video {
   from_Topic_heroVideo     Topic[]    @relation("Topic_heroVideo")
   from_Topic_multivideo    Topic[]    @relation("Topic_multivideo")
 
+  @@index([coverPhotoId])
   @@index([state])
   @@index([createdById])
   @@index([updatedById])
