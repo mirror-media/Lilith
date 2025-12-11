@@ -136,6 +136,16 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
       },
     }),
+    tags_algo: relationship({
+      label: '演算法標籤',
+      isFilterable: false,
+      ref: 'Tag.externals_algo',
+      many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+        createView: { fieldMode: 'hidden' },
+      },
+    }),
     relateds: relationship({
       label: '相關內部文章',
       ref: 'Post.from_External_relateds',
@@ -145,7 +155,7 @@ const listConfigurations = list({
       },
     }),
     groups: relationship({
-      label: "群組",
+      label: '群組',
       ref: 'Group.externals',
       many: true,
       ui: {

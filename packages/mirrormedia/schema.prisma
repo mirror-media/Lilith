@@ -208,6 +208,7 @@ model External {
   content             String     @default("")
   source              String     @default("")
   tags                Tag[]      @relation("External_tags")
+  tags_algo           Tag[]      @relation("External_tags_algo")
   relateds            Post[]     @relation("External_relateds")
   groups              Group[]    @relation("External_groups")
   createdAt           DateTime?
@@ -455,6 +456,7 @@ model Tag {
   posts               Post[]      @relation("Post_tags")
   posts_algo          Post[]      @relation("Post_tags_algo")
   externals           External[]  @relation("External_tags")
+  externals_algo      External[]  @relation("External_tags_algo")
   topics              Topic[]     @relation("Tag_topics")
   createdAt           DateTime?
   updatedAt           DateTime?
