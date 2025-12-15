@@ -203,28 +203,67 @@ const listConfigurations = list({
       }
     },
     afterOperation: async ({ operation, item }) => {
+      type ExternalHookItem = {
+        id: string
+        state: ExternalStatus
+      }
+      const external = item as ExternalHookItem
+      console.log('[EXTERNAL-HOOK-DEBUG] ===== START (Simple Log) =====')
+      console.log('[EXTERNAL-HOOK-DEBUG] operation:', operation)
+      console.log('[EXTERNAL-HOOK-DEBUG] item exists:', !!item)
+      console.log(
+        '[EXTERNAL-HOOK-DEBUG] envVar.autotagging:',
+        envVar.autotagging
+      )
+
+      if (item) {
+        console.log('[EXTERNAL-HOOK-DEBUG] item.id:', external.id)
+        console.log('[EXTERNAL-HOOK-DEBUG] item.state:', external.state)
+      } else {
+        console.log(
+          '[EXTERNAL-HOOK-DEBUG] Reason: item is undefined (likely batch/plural mutation).'
+        )
+      }
+      console.log('[EXTERNAL-HOOK-DEBUG] ===== END (Simple Log) =====')
       if (
         operation === 'create' &&
-        item?.state === ExternalStatus.Published &&
+        external?.state === ExternalStatus.Published &&
         envVar.autotagging
       ) {
+        console.log('[EXTERNAL-HOOK] Triggering AI for item:', external.id)
         try {
+          await new Promise((r) => setTimeout(r, 100))
+
           const response = await fetch(
             envVar.dataServiceApi +
               '/external_tagging_with_relation?id=' +
-              item.id,
+              external.id,
             {
               method: 'GET',
             }
           )
           if (!response.ok) {
             console.error(
-              `[AUTO-TAG-RELATION-EXTERNAL] Failed: ${response.status} ${response.statusText}`
+              `[AUTO-TAG-RELATION-EXTERNAL] Failed: ${response.status} ${response.statusText} for ID: ${external.id}`
+            )
+          } else {
+            console.log(
+              `[AUTO-TAG-RELATION-EXTERNAL] Success for ${external.id}`
             )
           }
         } catch (error) {
-          console.error(`[AUTO-TAG-RELATION-EXTERNAL] Error:`, error)
+          console.error(
+            `[AUTO-TAG-RELATION-EXTERNAL] Error for ID: ${external.id}`,
+            error
+          )
         }
+      } else {
+        console.log('[EXTERNAL-HOOK] Not triggering AI:', {
+          isCreate: operation === 'create',
+          isPublished: external?.state === ExternalStatus.Published,
+          autotaggingEnabled: envVar.autotagging,
+          id: external?.id,
+        })
       }
     },
   },
