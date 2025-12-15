@@ -202,12 +202,10 @@ const listConfigurations = list({
         }
       }
     },
-    afterOperation: async ({ operation, item, resolvedData }) => {
+    afterOperation: async ({ operation, item }) => {
       if (
         operation === 'create' &&
-        resolvedData &&
-        resolvedData.state &&
-        resolvedData.state === ExternalStatus.Published &&
+        item?.state === ExternalStatus.Published &&
         envVar.autotagging
       ) {
         try {
