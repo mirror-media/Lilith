@@ -202,6 +202,33 @@ const listConfigurations = list({
         }
       }
     },
+    afterOperation: async ({ operation, item, resolvedData }) => {
+      if (
+        operation === 'create' &&
+        resolvedData &&
+        resolvedData.state &&
+        resolvedData.state === ExternalStatus.Published &&
+        envVar.autotagging
+      ) {
+        try {
+          const response = await fetch(
+            envVar.dataServiceApi +
+              '/external_tagging_with_relation?id=' +
+              item.id,
+            {
+              method: 'GET',
+            }
+          )
+          if (!response.ok) {
+            console.error(
+              `[AUTO-TAG-RELATION-EXTERNAL] Failed: ${response.status} ${response.statusText}`
+            )
+          }
+        } catch (error) {
+          console.error(`[AUTO-TAG-RELATION-EXTERNAL] Error:`, error)
+        }
+      }
+    },
   },
 })
 export default utils.addTrackingFields(listConfigurations)
