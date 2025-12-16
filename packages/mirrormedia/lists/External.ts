@@ -1,9 +1,12 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { select, text, timestamp, relationship } from '@keystone-6/core/fields'
+import { PubSub } from '@google-cloud/pubsub'
 import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator } = utils.accessControl
+const pubsub = new PubSub()
+const topic = pubsub.topic('external-tagging')
 
 enum UserRole {
   Admin = 'admin',
@@ -208,64 +211,13 @@ const listConfigurations = list({
         item?.state === ExternalStatus.Published &&
         envVar.autotagging
       ) {
-        const maxRetries = 3
-        let attempt = 0
-
-        while (attempt < maxRetries) {
-          try {
-            if (attempt === 0) {
-              // 避免瞬間併發，加入隨機延遲機制
-              const idNum = parseInt(String(item.id), 10) || 0
-              const baseDelay = (idNum % 20) * 50
-              const jitter = Math.random() * 200
-              const totalDelay = baseDelay + jitter
-
-              await new Promise((resolve) => setTimeout(resolve, totalDelay))
-            }
-            const response = await fetch(
-              envVar.dataServiceApi +
-                '/external_tagging_with_relation?id=' +
-                item.id,
-              { method: 'GET' }
-            )
-
-            if (response.ok) {
-              console.log(
-                `[AUTO-TAG-RELATION-EXTERNAL] Success for External ${item.id}`
-              )
-              break
-            }
-            // 出現 429 或 5xx錯誤時重試
-            if (
-              response.status === 429 ||
-              (response.status >= 500 && response.status < 600)
-            ) {
-              // 進入 catch 區塊處理重試
-              throw new Error(
-                `Server returned a retriable status: ${response.status}`
-              )
-            }
-
-            console.error(
-              `[AUTO-TAG-RELATION-EXTERNAL] Failed for ${item.id}: ${response.status}`
-            )
-            break
-          } catch (error) {
-            attempt++
-            const errorMessage =
-              error instanceof Error ? error.message : 'Unknown error'
-            if (attempt < maxRetries) {
-              const retryDelay = 2000 * attempt
-              console.log(
-                `[AUTO-TAG-RELATION-EXTERNAL] Error, retrying in ${retryDelay}ms (${attempt}/${maxRetries}): ${errorMessage}`
-              )
-              await new Promise((resolve) => setTimeout(resolve, retryDelay))
-            } else {
-              console.error(
-                `[AUTO-TAG-RELATION-EXTERNAL] Failed after ${maxRetries} attempts for ${item.id}: ${errorMessage}`
-              )
-            }
-          }
+        try {
+          await topic.publishMessage({
+            json: { externalId: item.id },
+          })
+          console.log(`[EXTERNAL-HOOK] Published to Pub/Sub: ${item.id}`)
+        } catch (error) {
+          console.error(`[EXTERNAL-HOOK] Pub/Sub publish error:`, error)
         }
       }
     },

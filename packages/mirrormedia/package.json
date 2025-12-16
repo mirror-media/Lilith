@@ -21,6 +21,7 @@
     "@apollo/utils.keyvadapter": "^3.0.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "11.11.0",
+    "@google-cloud/pubsub": "^5.2.0",
     "@keystone-6/auth": "7.0.0",
     "@keystone-6/core": "5.2.0",
     "@keyv/redis": "^2.7.0",
