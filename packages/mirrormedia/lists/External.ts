@@ -234,32 +234,37 @@ const listConfigurations = list({
                 `[AUTO-TAG-RELATION-EXTERNAL] Success for External ${item.id}`
               )
               break
-              // 出現限流錯誤時重試
-            } else if (response.status === 429) {
-              attempt++
-              if (attempt < maxRetries) {
-                const retryDelay = 2000 * attempt
-                console.log(
-                  `[AUTO-TAG-RELATION-EXTERNAL] Rate limited, retrying in ${retryDelay}ms (${attempt}/${maxRetries})`
-                )
-                await new Promise((resolve) => setTimeout(resolve, retryDelay))
-              } else {
-                console.error(
-                  `[AUTO-TAG-RELATION-EXTERNAL] Failed after ${maxRetries} attempts for ${item.id}`
-                )
-              }
-            } else {
-              console.error(
-                `[AUTO-TAG-RELATION-EXTERNAL] Failed for ${item.id}: ${response.status}`
-              )
-              break
             }
-          } catch (error) {
+            // 出現 429 或 5xx錯誤時重試
+            if (
+              response.status === 429 ||
+              (response.status >= 500 && response.status < 600)
+            ) {
+              // 進入 catch 區塊處理重試
+              throw new Error(
+                `Server returned a retriable status: ${response.status}`
+              )
+            }
+
             console.error(
-              `[AUTO-TAG-RELATION-EXTERNAL] Error for ${item.id}:`,
-              error
+              `[AUTO-TAG-RELATION-EXTERNAL] Failed for ${item.id}: ${response.status}`
             )
             break
+          } catch (error) {
+            attempt++
+            const errorMessage =
+              error instanceof Error ? error.message : 'Unknown error'
+            if (attempt < maxRetries) {
+              const retryDelay = 2000 * attempt
+              console.log(
+                `[AUTO-TAG-RELATION-EXTERNAL] Error, retrying in ${retryDelay}ms (${attempt}/${maxRetries}): ${errorMessage}`
+              )
+              await new Promise((resolve) => setTimeout(resolve, retryDelay))
+            } else {
+              console.error(
+                `[AUTO-TAG-RELATION-EXTERNAL] Failed after ${maxRetries} attempts for ${item.id}: ${errorMessage}`
+              )
+            }
           }
         }
       }
