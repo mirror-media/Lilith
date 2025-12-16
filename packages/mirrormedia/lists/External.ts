@@ -208,27 +208,63 @@ const listConfigurations = list({
         item?.state === ExternalStatus.Published &&
         envVar.autotagging
       ) {
-        try {
-          const response = await fetch(
-            envVar.dataServiceApi +
-              '/external_tagging_with_relation?id=' +
-              item.id,
-            { method: 'GET' }
-          )
-          if (!response.ok) {
+        const maxRetries = 3
+        let attempt = 0
+
+        while (attempt < maxRetries) {
+          try {
+            if (attempt === 0) {
+              // 避免瞬間併發，加入隨機延遲機制
+              const idNum = parseInt(String(item.id), 10) || 0
+              const baseDelay = (idNum % 20) * 50
+              const jitter = Math.random() * 200
+              const totalDelay = baseDelay + jitter
+
+              await new Promise((resolve) => setTimeout(resolve, totalDelay))
+            }
+            const response = await fetch(
+              envVar.dataServiceApi +
+                '/external_tagging_with_relation?id=' +
+                item.id,
+              { method: 'GET' }
+            )
+
+            if (response.ok) {
+              console.log(
+                `[AUTO-TAG-RELATION-EXTERNAL] Success for External ${item.id}`
+              )
+              break
+              // 出現限流錯誤時重試
+            } else if (response.status === 429) {
+              attempt++
+              if (attempt < maxRetries) {
+                const retryDelay = 2000 * attempt
+                console.log(
+                  `[AUTO-TAG-RELATION-EXTERNAL] Rate limited, retrying in ${retryDelay}ms (${attempt}/${maxRetries})`
+                )
+                await new Promise((resolve) => setTimeout(resolve, retryDelay))
+              } else {
+                console.error(
+                  `[AUTO-TAG-RELATION-EXTERNAL] Failed after ${maxRetries} attempts for ${item.id}`
+                )
+              }
+            } else {
+              console.error(
+                `[AUTO-TAG-RELATION-EXTERNAL] Failed for ${item.id}: ${response.status}`
+              )
+              break
+            }
+          } catch (error) {
             console.error(
-              `[AUTO-TAG-RELATION-EXTERNAL] Failed: ${response.status} ${response.statusText}`
+              `[AUTO-TAG-RELATION-EXTERNAL] Error for ${item.id}:`,
+              error
             )
-          } else {
-            console.log(
-              `[AUTO-TAG-RELATION-EXTERNAL] Success for External ${item.id}`
-            )
+            break
           }
-        } catch (error) {
-          console.error(`[AUTO-TAG-RELATION-EXTERNAL] Error:`, error)
         }
       }
     },
   },
 })
+
 export default utils.addTrackingFields(listConfigurations)
