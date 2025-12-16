@@ -6,7 +6,7 @@ import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator } = utils.accessControl
 const pubsub = new PubSub()
-const topic = pubsub.topic('external-tagging')
+const topic = pubsub.topic(envVar.topicName)
 
 enum UserRole {
   Admin = 'admin',
@@ -217,7 +217,10 @@ const listConfigurations = list({
           })
           console.log(`[EXTERNAL-HOOK] Published to Pub/Sub: ${item.id}`)
         } catch (error) {
-          console.error(`[EXTERNAL-HOOK] Pub/Sub publish error:`, error)
+          console.error(
+            `[EXTERNAL-HOOK] Pub/Sub publish error: ${item.id}`,
+            error
+          )
         }
       }
     },
