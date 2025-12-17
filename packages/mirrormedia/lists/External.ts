@@ -1,9 +1,12 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { select, text, timestamp, relationship } from '@keystone-6/core/fields'
+import { PubSub } from '@google-cloud/pubsub'
 import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator } = utils.accessControl
+const pubsub = new PubSub()
+const topic = pubsub.topic(envVar.topicName)
 
 enum UserRole {
   Admin = 'admin',
@@ -202,6 +205,26 @@ const listConfigurations = list({
         }
       }
     },
+    afterOperation: async ({ operation, item }) => {
+      if (
+        operation === 'create' &&
+        item?.state === ExternalStatus.Published &&
+        envVar.autotagging
+      ) {
+        try {
+          await topic.publishMessage({
+            json: { externalId: item.id },
+          })
+          console.log(`[EXTERNAL-HOOK] Published to Pub/Sub: ${item.id}`)
+        } catch (error) {
+          console.error(
+            `[EXTERNAL-HOOK] Pub/Sub publish error: ${item.id}`,
+            error
+          )
+        }
+      }
+    },
   },
 })
+
 export default utils.addTrackingFields(listConfigurations)

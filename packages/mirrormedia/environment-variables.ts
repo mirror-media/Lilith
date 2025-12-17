@@ -21,6 +21,7 @@ const {
   DATA_SERVICE_API,
   INVALID_CDN_CACHE_SERVER_URL,
   AUTO_TAGGING,
+  TOPIC_NAME,
 } = process.env
 
 enum DatabaseProvider {
@@ -79,4 +80,5 @@ export default {
   dataServiceApi: DATA_SERVICE_API,
   autotagging: AUTO_TAGGING === 'true',
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
+  topicName: TOPIC_NAME || 'external-tagging-dev',
 }
