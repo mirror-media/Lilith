@@ -1,12 +1,10 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { select, text, timestamp, relationship } from '@keystone-6/core/fields'
-import { PubSub } from '@google-cloud/pubsub'
+import { CloudTasksClient, protos } from '@google-cloud/tasks'
 import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator } = utils.accessControl
-const pubsub = new PubSub()
-const topic = pubsub.topic(envVar.topicName)
 
 enum UserRole {
   Admin = 'admin',
@@ -27,6 +25,46 @@ type Session = {
   data: {
     id: string
     role: UserRole
+  }
+}
+
+const tasksClient = new CloudTasksClient()
+
+async function createTaggingTask(externalId: string) {
+  try {
+    const queueName = envVar.queueName
+    const dataServiceUrl = envVar.dataServiceApi
+    const parent = tasksClient.queuePath(
+      envVar.projectID,
+      envVar.location,
+      queueName
+    )
+
+    const task = {
+      httpRequest: {
+        httpMethod: protos.google.cloud.tasks.v2.HttpMethod.POST,
+        url: `${dataServiceUrl}/external_tagging_with_relation`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: Buffer.from(
+          JSON.stringify({
+            externalId: externalId,
+          })
+        ),
+      },
+    }
+    const [response] = await tasksClient.createTask({ parent, task })
+    console.log(
+      `[EXTERNAL-HOOK] Created task for External ${externalId}: ${response.name}`
+    )
+    return true
+  } catch (error) {
+    console.error(
+      `[EXTERNAL-HOOK] Failed to create task for External ${externalId}:`,
+      error
+    )
+    return false
   }
 }
 
@@ -211,17 +249,7 @@ const listConfigurations = list({
         item?.state === ExternalStatus.Published &&
         envVar.autotagging
       ) {
-        try {
-          await topic.publishMessage({
-            json: { externalId: item.id },
-          })
-          console.log(`[EXTERNAL-HOOK] Published to Pub/Sub: ${item.id}`)
-        } catch (error) {
-          console.error(
-            `[EXTERNAL-HOOK] Pub/Sub publish error: ${item.id}`,
-            error
-          )
-        }
+        await createTaggingTask(String(item.id))
       }
     },
   },
