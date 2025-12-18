@@ -1,7 +1,7 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { select, text, timestamp, relationship } from '@keystone-6/core/fields'
-import { CloudTasksClient } from '@google-cloud/tasks'
+import { CloudTasksClient, protos } from '@google-cloud/tasks'
 import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator } = utils.accessControl
@@ -42,7 +42,7 @@ async function createTaggingTask(externalId: string) {
 
     const task = {
       httpRequest: {
-        httpMethod: 'POST' as const,
+        httpMethod: protos.google.cloud.tasks.v2.HttpMethod.POST,
         url: `${dataServiceUrl}/external_tagging_with_relation`,
         headers: {
           'Content-Type': 'application/json',
