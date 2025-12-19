@@ -1218,6 +1218,7 @@ type Post {
   css: String
   apiDataBrief: JSON
   apiData: JSON
+  pv: Int
   publishedDateString: String
   trimmedApiData: JSON
   createdAt: DateTime
@@ -1273,6 +1274,7 @@ input PostWhereInput {
   redirect: StringFilter
   adTrace: StringFilter
   css: StringFilter
+  pv: IntNullableFilter
   publishedDateString: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1313,6 +1315,7 @@ input PostOrderByInput {
   redirect: OrderDirection
   adTrace: OrderDirection
   css: OrderDirection
+  pv: OrderDirection
   publishedDateString: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1373,6 +1376,7 @@ input PostUpdateInput {
   css: String
   apiDataBrief: JSON
   apiData: JSON
+  pv: Int
   publishedDateString: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1473,6 +1477,7 @@ input PostCreateInput {
   css: String
   apiDataBrief: JSON
   apiData: JSON
+  pv: Int
   publishedDateString: String
   createdAt: DateTime
   updatedAt: DateTime

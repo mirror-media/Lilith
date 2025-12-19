@@ -325,6 +325,7 @@ model Post {
   css                        String         @default("")
   apiDataBrief               Json?
   apiData                    Json?
+  pv                         Int?           @default(0)
   publishedDateString        String         @default("")
   createdAt                  DateTime?
   updatedAt                  DateTime?
@@ -353,6 +354,7 @@ model Post {
   @@index([state])
   @@index([publishedDate])
   @@index([WarningId])
+  @@index([pv])
   @@index([createdById])
   @@index([updatedById])
 }

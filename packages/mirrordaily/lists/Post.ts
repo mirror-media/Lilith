@@ -9,6 +9,7 @@ import {
   select,
   json,
   virtual,
+  integer,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 // @ts-ignore draft-js does not have typescript definition
@@ -221,7 +222,10 @@ const lockByItemViewFunction: MaybeItemFunction<
   // @ts-ignore next line
   if (currentUserRole === UserRole.Admin) {
     return 'edit'
-  } else if (currentUserRole && [UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
+  } else if (
+    currentUserRole &&
+    [UserRole.Editor, UserRole.Moderator].includes(currentUserRole)
+  ) {
     const { lockBy } = await context.prisma.Post.findUnique({
       where: { id: Number(item?.id) },
       select: {
@@ -804,7 +808,20 @@ const listConfigurations = list({
       isFilterable: false,
       defaultValue: true,
     }),
-
+    pv: integer({
+      label: 'Page View',
+      defaultValue: 0,
+      isIndexed: true,
+      isFilterable: true,
+      isOrderable: true,
+      validation: {
+        min: 0,
+      },
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
+    }),
     preview: virtual({
       field: graphql.field({
         type: graphql.JSON,
@@ -922,9 +939,9 @@ const listConfigurations = list({
     publishedDateString: text({
       label: '搜尋日期',
       ui: {
-        createView: { fieldMode: 'hidden', },
-        itemView: { fieldMode: 'hidden', },
-        listView: { fieldMode: 'hidden', },
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     trimmedApiData: virtual({
@@ -953,7 +970,15 @@ const listConfigurations = list({
   ui: {
     labelField: 'id',
     listView: {
-      initialColumns: ['id', 'title', 'state', 'publishedDate', 'writers', 'designers', 'engineers'],
+      initialColumns: [
+        'id',
+        'title',
+        'state',
+        'publishedDate',
+        'writers',
+        'designers',
+        'engineers',
+      ],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
@@ -1183,7 +1208,7 @@ export default utils.addManualOrderRelationshipFields(
       targetListName: 'Category',
       targetListLabelField: 'name',
     },
-	/*
+    /*
     {
       fieldName: 'manualOrderOfRelatedVideos',
       targetFieldName: 'related_videos',
