@@ -1,6 +1,7 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { select, text, timestamp, relationship } from '@keystone-6/core/fields'
+import { CloudTasksClient, protos } from '@google-cloud/tasks'
 import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator } = utils.accessControl
@@ -24,6 +25,46 @@ type Session = {
   data: {
     id: string
     role: UserRole
+  }
+}
+
+const tasksClient = new CloudTasksClient()
+
+async function createTaggingTask(externalId: string) {
+  try {
+    const queueName = envVar.queueName
+    const dataServiceUrl = envVar.dataServiceApi
+    const parent = tasksClient.queuePath(
+      envVar.projectID,
+      envVar.location,
+      queueName
+    )
+
+    const task = {
+      httpRequest: {
+        httpMethod: protos.google.cloud.tasks.v2.HttpMethod.POST,
+        url: `${dataServiceUrl}/external_tagging_with_relation`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: Buffer.from(
+          JSON.stringify({
+            externalId: externalId,
+          })
+        ),
+      },
+    }
+    const [response] = await tasksClient.createTask({ parent, task })
+    console.log(
+      `[EXTERNAL-HOOK] Created task for External ${externalId}: ${response.name}`
+    )
+    return true
+  } catch (error) {
+    console.error(
+      `[EXTERNAL-HOOK] Failed to create task for External ${externalId}:`,
+      error
+    )
+    return false
   }
 }
 
@@ -136,6 +177,16 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
       },
     }),
+    tags_algo: relationship({
+      label: '演算法標籤',
+      isFilterable: false,
+      ref: 'Tag.externals_algo',
+      many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+        createView: { fieldMode: 'hidden' },
+      },
+    }),
     relateds: relationship({
       label: '相關內部文章',
       ref: 'Post.from_External_relateds',
@@ -145,7 +196,7 @@ const listConfigurations = list({
       },
     }),
     groups: relationship({
-      label: "群組",
+      label: '群組',
       ref: 'Group.externals',
       many: true,
       ui: {
@@ -192,6 +243,16 @@ const listConfigurations = list({
         }
       }
     },
+    afterOperation: async ({ operation, item }) => {
+      if (
+        operation === 'create' &&
+        item?.state === ExternalStatus.Published &&
+        envVar.autotagging
+      ) {
+        await createTaggingTask(String(item.id))
+      }
+    },
   },
 })
+
 export default utils.addTrackingFields(listConfigurations)

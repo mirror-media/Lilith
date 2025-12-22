@@ -21,6 +21,9 @@ const {
   DATA_SERVICE_API,
   INVALID_CDN_CACHE_SERVER_URL,
   AUTO_TAGGING,
+  QUEUE_NAME,
+  PROJECT_ID,
+  LOCATION,
 } = process.env
 
 enum DatabaseProvider {
@@ -79,4 +82,7 @@ export default {
   dataServiceApi: DATA_SERVICE_API,
   autotagging: AUTO_TAGGING === 'true',
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
+  queueName: QUEUE_NAME || 'external-tagging-dev',
+  projectID: PROJECT_ID || 'mirrormedia',
+  location: LOCATION || 'asia-east1',
 }

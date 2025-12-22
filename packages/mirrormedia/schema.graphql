@@ -910,6 +910,8 @@ type External {
   source: String
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  tags_algo(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tags_algoCount(where: TagWhereInput! = {}): Int
   relateds(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedsCount(where: PostWhereInput! = {}): Int
   groups(where: GroupWhereInput! = {}, orderBy: [GroupOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GroupWhereUniqueInput): [Group!]
@@ -997,6 +999,7 @@ input ExternalUpdateInput {
   content: String
   source: String
   tags: TagRelateToManyForUpdateInput
+  tags_algo: TagRelateToManyForUpdateInput
   relateds: PostRelateToManyForUpdateInput
   groups: GroupRelateToManyForUpdateInput
   createdAt: DateTime
@@ -1046,6 +1049,7 @@ input ExternalCreateInput {
   content: String
   source: String
   tags: TagRelateToManyForCreateInput
+  tags_algo: TagRelateToManyForCreateInput
   relateds: PostRelateToManyForCreateInput
   groups: GroupRelateToManyForCreateInput
   createdAt: DateTime
@@ -1940,6 +1944,8 @@ type Tag {
   posts_algoCount(where: PostWhereInput! = {}): Int
   externals(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
   externalsCount(where: ExternalWhereInput! = {}): Int
+  externals_algo(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
+  externals_algoCount(where: ExternalWhereInput! = {}): Int
   topics(where: TopicWhereInput! = {}, orderBy: [TopicOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TopicWhereUniqueInput): [Topic!]
   topicsCount(where: TopicWhereInput! = {}): Int
   createdAt: DateTime
@@ -1964,6 +1970,7 @@ input TagWhereInput {
   posts: PostManyRelationFilter
   posts_algo: PostManyRelationFilter
   externals: ExternalManyRelationFilter
+  externals_algo: ExternalManyRelationFilter
   topics: TopicManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1985,6 +1992,7 @@ input TagUpdateInput {
   posts: PostRelateToManyForUpdateInput
   posts_algo: PostRelateToManyForUpdateInput
   externals: ExternalRelateToManyForUpdateInput
+  externals_algo: ExternalRelateToManyForUpdateInput
   topics: TopicRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -2003,6 +2011,7 @@ input TagCreateInput {
   posts: PostRelateToManyForCreateInput
   posts_algo: PostRelateToManyForCreateInput
   externals: ExternalRelateToManyForCreateInput
+  externals_algo: ExternalRelateToManyForCreateInput
   topics: TopicRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
