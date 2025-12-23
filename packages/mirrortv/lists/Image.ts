@@ -211,6 +211,77 @@ const listConfigurations = list({
     }),
   },
 
+  hooks: {
+    resolveInput: async ({ resolvedData, item }) => {
+      // Get file metadata from new upload or existing record
+      const fileId = resolvedData.file?.id || item?.file_id
+      const extension = resolvedData.file?.extension || item?.file_extension
+      const width = resolvedData.file?.width || item?.file_width
+      const height = resolvedData.file?.height || item?.file_height
+
+      if (fileId && extension && width && height) {
+        const baseUrl = envVar.images.baseUrl
+        const bucket = envVar.gcs.bucket
+        const ext = `.${extension}`
+
+        const allPossibleTargets = [2400, 1600, 1200, 800, 480]
+
+        const actualAvailableTargets =
+          width >= height
+            ? [2400, 1600, 800, 480] // 橫圖規格
+            : [1600, 1200, 800, 480] // 直圖規格
+
+        const originalUrl = getFileURL(bucket, baseUrl, `${fileId}${ext}`)
+
+        // Fallback logic: find best available size (Target -> Smaller -> Original)
+        const getBestFitUrl = (targetW: number) => {
+          if (actualAvailableTargets.includes(targetW) && width >= targetW) {
+            return {
+              url: getFileURL(bucket, baseUrl, `${fileId}-w${targetW}${ext}`),
+              w: targetW,
+              h: Math.round(height * (targetW / width)),
+            }
+          }
+
+          const fallbacks = allPossibleTargets
+            .filter((t) => t < targetW)
+            .sort((a, b) => b - a)
+
+          for (const t of fallbacks) {
+            if (actualAvailableTargets.includes(t) && width >= t) {
+              return {
+                url: getFileURL(bucket, baseUrl, `${fileId}-w${t}${ext}`),
+                w: t,
+                h: Math.round(height * (t / width)),
+              }
+            }
+          }
+
+          return { url: originalUrl, w: width, h: height }
+        }
+
+        const apiData: Record<string, any> = {
+          url: originalUrl,
+          original: { url: originalUrl, width, height },
+        }
+
+        allPossibleTargets.forEach((size) => {
+          const result = getBestFitUrl(size)
+          const key = `w${size}`
+          apiData[key] = {
+            url: result.url,
+            width: result.w,
+            height: result.h,
+          }
+        })
+
+        resolvedData.imageApiData = apiData
+      }
+
+      return resolvedData
+    },
+  },
+
   access: {
     operation: {
       query: () => true,
