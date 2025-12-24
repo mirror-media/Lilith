@@ -75,7 +75,7 @@ const listConfigurations = list({
     resolveInput: ({ resolvedData }) => {
       const fileData = resolvedData.file as FileField
 
-      if (fileData) {
+      if (fileData && fileData.filename) {
         const filename = fileData.filename
 
         // 路徑處理
