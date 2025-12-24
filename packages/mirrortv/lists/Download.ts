@@ -24,7 +24,6 @@ type FileField = {
 }
 
 const gcsConfig = envVar.gcs as unknown as GcsConfig
-const subDir = 'documents'
 
 // Init Storage
 let bucket: Bucket | undefined
@@ -32,7 +31,7 @@ try {
   let keyPath = gcsConfig?.keyFilename
   if (keyPath) keyPath = path.resolve(process.cwd(), keyPath)
 
-  if (gcsConfig) {
+  if (gcsConfig?.bucket) {
     const storage = new Storage({
       projectId: gcsConfig.projectId,
       keyFilename: keyPath,
@@ -78,44 +77,17 @@ const listConfigurations = list({
       if (fileData && fileData.filename) {
         const filename = fileData.filename
 
-        // 路徑處理
-        const urlBase = envVar.files.baseUrl || '/files'
-        const storageRoot = envVar.files.storagePath || 'public/files'
-        const absRoot = path.isAbsolute(storageRoot)
-          ? storageRoot
-          : path.join(process.cwd(), storageRoot)
-        const srcPath = path.join(absRoot, filename) // 原始位置
-        const destDir = path.join(absRoot, subDir) // 目標資料夾
-        const destPath = path.join(destDir, filename) // 目標位置
-
-        try {
-          console.log(`[Download] Processing: ${filename}`)
-
-          // 檔案移至 documents
-          if (fs.existsSync(srcPath)) {
-            if (!fs.existsSync(destDir))
-              fs.mkdirSync(destDir, { recursive: true })
-            fs.renameSync(srcPath, destPath)
-            // eslint-disable-next-line no-console
-            console.log(`[Download] Moved to: ${destPath}`)
-          }
-
-          // 設定 URL
-          if (gcsConfig?.bucket) {
-            resolvedData.url = getFileURL(
-              gcsConfig.bucket,
-              envVar.files.baseUrl,
-              `${subDir}/${filename}`
-            )
-          } else {
-            resolvedData.url = `${urlBase}/${subDir}/${filename}`
-          }
-        } catch (e) {
-          console.error('[Download] Error:', e)
-          // Fallback URL
-          resolvedData.url = gcsConfig?.bucket
-            ? getFileURL(gcsConfig.bucket, urlBase, `${subDir}/${filename}`)
-            : `${urlBase}/${subDir}/${filename}`
+        if (gcsConfig?.bucket) {
+          resolvedData.url = getFileURL(
+            gcsConfig.bucket,
+            envVar.files.baseUrl,
+            filename
+          )
+        } else {
+          const baseUrl = envVar.files.baseUrl.endsWith('/')
+            ? envVar.files.baseUrl
+            : `${envVar.files.baseUrl}/`
+          resolvedData.url = `${baseUrl}${filename}`
         }
       }
       return resolvedData
@@ -135,29 +107,21 @@ const listConfigurations = list({
       try {
         // 刪除 GCS 檔案
         if (bucket) {
-          const gcsPath = `${subDir}/${filename}`
-          const file = bucket.file(gcsPath)
+          const file = bucket.file(filename)
 
           const [exists] = await file.exists()
           if (exists) {
             await file.delete()
-            // eslint-disable-next-line no-console
-            console.log(`[Download] Deleted GCS: ${gcsPath}`)
+            console.log(`[Download] Deleted GCS: ${filename}`)
           }
         }
-        // 刪除 local 檔案
+        // 刪除 Local 檔案
         else {
           const storageRoot = envVar.files.storagePath || 'public/files'
-          const localPath = path.resolve(
-            process.cwd(),
-            storageRoot,
-            subDir,
-            filename
-          )
+          const localPath = path.resolve(process.cwd(), storageRoot, filename)
 
           if (fs.existsSync(localPath)) {
             fs.unlinkSync(localPath)
-            // eslint-disable-next-line no-console
             console.log(`[Download] Deleted Local: ${localPath}`)
           }
         }
