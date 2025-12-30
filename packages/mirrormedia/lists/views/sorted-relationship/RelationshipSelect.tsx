@@ -15,6 +15,7 @@ import {
 // eslint-disable-next-line
 import { jsx } from '@keystone-ui/core';
 import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields'
+import styled from 'styled-components'
 import { validate as validateUUID } from 'uuid'
 import { IdFieldConfig, ListMeta } from '@keystone-6/core/types'
 import {
@@ -107,6 +108,12 @@ export function useFilter(
 const idFieldAlias = '____id____'
 
 const labelFieldAlias = '____label____'
+
+const SelectWrapper = styled.div`
+  width: 100%;
+  min-width: 0;
+  flex-shrink: 1;
+`
 
 const LoadingIndicatorContext = createContext<{
   count: number
@@ -373,52 +380,74 @@ export const RelationshipSelect = ({
 
   return (
     <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
-      <MultiSelect // this is necessary because react-select passes a second argument to onInputChange
-        // and useState setters log a warning if a second argument is passed
-        onInputChange={(val) => setSearch(val)}
-        isLoading={loading || isLoading}
-        autoFocus={autoFocus}
-        components={relationshipSelectComponents}
-        portalMenu={portalMenu}
-        value={state.value.map((value) => ({
-          value: value.id,
-          label: value.label,
-          data: value.data,
-        }))}
-        options={options}
-        onChange={(value) => {
-          state.onChange(
-            value.map((x) => ({
-              id: x.value,
-              label: x.label,
-              data: (x as any).data,
-            }))
-          )
-        }}
-        placeholder={placeholder}
-        controlShouldRenderValue={controlShouldRenderValue}
-        isClearable={controlShouldRenderValue}
-        isDisabled={isDisabled}
-        // The parameter `formatOptionLabel` is added specifically for this project
-        // and is not copied from the codebase of keystone-6/core.
-        // This parameter controls the appearance of element in drop-down list component, make it display image if needed.
-        // See [Pull Request](https://github.com/mirror-media/Lilith/pull/698) to get more details.
-        formatOptionLabel={(option) => {
-          return (
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <span>{option.label}</span>
-              {list.label === 'Photos' && (
-                <img
-                  src={option?.data?.imageFile?.url}
-                  width={50}
-                  height={50}
-                  style={{ objectFit: 'cover', marginLeft: 'auto' }}
-                ></img>
-              )}
-            </div>
-          )
-        }}
-      />
+      <SelectWrapper>
+        <MultiSelect // this is necessary because react-select passes a second argument to onInputChange
+          // and useState setters log a warning if a second argument is passed
+          onInputChange={(val) => setSearch(val)}
+          isLoading={loading || isLoading}
+          autoFocus={autoFocus}
+          components={relationshipSelectComponents}
+          portalMenu={portalMenu}
+          value={state.value.map((value) => ({
+            value: value.id,
+            label: value.label,
+            data: value.data,
+          }))}
+          options={options}
+          onChange={(value) => {
+            state.onChange(
+              value.map((x) => ({
+                id: x.value,
+                label: x.label,
+                data: (x as any).data,
+              }))
+            )
+          }}
+          placeholder={placeholder}
+          controlShouldRenderValue={controlShouldRenderValue}
+          isClearable={controlShouldRenderValue}
+          isDisabled={isDisabled}
+          styles={{
+            container: (base) => ({
+              ...base,
+              width: '100%',
+              minWidth: 0,
+            }),
+            control: (base) => ({
+              ...base,
+              width: '100%',
+              minWidth: 0,
+            }),
+            menu: (base) => ({
+              ...base,
+              minWidth: '100%',
+            }),
+            menuPortal: (base) => ({
+              ...base,
+              zIndex: 9999,
+            }),
+          }}
+          // The parameter `formatOptionLabel` is added specifically for this project
+          // and is not copied from the codebase of keystone-6/core.
+          // This parameter controls the appearance of element in drop-down list component, make it display image if needed.
+          // See [Pull Request](https://github.com/mirror-media/Lilith/pull/698) to get more details.
+          formatOptionLabel={(option) => {
+            return (
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span>{option.label}</span>
+                {list.label === 'Photos' && (
+                  <img
+                    src={option?.data?.imageFile?.url}
+                    width={50}
+                    height={50}
+                    style={{ objectFit: 'cover', marginLeft: 'auto' }}
+                  ></img>
+                )}
+              </div>
+            )
+          }}
+        />
+      </SelectWrapper>
     </LoadingIndicatorContext.Provider>
   )
 }

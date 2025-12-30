@@ -308,6 +308,7 @@ export function Cards({
               justifyContent: 'space-between',
               'div:first-of-type': {
                 flex: '2',
+                minWidth: 0,
               },
             }}
           >

@@ -92,7 +92,7 @@ const ImageMetaGridsWrapper = styled.div`
 `
 
 const ImageMetaGridWrapper = styled.div`
-  width: 33.3333%;
+  width: 100%;
   cursor: pointer;
   padding: 0 10px 10px;
 `
@@ -108,6 +108,10 @@ const Label = styled.label`
   display: block;
   margin: 10px 0;
   font-weight: 600;
+`
+
+const StyledTextInput = styled(TextInput)`
+  width: 100%;
 `
 
 const SeparationLine = styled.div`
@@ -254,7 +258,7 @@ function ImageMetaGrid(props: {
       {enableCaption && (
         <Fragment>
           <Label htmlFor="caption">Image Caption:</Label>
-          <TextInput
+          <StyledTextInput
             id="caption"
             type="text"
             placeholder={image?.name}
@@ -272,7 +276,7 @@ function ImageMetaGrid(props: {
       {enableUrl && (
         <Fragment>
           <Label htmlFor="url">Url:</Label>
-          <TextInput
+          <StyledTextInput
             id="url"
             type="text"
             placeholder="(Optional)"
