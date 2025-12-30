@@ -532,6 +532,7 @@ type Contact {
   content: String
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
+  slugCode: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -550,6 +551,7 @@ input ContactWhereInput {
   name: StringFilter
   content: StringFilter
   sections: SectionManyRelationFilter
+  slugCode: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -560,6 +562,7 @@ input ContactOrderByInput {
   id: OrderDirection
   name: OrderDirection
   content: OrderDirection
+  slugCode: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -568,6 +571,7 @@ input ContactUpdateInput {
   name: String
   content: String
   sections: SectionRelateToManyForUpdateInput
+  slugCode: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -583,6 +587,7 @@ input ContactCreateInput {
   name: String
   content: String
   sections: SectionRelateToManyForCreateInput
+  slugCode: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput

@@ -100,6 +100,7 @@ model Contact {
   name                    String    @default("")
   content                 String    @default("")
   sections                Section[] @relation("Contact_sections")
+  slugCode                String    @default("")
   createdAt               DateTime?
   updatedAt               DateTime?
   createdBy               User?     @relation("Contact_createdBy", fields: [createdById], references: [id])
