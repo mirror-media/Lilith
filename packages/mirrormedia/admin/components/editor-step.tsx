@@ -42,6 +42,13 @@ const ControlGroup = styled.div`
   margin-top: 38px;
   margin-left: 69px;
   margin-right: 69px;
+
+  @media (max-width: 575px) {
+    flex-wrap: wrap;
+    margin-left: 10px;
+    margin-right: 10px;
+    row-gap: 10px;
+  }
 `
 
 const WatermarkIcon = styled.input`

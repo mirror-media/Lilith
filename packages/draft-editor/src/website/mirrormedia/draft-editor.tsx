@@ -355,6 +355,10 @@ const DraftEditorControlsWrapper = styled.div`
   flex-wrap: wrap;
   padding-right: 45px;
   column-gap: 5px;
+
+  @media (max-width: 767px) {
+    padding-right: 10px;
+  }
 `
 
 const TextEditorWrapper = styled.div`
@@ -449,7 +453,7 @@ const DraftEditorContainer = styled.div<{ isEnlarged: boolean }>`
 `
 
 const ButtonGroup = styled.div<{ isDisabled?: boolean }>`
-  margin: 0 10px 0 0;
+  margin: 0;
   ${({ isDisabled }) =>
     isDisabled
       ? css`
