@@ -1410,22 +1410,22 @@
   dependencies:
     "@azure/msal-common" "^7.4.0"
 
-"@azure/msal-common@13.3.1":
-  version "13.3.1"
-  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-13.3.1.tgz#012465bf940d12375dc47387b754ccf9d6b92180"
-  integrity sha512-Lrk1ozoAtaP/cp53May3v6HtcFSVxdFrg2Pa/1xu5oIvsIwhxW6zSPibKefCOVgd5osgykMi5jjcZHv8XkzZEQ==
+"@azure/msal-common@^12.0.0":
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-12.1.0.tgz#e253a4912a359193c52c570a1e2585cfd0213bff"
+  integrity sha512-9RUiv0evSHvYtvF7r9ksShw9FgCeT6Rf6JB/SOMbMzI0VySZDUBSE+0b9e7DgL2Ph8wSARIh3m8c5pCK9TRY3w==
 
 "@azure/msal-common@^7.0.0", "@azure/msal-common@^7.4.0":
   version "7.4.0"
   resolved "https://registry.npmjs.org/@azure/msal-common/-/msal-common-7.4.0.tgz"
   integrity sha512-Iltw6BucADuLVjUalAdpCI0Oym7965f8p4KmTkb7FOCee/3jOMzbkpFr205kJG62GCJCIv5pB4yoOA35nAjU4A==
 
-"@azure/msal-node@^1.10.0", "@azure/msal-node@^1.18.4":
-  version "1.18.4"
-  resolved "https://registry.yarnpkg.com/@azure/msal-node/-/msal-node-1.18.4.tgz#c921b0447c92fb3b0cb1ebf5a9a76fcad2ec7c21"
-  integrity sha512-Kc/dRvhZ9Q4+1FSfsTFDME/v6+R2Y1fuMty/TfwqE5p9GTPw08BPbKgeWinE8JRHRp+LemjQbUZsn4Q4l6Lszg==
+"@azure/msal-node@1.17.0", "@azure/msal-node@^1.10.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-node/-/msal-node-1.17.0.tgz#fa7bba155719a7e26ac6e8d4941dd56e807e458a"
+  integrity sha512-aOKykKxDc+Kf5vcdOUPdKlJ96YAIyrHyl4W8RyfMqw0iApDckOuhejNwlZr6/M7U40wo1Wj4PwxRVx7d8OFBFg==
   dependencies:
-    "@azure/msal-common" "13.3.1"
+    "@azure/msal-common" "^12.0.0"
     jsonwebtoken "^9.0.0"
     uuid "^8.3.0"
 
@@ -4203,6 +4203,28 @@
     "@keystone-ui/fields" "^7.2.0"
     "@keystone-ui/modals" "^6.0.3"
     "@mirrormedia/lilith-draft-editor" "^3.0.8-beta.2"
+    "@mirrormedia/subscription-webhooks-share" "^1.1.1"
+    "@twreporter/errors" "^1.1.1"
+    axios "^0.26.0"
+    draft-convert "^2.1.12"
+    draft-js "^0.11.7"
+    htmlparser2 "^7.2.0"
+    immutable "^4.0.0"
+    lodash "^4.17.21"
+    shortid "^2.2.16"
+    styled-components "5.3.5"
+    zlib "^1.0.5"
+
+"@mirrormedia/lilith-core@3.0.11-beta.3":
+  version "3.0.11-beta.3"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-3.0.11-beta.3.tgz#54405f2aea2cf7fb55d7c0977265dd2ffc6d8cd7"
+  integrity sha512-RP1pMsr4v0zPlrxxO2AJNikg3ZuUiUSUJ+mprKObKmpDBwKGt7R4j1mvusVyGd05kYhYoTeW5O0bEau/vM9+oQ==
+  dependencies:
+    "@google-cloud/storage" "^5.18.0"
+    "@keystone-ui/button" "^7.0.2"
+    "@keystone-ui/fields" "^7.2.0"
+    "@keystone-ui/modals" "^6.0.3"
+    "@mirrormedia/lilith-draft-editor" "^3.0.9"
     "@mirrormedia/subscription-webhooks-share" "^1.1.1"
     "@twreporter/errors" "^1.1.1"
     axios "^0.26.0"
