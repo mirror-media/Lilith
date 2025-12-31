@@ -1,10 +1,12 @@
 {
+  "private": true,
   "workspaces": [
     "packages/core",
     "packages/draft-editor",
     "packages/draft-renderer",
     "packages/editools",
     "packages/mirrormedia",
+    "packages/mirrortv",
     "packages/readr",
     "packages/openrelationship",
     "packages/mirrordaily",
@@ -45,6 +47,11 @@
   "resolutions": {
     "react": "18.1.0",
     "react-dom": "18.1.0",
-    "graphql": "^16.8.1"
+    "graphql": "^16.8.1",
+    "cheerio": "1.0.0-rc.12",
+    "@azure/msal-node": "1.17.0",
+    "@azure/logger": "1.0.0",
+    "@azure/core-auth": "1.9.0",
+    "@azure/core-util": "1.0.0"
   }
 }
