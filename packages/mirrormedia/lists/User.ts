@@ -52,6 +52,10 @@ const listConfigurations = list({
         length: {
           max: 3,
         },
+        match: {
+          regex: /^[a-zA-Z0-9]*$/,
+          explanation: '只能輸入英文字母和數字，不能包含空白或特殊符號',
+        },
       },
     }),
     isProtected: checkbox({
