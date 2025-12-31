@@ -45,6 +45,15 @@ const listConfigurations = list({
       ],
       validation: { isRequired: true },
     }),
+    slugCode: text({
+      label: '手機上稿專用slug代號',
+      validation: {
+        isRequired: false,
+        length: {
+          max: 3,
+        },
+      },
+    }),
     isProtected: checkbox({
       defaultValue: false,
     }),
