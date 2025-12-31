@@ -100,7 +100,6 @@ model Contact {
   name                    String    @default("")
   content                 String    @default("")
   sections                Section[] @relation("Contact_sections")
-  slugCode                String    @default("")
   createdAt               DateTime?
   updatedAt               DateTime?
   createdBy               User?     @relation("Contact_createdBy", fields: [createdById], references: [id])
@@ -522,6 +521,7 @@ model User {
   email                            String              @unique @default("")
   password                         String
   role                             String
+  slugCode                         String              @default("")
   isProtected                      Boolean             @default(false)
   from_AudioFile_createdBy         AudioFile[]         @relation("AudioFile_createdBy")
   from_AudioFile_updatedBy         AudioFile[]         @relation("AudioFile_updatedBy")
