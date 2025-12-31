@@ -50,8 +50,7 @@
     "graphql": "^16.8.1",
     "cheerio": "1.0.0-rc.12",
     "@azure/msal-node": "1.17.0",
-    "@azure/logger": "1.0.0",
-    "@azure/core-auth": "1.9.0",
+    "@azure/core-auth": "1.4.0",
     "@azure/core-util": "1.0.0"
   }
 }
