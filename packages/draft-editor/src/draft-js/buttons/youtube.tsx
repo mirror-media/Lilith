@@ -1,14 +1,49 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { AtomicBlockUtils, EditorState } from 'draft-js'
 import { Drawer, DrawerController } from '@keystone-ui/modals'
 import { TextInput } from '@keystone-ui/fields'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import type { ButtonProps } from './type'
 
 const Label = styled.label`
   display: block;
   font-weight: 600;
   margin: 10px 0;
+`
+
+// Global styles for Drawer on mobile devices
+const DrawerMobileStyles = createGlobalStyle`
+  @media (max-width: 767px) {
+    /* Target all possible Drawer containers - emotion may generate different class names */
+    div[role="dialog"][aria-modal="true"],
+    form[role="dialog"][aria-modal="true"],
+    [role="dialog"][aria-modal="true"] {
+      width: 100vw !important;
+      max-width: 100vw !important;
+      min-width: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    /* Ensure content doesn't overflow */
+    [role="dialog"][aria-modal="true"] > * {
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    [role="dialog"][aria-modal="true"] * {
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Input fields */
+    [role="dialog"][aria-modal="true"] input {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+  }
 `
 
 type YoutubeInputType = {
@@ -52,58 +87,92 @@ export function YoutubeInput(props: YoutubeInputType) {
     setInputValue(initialInputValue)
   }
 
+  // Apply mobile styles dynamically when drawer is open
+  // This ensures we override emotion's inline styles
+  useEffect(() => {
+    if (!isOpen) return
+
+    const applyMobileStyles = () => {
+      const drawer = document.querySelector(
+        '[role="dialog"][aria-modal="true"]'
+      ) as HTMLElement
+      if (drawer && window.innerWidth <= 767) {
+        // Use setProperty with important flag
+        drawer.style.setProperty('width', '100vw', 'important')
+        drawer.style.setProperty('max-width', '100vw', 'important')
+        drawer.style.setProperty('min-width', '0', 'important')
+        drawer.style.setProperty('left', '0', 'important')
+        drawer.style.setProperty('right', '0', 'important')
+        drawer.style.setProperty('margin', '0', 'important')
+      }
+    }
+
+    // Apply immediately and after delays to ensure drawer is fully rendered
+    applyMobileStyles()
+    const timeout1 = setTimeout(applyMobileStyles, 10)
+    const timeout2 = setTimeout(applyMobileStyles, 50)
+
+    return () => {
+      clearTimeout(timeout1)
+      clearTimeout(timeout2)
+    }
+  }, [isOpen])
+
   return (
-    <DrawerController isOpen={isOpen}>
-      <Drawer
-        title={`Insert Youtube video`}
-        actions={{
-          cancel: {
-            label: 'Cancel',
-            action: () => {
-              clearInputValue()
-              onCancel()
+    <>
+      <DrawerMobileStyles />
+      <DrawerController isOpen={isOpen}>
+        <Drawer
+          title={`Insert Youtube video`}
+          actions={{
+            cancel: {
+              label: 'Cancel',
+              action: () => {
+                clearInputValue()
+                onCancel()
+              },
             },
-          },
-          confirm: {
-            label: 'Confirm',
-            action: () => {
-              onChange({
-                description: inputValue.description,
-                youtubeId: getYoutubeId(inputValue.youtubeIdOrUrl),
+            confirm: {
+              label: 'Confirm',
+              action: () => {
+                onChange({
+                  description: inputValue.description,
+                  youtubeId: getYoutubeId(inputValue.youtubeIdOrUrl),
+                })
+                clearInputValue()
+              },
+            },
+          }}
+        >
+          <Label htmlFor="description">Youtube Description</Label>
+          <TextInput
+            onChange={(e) =>
+              setInputValue({
+                description: e.target.value,
+                youtubeIdOrUrl: inputValue.youtubeIdOrUrl,
               })
-              clearInputValue()
-            },
-          },
-        }}
-      >
-        <Label htmlFor="description">Youtube Description</Label>
-        <TextInput
-          onChange={(e) =>
-            setInputValue({
-              description: e.target.value,
-              youtubeIdOrUrl: inputValue.youtubeIdOrUrl,
-            })
-          }
-          type="text"
-          placeholder="description"
-          id="description"
-          value={inputValue.description}
-        />
-        <Label htmlFor="youtubeId">Youtube Video Id or Url</Label>
-        <TextInput
-          onChange={(e) =>
-            setInputValue({
-              description: inputValue.description,
-              youtubeIdOrUrl: e.target.value,
-            })
-          }
-          type="text"
-          placeholder="youtubeId or url"
-          id="youtubeIdOrUrl"
-          value={inputValue.youtubeIdOrUrl}
-        />
-      </Drawer>
-    </DrawerController>
+            }
+            type="text"
+            placeholder="description"
+            id="description"
+            value={inputValue.description}
+          />
+          <Label htmlFor="youtubeId">Youtube Video Id or Url</Label>
+          <TextInput
+            onChange={(e) =>
+              setInputValue({
+                description: inputValue.description,
+                youtubeIdOrUrl: e.target.value,
+              })
+            }
+            type="text"
+            placeholder="youtubeId or url"
+            id="youtubeIdOrUrl"
+            value={inputValue.youtubeIdOrUrl}
+          />
+        </Drawer>
+      </DrawerController>
+    </>
   )
 }
 
