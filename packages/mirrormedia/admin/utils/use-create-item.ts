@@ -109,6 +109,7 @@ function useCreateItemCore({
   autoSlug: boolean
 }): CreateItemHookResult {
   const apolloClient = useApolloClient()
+  const { authenticatedItem } = useKeystone()
   const [value, setValue] = useState(() => {
     const value: ValueWithoutServerSideErrors = {}
     Object.keys(list.fields).forEach((fieldPath) => {
@@ -225,27 +226,32 @@ function useCreateItemCore({
           }
         }
 
-        // Query Contact slugCode if writerId exists
-        if (writerId) {
+        // Query current logged-in User's slugCode
+        if (
+          authenticatedItem &&
+          'state' in authenticatedItem &&
+          authenticatedItem.state === 'authenticated' &&
+          authenticatedItem.id
+        ) {
           try {
-            const { data: contactData } = await apolloClient.query({
+            const { data: userData } = await apolloClient.query({
               query: gql`
-                query GetContactSlugCode($id: ID!) {
-                  contact(where: { id: $id }) {
+                query GetUserSlugCode($id: ID!) {
+                  user(where: { id: $id }) {
                     id
                     slugCode
                   }
                 }
               `,
-              variables: { id: writerId },
+              variables: { id: authenticatedItem.id },
               fetchPolicy: 'network-only',
             })
-            if (contactData?.contact?.slugCode) {
-              slugCode = contactData.contact.slugCode
+            if (userData?.user?.slugCode) {
+              slugCode = userData.user.slugCode
             }
           } catch (error) {
             // If query fails, continue without slugCode (backward compatible)
-            console.error('Failed to fetch Contact slugCode:', error)
+            console.error('Failed to fetch User slugCode:', error)
           }
         }
 
@@ -253,6 +259,8 @@ function useCreateItemCore({
           ? slugCode
             ? `${dateStr}-${writerId}${slugCode}-${timeStr}`
             : `${dateStr}-${writerId}-${timeStr}`
+          : slugCode
+          ? `${dateStr}-${slugCode}-${timeStr}`
           : `${dateStr}-${timeStr}`
 
         finalData = { ...finalData, slug }

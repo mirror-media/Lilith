@@ -23,15 +23,6 @@ const listConfigurations = list({
         labelField: 'name',
       },
     }),
-    slugCode: text({
-      label: '手機上稿專用slug代號',
-      validation: {
-        isRequired: false,
-        length: {
-          max: 3,
-        },
-      },
-    }),
   },
   ui: {
     labelField: 'name',
