@@ -302,14 +302,8 @@ export function Cards({
         <CardContainer mode="edit">
           <Stack
             gap="small"
-            across
             css={{
               width: '100%',
-              justifyContent: 'space-between',
-              'div:first-of-type': {
-                flex: '2',
-                minWidth: 0,
-              },
             }}
           >
             <RelationshipSelect
