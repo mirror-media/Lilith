@@ -4,8 +4,9 @@ import type { ComponentPropsWithoutRef, HTMLAttributes, ReactNode } from 'react'
 import type { ListMeta } from '@keystone-6/core/types'
 import { Heading, useTheme } from '@keystone-ui/core'
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon'
-import { Fragment } from 'react'
+import { Fragment, Children } from 'react'
 import { Link } from '@keystone-ui/core'
+import { css, jsx } from '@emotion/react'
 
 type ContainerProps = ComponentPropsWithoutRef<'div'>
 export const Container = ({ children, ...props }: ContainerProps) => (
@@ -86,20 +87,24 @@ export function ItemPageHeader(props: { list: ListMeta; label: string }) {
 
 export function ColumnLayout(props: HTMLAttributes<HTMLDivElement>) {
   const { spacing } = useTheme()
+  const { children, ...restProps } = props
+  const childCount = Children.count(children)
+
+  const gridStyles = css({
+    alignItems: 'start',
+    display: 'grid',
+    gap: spacing.xlarge,
+    gridTemplateColumns: childCount === 1 ? '1fr' : '2fr 1fr',
+    '@media (min-width: 576px)': {
+      gridTemplateColumns: '2fr 1fr',
+    },
+  })
 
   return (
     // this container must be relative to catch absolute children
     // particularly the "expanded" document-field, which needs a height of 100%
     <Container style={{ position: 'relative', height: '100%' }}>
-      <div
-        style={{
-          alignItems: 'start',
-          display: 'grid',
-          gap: spacing.xlarge,
-          gridTemplateColumns: `2fr 1fr`,
-        }}
-        {...props}
-      />
+      {jsx('div', { css: gridStyles, ...restProps, children })}
     </Container>
   )
 }

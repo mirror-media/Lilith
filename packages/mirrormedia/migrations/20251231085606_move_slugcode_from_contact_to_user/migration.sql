@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User"
+ADD COLUMN "slugCode" TEXT NOT NULL DEFAULT '';

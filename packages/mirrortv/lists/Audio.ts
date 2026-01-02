@@ -20,36 +20,25 @@ import os from 'os'
 import { pipeline } from 'stream/promises'
 import { Storage } from '@google-cloud/storage'
 
-// 設定 FFmpeg
+// 環境與 FFmpeg 配置
 ffmpeg.setFfmpegPath(ffmpegInstaller.path)
 ffmpeg.setFfprobePath(ffprobeInstaller.path)
 
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
-
-// --- 定義型別 ---
-type GcsConfig = {
-  bucket: string
-  projectId?: string
-  keyFilename?: string
-}
-type FileField = {
-  filename: string
-  filesize: number
-}
+type GcsConfig = { bucket: string; projectId?: string; keyFilename?: string }
+type FileField = { filename: string; filesize: number }
 
 const gcsConfig = envVar.gcs as unknown as GcsConfig
+const subDir = 'audios'
 
-// --- 初始化 Storage ---
+// Storage 初始化
 let storage: Storage
 let bucket: any
-
 try {
-  let resolvedKeyPath = gcsConfig.keyFilename
-  if (gcsConfig.keyFilename) {
-    // 轉為絕對路徑，確保刪除功能有權限
-    resolvedKeyPath = path.resolve(process.cwd(), gcsConfig.keyFilename)
-  }
+  const resolvedKeyPath = gcsConfig.keyFilename
+    ? path.resolve(process.cwd(), gcsConfig.keyFilename)
+    : undefined
   storage = new Storage({
     projectId: gcsConfig.projectId,
     keyFilename: resolvedKeyPath,
@@ -59,20 +48,19 @@ try {
   console.error('[Audio] GCS Init Failed:', err)
 }
 
-// 輔助：分析 Audio 檔案
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// 媒體分析工具
 const analyzeMedia = (
   filePath: string
 ): Promise<{ duration: number; raw: any }> => {
   return new Promise((resolve, reject) => {
     ffmpeg.ffprobe(filePath, (err, metadata) => {
-      if (err) {
-        return reject(err)
-      }
-      const duration = metadata.format.duration
-        ? Math.round(metadata.format.duration)
-        : 0
-      resolve({ duration, raw: metadata })
+      if (err) return reject(err)
+      resolve({
+        duration: metadata.format.duration
+          ? Math.round(metadata.format.duration)
+          : 0,
+        raw: metadata,
+      })
     })
   })
 }
@@ -137,143 +125,91 @@ const listConfigurations = list({
   hooks: {
     resolveInput: async ({ resolvedData }) => {
       const fileData = resolvedData.file as FileField
+      if (fileData && fileData.filename) {
+        const originalName = fileData.filename
+        const tempPath = path.join(
+          os.tmpdir(),
+          `audio-${Math.random().toString(36).substring(7)}-${originalName}`
+        )
 
-      if (fileData) {
-        const filename = fileData.filename
-        const tempId = Math.random().toString(36).substring(7)
-        const tempPath = path.join(os.tmpdir(), `audio-${tempId}-${filename}`)
+        const baseDir = envVar.files.baseUrl.replace(/^\/|\/$/g, '') || 'files'
 
         try {
-          console.log(`[Audio] Processing: ${filename}`)
-
-          // 定義路徑
           const storageRoot = envVar.files.storagePath || 'public/files'
-          const absoluteStorageRoot = path.isAbsolute(storageRoot)
+          const absRoot = path.isAbsolute(storageRoot)
             ? storageRoot
             : path.join(process.cwd(), storageRoot)
-
-          // Keystone 預設路徑
-          const originalLocalPath = path.join(absoluteStorageRoot, filename)
-
-          // 目標路徑 (files/audios/filename)
-          const targetLocalDir = path.join(absoluteStorageRoot, 'audios')
-          const targetLocalPath = path.join(targetLocalDir, filename)
+          const srcPath = path.join(absRoot, originalName)
+          const destDir = path.join(absRoot, subDir)
+          const destPath = path.join(destDir, originalName)
 
           let readStream: NodeJS.ReadableStream
-
-          if (fs.existsSync(originalLocalPath)) {
-            console.log(`[Audio] Moving file to /audios...`)
-
-            if (!fs.existsSync(targetLocalDir)) {
-              fs.mkdirSync(targetLocalDir, { recursive: true })
-            }
-            fs.renameSync(originalLocalPath, targetLocalPath)
-            console.log(`[Audio] Moved to: ${targetLocalPath}`)
-
-            readStream = fs.createReadStream(targetLocalPath)
-          } else if (fs.existsSync(targetLocalPath)) {
-            console.log(`[Audio] File already in /audios.`)
-            readStream = fs.createReadStream(targetLocalPath)
+          if (fs.existsSync(srcPath)) {
+            if (!fs.existsSync(destDir))
+              fs.mkdirSync(destDir, { recursive: true })
+            fs.renameSync(srcPath, destPath)
+            readStream = fs.createReadStream(destPath)
+          } else if (fs.existsSync(destPath)) {
+            readStream = fs.createReadStream(destPath)
           } else if (bucket) {
-            // GCS 下載
-            const gcsBase = envVar.files.baseUrl
-              ? envVar.files.baseUrl.replace(/^\//, '')
-              : 'files'
-            const gcsPath = `${gcsBase}/audios/${filename}`
-
-            console.log(`[Audio] Downloading from GCS: ${gcsPath}`)
+            const gcsPath = `${baseDir}/${subDir}/${originalName}`
             const gcsFile = bucket.file(gcsPath)
-
-            const [exists] = await gcsFile.exists()
-            if (!exists) {
-              throw new Error(
-                `File not found locally AND not found in GCS: ${gcsPath}`
-              )
-            }
+            if (!(await gcsFile.exists())[0])
+              throw new Error(`File not found: ${gcsPath}`)
             readStream = gcsFile.createReadStream()
           } else {
             throw new Error(`File not found anywhere.`)
           }
 
-          // 複製到 /tmp 進行分析
           await pipeline(readStream, fs.createWriteStream(tempPath))
-          console.log(`[Audio] Temp file created at: ${tempPath}`)
-
-          console.log(`[Audio] FFprobe analyzing...`)
           const { duration, raw } = await analyzeMedia(tempPath)
-          console.log(`[Audio] Analysis Result: Duration ${duration}s`)
-
-          // 更新資料庫
           resolvedData.duration = duration
           resolvedData.meta = {
-            originalFilename: filename,
+            originalFilename: originalName,
             filesize: fileData.filesize,
             format: raw.format,
             streams: raw.streams,
           }
 
-          // 設定 URL
-          if (gcsConfig && gcsConfig.bucket) {
+          fileData.filename = `${subDir}/${originalName}`
+
+          if (gcsConfig?.bucket) {
             resolvedData.url = getFileURL(
               gcsConfig.bucket,
-              envVar.files.baseUrl,
-              `audios/${filename}`
+              baseDir,
+              fileData.filename
             )
           } else {
-            resolvedData.url = `/assets/audios/${filename}`
+            resolvedData.url = `/${baseDir}/${fileData.filename}`
           }
         } catch (error) {
-          console.error('[Audio] Analysis failed:', error)
-          resolvedData.duration = 0
-          resolvedData.meta = {
-            error: 'Metadata analysis failed',
-            details: (error as Error).message,
-          }
-
-          // Fallback URL
-          if (gcsConfig && gcsConfig.bucket) {
-            resolvedData.url = getFileURL(
-              gcsConfig.bucket,
-              envVar.files.baseUrl,
-              `audios/${filename}`
-            )
-          } else {
-            resolvedData.url = `/assets/audios/${filename}`
-          }
+          console.error('[Audio] Hook Error:', error)
+          const fallbackPath = `${subDir}/${originalName}`
+          resolvedData.url = gcsConfig?.bucket
+            ? getFileURL(gcsConfig.bucket, baseDir, fallbackPath)
+            : `/${baseDir}/${fallbackPath}`
         } finally {
-          fs.unlink(tempPath, (err) => {
-            if (err && err.code !== 'ENOENT')
-              console.warn(`[Audio] Warning: Could not delete temp file`)
-          })
+          if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath)
         }
       }
-
       return resolvedData
     },
 
     afterOperation: async ({ operation, item }) => {
       if (operation === 'delete' && item && bucket) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const fileData = (item as any).file as FileField
-        const filename = fileData?.filename
-
+        const filename = (item as any).file?.filename
         if (filename) {
           try {
-            // 刪除
-            const gcsBase = envVar.files.baseUrl
-              ? envVar.files.baseUrl.replace(/^\//, '')
-              : 'files'
-            const gcsPath = `${gcsBase}/audios/${filename}`
-
-            const file = bucket.file(gcsPath)
-
-            const [exists] = await file.exists()
-            if (exists) {
-              await file.delete()
-              console.log(`[Audio] Deleted GCS file: ${gcsPath}`)
+            const baseDir =
+              envVar.files.baseUrl.replace(/^\/|\/$/g, '') || 'files'
+            const gcsPath = `${baseDir}/${filename}`
+            const gcsFile = bucket.file(gcsPath)
+            if ((await gcsFile.exists())[0]) {
+              await gcsFile.delete()
+              console.log(`[Audio] Deleted GCS: ${gcsPath}`)
             }
           } catch (e) {
-            console.error(`[Audio] Failed to delete GCS file:`, e)
+            console.error(`[Audio] Delete failed:`, e)
           }
         }
       }
