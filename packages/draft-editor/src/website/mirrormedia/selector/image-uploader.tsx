@@ -62,7 +62,7 @@ const ImageFilesWrapper = styled.div`
 `
 
 const ImageFileWrapper = styled.div`
-  width: 33%;
+  width: 100%;
   cursor: pointer;
   padding: 0 10px 10px;
 `
