@@ -1238,8 +1238,6 @@ input ShowCreateInput {
 
 type Post {
   id: ID!
-  lockBy: User
-  lockExpireAt: DateTime
   slug: String
   name: String
   subtitle: String
@@ -1296,6 +1294,8 @@ type Post {
   isAdvertised: Boolean
   isAdBlocked: Boolean
   lockTime: DateTime
+  lockBy: User
+  lockExpireAt: DateTime
   trimmedApiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -1314,8 +1314,6 @@ input PostWhereInput {
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
   id: IDFilter
-  lockBy: UserWhereInput
-  lockExpireAt: DateTimeNullableFilter
   slug: StringFilter
   name: StringFilter
   subtitle: StringFilter
@@ -1356,6 +1354,8 @@ input PostWhereInput {
   isAdvertised: BooleanFilter
   isAdBlocked: BooleanFilter
   lockTime: DateTimeNullableFilter
+  lockBy: UserWhereInput
+  lockExpireAt: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1382,7 +1382,6 @@ input PostManyRelationFilter {
 
 input PostOrderByInput {
   id: OrderDirection
-  lockExpireAt: OrderDirection
   slug: OrderDirection
   name: OrderDirection
   subtitle: OrderDirection
@@ -1407,13 +1406,12 @@ input PostOrderByInput {
   isAdvertised: OrderDirection
   isAdBlocked: OrderDirection
   lockTime: OrderDirection
+  lockExpireAt: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
 
 input PostUpdateInput {
-  lockBy: UserRelateToOneForUpdateInput
-  lockExpireAt: DateTime
   slug: String
   name: String
   subtitle: String
@@ -1460,6 +1458,8 @@ input PostUpdateInput {
   isAdvertised: Boolean
   isAdBlocked: Boolean
   lockTime: DateTime
+  lockBy: UserRelateToOneForUpdateInput
+  lockExpireAt: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1505,8 +1505,6 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  lockBy: UserRelateToOneForCreateInput
-  lockExpireAt: DateTime
   slug: String
   name: String
   subtitle: String
@@ -1553,6 +1551,8 @@ input PostCreateInput {
   isAdvertised: Boolean
   isAdBlocked: Boolean
   lockTime: DateTime
+  lockBy: UserRelateToOneForCreateInput
+  lockExpireAt: DateTime
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
