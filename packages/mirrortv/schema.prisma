@@ -328,9 +328,6 @@ model Show {
 
 model Post {
   id                                 Int                 @id @default(autoincrement())
-  lockBy                             User?               @relation("Post_lockBy", fields: [lockById], references: [id])
-  lockById                           Int?                @map("lockBy")
-  lockExpireAt                       DateTime?
   slug                               String              @unique @default("")
   name                               String              @default("untitled")
   subtitle                           String              @default("")
@@ -383,6 +380,9 @@ model Post {
   isAdvertised                       Boolean             @default(false)
   isAdBlocked                        Boolean             @default(false)
   lockTime                           DateTime?
+  lockBy                             User?               @relation("Post_lockBy", fields: [lockById], references: [id])
+  lockById                           Int?                @map("lockBy")
+  lockExpireAt                       DateTime?
   createdAt                          DateTime?
   updatedAt                          DateTime?
   createdBy                          User?               @relation("Post_createdBy", fields: [createdById], references: [id])
@@ -397,7 +397,6 @@ model Post {
   from_VideoEditorChoice_videoEditor VideoEditorChoice[] @relation("VideoEditorChoice_videoEditor")
   from_Video_relatedPosts            Video[]             @relation("Video_relatedPosts")
 
-  @@index([lockById])
   @@index([state])
   @@index([heroVideoId])
   @@index([heroImageId])
@@ -405,6 +404,7 @@ model Post {
   @@index([audioId])
   @@index([relatedTopicId])
   @@index([ogImageId])
+  @@index([lockById])
   @@index([createdById])
   @@index([updatedById])
 }

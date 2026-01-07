@@ -31,12 +31,16 @@ const listConfigurations = list({
       label: '欄位更動內容',
       ui: {
         displayMode: 'textarea',
-        itemView: { fieldMode: 'read' },
+        itemView: { fieldMode: 'edit' },
       },
       hooks: {
-        resolveInput({ resolvedData, item }) {
+        resolveInput: async ({ resolvedData, item }) => {
           const raw = resolvedData.changedList || item?.changedList || ''
-          return formatChangedList(raw)
+          if (typeof raw === 'string' && raw.trim().startsWith('{')) {
+            return formatChangedList(raw)
+          }
+
+          return raw
         },
       },
     }),
