@@ -6,6 +6,7 @@ import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createPreviewMiniApp } from './express-mini-apps/preview/app'
+import { createDashboardMiniApp } from './express-mini-apps/dashboard/app'
 import Keyv from 'keyv'
 import { KeyvAdapter } from '@apollo/utils.keyvadapter'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
@@ -126,6 +127,13 @@ Disallow: /`)
           app.use(
             createPreviewMiniApp({
               previewServer: envVar.previewServer,
+              keystoneContext: context,
+            })
+          )
+
+          app.use(
+            createDashboardMiniApp({
+              dashboardServer: envVar.dashboardServer,
               keystoneContext: context,
             })
           )

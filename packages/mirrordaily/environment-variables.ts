@@ -5,6 +5,8 @@ const {
   ACCESS_CONTROL_STRATEGY,
   PREVIEW_SERVER_ORIGIN,
   PREVIEW_SERVER_PATH,
+  DASHBOARD_SERVER_ORIGIN,
+  DASHBOARD_SERVER_PATH,
   DATABASE_PROVIDER,
   DATABASE_URL,
   SESSION_SECRET,
@@ -43,6 +45,12 @@ export default {
   previewServer: {
     origin: PREVIEW_SERVER_ORIGIN || 'http://localhost:3001',
     path: PREVIEW_SERVER_PATH || '/preview-server',
+  },
+  dashboardServer: {
+    origin:
+      DASHBOARD_SERVER_ORIGIN ||
+      'https://traffic-analytics-web-dev-151209114015.asia-east1.run.app',
+    path: DASHBOARD_SERVER_PATH || '/dashboard',
   },
   database: {
     provider:

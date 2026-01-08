@@ -18,9 +18,12 @@ export function CustomNavigation({
     if (newTitle !== currentTitle) document.title = newTitle
   })
 
+  const isAdmin = authenticatedItem?.role === 'admin'
+
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
       <NavItem href="/">Dashboard</NavItem>
+      {isAdmin && <NavItem href="/dashboard">PV Dashboard</NavItem>}
       {/* creat post shortcut */}
       <NavItem key="create-post-shortcut" href="/custom-post-creation">
         Create Post <PlusIcon size="smallish" color="blue" />
