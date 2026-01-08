@@ -133,6 +133,8 @@ const listConfigurations = list({
         )
 
         const baseDir = envVar.files.baseUrl.replace(/^\/|\/$/g, '') || 'files'
+        const relativeFilePath = `${subDir}/${originalName}`
+        const gcsPath = `${baseDir}/${relativeFilePath}`
 
         try {
           const storageRoot = envVar.files.storagePath || 'public/files'
@@ -152,7 +154,6 @@ const listConfigurations = list({
           } else if (fs.existsSync(destPath)) {
             readStream = fs.createReadStream(destPath)
           } else if (bucket) {
-            const gcsPath = `${baseDir}/${subDir}/${originalName}`
             const gcsFile = bucket.file(gcsPath)
             if (!(await gcsFile.exists())[0])
               throw new Error(`File not found: ${gcsPath}`)
@@ -163,7 +164,20 @@ const listConfigurations = list({
 
           await pipeline(readStream, fs.createWriteStream(tempPath))
           const { duration, raw } = await analyzeMedia(tempPath)
+
+          // 寫入完整路徑
+          const fullUrl = gcsConfig?.bucket
+            ? getFileURL(gcsConfig.bucket, baseDir, relativeFilePath)
+            : `/${baseDir}/${relativeFilePath}`
+          if (raw.format) raw.format.filename = fullUrl
+          if (raw.streams && Array.isArray(raw.streams)) {
+            raw.streams.forEach((stream: Record<string, any>) => {
+              if (stream.filename) stream.filename = fullUrl
+            })
+          }
+
           resolvedData.duration = duration
+          resolvedData.url = fullUrl
           resolvedData.meta = {
             originalFilename: originalName,
             filesize: fileData.filesize,
@@ -171,17 +185,7 @@ const listConfigurations = list({
             streams: raw.streams,
           }
 
-          fileData.filename = `${subDir}/${originalName}`
-
-          if (gcsConfig?.bucket) {
-            resolvedData.url = getFileURL(
-              gcsConfig.bucket,
-              baseDir,
-              fileData.filename
-            )
-          } else {
-            resolvedData.url = `/${baseDir}/${fileData.filename}`
-          }
+          fileData.filename = relativeFilePath
         } catch (error) {
           console.error('[Audio] Hook Error:', error)
           const fallbackPath = `${subDir}/${originalName}`
