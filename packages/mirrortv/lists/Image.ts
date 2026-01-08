@@ -56,7 +56,13 @@ const listConfigurations = list({
     }),
 
     keywords: text({ label: '關鍵字' }),
-    meta: text({ label: '中繼資料' }),
+    meta: text({
+      label: '中繼資料',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
+    }),
 
     imageApiData: json({
       label: 'Image API Data (JSON)',
@@ -218,6 +224,19 @@ const listConfigurations = list({
       const extension = resolvedData.file?.extension || item?.file_extension
       const width = resolvedData.file?.width || item?.file_width
       const height = resolvedData.file?.height || item?.file_height
+
+      // 填入 MIME Type 到 meta
+      if (resolvedData.file?.extension) {
+        const ext = resolvedData.file.extension.toLowerCase()
+        const mimeMap: Record<string, string> = {
+          jpg: 'image/jpeg',
+          jpeg: 'image/jpeg',
+          png: 'image/png',
+          gif: 'image/gif',
+          webp: 'image/webp',
+        }
+        resolvedData.meta = mimeMap[ext] || `image/${ext}`
+      }
 
       if (fileId && extension && width && height) {
         const baseUrl = envVar.images.baseUrl
