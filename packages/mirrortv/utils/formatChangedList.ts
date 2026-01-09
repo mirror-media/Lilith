@@ -10,12 +10,15 @@ export const formatChangedList = (changedList: string): string => {
   try {
     changedListObj = JSON.parse(changedList)
   } catch (err) {
-    throw new Error('Invalid JSON string passed to formatChangedList')
+    return changedList
   }
-  const result = Object.keys(changedListObj).map((key) => {
-    return `${key}:${changedListObj[key]}`
-  })
-  // changeList always has id(arr[0]), but we don't need it
-  result.shift()
+
+  const result = Object.keys(changedListObj)
+    .filter((key) => key !== 'id')
+    .map((key) => {
+      const value = changedListObj[key]
+      return `${key}:${value}`
+    })
+
   return result.join('\n')
 }

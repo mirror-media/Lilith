@@ -113,24 +113,6 @@ const itemViewFunction = async ({
 
 const listConfigurations = list({
   fields: {
-    // --- Locking Fields (MM) ---
-    lockBy: relationship({
-      ref: 'User',
-      label: '誰正在編輯',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
-        displayMode: 'cards',
-        cardFields: ['name'],
-      },
-    }),
-    lockExpireAt: timestamp({
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-      },
-    }),
-
     // --- Basic Fields ---
     slug: text({
       label: 'Slug',
@@ -188,7 +170,7 @@ const listConfigurations = list({
       label: '影音',
       ref: 'Contact',
       many: true,
-    }), // K5 名稱
+    }),
     designers: relationship({ label: '設計', ref: 'Contact', many: true }),
     engineers: relationship({ label: '工程', ref: 'Contact', many: true }),
     vocals: relationship({ label: '主播', ref: 'Contact', many: true }),
@@ -334,6 +316,24 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
+      },
+    }),
+
+    // --- Locking Fields (MM) ---
+    lockBy: relationship({
+      ref: 'User',
+      label: '誰正在編輯',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+        displayMode: 'cards',
+        cardFields: ['name'],
+      },
+    }),
+    lockExpireAt: timestamp({
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
 
@@ -512,25 +512,169 @@ const listConfigurations = list({
       }
     },
 
-    afterOperation: async ({ operation, item, context }) => {
-      // --- K5 Logic: Emit Edit Log ---
-      // 這裡需要實作 emitEditLog，通常是用 console.log 或寫入 DB
-      // K6 rename: existingItem -> originalItem
-      console.log(
-        `[EditLog] Operation: ${operation}, Item: ${item?.id}, User: ${context.session?.data?.name}`
-      )
+    afterOperation: async ({
+      operation,
+      item,
+      context,
+      resolvedData,
+      originalItem,
+    }) => {
+      if (
+        operation === 'create' ||
+        operation === 'update' ||
+        operation === 'delete'
+      ) {
+        try {
+          const editorName = context.session?.data?.name || '未知用戶'
+          const targetId =
+            item?.id || (originalItem as any)?.id || (resolvedData as any)?.id
+          if (!targetId) {
+            console.warn('[EditLog] 無法取得目標 ID，取消紀錄')
+            return
+          }
 
-      /* 
-      if (typeof emitEditLog === 'function') {
-        emitEditLog({
-          operation,
-          originalInput: resolvedData, 
-          existingItem: originalItem, 
-          context,
-          updatedItem: item,
-        })
+          // 定義抓取欄位
+          const fullQuery = `
+            id slug name subtitle state publishTime publishedDateString
+            otherbyline heroCaption heroImageSize style source
+            ogTitle ogDescription adTraceCode notFeed exclusive
+            isFeatured isAdult isAdvertised isAdBlocked
+            brief content
+            categories { id name } writers { id name } photographers { id name }
+            cameraOperators { id name } designers { id name } engineers { id name }
+            vocals { id name } heroVideo { id name } heroImage { id name }
+            topics { id name } tags { id name } audio { id name }
+            download { id name } relatedPosts { id name } relatedTopic { id name }
+            ogImage { id name }
+          `
+
+          const fullNewItem =
+            operation !== 'delete'
+              ? ((await context.sudo().query.Post.findOne({
+                  where: { id: String(targetId) },
+                  query: fullQuery,
+                })) as Record<string, any>)
+              : null
+
+          const oldItemBase = (originalItem as Record<string, any>) || {}
+
+          const formatValueForLog = (val: any) => {
+            if (val === undefined || val === null) return null
+
+            // 處理 Many Relationship
+            if (Array.isArray(val)) {
+              if (val.length === 0) return null
+              return val.map((v: any) => v.name || v.id || v).join(',')
+            }
+
+            // 處理 Single Relationship
+            if (typeof val === 'object') {
+              if (val.name) return val.name
+              if (val.id) return val.id
+              return JSON.stringify(val)
+            }
+            return String(val)
+          }
+
+          const safeParse = (data: any) => {
+            if (!data) return undefined
+            if (typeof data === 'object') return data
+            try {
+              return JSON.parse(data)
+            } catch (e) {
+              return undefined
+            }
+          }
+
+          const editedData: Record<string, any> = {}
+          const blackList = [
+            'id',
+            'briefHtml',
+            'briefApiData',
+            'contentHtml',
+            'contentApiData',
+            'updatedAt',
+            'createdAt',
+            'manualOrderOfWriters',
+            'manualOrderOfRelatedPosts',
+            'updateTimeStamp',
+            'lockBy',
+            'lockExpireAt',
+            'trimmedApiData',
+          ]
+
+          let briefObject: any = undefined
+          let contentObject: any = undefined
+
+          if (operation === 'update') {
+            const newItem = fullNewItem || {}
+            // 比對有異動的欄位
+            Object.keys(resolvedData || {}).forEach((key) => {
+              if (
+                blackList.includes(key) ||
+                key === 'brief' ||
+                key === 'content'
+              )
+                return
+
+              const oldValue = formatValueForLog(oldItemBase[key])
+              const newValue = formatValueForLog(newItem[key])
+
+              if (oldValue !== newValue) {
+                editedData[key] = newValue ?? 'null'
+              }
+            })
+            briefObject = newItem.brief
+            contentObject = newItem.content
+          } else {
+            // Create 或 Delete: 紀錄當下所有欄位
+            const target =
+              operation === 'delete' ? oldItemBase : fullNewItem || {}
+            Object.keys(target).forEach((key) => {
+              if (
+                blackList.includes(key) ||
+                key === 'brief' ||
+                key === 'content'
+              )
+                return
+              editedData[key] = formatValueForLog(target[key])
+            })
+            briefObject = target.brief
+            contentObject = target.content
+          }
+
+          if (
+            operation === 'update' &&
+            Object.keys(editedData).length === 0 &&
+            !resolvedData.brief &&
+            !resolvedData.content
+          ) {
+            return
+          }
+
+          const postSlug =
+            operation === 'delete'
+              ? oldItemBase?.slug || oldItemBase?.name || String(targetId)
+              : fullNewItem?.slug || fullNewItem?.name || String(targetId)
+
+          // 寫入 EditLog
+          await context.sudo().query.EditLog.createOne({
+            data: {
+              name: editorName,
+              operation: operation,
+              postSlug: String(postSlug),
+              brief: safeParse(briefObject),
+              content: safeParse(contentObject),
+              changedList: JSON.stringify(editedData),
+            },
+          })
+
+          console.log(`[EditLog] ${operation} 成功紀錄: ${postSlug}`)
+        } catch (err) {
+          console.error(`[EditLog] ${operation} 發生錯誤:`, err)
+        }
       }
-      */
+
       // MM 的邏輯: 更新後解鎖
       if (operation === 'update' && item) {
         await context.prisma.Post.update({
