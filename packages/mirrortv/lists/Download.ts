@@ -24,6 +24,7 @@ type FileField = {
 }
 
 const gcsConfig = envVar.gcs as unknown as GcsConfig
+const STORAGE_ROOT = envVar.files.storagePath || '/app/public/gcs-bucket/files'
 const subDir = 'documents'
 
 // Init Google Cloud Storage
@@ -76,21 +77,32 @@ const listConfigurations = list({
       const fileData = resolvedData.file as FileField
 
       if (fileData && fileData.filename) {
-        const filename = fileData.filename
+        const filename = fileData.filename.replace(/^\/+/g, '')
 
-        const baseDir = envVar.files.baseUrl.replace(/^\/|\/$/g, '') || 'files'
+        const baseDir = (envVar.files.baseUrl || 'files').replace(
+          /^\/+|\/+$/g,
+          ''
+        )
+        const cleanSubDir = subDir.replace(/^\/+|\/+$/g, '')
+        const folderPath = `${baseDir}/${cleanSubDir}`
 
         try {
           if (gcsConfig?.bucket) {
-            resolvedData.url = getFileURL(
+            const generatedUrl = getFileURL(
               gcsConfig.bucket,
-              `${baseDir}/${subDir}`,
+              folderPath,
               filename
             )
+            if (typeof generatedUrl === 'string') {
+              resolvedData.url = generatedUrl.replace(/\/+$/, '')
+            } else {
+              resolvedData.url = generatedUrl
+            }
           } else {
-            const baseUrl = envVar.files.baseUrl.replace(/\/$/, '')
-            resolvedData.url = `${baseUrl}/${subDir}/${filename}`
+            const baseUrl = (envVar.files.baseUrl || '').replace(/\/+$/, '')
+            resolvedData.url = `${baseUrl}/${cleanSubDir}/${filename}`
           }
+          console.log(`[Download] GCS upload: ${resolvedData.url}`)
         } catch (e) {
           console.error('[Download] resolveInput Error:', e)
         }
@@ -98,43 +110,39 @@ const listConfigurations = list({
       return resolvedData
     },
 
-    afterOperation: async ({ operation, item, originalItem }) => {
-      const targetItem = operation === 'delete' ? originalItem : item
-      if (operation !== 'delete' || !targetItem) return
+    afterOperation: async ({ operation, originalItem }) => {
+      if (operation !== 'delete' || !originalItem) return
 
-      const rawItem = targetItem as {
+      const rawItem = originalItem as {
         file_filename?: string
         file?: { filename?: string }
       }
-      const filename = rawItem.file_filename || rawItem.file?.filename
+
+      let filename = rawItem.file_filename || rawItem.file?.filename
       if (!filename) return
+      filename = filename.replace(/^\/+/g, '')
 
       try {
-        const baseDir = envVar.files.baseUrl.replace(/^\/|\/$/g, '') || 'files'
+        const localPath = path
+          .join(STORAGE_ROOT, subDir, filename)
+          .replace(/\/+$/, '')
 
-        if (bucket) {
-          const gcsPath = `${baseDir}/${subDir}/${filename}`
+        if (fs.existsSync(localPath)) {
+          fs.unlinkSync(localPath)
+          console.log(`[Download] FUSE Deleted: ${localPath}`)
+        } else if (bucket) {
+          const baseDir = (envVar.files.baseUrl || 'files').replace(
+            /^\/+|\/+$/g,
+            ''
+          )
+          const cleanSubDir = subDir.replace(/^\/+|\/+$/g, '')
+          const gcsPath = `${baseDir}/${cleanSubDir}/${filename}`
+
           const gcsFile = bucket.file(gcsPath)
-
           const [exists] = await gcsFile.exists()
           if (exists) {
             await gcsFile.delete()
-            // eslint-disable-next-line no-console
-            console.log(`[Download] Deleted GCS Object: ${gcsPath}`)
-          }
-        } else {
-          const storageRoot = envVar.files.storagePath || 'public/files'
-          const localPath = path.resolve(
-            process.cwd(),
-            storageRoot,
-            subDir,
-            filename
-          )
-
-          if (fs.existsSync(localPath)) {
-            fs.unlinkSync(localPath)
-            // eslint-disable-next-line no-console
-            console.log(`[Download] Deleted Local File: ${localPath}`)
+            console.log(`[Download] GCS Deleted: ${gcsPath}`)
           }
         }
       } catch (e) {
