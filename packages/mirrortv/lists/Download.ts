@@ -77,22 +77,25 @@ const listConfigurations = list({
       const fileData = resolvedData.file as FileField
 
       if (fileData && fileData.filename) {
-        const filename = fileData.filename.replace(/^\/+/g, '')
+        const cleanSubDir = subDir.replace(/^\/+|\/+$/g, '')
 
+        if (!fileData.filename.startsWith(`${cleanSubDir}/`)) {
+          fileData.filename = `${cleanSubDir}/${fileData.filename.replace(
+            /^\/+/g,
+            ''
+          )}`
+        }
+
+        const filename = fileData.filename
         const baseDir = (envVar.files.baseUrl || 'files').replace(
           /^\/+|\/+$/g,
           ''
         )
-        const cleanSubDir = subDir.replace(/^\/+|\/+$/g, '')
-        const folderPath = `${baseDir}/${cleanSubDir}`
 
         try {
           if (gcsConfig?.bucket) {
-            const generatedUrl = getFileURL(
-              gcsConfig.bucket,
-              folderPath,
-              filename
-            )
+            const generatedUrl = getFileURL(gcsConfig.bucket, baseDir, filename)
+
             if (typeof generatedUrl === 'string') {
               resolvedData.url = generatedUrl.replace(/\/+$/, '')
             } else {
@@ -100,9 +103,9 @@ const listConfigurations = list({
             }
           } else {
             const baseUrl = (envVar.files.baseUrl || '').replace(/\/+$/, '')
-            resolvedData.url = `${baseUrl}/${cleanSubDir}/${filename}`
+            resolvedData.url = `${baseUrl}/${filename}`
           }
-          console.log(`[Download] GCS upload: ${resolvedData.url}`)
+          console.log(`[Download] Expected Path: ${resolvedData.url}`)
         } catch (e) {
           console.error('[Download] resolveInput Error:', e)
         }
@@ -123,9 +126,7 @@ const listConfigurations = list({
       filename = filename.replace(/^\/+/g, '')
 
       try {
-        const localPath = path
-          .join(STORAGE_ROOT, subDir, filename)
-          .replace(/\/+$/, '')
+        const localPath = path.join(STORAGE_ROOT, filename).replace(/\/+$/, '')
 
         if (fs.existsSync(localPath)) {
           fs.unlinkSync(localPath)
@@ -135,8 +136,7 @@ const listConfigurations = list({
             /^\/+|\/+$/g,
             ''
           )
-          const cleanSubDir = subDir.replace(/^\/+|\/+$/g, '')
-          const gcsPath = `${baseDir}/${cleanSubDir}/${filename}`
+          const gcsPath = `${baseDir}/${filename}`
 
           const gcsFile = bucket.file(gcsPath)
           const [exists] = await gcsFile.exists()
