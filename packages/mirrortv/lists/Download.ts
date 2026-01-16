@@ -23,6 +23,15 @@ type FileField = {
   ref?: string
 }
 
+type DownloadItem = {
+  id: string | number
+  name?: string
+  url?: string
+  file_filename?: string
+  file_filesize?: number
+  createdAt?: string
+}
+
 const gcsConfig = envVar.gcs as unknown as GcsConfig
 const subDir = 'documents'
 
@@ -127,7 +136,36 @@ const listConfigurations = list({
       return resolvedData
     },
 
-    afterOperation: async ({ operation, originalItem }) => {
+    afterOperation: async ({ operation, item, originalItem, context }) => {
+      const newItem = item as DownloadItem
+      if (operation === 'create' || operation === 'update') {
+        if (newItem.name === 'tv-schedule' && newItem.file_filename) {
+          if (!newItem.file_filename?.endsWith('.csv')) return
+          const syncEndpoint = `${envVar.dataServiceApi}/tv-schedule/sync`
+          const baseDir = envVar.files.baseUrl.replace(/^\//, '') // 'files'
+          const blobName = `${baseDir}/${newItem.file_filename}`
+          try {
+            const response = await fetch(syncEndpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ filename: blobName }),
+            })
+            if (!response.ok) {
+              throw new Error(`Sync failed: ${response.status}`)
+            }
+            const result = await response.json()
+            if (result.url) {
+              await context.db.Download.updateOne({
+                where: { id: String(newItem.id) },
+                data: { url: result.url },
+              })
+              console.log(`[Download Hook] Updated URL to: ${result.url}`)
+            }
+          } catch (error) {
+            console.error('[Download Hook] Sync Error:', error)
+          }
+        }
+      }
       if (operation !== 'delete' || !originalItem) return
 
       const rawItem = originalItem as {
