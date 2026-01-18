@@ -15,8 +15,8 @@ gcskeyfile.json
 .eslintcache
 
 # output files
-packages/**/lib
+# packages/**/lib
 packages/**/public/*
-packages/**/@types
+# packages/**/@types
 
 packages/**/start.sh
