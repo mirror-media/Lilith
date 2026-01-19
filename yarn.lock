@@ -4185,16 +4185,16 @@
     styled-components "5.3.5"
     zlib "^1.0.5"
 
-"@mirrormedia/lilith-core@3.0.11-beta.2":
-  version "3.0.11-beta.2"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-3.0.11-beta.2.tgz#88e2b2e3ef6fd14d635be6eb0f812613be007f43"
-  integrity sha512-4KOGpwkbfKjiIeOUljW3kXvlaOyz6dpbqjxUHzi2xxvH+dkKKpPsCq+rP2Yd/TtN6iqyeOeh51Gu3z1bN8T3aw==
+"@mirrormedia/lilith-core@3.0.11-beta.3":
+  version "3.0.11-beta.3"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-3.0.11-beta.3.tgz#54405f2aea2cf7fb55d7c0977265dd2ffc6d8cd7"
+  integrity sha512-RP1pMsr4v0zPlrxxO2AJNikg3ZuUiUSUJ+mprKObKmpDBwKGt7R4j1mvusVyGd05kYhYoTeW5O0bEau/vM9+oQ==
   dependencies:
     "@google-cloud/storage" "^5.18.0"
     "@keystone-ui/button" "^7.0.2"
     "@keystone-ui/fields" "^7.2.0"
     "@keystone-ui/modals" "^6.0.3"
-    "@mirrormedia/lilith-draft-editor" "^3.0.8-beta.2"
+    "@mirrormedia/lilith-draft-editor" "^3.0.9"
     "@mirrormedia/subscription-webhooks-share" "^1.1.1"
     "@twreporter/errors" "^1.1.1"
     axios "^0.26.0"
@@ -4207,16 +4207,16 @@
     styled-components "5.3.5"
     zlib "^1.0.5"
 
-"@mirrormedia/lilith-core@3.0.11-beta.3":
-  version "3.0.11-beta.3"
-  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-3.0.11-beta.3.tgz#54405f2aea2cf7fb55d7c0977265dd2ffc6d8cd7"
-  integrity sha512-RP1pMsr4v0zPlrxxO2AJNikg3ZuUiUSUJ+mprKObKmpDBwKGt7R4j1mvusVyGd05kYhYoTeW5O0bEau/vM9+oQ==
+"@mirrormedia/lilith-core@3.0.11-beta.6":
+  version "3.0.11-beta.6"
+  resolved "https://registry.yarnpkg.com/@mirrormedia/lilith-core/-/lilith-core-3.0.11-beta.6.tgz#319102d4077dac21a0eed0537659ec32cc072412"
+  integrity sha512-IgexauhMASPPOYYI4nvYklzhZRk1ka8n2gLjnheUbCF+aG9SFRRzIn1FPBtfgdrrsVWwWEFrMlox73VidU7fzA==
   dependencies:
     "@google-cloud/storage" "^5.18.0"
     "@keystone-ui/button" "^7.0.2"
     "@keystone-ui/fields" "^7.2.0"
     "@keystone-ui/modals" "^6.0.3"
-    "@mirrormedia/lilith-draft-editor" "^3.0.9"
+    "@mirrormedia/lilith-draft-editor" "^3.0.12"
     "@mirrormedia/subscription-webhooks-share" "^1.1.1"
     "@twreporter/errors" "^1.1.1"
     axios "^0.26.0"
@@ -6542,7 +6542,7 @@ cheerio-select@^2.1.0:
     domhandler "^5.0.3"
     domutils "^3.0.1"
 
-cheerio@1.0.0-rc.12:
+cheerio@1.0.0-rc.12, cheerio@^1.0.0-rc.12:
   version "1.0.0-rc.12"
   resolved "https://registry.yarnpkg.com/cheerio/-/cheerio-1.0.0-rc.12.tgz#788bf7466506b1c6bf5fae51d24a2c4d62e47683"
   integrity sha512-VqR8m68vM46BNnuZ5NtnGBKIE/DfN0cRIzg9n40EIq9NOv90ayxLBXA8fXC5gquFRGJSTRqBq25Jt2ECLR431Q==
