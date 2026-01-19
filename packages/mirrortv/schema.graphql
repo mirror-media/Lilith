@@ -1035,6 +1035,7 @@ type External {
   slug: String
   partner: Partner
   name: String
+  label: String
   subtitle: String
   state: String
   publishTime: DateTime
@@ -1381,6 +1382,7 @@ type Post {
   id: ID!
   slug: String
   name: String
+  label: String
   subtitle: String
   state: String
   publishTime: DateTime
