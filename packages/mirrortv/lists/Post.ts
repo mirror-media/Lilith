@@ -124,6 +124,24 @@ const listConfigurations = list({
       validation: { isRequired: true },
       defaultValue: 'untitled',
     }),
+
+    label: virtual({
+      label: '關聯顯示 (Slug + Name)',
+      field: graphql.field({
+        type: graphql.String,
+        resolve: (item: Record<string, any>) => {
+          const slug = item.slug || ''
+          const name = item.name ? `【${item.name}】` : ''
+          return `${slug} ${name}`.trim()
+        },
+      }),
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
+
     subtitle: text({ label: '副標' }),
     state: select({
       label: '狀態',
@@ -217,7 +235,7 @@ const listConfigurations = list({
     // --- Rich Text ---
     brief: customFields.richTextEditor({
       label: '前言',
-      website: 'mirrormedia',
+      website: 'mirrortv',
       disabledButtons: [
         'header-four',
         'code-block',
@@ -228,7 +246,7 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
-      website: 'mirrormedia',
+      website: 'mirrortv',
       disabledButtons: ['header-four', 'code-block', 'annotation', 'table'],
     }),
 
@@ -358,14 +376,16 @@ const listConfigurations = list({
   },
 
   ui: {
-    labelField: 'name',
+    labelField: 'label', 
+    
     listView: {
       initialColumns: ['slug', 'name', 'state', 'categories', 'publishTime'],
       initialSort: { field: 'publishTime', direction: 'DESC' },
       pageSize: 50,
     },
+    searchFields: ['name', 'slug'], 
+    
     itemView: {
-      // 啟用鎖定機制的 View Function
       defaultFieldMode: itemViewFunction,
     },
   },
