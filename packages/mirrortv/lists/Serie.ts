@@ -22,7 +22,7 @@ const listConfigurations = list({
     }),
     introduction: customFields.richTextEditor({
       label: '內文',
-      website: 'mirrormedia',
+      website: 'mirrortv',
     }),
     section: relationship({
       label: '相關索引',
