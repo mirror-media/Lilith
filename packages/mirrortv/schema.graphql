@@ -413,7 +413,6 @@ type Category {
 
 input CategoryWhereUniqueInput {
   id: ID
-  sortOrder: Int
   slug: String
 }
 
