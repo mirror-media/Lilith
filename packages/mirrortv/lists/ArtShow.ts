@@ -67,7 +67,7 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
-      website: 'mirrormedia',
+      website: 'mirrortv',
       disabledButtons: [
         'code',
         'header-three', // H3
@@ -109,7 +109,7 @@ const listConfigurations = list({
       label: 'Content API Data',
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
       },
     }),
     // 儲存 Content 轉換後的 HTML
@@ -141,16 +141,14 @@ const listConfigurations = list({
     resolveInput: async ({ resolvedData }) => {
       // 過濾控制字元
       resolvedData = filterControlCharacters(resolvedData)
-
       // 轉換 Rich Text (Content)
       const { content } = resolvedData
       if (content) {
         resolvedData.contentApiData = customFields.draftConverter
           .convertToApiData(content)
           .toJS()
-
-        resolvedData.contentHtml =
-          customFields.draftConverter.convertToHtml(content)
+        // resolvedData.contentHtml =
+        //   customFields.draftConverter.convertToHtml(content)
       }
       return resolvedData
     },

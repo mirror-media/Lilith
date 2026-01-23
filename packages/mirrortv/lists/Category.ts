@@ -13,8 +13,25 @@ const listConfigurations = list({
   fields: {
     sortOrder: integer({
       label: '排序順位',
-      isIndexed: 'unique',
-      validation: { isRequired: true },
+      isIndexed: true,
+      validation: { isRequired: false },
+      hooks: {
+        validateInput: async ({
+          resolvedData,
+          addValidationError,
+          context,
+        }) => {
+          const { sortOrder } = resolvedData
+          if (sortOrder !== null && sortOrder !== undefined) {
+            const existing = await context.db.Category.findMany({
+              where: { sortOrder: { equals: sortOrder } },
+            })
+            if (existing.length > 0) {
+              addValidationError('排序順位不能重複！')
+            }
+          }
+        },
+      },
     }),
 
     slug: text({

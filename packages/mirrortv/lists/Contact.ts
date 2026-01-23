@@ -49,7 +49,7 @@ const listConfigurations = list({
     twitter: text({ label: 'Twitter / X' }),
     bio: customFields.richTextEditor({
       label: '個人簡介',
-      website: 'mirrormedia',
+      website: 'mirrortv',
     }),
     anchorperson: checkbox({
       label: '主播',
@@ -77,14 +77,14 @@ const listConfigurations = list({
       label: 'bio API Data',
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     bioHtml: text({
       label: 'bio HTML',
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     isResigned: checkbox({

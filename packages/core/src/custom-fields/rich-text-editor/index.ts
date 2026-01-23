@@ -13,7 +13,7 @@ export type JsonFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     db?: { map?: string }
     disabledButtons?: string[]
     hideOnMobileButtons?: string[]
-    website?: 'mirrormedia' | 'readr' | 'mirrordaily'
+    website?: 'mirrormedia' | 'readr' | 'mirrordaily' | 'mirrortv'
   }
 
 export const richTextEditor =

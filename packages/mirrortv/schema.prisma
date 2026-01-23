@@ -70,7 +70,7 @@ model Audio {
 
 model Category {
   id                       Int        @id @default(autoincrement())
-  sortOrder                Int        @unique
+  sortOrder                Int?
   slug                     String     @unique @default("")
   name                     String     @default("")
   ogTitle                  String     @default("")
@@ -91,6 +91,7 @@ model Category {
   from_Topic_categories    Topic[]    @relation("Topic_categories")
   from_Video_categories    Video[]    @relation("Video_categories")
 
+  @@index([sortOrder])
   @@index([ogImageId])
   @@index([createdById])
   @@index([updatedById])

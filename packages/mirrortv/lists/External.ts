@@ -1,6 +1,6 @@
 import { utils } from '@mirrormedia/lilith-core'
-import { list } from '@keystone-6/core'
-import { text, relationship, select, timestamp } from '@keystone-6/core/fields'
+import { list, graphql } from '@keystone-6/core'
+import { text, relationship, select, timestamp, virtual } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -21,6 +21,23 @@ const listConfigurations = list({
       label: '標題',
       validation: { isRequired: true },
       defaultValue: 'untitled',
+    }),
+
+    label: virtual({
+      label: '關聯顯示 (Slug + Name)',
+      field: graphql.field({
+        type: graphql.String,
+        resolve: (item: Record<string, any>) => {
+          const slug = item.slug || ''
+          const name = item.name ? `【${item.name}】` : ''
+          return `${slug} ${name}`.trim()
+        },
+      }),
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
 
     subtitle: text({
@@ -103,7 +120,8 @@ const listConfigurations = list({
   },
 
   ui: {
-    labelField: 'name',
+    labelField: 'label', 
+    
     listView: {
       initialColumns: [
         'name',
@@ -116,6 +134,7 @@ const listConfigurations = list({
       initialSort: { field: 'publishTime', direction: 'DESC' },
       pageSize: 50,
     },
+    searchFields: ['name', 'slug'],
   },
 
   graphql: {

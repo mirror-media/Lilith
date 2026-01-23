@@ -413,7 +413,6 @@ type Category {
 
 input CategoryWhereUniqueInput {
   id: ID
-  sortOrder: Int
   slug: String
 }
 
@@ -422,7 +421,7 @@ input CategoryWhereInput {
   OR: [CategoryWhereInput!]
   NOT: [CategoryWhereInput!]
   id: IDFilter
-  sortOrder: IntFilter
+  sortOrder: IntNullableFilter
   slug: StringFilter
   name: StringFilter
   ogTitle: StringFilter
@@ -434,17 +433,6 @@ input CategoryWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input IntFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: IntFilter
 }
 
 input BooleanFilter {
@@ -1035,6 +1023,7 @@ type External {
   slug: String
   partner: Partner
   name: String
+  label: String
   subtitle: String
   state: String
   publishTime: DateTime
@@ -1381,6 +1370,7 @@ type Post {
   id: ID!
   slug: String
   name: String
+  label: String
   subtitle: String
   state: String
   publishTime: DateTime
@@ -1803,6 +1793,17 @@ input SaleWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
 }
 
 input SaleStateTypeNullableFilter {

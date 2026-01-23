@@ -124,6 +124,24 @@ const listConfigurations = list({
       validation: { isRequired: true },
       defaultValue: 'untitled',
     }),
+
+    label: virtual({
+      label: '關聯顯示 (Slug + Name)',
+      field: graphql.field({
+        type: graphql.String,
+        resolve: (item: Record<string, any>) => {
+          const slug = item.slug || ''
+          const name = item.name ? `【${item.name}】` : ''
+          return `${slug} ${name}`.trim()
+        },
+      }),
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
+
     subtitle: text({ label: '副標' }),
     state: select({
       label: '狀態',
@@ -217,7 +235,7 @@ const listConfigurations = list({
     // --- Rich Text ---
     brief: customFields.richTextEditor({
       label: '前言',
-      website: 'mirrormedia',
+      website: 'mirrortv',
       disabledButtons: [
         'header-four',
         'code-block',
@@ -228,7 +246,7 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
-      website: 'mirrormedia',
+      website: 'mirrortv',
       disabledButtons: ['header-four', 'code-block', 'annotation', 'table'],
     }),
 
@@ -358,14 +376,16 @@ const listConfigurations = list({
   },
 
   ui: {
-    labelField: 'name',
+    labelField: 'label',
+
     listView: {
       initialColumns: ['slug', 'name', 'state', 'categories', 'publishTime'],
       initialSort: { field: 'publishTime', direction: 'DESC' },
       pageSize: 50,
     },
+    searchFields: ['name', 'slug'],
+
     itemView: {
-      // 啟用鎖定機制的 View Function
       defaultFieldMode: itemViewFunction,
     },
   },
@@ -393,32 +413,47 @@ const listConfigurations = list({
 
   hooks: {
     resolveInput: async ({ resolvedData, item }) => {
-      // 1. 清理控制字元
+      // 清理控制字元
       for (const key in resolvedData) {
         if (typeof resolvedData[key] === 'string') {
           resolvedData[key] = removeControlCharacter(resolvedData[key])
         }
       }
 
-      // 2. RichText 轉換 (DraftJS -> HTML/API Data)
+      // RichText 轉換 (DraftJS -> HTML/API Data)
       if (resolvedData.brief) {
-        resolvedData.briefApiData = customFields.draftConverter
-          .convertToApiData(resolvedData.brief)
-          .toJS()
-        resolvedData.briefHtml = customFields.draftConverter.convertToHtml(
-          resolvedData.brief
-        )
+        try {
+          resolvedData.briefApiData = customFields.draftConverter
+            .convertToApiData(resolvedData.brief)
+            .toJS()
+          // resolvedData.briefHtml = customFields.draftConverter.convertToHtml(
+          //   resolvedData.brief
+          // )
+        } catch (error: unknown) {
+          const message =
+            error instanceof Error ? error.message : '發生未知錯誤'
+          console.error('[Error] Brief 轉換失敗:', message)
+        }
       }
       if (resolvedData.content) {
-        resolvedData.contentApiData = customFields.draftConverter
-          .convertToApiData(resolvedData.content)
-          .toJS()
-        resolvedData.contentHtml = customFields.draftConverter.convertToHtml(
-          resolvedData.content
-        )
+        try {
+          resolvedData.contentApiData = customFields.draftConverter
+            .convertToApiData(resolvedData.content)
+            .toJS()
+          // resolvedData.contentHtml = customFields.draftConverter.convertToHtml(
+          //   resolvedData.content
+          // )
+        } catch (error: unknown) {
+          const message =
+            error instanceof Error ? error.message : '發生未知錯誤'
+          console.error('[Error] Content 轉換失敗，原因:', message)
+
+          resolvedData.contentApiData = []
+          resolvedData.contentHtml = ''
+        }
       }
 
-      // 3. 清理 HTML 中的控制字元
+      // 清理 HTML 中的控制字元
       if (resolvedData.briefHtml)
         resolvedData.briefHtml = removeControlCharacter(resolvedData.briefHtml)
       if (resolvedData.contentHtml)
@@ -426,10 +461,10 @@ const listConfigurations = list({
           resolvedData.contentHtml
         )
 
-      // 4. 生成 Source
+      // 生成 Source
       handleGenerateSource(item, resolvedData)
 
-      // 5. Slug 格式化
+      // Slug 格式化
       if (resolvedData.slug) {
         resolvedData.slug = resolvedData.slug.trim().replace(/\s+/g, '_')
       }
