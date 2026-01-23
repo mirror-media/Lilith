@@ -14,7 +14,7 @@ const listConfigurations = list({
     sortOrder: integer({
       label: '排序順位',
       isIndexed: 'unique',
-      validation: { isRequired: true },
+      validation: { isRequired: false },
     }),
 
     slug: text({
