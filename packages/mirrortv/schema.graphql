@@ -422,7 +422,7 @@ input CategoryWhereInput {
   OR: [CategoryWhereInput!]
   NOT: [CategoryWhereInput!]
   id: IDFilter
-  sortOrder: IntFilter
+  sortOrder: IntNullableFilter
   slug: StringFilter
   name: StringFilter
   ogTitle: StringFilter
@@ -434,17 +434,6 @@ input CategoryWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
-}
-
-input IntFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: IntFilter
 }
 
 input BooleanFilter {
@@ -1805,6 +1794,17 @@ input SaleWhereInput {
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
 }
 
 input SaleStateTypeNullableFilter {
