@@ -18,7 +18,7 @@ function filterByServerType(roles: UserRole[]) {
     switch (envVar.accessControlStrategy) {
       case ACL.GraphQL:
         // 前端網站只顯示已發布或可見項目
-        return { state: { in: ['published', 'invisible'] } }
+        return { state: { in: ['published'] } }
       case ACL.Preview:
         // Preview 顯示全部
         return true

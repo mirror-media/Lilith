@@ -52,7 +52,7 @@ function handleGenerateSource(
   }
 }
 
-function filterPosts() {
+function filterPosts(roles: UserRole[]) {
   return ({ session }: { session?: Record<string, any> }) => {
     switch (envVar.accessControlStrategy) {
       case 'gql':
@@ -61,14 +61,14 @@ function filterPosts() {
         return true
       case 'cms':
       default:
-        // Admin, Moderator 可看所有
-        if (
-          session?.data?.role === UserRole.Admin ||
-          session?.data?.role === UserRole.Moderator
-        ) {
+        if (!session?.data?.role)
+          return { state: { in: [PostState.Published] } }
+
+        if (roles.includes(session.data.role)) {
           return true
         }
-        return true
+
+        return { state: { in: [PostState.Published] } }
     }
   }
 }
@@ -113,24 +113,6 @@ const itemViewFunction = async ({
 
 const listConfigurations = list({
   fields: {
-    // --- Locking Fields (MM) ---
-    lockBy: relationship({
-      ref: 'User',
-      label: '誰正在編輯',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
-        displayMode: 'cards',
-        cardFields: ['name'],
-      },
-    }),
-    lockExpireAt: timestamp({
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'hidden' },
-      },
-    }),
-
     // --- Basic Fields ---
     slug: text({
       label: 'Slug',
@@ -142,6 +124,24 @@ const listConfigurations = list({
       validation: { isRequired: true },
       defaultValue: 'untitled',
     }),
+
+    label: virtual({
+      label: '關聯顯示 (Slug + Name)',
+      field: graphql.field({
+        type: graphql.String,
+        resolve: (item: Record<string, any>) => {
+          const slug = item.slug || ''
+          const name = item.name ? `【${item.name}】` : ''
+          return `${slug} ${name}`.trim()
+        },
+      }),
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
+
     subtitle: text({ label: '副標' }),
     state: select({
       label: '狀態',
@@ -188,13 +188,13 @@ const listConfigurations = list({
       label: '影音',
       ref: 'Contact',
       many: true,
-    }), // K5 名稱
+    }),
     designers: relationship({ label: '設計', ref: 'Contact', many: true }),
     engineers: relationship({ label: '工程', ref: 'Contact', many: true }),
     vocals: relationship({ label: '主播', ref: 'Contact', many: true }),
     otherbyline: text({ label: '作者（其他）' }),
 
-    // heroVideo: relationship({ label: '影片', ref: 'Video' }),
+    heroVideo: relationship({ label: '影片', ref: 'Video' }),
     heroImage: relationship({
       label: '首圖',
       ref: 'Image',
@@ -235,7 +235,7 @@ const listConfigurations = list({
     // --- Rich Text ---
     brief: customFields.richTextEditor({
       label: '前言',
-      website: 'mirrormedia',
+      website: 'mirrortv',
       disabledButtons: [
         'header-four',
         'code-block',
@@ -246,7 +246,7 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
-      website: 'mirrormedia',
+      website: 'mirrortv',
       disabledButtons: ['header-four', 'code-block', 'annotation', 'table'],
     }),
 
@@ -288,10 +288,17 @@ const listConfigurations = list({
     }),
 
     // --- Others ---
-    // topics: relationship({ label: '專題', ref: 'Topic', ui: { createView: { fieldMode: 'hidden' }, itemView: { fieldMode: 'read' } } }),
+    topics: relationship({
+      label: '專題',
+      ref: 'Topic',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
+    }),
     tags: relationship({ label: '標籤', ref: 'Tag', many: true }),
     audio: relationship({ label: '音檔', ref: 'Audio' }),
-    // download: relationship({ label: '附加檔案', ref: 'Download', many: true }),
+    download: relationship({ label: '附加檔案', ref: 'Download', many: true }),
 
     relatedPosts: relationship({ label: '相關文章', ref: 'Post', many: true }),
     manualOrderOfRelatedPosts: json({
@@ -302,7 +309,14 @@ const listConfigurations = list({
       },
     }),
 
-    // relatedTopic: relationship({ label: '相關專題', ref: 'Topic', ui: { createView: { fieldMode: 'hidden' }, itemView: { fieldMode: 'read' } } }),
+    relatedTopic: relationship({
+      label: '相關專題',
+      ref: 'Topic',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
+    }),
 
     ogTitle: text({ label: 'FB 分享標題' }),
     ogDescription: text({ label: 'FB 分享說明' }),
@@ -320,6 +334,24 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
+      },
+    }),
+
+    // --- Locking Fields (MM) ---
+    lockBy: relationship({
+      ref: 'User',
+      label: '誰正在編輯',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+        displayMode: 'cards',
+        cardFields: ['name'],
+      },
+    }),
+    lockExpireAt: timestamp({
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
 
@@ -344,14 +376,16 @@ const listConfigurations = list({
   },
 
   ui: {
-    labelField: 'name',
+    labelField: 'label',
+
     listView: {
       initialColumns: ['slug', 'name', 'state', 'categories', 'publishTime'],
       initialSort: { field: 'publishTime', direction: 'DESC' },
       pageSize: 50,
     },
+    searchFields: ['name', 'slug'],
+
     itemView: {
-      // 啟用鎖定機制的 View Function
       defaultFieldMode: itemViewFunction,
     },
   },
@@ -379,32 +413,47 @@ const listConfigurations = list({
 
   hooks: {
     resolveInput: async ({ resolvedData, item }) => {
-      // 1. 清理控制字元
+      // 清理控制字元
       for (const key in resolvedData) {
         if (typeof resolvedData[key] === 'string') {
           resolvedData[key] = removeControlCharacter(resolvedData[key])
         }
       }
 
-      // 2. RichText 轉換 (DraftJS -> HTML/API Data)
+      // RichText 轉換 (DraftJS -> HTML/API Data)
       if (resolvedData.brief) {
-        resolvedData.briefApiData = customFields.draftConverter
-          .convertToApiData(resolvedData.brief)
-          .toJS()
-        resolvedData.briefHtml = customFields.draftConverter.convertToHtml(
-          resolvedData.brief
-        )
+        try {
+          resolvedData.briefApiData = customFields.draftConverter
+            .convertToApiData(resolvedData.brief)
+            .toJS()
+          // resolvedData.briefHtml = customFields.draftConverter.convertToHtml(
+          //   resolvedData.brief
+          // )
+        } catch (error: unknown) {
+          const message =
+            error instanceof Error ? error.message : '發生未知錯誤'
+          console.error('[Error] Brief 轉換失敗:', message)
+        }
       }
       if (resolvedData.content) {
-        resolvedData.contentApiData = customFields.draftConverter
-          .convertToApiData(resolvedData.content)
-          .toJS()
-        resolvedData.contentHtml = customFields.draftConverter.convertToHtml(
-          resolvedData.content
-        )
+        try {
+          resolvedData.contentApiData = customFields.draftConverter
+            .convertToApiData(resolvedData.content)
+            .toJS()
+          // resolvedData.contentHtml = customFields.draftConverter.convertToHtml(
+          //   resolvedData.content
+          // )
+        } catch (error: unknown) {
+          const message =
+            error instanceof Error ? error.message : '發生未知錯誤'
+          console.error('[Error] Content 轉換失敗，原因:', message)
+
+          resolvedData.contentApiData = []
+          resolvedData.contentHtml = ''
+        }
       }
 
-      // 3. 清理 HTML 中的控制字元
+      // 清理 HTML 中的控制字元
       if (resolvedData.briefHtml)
         resolvedData.briefHtml = removeControlCharacter(resolvedData.briefHtml)
       if (resolvedData.contentHtml)
@@ -412,10 +461,10 @@ const listConfigurations = list({
           resolvedData.contentHtml
         )
 
-      // 4. 生成 Source
+      // 生成 Source
       handleGenerateSource(item, resolvedData)
 
-      // 5. Slug 格式化
+      // Slug 格式化
       if (resolvedData.slug) {
         resolvedData.slug = resolvedData.slug.trim().replace(/\s+/g, '_')
       }
@@ -498,25 +547,169 @@ const listConfigurations = list({
       }
     },
 
-    afterOperation: async ({ operation, item, context }) => {
-      // --- K5 Logic: Emit Edit Log ---
-      // 這裡需要實作 emitEditLog，通常是用 console.log 或寫入 DB
-      // K6 rename: existingItem -> originalItem
-      console.log(
-        `[EditLog] Operation: ${operation}, Item: ${item?.id}, User: ${context.session?.data?.name}`
-      )
+    afterOperation: async ({
+      operation,
+      item,
+      context,
+      resolvedData,
+      originalItem,
+    }) => {
+      if (
+        operation === 'create' ||
+        operation === 'update' ||
+        operation === 'delete'
+      ) {
+        try {
+          const editorName = context.session?.data?.name || '未知用戶'
+          const targetId =
+            item?.id || (originalItem as any)?.id || (resolvedData as any)?.id
+          if (!targetId) {
+            console.warn('[EditLog] 無法取得目標 ID，取消紀錄')
+            return
+          }
 
-      /* 
-      if (typeof emitEditLog === 'function') {
-        emitEditLog({
-          operation,
-          originalInput: resolvedData, 
-          existingItem: originalItem, 
-          context,
-          updatedItem: item,
-        })
+          // 定義抓取欄位
+          const fullQuery = `
+            id slug name subtitle state publishTime publishedDateString
+            otherbyline heroCaption heroImageSize style source
+            ogTitle ogDescription adTraceCode notFeed exclusive
+            isFeatured isAdult isAdvertised isAdBlocked
+            brief content
+            categories { id name } writers { id name } photographers { id name }
+            cameraOperators { id name } designers { id name } engineers { id name }
+            vocals { id name } heroVideo { id name } heroImage { id name }
+            topics { id name } tags { id name } audio { id name }
+            download { id name } relatedPosts { id name } relatedTopic { id name }
+            ogImage { id name }
+          `
+
+          const fullNewItem =
+            operation !== 'delete'
+              ? ((await context.sudo().query.Post.findOne({
+                  where: { id: String(targetId) },
+                  query: fullQuery,
+                })) as Record<string, any>)
+              : null
+
+          const oldItemBase = (originalItem as Record<string, any>) || {}
+
+          const formatValueForLog = (val: any) => {
+            if (val === undefined || val === null) return null
+
+            // 處理 Many Relationship
+            if (Array.isArray(val)) {
+              if (val.length === 0) return null
+              return val.map((v: any) => v.name || v.id || v).join(',')
+            }
+
+            // 處理 Single Relationship
+            if (typeof val === 'object') {
+              if (val.name) return val.name
+              if (val.id) return val.id
+              return JSON.stringify(val)
+            }
+            return String(val)
+          }
+
+          const safeParse = (data: any) => {
+            if (!data) return undefined
+            if (typeof data === 'object') return data
+            try {
+              return JSON.parse(data)
+            } catch (e) {
+              return undefined
+            }
+          }
+
+          const editedData: Record<string, any> = {}
+          const blackList = [
+            'id',
+            'briefHtml',
+            'briefApiData',
+            'contentHtml',
+            'contentApiData',
+            'updatedAt',
+            'createdAt',
+            'manualOrderOfWriters',
+            'manualOrderOfRelatedPosts',
+            'updateTimeStamp',
+            'lockBy',
+            'lockExpireAt',
+            'trimmedApiData',
+          ]
+
+          let briefObject: any = undefined
+          let contentObject: any = undefined
+
+          if (operation === 'update') {
+            const newItem = fullNewItem || {}
+            // 比對有異動的欄位
+            Object.keys(resolvedData || {}).forEach((key) => {
+              if (
+                blackList.includes(key) ||
+                key === 'brief' ||
+                key === 'content'
+              )
+                return
+
+              const oldValue = formatValueForLog(oldItemBase[key])
+              const newValue = formatValueForLog(newItem[key])
+
+              if (oldValue !== newValue) {
+                editedData[key] = newValue ?? 'null'
+              }
+            })
+            briefObject = newItem.brief
+            contentObject = newItem.content
+          } else {
+            // Create 或 Delete: 紀錄當下所有欄位
+            const target =
+              operation === 'delete' ? oldItemBase : fullNewItem || {}
+            Object.keys(target).forEach((key) => {
+              if (
+                blackList.includes(key) ||
+                key === 'brief' ||
+                key === 'content'
+              )
+                return
+              editedData[key] = formatValueForLog(target[key])
+            })
+            briefObject = target.brief
+            contentObject = target.content
+          }
+
+          if (
+            operation === 'update' &&
+            Object.keys(editedData).length === 0 &&
+            !resolvedData.brief &&
+            !resolvedData.content
+          ) {
+            return
+          }
+
+          const postSlug =
+            operation === 'delete'
+              ? oldItemBase?.slug || oldItemBase?.name || String(targetId)
+              : fullNewItem?.slug || fullNewItem?.name || String(targetId)
+
+          // 寫入 EditLog
+          await context.sudo().query.EditLog.createOne({
+            data: {
+              name: editorName,
+              operation: operation,
+              postSlug: String(postSlug),
+              brief: safeParse(briefObject),
+              content: safeParse(contentObject),
+              changedList: JSON.stringify(editedData),
+            },
+          })
+
+          console.log(`[EditLog] ${operation} 成功紀錄: ${postSlug}`)
+        } catch (err) {
+          console.error(`[EditLog] ${operation} 發生錯誤:`, err)
+        }
       }
-      */
+
       // MM 的邏輯: 更新後解鎖
       if (operation === 'update' && item) {
         await context.prisma.Post.update({

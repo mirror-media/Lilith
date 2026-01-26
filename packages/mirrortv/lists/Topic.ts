@@ -124,7 +124,7 @@ const listConfigurations = list({
     }),
     brief: customFields.richTextEditor({
       label: '前言',
-      website: 'mirrormedia',
+      website: 'mirrortv',
       disabledButtons: [
         'code',
         'header-four',
@@ -208,8 +208,8 @@ const listConfigurations = list({
           .convertToApiData(brief)
           .toJS()
 
-        resolvedData.briefHtml =
-          customFields.draftConverter.convertToHtml(brief)
+        // resolvedData.briefHtml =
+        //   customFields.draftConverter.convertToHtml(brief)
       }
 
       return resolvedData

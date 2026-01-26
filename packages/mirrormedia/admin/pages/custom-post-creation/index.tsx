@@ -45,7 +45,6 @@ const CUSTOM_FIELD_MODES = {
 const Wrapper = styled.div`
   /* workaround: padding-bottom is added to ensure all content is visible on mobile devices */
   padding-bottom: 140px;
-  max-width: 320px;
 
   @media (min-width: 575px) {
     max-width: none;

@@ -78,7 +78,7 @@ function filterExternals(roles: string[]) {
         }
       }
       case 'preview': {
-        // Expose all externals, including `published`, `draft` and `archived` externals
+        // Expose all externals, including `published`, `draft` and `archived` externals.
         return true
       }
       case 'cms':

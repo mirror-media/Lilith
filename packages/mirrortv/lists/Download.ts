@@ -26,13 +26,13 @@ type FileField = {
 const gcsConfig = envVar.gcs as unknown as GcsConfig
 const subDir = 'documents'
 
-// Init Storage
+// Init Google Cloud Storage
 let bucket: Bucket | undefined
 try {
   let keyPath = gcsConfig?.keyFilename
   if (keyPath) keyPath = path.resolve(process.cwd(), keyPath)
 
-  if (gcsConfig) {
+  if (gcsConfig?.bucket) {
     const storage = new Storage({
       projectId: gcsConfig.projectId,
       keyFilename: keyPath,
@@ -72,93 +72,97 @@ const listConfigurations = list({
   },
 
   hooks: {
-    resolveInput: ({ resolvedData }) => {
+    resolveInput: async ({ resolvedData }) => {
       const fileData = resolvedData.file as FileField
 
-      if (fileData) {
-        const filename = fileData.filename
+      if (fileData && fileData.filename) {
+        let originalName = fileData.filename
 
-        // 路徑處理
-        const urlBase = envVar.files.baseUrl || '/files'
-        const storageRoot = envVar.files.storagePath || 'public/files'
-        const absRoot = path.isAbsolute(storageRoot)
-          ? storageRoot
-          : path.join(process.cwd(), storageRoot)
-        const srcPath = path.join(absRoot, filename) // 原始位置
-        const destDir = path.join(absRoot, subDir) // 目標資料夾
-        const destPath = path.join(destDir, filename) // 目標位置
+        if (originalName.startsWith(`${subDir}/`)) {
+          originalName = originalName.replace(`${subDir}/`, '')
+        }
+
+        const baseDir = envVar.files.baseUrl.replace(/^\/|\/$/g, '') || 'files'
+        const relativeFilePath = `${subDir}/${originalName}`
 
         try {
-          console.log(`[Download] Processing: ${filename}`)
+          const storageRoot = envVar.files.storagePath || 'public/files'
+          const absRoot = path.isAbsolute(storageRoot)
+            ? storageRoot
+            : path.join(process.cwd(), storageRoot)
 
-          // 檔案移至 documents
-          if (fs.existsSync(srcPath)) {
-            if (!fs.existsSync(destDir))
+          const srcPath = path.join(absRoot, originalName)
+          const destDir = path.join(absRoot, subDir)
+          const destPath = path.join(destDir, originalName)
+
+          if (fs.existsSync(srcPath) && srcPath !== destPath) {
+            if (!fs.existsSync(destDir)) {
               fs.mkdirSync(destDir, { recursive: true })
+            }
             fs.renameSync(srcPath, destPath)
-            // eslint-disable-next-line no-console
-            console.log(`[Download] Moved to: ${destPath}`)
+            console.log(`[Download] Moved: ${srcPath} → ${destPath}`)
+          } else if (fs.existsSync(destPath)) {
+            console.log(`[Download] Already in place: ${destPath}`)
           }
 
-          // 設定 URL
-          if (gcsConfig?.bucket) {
-            resolvedData.url = getFileURL(
-              gcsConfig.bucket,
-              envVar.files.baseUrl,
-              `${subDir}/${filename}`
-            )
-          } else {
-            resolvedData.url = `${urlBase}/${subDir}/${filename}`
-          }
+          fileData.filename = relativeFilePath
+
+          const fullUrl = gcsConfig?.bucket
+            ? getFileURL(gcsConfig.bucket, baseDir, relativeFilePath)
+            : `/${baseDir}/${relativeFilePath}`
+
+          resolvedData.url =
+            typeof fullUrl === 'string' ? fullUrl.replace(/\/+$/, '') : fullUrl
+
+          console.log(`[Download] File: ${fileData.filename}`)
+          console.log(`[Download] URL: ${resolvedData.url}`)
         } catch (e) {
-          console.error('[Download] Error:', e)
-          // Fallback URL
-          resolvedData.url = gcsConfig?.bucket
-            ? getFileURL(gcsConfig.bucket, urlBase, `${subDir}/${filename}`)
-            : `${urlBase}/${subDir}/${filename}`
+          console.error('[Download] resolveInput Error:', e)
+          const fallbackUrl = gcsConfig?.bucket
+            ? getFileURL(gcsConfig.bucket, baseDir, relativeFilePath)
+            : `/${baseDir}/${relativeFilePath}`
+          resolvedData.url = fallbackUrl
         }
       }
       return resolvedData
     },
 
-    afterOperation: async ({ operation, item, originalItem }) => {
-      const targetItem = operation === 'delete' ? originalItem : item
-      if (operation !== 'delete' || !targetItem) return
+    afterOperation: async ({ operation, originalItem }) => {
+      if (operation !== 'delete' || !originalItem) return
 
-      const rawItem = targetItem as {
+      const rawItem = originalItem as {
         file_filename?: string
         file?: { filename?: string }
       }
-      const filename = rawItem.file_filename || rawItem.file?.filename
+
+      let filename = rawItem.file_filename || rawItem.file?.filename
       if (!filename) return
+      filename = filename.replace(/^\/+/g, '')
 
       try {
-        // 刪除 GCS 檔案
-        if (bucket) {
-          const gcsPath = `${subDir}/${filename}`
-          const file = bucket.file(gcsPath)
+        const storageRoot = envVar.files.storagePath || 'public/files'
+        const absRoot = path.isAbsolute(storageRoot)
+          ? storageRoot
+          : path.join(process.cwd(), storageRoot)
+        const localPath = path.join(absRoot, filename)
 
-          const [exists] = await file.exists()
-          if (exists) {
-            await file.delete()
-            // eslint-disable-next-line no-console
-            console.log(`[Download] Deleted GCS: ${gcsPath}`)
-          }
+        if (fs.existsSync(localPath)) {
+          fs.unlinkSync(localPath)
+          console.log(`[Download] Local Deleted: ${localPath}`)
         }
-        // 刪除 local 檔案
-        else {
-          const storageRoot = envVar.files.storagePath || 'public/files'
-          const localPath = path.resolve(
-            process.cwd(),
-            storageRoot,
-            subDir,
-            filename
-          )
 
-          if (fs.existsSync(localPath)) {
-            fs.unlinkSync(localPath)
-            // eslint-disable-next-line no-console
-            console.log(`[Download] Deleted Local: ${localPath}`)
+        if (bucket) {
+          const baseDir = (envVar.files.baseUrl || 'files').replace(
+            /^\/+|\/+$/g,
+            ''
+          )
+          const gcsPath = `${baseDir}/${filename}`
+          const gcsFile = bucket.file(gcsPath)
+
+          const [exists] = await gcsFile.exists()
+          if (exists) {
+            await gcsFile.delete()
+            console.log(`[Download] GCS Deleted: ${gcsPath}`)
           }
         }
       } catch (e) {

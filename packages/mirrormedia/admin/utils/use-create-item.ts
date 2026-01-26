@@ -6,7 +6,12 @@ import type { Value } from '@keystone-6/core/admin-ui/utils'
 import { useToasts } from '@keystone-ui/toast'
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import isDeepEqual from 'fast-deep-equal'
-import { useMutation, gql, ApolloError } from '@keystone-6/core/admin-ui/apollo'
+import {
+  useMutation,
+  gql,
+  ApolloError,
+  useApolloClient,
+} from '@keystone-6/core/admin-ui/apollo'
 import { useKeystone } from '@keystone-6/core/admin-ui/context'
 
 import { usePreventNavigation } from './use-prevent-navigation'
@@ -103,6 +108,8 @@ function useCreateItemCore({
   returnedData: any
   autoSlug: boolean
 }): CreateItemHookResult {
+  const apolloClient = useApolloClient()
+  const { authenticatedItem } = useKeystone()
   const [value, setValue] = useState(() => {
     const value: ValueWithoutServerSideErrors = {}
     Object.keys(list.fields).forEach((fieldPath) => {
@@ -196,6 +203,7 @@ function useCreateItemCore({
         const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, '') // HHmmss
 
         let writerId = ''
+        let slugCode = ''
         const writersField = value.writers
 
         if (writersField?.value?.value) {
@@ -218,8 +226,41 @@ function useCreateItemCore({
           }
         }
 
+        // Query current logged-in User's slugCode
+        if (
+          authenticatedItem &&
+          'state' in authenticatedItem &&
+          authenticatedItem.state === 'authenticated' &&
+          authenticatedItem.id
+        ) {
+          try {
+            const { data: userData } = await apolloClient.query({
+              query: gql`
+                query GetUserSlugCode($id: ID!) {
+                  user(where: { id: $id }) {
+                    id
+                    slugCode
+                  }
+                }
+              `,
+              variables: { id: authenticatedItem.id },
+              fetchPolicy: 'network-only',
+            })
+            if (userData?.user?.slugCode) {
+              slugCode = userData.user.slugCode
+            }
+          } catch (error) {
+            // If query fails, continue without slugCode (backward compatible)
+            console.error('Failed to fetch User slugCode:', error)
+          }
+        }
+
         const slug = writerId
-          ? `${dateStr}-${writerId}-${timeStr}`
+          ? slugCode
+            ? `${dateStr}-${writerId}${slugCode}-${timeStr}`
+            : `${dateStr}-${writerId}-${timeStr}`
+          : slugCode
+          ? `${dateStr}-${slugCode}-${timeStr}`
           : `${dateStr}-${timeStr}`
 
         finalData = { ...finalData, slug }

@@ -2203,6 +2203,7 @@ type User {
   email: String
   password: PasswordState
   role: String
+  slugCode: String
   isProtected: Boolean
 }
 
@@ -2223,6 +2224,7 @@ input UserWhereInput {
   name: StringFilter
   email: StringFilter
   role: StringFilter
+  slugCode: StringFilter
   isProtected: BooleanFilter
 }
 
@@ -2231,6 +2233,7 @@ input UserOrderByInput {
   name: OrderDirection
   email: OrderDirection
   role: OrderDirection
+  slugCode: OrderDirection
   isProtected: OrderDirection
 }
 
@@ -2239,6 +2242,7 @@ input UserUpdateInput {
   email: String
   password: String
   role: String
+  slugCode: String
   isProtected: Boolean
 }
 
@@ -2252,6 +2256,7 @@ input UserCreateInput {
   email: String
   password: String
   role: String
+  slugCode: String
   isProtected: Boolean
 }
 
@@ -2631,6 +2636,14 @@ type Query {
   groupsCount(where: GroupWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
+  allPostsForRelation(where: JSON, take: Int, skip: Int, orderBy: JSON): [PostForRelation!]
+  allPostsForRelationCount(where: JSON): Int
+}
+
+type PostForRelation {
+  id: ID!
+  title: String
+  slug: String
 }
 
 union AuthenticatedItem = User

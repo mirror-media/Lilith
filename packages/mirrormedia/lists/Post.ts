@@ -39,7 +39,13 @@ type Session = {
 }
 
 function filterPosts(roles: string[]) {
-  return ({ session }: { session?: Session }) => {
+  return ({
+    session,
+    context,
+  }: {
+    session?: Session
+    context: KeystoneContext
+  }) => {
     switch (envVar.accessControlStrategy) {
       case 'gql': {
         // Expose `published` and `invisible` posts
@@ -66,6 +72,26 @@ function filterPosts(roles: string[]) {
         }
 
         if (session.data.role === UserRole.Editor) {
+          const reqBody = (
+            context.req as { body?: { query?: string; variables?: unknown } }
+          )?.body
+          const query = reqBody?.query
+
+          if (query && typeof query === 'string') {
+            // Mutations: allow all posts (for connecting relationships)
+            if (query.trim().startsWith('mutation')) {
+              return true
+            }
+
+            // Single-item query (edit page): allow all posts (for relationship loading)
+            // Check if query uses 'post(' (singular) instead of 'posts(' (plural)
+            const isSingleItemQuery =
+              /\bpost\s*\(/.test(query) && !/\bposts\s*\(/.test(query)
+            if (isSingleItemQuery) {
+              return true
+            }
+          }
+
           return {
             createdBy: { id: { equals: session.data.id } },
           }
@@ -419,6 +445,7 @@ const listConfigurations = list({
         'unordered-list-item',
         'ordered-list-item',
         'header-three',
+        'header-four',
         'audio',
         'blockquote',
         'code',
@@ -426,10 +453,11 @@ const listConfigurations = list({
         'divider',
         'embed',
         'info-box',
-        'link',
+        'italic',
+        'underline',
         'slideshow',
         'table',
-        'youtube',
+        'video',
       ],
       website: 'mirrormedia',
       access: {
@@ -501,7 +529,7 @@ const listConfigurations = list({
       ref: 'Post',
       many: false,
       ui: {
-        views: './lists/views/sorted-relationship/index',
+        views: './lists/views/related-posts-all/index',
       },
     }),
     relatedsTwo: relationship({
@@ -509,7 +537,7 @@ const listConfigurations = list({
       ref: 'Post',
       many: false,
       ui: {
-        views: './lists/views/sorted-relationship/index',
+        views: './lists/views/related-posts-all/index',
       },
     }),
     relateds: relationship({
@@ -517,7 +545,7 @@ const listConfigurations = list({
       ref: 'Post',
       many: true,
       ui: {
-        views: './lists/views/sorted-relationship/index',
+        views: './lists/views/related-posts-all/index',
       },
     }),
     from_External_relateds: relationship({
