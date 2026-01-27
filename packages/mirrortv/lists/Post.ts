@@ -159,7 +159,12 @@ const listConfigurations = list({
         update: allowRoles(admin, moderator, editor),
       },
     }),
-    publishTime: timestamp({ label: '發佈時間' }),
+    publishTime: timestamp({
+      label: '發佈時間',
+      isIndexed: true,
+      isFilterable: true,
+      defaultValue: { kind: 'now' },
+    }),
     publishedDateString: text({
       label: '發布日期(字串)',
       ui: {
@@ -169,7 +174,8 @@ const listConfigurations = list({
     }),
     updateTimeStamp: checkbox({
       label: '下次存檔時自動更改成「現在時間」',
-      defaultValue: false,
+      isFilterable: false,
+      defaultValue: true,
     }),
 
     // --- Relations ---
@@ -460,6 +466,19 @@ const listConfigurations = list({
         resolvedData.contentHtml = removeControlCharacter(
           resolvedData.contentHtml
         )
+
+      // publishTime
+      const { updateTimeStamp, publishTime } = resolvedData
+      if (updateTimeStamp === true) {
+        const now = new Date()
+        now.setSeconds(0, 0)
+        resolvedData.publishTime = now.toISOString()
+        resolvedData.updateTimeStamp = false
+      } else if (publishTime) {
+        const customDate = new Date(publishTime)
+        customDate.setSeconds(0, 0)
+        resolvedData.publishTime = customDate.toISOString()
+      }
 
       // 生成 Source
       handleGenerateSource(item, resolvedData)
