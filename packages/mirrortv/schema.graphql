@@ -1451,7 +1451,6 @@ input PostWhereInput {
   state: StringNullableFilter
   publishTime: DateTimeNullableFilter
   publishedDateString: StringFilter
-  updateTimeStamp: BooleanFilter
   categories: CategoryManyRelationFilter
   writers: ContactManyRelationFilter
   photographers: ContactManyRelationFilter
