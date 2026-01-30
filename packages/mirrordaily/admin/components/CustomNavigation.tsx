@@ -4,8 +4,17 @@ import {
   NavItem,
 } from '@keystone-6/core/admin-ui/components'
 import type { NavigationProps } from '@keystone-6/core/admin-ui/components'
+import { gql, useQuery } from '@keystone-6/core/admin-ui/apollo'
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon'
 import { Fragment, useEffect } from 'react'
+
+const USER_ROLE_QUERY = gql`
+  query UserRole($id: ID!) {
+    user(where: { id: $id }) {
+      role
+    }
+  }
+`
 
 export function CustomNavigation({
   lists,
@@ -18,7 +27,13 @@ export function CustomNavigation({
     if (newTitle !== currentTitle) document.title = newTitle
   })
 
-  const isAdmin = authenticatedItem?.role === 'admin'
+  const userId =
+    authenticatedItem.state === 'authenticated' ? authenticatedItem.id : null
+  const { data } = useQuery(USER_ROLE_QUERY, {
+    variables: { id: userId },
+    skip: !userId,
+  })
+  const isAdmin = data?.user?.role === 'admin'
 
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
