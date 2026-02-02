@@ -250,8 +250,8 @@ model External {
   heroCaption                      String         @default("")
   brief_original                   String         @default("")
   content_original                 String         @default("")
-  brief                            String         @default("")
-  content                          String         @default("")
+  brief                            Json?
+  content                          Json?
   tags                             Tag[]          @relation("External_tags")
   categories                       Category[]     @relation("External_categories")
   source                           String         @default("")
