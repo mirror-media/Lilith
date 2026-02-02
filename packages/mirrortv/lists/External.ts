@@ -1,6 +1,12 @@
-import { utils } from '@mirrormedia/lilith-core'
+import { utils, customFields } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { text, relationship, select, timestamp, virtual } from '@keystone-6/core/fields'
+import {
+  text,
+  relationship,
+  select,
+  timestamp,
+  virtual,
+} from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -83,14 +89,67 @@ const listConfigurations = list({
       ui: { displayMode: 'textarea' },
     }),
 
-    brief: text({
+    brief: customFields.richTextEditor({
       label: '前言',
-      ui: { displayMode: 'textarea' },
+      disabledButtons: [
+        'code',
+        'header-four',
+        'blockquote',
+        'unordered-list-item',
+        'ordered-list-item',
+        'code-block',
+        'annotation',
+        'divider',
+        'embed',
+        'font-color',
+        'image',
+        'info-box',
+        'slideshow',
+        'table',
+        'text-align',
+        'color-box',
+        'background-color',
+        'background-image',
+        'background-video',
+        'related-post',
+        'side-index',
+        'video',
+        'audio',
+        'youtube',
+      ],
+      website: 'mirrortv',
     }),
-
-    content: text({
+    content: customFields.richTextEditor({
       label: '內文',
-      ui: { displayMode: 'textarea' },
+      disabledButtons: [
+        'background-color',
+        'background-image',
+        'background-video',
+        'color-box',
+        'font-color',
+        'header-four',
+        'related-post',
+        'side-index',
+        'text-align',
+      ],
+      hideOnMobileButtons: [
+        'annotation',
+        'unordered-list-item',
+        'ordered-list-item',
+        'header-three',
+        'audio',
+        'blockquote',
+        'code',
+        'code-block',
+        'divider',
+        'embed',
+        'info-box',
+        'link',
+        'slideshow',
+        'table',
+        'youtube',
+      ],
+      website: 'mirrortv',
     }),
 
     tags: relationship({
@@ -120,8 +179,8 @@ const listConfigurations = list({
   },
 
   ui: {
-    labelField: 'label', 
-    
+    labelField: 'label',
+
     listView: {
       initialColumns: [
         'name',
