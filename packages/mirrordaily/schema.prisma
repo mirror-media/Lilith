@@ -313,6 +313,7 @@ model Post {
   state                      String?        @default("draft")
   publishedDate              DateTime       @default(now())
   updateTimeStamp            Boolean        @default(true)
+  pv                         Int?           @default(0)
   isFeatured                 Boolean        @default(false)
   isAdvertised               Boolean        @default(false)
   hiddenAdvertised           Boolean        @default(false)
@@ -325,7 +326,6 @@ model Post {
   css                        String         @default("")
   apiDataBrief               Json?
   apiData                    Json?
-  pv                         Int?           @default(0)
   publishedDateString        String         @default("")
   createdAt                  DateTime?
   updatedAt                  DateTime?
@@ -353,8 +353,8 @@ model Post {
   @@index([og_imageId])
   @@index([state])
   @@index([publishedDate])
-  @@index([WarningId])
   @@index([pv])
+  @@index([WarningId])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -440,6 +440,7 @@ model Topic {
   externals                    External[] @relation("External_topics")
   style                        String     @default("")
   isFeatured                   Boolean    @default(false)
+  isPromoted                   Boolean    @default(false)
   title_style                  String?    @default("feature")
   sections                     Section[]  @relation("Section_topics")
   javascript                   String     @default("")

@@ -1109,6 +1109,34 @@ const listConfigurations = list({
       return
     },
     afterOperation: async ({ operation, item, context, resolvedData }) => {
+      // 更新 Topic 的 updatedAt
+      if (operation === 'update' || operation === 'create') {
+        if (resolvedData?.topics) {
+          const topicIds = []
+
+          if (resolvedData.topics.connect) {
+            if (Array.isArray(resolvedData.topics.connect)) {
+              topicIds.push(
+                ...resolvedData.topics.connect.map((t: any) => t.id)
+              )
+            } else {
+              topicIds.push(resolvedData.topics.connect.id)
+            }
+          }
+
+          // 更新所有相關的 topics
+          if (topicIds.length > 0) {
+            await Promise.all(
+              topicIds.map((topicId: number) =>
+                context.prisma.topic.update({
+                  where: { id: topicId },
+                  data: { updatedAt: new Date() },
+                })
+              )
+            )
+          }
+        }
+      }
       if (item?.topicsId) {
         const result = fetch(
           envVar.topicServiceApi + '?topic_id=' + item?.topicsId,
