@@ -91,6 +91,11 @@ const listConfigurations = list({
 
     brief: customFields.richTextEditor({
       label: '前言',
+      ui: {
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        createView: { fieldMode: 'hidden' },
+      },
       disabledButtons: [
         'code',
         'header-four',
@@ -121,6 +126,11 @@ const listConfigurations = list({
     }),
     content: customFields.richTextEditor({
       label: '內文',
+      ui: {
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        createView: { fieldMode: 'hidden' },
+      },
       disabledButtons: [
         'background-color',
         'background-image',
