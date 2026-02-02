@@ -1205,6 +1205,7 @@ type Post {
   state: String
   publishedDate: DateTime
   updateTimeStamp: Boolean
+  pv: Int
   preview: JSON
   isFeatured: Boolean
   isAdvertised: Boolean
@@ -1218,7 +1219,6 @@ type Post {
   css: String
   apiDataBrief: JSON
   apiData: JSON
-  pv: Int
   publishedDateString: String
   trimmedApiData: JSON
   createdAt: DateTime
@@ -1265,6 +1265,7 @@ input PostWhereInput {
   og_title: StringFilter
   state: StringNullableFilter
   publishedDate: DateTimeFilter
+  pv: IntNullableFilter
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
   hiddenAdvertised: BooleanFilter
@@ -1274,7 +1275,6 @@ input PostWhereInput {
   redirect: StringFilter
   adTrace: StringFilter
   css: StringFilter
-  pv: IntNullableFilter
   publishedDateString: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1308,6 +1308,7 @@ input PostOrderByInput {
   state: OrderDirection
   publishedDate: OrderDirection
   updateTimeStamp: OrderDirection
+  pv: OrderDirection
   isFeatured: OrderDirection
   isAdvertised: OrderDirection
   hiddenAdvertised: OrderDirection
@@ -1315,7 +1316,6 @@ input PostOrderByInput {
   redirect: OrderDirection
   adTrace: OrderDirection
   css: OrderDirection
-  pv: OrderDirection
   publishedDateString: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1365,6 +1365,7 @@ input PostUpdateInput {
   state: String
   publishedDate: DateTime
   updateTimeStamp: Boolean
+  pv: Int
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
@@ -1376,7 +1377,6 @@ input PostUpdateInput {
   css: String
   apiDataBrief: JSON
   apiData: JSON
-  pv: Int
   publishedDateString: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1466,6 +1466,7 @@ input PostCreateInput {
   state: String
   publishedDate: DateTime
   updateTimeStamp: Boolean
+  pv: Int
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
@@ -1477,7 +1478,6 @@ input PostCreateInput {
   css: String
   apiDataBrief: JSON
   apiData: JSON
-  pv: Int
   publishedDateString: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1774,6 +1774,7 @@ type Topic {
   externalsCount(where: ExternalWhereInput! = {}): Int
   style: String
   isFeatured: Boolean
+  isPromoted: Boolean
   title_style: String
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
@@ -1816,6 +1817,7 @@ input TopicWhereInput {
   externals: ExternalManyRelationFilter
   style: StringFilter
   isFeatured: BooleanFilter
+  isPromoted: BooleanFilter
   title_style: StringNullableFilter
   sections: SectionManyRelationFilter
   javascript: StringFilter
@@ -1847,6 +1849,7 @@ input TopicOrderByInput {
   type: OrderDirection
   style: OrderDirection
   isFeatured: OrderDirection
+  isPromoted: OrderDirection
   title_style: OrderDirection
   javascript: OrderDirection
   dfp: OrderDirection
@@ -1878,6 +1881,7 @@ input TopicUpdateInput {
   externals: ExternalRelateToManyForUpdateInput
   style: String
   isFeatured: Boolean
+  isPromoted: Boolean
   title_style: String
   sections: SectionRelateToManyForUpdateInput
   javascript: String
@@ -1924,6 +1928,7 @@ input TopicCreateInput {
   externals: ExternalRelateToManyForCreateInput
   style: String
   isFeatured: Boolean
+  isPromoted: Boolean
   title_style: String
   sections: SectionRelateToManyForCreateInput
   javascript: String
