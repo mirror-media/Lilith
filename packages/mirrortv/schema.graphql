@@ -1032,8 +1032,8 @@ type External {
   heroCaption: String
   brief_original: String
   content_original: String
-  brief: String
-  content: String
+  brief: JSON
+  content: JSON
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
@@ -1066,8 +1066,6 @@ input ExternalWhereInput {
   heroCaption: StringFilter
   brief_original: StringFilter
   content_original: StringFilter
-  brief: StringFilter
-  content: StringFilter
   tags: TagManyRelationFilter
   categories: CategoryManyRelationFilter
   source: StringFilter
@@ -1089,8 +1087,6 @@ input ExternalOrderByInput {
   heroCaption: OrderDirection
   brief_original: OrderDirection
   content_original: OrderDirection
-  brief: OrderDirection
-  content: OrderDirection
   source: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
@@ -1108,8 +1104,8 @@ input ExternalUpdateInput {
   heroCaption: String
   brief_original: String
   content_original: String
-  brief: String
-  content: String
+  brief: JSON
+  content: JSON
   tags: TagRelateToManyForUpdateInput
   categories: CategoryRelateToManyForUpdateInput
   source: String
@@ -1142,8 +1138,8 @@ input ExternalCreateInput {
   heroCaption: String
   brief_original: String
   content_original: String
-  brief: String
-  content: String
+  brief: JSON
+  content: JSON
   tags: TagRelateToManyForCreateInput
   categories: CategoryRelateToManyForCreateInput
   source: String
