@@ -51,6 +51,7 @@ type AudioEntity = {
   name?: string
   urlOriginal?: string
   audioSrc?: string
+  url?: string
   file?: {
     url: string
   }
@@ -67,12 +68,17 @@ export function AudioBlock(
   const isAmp = contentLayout === 'amp'
   const { audio }: { audio: AudioEntity } = entity.getData()
 
+  const effectiveSrc =
+    audio?.urlOriginal ||
+    audio?.audioSrc ||
+    audio?.url ||
+    audio?.file?.url ||
+    ''
   const AudioJsx = isAmp ? (
-    <AmpAudioBlock audio={audio} />
+    <AmpAudioBlock audio={{ ...audio, urlOriginal: effectiveSrc }} />
   ) : (
     <Audio controls>
-      <source src={audio?.urlOriginal} />
-      <source src={audio?.file?.url} />
+      <source src={effectiveSrc} />
     </Audio>
   )
 
@@ -94,12 +100,17 @@ export function AudioBlockV2(
   const isAmp = contentLayout === 'amp'
   const { audio }: { audio: AudioEntity } = entity.getData()
 
+  const effectiveSrc =
+    audio?.audioSrc ||
+    audio?.urlOriginal ||
+    audio?.url ||
+    audio?.file?.url ||
+    ''
   const AudioJsx = isAmp ? (
-    <AmpAudioBlockV2 audio={audio} />
+    <AmpAudioBlockV2 audio={{ ...audio, audioSrc: effectiveSrc }} />
   ) : (
     <Audio controls>
-      <source src={audio?.audioSrc} />
-      <source src={audio?.file?.url} />
+      <source src={effectiveSrc} />
     </Audio>
   )
 
