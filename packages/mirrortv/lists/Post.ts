@@ -74,42 +74,42 @@ function filterPosts(roles: UserRole[]) {
 }
 
 // 文章鎖定機制
-const itemViewFunction = async ({
-  session,
-  context,
-  item,
-}: {
-  session: Record<string, any>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  context: any
-  item: Record<string, any>
-}) => {
-  const userRole = session?.data?.role
-  if (userRole === UserRole.Editor || userRole === UserRole.Contributor) {
-    const { lockBy } = await context.prisma.Post.findUnique({
-      where: { id: Number(item.id) },
-      select: { lockBy: { select: { id: true } } },
-    })
+// const itemViewFunction = async ({
+//   session,
+//   context,
+//   item,
+// }: {
+//   session: Record<string, any>
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   context: any
+//   item: Record<string, any>
+// }) => {
+//   const userRole = session?.data?.role
+//   if (userRole === UserRole.Editor || userRole === UserRole.Contributor) {
+//     const { lockBy } = await context.prisma.Post.findUnique({
+//       where: { id: Number(item.id) },
+//       select: { lockBy: { select: { id: true } } },
+//     })
 
-    if (!lockBy || Number(lockBy.id) === Number(session.data.id)) {
-      const lockExpireAt = new Date(
-        Date.now() + (envVar.lockDuration || 30) * 60 * 1000
-      ).toISOString()
-      if (!lockBy) {
-        await context.prisma.Post.update({
-          where: { id: Number(item.id) },
-          data: {
-            lockBy: { connect: { id: Number(session.data.id) } },
-            lockExpireAt,
-          },
-        })
-      }
-      return 'edit'
-    }
-    return 'read'
-  }
-  return 'edit'
-}
+//     if (!lockBy || Number(lockBy.id) === Number(session.data.id)) {
+//       const lockExpireAt = new Date(
+//         Date.now() + (envVar.lockDuration || 30) * 60 * 1000
+//       ).toISOString()
+//       if (!lockBy) {
+//         await context.prisma.Post.update({
+//           where: { id: Number(item.id) },
+//           data: {
+//             lockBy: { connect: { id: Number(session.data.id) } },
+//             lockExpireAt,
+//           },
+//         })
+//       }
+//       return 'edit'
+//     }
+//     return 'read'
+//   }
+//   return 'edit'
+// }
 
 const listConfigurations = list({
   fields: {
@@ -155,8 +155,8 @@ const listConfigurations = list({
       defaultValue: PostState.Draft,
       isIndexed: true,
       access: {
-        create: allowRoles(admin, moderator, editor),
-        update: allowRoles(admin, moderator, editor),
+        create: allowRoles(admin, moderator),
+        update: allowRoles(admin, moderator),
       },
     }),
     publishTime: timestamp({
@@ -245,15 +245,33 @@ const listConfigurations = list({
       disabledButtons: [
         'header-four',
         'code-block',
-        'annotation',
         'table',
+        'divider',
         'related-post',
+        'color-box',
+        'background-color',
+        'background-image',
+        'background-video',
+        'side-index',
+        'text-align',
       ],
     }),
     content: customFields.richTextEditor({
       label: '內文',
       website: 'mirrortv',
-      disabledButtons: ['header-four', 'code-block', 'annotation', 'table'],
+      disabledButtons: [
+        'header-four',
+        'code-block',
+        'table',
+        'related-post',
+        'color-box',
+        'divider',
+        'background-color',
+        'background-image',
+        'background-video',
+        'side-index',
+        'text-align',
+      ],
     }),
 
     // --- Hidden API Data ---
@@ -391,9 +409,9 @@ const listConfigurations = list({
     },
     searchFields: ['name', 'slug'],
 
-    itemView: {
-      defaultFieldMode: itemViewFunction,
-    },
+    // itemView: {
+    //   defaultFieldMode: itemViewFunction,
+    // },
   },
 
   graphql: {
@@ -403,7 +421,7 @@ const listConfigurations = list({
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor, contributor, owner),
-      update: allowRoles(admin, moderator, owner),
+      update: allowRoles(admin, moderator, contributor, owner),
       create: allowRoles(admin, moderator, editor, contributor),
       delete: allowRoles(admin, moderator),
     },
@@ -498,10 +516,25 @@ const listConfigurations = list({
       context,
       operation,
     }) => {
-      // 權限檢查
-      if (operation === 'update' && item?.state === 'published') {
-        if (context.session?.data?.role === 'contributor') {
-          addValidationError("You don't have the permission")
+      // contributor 權限檢查
+      if (
+        operation === 'update' &&
+        context.session?.data?.role === 'contributor'
+      ) {
+        const currentItem = await context.prisma.Post.findUnique({
+          where: { id: Number(item.id) },
+          select: {
+            createdBy: { select: { id: true } },
+          },
+        })
+
+        // 檢查是否為創建者
+        const createdById = currentItem?.createdBy?.id
+        if (
+          createdById &&
+          Number(createdById) !== Number(context.session?.data?.id)
+        ) {
+          addValidationError('您只能修改自己新增的文章')
           return
         }
       }
@@ -523,22 +556,22 @@ const listConfigurations = list({
       }
 
       // 檢查鎖定狀態 (Update only)
-      if (
-        operation === 'update' &&
-        context.session?.data?.role !== UserRole.Admin
-      ) {
-        const currentItem = await context.prisma.Post.findUnique({
-          where: { id: Number(item.id) },
-          select: { lockBy: { select: { id: true } } },
-        })
-        const lockById = currentItem?.lockBy?.id
-        if (
-          lockById &&
-          Number(lockById) !== Number(context.session?.data?.id)
-        ) {
-          addValidationError('可能有其他人正在編輯，請重新整理頁面。')
-        }
-      }
+      // if (
+      //   operation === 'update' &&
+      //   context.session?.data?.role !== UserRole.Admin
+      // ) {
+      //   const currentItem = await context.prisma.Post.findUnique({
+      //     where: { id: Number(item.id) },
+      //     select: { lockBy: { select: { id: true } } },
+      //   })
+      //   const lockById = currentItem?.lockBy?.id
+      //   if (
+      //     lockById &&
+      //     Number(lockById) !== Number(context.session?.data?.id)
+      //   ) {
+      //     addValidationError('可能有其他人正在編輯，請重新整理頁面。')
+      //   }
+      // }
     },
 
     beforeOperation: async ({ operation, resolvedData }) => {
@@ -730,15 +763,15 @@ const listConfigurations = list({
       }
 
       // MM 的邏輯: 更新後解鎖
-      if (operation === 'update' && item) {
-        await context.prisma.Post.update({
-          where: { id: Number(item.id) },
-          data: {
-            lockBy: { disconnect: true },
-            lockExpireAt: null,
-          },
-        })
-      }
+      // if (operation === 'update' && item) {
+      //   await context.prisma.Post.update({
+      //     where: { id: Number(item.id) },
+      //     data: {
+      //       lockBy: { disconnect: true },
+      //       lockExpireAt: null,
+      //     },
+      //   })
+      // }
     },
   },
 })
