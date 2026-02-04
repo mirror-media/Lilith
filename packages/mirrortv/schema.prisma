@@ -250,8 +250,8 @@ model External {
   heroCaption                      String         @default("")
   brief_original                   String         @default("")
   content_original                 String         @default("")
-  brief                            String         @default("")
-  content                          String         @default("")
+  brief                            Json?
+  content                          Json?
   tags                             Tag[]          @relation("External_tags")
   categories                       Category[]     @relation("External_categories")
   source                           String         @default("")
@@ -341,9 +341,9 @@ model Post {
   name                               String              @default("untitled")
   subtitle                           String              @default("")
   state                              String?             @default("draft")
-  publishTime                        DateTime?
+  publishTime                        DateTime?           @default(now())
   publishedDateString                String              @default("")
-  updateTimeStamp                    Boolean             @default(false)
+  updateTimeStamp                    Boolean             @default(true)
   categories                         Category[]          @relation("Post_categories")
   writers                            Contact[]           @relation("Post_writers")
   manualOrderOfWriters               Json?
@@ -407,6 +407,7 @@ model Post {
   from_Video_relatedPosts            Video[]             @relation("Video_relatedPosts")
 
   @@index([state])
+  @@index([publishTime])
   @@index([heroVideoId])
   @@index([heroImageId])
   @@index([topicsId])
