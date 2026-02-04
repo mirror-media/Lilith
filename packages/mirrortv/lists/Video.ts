@@ -138,6 +138,11 @@ const listConfigurations = list({
     publishTime: timestamp({
       label: '發佈時間',
     }),
+    updateTimeStamp: checkbox({
+      label: '下次存檔時自動更改成「現在時間」',
+      isFilterable: false,
+      defaultValue: true,
+    }),
 
     fileDuration: virtual({
       label: '影片檔案時長',
@@ -249,6 +254,21 @@ const listConfigurations = list({
 
     resolveInput: async ({ resolvedData, item }) => {
       const inputData = { ...resolvedData }
+
+      // 自動更新時間邏輯
+      const updateTimeStamp = inputData.updateTimeStamp
+      const publishTime = inputData.publishTime
+
+      if (updateTimeStamp === true) {
+        const now = new Date()
+        now.setSeconds(0, 0)
+        inputData.publishTime = now.toISOString()
+        inputData.updateTimeStamp = false
+      } else if (publishTime) {
+        const customDate = new Date(publishTime)
+        customDate.setSeconds(0, 0)
+        inputData.publishTime = customDate.toISOString()
+      }
 
       if (inputData.youtubeUrl === undefined) {
         return inputData

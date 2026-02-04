@@ -2707,6 +2707,7 @@ type Video {
   tagsCount(where: TagWhereInput! = {}): Int
   state: String
   publishTime: DateTime
+  updateTimeStamp: Boolean
   fileDuration: String
   youtubeDuration: String
   videoSrc: String
@@ -2761,6 +2762,7 @@ input VideoOrderByInput {
   youtubeDuration_internal: OrderDirection
   state: OrderDirection
   publishTime: OrderDirection
+  updateTimeStamp: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -2783,6 +2785,7 @@ input VideoUpdateInput {
   tags: TagRelateToManyForUpdateInput
   state: String
   publishTime: DateTime
+  updateTimeStamp: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -2812,6 +2815,7 @@ input VideoCreateInput {
   tags: TagRelateToManyForCreateInput
   state: String
   publishTime: DateTime
+  updateTimeStamp: Boolean
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
