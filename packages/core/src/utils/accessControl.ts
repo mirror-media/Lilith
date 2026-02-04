@@ -10,6 +10,57 @@ import type {
 
 const accessControlStrategy = process.env.ACCESS_CONTROL_STRATEGY
 
+/**
+ * 環境變數轉 Set，並可加入預設值。
+ *
+ * 範例設定：
+ * ACCESS_CONTROL_STRATEGY=restricted
+ * ACCESS_CONTROL_RESTRICTED_QUERY_LISTS=User,Post
+ * ACCESS_CONTROL_RESTRICTED_UPDATE_DELETE_LISTS=User,SecretList
+ */
+const parseListEnvToSet = (value: string | undefined, defaults: string[] = []) => {
+  const set = new Set(defaults)
+  ;(value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .forEach((item) => set.add(item))
+  return set
+}
+
+// restricted 預設封鎖 User list（query/update/delete）
+const defaultRestrictedLists =
+  accessControlStrategy === 'restricted' ? ['User'] : []
+
+const restrictedQueryLists = parseListEnvToSet(
+  process.env.ACCESS_CONTROL_RESTRICTED_QUERY_LISTS,
+  defaultRestrictedLists
+)
+const restrictedUpdateDeleteLists = parseListEnvToSet(
+  process.env.ACCESS_CONTROL_RESTRICTED_UPDATE_DELETE_LISTS,
+  defaultRestrictedLists
+)
+
+const bypassWithRestrictions: ListOperationAccessControl<
+  AccessOperation,
+  BaseListTypeInfo
+> = ({ listKey, operation }) => {
+  if (!listKey || !operation) return true
+
+  if (operation === 'query' && restrictedQueryLists.has(listKey)) {
+    return false
+  }
+
+  if (
+    (operation === 'update' || operation === 'delete') &&
+    restrictedUpdateDeleteLists.has(listKey)
+  ) {
+    return false
+  }
+
+  return true
+}
+
 type ACLCheckFunction = (
   auth: BaseAccessArgs<BaseListTypeInfo>
 ) => MaybePromise<boolean>
@@ -32,6 +83,10 @@ export const allowRoles: ListACLFunction = (...args) => {
     case 'preview': {
       return () => true
     }
+    case 'restricted': {
+      // 可透過環境變數指定部分 list 的 query/update/delete 禁用
+      return bypassWithRestrictions
+    }
     case 'cms':
     default: {
       return async (auth) => {
@@ -47,6 +102,10 @@ export const allowRolesForUsers: ListACLFunction = (...args) => {
   // 若user的create access control受到限制,則adminUI將會沒有權限幫我們新增
   // （陷入沒辦法登入進CMS的窘境）
   // 因此在user的access control需要多判斷「如果db中沒有user存在，就暫時關閉access control用以新增user」
+  if (accessControlStrategy === 'restricted') {
+    return bypassWithRestrictions
+  }
+
   return async (auth) => {
     const newArgs = [...args, isNeedToTurnOffAccessControl]
 
