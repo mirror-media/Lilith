@@ -16,7 +16,8 @@ const accessControlStrategy = process.env.ACCESS_CONTROL_STRATEGY
  * 範例設定：
  * ACCESS_CONTROL_STRATEGY=restricted
  * ACCESS_CONTROL_RESTRICTED_QUERY_LISTS=User,Post
- * ACCESS_CONTROL_RESTRICTED_UPDATE_DELETE_LISTS=User,SecretList
+ * ACCESS_CONTROL_RESTRICTED_UPDATE_LISTS=User,SecretList
+ * ACCESS_CONTROL_RESTRICTED_DELETE_LISTS=User,SecretList
  */
 const parseListEnvToSet = (value: string | undefined, defaults: string[] = []) => {
   const set = new Set(defaults)
@@ -29,16 +30,25 @@ const parseListEnvToSet = (value: string | undefined, defaults: string[] = []) =
 }
 
 // restricted 預設封鎖 User list（query/update/delete）
-const defaultRestrictedLists =
+const defaultRestrictedQueryLists =
   accessControlStrategy === 'restricted' ? ['User'] : []
+const defaultRestrictedUpdateLists =
+  accessControlStrategy === 'restricted' ? ['User'] : []
+// restricted 預設封鎖所有 list 的 delete
+const defaultRestrictedDeleteLists =
+  accessControlStrategy === 'restricted' ? ['*'] : []
 
 const restrictedQueryLists = parseListEnvToSet(
   process.env.ACCESS_CONTROL_RESTRICTED_QUERY_LISTS,
-  defaultRestrictedLists
+  defaultRestrictedQueryLists
 )
-const restrictedUpdateDeleteLists = parseListEnvToSet(
-  process.env.ACCESS_CONTROL_RESTRICTED_UPDATE_DELETE_LISTS,
-  defaultRestrictedLists
+const restrictedUpdateLists = parseListEnvToSet(
+  process.env.ACCESS_CONTROL_RESTRICTED_UPDATE_LISTS,
+  defaultRestrictedUpdateLists
+)
+const restrictedDeleteLists = parseListEnvToSet(
+  process.env.ACCESS_CONTROL_RESTRICTED_DELETE_LISTS,
+  defaultRestrictedDeleteLists
 )
 
 const bypassWithRestrictions: ListOperationAccessControl<
@@ -51,9 +61,13 @@ const bypassWithRestrictions: ListOperationAccessControl<
     return false
   }
 
+  if (operation === 'update' && restrictedUpdateLists.has(listKey)) {
+    return false
+  }
+
   if (
-    (operation === 'update' || operation === 'delete') &&
-    restrictedUpdateDeleteLists.has(listKey)
+    operation === 'delete' &&
+    (restrictedDeleteLists.has('*') || restrictedDeleteLists.has(listKey))
   ) {
     return false
   }
