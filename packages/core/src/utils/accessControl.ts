@@ -116,9 +116,6 @@ export const allowRolesForUsers: ListACLFunction = (...args) => {
   // 若user的create access control受到限制,則adminUI將會沒有權限幫我們新增
   // （陷入沒辦法登入進CMS的窘境）
   // 因此在user的access control需要多判斷「如果db中沒有user存在，就暫時關閉access control用以新增user」
-  if (accessControlStrategy === 'restricted') {
-    return bypassWithRestrictions
-  }
 
   return async (auth) => {
     const newArgs = [...args, isNeedToTurnOffAccessControl]
