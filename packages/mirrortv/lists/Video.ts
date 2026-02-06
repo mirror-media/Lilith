@@ -138,6 +138,11 @@ const listConfigurations = list({
     publishTime: timestamp({
       label: '發佈時間',
     }),
+    updateTimeStamp: checkbox({
+      label: '下次存檔時自動更改成「現在時間」',
+      isFilterable: false,
+      defaultValue: true,
+    }),
 
     fileDuration: virtual({
       label: '影片檔案時長',
@@ -249,6 +254,21 @@ const listConfigurations = list({
 
     resolveInput: async ({ resolvedData, item }) => {
       const inputData = { ...resolvedData }
+
+      // 自動更新時間邏輯
+      const updateTimeStamp = inputData.updateTimeStamp
+      const publishTime = inputData.publishTime
+
+      if (updateTimeStamp === true) {
+        const now = new Date()
+        now.setSeconds(0, 0)
+        inputData.publishTime = now.toISOString()
+        inputData.updateTimeStamp = false
+      } else if (publishTime) {
+        const customDate = new Date(publishTime)
+        customDate.setSeconds(0, 0)
+        inputData.publishTime = customDate.toISOString()
+      }
 
       if (inputData.youtubeUrl === undefined) {
         return inputData
@@ -383,6 +403,34 @@ const listConfigurations = list({
             meta: '',
           },
         })
+      }
+      const liveVideoNames = ['mnews-live', 'live-cam']
+      const isLiveVideo = liveVideoNames.includes(newItem.name || '')
+      if (isLiveVideo) {
+        const wasPublished = oldItem?.state === VideoState.Published
+        const isPublished = newItem?.state === VideoState.Published
+        if (wasPublished || isPublished) {
+          console.log(
+            `[Hook] Live video "${newItem.name}" status changed, triggering JSON regeneration`
+          )
+          try {
+            const dataServiceApi = `${envVar.dataServiceApi}/jobs/homepage-video/generate`
+            const response = await fetch(dataServiceApi, { method: 'POST' })
+            if (response.ok) {
+              console.log(
+                `[Hook] Successfully triggered homepage video JSON regeneration.`
+              )
+            } else {
+              console.error(
+                '[Hook] Video JSON update failed:',
+                response.status,
+                response.statusText
+              )
+            }
+          } catch (error) {
+            console.error('[Hook] Failed to trigger video JSON update:', error)
+          }
+        }
       }
     },
   },
