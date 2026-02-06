@@ -1126,6 +1126,7 @@ const listConfigurations = list({
 
           // 更新所有相關的 topics
           if (topicIds.length > 0) {
+            // 更新資料庫中 Topic 的 updatedAt
             await Promise.all(
               topicIds.map((topicId: number) =>
                 context.prisma.topic.update({
@@ -1134,6 +1135,29 @@ const listConfigurations = list({
                 })
               )
             )
+            // 更新 topic.json
+            const topicSyncUrl = envVar.topicServiceUrl
+            if (topicSyncUrl) {
+              fetch(topicSyncUrl)
+                .then((res) => {
+                  if (res.ok) {
+                    console.log(
+                      `[Topic Sync] Successfully triggered topics.json update.`
+                    )
+                  } else {
+                    console.error(
+                      `[Topic Sync] Data Service returned error. Status: ${res.status}`
+                    )
+                  }
+                })
+                .catch((err) => {
+                  console.error('[Topic Sync Error] Network or URL error:', err)
+                })
+            } else {
+              console.warn(
+                '[Topic Sync] TOPIC_SERVICE_URL is missing in environment variables.'
+              )
+            }
           }
         }
       }
