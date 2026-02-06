@@ -206,7 +206,8 @@ const listConfigurations = list({
       ref: 'Image',
       ui: {
         displayMode: 'cards',
-        cardFields: ['file'],
+        cardFields: ['name', 'file'],
+        linkToItem: true,
         inlineCreate: {
           fields: ['name', 'file'],
         },
