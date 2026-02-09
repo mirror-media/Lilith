@@ -18,6 +18,7 @@ import Game from './Game'
 import Warning from './Warning'
 import PopularTag from './PopularTag'
 import HotNews from './HotNews'
+import PromoteTopic from './PromoteTopic'
 
 export const listDefinition = {
   AudioFile: Audio,
@@ -30,6 +31,7 @@ export const listDefinition = {
   Partner,
   Photo: Image,
   Post,
+  PromoteTopic,
   Section,
   Tag,
   Topic,
@@ -39,5 +41,5 @@ export const listDefinition = {
   Game,
   Warning,
   PopularTag,
-  Hot: HotNews
+  Hot: HotNews,
 }
