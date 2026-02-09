@@ -220,9 +220,6 @@ const listConfigurations = list({
     isFeatured: checkbox({
       label: '置頂',
     }),
-    isPromoted: checkbox({
-      label: '推廣區',
-    }),
     title_style: select({
       label: '專題樣式',
       options: [{ label: 'Feature', value: 'feature' }],
