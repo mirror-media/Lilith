@@ -11,6 +11,7 @@ import {
   virtual,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
+import Redis from 'ioredis'
 // @ts-ignore draft-js does not have typescript definition
 import { RawContentState } from 'draft-js'
 
@@ -169,6 +170,15 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
 
   return 'edit'
 }
+
+// 使用 envVar.cache.url 建立 Redis 連線 (REDIS_SERVER)
+const redis = new Redis(envVar.cache.url || 'redis://10.124.51.3:6379', {
+  connectTimeout: envVar.cache.connectTimeOut || 10000,
+  maxRetriesPerRequest: 3,
+})
+redis.on('error', (err) => {
+  console.error('[Cache] Redis connection error:', err)
+})
 
 const listConfigurations = list({
   fields: {
@@ -909,6 +919,70 @@ const listConfigurations = list({
 })
 
 let extendedListConfigurations = utils.addTrackingFields(listConfigurations)
+
+// 清除 Redis
+const originalAfterOperation = extendedListConfigurations.hooks?.afterOperation
+
+extendedListConfigurations.hooks = {
+  ...extendedListConfigurations.hooks,
+  afterOperation: async (args) => {
+    const { operation, item, originalItem } = args
+
+    // Trigger on update/delete if cache is enabled
+    if (
+      (operation === 'update' || operation === 'delete') &&
+      envVar.cache.isEnabled
+    ) {
+      const slug = (item?.slug || originalItem?.slug) as string | undefined
+      const id = (item?.id || originalItem?.id) as string | undefined
+
+      if (slug) {
+        try {
+          console.log(`[Cache] Purge started: ${slug} (${operation})`)
+
+          // Scanning for search/query cache keys
+          const stream = redis.scanStream({
+            match: 'post:unique:*',
+            count: 100,
+          })
+          let count = 0
+
+          for await (const rawKeys of stream) {
+            const keys = rawKeys as string[]
+            if (!keys.length) continue
+
+            for (const key of keys) {
+              const data = await redis.get(key)
+
+              if (typeof data === 'string') {
+                // Precise match check for slug and ID to prevent partial match
+                const isMatch =
+                  data.includes(`"${slug}"`) ||
+                  (id &&
+                    (data.includes(`"id":${id}`) ||
+                      data.includes(`"id":"${id}"`)))
+
+                if (isMatch) {
+                  await redis.del(key)
+                  count++
+                }
+              }
+            }
+          }
+          console.log(`[Cache] Purge done. ${count} keys deleted for ${slug}`)
+        } catch (err) {
+          console.error(`[Cache] Purge failed: ${slug}`, err)
+        }
+      }
+    }
+
+    // Call the original hook logic
+    if (originalAfterOperation) {
+      await originalAfterOperation(args)
+    }
+  },
+}
+
 if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
   extendedListConfigurations = utils.invalidateCacheAfterOperation(
     extendedListConfigurations,
