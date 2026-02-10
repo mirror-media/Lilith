@@ -172,13 +172,22 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
 }
 
 // 使用 envVar.cache.url 建立 Redis 連線 (REDIS_SERVER)
-const redis = new Redis(envVar.cache.url || 'redis://10.124.51.3:6379', {
-  connectTimeout: envVar.cache.connectTimeOut || 10000,
-  maxRetriesPerRequest: 3,
-})
-redis.on('error', (err) => {
-  console.error('[Cache] Redis connection error:', err)
-})
+let _redis: Redis | null = null
+
+const getRedis = () => {
+  if (!_redis) {
+    _redis = new Redis(envVar.cache.url || 'redis://10.124.51.3:6379', {
+      connectTimeout: envVar.cache.connectTimeOut || 10000,
+      maxRetriesPerRequest: 3,
+      lazyConnect: true, // 防止 Build 時自動連線
+    })
+
+    _redis.on('error', (err) => {
+      console.error('[Cache] Redis connection error:', err)
+    })
+  }
+  return _redis
+}
 
 const listConfigurations = list({
   fields: {
@@ -937,6 +946,7 @@ extendedListConfigurations.hooks = {
 
       if (slug || id) {
         try {
+          const redis = getRedis()
           console.log(`[Cache] Purge started for: ${slug || id} (${operation})`)
 
           // 建立正則式，提升比對效率
