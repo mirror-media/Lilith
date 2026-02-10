@@ -928,7 +928,6 @@ extendedListConfigurations.hooks = {
   afterOperation: async (args) => {
     const { operation, item, originalItem } = args
 
-    // Trigger on update/delete if cache is enabled
     if (
       (operation === 'update' || operation === 'delete') &&
       envVar.cache.isEnabled
@@ -936,42 +935,47 @@ extendedListConfigurations.hooks = {
       const slug = (item?.slug || originalItem?.slug) as string | undefined
       const id = (item?.id || originalItem?.id) as string | undefined
 
-      if (slug) {
+      if (slug || id) {
         try {
-          console.log(`[Cache] Purge started: ${slug} (${operation})`)
+          console.log(`[Cache] Purge started for: ${slug || id} (${operation})`)
 
-          // Scanning for search/query cache keys
+          // 建立正則式，提升比對效率
+          const patterns = []
+          if (slug) patterns.push(`"${slug}"`)
+          if (id) patterns.push(`"id":\\s*"?${id}"?`)
+          const searchRegex = new RegExp(patterns.join('|'))
+
           const stream = redis.scanStream({
             match: 'post:unique:*',
-            count: 100,
+            count: 500,
           })
-          let count = 0
+
+          let deletedCount = 0
 
           for await (const rawKeys of stream) {
             const keys = rawKeys as string[]
             if (!keys.length) continue
 
-            for (const key of keys) {
-              const data = await redis.get(key)
+            // 使用 mget 一次抓取整批內容
+            const values = await redis.mget(...keys)
 
-              if (typeof data === 'string') {
-                // Precise match check for slug and ID to prevent partial match
-                const isMatch =
-                  data.includes(`"${slug}"`) ||
-                  (id &&
-                    (data.includes(`"id":${id}`) ||
-                      data.includes(`"id":"${id}"`)))
-
-                if (isMatch) {
-                  await redis.del(key)
-                  count++
-                }
+            const keysToDelete: string[] = []
+            values.forEach((data, index) => {
+              if (data && searchRegex.test(data)) {
+                keysToDelete.push(keys[index])
               }
+            })
+
+            // 批次刪除匹配到的 keys
+            if (keysToDelete.length > 0) {
+              await redis.del(...keysToDelete)
+              deletedCount += keysToDelete.length
             }
           }
-          console.log(`[Cache] Purge done. ${count} keys deleted for ${slug}`)
+
+          console.log(`[Cache] Purge done. Total ${deletedCount} keys deleted.`)
         } catch (err) {
-          console.error(`[Cache] Purge failed: ${slug}`, err)
+          console.error(`[Cache] Purge failed: ${slug || id}`, err)
         }
       }
     }
