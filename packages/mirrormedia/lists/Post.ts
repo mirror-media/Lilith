@@ -11,6 +11,7 @@ import {
   virtual,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
+import Redis from 'ioredis'
 // @ts-ignore draft-js does not have typescript definition
 import { RawContentState } from 'draft-js'
 
@@ -169,6 +170,15 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
 
   return 'edit'
 }
+
+// 使用 envVar.cache.url 建立 Redis 連線 (REDIS_SERVER)
+const redis = new Redis(envVar.cache.url || 'redis://10.124.51.3:6379', {
+  connectTimeout: envVar.cache.connectTimeOut || 10000,
+  maxRetriesPerRequest: 3,
+})
+redis.on('error', (err) => {
+  console.error('[Cache] Redis connection error:', err)
+})
 
 const listConfigurations = list({
   fields: {
@@ -909,6 +919,74 @@ const listConfigurations = list({
 })
 
 let extendedListConfigurations = utils.addTrackingFields(listConfigurations)
+
+// 清除 Redis
+const originalAfterOperation = extendedListConfigurations.hooks?.afterOperation
+
+extendedListConfigurations.hooks = {
+  ...extendedListConfigurations.hooks,
+  afterOperation: async (args) => {
+    const { operation, item, originalItem } = args
+
+    if (
+      (operation === 'update' || operation === 'delete') &&
+      envVar.cache.isEnabled
+    ) {
+      const slug = (item?.slug || originalItem?.slug) as string | undefined
+      const id = (item?.id || originalItem?.id) as string | undefined
+
+      if (slug || id) {
+        try {
+          console.log(`[Cache] Purge started for: ${slug || id} (${operation})`)
+
+          // 建立正則式，提升比對效率
+          const patterns = []
+          if (slug) patterns.push(`"${slug}"`)
+          if (id) patterns.push(`"id":\\s*"?${id}"?`)
+          const searchRegex = new RegExp(patterns.join('|'))
+
+          const stream = redis.scanStream({
+            match: 'post:unique:*',
+            count: 500,
+          })
+
+          let deletedCount = 0
+
+          for await (const rawKeys of stream) {
+            const keys = rawKeys as string[]
+            if (!keys.length) continue
+
+            // 使用 mget 一次抓取整批內容
+            const values = await redis.mget(...keys)
+
+            const keysToDelete: string[] = []
+            values.forEach((data, index) => {
+              if (data && searchRegex.test(data)) {
+                keysToDelete.push(keys[index])
+              }
+            })
+
+            // 批次刪除匹配到的 keys
+            if (keysToDelete.length > 0) {
+              await redis.del(...keysToDelete)
+              deletedCount += keysToDelete.length
+            }
+          }
+
+          console.log(`[Cache] Purge done. Total ${deletedCount} keys deleted.`)
+        } catch (err) {
+          console.error(`[Cache] Purge failed: ${slug || id}`, err)
+        }
+      }
+    }
+
+    // Call the original hook logic
+    if (originalAfterOperation) {
+      await originalAfterOperation(args)
+    }
+  },
+}
+
 if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
   extendedListConfigurations = utils.invalidateCacheAfterOperation(
     extendedListConfigurations,
