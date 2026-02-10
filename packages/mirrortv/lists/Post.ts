@@ -422,7 +422,7 @@ const listConfigurations = list({
   access: {
     operation: {
       query: allowRoles(admin, moderator, editor, contributor, owner),
-      update: allowRoles(admin, moderator, contributor, owner),
+      update: allowRoles(admin, moderator, editor, contributor, owner),
       create: allowRoles(admin, moderator, editor, contributor),
       delete: allowRoles(admin, moderator),
     },
@@ -433,6 +433,32 @@ const listConfigurations = list({
         UserRole.Editor,
         UserRole.Contributor,
       ]),
+      update: ({ session }) => {
+        const role = session?.data?.role
+        const userId = session?.data?.id
+
+        if (role === UserRole.Admin || role === UserRole.Moderator) {
+          console.log('[Access Debug] Admin/Moderator bypass')
+          return true
+        }
+
+        if (
+          userId &&
+          (role === UserRole.Editor || role === UserRole.Contributor)
+        ) {
+          console.log(`[Access Debug] Applying owner filter for ID: ${userId}`)
+          return {
+            createdBy: {
+              id: {
+                equals: userId,
+              },
+            },
+          }
+        }
+
+        console.log('[Access Debug] Access denied by default')
+        return false
+      },
     },
   },
 
