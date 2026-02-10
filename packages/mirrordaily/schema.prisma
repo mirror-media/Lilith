@@ -359,6 +359,25 @@ model Post {
   @@index([updatedById])
 }
 
+model PromoteTopic {
+  id          Int       @id @default(autoincrement())
+  order       Int?      @unique
+  topics      Topic?    @relation("PromoteTopic_topics", fields: [topicsId], references: [id])
+  topicsId    Int?      @map("topics")
+  state       String?   @default("draft")
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("PromoteTopic_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("PromoteTopic_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([topicsId])
+  @@index([state])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
 model Section {
   id                    Int        @id @default(autoincrement())
   name                  String     @unique @default("")
@@ -414,44 +433,44 @@ model Tag {
 }
 
 model Topic {
-  id                           Int        @id @default(autoincrement())
-  name                         String     @unique @default("")
-  slug                         String     @unique @default("")
+  id                           Int            @id @default(autoincrement())
+  name                         String         @unique @default("")
+  slug                         String         @unique @default("")
   sortOrder                    Int?
-  state                        String?    @default("draft")
-  publishedDate                DateTime   @default(now())
+  state                        String?        @default("draft")
+  publishedDate                DateTime       @default(now())
   brief                        Json?
   apiDataBrief                 Json?
   leading                      String?
-  heroImage                    Photo?     @relation("Topic_heroImage", fields: [heroImageId], references: [id])
-  heroImageId                  Int?       @map("heroImage")
+  heroImage                    Photo?         @relation("Topic_heroImage", fields: [heroImageId], references: [id])
+  heroImageId                  Int?           @map("heroImage")
   heroUrl                      String?
-  heroVideo                    Video?     @relation("Topic_heroVideo", fields: [heroVideoId], references: [id])
-  heroVideoId                  Int?       @map("heroVideo")
-  slideshow_images             Photo[]    @relation("Topic_slideshow_images")
+  heroVideo                    Video?         @relation("Topic_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId                  Int?           @map("heroVideo")
+  slideshow_images             Photo[]        @relation("Topic_slideshow_images")
   manualOrderOfSlideshowImages Json?
-  og_title                     String     @default("")
-  og_description               String     @default("")
-  og_image                     Photo?     @relation("Topic_og_image", fields: [og_imageId], references: [id])
-  og_imageId                   Int?       @map("og_image")
-  type                         String?    @default("list")
-  tags                         Tag[]      @relation("Tag_topics")
-  posts                        Post[]     @relation("Post_topics")
-  externals                    External[] @relation("External_topics")
-  style                        String     @default("")
-  isFeatured                   Boolean    @default(false)
-  isPromoted                   Boolean    @default(false)
-  title_style                  String?    @default("feature")
-  sections                     Section[]  @relation("Section_topics")
-  javascript                   String     @default("")
-  dfp                          String     @default("")
-  mobile_dfp                   String     @default("")
+  og_title                     String         @default("")
+  og_description               String         @default("")
+  og_image                     Photo?         @relation("Topic_og_image", fields: [og_imageId], references: [id])
+  og_imageId                   Int?           @map("og_image")
+  type                         String?        @default("list")
+  tags                         Tag[]          @relation("Tag_topics")
+  posts                        Post[]         @relation("Post_topics")
+  externals                    External[]     @relation("External_topics")
+  style                        String         @default("")
+  isFeatured                   Boolean        @default(false)
+  title_style                  String?        @default("feature")
+  sections                     Section[]      @relation("Section_topics")
+  javascript                   String         @default("")
+  dfp                          String         @default("")
+  mobile_dfp                   String         @default("")
   createdAt                    DateTime?
   updatedAt                    DateTime?
-  createdBy                    User?      @relation("Topic_createdBy", fields: [createdById], references: [id])
-  createdById                  Int?       @map("createdBy")
-  updatedBy                    User?      @relation("Topic_updatedBy", fields: [updatedById], references: [id])
-  updatedById                  Int?       @map("updatedBy")
+  createdBy                    User?          @relation("Topic_createdBy", fields: [createdById], references: [id])
+  createdById                  Int?           @map("createdBy")
+  updatedBy                    User?          @relation("Topic_updatedBy", fields: [updatedById], references: [id])
+  updatedById                  Int?           @map("updatedBy")
+  from_PromoteTopic_topics     PromoteTopic[] @relation("PromoteTopic_topics")
 
   @@index([state])
   @@index([publishedDate])
@@ -496,6 +515,8 @@ model User {
   from_Post_lockBy            Post[]         @relation("Post_lockBy")
   from_Post_createdBy         Post[]         @relation("Post_createdBy")
   from_Post_updatedBy         Post[]         @relation("Post_updatedBy")
+  from_PromoteTopic_createdBy PromoteTopic[] @relation("PromoteTopic_createdBy")
+  from_PromoteTopic_updatedBy PromoteTopic[] @relation("PromoteTopic_updatedBy")
   from_Section_createdBy      Section[]      @relation("Section_createdBy")
   from_Section_updatedBy      Section[]      @relation("Section_updatedBy")
   from_Tag_createdBy          Tag[]          @relation("Tag_createdBy")

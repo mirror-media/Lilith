@@ -1510,6 +1510,69 @@ input WarningRelateToManyForCreateInput {
   connect: [WarningWhereUniqueInput!]
 }
 
+type PromoteTopic {
+  id: ID!
+  order: Int
+  topics: Topic
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input PromoteTopicWhereUniqueInput {
+  id: ID
+  order: Int
+}
+
+input PromoteTopicWhereInput {
+  AND: [PromoteTopicWhereInput!]
+  OR: [PromoteTopicWhereInput!]
+  NOT: [PromoteTopicWhereInput!]
+  id: IDFilter
+  order: IntNullableFilter
+  topics: TopicWhereInput
+  state: StringNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PromoteTopicOrderByInput {
+  id: OrderDirection
+  order: OrderDirection
+  state: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PromoteTopicUpdateInput {
+  order: Int
+  topics: TopicRelateToOneForUpdateInput
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PromoteTopicUpdateArgs {
+  where: PromoteTopicWhereUniqueInput!
+  data: PromoteTopicUpdateInput!
+}
+
+input PromoteTopicCreateInput {
+  order: Int
+  topics: TopicRelateToOneForCreateInput
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 type Section {
   id: ID!
   name: String
@@ -1774,7 +1837,6 @@ type Topic {
   externalsCount(where: ExternalWhereInput! = {}): Int
   style: String
   isFeatured: Boolean
-  isPromoted: Boolean
   title_style: String
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   sectionsCount(where: SectionWhereInput! = {}): Int
@@ -1817,7 +1879,6 @@ input TopicWhereInput {
   externals: ExternalManyRelationFilter
   style: StringFilter
   isFeatured: BooleanFilter
-  isPromoted: BooleanFilter
   title_style: StringNullableFilter
   sections: SectionManyRelationFilter
   javascript: StringFilter
@@ -1849,7 +1910,6 @@ input TopicOrderByInput {
   type: OrderDirection
   style: OrderDirection
   isFeatured: OrderDirection
-  isPromoted: OrderDirection
   title_style: OrderDirection
   javascript: OrderDirection
   dfp: OrderDirection
@@ -1881,7 +1941,6 @@ input TopicUpdateInput {
   externals: ExternalRelateToManyForUpdateInput
   style: String
   isFeatured: Boolean
-  isPromoted: Boolean
   title_style: String
   sections: SectionRelateToManyForUpdateInput
   javascript: String
@@ -1928,7 +1987,6 @@ input TopicCreateInput {
   externals: ExternalRelateToManyForCreateInput
   style: String
   isFeatured: Boolean
-  isPromoted: Boolean
   title_style: String
   sections: SectionRelateToManyForCreateInput
   javascript: String
@@ -2567,6 +2625,12 @@ type Mutation {
   updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
+  createPromoteTopic(data: PromoteTopicCreateInput!): PromoteTopic
+  createPromoteTopics(data: [PromoteTopicCreateInput!]!): [PromoteTopic]
+  updatePromoteTopic(where: PromoteTopicWhereUniqueInput!, data: PromoteTopicUpdateInput!): PromoteTopic
+  updatePromoteTopics(data: [PromoteTopicUpdateArgs!]!): [PromoteTopic]
+  deletePromoteTopic(where: PromoteTopicWhereUniqueInput!): PromoteTopic
+  deletePromoteTopics(where: [PromoteTopicWhereUniqueInput!]!): [PromoteTopic]
   createSection(data: SectionCreateInput!): Section
   createSections(data: [SectionCreateInput!]!): [Section]
   updateSection(where: SectionWhereUniqueInput!, data: SectionUpdateInput!): Section
@@ -2681,6 +2745,9 @@ type Query {
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
+  promoteTopics(where: PromoteTopicWhereInput! = {}, orderBy: [PromoteTopicOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PromoteTopicWhereUniqueInput): [PromoteTopic!]
+  promoteTopic(where: PromoteTopicWhereUniqueInput!): PromoteTopic
+  promoteTopicsCount(where: PromoteTopicWhereInput! = {}): Int
   sections(where: SectionWhereInput! = {}, orderBy: [SectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionWhereUniqueInput): [Section!]
   section(where: SectionWhereUniqueInput!): Section
   sectionsCount(where: SectionWhereInput! = {}): Int
