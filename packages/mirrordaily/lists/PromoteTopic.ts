@@ -4,6 +4,7 @@ import { relationship, select, integer } from '@keystone-6/core/fields'
 import { State } from '../type'
 
 const { allowRoles, admin } = utils.accessControl
+import envVar from '../environment-variables'
 
 enum PromoteTopicState {
   Draft = State.Draft,
@@ -81,6 +82,39 @@ const listConfigurations = list({
 
           console.log(
             `[Cache-Control] Max published limit reached. Archived oldest topic ID: ${oldestTopic.id}`
+          )
+        }
+      }
+    },
+    afterOperation: async ({ item, originalItem }) => {
+      const wasPublished = originalItem?.state === PromoteTopicState.Published
+      const isPublished = item?.state === PromoteTopicState.Published
+
+      if (wasPublished || isPublished) {
+        const promoteTopicSyncUrl = envVar.promoteTopicServiceUrl
+
+        if (promoteTopicSyncUrl) {
+          fetch(promoteTopicSyncUrl)
+            .then((res) => {
+              if (res.ok) {
+                console.log(
+                  '[Promote Topic Sync] Successfully triggered promote-topics.json update.'
+                )
+              } else {
+                console.error(
+                  `[Promote Topic Sync] Service returned error. Status: ${res.status}`
+                )
+              }
+            })
+            .catch((err) => {
+              console.error(
+                '[Promote Topic Sync Error] Network or URL error:',
+                err
+              )
+            })
+        } else {
+          console.warn(
+            '[Promote Topic Sync] Skip: promoteTopicServiceUrl is missing in env.'
           )
         }
       }
