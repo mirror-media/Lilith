@@ -586,7 +586,6 @@ const listConfigurations = list({
     }),
     tags_algo: relationship({
       label: '演算法標籤',
-      isFilterable: false,
       ref: 'Tag.posts_algo',
       many: true,
       ui: {
