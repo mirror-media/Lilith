@@ -387,6 +387,8 @@ model Post {
   isAdvertised               Boolean        @default(false)
   hiddenAdvertised           Boolean        @default(false)
   isAdult                    Boolean        @default(false)
+  auto_faq                   Boolean        @default(false)
+  faqs_algo                  Json?
   redirect                   String         @default("")
   adTrace                    String         @default("")
   css                        String         @default("")
