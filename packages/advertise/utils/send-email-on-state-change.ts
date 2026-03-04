@@ -175,6 +175,7 @@ async function sendEmail(
     receiver: string[]
     subject: string
     body: string
+    mail_to?: string
   },
   recipientType: string
 ) {
@@ -241,6 +242,7 @@ async function sendEmailToMember(
       <br>
       <p>鏡電視廣告團隊</p>
     `,
+    mail_to: data.memberEmail,
   }
 
   return sendEmail(emailApiUrl, emailPayload, '會員')
@@ -291,6 +293,7 @@ async function sendEmailToSales(
       <br>
       <p>鏡電視廣告系統</p>
     `,
+    mail_to: salesEmail,
   }
 
   return sendEmail(emailApiUrl, emailPayload, '業務')
