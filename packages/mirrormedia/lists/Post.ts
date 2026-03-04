@@ -684,6 +684,18 @@ const listConfigurations = list({
       label: '18禁',
       defaultValue: false,
     }),
+    auto_faq: checkbox({
+      label: '自動生成 FAQ',
+      defaultValue: false,
+    }),
+    faqs_algo: json({
+      label: 'FAQ',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
+    }),
     redirect: text({
       label: '廣編文轉址 slug',
     }),
@@ -889,7 +901,13 @@ const listConfigurations = list({
       }
       return
     },
-    afterOperation: async ({ operation, item, context, resolvedData }) => {
+    afterOperation: async ({
+      operation,
+      item,
+      originalItem,
+      context,
+      resolvedData,
+    }) => {
       if (
         resolvedData &&
         resolvedData.state &&
@@ -911,6 +929,36 @@ const listConfigurations = list({
           }
         } catch (error) {
           console.error(`[AUTO-TAG-RELATION] Error:`, error)
+        }
+      }
+      if (
+        // trigger auto faq service
+        item &&
+        item.auto_faq === true &&
+        item.state === PostStatus.Published &&
+        envVar.autoFaqPost
+      ) {
+        const stateChangedToPublished =
+          originalItem?.state !== PostStatus.Published
+        const contentChanged =
+          item.title !== originalItem?.title ||
+          JSON.stringify(item.content) !==
+            JSON.stringify(originalItem?.content) ||
+          JSON.stringify(item.brief) !== JSON.stringify(originalItem?.brief)
+        if (stateChangedToPublished || contentChanged) {
+          try {
+            const response = await fetch(
+              envVar.dataServiceApi + '/post_faq?id=' + item.id,
+              { method: 'GET' }
+            )
+            if (!response.ok) {
+              console.error(
+                `[AUTO-FAQ] Failed: ${response.status} ${response.statusText}`
+              )
+            }
+          } catch (error) {
+            console.error(`[AUTO-FAQ] Error:`, error)
+          }
         }
       }
       if (operation === 'update') {
