@@ -4,9 +4,6 @@
   - You are about to drop the column `isPromoted` on the `Topic` table. All the data in the column will be lost.
 
 */
--- AlterTable
-ALTER TABLE "Topic" DROP COLUMN "isPromoted";
-
 -- CreateTable
 CREATE TABLE "PromoteTopic" (
     "id" SERIAL NOT NULL,
