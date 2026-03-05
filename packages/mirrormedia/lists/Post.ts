@@ -873,6 +873,9 @@ const listConfigurations = list({
         resolvedData.updatedAt = new Date()
         resolvedData.updateTimeStamp = false
       }
+      if (resolvedData.auto_faq === false) {
+        resolvedData.faqs_algo = null
+      }
       return resolvedData
     },
     beforeOperation: async ({ operation, resolvedData }) => {
@@ -940,8 +943,7 @@ const listConfigurations = list({
       ) {
         const stateChangedToPublished =
           originalItem?.state !== PostStatus.Published
-        const autoFaqJustEnabled =
-          originalItem?.auto_faq !== true && item.faqs_algo === null
+        const autoFaqJustEnabled = originalItem?.auto_faq !== true
         const contentChanged =
           item.title !== originalItem?.title ||
           JSON.stringify(item.content) !==
