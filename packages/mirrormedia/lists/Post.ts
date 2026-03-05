@@ -940,12 +940,14 @@ const listConfigurations = list({
       ) {
         const stateChangedToPublished =
           originalItem?.state !== PostStatus.Published
+        const autoFaqJustEnabled =
+          originalItem?.auto_faq !== true && item.faqs_algo === null
         const contentChanged =
           item.title !== originalItem?.title ||
           JSON.stringify(item.content) !==
             JSON.stringify(originalItem?.content) ||
           JSON.stringify(item.brief) !== JSON.stringify(originalItem?.brief)
-        if (stateChangedToPublished || contentChanged) {
+        if (stateChangedToPublished || autoFaqJustEnabled || contentChanged) {
           try {
             const response = await fetch(
               envVar.dataServiceApi + '/post_faq?id=' + item.id,
