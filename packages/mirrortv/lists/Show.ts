@@ -26,10 +26,30 @@ const listConfigurations = list({
     bannerImg: relationship({
       label: 'banner',
       ref: 'Image',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['name', 'file'],
+        linkToItem: true,
+        inlineConnect: true,
+        inlineCreate: {
+          fields: ['name', 'file'],
+        },
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     picture: relationship({
       label: '圖片',
       ref: 'Image',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['name', 'file'],
+        linkToItem: true,
+        inlineConnect: true,
+        inlineCreate: {
+          fields: ['name', 'file'],
+        },
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     sortOrder: integer({
       label: '排序順位',

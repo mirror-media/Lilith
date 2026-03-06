@@ -28,6 +28,7 @@ const listConfigurations = list({
     file: image({
       label: '檔案',
       storage: 'images',
+      ui: { views: './lists/views/custom-image/index' },
     }),
 
     copyright: select({
