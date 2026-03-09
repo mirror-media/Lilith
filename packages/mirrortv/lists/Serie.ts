@@ -19,6 +19,16 @@ const listConfigurations = list({
     heroImage: relationship({
       label: '首圖',
       ref: 'Image',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['name', 'file'],
+        linkToItem: true,
+        inlineConnect: true,
+        inlineCreate: {
+          fields: ['name', 'file'],
+        },
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     introduction: customFields.richTextEditor({
       label: '內文',
