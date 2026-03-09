@@ -38,10 +38,30 @@ const listConfigurations = list({
     anchorImg: relationship({
       label: '長方形圖',
       ref: 'Image',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['name', 'file'],
+        linkToItem: true,
+        inlineConnect: true,
+        inlineCreate: {
+          fields: ['name', 'file'],
+        },
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     showhostImg: relationship({
       label: '正方形圖',
       ref: 'Image',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['name', 'file'],
+        linkToItem: true,
+        inlineConnect: true,
+        inlineCreate: {
+          fields: ['name', 'file'],
+        },
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     homepage: text({ label: '個人首頁' }),
     facebook: text({ label: 'Facebook' }),

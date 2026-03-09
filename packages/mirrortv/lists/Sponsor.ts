@@ -42,16 +42,46 @@ const listConfigurations = list({
     logo: relationship({
       label: '首圖(必填)',
       ref: 'Image',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['name', 'file'],
+        linkToItem: true,
+        inlineConnect: true,
+        inlineCreate: {
+          fields: ['name', 'file'],
+        },
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
 
     mobile: relationship({
       label: '手機用圖（僅供外部連結使用）',
       ref: 'Image',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['name', 'file'],
+        linkToItem: true,
+        inlineConnect: true,
+        inlineCreate: {
+          fields: ['name', 'file'],
+        },
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
 
     tablet: relationship({
       label: '平板用圖（僅供外部連結使用）',
       ref: 'Image',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['name', 'file'],
+        linkToItem: true,
+        inlineConnect: true,
+        inlineCreate: {
+          fields: ['name', 'file'],
+        },
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
   },
 
