@@ -816,22 +816,22 @@ if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
 }
 
 // 啟用手動排序功能
-export default utils.addManualOrderRelationshipFields(
-  [
-    /*
-    {
-      fieldName: 'manualOrderOfWriters',
-      targetFieldName: 'writers',
-      targetListName: 'Contact',
-      targetListLabelField: 'name',
-    },
-    */
-    {
-      fieldName: 'manualOrderOfRelatedPosts',
-      targetFieldName: 'relatedPosts',
-      targetListName: 'Post',
-      targetListLabelField: 'name', // K5 Post label is 'name'
-    },
-  ],
-  extendedListConfigurations
-)
+export default extendedListConfigurations
+// export default utils.addManualOrderRelationshipFields(
+//   [
+
+//     {
+//       fieldName: 'manualOrderOfWriters',
+//       targetFieldName: 'writers',
+//       targetListName: 'Contact',
+//       targetListLabelField: 'name',
+//     },
+//     {
+//       fieldName: 'manualOrderOfRelatedPosts',
+//       targetFieldName: 'relatedPosts',
+//       targetListName: 'Post',
+//       targetListLabelField: 'name', // K5 Post label is 'name'
+//     },
+//   ],
+//   extendedListConfigurations
+// )
