@@ -1,6 +1,8 @@
 import type { AdminConfig } from '@keystone-6/core/types'
-import { ListSearchMobileFix } from '../../core/src/admin/list-search-mobile-fix'
+import { admin } from '@mirrormedia/lilith-core'
 import { CustomNavigation } from './components/custom-navigation'
+
+const { ListSearchMobileFix } = admin
 
 function CustomLogo() {
   return (
