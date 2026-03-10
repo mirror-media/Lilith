@@ -345,6 +345,7 @@ model Post {
   publishedDateString                String              @default("")
   updateTimeStamp                    Boolean             @default(true)
   categories                         Category[]          @relation("Post_categories")
+  manualOrderOfCategories            Json?
   writers                            Contact[]           @relation("Post_writers")
   manualOrderOfWriters               Json?
   photographers                      Contact[]           @relation("Post_photographers")
@@ -370,6 +371,7 @@ model Post {
   topics                             Topic?              @relation("Post_topics", fields: [topicsId], references: [id])
   topicsId                           Int?                @map("topics")
   tags                               Tag[]               @relation("Post_tags")
+  manualOrderOfTags                  Json?
   audio                              Audio?              @relation("Post_audio", fields: [audioId], references: [id])
   audioId                            Int?                @map("audio")
   download                           Download[]          @relation("Post_download")
