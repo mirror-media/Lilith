@@ -71,7 +71,12 @@ function useDebouncedValue<T>(value: T, limitMs: number): T {
 
 export function useFilter(search: string, list: ListMeta, searchFields: string[]) {
   return useMemo(() => {
-    if (!search.length) return { OR: [] }
+    const baseConditions = { 
+      state: { in: [PostStatus.Published, PostStatus.Scheduled, PostStatus.Invisible] } 
+    };
+
+    if (!search.length) return baseConditions;
+
     const idFieldKind: IdFieldConfig['kind'] = (list.fields.id.controller as any).idFieldKind
     const trimmedSearch = search.trim()
     const isValidId = idValidators[idFieldKind](trimmedSearch)
@@ -90,7 +95,10 @@ export function useFilter(search: string, list: ListMeta, searchFields: string[]
         })
       }
     }
-    return { OR: conditions }
+    return { 
+      ...baseConditions,
+      AND: conditions.length ? [{ OR: conditions }] : [] 
+    }
   }, [search, list, searchFields])
 }
 
@@ -175,11 +183,7 @@ export const RelationshipSelect = ({
         label: item[labelFieldAlias] || item[idFieldAlias],
         data: item,
       }))
-      .filter((opt: any) => {
-        const isCurrent = opt.value === currentPostId
-        const shouldInclude = includesStates.includes(opt.data.state as PostStatus)
-        return !isCurrent && shouldInclude
-      })
+      .filter((opt: any) => opt.value !== currentPostId)
   }, [data, currentPostId])
 
   useIntersectionObserver(
