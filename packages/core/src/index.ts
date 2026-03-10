@@ -1,3 +1,4 @@
+import { ListSearchMobileFix } from './admin/list-search-mobile-fix'
 import * as accessControl from './utils/accessControl'
 import addManualOrderRelationshipFields from './utils/manual-order-relationship'
 import { addTrackingFields } from './utils/trackingHandler'
@@ -7,6 +8,10 @@ import { createLoginLoggingPlugin } from './utils/login-logging'
 import { draftConverter } from '@mirrormedia/lilith-draft-editor'
 import { richTextEditor } from './custom-fields/rich-text-editor'
 import { selectWithColor } from './custom-fields/select-with-color'
+
+export const admin = {
+  ListSearchMobileFix,
+}
 
 export const customFields = {
   draftConverter,
@@ -23,6 +28,7 @@ export const utils = {
 }
 
 export default {
+  admin,
   customFields,
   utils,
 }
