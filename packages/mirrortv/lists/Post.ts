@@ -73,44 +73,6 @@ function filterPosts(roles: UserRole[]) {
   }
 }
 
-// 文章鎖定機制
-// const itemViewFunction = async ({
-//   session,
-//   context,
-//   item,
-// }: {
-//   session: Record<string, any>
-//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   context: any
-//   item: Record<string, any>
-// }) => {
-//   const userRole = session?.data?.role
-//   if (userRole === UserRole.Editor || userRole === UserRole.Contributor) {
-//     const { lockBy } = await context.prisma.Post.findUnique({
-//       where: { id: Number(item.id) },
-//       select: { lockBy: { select: { id: true } } },
-//     })
-
-//     if (!lockBy || Number(lockBy.id) === Number(session.data.id)) {
-//       const lockExpireAt = new Date(
-//         Date.now() + (envVar.lockDuration || 30) * 60 * 1000
-//       ).toISOString()
-//       if (!lockBy) {
-//         await context.prisma.Post.update({
-//           where: { id: Number(item.id) },
-//           data: {
-//             lockBy: { connect: { id: Number(session.data.id) } },
-//             lockExpireAt,
-//           },
-//         })
-//       }
-//       return 'edit'
-//     }
-//     return 'read'
-//   }
-//   return 'edit'
-// }
-
 const listConfigurations = list({
   fields: {
     // --- Basic Fields ---
@@ -179,25 +141,81 @@ const listConfigurations = list({
     }),
 
     // --- Relations ---
-    categories: relationship({ label: '分類', ref: 'Category', many: true }),
-    writers: relationship({ label: '作者', ref: 'Contact', many: true }),
+    categories: relationship({
+      label: '分類',
+      ref: 'Category',
+      many: true ,
+      ui: {
+        labelField: 'name',
+        displayMode: 'select',
+        views: './lists/views/post/categories/index',
+      },
+    }),
+    manualOrderOfCategories: json({
+      isFilterable: false,
+      label: '分類手動排序結果',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
+    writers: relationship({
+      label: '作者',
+      ref: 'Contact',
+      many: true,
+      ui: {
+        views: './lists/views/post/contact-relationship/index',
+      },
+    }),
     manualOrderOfWriters: json({
       label: '作者手動排序結果',
+      isFilterable: false,
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
       },
     }),
 
-    photographers: relationship({ label: '攝影', ref: 'Contact', many: true }),
+    photographers: relationship({
+      label: '攝影',
+      ref: 'Contact',
+      many: true,
+      ui: {
+        views: './lists/views/post/contact-relationship/index',
+      },
+    }),
     cameraOperators: relationship({
       label: '影音',
       ref: 'Contact',
       many: true,
+      ui: {
+        views: './lists/views/post/contact-relationship/index',
+      },
     }),
-    designers: relationship({ label: '設計', ref: 'Contact', many: true }),
-    engineers: relationship({ label: '工程', ref: 'Contact', many: true }),
-    vocals: relationship({ label: '主播', ref: 'Contact', many: true }),
+    designers: relationship({
+      label: '設計',
+      ref: 'Contact',
+      many: true,
+      ui: {
+        views: './lists/views/post/contact-relationship/index',
+      },
+    }),
+    engineers: relationship({
+      label: '工程',
+      ref: 'Contact',
+      many: true,
+      ui: {
+        views: './lists/views/post/contact-relationship/index',
+      },
+    }),
+    vocals: relationship({
+      label: '主播',
+      ref: 'Contact',
+      many: true,
+      ui: {
+        views: './lists/views/post/contact-relationship/index',
+      },
+    }),
     otherbyline: text({ label: '作者（其他）' }),
 
     heroVideo: relationship({ label: '影片', ref: 'Video' }),
@@ -321,13 +339,35 @@ const listConfigurations = list({
         itemView: { fieldMode: 'read' },
       },
     }),
-    tags: relationship({ label: '標籤', ref: 'Tag', many: true }),
+    tags: relationship({
+      label: '標籤',
+      ref: 'Tag',
+      many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
+    }),
+    manualOrderOfTags: json({
+      label: '標籤排序結果',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
     audio: relationship({ label: '音檔', ref: 'Audio' }),
     download: relationship({ label: '附加檔案', ref: 'Download', many: true }),
 
-    relatedPosts: relationship({ label: '相關文章', ref: 'Post', many: true }),
+    relatedPosts: relationship({
+      label: '相關文章',
+      ref: 'Post',
+      many: true,
+      ui: {
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+      },
+    }),
     manualOrderOfRelatedPosts: json({
       label: '相關文章手動排序結果',
+      isFilterable: false,
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
@@ -463,7 +503,35 @@ const listConfigurations = list({
   },
 
   hooks: {
-    resolveInput: async ({ resolvedData, item }) => {
+    resolveInput: async ({ resolvedData, item  }) => {
+      const orderFields = ['manualOrderOfCategories', 'manualOrderOfWriters', 'manualOrderOfRelatedPosts'];
+
+      for (const fieldKey of orderFields) {
+        const orderUpdate = resolvedData[fieldKey];
+
+        if (orderUpdate && typeof orderUpdate === 'object' && orderUpdate.__isOrderUpdate) {
+          const { path, data } = orderUpdate;
+
+          let currentAllOrders: any = {};
+          if (item && item[fieldKey]) {
+            currentAllOrders = typeof item[fieldKey] === 'string'
+              ? JSON.parse(item[fieldKey])
+              : item[fieldKey];
+          }
+
+          if (Array.isArray(currentAllOrders) || typeof currentAllOrders !== 'object') {
+            currentAllOrders = {};
+          }
+
+          const newAllOrders = {
+            ...currentAllOrders,
+            [path]: data,
+          };
+
+          resolvedData[fieldKey] = newAllOrders;
+        }
+      }
+
       // 清理控制字元
       for (const key in resolvedData) {
         if (typeof resolvedData[key] === 'string') {
@@ -581,24 +649,6 @@ const listConfigurations = list({
           }
         }
       }
-
-      // 檢查鎖定狀態 (Update only)
-      // if (
-      //   operation === 'update' &&
-      //   context.session?.data?.role !== UserRole.Admin
-      // ) {
-      //   const currentItem = await context.prisma.Post.findUnique({
-      //     where: { id: Number(item.id) },
-      //     select: { lockBy: { select: { id: true } } },
-      //   })
-      //   const lockById = currentItem?.lockBy?.id
-      //   if (
-      //     lockById &&
-      //     Number(lockById) !== Number(context.session?.data?.id)
-      //   ) {
-      //     addValidationError('可能有其他人正在編輯，請重新整理頁面。')
-      //   }
-      // }
     },
 
     beforeOperation: async ({ operation, resolvedData }) => {
@@ -788,17 +838,6 @@ const listConfigurations = list({
           console.error(`[EditLog] ${operation} 發生錯誤:`, err)
         }
       }
-
-      // MM 的邏輯: 更新後解鎖
-      // if (operation === 'update' && item) {
-      //   await context.prisma.Post.update({
-      //     where: { id: Number(item.id) },
-      //     data: {
-      //       lockBy: { disconnect: true },
-      //       lockExpireAt: null,
-      //     },
-      //   })
-      // }
     },
   },
 })
@@ -815,23 +854,4 @@ if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
   )
 }
 
-// 啟用手動排序功能
-export default extendedListConfigurations
-// export default utils.addManualOrderRelationshipFields(
-//   [
-
-//     {
-//       fieldName: 'manualOrderOfWriters',
-//       targetFieldName: 'writers',
-//       targetListName: 'Contact',
-//       targetListLabelField: 'name',
-//     },
-//     {
-//       fieldName: 'manualOrderOfRelatedPosts',
-//       targetFieldName: 'relatedPosts',
-//       targetListName: 'Post',
-//       targetListLabelField: 'name', // K5 Post label is 'name'
-//     },
-//   ],
-//   extendedListConfigurations
-// )
+export default extendedListConfigurations;

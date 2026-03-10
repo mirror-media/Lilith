@@ -1,8 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, useState, useEffect } from 'react'
-
+import { Fragment, useState } from 'react'
 import { Button } from '@keystone-ui/button'
 // eslint-disable-next-line
 import { jsx, Stack, useTheme } from '@keystone-ui/core';
@@ -37,49 +36,29 @@ function LinkToRelatedItems({
   refFieldKey,
 }: {
   itemId: string | null
-  value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' }
+  value: any
   list: ListMeta
   refFieldKey?: string
 }) {
-  function constructQuery({
-    refFieldKey,
-    itemId,
-    value,
-  }: {
-    refFieldKey?: string
-    itemId: string | null
-    value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' }
-  }) {
+  function constructQuery() {
     if (!!refFieldKey && itemId) {
       return `!${refFieldKey}_matches="${itemId}"`
     }
-    return `!id_in="${(value?.value as { id: string; label: string }[])
-      .slice(0, 100)
-      .map(({ id }: { id: string }) => id)
-      .join(',')}"`
+    const items = value.kind === 'many' ? value.value : [value.value].filter(Boolean)
+    return `!id_in="${items.slice(0, 100).map((x: any) => x.id).join(',')}"`
   }
-  const commonProps = {
-    size: 'small',
-    tone: 'active',
-    weight: 'link',
-  } as const
+  const commonProps = { size: 'small', tone: 'active', weight: 'link' } as const
 
   if (value.kind === 'many') {
-    const query = constructQuery({ refFieldKey, value, itemId })
     return (
-      <Button {...commonProps} as={Link as any} href={`/${list.path}?${query}`}>
+      <Button {...commonProps} as={Link as any} href={`/${list.path}?${constructQuery()}`}>
         View related {list.plural}
       </Button>
     )
   }
-
   return (
-    <Button
-      {...commonProps}
-      as={Link as any}
-      href={`/${list.path}/${value.value?.id}`}
-    >
-      View {list.singular} details
+    <Button {...commonProps} as={Link as any} href={`/${list.path}/${value.value?.id}`}>
+      檢視 {list.singular} 詳情
     </Button>
   )
 }
@@ -89,7 +68,6 @@ export const Field = ({
   autoFocus,
   value,
   onChange,
-  forceValidation,
 }: FieldProps<typeof controller>) => {
   const keystone = useKeystone()
   const foreignList = useList(field.refListKey)
@@ -100,412 +78,212 @@ export const Field = ({
     return (
       <Stack as="fieldset" gap="medium">
         <FieldLegend>{field.label}</FieldLegend>
-        <FieldDescription id={`${field.path}-description`}>
-          {field.description}
-        </FieldDescription>
-        <div>
-          {value.count === 1
-            ? `There is 1 ${foreignList.singular} `
-            : `There are ${value.count} ${foreignList.plural} `}
-          linked to this {localList.singular}
-        </div>
+        <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
+        <div>共計 {value.count} 個 {foreignList.plural} 連結至此 {localList.singular}</div>
       </Stack>
     )
   }
 
-  const authenticatedItem = keystone.authenticatedItem
-
   return (
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
-      <FieldDescription id={`${field.path}-description`}>
-        {field.description}
-      </FieldDescription>
-      <Fragment>
-        <Stack gap="medium">
-          <RelationshipSelect
-            controlShouldRenderValue
-            aria-describedby={
-              field.description === null
-                ? undefined
-                : `${field.path}-description`
-            }
-            autoFocus={autoFocus}
-            isDisabled={onChange === undefined}
-            labelField={field.refLabelField}
-            searchFields={field.refSearchFields}
-            list={foreignList}
-            portalMenu
-            state={
-              value.kind === 'many'
-                ? {
-                    kind: 'many',
-                    value: value.value,
-                    onChange(newItems) {
-                      onChange?.({
-                        ...value,
-                        value: newItems,
-                      })
-                    },
-                  }
-                : {
-                    kind: 'one',
-                    value: value.value,
-                    onChange(newVal) {
-                      if (value.kind === 'one') {
-                        onChange?.({
-                          ...value,
-                          value: newVal,
-                        })
-                      }
-                    },
-                  }
-            }
-            orderBy={[{ id: 'desc' }]}
-            currentItemId={value.id}
-          />
-          <Stack across gap="small">
-            {onChange !== undefined && !field.hideCreate && (
-              <Button
-                size="small"
-                disabled={isDrawerOpen}
-                onClick={() => {
-                  setIsDrawerOpen(true)
-                }}
-              >
-                Create related {foreignList.singular}
-              </Button>
-            )}
-            {onChange !== undefined &&
-              authenticatedItem.state === 'authenticated' &&
-              authenticatedItem.listKey === field.refListKey &&
-              (value.kind === 'many'
-                ? value.value.find((x) => x.id === authenticatedItem.id) ===
-                  undefined
-                : value.value?.id !== authenticatedItem.id) && (
-                <Button
-                  size="small"
-                  onClick={() => {
-                    const val = {
-                      label: authenticatedItem.label,
-                      id: authenticatedItem.id,
-                    }
-                    if (value.kind === 'many') {
-                      onChange({
-                        ...value,
-                        value: [...value.value, val],
-                      })
-                    } else {
-                      onChange({
-                        ...value,
-                        value: val,
-                      })
-                    }
-                  }}
-                >
-                  {value.kind === 'many' ? 'Add ' : 'Set as '}
-                  {authenticatedItem.label}
-                </Button>
-              )}
-            {!!(value.kind === 'many'
-              ? value.value.length
-              : value.kind === 'one' && value.value) && (
-              <LinkToRelatedItems
-                itemId={value.id}
-                refFieldKey={field.refFieldKey}
-                list={foreignList}
-                value={value}
-              />
-            )}
-          </Stack>
-        </Stack>
-        {onChange !== undefined && (
-          <DrawerController isOpen={isDrawerOpen}>
-            <CreateItemDrawer
-              listKey={foreignList.key}
-              onClose={() => {
-                setIsDrawerOpen(false)
-              }}
-              onCreate={(val) => {
-                setIsDrawerOpen(false)
-                if (value.kind === 'many') {
-                  onChange({
-                    ...value,
-                    value: [...value.value, val],
-                  })
-                } else if (value.kind === 'one') {
-                  onChange({
-                    ...value,
-                    value: val,
-                  })
+      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
+      <Stack gap="medium">
+        <RelationshipSelect
+          controlShouldRenderValue
+          autoFocus={autoFocus}
+          isDisabled={onChange === undefined}
+          labelField={field.refLabelField}
+          searchFields={field.refSearchFields}
+          list={foreignList}
+          portalMenu
+          state={
+            value.kind === 'many'
+              ? {
+                  kind: 'many',
+                  value: value.value,
+                  onChange(newItems: any) {
+                    onChange?.({ ...value, value: newItems })
+                  },
                 }
-              }}
-            />
-          </DrawerController>
-        )}
-      </Fragment>
+              : {
+                  kind: 'one',
+                  value: (value as any).value,
+                  onChange(newVal: any) {
+                    if (value.kind === 'one') onChange?.({ ...value, value: newVal })
+                  },
+                }
+          }
+          orderBy={[{ id: 'desc' }]}
+          currentItemId={value.id}
+        />
+        <Stack across gap="small">
+          {onChange !== undefined && !field.hideCreate && (
+            <Button size="small" disabled={isDrawerOpen} onClick={() => setIsDrawerOpen(true)}>
+              Create {foreignList.singular}
+            </Button>
+          )}
+          {!!(value.kind === 'many' ? value.value.length : (value as any).value) && (
+            <LinkToRelatedItems itemId={value.id} refFieldKey={field.refFieldKey} list={foreignList} value={value} />
+          )}
+        </Stack>
+      </Stack>
+      {onChange !== undefined && (
+        <DrawerController isOpen={isDrawerOpen}>
+          <CreateItemDrawer
+            listKey={foreignList.key}
+            onClose={() => setIsDrawerOpen(false)}
+            onCreate={(val) => {
+              setIsDrawerOpen(false)
+              window.dispatchEvent(new CustomEvent('REFRESH_RELATIONSHIPS'));
+              
+              if (value.kind === 'many') {
+                onChange({ ...value, value: [...value.value, val] })
+              } else if (value.kind === 'one') {
+                onChange({ ...value, value: val } as any)
+              }
+            }}
+          />
+        </DrawerController>
+      )}
     </FieldContainer>
   )
 }
 
-// @ts-ignore
 export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const list = useList(field.refListKey)
   const { colors } = useTheme()
 
   if (field.display === 'count') {
     const count = item[`${field.path}Count`] ?? 0
-    return (
-      <CellContainer>
-        {count} {count === 1 ? list.singular : list.plural}
-      </CellContainer>
-    )
+    return <CellContainer>{count} {count === 1 ? list.singular : list.plural}</CellContainer>
   }
 
-  const hasManualOrder = field.listKey === 'Post'
-  const fieldPath = hasManualOrder ? `${field.path}InInputOrder` : field.path
-  const data = item[fieldPath]
-  const items = (Array.isArray(data) ? data : [data]).filter((item) => item)
+  const data = item[field.path]
+  const items = (Array.isArray(data) ? data : [data]).filter(Boolean)
   const displayItems = items.length < 5 ? items : items.slice(0, 3)
-  const overflow = items.length < 5 ? 0 : items.length - 3
-  const labelField = hasManualOrder ? 'label' : field.refLabelField
-  const styles = {
-    color: colors.foreground,
-    textDecoration: 'none',
-
-    ':hover': {
-      textDecoration: 'underline',
-    },
-  } as const
-
+  
   return (
     <CellContainer>
-      {displayItems.map((item, index) => (
-        <Fragment key={item.id}>
+      {displayItems.map((it, index) => (
+        <Fragment key={it.id}>
           {index ? ', ' : ''}
-          {/* @ts-ignore */}
-          <Link
-            href={`/${list.path}/${item.id}`}
-            css={styles}
-          >
-            {item[labelField] || item.id}
+          <Link href={`/${list.path}/${it.id}`} css={{ color: colors.foreground, textDecoration: 'none', ':hover': { textDecoration: 'underline' } }}>
+            {it.label || it.id}
           </Link>
         </Fragment>
       ))}
-      {overflow ? `, and ${overflow} more` : null}
+      {items.length > 5 && `, 以及另外 ${items.length - 3} 個`}
     </CellContainer>
   )
 }
 
-// @ts-ignore
-export const CardValue: CardValueComponent<typeof controller> = ({
-  field,
-  item,
-}) => {
+export const CardValue: CardValueComponent<typeof controller> = ({ field, item }) => {
   const list = useList(field.refListKey)
   const data = item[field.path]
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      {(Array.isArray(data) ? data : [data])
-        .filter((item) => item)
-        .map((item, index) => (
-          <Fragment key={item.id}>
-            {index ? ', ' : ''}
-            {/* @ts-ignore */}
-            <Link href={`/${list.path}/${item.id}`}>
-              {item.label || item.id}
-            </Link>
-          </Fragment>
-        ))}
+      {(Array.isArray(data) ? data : [data]).filter(Boolean).map((it, index) => (
+        <Fragment key={it.id}>
+          {index ? ', ' : ''}
+          <Link href={`/${list.path}/${it.id}`}>{it.label || it.id}</Link>
+        </Fragment>
+      ))}
     </FieldContainer>
   )
 }
 
-type Value = { label: string; id: string }
-
-type SingleRelationshipValue = {
-  kind: 'one'
-  id: null | string
-  initialValue: Value | null
-  value: Value | null
-}
-type ManyRelationshipValue = {
-  kind: 'many'
-  id: null | string
-  initialValue: Value[]
-  value: Value[]
-}
-type CountRelationshipValue = {
-  kind: 'count'
-  id: null | string
-  count: number
-}
-
-type RelationshipController = FieldController<
-  | ManyRelationshipValue
-  | SingleRelationshipValue
-  | CountRelationshipValue,
-  string
-> & {
-  display: 'count' | 'select'
-  listKey: string
-  refListKey: string
-  refFieldKey?: string
-  refLabelField: string
-  refSearchFields: string[]
-  hideCreate: boolean
-  many: boolean
-}
-
-export const controller = (
-  config: FieldControllerConfig<
-    {
-      refFieldKey?: string
-      refListKey: string
-      many: boolean
-      hideCreate: boolean
-      refLabelField: string
-      refSearchFields: string[]
-    } & (
-      | {
-          displayMode: 'select'
-        }
-      | {
-          displayMode: 'count'
-        }
-    )
-  >
-): RelationshipController => {
-  const refLabelField = config.fieldMeta.refLabelField
-  const refSearchFields = config.fieldMeta.refSearchFields
+export const controller = (config: FieldControllerConfig<any>): any => {
+  const { refLabelField, refSearchFields } = config.fieldMeta
   
-  // 檢查是否有 manualOrder 支援（通過檢查 listKey 是否為 Post）
-  // 如果有 manualOrder，使用 InInputOrder；否則使用原始欄位
-  const hasManualOrder = config.listKey === 'Post'
-  const fieldPath = hasManualOrder ? `${config.path}InInputOrder` : config.path
+  const ORDER_FIELD_MAP: Record<string, string> = {
+    categories: 'manualOrderOfCategories',
+    writers: 'manualOrderOfWriters',
+    photographers: 'manualOrderOfWriters', 
+  }
+  const SHARED_ORDER_FIELD = ORDER_FIELD_MAP[config.path]
 
   return {
-    refFieldKey: config.fieldMeta.refFieldKey,
-    many: config.fieldMeta.many,
-    listKey: config.listKey,
     path: config.path,
     label: config.label,
     description: config.description,
-    display:
-      config.fieldMeta.displayMode === 'count' ? 'count' : 'select',
+    display: config.fieldMeta.displayMode === 'count' ? 'count' : 'select',
     refLabelField,
     refSearchFields,
     refListKey: config.fieldMeta.refListKey,
-    graphqlSelection:
-      config.fieldMeta.displayMode === 'count'
-        ? `${config.path}Count`
-        : `${fieldPath} {
-              id
-              ${hasManualOrder ? `label: ${refLabelField}` : refLabelField}
-            }`,
+    listKey: config.listKey,
+    many: config.fieldMeta.many,
     hideCreate: config.fieldMeta.hideCreate,
+    
+    graphqlSelection: config.fieldMeta.displayMode === 'count' 
+      ? `${config.path}Count` 
+      : `${config.path} { id label: ${refLabelField} } ${SHARED_ORDER_FIELD || ''}`,
+
     defaultValue: config.fieldMeta.many
-      ? {
-          id: null,
-          kind: 'many',
-          initialValue: [],
-          value: [],
-        }
-      : { id: null, kind: 'one', value: null, initialValue: null },
-    deserialize: (data) => {
+      ? { kind: 'many', id: null, initialValue: [], value: [] }
+      : { kind: 'one', id: null, initialValue: null, value: null },
+
+    deserialize: (data: any) => {
       if (config.fieldMeta.displayMode === 'count') {
-        return {
-          id: data.id,
-          kind: 'count',
-          count: data[`${config.path}Count`] ?? 0,
-        }
+        return { id: data.id, kind: 'count', count: data[`${config.path}Count`] ?? 0 }
       }
-      if (config.fieldMeta.many) {
-        // 根據是否有 manualOrder 決定使用哪個欄位
-        const sourceData = hasManualOrder 
-          ? (data[`${config.path}InInputOrder`] || [])
-          : (data[config.path] || [])
-        const value = (Array.isArray(sourceData) ? sourceData : []).map((x: any) => ({
-          id: x.id,
-          label: hasManualOrder ? (x.label || x.id) : (x[refLabelField] || x.id),
-        }))
-        return {
-          kind: 'many',
-          id: data.id,
-          initialValue: value,
-          value,
-        }
+
+      const pathData = data[config.path] || []
+      const rawAllOrders = SHARED_ORDER_FIELD ? (data[SHARED_ORDER_FIELD] || {}) : {}
+      const myOrderData = Array.isArray(rawAllOrders[config.path]) ? rawAllOrders[config.path] : []
+      
+      let value = (Array.isArray(pathData) ? pathData : [pathData]).filter(Boolean).map((x: any) => ({
+        id: x.id,
+        label: x.label || x[refLabelField] || x.id,
+      }))
+
+      if (config.fieldMeta.many && myOrderData.length > 0) {
+        const orderMap = new Map(myOrderData.map((it: any, i: number) => [String(it.id), i]))
+        value.sort((a, b) => (orderMap.get(String(a.id)) ?? 999) - (orderMap.get(String(b.id)) ?? 999))
       }
-      // 根據是否有 manualOrder 決定使用哪個欄位
-      const sourceValue = hasManualOrder
-        ? data[`${config.path}InInputOrder`]
-        : data[config.path]
-      let value = null
-      if (sourceValue) {
-        value = {
-          id: sourceValue.id,
-          label: hasManualOrder 
-            ? (sourceValue.label || sourceValue.id)
-            : (sourceValue[refLabelField] || sourceValue.id),
-        }
-      }
-      return {
-        kind: 'one',
-        id: data.id,
-        value,
-        initialValue: value,
+
+      return { 
+        kind: config.fieldMeta.many ? 'many' : 'one', 
+        id: data.id, 
+        initialValue: value, 
+        value: config.fieldMeta.many ? value : value[0] || null 
       }
     },
-    filter: {
-      Filter: () => null,
-      graphql: () => ({}),
-      Label: () => '',
-      types: {},
-    },
-    validate(value) {
-      return true
-    },
-    serialize: (state) => {
+
+    serialize: (state: any) => {
       if (state.kind === 'many') {
-        const newAllIds = new Set(state.value.map((x) => x.id))
-        const initialIds = new Set(state.initialValue.map((x) => x.id))
-        const disconnect = state.initialValue
-          .filter((x) => !newAllIds.has(x.id))
-          .map((x) => ({ id: x.id }))
-        const connect = state.value
-          .filter((x) => !initialIds.has(x.id))
-          .map((x) => ({ id: x.id }))
-        if (disconnect.length || connect.length) {
-          const output: any = {}
+        const isSameValue = state.value.length === state.initialValue.length &&
+          state.value.every((v: any, i: number) => v.id === state.initialValue[i]?.id)
 
-          if (disconnect.length) {
-            output.disconnect = disconnect
-          }
+        const result: any = {}
 
-          if (connect.length) {
-            output.connect = connect
-          }
-
-          return {
-            [config.path]: output,
+        if (SHARED_ORDER_FIELD) {
+          result[SHARED_ORDER_FIELD] = {
+            __isOrderUpdate: true,
+            path: config.path,
+            data: state.value.map((x: any) => ({ id: String(x.id), name: String(x.label || x.id) }))
           }
         }
-      } else if (state.kind === 'one') {
-        if (state.initialValue && !state.value) {
-          return { [config.path]: { disconnect: true } }
-        } else if (state.value && state.value.id !== state.initialValue?.id) {
-          return {
-            [config.path]: {
-              connect: {
-                id: state.value.id,
-              },
-            },
+
+        if (!isSameValue) {
+          result[config.path] = {
+            disconnect: state.initialValue
+              .filter((iv: { id: string }) => !state.value.some((v: { id: string }) => v.id === iv.id))
+              .map((x: { id: string }) => ({ id: x.id })),
+            connect: state.value
+              .filter((v: { id: string }) => !state.initialValue.some((iv: { id: string }) => iv.id === v.id))
+              .map((x: { id: string }) => ({ id: x.id })),
           }
         }
+        return result
+      }
+      
+      if (state.value?.id !== state.initialValue?.id) {
+        if (!state.value) return { [config.path]: { disconnect: true } }
+        return { [config.path]: { connect: { id: state.value.id } } }
       }
       return {}
     },
   }
 }
-

@@ -18,9 +18,7 @@ import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields'
 import { validate as validateUUID } from 'uuid'
 import { IdFieldConfig, ListMeta } from '@keystone-6/core/types'
 import {
-  ApolloClient,
   gql,
-  InMemoryCache,
   TypedDocumentNode,
   useApolloClient,
   useQuery,
@@ -106,7 +104,6 @@ export function useFilter(
 }
 
 const idFieldAlias = '____id____'
-
 const labelFieldAlias = '____label____'
 
 const LoadingIndicatorContext = createContext<{
@@ -114,9 +111,7 @@ const LoadingIndicatorContext = createContext<{
   ref: (element: HTMLElement | null) => void
 }>({
   count: 0,
-  ref: () => {
-    console.log('ref function called')
-  },
+  ref: () => {},
 })
 
 export const RelationshipSelect = ({
@@ -143,30 +138,16 @@ export const RelationshipSelect = ({
   list: ListMeta
   placeholder?: string
   portalMenu?: true | undefined
-  state:
-    | {
-        kind: 'many'
-        value: { label: string; id: string; data?: Record<string, any> }[]
-        onChange(
-          value: { label: string; id: string; data: Record<string, any> }[]
-        ): void
-      }
-    | {
-        kind: 'one'
-        value: { label: string; id: string; data?: Record<string, any> } | null
-        onChange(
-          value: { label: string; id: string; data: Record<string, any> } | null
-        ): void
-      }
+  state: any
   extraSelection?: string
   orderBy: Record<string, any>[]
   currentItemId: string | null
 }) => {
   const [search, setSearch] = useState('')
-  const [loadingIndicatorElement, setLoadingIndicatorElement] =
-    useState<null | HTMLElement>(null)
+  const [loadingIndicatorElement, setLoadingIndicatorElement] = useState<null | HTMLElement>(null)
+  
+  const client = useApolloClient()
 
-  // 查詢當前 Post 的 sections（只在初始化時）
   const { data: postData } = useQuery(
     gql`
       query GetPostSections($id: ID!) {
@@ -184,12 +165,10 @@ export const RelationshipSelect = ({
     }
   )
 
-  // 使用 state 來追蹤當前的 sections
   const [currentSections, setCurrentSections] = useState<string[]>(
     postData?.post?.sections?.map((s: any) => s.id) || []
   )
 
-  // 當從數據庫查詢到 sections 時，更新 state 並通知 manager
   useEffect(() => {
     if (postData?.post?.sections) {
       const sectionIds = postData.post.sections.map((s: any) => s.id)
@@ -198,7 +177,6 @@ export const RelationshipSelect = ({
     }
   }, [postData?.post?.sections])
 
-  // 訂閱 sections 的變化（來自用戶在表單中的選擇）
   useEffect(() => {
     const unsubscribe = sectionsManager.subscribe((sectionIds) => {
       setCurrentSections(sectionIds)
@@ -208,18 +186,7 @@ export const RelationshipSelect = ({
 
   const selectedSections = currentSections
 
-  const QUERY: TypedDocumentNode<
-    {
-      items: { [idFieldAlias]: string; [labelFieldAlias]: string | null }[]
-      count: number
-    },
-    {
-      where: Record<string, any>
-      take: number
-      skip: number
-      orderBy: Record<string, any>[]
-    }
-  > = gql`
+  const QUERY: TypedDocumentNode<any, any> = gql`
     query RelationshipSelect($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!, $orderBy: [${list.gqlNames.listOrderName}!]!) {
       items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
         ${idFieldAlias}: id
@@ -233,250 +200,98 @@ export const RelationshipSelect = ({
   const debouncedSearch = useDebouncedValue(search, 200)
   const searchFilter = useFilter(debouncedSearch, list, searchFields)
 
-  // 建立完整的 where 條件，包括 sections 過濾
   const where = useMemo(() => {
     const conditions: any = {}
-    
-    // 如果有搜尋條件，加入搜尋過濾
     if (searchFilter.OR && searchFilter.OR.length > 0) {
       Object.assign(conditions, searchFilter)
     }
-
-    // 如果有選中的 sections，只顯示屬於這些 sections 的 categories
-    if (selectedSections.length > 0) {
-      conditions.sections = {
-        some: {
-          id: {
-            in: selectedSections,
-          },
-        },
-      }
+    if (selectedSections && selectedSections.length > 0) {
+      conditions.sections = { some: { id: { in: selectedSections } } }
     }
-
     return conditions
   }, [searchFilter, selectedSections])
 
-  const link = useApolloClient().link
-  const apolloClient = useMemo(
-    () =>
-      new ApolloClient({
-        link,
-        cache: new InMemoryCache({
-          typePolicies: {
-            Query: {
-              fields: {
-                [list.gqlNames.listQueryName]: {
-                  keyArgs: ['where'],
-                  merge: (
-                    existing: readonly unknown[],
-                    incoming: readonly unknown[],
-                    { args }
-                  ) => {
-                    const merged = existing ? existing.slice() : []
-                    const { skip } = args!
-                    for (let i = 0; i < incoming.length; ++i) {
-                      merged[skip + i] = incoming[i]
-                    }
-                    return merged
-                  },
-                },
-              },
-            },
-          },
-        }),
-      }),
-    [link, list.gqlNames.listQueryName]
-  )
-
-  const initialItemsToLoad = Math.min(list.pageSize, 10)
-  const subsequentItemsToLoad = Math.min(list.pageSize, 50)
-  const { data, error, loading, fetchMore } = useQuery(QUERY, {
-    fetchPolicy: 'network-only',
-    variables: { where, take: initialItemsToLoad, skip: 0, orderBy },
-    client: apolloClient,
+  const { data, error, loading, fetchMore, refetch } = useQuery(QUERY, {
+    fetchPolicy: 'cache-and-network',
+    variables: { where, take: 50, skip: 0, orderBy },
+    client: client,
   })
 
+  useEffect(() => {
+    const handleRefresh = () => {
+      refetch()
+    }
+    window.addEventListener('REFRESH_RELATIONSHIPS', handleRefresh)
+    return () => window.removeEventListener('REFRESH_RELATIONSHIPS', handleRefresh)
+  }, [refetch])
+
   const count = data?.count || 0
-
-  const options =
-    data?.items?.map(
-      ({ [idFieldAlias]: value, [labelFieldAlias]: label, ...data }) => ({
-        value,
-        label: label || value,
-        data,
-      })
-    ) || []
-
-  const loadingIndicatorContextVal = useMemo(
-    () => ({
-      count,
-      ref: setLoadingIndicatorElement,
-    }),
-    [count]
-  )
-
-  const [lastFetchMore, setLastFetchMore] = useState<{
-    where: Record<string, any>
-    extraSelection: string
-    list: ListMeta
-    skip: number
-  } | null>(null)
+  const options = data?.items?.map(({ [idFieldAlias]: value, [labelFieldAlias]: label, ...data }: any) => ({
+    value,
+    label: label || value,
+    data,
+  })) || []
 
   useIntersectionObserver(
     ([{ isIntersecting }]) => {
-      const skip = data?.items.length
-      if (
-        !loading &&
-        skip &&
-        isIntersecting &&
-        options.length < count &&
-        (lastFetchMore?.extraSelection !== extraSelection ||
-          lastFetchMore?.where !== where ||
-          lastFetchMore?.list !== list ||
-          lastFetchMore?.skip !== skip)
-      ) {
-        const QUERY: TypedDocumentNode<
-          {
-            items: {
-              [idFieldAlias]: string
-              [labelFieldAlias]: string | null
-            }[]
-          },
-          {
-            where: Record<string, any>
-            take: number
-            skip: number
-            orderBy: Record<string, any>[]
-          }
-        > = gql`
-              query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!, $orderBy: [${list.gqlNames.listOrderName}!]!) {
-                items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
-                  ${labelFieldAlias}: ${labelField}
-                  ${idFieldAlias}: id
-                  ${extraSelection}
-                }
-              }
-            `
-        setLastFetchMore({ extraSelection, list, skip, where })
+      const skip = data?.items?.length
+      if (!loading && skip && isIntersecting && options.length < count) {
         fetchMore({
-          query: QUERY,
-          variables: {
-            where,
-            take: subsequentItemsToLoad,
-            skip,
-            orderBy,
-          },
+          variables: { where, take: 50, skip, orderBy },
         })
-          .then(() => {
-            setLastFetchMore(null)
-          })
-          .catch(() => {
-            setLastFetchMore(null)
-          })
       }
     },
     { current: loadingIndicatorElement }
   )
 
-  if (error) {
-    return <span>Error</span>
-  }
+  if (error) return <span>載入發生錯誤</span>
 
-  // 如果沒有選中任何 section，顯示提示訊息
-  if (selectedSections.length === 0) {
-    return (
-      <div style={{ padding: '8px', color: '#666', fontStyle: 'italic' }}>
-        請先選擇大分類（Sections），才能選擇小分類（Categories）
-      </div>
-    )
-  }
-
-  if (state.kind === 'one') {
-    return (
-      <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
-        <Select
-          onInputChange={(val) => setSearch(val)}
-          isLoading={loading || isLoading}
-          autoFocus={autoFocus}
-          components={relationshipSelectComponents}
-          portalMenu={portalMenu}
-          value={
-            state.value
-              ? {
-                  value: state.value.id,
-                  label: state.value.label,
-                  // eslint-disable-next-line
-                  // @ts-ignore
-                  data: state.value.data,
-                }
-              : null
-          }
-          options={options}
-          onChange={(value) => {
-            state.onChange(
-              value
-                ? {
-                    id: value.value,
-                    label: value.label,
-                    data: (value as any).data,
-                  }
-                : null
-            )
-          }}
-          placeholder={placeholder}
-          controlShouldRenderValue={controlShouldRenderValue}
-          isClearable={controlShouldRenderValue}
-          isDisabled={isDisabled}
-        />
-      </LoadingIndicatorContext.Provider>
-    )
+  const commonProps = {
+    onInputChange: (val: string) => setSearch(val),
+    isLoading: loading || isLoading,
+    autoFocus,
+    components: relationshipSelectComponents,
+    portalMenu,
+    options,
+    placeholder,
+    controlShouldRenderValue,
+    isClearable: controlShouldRenderValue,
+    isDisabled,
   }
 
   return (
-    <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
-      <MultiSelect
-        onInputChange={(val) => setSearch(val)}
-        isLoading={loading || isLoading}
-        autoFocus={autoFocus}
-        components={relationshipSelectComponents}
-        portalMenu={portalMenu}
-        value={state.value.map((value) => ({
-          value: value.id,
-          label: value.label,
-          data: value.data,
-        }))}
-        options={options}
-        onChange={(value) => {
-          state.onChange(
-            value.map((x) => ({
-              id: x.value,
-              label: x.label,
-              data: (x as any).data,
-            }))
-          )
-        }}
-        placeholder={placeholder}
-        controlShouldRenderValue={controlShouldRenderValue}
-        isClearable={controlShouldRenderValue}
-        isDisabled={isDisabled}
-      />
+    <LoadingIndicatorContext.Provider value={{ count, ref: setLoadingIndicatorElement }}>
+      {state.kind === 'many' ? (
+        <MultiSelect
+          {...commonProps}
+          value={state.value.map((v: any) => ({ value: v.id, label: v.label, data: v.data }))}
+          onChange={(value: any) => {
+            state.onChange(value.map((x: any) => ({ id: x.value, label: x.label, data: x.data })))
+          }}
+        />
+      ) : (
+        <Select
+          {...commonProps}
+          value={state.value ? { value: state.value.id, label: state.value.label, data: state.value.data } : null}
+          onChange={(value: any) => {
+            state.onChange(value ? { id: value.value, label: value.label, data: value.data } : null)
+          }}
+        />
+      )}
     </LoadingIndicatorContext.Provider>
   )
 }
 
 const relationshipSelectComponents: Partial<typeof selectComponents> = {
-  MenuList: ({ children, ...props }) => {
+  MenuList: ({ children, ...props }: any) => {
     const { count, ref } = useContext(LoadingIndicatorContext)
     return (
       <selectComponents.MenuList {...props}>
         {children}
-        <div css={{ textAlign: 'center' }} ref={ref}>
-          {props.options.length < count && (
-            <span css={{ padding: 8 }}>Loading...</span>
-          )}
+        <div css={{ textAlign: 'center', padding: '8px' }} ref={ref}>
+          {props.options.length < count && <span>載入中...</span>}
         </div>
       </selectComponents.MenuList>
     )
   },
 }
-

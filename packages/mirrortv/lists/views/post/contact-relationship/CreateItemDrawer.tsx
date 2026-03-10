@@ -11,41 +11,23 @@ import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 import { Fields } from '@keystone-6/core/admin-ui/utils'
 import { useCreateItem } from '../../../../admin/utils/use-create-item'
 import { GraphQLErrorNotice } from '@keystone-6/core/admin-ui/components'
-import { useRef } from 'react'
 
+/**
+ * 移除 defaultRole，專注於通用關聯建立
+ */
 export function CreateItemDrawer({
   listKey,
-  defaultRole,
   onClose,
   onCreate,
 }: {
   listKey: string
-  defaultRole: string
   onClose: () => void
   onCreate: (item: { id: string; label: string }) => void
 }) {
-  const isAssignedRef = useRef(false)
   const { createViewFieldModes } = useKeystone()
   const list = useList(listKey)
-  const createItemState = useCreateItem(list, { role: 'hidden' })
-
-  if (isAssignedRef.current === false) {
-    createItemState.props.onChange(() => {
-      return Object.assign({}, createItemState.props.value, {
-        ...createItemState.props.value,
-        role: {
-          kind: 'value',
-          value: {
-            kind: 'create',
-            value: {
-              value: defaultRole,
-            },
-          },
-        },
-      })
-    })
-    isAssignedRef.current = true
-  }
+  
+  const createItemState = useCreateItem(list)
 
   return (
     <Drawer

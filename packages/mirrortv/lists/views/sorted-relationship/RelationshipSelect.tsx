@@ -1,186 +1,36 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-
 import 'intersection-observer'
-import {
-  RefObject,
-  useEffect,
-  useMemo,
-  useState,
-  createContext,
-  useContext,
-  useRef,
-} from 'react'
-
-// eslint-disable-next-line
-import { jsx } from '@keystone-ui/core';
+import { RefObject, useEffect, useMemo, useState, createContext, useContext, useRef } from 'react'
+import { jsx } from '@keystone-ui/core'
 import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields'
 import { validate as validateUUID } from 'uuid'
 import { IdFieldConfig, ListMeta } from '@keystone-6/core/types'
-import {
-  ApolloClient,
-  gql,
-  InMemoryCache,
-  TypedDocumentNode,
-  useApolloClient,
-  useQuery,
-} from '@keystone-6/core/admin-ui/apollo'
-
-function useIntersectionObserver(
-  cb: IntersectionObserverCallback,
-  ref: RefObject<any>
-) {
-  const cbRef = useRef(cb)
-  useEffect(() => {
-    cbRef.current = cb
-  })
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (...args) => cbRef.current(...args),
-      {}
-    )
-    const node = ref.current
-    if (node !== null) {
-      observer.observe(node)
-      return () => observer.unobserve(node)
-    }
-  }, [ref])
-}
-
-const idValidators = {
-  uuid: validateUUID,
-  cuid(value: string) {
-    return value.startsWith('c')
-  },
-  autoincrement(value: string) {
-    return /^\d+$/.test(value)
-  },
-}
-
-function useDebouncedValue<T>(value: T, limitMs: number): T {
-  const [debouncedValue, setDebouncedValue] = useState(() => value)
-
-  useEffect(() => {
-    const id = setTimeout(() => {
-      setDebouncedValue(() => value)
-    }, limitMs)
-    return () => {
-      clearTimeout(id)
-    }
-  }, [value, limitMs])
-  return debouncedValue
-}
-
-export function useFilter(
-  search: string,
-  list: ListMeta,
-  searchFields: string[]
-) {
-  return useMemo(() => {
-    if (!search.length) return { OR: [] }
-
-    const idFieldKind: IdFieldConfig['kind'] = (
-      list.fields.id.controller as any
-    ).idFieldKind
-    const trimmedSearch = search.trim()
-    const isValidId = idValidators[idFieldKind](trimmedSearch)
-
-    const conditions: Record<string, any>[] = []
-    if (isValidId) {
-      conditions.push({ id: { equals: trimmedSearch } })
-    }
-
-    for (const fieldKey of searchFields) {
-      const field = list.fields[fieldKey]
-      conditions.push({
-        [field.path]: {
-          contains: trimmedSearch,
-          mode: field.search === 'insensitive' ? 'insensitive' : undefined,
-        },
-      })
-    }
-
-    return { OR: conditions }
-  }, [search, list, searchFields])
-}
+import { ApolloClient, gql, InMemoryCache, TypedDocumentNode, useApolloClient, useQuery } from '@keystone-6/core/admin-ui/apollo'
 
 const idFieldAlias = '____id____'
-
 const labelFieldAlias = '____label____'
-
-const LoadingIndicatorContext = createContext<{
-  count: number
-  ref: (element: HTMLElement | null) => void
-}>({
+const LoadingIndicatorContext = createContext<{ count: number; ref: (element: HTMLElement | null) => void }>({
   count: 0,
-  // To avoid @typescript-eslint/no-empty-function,
-  // add a console log.
-  ref: () => {
-    console.log('ref function called')
-  },
+  ref: () => {},
 })
 
 export const RelationshipSelect = ({
-  autoFocus,
-  controlShouldRenderValue,
-  isDisabled,
-  isLoading,
-  labelField,
-  searchFields,
-  list,
-  placeholder,
-  portalMenu,
-  state,
-  extraSelection = '',
-  orderBy,
-}: {
-  autoFocus?: boolean
-  controlShouldRenderValue: boolean
-  isDisabled: boolean
-  isLoading?: boolean
-  labelField: string
-  searchFields: string[]
-  list: ListMeta
-  placeholder?: string
-  portalMenu?: true | undefined
-  state:
-    | {
-        kind: 'many'
-        value: { label: string; id: string; data?: Record<string, any> }[]
-        onChange(
-          value: { label: string; id: string; data: Record<string, any> }[]
-        ): void
-      }
-    | {
-        kind: 'one'
-        value: { label: string; id: string; data?: Record<string, any> } | null
-        onChange(
-          value: { label: string; id: string; data: Record<string, any> } | null
-        ): void
-      }
-  extraSelection?: string
-  orderBy: Record<string, any>[]
-}) => {
+  autoFocus, controlShouldRenderValue, isDisabled, isLoading, labelField, searchFields, list, placeholder, portalMenu, state, extraSelection = '', orderBy,
+}: any) => {
   const [search, setSearch] = useState('')
-  // note it's important that this is in state rather than a ref
-  // because we want a re-render if the element changes
-  // so that we can register the intersection observer
-  // on the right element
-  const [loadingIndicatorElement, setLoadingIndicatorElement] =
-    useState<null | HTMLElement>(null)
+  const [loadingIndicatorElement, setLoadingIndicatorElement] = useState<null | HTMLElement>(null)
+  const link = useApolloClient().link
 
-  const QUERY: TypedDocumentNode<
-    {
-      items: { [idFieldAlias]: string; [labelFieldAlias]: string | null }[]
-      count: number
-    },
-    {
-      where: Record<string, any>
-      take: number
-      skip: number
-      orderBy: Record<string, any>[]
-    }
-  > = gql`
+  const apolloClient = useMemo(() => new ApolloClient({
+    link,
+    cache: new InMemoryCache({
+      typePolicies: { Query: { fields: { [list.gqlNames.listQueryName]: { keyArgs: ['where'], merge(existing: any[] = [], incoming: any[], { args }: any) {
+        const merged = existing.slice(); for (let i = 0; i < incoming.length; ++i) merged[args.skip + i] = incoming[i]; return merged;
+      }}}}}}),
+  }), [link, list.gqlNames.listQueryName])
+
+  const QUERY: TypedDocumentNode<any, any> = gql`
     query RelationshipSelect($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!, $orderBy: [${list.gqlNames.listOrderName}!]!) {
       items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
         ${idFieldAlias}: id
@@ -191,248 +41,64 @@ export const RelationshipSelect = ({
     }
   `
 
-  const debouncedSearch = useDebouncedValue(search, 200)
-  const where = useFilter(debouncedSearch, list, searchFields)
-
-  const link = useApolloClient().link
-  // we're using a local apollo client here because writing a global implementation of the typePolicies
-  // would require making assumptions about how pagination should work which won't always be right
-  const apolloClient = useMemo(
-    () =>
-      new ApolloClient({
-        link,
-        cache: new InMemoryCache({
-          typePolicies: {
-            Query: {
-              fields: {
-                [list.gqlNames.listQueryName]: {
-                  keyArgs: ['where'],
-                  merge: (
-                    existing: readonly unknown[],
-                    incoming: readonly unknown[],
-                    { args }
-                  ) => {
-                    const merged = existing ? existing.slice() : []
-                    const { skip } = args!
-                    for (let i = 0; i < incoming.length; ++i) {
-                      merged[skip + i] = incoming[i]
-                    }
-                    return merged
-                  },
-                },
-              },
-            },
-          },
-        }),
-      }),
-    [link, list.gqlNames.listQueryName]
-  )
-
-  const initialItemsToLoad = Math.min(list.pageSize, 10)
-  const subsequentItemsToLoad = Math.min(list.pageSize, 50)
-  const { data, error, loading, fetchMore } = useQuery(QUERY, {
+  const { data, loading, fetchMore } = useQuery(QUERY, {
     fetchPolicy: 'network-only',
-    variables: { where, take: initialItemsToLoad, skip: 0, orderBy },
+    variables: { where: { OR: search ? [{ [labelField]: { contains: search, mode: 'insensitive' } }] : [] }, take: 50, skip: 0, orderBy },
     client: apolloClient,
   })
 
-  const count = data?.count || 0
+  const options = data?.items?.map((item: any) => ({ value: item[idFieldAlias], label: item[labelFieldAlias] || item[idFieldAlias], data: item })) || []
 
-  const options =
-    data?.items?.map(
-      ({ [idFieldAlias]: value, [labelFieldAlias]: label, ...data }) => ({
-        value,
-        label: label || value,
-        data,
-      })
-    ) || []
-
-  const loadingIndicatorContextVal = useMemo(
-    () => ({
-      count,
-      ref: setLoadingIndicatorElement,
-    }),
-    [count]
-  )
-
-  // we want to avoid fetching more again and `loading` from Apollo
-  // doesn't seem to become true when fetching more
-  const [lastFetchMore, setLastFetchMore] = useState<{
-    where: Record<string, any>
-    extraSelection: string
-    list: ListMeta
-    skip: number
-  } | null>(null)
-
-  useIntersectionObserver(
-    ([{ isIntersecting }]) => {
-      const skip = data?.items.length
-      if (
-        !loading &&
-        skip &&
-        isIntersecting &&
-        options.length < count &&
-        (lastFetchMore?.extraSelection !== extraSelection ||
-          lastFetchMore?.where !== where ||
-          lastFetchMore?.list !== list ||
-          lastFetchMore?.skip !== skip)
-      ) {
-        const QUERY: TypedDocumentNode<
-          {
-            items: {
-              [idFieldAlias]: string
-              [labelFieldAlias]: string | null
-            }[]
-          },
-          {
-            where: Record<string, any>
-            take: number
-            skip: number
-            orderBy: Record<string, any>[]
-          }
-        > = gql`
-              query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!, $orderBy: [${list.gqlNames.listOrderName}!]!) {
-                items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
-                  ${labelFieldAlias}: ${labelField}
-                  ${idFieldAlias}: id
-                  ${extraSelection}
-                }
-              }
-            `
-        setLastFetchMore({ extraSelection, list, skip, where })
-        fetchMore({
-          query: QUERY,
-          variables: {
-            where,
-            take: subsequentItemsToLoad,
-            skip,
-            orderBy,
-          },
-        })
-          .then(() => {
-            setLastFetchMore(null)
-          })
-          .catch(() => {
-            setLastFetchMore(null)
-          })
-      }
-    },
-    { current: loadingIndicatorElement }
-  )
-
-  // TODO: better error UI
-  // TODO: Handle permission errors
-  // (ie; user has permission to read this relationship field, but
-  // not the related list, or some items on the list)
-  if (error) {
-    return <span>Error</span>
-  }
-
-  if (state.kind === 'one') {
-    return (
-      <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
-        <Select
-          // this is necessary because react-select passes a second argument to onInputChange
-          // and useState setters log a warning if a second argument is passed
-          onInputChange={(val) => setSearch(val)}
-          isLoading={loading || isLoading}
-          autoFocus={autoFocus}
-          components={relationshipSelectComponents}
-          portalMenu={portalMenu}
-          value={
-            state.value
-              ? {
-                  value: state.value.id,
-                  label: state.value.label,
-                  // eslint-disable-next-line
-                  // @ts-ignore
-                  data: state.value.data,
-                }
-              : null
-          }
-          options={options}
-          onChange={(value) => {
-            state.onChange(
-              value
-                ? {
-                    id: value.value,
-                    label: value.label,
-                    data: (value as any).data,
-                  }
-                : null
-            )
-          }}
-          placeholder={placeholder}
-          controlShouldRenderValue={controlShouldRenderValue}
-          isClearable={controlShouldRenderValue}
-          isDisabled={isDisabled}
-        />
-      </LoadingIndicatorContext.Provider>
-    )
+  const commonProps = {
+    onInputChange: (val: string) => setSearch(val),
+    isLoading: loading || isLoading,
+    autoFocus,
+    components: relationshipSelectComponents,
+    portalMenu,
+    options,
+    placeholder,
+    controlShouldRenderValue,
+    isClearable: controlShouldRenderValue,
+    isDisabled,
   }
 
   return (
-    <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
-      <MultiSelect // this is necessary because react-select passes a second argument to onInputChange
-        // and useState setters log a warning if a second argument is passed
-        onInputChange={(val) => setSearch(val)}
-        isLoading={loading || isLoading}
-        autoFocus={autoFocus}
-        components={relationshipSelectComponents}
-        portalMenu={portalMenu}
-        value={state.value.map((value) => ({
-          value: value.id,
-          label: value.label,
-          data: value.data,
-        }))}
-        options={options}
-        onChange={(value) => {
-          state.onChange(
-            value.map((x) => ({
-              id: x.value,
-              label: x.label,
-              data: (x as any).data,
-            }))
-          )
-        }}
-        placeholder={placeholder}
-        controlShouldRenderValue={controlShouldRenderValue}
-        isClearable={controlShouldRenderValue}
-        isDisabled={isDisabled}
-        // The parameter `formatOptionLabel` is added specifically for this project
-        // and is not copied from the codebase of keystone-6/core.
-        // This parameter controls the appearance of element in drop-down list component, make it display image if needed.
-        // See [Pull Request](https://github.com/mirror-media/Lilith/pull/698) to get more details.
-        formatOptionLabel={(option) => {
-          return (
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
+    <LoadingIndicatorContext.Provider value={{ count: data?.count || 0, ref: setLoadingIndicatorElement }}>
+      {state.kind === 'many' ? (
+        <MultiSelect
+          {...commonProps}
+          value={state.value.map((v: any) => ({ value: v.id, label: v.label, data: v.data }))}
+          onChange={(newValue: any) => {
+            state.onChange(newValue.map((x: any) => ({ id: x.value, label: x.label, data: x.data })))
+          }}
+          formatOptionLabel={(option: any) => (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
               <span>{option.label}</span>
-              {list.label === 'Photos' && (
-                <img
-                  src={option?.data?.imageFile?.url}
-                  width={50}
-                  height={50}
-                  style={{ objectFit: 'cover', marginLeft: 'auto' }}
-                ></img>
+              {list.label === 'Photos' && option.data?.imageFile?.url && (
+                <img src={option.data.imageFile.url} width={30} height={30} style={{ marginLeft: 'auto', objectFit: 'cover' }} />
               )}
             </div>
-          )
-        }}
-      />
+          )}
+        />
+      ) : (
+        <Select
+          {...commonProps}
+          value={state.value ? { value: state.value.id, label: state.value.label, data: state.value.data } : null}
+          onChange={(v: any) => state.onChange(v ? { id: v.value, label: v.label, data: v.data } : null)}
+        />
+      )}
     </LoadingIndicatorContext.Provider>
   )
 }
 
 const relationshipSelectComponents: Partial<typeof selectComponents> = {
-  MenuList: ({ children, ...props }) => {
+  MenuList: ({ children, ...props }: any) => {
     const { count, ref } = useContext(LoadingIndicatorContext)
     return (
       <selectComponents.MenuList {...props}>
         {children}
-        <div css={{ textAlign: 'center' }} ref={ref}>
-          {props.options.length < count && (
-            <span css={{ padding: 8 }}>Loading...</span>
-          )}
+        <div ref={ref} style={{ textAlign: 'center', padding: 8 }}>
+          {props.options.length < count && 'Loading...'}
         </div>
       </selectComponents.MenuList>
     )
