@@ -1,8 +1,14 @@
 import type { AdminConfig } from '@keystone-6/core/types'
+import { ListSearchMobileFix } from '../../core/src/admin/list-search-mobile-fix'
 import { CustomNavigation } from './components/CustomNavigation'
 
 function CustomLogo() {
-  return <h3>《鏡電視》</h3>
+  return (
+    <>
+      <ListSearchMobileFix />
+      <h3>《鏡電視》</h3>
+    </>
+  )
 }
 
 export const components: AdminConfig['components'] = {
