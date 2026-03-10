@@ -1374,6 +1374,7 @@ type Post {
   updateTimeStamp: Boolean
   categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   categoriesCount(where: CategoryWhereInput! = {}): Int
+  manualOrderOfCategories: JSON
   writers(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   writersCount(where: ContactWhereInput! = {}): Int
   manualOrderOfWriters: JSON
@@ -1403,6 +1404,7 @@ type Post {
   topics: Topic
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  manualOrderOfTags: JSON
   audio: Audio
   download(where: DownloadWhereInput! = {}, orderBy: [DownloadOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DownloadWhereUniqueInput): [Download!]
   downloadCount(where: DownloadWhereInput! = {}): Int
@@ -1428,7 +1430,6 @@ type Post {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
-  relatedPostsInInputOrder: [Post]
 }
 
 input PostWhereUniqueInput {
@@ -1540,6 +1541,7 @@ input PostUpdateInput {
   publishedDateString: String
   updateTimeStamp: Boolean
   categories: CategoryRelateToManyForUpdateInput
+  manualOrderOfCategories: JSON
   writers: ContactRelateToManyForUpdateInput
   manualOrderOfWriters: JSON
   photographers: ContactRelateToManyForUpdateInput
@@ -1562,6 +1564,7 @@ input PostUpdateInput {
   source: String
   topics: TopicRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
+  manualOrderOfTags: JSON
   audio: AudioRelateToOneForUpdateInput
   download: DownloadRelateToManyForUpdateInput
   relatedPosts: PostRelateToManyForUpdateInput
@@ -1620,6 +1623,7 @@ input PostCreateInput {
   publishedDateString: String
   updateTimeStamp: Boolean
   categories: CategoryRelateToManyForCreateInput
+  manualOrderOfCategories: JSON
   writers: ContactRelateToManyForCreateInput
   manualOrderOfWriters: JSON
   photographers: ContactRelateToManyForCreateInput
@@ -1642,6 +1646,7 @@ input PostCreateInput {
   source: String
   topics: TopicRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
+  manualOrderOfTags: JSON
   audio: AudioRelateToOneForCreateInput
   download: DownloadRelateToManyForCreateInput
   relatedPosts: PostRelateToManyForCreateInput
