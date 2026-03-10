@@ -1,8 +1,16 @@
 import type { AdminConfig } from '@keystone-6/core/types'
+import { admin } from '@mirrormedia/lilith-core'
 import { CustomNavigation } from './components/CustomNavigation'
 
+const { ListSearchMobileFix } = admin
+
 function CustomLogo() {
-  return <h3>《鏡報》</h3>
+  return (
+    <>
+      <ListSearchMobileFix />
+      <h3>《鏡報》</h3>
+    </>
+  )
 }
 
 export const components: AdminConfig['components'] = {
