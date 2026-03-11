@@ -12,6 +12,7 @@ type ArtShow {
   content: JSON
   author(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   authorCount(where: ContactWhereInput! = {}): Int
+  manualOrderOfAuthors: JSON
   series(where: SerieWhereInput! = {}, orderBy: [SerieOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SerieWhereUniqueInput): [Serie!]
   seriesCount(where: SerieWhereInput! = {}): Int
   show: Show
@@ -173,6 +174,7 @@ input ArtShowUpdateInput {
   heroVideo: VideoRelateToOneForUpdateInput
   content: JSON
   author: ContactRelateToManyForUpdateInput
+  manualOrderOfAuthors: JSON
   series: SerieRelateToManyForUpdateInput
   show: ShowRelateToOneForUpdateInput
   contentApiData: JSON
@@ -235,6 +237,7 @@ input ArtShowCreateInput {
   heroVideo: VideoRelateToOneForCreateInput
   content: JSON
   author: ContactRelateToManyForCreateInput
+  manualOrderOfAuthors: JSON
   series: SerieRelateToManyForCreateInput
   show: ShowRelateToOneForCreateInput
   contentApiData: JSON
@@ -1380,14 +1383,19 @@ type Post {
   manualOrderOfWriters: JSON
   photographers(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   photographersCount(where: ContactWhereInput! = {}): Int
+  manualOrderOfPhotographers: JSON
   cameraOperators(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   cameraOperatorsCount(where: ContactWhereInput! = {}): Int
+  manualOrderOfCameraOperators: JSON
   designers(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   designersCount(where: ContactWhereInput! = {}): Int
+  manualOrderOfDesigners: JSON
   engineers(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   engineersCount(where: ContactWhereInput! = {}): Int
+  manualOrderOfEngineers: JSON
   vocals(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   vocalsCount(where: ContactWhereInput! = {}): Int
+  manualOrderOfVocals: JSON
   otherbyline: String
   heroVideo: Video
   heroImage: Image
@@ -1545,10 +1553,15 @@ input PostUpdateInput {
   writers: ContactRelateToManyForUpdateInput
   manualOrderOfWriters: JSON
   photographers: ContactRelateToManyForUpdateInput
+  manualOrderOfPhotographers: JSON
   cameraOperators: ContactRelateToManyForUpdateInput
+  manualOrderOfCameraOperators: JSON
   designers: ContactRelateToManyForUpdateInput
+  manualOrderOfDesigners: JSON
   engineers: ContactRelateToManyForUpdateInput
+  manualOrderOfEngineers: JSON
   vocals: ContactRelateToManyForUpdateInput
+  manualOrderOfVocals: JSON
   otherbyline: String
   heroVideo: VideoRelateToOneForUpdateInput
   heroImage: ImageRelateToOneForUpdateInput
@@ -1627,10 +1640,15 @@ input PostCreateInput {
   writers: ContactRelateToManyForCreateInput
   manualOrderOfWriters: JSON
   photographers: ContactRelateToManyForCreateInput
+  manualOrderOfPhotographers: JSON
   cameraOperators: ContactRelateToManyForCreateInput
+  manualOrderOfCameraOperators: JSON
   designers: ContactRelateToManyForCreateInput
+  manualOrderOfDesigners: JSON
   engineers: ContactRelateToManyForCreateInput
+  manualOrderOfEngineers: JSON
   vocals: ContactRelateToManyForCreateInput
+  manualOrderOfVocals: JSON
   otherbyline: String
   heroVideo: VideoRelateToOneForCreateInput
   heroImage: ImageRelateToOneForCreateInput
@@ -2091,6 +2109,7 @@ type Show {
   introduction: String
   hostName(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   hostNameCount(where: ContactWhereInput! = {}): Int
+  manualOrderOfHostNames: JSON
   staffName(where: ContactWhereInput! = {}, orderBy: [ContactOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContactWhereUniqueInput): [Contact!]
   staffNameCount(where: ContactWhereInput! = {}): Int
   igUrl: String
@@ -2165,6 +2184,7 @@ input ShowUpdateInput {
   sortOrder: Int
   introduction: String
   hostName: ContactRelateToManyForUpdateInput
+  manualOrderOfHostNames: JSON
   staffName: ContactRelateToManyForUpdateInput
   igUrl: String
   facebookUrl: String
@@ -2193,6 +2213,7 @@ input ShowCreateInput {
   sortOrder: Int
   introduction: String
   hostName: ContactRelateToManyForCreateInput
+  manualOrderOfHostNames: JSON
   staffName: ContactRelateToManyForCreateInput
   igUrl: String
   facebookUrl: String
