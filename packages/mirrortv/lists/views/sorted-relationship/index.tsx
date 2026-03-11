@@ -110,21 +110,25 @@ export const Cell: CellComponent<any> = ({ field, item }) => {
 }
 
 export const controller = (config: FieldControllerConfig<any>): any => {
-  const { many, displayMode } = config.fieldMeta;
-  const pathWithUpper = config.path.charAt(0).toUpperCase() + config.path.slice(1);
-  const orderFieldKey = many ? `manualOrderOf${pathWithUpper}` : null;
+  const { many, displayMode, refLabelField } = config.fieldMeta;
+  
+  const fieldPath = config.path;
+  const suffix = fieldPath.endsWith('s') ? '' : 's';
+  const orderFieldKey = many 
+    ? `manualOrderOf${fieldPath.charAt(0).toUpperCase() + fieldPath.slice(1)}${suffix}` 
+    : null;
 
   return {
     path: config.path,
     label: config.label,
     description: config.description,
     listKey: config.listKey, 
-    refLabelField: 'name',
+    refLabelField: refLabelField || 'name',
     refSearchFields: config.fieldMeta.refSearchFields,
     refListKey: config.fieldMeta.refListKey,
     many,
     
-    graphqlSelection: `${config.path} { id name } ${orderFieldKey ? orderFieldKey : ''}`,
+    graphqlSelection: `${config.path} { id label: ${refLabelField || 'name'} } ${orderFieldKey ? orderFieldKey : ''}`,
     
     defaultValue: displayMode === 'cards'
       ? { kind: 'cards-view', id: null, initialIds: new Set(), currentIds: new Set(), itemsBeingEdited: new Set(), itemBeingCreated: false, displayOptions: config.fieldMeta }
@@ -150,14 +154,22 @@ export const controller = (config: FieldControllerConfig<any>): any => {
 
       if (many) {
         const orderData = orderFieldKey ? data[orderFieldKey] : null;
-        let items = (Array.isArray(rawData) ? rawData : []).map((x: any) => ({ id: x.id, label: x.name || x.id }));
+        let items = (Array.isArray(rawData) ? rawData : []).map((x: any) => ({ 
+          id: x.id, 
+          label: x.label || x.id 
+        }));
+
         if (Array.isArray(orderData)) {
-          items.sort((a: any, b: any) => (orderData.indexOf(a.id) === -1 ? 999 : orderData.indexOf(a.id)) - (orderData.indexOf(b.id) === -1 ? 999 : orderData.indexOf(b.id)));
+          items.sort((a: any, b: any) => {
+            const indexA = orderData.indexOf(a.id);
+            const indexB = orderData.indexOf(b.id);
+            return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+          });
         }
         return { kind: 'many', initialValue: items, value: items };
       }
 
-      const item = rawData ? { id: rawData.id, label: rawData.name || rawData.id } : null;
+      const item = rawData ? { id: rawData.id, label: rawData.label || rawData.id } : null;
       return { kind: 'one', initialValue: item, value: item };
     },
 
