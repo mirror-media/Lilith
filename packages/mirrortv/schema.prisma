@@ -23,6 +23,7 @@ model ArtShow {
   heroVideoId          Int?      @map("heroVideo")
   content              Json?
   author               Contact[] @relation("ArtShow_author")
+  manualOrderOfAuthors Json?
   series               Serie[]   @relation("ArtShow_series")
   show                 Show?     @relation("ArtShow_show", fields: [showId], references: [id])
   showId               Int?      @map("show")
@@ -349,10 +350,15 @@ model Post {
   writers                            Contact[]           @relation("Post_writers")
   manualOrderOfWriters               Json?
   photographers                      Contact[]           @relation("Post_photographers")
+  manualOrderOfPhotographers         Json?
   cameraOperators                    Contact[]           @relation("Post_cameraOperators")
+  manualOrderOfCameraOperators       Json?
   designers                          Contact[]           @relation("Post_designers")
+  manualOrderOfDesigners             Json?
   engineers                          Contact[]           @relation("Post_engineers")
+  manualOrderOfEngineers             Json?
   vocals                             Contact[]           @relation("Post_vocals")
+  manualOrderOfVocals                Json?
   otherbyline                        String              @default("")
   heroVideo                          Video?              @relation("Post_heroVideo", fields: [heroVideoId], references: [id])
   heroVideoId                        Int?                @map("heroVideo")
@@ -507,32 +513,33 @@ model Serie {
 }
 
 model Show {
-  id                Int       @id @default(autoincrement())
-  slug              String    @unique @default("")
-  name              String    @default("")
-  sections          Section[] @relation("Section_show")
-  isArtShow         Boolean   @default(false)
-  bannerImg         Image?    @relation("Show_bannerImg", fields: [bannerImgId], references: [id])
-  bannerImgId       Int?      @map("bannerImg")
-  picture           Image?    @relation("Show_picture", fields: [pictureId], references: [id])
-  pictureId         Int?      @map("picture")
-  sortOrder         Int?      @unique
-  introduction      String    @default("")
-  hostName          Contact[] @relation("Contact_relatedShows")
-  staffName         Contact[] @relation("Show_staffName")
-  igUrl             String    @default("")
-  facebookUrl       String    @default("")
-  playList01        String    @default("")
-  playList02        String    @default("")
-  listShow          Boolean   @default(false)
-  trailerPlaylist   String    @default("")
-  createdAt         DateTime?
-  updatedAt         DateTime?
-  createdBy         User?     @relation("Show_createdBy", fields: [createdById], references: [id])
-  createdById       Int?      @map("createdBy")
-  updatedBy         User?     @relation("Show_updatedBy", fields: [updatedById], references: [id])
-  updatedById       Int?      @map("updatedBy")
-  from_ArtShow_show ArtShow[] @relation("ArtShow_show")
+  id                     Int       @id @default(autoincrement())
+  slug                   String    @unique @default("")
+  name                   String    @default("")
+  sections               Section[] @relation("Section_show")
+  isArtShow              Boolean   @default(false)
+  bannerImg              Image?    @relation("Show_bannerImg", fields: [bannerImgId], references: [id])
+  bannerImgId            Int?      @map("bannerImg")
+  picture                Image?    @relation("Show_picture", fields: [pictureId], references: [id])
+  pictureId              Int?      @map("picture")
+  sortOrder              Int?      @unique
+  introduction           String    @default("")
+  hostName               Contact[] @relation("Contact_relatedShows")
+  manualOrderOfHostNames Json?
+  staffName              Contact[] @relation("Show_staffName")
+  igUrl                  String    @default("")
+  facebookUrl            String    @default("")
+  playList01             String    @default("")
+  playList02             String    @default("")
+  listShow               Boolean   @default(false)
+  trailerPlaylist        String    @default("")
+  createdAt              DateTime?
+  updatedAt              DateTime?
+  createdBy              User?     @relation("Show_createdBy", fields: [createdById], references: [id])
+  createdById            Int?      @map("createdBy")
+  updatedBy              User?     @relation("Show_updatedBy", fields: [updatedById], references: [id])
+  updatedById            Int?      @map("updatedBy")
+  from_ArtShow_show      ArtShow[] @relation("ArtShow_show")
 
   @@index([bannerImgId])
   @@index([pictureId])

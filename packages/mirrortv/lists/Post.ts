@@ -184,6 +184,15 @@ const listConfigurations = list({
         views: './lists/views/post/contact-relationship/index',
       },
     }),
+    manualOrderOfPhotographers: json({
+      label: '攝影手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
+
     cameraOperators: relationship({
       label: '影音',
       ref: 'Contact',
@@ -192,6 +201,15 @@ const listConfigurations = list({
         views: './lists/views/post/contact-relationship/index',
       },
     }),
+    manualOrderOfCameraOperators: json({
+      label: '影音手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
+
     designers: relationship({
       label: '設計',
       ref: 'Contact',
@@ -200,6 +218,15 @@ const listConfigurations = list({
         views: './lists/views/post/contact-relationship/index',
       },
     }),
+    manualOrderOfDesigners: json({
+      label: '設計手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
+
     engineers: relationship({
       label: '工程',
       ref: 'Contact',
@@ -208,12 +235,29 @@ const listConfigurations = list({
         views: './lists/views/post/contact-relationship/index',
       },
     }),
+    manualOrderOfEngineers: json({
+      label: '工程手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
+
     vocals: relationship({
       label: '主播',
       ref: 'Contact',
       many: true,
       ui: {
         views: './lists/views/post/contact-relationship/index',
+      },
+    }),
+    manualOrderOfVocals: json({
+      label: '主播手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     otherbyline: text({ label: '作者（其他）' }),
@@ -504,31 +548,30 @@ const listConfigurations = list({
 
   hooks: {
     resolveInput: async ({ resolvedData, item  }) => {
-      const orderFields = ['manualOrderOfCategories', 'manualOrderOfWriters', 'manualOrderOfRelatedPosts'];
+      const orderFields = [
+        'manualOrderOfWriters',
+        'manualOrderOfPhotographers',
+        'manualOrderOfCameraOperators',
+        'manualOrderOfDesigners',
+        'manualOrderOfEngineers',
+        'manualOrderOfVocals',
+        'manualOrderOfCategories',
+        'manualOrderOfRelatedPosts',
+        'manualOrderOfTags',
+      ];
 
       for (const fieldKey of orderFields) {
-        const orderUpdate = resolvedData[fieldKey];
-
-        if (orderUpdate && typeof orderUpdate === 'object' && orderUpdate.__isOrderUpdate) {
-          const { path, data } = orderUpdate;
-
-          let currentAllOrders: any = {};
-          if (item && item[fieldKey]) {
-            currentAllOrders = typeof item[fieldKey] === 'string'
-              ? JSON.parse(item[fieldKey])
-              : item[fieldKey];
+        if (resolvedData[fieldKey]) {
+          const incomingData = resolvedData[fieldKey];
+          try {
+            if (typeof incomingData === 'string') {
+              resolvedData[fieldKey] = JSON.parse(incomingData);
+            } else {
+              resolvedData[fieldKey] = incomingData;
+            }
+          } catch (e) {
+            console.error(`[Error] 欄位 ${fieldKey} 順序資料格式錯誤:`, e);
           }
-
-          if (Array.isArray(currentAllOrders) || typeof currentAllOrders !== 'object') {
-            currentAllOrders = {};
-          }
-
-          const newAllOrders = {
-            ...currentAllOrders,
-            [path]: data,
-          };
-
-          resolvedData[fieldKey] = newAllOrders;
         }
       }
 
@@ -760,7 +803,14 @@ const listConfigurations = list({
             'updatedAt',
             'createdAt',
             'manualOrderOfWriters',
+            'manualOrderOfPhotographers',
+            'manualOrderOfCameraOperators',
+            'manualOrderOfDesigners',
+            'manualOrderOfEngineers',
+            'manualOrderOfVocals',
+            'manualOrderOfCategories',
             'manualOrderOfRelatedPosts',
+            'manualOrderOfTags',
             'updateTimeStamp',
             'lockBy',
             'lockExpireAt',
