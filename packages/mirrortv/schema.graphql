@@ -509,8 +509,10 @@ type Contact {
   international: Boolean
   relatedShows(where: ShowWhereInput! = {}, orderBy: [ShowOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ShowWhereUniqueInput): [Show!]
   relatedShowsCount(where: ShowWhereInput! = {}): Int
+  manualOrderOfRelatedShows: JSON
   relatedSeries(where: SerieWhereInput! = {}, orderBy: [SerieOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SerieWhereUniqueInput): [Serie!]
   relatedSeriesCount(where: SerieWhereInput! = {}): Int
+  manualOrderOfRelatedSeries: JSON
   bioApiData: String
   bioHtml: String
   isResigned: Boolean
@@ -597,7 +599,9 @@ input ContactUpdateInput {
   host: Boolean
   international: Boolean
   relatedShows: ShowRelateToManyForUpdateInput
+  manualOrderOfRelatedShows: JSON
   relatedSeries: SerieRelateToManyForUpdateInput
+  manualOrderOfRelatedSeries: JSON
   bioApiData: String
   bioHtml: String
   isResigned: Boolean
@@ -635,7 +639,9 @@ input ContactCreateInput {
   host: Boolean
   international: Boolean
   relatedShows: ShowRelateToManyForCreateInput
+  manualOrderOfRelatedShows: JSON
   relatedSeries: SerieRelateToManyForCreateInput
+  manualOrderOfRelatedSeries: JSON
   bioApiData: String
   bioHtml: String
   isResigned: Boolean
@@ -2396,15 +2402,20 @@ type Topic {
   heroVideo: Video
   slideshow(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   slideshowCount(where: PostWhereInput! = {}): Int
+  manualOrderOfSlideshows: JSON
   multivideo(where: VideoWhereInput! = {}, orderBy: [VideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: VideoWhereUniqueInput): [Video!]
   multivideoCount(where: VideoWhereInput! = {}): Int
+  manualOrderOfMultivideos: JSON
   post(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postCount(where: PostWhereInput! = {}): Int
+  manualOrderOfPosts: JSON
   sortDir: String
   categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   categoriesCount(where: CategoryWhereInput! = {}): Int
+  manualOrderOfCategories: JSON
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  manualOrderOfTags: JSON
   state: String
   brief: JSON
   briefApiData: JSON
@@ -2493,11 +2504,16 @@ input TopicUpdateInput {
   heroImage: ImageRelateToOneForUpdateInput
   heroVideo: VideoRelateToOneForUpdateInput
   slideshow: PostRelateToManyForUpdateInput
+  manualOrderOfSlideshows: JSON
   multivideo: VideoRelateToManyForUpdateInput
+  manualOrderOfMultivideos: JSON
   post: PostRelateToManyForUpdateInput
+  manualOrderOfPosts: JSON
   sortDir: String
   categories: CategoryRelateToManyForUpdateInput
+  manualOrderOfCategories: JSON
   tags: TagRelateToManyForUpdateInput
+  manualOrderOfTags: JSON
   state: String
   brief: JSON
   briefApiData: JSON
@@ -2535,11 +2551,16 @@ input TopicCreateInput {
   heroImage: ImageRelateToOneForCreateInput
   heroVideo: VideoRelateToOneForCreateInput
   slideshow: PostRelateToManyForCreateInput
+  manualOrderOfSlideshows: JSON
   multivideo: VideoRelateToManyForCreateInput
+  manualOrderOfMultivideos: JSON
   post: PostRelateToManyForCreateInput
+  manualOrderOfPosts: JSON
   sortDir: String
   categories: CategoryRelateToManyForCreateInput
+  manualOrderOfCategories: JSON
   tags: TagRelateToManyForCreateInput
+  manualOrderOfTags: JSON
   state: String
   brief: JSON
   briefApiData: JSON
@@ -2720,6 +2741,7 @@ type Video {
   description: String
   relatedPosts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedPostsCount(where: PostWhereInput! = {}): Int
+  manualOrderOfRelatedPosts: JSON
   isFeed: Boolean
   thumbnail: String
   meta: String
@@ -2729,8 +2751,10 @@ type Video {
   youtubeDuration_internal: String
   categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   categoriesCount(where: CategoryWhereInput! = {}): Int
+  manualOrderOfCategories: JSON
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  manualOrderOfTags: JSON
   state: String
   publishTime: DateTime
   updateTimeStamp: Boolean
@@ -2800,6 +2824,7 @@ input VideoUpdateInput {
   coverPhoto: ImageRelateToOneForUpdateInput
   description: String
   relatedPosts: PostRelateToManyForUpdateInput
+  manualOrderOfRelatedPosts: JSON
   isFeed: Boolean
   thumbnail: String
   meta: String
@@ -2808,7 +2833,9 @@ input VideoUpdateInput {
   fileDuration_internal: String
   youtubeDuration_internal: String
   categories: CategoryRelateToManyForUpdateInput
+  manualOrderOfCategories: JSON
   tags: TagRelateToManyForUpdateInput
+  manualOrderOfTags: JSON
   state: String
   publishTime: DateTime
   updateTimeStamp: Boolean
@@ -2830,6 +2857,7 @@ input VideoCreateInput {
   coverPhoto: ImageRelateToOneForCreateInput
   description: String
   relatedPosts: PostRelateToManyForCreateInput
+  manualOrderOfRelatedPosts: JSON
   isFeed: Boolean
   thumbnail: String
   meta: String
@@ -2838,7 +2866,9 @@ input VideoCreateInput {
   fileDuration_internal: String
   youtubeDuration_internal: String
   categories: CategoryRelateToManyForCreateInput
+  manualOrderOfCategories: JSON
   tags: TagRelateToManyForCreateInput
+  manualOrderOfTags: JSON
   state: String
   publishTime: DateTime
   updateTimeStamp: Boolean

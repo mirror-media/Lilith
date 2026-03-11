@@ -571,6 +571,7 @@ const listConfigurations = list({
             }
           } catch (e) {
             console.error(`[Error] 欄位 ${fieldKey} 順序資料格式錯誤:`, e);
+            delete resolvedData[fieldKey];
           }
         }
       }
