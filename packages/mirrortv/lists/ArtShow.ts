@@ -104,6 +104,17 @@ const listConfigurations = list({
       label: '導演',
       ref: 'Contact',
       many: true,
+      ui: {
+        views: './lists/views/post/contact-relationship/index',
+      },
+    }),
+    manualOrderOfAuthors: json({
+      label: '導演手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     series: relationship({
       label: '相關單元',
@@ -149,6 +160,24 @@ const listConfigurations = list({
   },
   hooks: {
     resolveInput: async ({ resolvedData }) => {
+      const data = resolvedData as Record<string, any>;
+
+      const orderFields = ['manualOrderOfAuthors']; 
+      for (const fieldKey of orderFields) {
+        if (data[fieldKey]) {
+          const incomingData = data[fieldKey];
+          try {
+            if (typeof incomingData === 'string') {
+              data[fieldKey] = JSON.parse(incomingData);
+            } else {
+              data[fieldKey] = incomingData;
+            }
+          } catch (e) {
+            console.error(`[Error] 欄位 ${fieldKey} 順序格式錯誤:`, e);
+          }
+        }
+      }
+
       // 過濾控制字元
       resolvedData = filterControlCharacters(resolvedData)
       // 轉換 Rich Text (Content)

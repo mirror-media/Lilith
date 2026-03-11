@@ -46,6 +46,8 @@ export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof c
   const foreignList = useList(field.refListKey)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
+  if (!foreignList) return <div>Loading...</div>;
+
   return (
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
@@ -93,9 +95,7 @@ export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof c
             onClose={() => setIsDrawerOpen(false)}
             onCreate={(val) => {
               setIsDrawerOpen(false)
-
               window.dispatchEvent(new CustomEvent('REFRESH_RELATIONSHIPS'));
-
               if (value.kind === 'many') {
                 onChange({ ...value, value: [...value.value, val] })
               } else if (value.kind === 'one') {
@@ -137,8 +137,11 @@ export const CardValue: CardValueComponent<typeof controller> = ({ field, item }
 }
 
 export const controller = (config: FieldControllerConfig<any>): any => {
-  const { refLabelField, refSearchFields } = config.fieldMeta
-  const SHARED_ORDER_FIELD = 'manualOrderOfWriters'
+  const { refLabelField, refSearchFields } = config.fieldMeta;
+  
+  const fieldPath = config.path;
+  const suffix = fieldPath.endsWith('s') ? '' : 's';
+  const ORDER_FIELD_NAME = `manualOrderOf${fieldPath.charAt(0).toUpperCase() + fieldPath.slice(1)}${suffix}`;
 
   return {
     path: config.path,
@@ -150,55 +153,57 @@ export const controller = (config: FieldControllerConfig<any>): any => {
     refListKey: config.fieldMeta.refListKey,
     listKey: config.listKey,
     many: config.fieldMeta.many,
-    graphqlSelection: `${config.path} { id label: ${refLabelField} } ${SHARED_ORDER_FIELD}`,
+    graphqlSelection: `${config.path} { id label: ${refLabelField} } ${ORDER_FIELD_NAME}`,
 
     defaultValue: config.fieldMeta.many
       ? { kind: 'many', id: null, initialValue: [], value: [] }
       : { kind: 'one', id: null, initialValue: null, value: null },
 
     deserialize: (data: any) => {
-      const pathData = data[config.path] || []
-      const rawAllOrders = data[SHARED_ORDER_FIELD] || {}
-      const myOrderData = Array.isArray(rawAllOrders[config.path]) ? rawAllOrders[config.path] : []
-      let value = pathData.map((x: any) => ({ id: x.id, label: x.label || x.id }))
+      const pathData = data[config.path] || [];
+      const myOrderData = Array.isArray(data[ORDER_FIELD_NAME]) ? data[ORDER_FIELD_NAME] : [];
+      const currentItemsMap = new Map(pathData.map((x: any) => [String(x.id), x]));
+      let sortedValue: any[] = [];
 
-      if (config.fieldMeta.many && myOrderData.length > 0) {
-        const orderMap = new Map(myOrderData.map((item: any, index: number) => [String(item.id), index]))
-        value.sort((a: any, b: any) => {
-          const indexA = orderMap.has(String(a.id)) ? orderMap.get(String(a.id)) : 999
-          const indexB = orderMap.has(String(b.id)) ? orderMap.get(String(b.id)) : 999
-          return (indexA as number) - (indexB as number)
-        })
-      }
-      return { kind: 'many', id: data.id, initialValue: value, value }
+      myOrderData.forEach((orderedItem: any) => {
+        const item = currentItemsMap.get(String(orderedItem.id));
+        if (item) {
+          sortedValue.push({ id: item.id, label: item.label || item.id });
+          currentItemsMap.delete(String(orderedItem.id));
+        }
+      });
+
+      currentItemsMap.forEach((item: any) => {
+        sortedValue.push({ id: item.id, label: item.label || item.id });
+      });
+
+      return { kind: 'many', id: data.id, initialValue: sortedValue, value: sortedValue };
     },
 
     serialize: (state: any) => {
       if (state.kind === 'many') {
         const isSameValue = state.value.length === state.initialValue.length &&
-          state.value.every((v: any, i: number) => v.id === state.initialValue[i]?.id)
-
-        const result: any = {
-          [SHARED_ORDER_FIELD]: {
-            __isOrderUpdate: true,
-            path: config.path,
-            data: state.value.map((x: any) => ({ id: String(x.id), name: String(x.label || x.id) }))
-          }
-        }
+          state.value.every((v: any, i: number) => v.id === state.initialValue[i]?.id);
 
         if (!isSameValue) {
-          result[config.path] = {
-            disconnect: state.initialValue.map((x: any) => ({ id: x.id })),
-            connect: state.value.map((x: any) => ({ id: x.id })),
-          }
+          return {
+            [config.path]: {
+              disconnect: state.initialValue.map((x: any) => ({ id: x.id })),
+              connect: state.value.map((x: any) => ({ id: x.id })),
+            },
+            [ORDER_FIELD_NAME]: state.value.map((x: any) => ({ 
+              id: String(x.id), 
+              name: String(x.label || x.id) 
+            })),
+          };
         }
-        return result
       }
+      
       if (state.value?.id !== state.initialValue?.id) {
-        if (!state.value) return { [config.path]: { disconnect: true } }
-        return { [config.path]: { connect: { id: state.value.id } } }
+        if (!state.value) return { [config.path]: { disconnect: true } };
+        return { [config.path]: { connect: { id: state.value.id } } };
       }
-      return {}
+      return {};
     },
-  }
-}
+  };
+};

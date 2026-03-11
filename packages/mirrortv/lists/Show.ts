@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { text, relationship, checkbox, integer } from '@keystone-6/core/fields'
+import { text, relationship, checkbox, integer, json } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -63,6 +63,17 @@ const listConfigurations = list({
       label: '主持人姓名',
       ref: 'Contact.relatedShows',
       many: true,
+      ui: {
+        views: './lists/views/post/contact-relationship/index',
+      },
+    }),
+    manualOrderOfHostNames: json({
+      label: '主持人手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     staffName: relationship({
       label: '工作人員姓名',
@@ -89,6 +100,29 @@ const listConfigurations = list({
     },
   },
   hooks: {
+    resolveInput: async ({ resolvedData }) => {
+      const data = resolvedData as Record<string, any>;
+
+      const orderFields = ['manualOrderOfHostNames'];
+
+      for (const fieldKey of orderFields) {
+        if (data[fieldKey]) {
+          const incomingData = data[fieldKey];
+          try {
+            if (typeof incomingData === 'string') {
+              data[fieldKey] = JSON.parse(incomingData);
+            } else {
+              data[fieldKey] = incomingData;
+            }
+          } catch (e) {
+            console.error(`[Error] 欄位 ${fieldKey} 順序格式錯誤:`, e);
+          }
+        }
+      }
+
+      return data;
+    },
+
     validateInput: async ({
       resolvedData,
       addValidationError,
