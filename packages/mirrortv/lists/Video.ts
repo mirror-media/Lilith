@@ -9,6 +9,7 @@ import {
   virtual,
   integer,
   checkbox,
+  json,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 import { getYouTubeDuration } from '../utils/video-duration'
@@ -67,6 +68,17 @@ const listConfigurations = list({
       label: '相關文章',
       ref: 'Post',
       many: true,
+      ui: {
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+      },
+    }),
+    manualOrderOfRelatedPosts: json({
+      label: '相關文章手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     isFeed: checkbox({
       label: '供稿',
@@ -115,11 +127,34 @@ const listConfigurations = list({
       label: '分類',
       ref: 'Category',
       many: true,
+      ui: {
+        labelField: 'name',
+        displayMode: 'select',
+        views: './lists/views/post/categories/index',
+      },
+    }),
+    manualOrderOfCategories: json({
+      isFilterable: false,
+      label: '分類手動排序結果',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     tags: relationship({
       label: '標籤',
       ref: 'Tag',
       many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
+    }),
+    manualOrderOfTags: json({
+      label: '標籤排序結果',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     state: select({
       label: '狀態',
@@ -254,6 +289,24 @@ const listConfigurations = list({
 
     resolveInput: async ({ resolvedData, item }) => {
       const inputData = { ...resolvedData }
+      const orderFields = [
+        'manualOrderOfRelatedPosts',
+        'manualOrderOfCategories',
+        'manualOrderOfTags'
+      ];
+
+      for (const fieldKey of orderFields) {
+        if (inputData[fieldKey] !== undefined) {
+          try {
+            if (typeof inputData[fieldKey] === 'string') {
+              inputData[fieldKey] = JSON.parse(inputData[fieldKey]);
+            }
+          } catch (e) {
+            console.error(`[Video Hook] ${fieldKey} parse error:`, e);
+            delete inputData[fieldKey];
+          }
+        }
+      }
 
       // 自動更新時間邏輯
       const updateTimeStamp = inputData.updateTimeStamp

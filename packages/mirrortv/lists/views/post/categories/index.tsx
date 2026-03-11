@@ -197,12 +197,9 @@ export const CardValue: CardValueComponent<typeof controller> = ({ field, item }
 export const controller = (config: FieldControllerConfig<any>): any => {
   const { refLabelField, refSearchFields } = config.fieldMeta
   
-  const ORDER_FIELD_MAP: Record<string, string> = {
-    categories: 'manualOrderOfCategories',
-    writers: 'manualOrderOfWriters',
-    photographers: 'manualOrderOfWriters', 
-  }
-  const SHARED_ORDER_FIELD = ORDER_FIELD_MAP[config.path]
+  const fieldPath = config.path;
+  const suffix = fieldPath.endsWith('s') ? '' : 's';
+  const orderFieldKey = `manualOrderOf${fieldPath.charAt(0).toUpperCase() + fieldPath.slice(1)}${suffix}`;
 
   return {
     path: config.path,
@@ -218,7 +215,7 @@ export const controller = (config: FieldControllerConfig<any>): any => {
     
     graphqlSelection: config.fieldMeta.displayMode === 'count' 
       ? `${config.path}Count` 
-      : `${config.path} { id label: ${refLabelField} } ${SHARED_ORDER_FIELD || ''}`,
+      : `${config.path} { id label: ${refLabelField} } ${orderFieldKey}`,
 
     defaultValue: config.fieldMeta.many
       ? { kind: 'many', id: null, initialValue: [], value: [] }
@@ -230,17 +227,19 @@ export const controller = (config: FieldControllerConfig<any>): any => {
       }
 
       const pathData = data[config.path] || []
-      const rawAllOrders = SHARED_ORDER_FIELD ? (data[SHARED_ORDER_FIELD] || {}) : {}
-      const myOrderData = Array.isArray(rawAllOrders[config.path]) ? rawAllOrders[config.path] : []
+      const orderData = data[orderFieldKey];
       
       let value = (Array.isArray(pathData) ? pathData : [pathData]).filter(Boolean).map((x: any) => ({
         id: x.id,
         label: x.label || x[refLabelField] || x.id,
       }))
 
-      if (config.fieldMeta.many && myOrderData.length > 0) {
-        const orderMap = new Map(myOrderData.map((it: any, i: number) => [String(it.id), i]))
-        value.sort((a, b) => (orderMap.get(String(a.id)) ?? 999) - (orderMap.get(String(b.id)) ?? 999))
+      if (config.fieldMeta.many && Array.isArray(orderData)) {
+        value.sort((a: any, b: any) => {
+          const indexA = orderData.findIndex((it: any) => (typeof it === 'object' ? it.id === a.id : it === a.id));
+          const indexB = orderData.findIndex((it: any) => (typeof it === 'object' ? it.id === b.id : it === b.id));
+          return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+        });
       }
 
       return { 
@@ -253,30 +252,30 @@ export const controller = (config: FieldControllerConfig<any>): any => {
 
     serialize: (state: any) => {
       if (state.kind === 'many') {
-        const isSameValue = state.value.length === state.initialValue.length &&
-          state.value.every((v: any, i: number) => v.id === state.initialValue[i]?.id)
+        const newIds = state.value.map((x: any) => x.id);
+        const oldIds = state.initialValue.map((x: any) => x.id);
+        
+        if (JSON.stringify(newIds) === JSON.stringify(oldIds)) return {};
 
-        const result: any = {}
+        const disconnect = state.initialValue
+          .filter((iv: { id: string }) => !newIds.includes(iv.id))
+          .map((x: { id: string }) => ({ id: x.id }));
 
-        if (SHARED_ORDER_FIELD) {
-          result[SHARED_ORDER_FIELD] = {
-            __isOrderUpdate: true,
-            path: config.path,
-            data: state.value.map((x: any) => ({ id: String(x.id), name: String(x.label || x.id) }))
-          }
+        const connect = state.value
+          .filter((v: { id: string }) => !oldIds.includes(v.id))
+          .map((x: { id: string }) => ({ id: x.id }));
+
+        const result: any = {
+          [orderFieldKey]: newIds
+        };
+
+        if (connect.length > 0 || disconnect.length > 0) {
+          result[config.path] = {};
+          if (connect.length > 0) result[config.path].connect = connect;
+          if (disconnect.length > 0) result[config.path].disconnect = disconnect;
         }
 
-        if (!isSameValue) {
-          result[config.path] = {
-            disconnect: state.initialValue
-              .filter((iv: { id: string }) => !state.value.some((v: { id: string }) => v.id === iv.id))
-              .map((x: { id: string }) => ({ id: x.id })),
-            connect: state.value
-              .filter((v: { id: string }) => !state.initialValue.some((iv: { id: string }) => iv.id === v.id))
-              .map((x: { id: string }) => ({ id: x.id })),
-          }
-        }
-        return result
+        return result;
       }
       
       if (state.value?.id !== state.initialValue?.id) {
