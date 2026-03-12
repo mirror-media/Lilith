@@ -133,19 +133,19 @@ export const controller = (config: FieldControllerConfig<any>): any => {
     defaultValue: displayMode === 'cards'
       ? { kind: 'cards-view', id: null, initialIds: new Set(), currentIds: new Set(), itemsBeingEdited: new Set(), itemBeingCreated: false, displayOptions: config.fieldMeta }
       : many 
-        ? { kind: 'many', initialValue: [], value: [] }
-        : { kind: 'one', initialValue: null, value: null },
+        ? { kind: 'many', id: null, initialValue: [], value: [] }
+        : { kind: 'one', id: null, initialValue: null, value: null },
 
     deserialize: (data: any) => {
       const rawData = data[config.path];
       
       if (displayMode === 'cards') {
-        const initialIds = new Set<string>((Array.isArray(rawData) ? rawData : rawData ? [rawData] : []).map((x: any) => x.id));
+        const initialIdsArr = (Array.isArray(rawData) ? rawData : rawData ? [rawData] : []).map((x: any) => x.id);
         return {
           kind: 'cards-view',
           id: data.id,
-          initialIds,
-          currentIds: initialIds,
+          initialIds: new Set(initialIdsArr),
+          currentIds: new Set(initialIdsArr),
           itemsBeingEdited: new Set(),
           itemBeingCreated: false,
           displayOptions: config.fieldMeta,
@@ -166,53 +166,79 @@ export const controller = (config: FieldControllerConfig<any>): any => {
             return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
           });
         }
-        return { kind: 'many', initialValue: items, value: items };
+        return { kind: 'many', id: data.id, initialValue: items, value: items };
       }
 
       const item = rawData ? { id: rawData.id, label: rawData.label || rawData.id } : null;
-      return { kind: 'one', initialValue: item, value: item };
+      return { kind: 'one', id: data.id, initialValue: item, value: item };
     },
 
     serialize: (state: any) => {
+      const isUpdate = !!state.id;
+
       if (state.kind === 'cards-view') {
         const initialIdsArr = Array.from(state.initialIds as Set<string>);
         const currentIdsArr = Array.from(state.currentIds as Set<string>);
-        const disconnect = initialIdsArr.filter((id: string) => !state.currentIds.has(id)).map((id: string) => ({ id }));
-        const connect = currentIdsArr.filter((id: string) => !state.initialIds.has(id)).map((id: string) => ({ id }));
-        const orderChanged = JSON.stringify(initialIdsArr) !== JSON.stringify(currentIdsArr);
-
-        if (connect.length === 0 && disconnect.length === 0 && !orderChanged) return {};
+        
+        if (JSON.stringify(initialIdsArr) === JSON.stringify(currentIdsArr)) return {};
 
         const res: any = {};
-        if (connect.length > 0 || disconnect.length > 0) {
-          res[config.path] = many 
-            ? { connect: connect.length ? connect : undefined, disconnect: disconnect.length ? disconnect : undefined }
-            : connect.length ? { connect: connect[0] } : { disconnect: true };
+        if (many && orderFieldKey) res[orderFieldKey] = currentIdsArr;
+
+        const connect = currentIdsArr.filter(id => !state.initialIds.has(id)).map(id => ({ id }));
+        const disconnect = initialIdsArr.filter(id => !state.currentIds.has(id)).map(id => ({ id }));
+
+        if (isUpdate) {
+          if (connect.length > 0 || disconnect.length > 0) {
+            res[config.path] = {};
+            if (connect.length > 0) res[config.path].connect = connect;
+            if (disconnect.length > 0) res[config.path].disconnect = disconnect;
+          }
+        } else {
+          if (currentIdsArr.length > 0) {
+            res[config.path] = many 
+              ? { connect: currentIdsArr.map(id => ({ id })) }
+              : { connect: { id: currentIdsArr[0] } };
+          }
         }
-        if (many && orderFieldKey && orderChanged) res[orderFieldKey] = currentIdsArr;
         return res;
       }
 
       if (state.kind === 'many') {
-        const newIds: string[] = state.value.map((x: any) => x.id)
-        const oldIds: string[] = state.initialValue.map((x: any) => x.id)
-        const orderChanged = JSON.stringify(newIds) !== JSON.stringify(oldIds);
-        const disconnect = oldIds.filter((id: string) => !newIds.includes(id)).map((id: string) => ({ id }));
-        const connect = newIds.filter((id: string) => !oldIds.includes(id)).map((id: string) => ({ id }));
+        const newIds = state.value.map((x: any) => x.id);
+        const oldIds = state.initialValue.map((x: any) => x.id);
+        
+        if (JSON.stringify(newIds) === JSON.stringify(oldIds)) return {};
 
-        if (connect.length === 0 && disconnect.length === 0 && !orderChanged) return {};
         const res: any = {};
-        if (connect.length > 0 || disconnect.length > 0) {
-          res[config.path] = { disconnect: disconnect.length ? disconnect : undefined, connect: connect.length ? connect : undefined };
+        if (orderFieldKey) res[orderFieldKey] = newIds;
+
+        if (isUpdate) {
+          const connect = newIds.filter(id => !oldIds.includes(id)).map(id => ({ id }));
+          const disconnect = oldIds.filter(id => !newIds.includes(id)).map(id => ({ id }));
+          
+          if (connect.length > 0 || disconnect.length > 0) {
+            res[config.path] = {};
+            if (connect.length > 0) res[config.path].connect = connect;
+            if (disconnect.length > 0) res[config.path].disconnect = disconnect;
+          }
+        } else {
+          if (newIds.length > 0) {
+            res[config.path] = { connect: newIds.map(id => ({ id })) };
+          }
         }
-        if (orderFieldKey && orderChanged) res[orderFieldKey] = newIds;
         return res;
       }
 
       if (state.kind === 'one') {
         if (state.value?.id === state.initialValue?.id) return {};
-        return state.value ? { [config.path]: { connect: { id: state.value.id } } } : { [config.path]: { disconnect: true } };
+        
+        if (!state.value) {
+          return isUpdate ? { [config.path]: { disconnect: true } } : {};
+        }
+        return { [config.path]: { connect: { id: state.value.id } } };
       }
+
       return {};
     },
   }

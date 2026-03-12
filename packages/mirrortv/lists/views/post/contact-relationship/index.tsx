@@ -186,16 +186,24 @@ export const controller = (config: FieldControllerConfig<any>): any => {
           state.value.every((v: any, i: number) => v.id === state.initialValue[i]?.id);
 
         if (!isSameValue) {
-          return {
-            [config.path]: {
-              disconnect: state.initialValue.map((x: any) => ({ id: x.id })),
-              connect: state.value.map((x: any) => ({ id: x.id })),
-            },
+          const result: any = {
             [ORDER_FIELD_NAME]: state.value.map((x: any) => ({ 
               id: String(x.id), 
               name: String(x.label || x.id) 
             })),
           };
+
+          if (state.initialValue.length === 0) {
+            result[config.path] = {
+              connect: state.value.map((x: any) => ({ id: x.id })),
+            };
+          } else {
+            result[config.path] = {
+              disconnect: state.initialValue.map((x: any) => ({ id: x.id })),
+              connect: state.value.map((x: any) => ({ id: x.id })),
+            };
+          }
+          return result;
         }
       }
       
