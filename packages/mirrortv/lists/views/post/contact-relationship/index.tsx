@@ -14,7 +14,6 @@ import { DrawerController } from '@keystone-ui/modals'
 import {
   CardValueComponent,
   CellComponent,
-  FieldController,
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-6/core/types'
@@ -181,9 +180,14 @@ export const controller = (config: FieldControllerConfig<any>): any => {
     },
 
     serialize: (state: any) => {
+      const isUpdate = !!state.id;
+
       if (state.kind === 'many') {
-        const isSameValue = state.value.length === state.initialValue.length &&
-          state.value.every((v: any, i: number) => v.id === state.initialValue[i]?.id);
+        const newIds = state.value.map((x: any) => String(x.id));
+        const oldIds = state.initialValue.map((x: any) => String(x.id));
+
+        const isSameValue = newIds.length === oldIds.length &&
+          newIds.every((id: string, i: number) => id === oldIds[i]);
 
         if (!isSameValue) {
           const result: any = {
@@ -193,22 +197,35 @@ export const controller = (config: FieldControllerConfig<any>): any => {
             })),
           };
 
-          if (state.initialValue.length === 0) {
-            result[config.path] = {
-              connect: state.value.map((x: any) => ({ id: x.id })),
-            };
+          if (isUpdate) {
+            const disconnect = state.initialValue
+              .filter((iv: any) => !newIds.includes(String(iv.id)))
+              .map((x: any) => ({ id: x.id }));
+            
+            const connect = state.value
+              .filter((v: any) => !oldIds.includes(String(v.id)))
+              .map((x: any) => ({ id: x.id }));
+
+            if (connect.length > 0 || disconnect.length > 0) {
+              result[config.path] = {};
+              if (connect.length > 0) result[config.path].connect = connect;
+              if (disconnect.length > 0) result[config.path].disconnect = disconnect;
+            }
           } else {
-            result[config.path] = {
-              disconnect: state.initialValue.map((x: any) => ({ id: x.id })),
-              connect: state.value.map((x: any) => ({ id: x.id })),
-            };
+            if (newIds.length > 0) {
+              result[config.path] = {
+                connect: newIds.map((id: string) => ({ id })),
+              };
+            }
           }
           return result;
         }
       }
       
       if (state.value?.id !== state.initialValue?.id) {
-        if (!state.value) return { [config.path]: { disconnect: true } };
+        if (!state.value) {
+          return isUpdate ? { [config.path]: { disconnect: true } } : {};
+        }
         return { [config.path]: { connect: { id: state.value.id } } };
       }
       return {};
