@@ -69,7 +69,6 @@ export const Field = ({
   value,
   onChange,
 }: FieldProps<typeof controller>) => {
-  const keystone = useKeystone()
   const foreignList = useList(field.refListKey)
   const localList = useList(field.listKey)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -136,7 +135,6 @@ export const Field = ({
             onCreate={(val) => {
               setIsDrawerOpen(false)
               window.dispatchEvent(new CustomEvent('REFRESH_RELATIONSHIPS'));
-              
               if (value.kind === 'many') {
                 onChange({ ...value, value: [...value.value, val] })
               } else if (value.kind === 'one') {
@@ -196,7 +194,6 @@ export const CardValue: CardValueComponent<typeof controller> = ({ field, item }
 
 export const controller = (config: FieldControllerConfig<any>): any => {
   const { refLabelField, refSearchFields } = config.fieldMeta
-  
   const fieldPath = config.path;
   const suffix = fieldPath.endsWith('s') ? '' : 's';
   const orderFieldKey = `manualOrderOf${fieldPath.charAt(0).toUpperCase() + fieldPath.slice(1)}${suffix}`;
@@ -234,6 +231,7 @@ export const controller = (config: FieldControllerConfig<any>): any => {
         label: x.label || x[refLabelField] || x.id,
       }))
 
+      // 根據排序欄位重整順序
       if (config.fieldMeta.many && Array.isArray(orderData)) {
         value.sort((a: any, b: any) => {
           const indexA = orderData.findIndex((it: any) => (typeof it === 'object' ? it.id === a.id : it === a.id));
@@ -257,29 +255,36 @@ export const controller = (config: FieldControllerConfig<any>): any => {
         
         if (JSON.stringify(newIds) === JSON.stringify(oldIds)) return {};
 
-        const disconnect = state.initialValue
-          .filter((iv: { id: string }) => !newIds.includes(iv.id))
-          .map((x: { id: string }) => ({ id: x.id }));
+        const result: any = { [orderFieldKey]: newIds };
 
-        const connect = state.value
-          .filter((v: { id: string }) => !oldIds.includes(v.id))
-          .map((x: { id: string }) => ({ id: x.id }));
+        const isUpdate = !!state.id;
 
-        const result: any = {
-          [orderFieldKey]: newIds
-        };
+        if (isUpdate) {
+          const disconnect = state.initialValue
+            .filter((iv: { id: string }) => !newIds.includes(iv.id))
+            .map((x: { id: string }) => ({ id: x.id }));
 
-        if (connect.length > 0 || disconnect.length > 0) {
-          result[config.path] = {};
-          if (connect.length > 0) result[config.path].connect = connect;
-          if (disconnect.length > 0) result[config.path].disconnect = disconnect;
+          const connect = state.value
+            .filter((v: { id: string }) => !oldIds.includes(v.id))
+            .map((x: { id: string }) => ({ id: x.id }));
+
+          if (connect.length > 0 || disconnect.length > 0) {
+            result[config.path] = {};
+            if (connect.length > 0) result[config.path].connect = connect;
+            if (disconnect.length > 0) result[config.path].disconnect = disconnect;
+          }
+        } else {
+          if (newIds.length > 0) {
+            result[config.path] = {
+              connect: newIds.map((id: string) => ({ id }))
+            };
+          }
         }
-
         return result;
       }
       
       if (state.value?.id !== state.initialValue?.id) {
-        if (!state.value) return { [config.path]: { disconnect: true } }
+        if (!state.value) return state.id ? { [config.path]: { disconnect: true } } : {};
         return { [config.path]: { connect: { id: state.value.id } } }
       }
       return {}
