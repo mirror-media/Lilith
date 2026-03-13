@@ -1,6 +1,12 @@
 import { list } from '@keystone-6/core'
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { text, relationship, checkbox, integer, json } from '@keystone-6/core/fields'
+import {
+  text,
+  relationship,
+  checkbox,
+  integer,
+  json,
+} from '@keystone-6/core/fields'
 import { v4 as uuidv4 } from 'uuid'
 
 const { allowRoles, admin, moderator, editor, contributor } =
@@ -159,18 +165,18 @@ const listConfigurations = list({
 
       const orderFields = [
         'manualOrderOfRelatedShows',
-        'manualOrderOfRelatedSeries'
-      ];
+        'manualOrderOfRelatedSeries',
+      ]
 
       for (const fieldKey of orderFields) {
         if (resolvedData[fieldKey] !== undefined) {
           try {
             if (typeof resolvedData[fieldKey] === 'string') {
-              resolvedData[fieldKey] = JSON.parse(resolvedData[fieldKey]);
+              resolvedData[fieldKey] = JSON.parse(resolvedData[fieldKey])
             }
           } catch (e) {
-            console.error(`[Contact Hook] ${fieldKey} parse error:`, e);
-            delete resolvedData[fieldKey];
+            console.error(`[Contact Hook] ${fieldKey} parse error:`, e)
+            delete resolvedData[fieldKey]
           }
         }
       }
@@ -187,4 +193,21 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+// export default utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfRelatedShows',
+      targetFieldName: 'relatedShows',
+      targetListName: 'Show',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfRelatedSeries',
+      targetFieldName: 'relatedSeries',
+      targetListName: 'Serie',
+      targetListLabelField: 'name',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)
