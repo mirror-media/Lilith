@@ -292,18 +292,18 @@ const listConfigurations = list({
       const orderFields = [
         'manualOrderOfRelatedPosts',
         'manualOrderOfCategories',
-        'manualOrderOfTags'
-      ];
+        'manualOrderOfTags',
+      ]
 
       for (const fieldKey of orderFields) {
         if (inputData[fieldKey] !== undefined) {
           try {
             if (typeof inputData[fieldKey] === 'string') {
-              inputData[fieldKey] = JSON.parse(inputData[fieldKey]);
+              inputData[fieldKey] = JSON.parse(inputData[fieldKey])
             }
           } catch (e) {
-            console.error(`[Video Hook] ${fieldKey} parse error:`, e);
-            delete inputData[fieldKey];
+            console.error(`[Video Hook] ${fieldKey} parse error:`, e)
+            delete inputData[fieldKey]
           }
         }
       }
@@ -489,4 +489,27 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+// export default utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfRelatedPosts',
+      targetFieldName: 'relatedPosts',
+      targetListName: 'Post',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfCategories',
+      targetFieldName: 'categories',
+      targetListName: 'Category',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfTags',
+      targetFieldName: 'tags',
+      targetListName: 'Tag',
+      targetListLabelField: 'name',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)
