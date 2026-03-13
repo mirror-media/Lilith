@@ -144,7 +144,7 @@ const listConfigurations = list({
     categories: relationship({
       label: '分類',
       ref: 'Category',
-      many: true ,
+      many: true,
       ui: {
         labelField: 'name',
         displayMode: 'select',
@@ -547,7 +547,7 @@ const listConfigurations = list({
   },
 
   hooks: {
-    resolveInput: async ({ resolvedData, item  }) => {
+    resolveInput: async ({ resolvedData, item }) => {
       const orderFields = [
         'manualOrderOfWriters',
         'manualOrderOfPhotographers',
@@ -558,20 +558,20 @@ const listConfigurations = list({
         'manualOrderOfCategories',
         'manualOrderOfRelatedPosts',
         'manualOrderOfTags',
-      ];
+      ]
 
       for (const fieldKey of orderFields) {
         if (resolvedData[fieldKey]) {
-          const incomingData = resolvedData[fieldKey];
+          const incomingData = resolvedData[fieldKey]
           try {
             if (typeof incomingData === 'string') {
-              resolvedData[fieldKey] = JSON.parse(incomingData);
+              resolvedData[fieldKey] = JSON.parse(incomingData)
             } else {
-              resolvedData[fieldKey] = incomingData;
+              resolvedData[fieldKey] = incomingData
             }
           } catch (e) {
-            console.error(`[Error] 欄位 ${fieldKey} 順序資料格式錯誤:`, e);
-            delete resolvedData[fieldKey];
+            console.error(`[Error] 欄位 ${fieldKey} 順序資料格式錯誤:`, e)
+            delete resolvedData[fieldKey]
           }
         }
       }
@@ -905,4 +905,63 @@ if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
   )
 }
 
-export default extendedListConfigurations;
+// export default extendedListConfigurations;
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfWriters',
+      targetFieldName: 'writers',
+      targetListName: 'Contact',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfPhotographers',
+      targetFieldName: 'photographers',
+      targetListName: 'Contact',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfCameraOperators',
+      targetFieldName: 'cameraOperators',
+      targetListName: 'Contact',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfDesigners',
+      targetFieldName: 'designers',
+      targetListName: 'Contact',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfEngineers',
+      targetFieldName: 'engineers',
+      targetListName: 'Contact',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfVocals',
+      targetFieldName: 'vocals',
+      targetListName: 'Contact',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfCategories',
+      targetFieldName: 'categories',
+      targetListName: 'Category',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfTags',
+      targetFieldName: 'tags',
+      targetListName: 'Tag',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfRelatedPosts',
+      targetFieldName: 'relatedPosts',
+      targetListName: 'Post',
+      targetListLabelField: 'name',
+    },
+  ],
+  extendedListConfigurations
+)
