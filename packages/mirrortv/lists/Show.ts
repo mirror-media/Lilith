@@ -1,6 +1,12 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { text, relationship, checkbox, integer, json } from '@keystone-6/core/fields'
+import {
+  text,
+  relationship,
+  checkbox,
+  integer,
+  json,
+} from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -101,26 +107,26 @@ const listConfigurations = list({
   },
   hooks: {
     resolveInput: async ({ resolvedData }) => {
-      const data = resolvedData as Record<string, any>;
+      const data = resolvedData as Record<string, any>
 
-      const orderFields = ['manualOrderOfHostNames'];
+      const orderFields = ['manualOrderOfHostNames']
 
       for (const fieldKey of orderFields) {
         if (data[fieldKey]) {
-          const incomingData = data[fieldKey];
+          const incomingData = data[fieldKey]
           try {
             if (typeof incomingData === 'string') {
-              data[fieldKey] = JSON.parse(incomingData);
+              data[fieldKey] = JSON.parse(incomingData)
             } else {
-              data[fieldKey] = incomingData;
+              data[fieldKey] = incomingData
             }
           } catch (e) {
-            console.error(`[Error] 欄位 ${fieldKey} 順序格式錯誤:`, e);
+            console.error(`[Error] 欄位 ${fieldKey} 順序格式錯誤:`, e)
           }
         }
       }
 
-      return data;
+      return data
     },
 
     validateInput: async ({
@@ -157,4 +163,15 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+// export default utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfHostNames',
+      targetFieldName: 'hostName',
+      targetListName: 'Contact',
+      targetListLabelField: 'name',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)

@@ -256,16 +256,25 @@ const listConfigurations = list({
   },
   hooks: {
     resolveInput: async ({ resolvedData }) => {
-      const orderFields = ['manualOrderOfSlideshows', 'manualOrderOfPosts', 'manualOrderOfCategories', 'manualOrderOfTags', 'manualOrderOfMultivideos']; 
+      const orderFields = [
+        'manualOrderOfSlideshows',
+        'manualOrderOfPosts',
+        'manualOrderOfCategories',
+        'manualOrderOfTags',
+        'manualOrderOfMultivideos',
+      ]
       for (const fieldKey of orderFields) {
-        if (resolvedData[fieldKey] !== undefined && resolvedData[fieldKey] !== null) {
+        if (
+          resolvedData[fieldKey] !== undefined &&
+          resolvedData[fieldKey] !== null
+        ) {
           try {
             if (typeof resolvedData[fieldKey] === 'string') {
-              resolvedData[fieldKey] = JSON.parse(resolvedData[fieldKey]);
+              resolvedData[fieldKey] = JSON.parse(resolvedData[fieldKey])
             }
           } catch (e) {
-            console.error(`[Topic Hook] ${fieldKey} parse error:`, e);
-            delete resolvedData[fieldKey];
+            console.error(`[Topic Hook] ${fieldKey} parse error:`, e)
+            delete resolvedData[fieldKey]
           }
         }
       }
@@ -293,6 +302,37 @@ const listConfigurations = list({
 })
 
 export default utils.addManualOrderRelationshipFields(
-  [],
+  [
+    {
+      fieldName: 'manualOrderOfSlideshows',
+      targetFieldName: 'slideshow',
+      targetListName: 'Post',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfMultivideos',
+      targetFieldName: 'multivideo',
+      targetListName: 'Video',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfPosts',
+      targetFieldName: 'post',
+      targetListName: 'Post',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfCategories',
+      targetFieldName: 'categories',
+      targetListName: 'Category',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfTags',
+      targetFieldName: 'tags',
+      targetListName: 'Tag',
+      targetListLabelField: 'name',
+    },
+  ],
   utils.addTrackingFields(listConfigurations)
 )
