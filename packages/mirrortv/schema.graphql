@@ -22,6 +22,7 @@ type ArtShow {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+  authorInInputOrder: [Contact]
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
@@ -520,6 +521,8 @@ type Contact {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+  relatedShowsInInputOrder: [Show]
+  relatedSeriesInInputOrder: [Serie]
 }
 
 input ContactWhereUniqueInput {
@@ -1444,6 +1447,15 @@ type Post {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+  writersInInputOrder: [Contact]
+  photographersInInputOrder: [Contact]
+  cameraOperatorsInInputOrder: [Contact]
+  designersInInputOrder: [Contact]
+  engineersInInputOrder: [Contact]
+  vocalsInInputOrder: [Contact]
+  categoriesInInputOrder: [Category]
+  tagsInInputOrder: [Tag]
+  relatedPostsInInputOrder: [Post]
 }
 
 input PostWhereUniqueInput {
@@ -2128,6 +2140,7 @@ type Show {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+  hostNameInInputOrder: [Contact]
 }
 
 input ShowWhereUniqueInput {
@@ -2431,6 +2444,11 @@ type Topic {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+  slideshowInInputOrder: [Post]
+  multivideoInInputOrder: [Video]
+  postInInputOrder: [Post]
+  categoriesInInputOrder: [Category]
+  tagsInInputOrder: [Tag]
 }
 
 input TopicWhereUniqueInput {
@@ -2765,6 +2783,9 @@ type Video {
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+  relatedPostsInInputOrder: [Post]
+  categoriesInInputOrder: [Category]
+  tagsInInputOrder: [Tag]
 }
 
 input VideoWhereUniqueInput {

@@ -15,13 +15,12 @@ import { DrawerController } from '@keystone-ui/modals'
 import {
   CardValueComponent,
   CellComponent,
-  FieldController,
   FieldControllerConfig,
   FieldProps,
   ListMeta,
 } from '@keystone-6/core/types'
 import { Link } from '@keystone-6/core/admin-ui/router'
-import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
+import { useList } from '@keystone-6/core/admin-ui/context'
 import {
   CellContainer,
   CreateItemDrawer,
@@ -135,10 +134,11 @@ export const Field = ({
             onCreate={(val) => {
               setIsDrawerOpen(false)
               window.dispatchEvent(new CustomEvent('REFRESH_RELATIONSHIPS'));
+              const newVal = { id: val.id, label: val.name || val.label || val.id };
               if (value.kind === 'many') {
-                onChange({ ...value, value: [...value.value, val] })
+                onChange({ ...value, value: [...value.value, newVal] })
               } else if (value.kind === 'one') {
-                onChange({ ...value, value: val } as any)
+                onChange({ ...value, value: newVal } as any)
               }
             }}
           />
@@ -159,7 +159,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
 
   const data = item[field.path]
   const items = (Array.isArray(data) ? data : [data]).filter(Boolean)
-  const displayItems = items.length < 5 ? items : items.slice(0, 3)
+  const displayItems = items.length <= 5 ? items : items.slice(0, 3)
   
   return (
     <CellContainer>
@@ -226,47 +226,65 @@ export const controller = (config: FieldControllerConfig<any>): any => {
       const pathData = data[config.path] || []
       const orderData = data[orderFieldKey];
       
-      let value = (Array.isArray(pathData) ? pathData : [pathData]).filter(Boolean).map((x: any) => ({
-        id: x.id,
-        label: x.label || x[refLabelField] || x.id,
-      }))
+      const currentItemsMap = new Map((Array.isArray(pathData) ? pathData : [pathData])
+        .filter(Boolean)
+        .map((x: any) => [String(x.id), { id: x.id, label: x.label || x[refLabelField] || x.id }]));
 
-      // 根據排序欄位重整順序
+      let sortedValue: any[] = [];
+
       if (config.fieldMeta.many && Array.isArray(orderData)) {
-        value.sort((a: any, b: any) => {
-          const indexA = orderData.findIndex((it: any) => (typeof it === 'object' ? it.id === a.id : it === a.id));
-          const indexB = orderData.findIndex((it: any) => (typeof it === 'object' ? it.id === b.id : it === b.id));
-          return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+        orderData.forEach((orderedItem: any) => {
+          const id = (typeof orderedItem === 'object' && orderedItem !== null) 
+            ? String(orderedItem.id) 
+            : String(orderedItem);
+
+          const item = currentItemsMap.get(id);
+          if (item) {
+            sortedValue.push(item);
+            currentItemsMap.delete(id);
+          }
         });
       }
+
+      currentItemsMap.forEach((item) => {
+        sortedValue.push(item);
+      });
 
       return { 
         kind: config.fieldMeta.many ? 'many' : 'one', 
         id: data.id, 
-        initialValue: value, 
-        value: config.fieldMeta.many ? value : value[0] || null 
+        initialValue: sortedValue, 
+        value: config.fieldMeta.many ? sortedValue : sortedValue[0] || null 
       }
     },
 
     serialize: (state: any) => {
       if (state.kind === 'many') {
-        const newIds = state.value.map((x: any) => x.id);
-        const oldIds = state.initialValue.map((x: any) => x.id);
+        const newItems = state.value;
+        const newIds = newItems.map((x: any) => String(x.id));
+        const oldIds = state.initialValue.map((x: any) => String(x.id));
         
-        if (JSON.stringify(newIds) === JSON.stringify(oldIds)) return {};
+        if (newIds.length === oldIds.length && newIds.every((id: string, i: number) => id === oldIds[i])) {
+          return {};
+        }
 
-        const result: any = { [orderFieldKey]: newIds };
+        const result: any = {
+          [orderFieldKey]: newItems.map((x: any) => ({
+            id: String(x.id),
+            name: String(x.label || x.id)
+          }))
+        };
 
         const isUpdate = !!state.id;
 
         if (isUpdate) {
           const disconnect = state.initialValue
-            .filter((iv: { id: string }) => !newIds.includes(iv.id))
-            .map((x: { id: string }) => ({ id: x.id }));
+            .filter((iv: any) => !newIds.includes(String(iv.id)))
+            .map((x: any) => ({ id: x.id }));
 
-          const connect = state.value
-            .filter((v: { id: string }) => !oldIds.includes(v.id))
-            .map((x: { id: string }) => ({ id: x.id }));
+          const connect = newItems
+            .filter((v: any) => !oldIds.includes(String(v.id)))
+            .map((x: any) => ({ id: x.id }));
 
           if (connect.length > 0 || disconnect.length > 0) {
             result[config.path] = {};

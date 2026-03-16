@@ -162,25 +162,6 @@ const listConfigurations = list({
           console.error('DraftJS conversion failed:', err)
         }
       }
-
-      const orderFields = [
-        'manualOrderOfRelatedShows',
-        'manualOrderOfRelatedSeries',
-      ]
-
-      for (const fieldKey of orderFields) {
-        if (resolvedData[fieldKey] !== undefined) {
-          try {
-            if (typeof resolvedData[fieldKey] === 'string') {
-              resolvedData[fieldKey] = JSON.parse(resolvedData[fieldKey])
-            }
-          } catch (e) {
-            console.error(`[Contact Hook] ${fieldKey} parse error:`, e)
-            delete resolvedData[fieldKey]
-          }
-        }
-      }
-
       return resolvedData
     },
   },
