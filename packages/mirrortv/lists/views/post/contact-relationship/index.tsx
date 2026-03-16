@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Button } from '@keystone-ui/button'
 // eslint-disable-next-line
 import { jsx, Stack, useTheme } from '@keystone-ui/core';
@@ -23,6 +23,11 @@ import { CellContainer } from '@keystone-6/core/admin-ui/components'
 import { CreateItemDrawer } from './CreateItemDrawer'
 import { RelationshipSelect } from './RelationshipSelect'
 
+type RelationshipItem = {
+  id: string;
+  label: string;
+};
+
 function LinkToRelatedItems({ itemId, value, list, refFieldKey }: any) {
   function constructQuery() {
     if (!!refFieldKey && itemId) return `!${refFieldKey}_matches="${itemId}"`
@@ -33,12 +38,12 @@ function LinkToRelatedItems({ itemId, value, list, refFieldKey }: any) {
   const commonProps = { size: 'small', tone: 'active', weight: 'link' } as const
   if (value.kind === 'many') {
     return (
-      <Button {...commonProps} as={Link} href={`/${list.path}?${constructQuery()}`}>
+      <Button {...commonProps} as={Link as any} href={`/${list.path}?${constructQuery()}`}>
         View related {list.plural}
       </Button>
     )
   }
-  return <Button {...commonProps} as={Link} href={`/${list.path}/${value.value?.id}`}>View details</Button>
+  return <Button {...commonProps} as={Link as any} href={`/${list.path}/${value.value?.id}`}>View details</Button>
 }
 
 export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof controller>) => {
@@ -92,13 +97,19 @@ export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof c
           <CreateItemDrawer
             listKey={foreignList.key}
             onClose={() => setIsDrawerOpen(false)}
-            onCreate={(val) => {
+            onCreate={(val: any) => {
               setIsDrawerOpen(false)
               window.dispatchEvent(new CustomEvent('REFRESH_RELATIONSHIPS'));
+              
+              const newVal: RelationshipItem = { 
+                id: String(val.id), 
+                label: val.label || val.name || String(val.id) 
+              };
+
               if (value.kind === 'many') {
-                onChange({ ...value, value: [...value.value, val] })
+                onChange({ ...value, value: [...value.value, newVal] })
               } else if (value.kind === 'one') {
-                onChange({ ...value, value: val } as any)
+                onChange({ ...value, value: newVal } as any)
               }
             }}
           />
@@ -161,20 +172,34 @@ export const controller = (config: FieldControllerConfig<any>): any => {
     deserialize: (data: any) => {
       const pathData = data[config.path] || [];
       const myOrderData = Array.isArray(data[ORDER_FIELD_NAME]) ? data[ORDER_FIELD_NAME] : [];
-      const currentItemsMap = new Map(pathData.map((x: any) => [String(x.id), x]));
-      let sortedValue: any[] = [];
+      
+      const currentItemsMap = new Map(
+        (Array.isArray(pathData) ? pathData : [pathData])
+          .filter(Boolean)
+          .map((x: any) => [String(x.id).trim(), x])
+      );
+      
+      let sortedValue: RelationshipItem[] = [];
 
       myOrderData.forEach((orderedItem: any) => {
-        const item = currentItemsMap.get(String(orderedItem.id));
+        const id = (orderedItem && typeof orderedItem === 'object') 
+          ? String(orderedItem.id).trim() 
+          : String(orderedItem).trim();
+
+        const item = currentItemsMap.get(id);
         if (item) {
-          sortedValue.push({ id: item.id, label: item.label || item.id });
-          currentItemsMap.delete(String(orderedItem.id));
+          sortedValue.push({ id: String(item.id), label: item.label || String(item.id) });
+          currentItemsMap.delete(id); 
         }
       });
 
       currentItemsMap.forEach((item: any) => {
-        sortedValue.push({ id: item.id, label: item.label || item.id });
+        sortedValue.push({ id: String(item.id), label: item.label || String(item.id) });
       });
+
+      if (!config.fieldMeta.many) {
+        return { kind: 'one', id: data.id, initialValue: sortedValue[0] || null, value: sortedValue[0] || null };
+      }
 
       return { kind: 'many', id: data.id, initialValue: sortedValue, value: sortedValue };
     },
@@ -183,43 +208,45 @@ export const controller = (config: FieldControllerConfig<any>): any => {
       const isUpdate = !!state.id;
 
       if (state.kind === 'many') {
-        const newIds = state.value.map((x: any) => String(x.id));
-        const oldIds = state.initialValue.map((x: any) => String(x.id));
+        const newItems: RelationshipItem[] = state.value || [];
+        const oldItems: RelationshipItem[] = state.initialValue || [];
+        
+        const newIds = newItems.map((x) => String(x.id).trim());
+        const oldIds = oldItems.map((x) => String(x.id).trim());
 
-        const isSameValue = newIds.length === oldIds.length &&
-          newIds.every((id: string, i: number) => id === oldIds[i]);
+        const isOrderChanged = JSON.stringify(newIds) !== JSON.stringify(oldIds);
+        if (!isOrderChanged) return {};
 
-        if (!isSameValue) {
-          const result: any = {
-            [ORDER_FIELD_NAME]: state.value.map((x: any) => ({ 
-              id: String(x.id), 
-              name: String(x.label || x.id) 
-            })),
-          };
+        const res: any = {
+          [ORDER_FIELD_NAME]: newItems.map((x) => ({ 
+            id: String(x.id), 
+            name: String(x.label || x.id) 
+          })),
+        };
 
-          if (isUpdate) {
-            const disconnect = state.initialValue
-              .filter((iv: any) => !newIds.includes(String(iv.id)))
-              .map((x: any) => ({ id: x.id }));
-            
-            const connect = state.value
-              .filter((v: any) => !oldIds.includes(String(v.id)))
-              .map((x: any) => ({ id: x.id }));
+        const disconnect = oldIds
+          .filter((id) => !newIds.includes(id))
+          .map((id) => ({ id }));
+        
+        const connect = newIds
+          .filter((id) => !oldIds.includes(id))
+          .map((id) => ({ id }));
 
-            if (connect.length > 0 || disconnect.length > 0) {
-              result[config.path] = {};
-              if (connect.length > 0) result[config.path].connect = connect;
-              if (disconnect.length > 0) result[config.path].disconnect = disconnect;
-            }
-          } else {
-            if (newIds.length > 0) {
-              result[config.path] = {
-                connect: newIds.map((id: string) => ({ id })),
-              };
-            }
+        if (isUpdate) {
+          if (connect.length > 0 || disconnect.length > 0) {
+            res[config.path] = {
+              connect: connect.length > 0 ? connect : undefined,
+              disconnect: disconnect.length > 0 ? disconnect : undefined,
+            };
           }
-          return result;
+        } else {
+          if (newIds.length > 0) {
+            res[config.path] = {
+              connect: newIds.map((id) => ({ id })),
+            };
+          }
         }
+        return res;
       }
       
       if (state.value?.id !== state.initialValue?.id) {

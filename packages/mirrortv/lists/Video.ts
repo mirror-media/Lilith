@@ -289,25 +289,6 @@ const listConfigurations = list({
 
     resolveInput: async ({ resolvedData, item }) => {
       const inputData = { ...resolvedData }
-      const orderFields = [
-        'manualOrderOfRelatedPosts',
-        'manualOrderOfCategories',
-        'manualOrderOfTags',
-      ]
-
-      for (const fieldKey of orderFields) {
-        if (inputData[fieldKey] !== undefined) {
-          try {
-            if (typeof inputData[fieldKey] === 'string') {
-              inputData[fieldKey] = JSON.parse(inputData[fieldKey])
-            }
-          } catch (e) {
-            console.error(`[Video Hook] ${fieldKey} parse error:`, e)
-            delete inputData[fieldKey]
-          }
-        }
-      }
-
       // 自動更新時間邏輯
       const updateTimeStamp = inputData.updateTimeStamp
       const publishTime = inputData.publishTime
