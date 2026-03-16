@@ -89,6 +89,7 @@ export const CardValue: CardValueComponent<typeof controller> = ({ field, item }
 }
 
 export const controller = (config: FieldControllerConfig<any>): any => {
+  const { many, displayMode, refLabelField } = config.fieldMeta;
   const fieldPath = config.path;
   const suffix = fieldPath.endsWith('s') ? '' : 's';
   const orderFieldKey = `manualOrderOf${fieldPath.charAt(0).toUpperCase() + fieldPath.slice(1)}${suffix}`;
@@ -99,57 +100,126 @@ export const controller = (config: FieldControllerConfig<any>): any => {
     description: config.description,
     listKey: config.listKey,
     refListKey: config.fieldMeta.refListKey,
-    refLabelField: config.fieldMeta.refLabelField || 'name', 
+    refLabelField: refLabelField || 'name', 
     refSearchFields: config.fieldMeta.refSearchFields || ['name', 'slug'],
-    many: config.fieldMeta.many,
+    many,
 
-    graphqlSelection: `${config.path} { id label } ${orderFieldKey}`,
+    graphqlSelection: `${config.path} { id label: ${refLabelField || 'name'} } ${orderFieldKey}`,
     
-    defaultValue: { kind: 'many', initialValue: [], value: [] },
+    defaultValue: displayMode === 'cards'
+      ? { 
+          kind: 'cards-view', 
+          id: null, 
+          initialIds: new Set<string>(), 
+          currentIds: new Set<string>(), 
+          itemsBeingEdited: new Set(), 
+          itemBeingCreated: false, 
+          displayOptions: config.fieldMeta 
+        }
+      : many 
+        ? { kind: 'many', initialValue: [], value: [] }
+        : { kind: 'one', initialValue: null, value: null },
 
     deserialize: (data: any) => {
-      const rawItems = (Array.isArray(data[config.path]) ? data[config.path] : [])
-        .map((x: any) => ({ id: x.id, label: x.label || x.id }));
+      const rawData = data[config.path] || [];
+      const orderData = Array.isArray(data[orderFieldKey]) ? data[orderFieldKey] : [];
       
-      const orderData = data[orderFieldKey];
-      
-      if (Array.isArray(orderData)) {
-        rawItems.sort((a: any, b: any) => {
-          const indexA = orderData.findIndex((it: any) => (typeof it === 'object' ? it.id === a.id : it === a.id));
-          const indexB = orderData.findIndex((it: any) => (typeof it === 'object' ? it.id === b.id : it === b.id));
-          return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
-        });
+      const items = (Array.isArray(rawData) ? rawData : [rawData]).filter(Boolean).map((x: any) => ({
+        id: String(x.id),
+        label: x.label || x.id
+      }));
+
+      const sortedValue = [...items].sort((a, b) => {
+        const indexA = orderData.findIndex((it: any) => 
+          (typeof it === 'object' && it !== null) ? String(it.id) === String(a.id) : String(it) === String(a.id)
+        );
+        const indexB = orderData.findIndex((it: any) => 
+          (typeof it === 'object' && it !== null) ? String(it.id) === String(b.id) : String(it) === String(b.id)
+        );
+
+        const posA = indexA === -1 ? 999999 : indexA;
+        const posB = indexB === -1 ? 999999 : indexB;
+
+        return posA - posB;
+      });
+
+      if (displayMode === 'cards') {
+        const ids = sortedValue.map(x => x.id);
+        return {
+          kind: 'cards-view',
+          id: data.id,
+          initialIds: new Set(ids),
+          currentIds: new Set(ids),
+          itemsBeingEdited: new Set(),
+          itemBeingCreated: false,
+          displayOptions: config.fieldMeta,
+        };
       }
 
-      return { kind: 'many', initialValue: rawItems, value: rawItems };
+      if (many) {
+        return { kind: 'many', id: data.id, initialValue: sortedValue, value: sortedValue };
+      }
+
+      const item = sortedValue[0] || null;
+      return { kind: 'one', id: data.id, initialValue: item, value: item };
     },
 
     serialize: (state: any) => {
-      if (state.kind === 'many') {
-        const newIds = state.value.map((x: any) => x.id);
-        const oldIds = state.initialValue.map((x: any) => x.id);
+      const isUpdate = !!state.id;
+      const res: any = {};
+
+      const getRelationalChanges = (currentItems: any[], initialItems: any[]) => {
+        const currentIds = currentItems.map(x => String(x.id));
+        const initialIds = initialItems.map(x => String(x.id));
         
-        if (JSON.stringify(newIds) === JSON.stringify(oldIds)) return {};
+        const isOrderChanged = JSON.stringify(currentIds) !== JSON.stringify(initialIds);
 
-        const disconnect = state.initialValue
-          .filter((x: any) => !newIds.includes(x.id))
-          .map((x: any) => ({ id: x.id }));
+        if (!isOrderChanged) return null;
 
-        const connect = state.value
-          .filter((x: any) => !oldIds.includes(x.id))
-          .map((x: any) => ({ id: x.id }));
-
-        const relData: any = { connect };
-        if (disconnect.length > 0) {
-          relData.disconnect = disconnect;
-        }
-
-        return {
-          [config.path]: relData,
-          [orderFieldKey]: newIds, 
+        const changeResult: any = {
+          [orderFieldKey]: currentItems.map(x => ({
+            id: String(x.id),
+            name: String(x.label || x.id)
+          }))
         };
+
+        if (isUpdate) {
+          const connect = currentIds.filter(id => !initialIds.includes(id)).map(id => ({ id }));
+          const disconnect = initialIds.filter(id => !currentIds.includes(id)).map(id => ({ id }));
+
+          if (connect.length || disconnect.length) {
+            changeResult[config.path] = {
+              ...(connect.length > 0 && { connect }),
+              ...(disconnect.length > 0 && { disconnect }),
+            };
+          }
+        } else {
+          if (currentIds.length > 0) {
+            changeResult[config.path] = { connect: currentIds.map(id => ({ id })) };
+          }
+        }
+        return changeResult;
+      };
+
+      if (state.kind === 'cards-view') {
+        const currentItems = Array.from(state.currentIds).map(id => ({ id: String(id) }));
+        const initialItems = Array.from(state.initialIds).map(id => ({ id: String(id) }));
+        const changes = getRelationalChanges(currentItems, initialItems);
+        return changes || {};
       }
-      return {};
+
+      if (state.kind === 'many') {
+        const changes = getRelationalChanges(state.value, state.initialValue);
+        return changes || {};
+      }
+
+      if (state.kind === 'one') {
+        if (state.value?.id === state.initialValue?.id) return {};
+        if (!state.value) return isUpdate ? { [config.path]: { disconnect: true } } : {};
+        return { [config.path]: { connect: { id: state.value.id } } };
+      }
+
+      return res;
     },
   };
 }

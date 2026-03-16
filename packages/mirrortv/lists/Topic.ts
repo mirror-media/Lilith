@@ -256,29 +256,6 @@ const listConfigurations = list({
   },
   hooks: {
     resolveInput: async ({ resolvedData }) => {
-      const orderFields = [
-        'manualOrderOfSlideshows',
-        'manualOrderOfPosts',
-        'manualOrderOfCategories',
-        'manualOrderOfTags',
-        'manualOrderOfMultivideos',
-      ]
-      for (const fieldKey of orderFields) {
-        if (
-          resolvedData[fieldKey] !== undefined &&
-          resolvedData[fieldKey] !== null
-        ) {
-          try {
-            if (typeof resolvedData[fieldKey] === 'string') {
-              resolvedData[fieldKey] = JSON.parse(resolvedData[fieldKey])
-            }
-          } catch (e) {
-            console.error(`[Topic Hook] ${fieldKey} parse error:`, e)
-            delete resolvedData[fieldKey]
-          }
-        }
-      }
-
       // 過濾非法字元
       resolvedData = filterControlCharacters(resolvedData)
       // 處理 Brief 轉換
