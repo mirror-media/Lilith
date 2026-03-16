@@ -548,38 +548,13 @@ const listConfigurations = list({
 
   hooks: {
     resolveInput: async ({ resolvedData, item }) => {
-      const orderFields = [
-        'manualOrderOfWriters',
-        'manualOrderOfPhotographers',
-        'manualOrderOfCameraOperators',
-        'manualOrderOfDesigners',
-        'manualOrderOfEngineers',
-        'manualOrderOfVocals',
-        'manualOrderOfCategories',
-        'manualOrderOfRelatedPosts',
-        'manualOrderOfTags',
-      ]
-
-      for (const fieldKey of orderFields) {
-        if (resolvedData[fieldKey]) {
-          const incomingData = resolvedData[fieldKey]
-          try {
-            if (typeof incomingData === 'string') {
-              resolvedData[fieldKey] = JSON.parse(incomingData)
-            } else {
-              resolvedData[fieldKey] = incomingData
-            }
-          } catch (e) {
-            console.error(`[Error] 欄位 ${fieldKey} 順序資料格式錯誤:`, e)
-            delete resolvedData[fieldKey]
-          }
-        }
-      }
-
       // 清理控制字元
       for (const key in resolvedData) {
-        if (typeof resolvedData[key] === 'string') {
-          resolvedData[key] = removeControlCharacter(resolvedData[key])
+        if (Object.prototype.hasOwnProperty.call(resolvedData, key)) {
+          const val = resolvedData[key];
+          if (typeof val === 'string' && val !== '') {
+            resolvedData[key] = removeControlCharacter(val);
+          }
         }
       }
 
