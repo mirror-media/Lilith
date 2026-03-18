@@ -13,6 +13,8 @@ import { CellContainer, CreateItemDrawer } from '@keystone-6/core/admin-ui/compo
 import { Cards } from './cards'
 import { RelationshipSelect } from './RelationshipSelect'
 
+type CustomController = typeof controller;
+
 function LinkToRelatedItems({ itemId, value, list, refFieldKey }: any) {
   function constructQuery() {
     if (!!refFieldKey && itemId) return `!${refFieldKey}_matches="${itemId}"`
@@ -41,7 +43,7 @@ function LinkToRelatedItems({ itemId, value, list, refFieldKey }: any) {
   return null
 }
 
-export const Field = ({ field, autoFocus, value, onChange, forceValidation }: FieldProps<any>) => {
+export const Field = ({ field, autoFocus, value, onChange, forceValidation }: FieldProps<CustomController>) => {
   const foreignList = useList(field.refListKey)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
@@ -123,12 +125,14 @@ export const Field = ({ field, autoFocus, value, onChange, forceValidation }: Fi
           listKey={foreignList.key}
           onClose={() => setIsDrawerOpen(false)}
           onCreate={(val) => {
-            setIsDrawerOpen(false)
+            setIsDrawerOpen(false);
+            window.dispatchEvent(new CustomEvent('REFRESH_RELATIONSHIPS'));
+
             const newVal = { id: val.id, label: val.label || val.name || val.id };
             if (value.kind === 'many') {
-              onChange?.({ ...value, value: [...(value.value || []), newVal] })
+              onChange?.({ ...value, value: [...(value.value || []), newVal] });
             } else {
-              onChange?.({ ...value, value: newVal })
+              onChange?.({ ...value, value: newVal });
             }
           }}
         />
@@ -137,7 +141,7 @@ export const Field = ({ field, autoFocus, value, onChange, forceValidation }: Fi
   )
 }
 
-export const Cell: CellComponent<any> = ({ field, item }) => {
+export const Cell: CellComponent<CustomController> = ({ field, item }) => {
   const list = useList(field.refListKey)
   const data = item[field.path]
   const items = (Array.isArray(data) ? data : [data]).filter(Boolean)
@@ -198,12 +202,15 @@ export const controller = (config: FieldControllerConfig<any>): any => {
       }));
 
       if (many && orderFieldKey && Array.isArray(orderData) && orderData.length > 0) {
+        const orderMap = new Map(
+          orderData.map((it: any, index: number) => {
+            const id = (it && typeof it === 'object' ? String(it.id) : String(it));
+            return [id, index];
+          })
+        );
         items.sort((a, b) => {
-          const getID = (it: any) => (it && typeof it === 'object' ? String(it.id) : String(it));
-          const indexA = orderData.findIndex((it: any) => getID(it) === a.id);
-          const indexB = orderData.findIndex((it: any) => getID(it) === b.id);
-          const posA = indexA === -1 ? 999999 : indexA;
-          const posB = indexB === -1 ? 999999 : indexB;
+          const posA = orderMap.get(a.id) ?? Infinity;
+          const posB = orderMap.get(b.id) ?? Infinity;
           return posA - posB;
         });
       }
@@ -230,7 +237,6 @@ export const controller = (config: FieldControllerConfig<any>): any => {
     serialize: (state: any) => {
       const isUpdate = !!state.id;
 
-      // --- 多選 (Many) 排序修正邏輯 ---
       if (state.kind === 'many' || (state.kind === 'cards-view' && many)) {
         const currentItems = state.kind === 'cards-view' 
           ? Array.from(state.currentIds).map(id => ({ id: String(id) }))
@@ -242,7 +248,9 @@ export const controller = (config: FieldControllerConfig<any>): any => {
 
         const currentIds = currentItems.map((x: any) => String(x.id));
         
-        if (JSON.stringify(currentIds) === JSON.stringify(initialIds)) return {};
+        if (currentIds.length === initialIds.length && currentIds.every((id, i) => id === initialIds[i])) {
+          return {};
+        }
 
         const res: any = {};
         
@@ -260,7 +268,6 @@ export const controller = (config: FieldControllerConfig<any>): any => {
         return res;
       }
 
-      // --- 單選 (One) 邏輯 ---
       if (state.kind === 'one' || (state.kind === 'cards-view' && !many)) {
         let currentId: string | null = null;
         let initialId: string | null = null;
