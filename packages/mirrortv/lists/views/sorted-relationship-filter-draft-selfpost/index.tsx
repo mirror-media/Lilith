@@ -10,7 +10,9 @@ import { CellContainer } from '@keystone-6/core/admin-ui/components'
 
 import { RelationshipSelect } from './RelationshipSelect'
 
-export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
+type CustomController = typeof controller;
+
+export const Field = ({ field, value, onChange, autoFocus }: FieldProps<CustomController>) => {
   const foreignList = useList(field.refListKey)
   const router = useRouter()
   const { id: routeId } = router.query
@@ -43,7 +45,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
               }
             : {
                 kind: 'one',
-                value: value.value,
+                value: (value as any).value,
                 onChange(newVal: any) {
                   onChange?.({ ...value, value: newVal })
                 },
@@ -56,7 +58,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
   )
 }
 
-export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
+export const Cell: CellComponent<CustomController> = ({ field, item }) => {
   const list = useList(field.refListKey)
   const data = item[field.path]
   const items = (Array.isArray(data) ? data : [data]).filter(Boolean)
@@ -72,7 +74,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   )
 }
 
-export const CardValue: CardValueComponent<typeof controller> = ({ field, item }) => {
+export const CardValue: CardValueComponent<CustomController> = ({ field, item }) => {
   const list = useList(field.refListKey)
   const data = item[field.path]
   return (
@@ -129,22 +131,22 @@ export const controller = (config: FieldControllerConfig<any>): any => {
         label: x.label || x.id
       }));
 
-      const sortedValue = [...items].sort((a, b) => {
-        const indexA = orderData.findIndex((it: any) => 
-          (typeof it === 'object' && it !== null) ? String(it.id) === String(a.id) : String(it) === String(a.id)
+      if (many && orderData.length > 0) {
+        const orderMap = new Map(
+          orderData.map((it: any, index: number) => {
+            const id = (it && typeof it === 'object' ? String(it.id) : String(it));
+            return [id, index];
+          })
         );
-        const indexB = orderData.findIndex((it: any) => 
-          (typeof it === 'object' && it !== null) ? String(it.id) === String(b.id) : String(it) === String(b.id)
-        );
-
-        const posA = indexA === -1 ? 999999 : indexA;
-        const posB = indexB === -1 ? 999999 : indexB;
-
-        return posA - posB;
-      });
+        items.sort((a, b) => {
+          const posA = orderMap.get(a.id) ?? Infinity;
+          const posB = orderMap.get(b.id) ?? Infinity;
+          return posA - posB;
+        });
+      }
 
       if (displayMode === 'cards') {
-        const ids = sortedValue.map(x => x.id);
+        const ids = items.map(x => x.id);
         return {
           kind: 'cards-view',
           id: data.id,
@@ -157,22 +159,22 @@ export const controller = (config: FieldControllerConfig<any>): any => {
       }
 
       if (many) {
-        return { kind: 'many', id: data.id, initialValue: sortedValue, value: sortedValue };
+        return { kind: 'many', id: data.id, initialValue: items, value: items };
       }
 
-      const item = sortedValue[0] || null;
+      const item = items[0] || null;
       return { kind: 'one', id: data.id, initialValue: item, value: item };
     },
 
     serialize: (state: any) => {
       const isUpdate = !!state.id;
-      const res: any = {};
 
       const getRelationalChanges = (currentItems: any[], initialItems: any[]) => {
         const currentIds = currentItems.map(x => String(x.id));
         const initialIds = initialItems.map(x => String(x.id));
         
-        const isOrderChanged = JSON.stringify(currentIds) !== JSON.stringify(initialIds);
+        const isOrderChanged = currentIds.length !== initialIds.length || 
+                              currentIds.some((id, i) => id !== initialIds[i]);
 
         if (!isOrderChanged) return null;
 
@@ -184,15 +186,7 @@ export const controller = (config: FieldControllerConfig<any>): any => {
         };
 
         if (isUpdate) {
-          const connect = currentIds.filter(id => !initialIds.includes(id)).map(id => ({ id }));
-          const disconnect = initialIds.filter(id => !currentIds.includes(id)).map(id => ({ id }));
-
-          if (connect.length || disconnect.length) {
-            changeResult[config.path] = {
-              ...(connect.length > 0 && { connect }),
-              ...(disconnect.length > 0 && { disconnect }),
-            };
-          }
+            changeResult[config.path] = { set: currentIds.map(id => ({ id })) };
         } else {
           if (currentIds.length > 0) {
             changeResult[config.path] = { connect: currentIds.map(id => ({ id })) };
@@ -214,12 +208,15 @@ export const controller = (config: FieldControllerConfig<any>): any => {
       }
 
       if (state.kind === 'one') {
-        if (state.value?.id === state.initialValue?.id) return {};
-        if (!state.value) return isUpdate ? { [config.path]: { disconnect: true } } : {};
-        return { [config.path]: { connect: { id: state.value.id } } };
+        const currentId = state.value?.id ? String(state.value.id) : null;
+        const initialId = state.initialValue?.id ? String(state.initialValue.id) : null;
+        
+        if (currentId === initialId) return {};
+        if (!currentId) return isUpdate ? { [config.path]: { disconnect: true } } : {};
+        return { [config.path]: { connect: { id: currentId } } };
       }
 
-      return res;
+      return {};
     },
   };
 }
