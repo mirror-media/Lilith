@@ -13,6 +13,8 @@ import { CellContainer, CreateItemDrawer } from '@keystone-6/core/admin-ui/compo
 import { Cards } from './cards'
 import { RelationshipSelect } from './RelationshipSelect'
 
+type CustomController = typeof controller;
+
 function LinkToRelatedItems({ itemId, value, list, refFieldKey }: any) {
   function constructQuery() {
     if (!!refFieldKey && itemId) return `!${refFieldKey}_matches="${itemId}"`
@@ -41,7 +43,7 @@ function LinkToRelatedItems({ itemId, value, list, refFieldKey }: any) {
   return null
 }
 
-export const Field = ({ field, autoFocus, value, onChange, forceValidation }: FieldProps<any>) => {
+export const Field = ({ field, autoFocus, value, onChange, forceValidation }: FieldProps<CustomController>) => {
   const foreignList = useList(field.refListKey)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
@@ -124,6 +126,9 @@ export const Field = ({ field, autoFocus, value, onChange, forceValidation }: Fi
           onClose={() => setIsDrawerOpen(false)}
           onCreate={(val) => {
             setIsDrawerOpen(false)
+            
+            window.dispatchEvent(new CustomEvent('REFRESH_RELATIONSHIPS'));
+            
             const newVal = { id: val.id, label: val.label || val.name || val.id };
             if (value.kind === 'many') {
               onChange?.({ ...value, value: [...(value.value || []), newVal] })
@@ -137,8 +142,7 @@ export const Field = ({ field, autoFocus, value, onChange, forceValidation }: Fi
   )
 }
 
-// --- Cell 組件 ---
-export const Cell: CellComponent<any> = ({ field, item }) => {
+export const Cell: CellComponent<CustomController> = ({ field, item }) => {
   const list = useList(field.refListKey)
   const data = item[field.path]
   const items = (Array.isArray(data) ? data : [data]).filter(Boolean)
@@ -154,7 +158,6 @@ export const Cell: CellComponent<any> = ({ field, item }) => {
   )
 }
 
-// --- Controller ---
 export const controller = (config: FieldControllerConfig<any>): any => {
   const { many, displayMode, refLabelField, refFieldKey } = config.fieldMeta;
   const fieldPath = config.path;
@@ -199,16 +202,16 @@ export const controller = (config: FieldControllerConfig<any>): any => {
         label: x.label || x.id
       }));
 
-      if (many && orderFieldKey && Array.isArray(orderData)) {
+      if (many && orderFieldKey && Array.isArray(orderData) && orderData.length > 0) {
+        const orderMap = new Map(
+          orderData.map((it: any, index: number) => {
+            const id = (it && typeof it === 'object' ? String(it.id) : String(it));
+            return [id, index];
+          })
+        );
         items.sort((a, b) => {
-          const indexA = orderData.findIndex((it: any) => 
-            (typeof it === 'object' && it !== null) ? String(it.id) === a.id : String(it) === a.id
-          );
-          const indexB = orderData.findIndex((it: any) => 
-            (typeof it === 'object' && it !== null) ? String(it.id) === b.id : String(it) === b.id
-          );
-          const posA = indexA === -1 ? 999999 : indexA;
-          const posB = indexB === -1 ? 999999 : indexB;
+          const posA = orderMap.get(a.id) ?? Infinity;
+          const posB = orderMap.get(b.id) ?? Infinity;
           return posA - posB;
         });
       }
@@ -235,7 +238,6 @@ export const controller = (config: FieldControllerConfig<any>): any => {
     serialize: (state: any) => {
       const isUpdate = !!state.id;
 
-      // 多選 (Many)
       if (state.kind === 'many' || (state.kind === 'cards-view' && many)) {
         const currentItems = state.kind === 'cards-view' 
           ? Array.from(state.currentIds).map(id => ({ id: String(id) }))
@@ -247,7 +249,10 @@ export const controller = (config: FieldControllerConfig<any>): any => {
 
         const currentIds = currentItems.map((x: any) => String(x.id));
         
-        if (JSON.stringify(currentIds) === JSON.stringify(initialIds)) return {};
+        // 修正：使用更穩健的陣列比對
+        if (currentIds.length === initialIds.length && currentIds.every((id, i) => id === initialIds[i])) {
+          return {};
+        }
 
         const res: any = {};
         if (orderFieldKey && many) {
@@ -255,14 +260,8 @@ export const controller = (config: FieldControllerConfig<any>): any => {
         }
 
         if (isUpdate) {
-          const connect = currentIds.filter(id => !initialIds.includes(id)).map(id => ({ id }));
-          const disconnect = initialIds.filter(id => !currentIds.includes(id)).map(id => ({ id }));
-          if (connect.length || disconnect.length) {
-            res[config.path] = { 
-              connect: connect.length ? connect : undefined, 
-              disconnect: disconnect.length ? disconnect : undefined 
-            };
-          }
+          // --- 修正：使用 set 運算子強制同步排序陣列 ---
+          res[config.path] = { set: currentIds.map(id => ({ id })) };
         } else {
           if (currentIds.length) {
             res[config.path] = { connect: currentIds.map(id => ({ id })) };
@@ -271,7 +270,6 @@ export const controller = (config: FieldControllerConfig<any>): any => {
         return res;
       }
 
-      // 單選 (One) - 修正 Img 
       if (state.kind === 'one' || (state.kind === 'cards-view' && !many)) {
         let currentId: string | null = null;
         let initialId: string | null = null;
