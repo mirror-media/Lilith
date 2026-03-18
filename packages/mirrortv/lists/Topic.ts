@@ -79,16 +79,50 @@ const listConfigurations = list({
       label: '輪播文章',
       ref: 'Post',
       many: true,
+      ui: {
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+      },
+    }),
+    manualOrderOfSlideshows: json({
+      label: '輪播文章手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     multivideo: relationship({
       label: '輪播影片',
       ref: 'Video',
       many: true,
+      ui: {
+        labelField: 'name',
+        views: './lists/views/sorted-relationship/index',
+      },
+    }),
+    manualOrderOfMultivideos: json({
+      label: '輪播影片手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     post: relationship({
       label: 'POST',
       ref: 'Post',
       many: true,
+      ui: {
+        views: './lists/views/sorted-relationship-filter-draft-selfpost/index',
+      },
+    }),
+    manualOrderOfPosts: json({
+      label: 'POST手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     sortDir: select({
       label: '時間軸排序方向',
@@ -102,11 +136,34 @@ const listConfigurations = list({
       label: '分類',
       ref: 'Category',
       many: true,
+      ui: {
+        labelField: 'name',
+        displayMode: 'select',
+        views: './lists/views/post/categories/index',
+      },
+    }),
+    manualOrderOfCategories: json({
+      isFilterable: false,
+      label: '分類手動排序結果',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     tags: relationship({
       label: '標籤',
       ref: 'Tag',
       many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+      },
+    }),
+    manualOrderOfTags: json({
+      label: '標籤排序結果',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     state: select({
       label: '狀態',
@@ -222,6 +279,37 @@ const listConfigurations = list({
 })
 
 export default utils.addManualOrderRelationshipFields(
-  [],
+  [
+    {
+      fieldName: 'manualOrderOfSlideshows',
+      targetFieldName: 'slideshow',
+      targetListName: 'Post',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfMultivideos',
+      targetFieldName: 'multivideo',
+      targetListName: 'Video',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfPosts',
+      targetFieldName: 'post',
+      targetListName: 'Post',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfCategories',
+      targetFieldName: 'categories',
+      targetListName: 'Category',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfTags',
+      targetFieldName: 'tags',
+      targetListName: 'Tag',
+      targetListLabelField: 'name',
+    },
+  ],
   utils.addTrackingFields(listConfigurations)
 )

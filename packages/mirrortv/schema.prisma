@@ -23,6 +23,7 @@ model ArtShow {
   heroVideoId          Int?      @map("heroVideo")
   content              Json?
   author               Contact[] @relation("ArtShow_author")
+  manualOrderOfAuthors Json?
   series               Serie[]   @relation("ArtShow_series")
   show                 Show?     @relation("ArtShow_show", fields: [showId], references: [id])
   showId               Int?      @map("show")
@@ -98,43 +99,45 @@ model Category {
 }
 
 model Contact {
-  id                        Int       @id @default(autoincrement())
-  sortOrder                 Int?      @unique
-  slug                      String    @unique @default("")
-  name                      String    @default("")
-  email                     String    @default("")
-  anchorImg                 Image?    @relation("Contact_anchorImg", fields: [anchorImgId], references: [id])
-  anchorImgId               Int?      @map("anchorImg")
-  showhostImg               Image?    @relation("Contact_showhostImg", fields: [showhostImgId], references: [id])
-  showhostImgId             Int?      @map("showhostImg")
-  homepage                  String    @default("")
-  facebook                  String    @default("")
-  instagram                 String    @default("")
-  twitter                   String    @default("")
-  bio                       Json?
-  anchorperson              Boolean   @default(false)
-  host                      Boolean   @default(false)
-  international             Boolean   @default(false)
-  relatedShows              Show[]    @relation("Contact_relatedShows")
-  relatedSeries             Serie[]   @relation("Contact_relatedSeries")
-  bioApiData                String    @default("")
-  bioHtml                   String    @default("")
-  isResigned                Boolean   @default(false)
-  createdAt                 DateTime?
-  updatedAt                 DateTime?
-  createdBy                 User?     @relation("Contact_createdBy", fields: [createdById], references: [id])
-  createdById               Int?      @map("createdBy")
-  updatedBy                 User?     @relation("Contact_updatedBy", fields: [updatedById], references: [id])
-  updatedById               Int?      @map("updatedBy")
-  from_ArtShow_author       ArtShow[] @relation("ArtShow_author")
-  from_Post_writers         Post[]    @relation("Post_writers")
-  from_Post_photographers   Post[]    @relation("Post_photographers")
-  from_Post_cameraOperators Post[]    @relation("Post_cameraOperators")
-  from_Post_designers       Post[]    @relation("Post_designers")
-  from_Post_engineers       Post[]    @relation("Post_engineers")
-  from_Post_vocals          Post[]    @relation("Post_vocals")
-  from_Section_host         Section[] @relation("Section_host")
-  from_Show_staffName       Show[]    @relation("Show_staffName")
+  id                         Int       @id @default(autoincrement())
+  sortOrder                  Int?      @unique
+  slug                       String    @unique @default("")
+  name                       String    @default("")
+  email                      String    @default("")
+  anchorImg                  Image?    @relation("Contact_anchorImg", fields: [anchorImgId], references: [id])
+  anchorImgId                Int?      @map("anchorImg")
+  showhostImg                Image?    @relation("Contact_showhostImg", fields: [showhostImgId], references: [id])
+  showhostImgId              Int?      @map("showhostImg")
+  homepage                   String    @default("")
+  facebook                   String    @default("")
+  instagram                  String    @default("")
+  twitter                    String    @default("")
+  bio                        Json?
+  anchorperson               Boolean   @default(false)
+  host                       Boolean   @default(false)
+  international              Boolean   @default(false)
+  relatedShows               Show[]    @relation("Contact_relatedShows")
+  manualOrderOfRelatedShows  Json?
+  relatedSeries              Serie[]   @relation("Contact_relatedSeries")
+  manualOrderOfRelatedSeries Json?
+  bioApiData                 String    @default("")
+  bioHtml                    String    @default("")
+  isResigned                 Boolean   @default(false)
+  createdAt                  DateTime?
+  updatedAt                  DateTime?
+  createdBy                  User?     @relation("Contact_createdBy", fields: [createdById], references: [id])
+  createdById                Int?      @map("createdBy")
+  updatedBy                  User?     @relation("Contact_updatedBy", fields: [updatedById], references: [id])
+  updatedById                Int?      @map("updatedBy")
+  from_ArtShow_author        ArtShow[] @relation("ArtShow_author")
+  from_Post_writers          Post[]    @relation("Post_writers")
+  from_Post_photographers    Post[]    @relation("Post_photographers")
+  from_Post_cameraOperators  Post[]    @relation("Post_cameraOperators")
+  from_Post_designers        Post[]    @relation("Post_designers")
+  from_Post_engineers        Post[]    @relation("Post_engineers")
+  from_Post_vocals           Post[]    @relation("Post_vocals")
+  from_Section_host          Section[] @relation("Section_host")
+  from_Show_staffName        Show[]    @relation("Show_staffName")
 
   @@index([anchorImgId])
   @@index([showhostImgId])
@@ -345,13 +348,19 @@ model Post {
   publishedDateString                String              @default("")
   updateTimeStamp                    Boolean             @default(true)
   categories                         Category[]          @relation("Post_categories")
+  manualOrderOfCategories            Json?
   writers                            Contact[]           @relation("Post_writers")
   manualOrderOfWriters               Json?
   photographers                      Contact[]           @relation("Post_photographers")
+  manualOrderOfPhotographers         Json?
   cameraOperators                    Contact[]           @relation("Post_cameraOperators")
+  manualOrderOfCameraOperators       Json?
   designers                          Contact[]           @relation("Post_designers")
+  manualOrderOfDesigners             Json?
   engineers                          Contact[]           @relation("Post_engineers")
+  manualOrderOfEngineers             Json?
   vocals                             Contact[]           @relation("Post_vocals")
+  manualOrderOfVocals                Json?
   otherbyline                        String              @default("")
   heroVideo                          Video?              @relation("Post_heroVideo", fields: [heroVideoId], references: [id])
   heroVideoId                        Int?                @map("heroVideo")
@@ -370,6 +379,7 @@ model Post {
   topics                             Topic?              @relation("Post_topics", fields: [topicsId], references: [id])
   topicsId                           Int?                @map("topics")
   tags                               Tag[]               @relation("Post_tags")
+  manualOrderOfTags                  Json?
   audio                              Audio?              @relation("Post_audio", fields: [audioId], references: [id])
   audioId                            Int?                @map("audio")
   download                           Download[]          @relation("Post_download")
@@ -505,32 +515,33 @@ model Serie {
 }
 
 model Show {
-  id                Int       @id @default(autoincrement())
-  slug              String    @unique @default("")
-  name              String    @default("")
-  sections          Section[] @relation("Section_show")
-  isArtShow         Boolean   @default(false)
-  bannerImg         Image?    @relation("Show_bannerImg", fields: [bannerImgId], references: [id])
-  bannerImgId       Int?      @map("bannerImg")
-  picture           Image?    @relation("Show_picture", fields: [pictureId], references: [id])
-  pictureId         Int?      @map("picture")
-  sortOrder         Int?      @unique
-  introduction      String    @default("")
-  hostName          Contact[] @relation("Contact_relatedShows")
-  staffName         Contact[] @relation("Show_staffName")
-  igUrl             String    @default("")
-  facebookUrl       String    @default("")
-  playList01        String    @default("")
-  playList02        String    @default("")
-  listShow          Boolean   @default(false)
-  trailerPlaylist   String    @default("")
-  createdAt         DateTime?
-  updatedAt         DateTime?
-  createdBy         User?     @relation("Show_createdBy", fields: [createdById], references: [id])
-  createdById       Int?      @map("createdBy")
-  updatedBy         User?     @relation("Show_updatedBy", fields: [updatedById], references: [id])
-  updatedById       Int?      @map("updatedBy")
-  from_ArtShow_show ArtShow[] @relation("ArtShow_show")
+  id                     Int       @id @default(autoincrement())
+  slug                   String    @unique @default("")
+  name                   String    @default("")
+  sections               Section[] @relation("Section_show")
+  isArtShow              Boolean   @default(false)
+  bannerImg              Image?    @relation("Show_bannerImg", fields: [bannerImgId], references: [id])
+  bannerImgId            Int?      @map("bannerImg")
+  picture                Image?    @relation("Show_picture", fields: [pictureId], references: [id])
+  pictureId              Int?      @map("picture")
+  sortOrder              Int?      @unique
+  introduction           String    @default("")
+  hostName               Contact[] @relation("Contact_relatedShows")
+  manualOrderOfHostNames Json?
+  staffName              Contact[] @relation("Show_staffName")
+  igUrl                  String    @default("")
+  facebookUrl            String    @default("")
+  playList01             String    @default("")
+  playList02             String    @default("")
+  listShow               Boolean   @default(false)
+  trailerPlaylist        String    @default("")
+  createdAt              DateTime?
+  updatedAt              DateTime?
+  createdBy              User?     @relation("Show_createdBy", fields: [createdById], references: [id])
+  createdById            Int?      @map("createdBy")
+  updatedBy              User?     @relation("Show_updatedBy", fields: [updatedById], references: [id])
+  updatedById            Int?      @map("updatedBy")
+  from_ArtShow_show      ArtShow[] @relation("ArtShow_show")
 
   @@index([bannerImgId])
   @@index([pictureId])
@@ -594,43 +605,48 @@ model Tag {
 }
 
 model Topic {
-  id                     Int        @id @default(autoincrement())
-  slug                   String     @unique @default("")
-  sortOrder              Int?       @unique
-  name                   String     @default("")
-  leading                String?    @default("image")
-  heroImage              Image?     @relation("Topic_heroImage", fields: [heroImageId], references: [id])
-  heroImageId            Int?       @map("heroImage")
-  heroVideo              Video?     @relation("Topic_heroVideo", fields: [heroVideoId], references: [id])
-  heroVideoId            Int?       @map("heroVideo")
-  slideshow              Post[]     @relation("Topic_slideshow")
-  multivideo             Video[]    @relation("Topic_multivideo")
-  post                   Post[]     @relation("Topic_post")
-  sortDir                String?    @default("desc")
-  categories             Category[] @relation("Topic_categories")
-  tags                   Tag[]      @relation("Topic_tags")
-  state                  String?    @default("draft")
-  brief                  Json?
-  briefApiData           Json?
-  briefHtml              String     @default("")
-  facebook               String     @default("")
-  instagram              String     @default("")
-  line                   String     @default("")
-  ogTitle                String     @default("")
-  ogDescription          String     @default("")
-  ogImage                Image?     @relation("Topic_ogImage", fields: [ogImageId], references: [id])
-  ogImageId              Int?       @map("ogImage")
-  isFeatured             Boolean    @default(false)
-  createdAt              DateTime?
-  updatedAt              DateTime?
-  createdBy              User?      @relation("Topic_createdBy", fields: [createdById], references: [id])
-  createdById            Int?       @map("createdBy")
-  updatedBy              User?      @relation("Topic_updatedBy", fields: [updatedById], references: [id])
-  updatedById            Int?       @map("updatedBy")
-  from_Image_topic       Image[]    @relation("Image_topic")
-  from_Post_topics       Post[]     @relation("Post_topics")
-  from_Post_relatedTopic Post[]     @relation("Post_relatedTopic")
-  from_Sponsor_topic     Sponsor[]  @relation("Sponsor_topic")
+  id                       Int        @id @default(autoincrement())
+  slug                     String     @unique @default("")
+  sortOrder                Int?       @unique
+  name                     String     @default("")
+  leading                  String?    @default("image")
+  heroImage                Image?     @relation("Topic_heroImage", fields: [heroImageId], references: [id])
+  heroImageId              Int?       @map("heroImage")
+  heroVideo                Video?     @relation("Topic_heroVideo", fields: [heroVideoId], references: [id])
+  heroVideoId              Int?       @map("heroVideo")
+  slideshow                Post[]     @relation("Topic_slideshow")
+  manualOrderOfSlideshows  Json?
+  multivideo               Video[]    @relation("Topic_multivideo")
+  manualOrderOfMultivideos Json?
+  post                     Post[]     @relation("Topic_post")
+  manualOrderOfPosts       Json?
+  sortDir                  String?    @default("desc")
+  categories               Category[] @relation("Topic_categories")
+  manualOrderOfCategories  Json?
+  tags                     Tag[]      @relation("Topic_tags")
+  manualOrderOfTags        Json?
+  state                    String?    @default("draft")
+  brief                    Json?
+  briefApiData             Json?
+  briefHtml                String     @default("")
+  facebook                 String     @default("")
+  instagram                String     @default("")
+  line                     String     @default("")
+  ogTitle                  String     @default("")
+  ogDescription            String     @default("")
+  ogImage                  Image?     @relation("Topic_ogImage", fields: [ogImageId], references: [id])
+  ogImageId                Int?       @map("ogImage")
+  isFeatured               Boolean    @default(false)
+  createdAt                DateTime?
+  updatedAt                DateTime?
+  createdBy                User?      @relation("Topic_createdBy", fields: [createdById], references: [id])
+  createdById              Int?       @map("createdBy")
+  updatedBy                User?      @relation("Topic_updatedBy", fields: [updatedById], references: [id])
+  updatedById              Int?       @map("updatedBy")
+  from_Image_topic         Image[]    @relation("Image_topic")
+  from_Post_topics         Post[]     @relation("Post_topics")
+  from_Post_relatedTopic   Post[]     @relation("Post_relatedTopic")
+  from_Sponsor_topic       Sponsor[]  @relation("Sponsor_topic")
 
   @@index([heroImageId])
   @@index([heroVideoId])
@@ -725,38 +741,41 @@ model VideoEditorChoice {
 }
 
 model Video {
-  id                       Int        @id @default(autoincrement())
-  name                     String     @default("")
-  youtubeUrl               String     @default("")
-  file_filesize            Int?
-  file_filename            String?
-  coverPhoto               Image?     @relation("Video_coverPhoto", fields: [coverPhotoId], references: [id])
-  coverPhotoId             Int?       @map("coverPhoto")
-  description              String     @default("")
-  relatedPosts             Post[]     @relation("Video_relatedPosts")
-  isFeed                   Boolean    @default(true)
-  thumbnail                String     @default("")
-  meta                     String     @default("")
-  url                      String     @default("")
-  duration                 Int?       @default(0)
-  fileDuration_internal    String     @default("")
-  youtubeDuration_internal String     @default("")
-  categories               Category[] @relation("Video_categories")
-  tags                     Tag[]      @relation("Video_tags")
-  state                    String?    @default("draft")
-  publishTime              DateTime?
-  updateTimeStamp          Boolean    @default(true)
-  createdAt                DateTime?
-  updatedAt                DateTime?
-  createdBy                User?      @relation("Video_createdBy", fields: [createdById], references: [id])
-  createdById              Int?       @map("createdBy")
-  updatedBy                User?      @relation("Video_updatedBy", fields: [updatedById], references: [id])
-  updatedById              Int?       @map("updatedBy")
-  from_ArtShow_heroVideo   ArtShow[]  @relation("ArtShow_heroVideo")
-  from_Event_video         Event[]    @relation("Event_video")
-  from_Post_heroVideo      Post[]     @relation("Post_heroVideo")
-  from_Topic_heroVideo     Topic[]    @relation("Topic_heroVideo")
-  from_Topic_multivideo    Topic[]    @relation("Topic_multivideo")
+  id                        Int        @id @default(autoincrement())
+  name                      String     @default("")
+  youtubeUrl                String     @default("")
+  file_filesize             Int?
+  file_filename             String?
+  coverPhoto                Image?     @relation("Video_coverPhoto", fields: [coverPhotoId], references: [id])
+  coverPhotoId              Int?       @map("coverPhoto")
+  description               String     @default("")
+  relatedPosts              Post[]     @relation("Video_relatedPosts")
+  manualOrderOfRelatedPosts Json?
+  isFeed                    Boolean    @default(true)
+  thumbnail                 String     @default("")
+  meta                      String     @default("")
+  url                       String     @default("")
+  duration                  Int?       @default(0)
+  fileDuration_internal     String     @default("")
+  youtubeDuration_internal  String     @default("")
+  categories                Category[] @relation("Video_categories")
+  manualOrderOfCategories   Json?
+  tags                      Tag[]      @relation("Video_tags")
+  manualOrderOfTags         Json?
+  state                     String?    @default("draft")
+  publishTime               DateTime?
+  updateTimeStamp           Boolean    @default(true)
+  createdAt                 DateTime?
+  updatedAt                 DateTime?
+  createdBy                 User?      @relation("Video_createdBy", fields: [createdById], references: [id])
+  createdById               Int?       @map("createdBy")
+  updatedBy                 User?      @relation("Video_updatedBy", fields: [updatedById], references: [id])
+  updatedById               Int?       @map("updatedBy")
+  from_ArtShow_heroVideo    ArtShow[]  @relation("ArtShow_heroVideo")
+  from_Event_video          Event[]    @relation("Event_video")
+  from_Post_heroVideo       Post[]     @relation("Post_heroVideo")
+  from_Topic_heroVideo      Topic[]    @relation("Topic_heroVideo")
+  from_Topic_multivideo     Topic[]    @relation("Topic_multivideo")
 
   @@index([coverPhotoId])
   @@index([state])

@@ -1,6 +1,12 @@
 import { list } from '@keystone-6/core'
 import { customFields, utils } from '@mirrormedia/lilith-core'
-import { text, relationship, checkbox, integer } from '@keystone-6/core/fields'
+import {
+  text,
+  relationship,
+  checkbox,
+  integer,
+  json,
+} from '@keystone-6/core/fields'
 import { v4 as uuidv4 } from 'uuid'
 
 const { allowRoles, admin, moderator, editor, contributor } =
@@ -87,11 +93,35 @@ const listConfigurations = list({
       label: '關聯藝文節目',
       ref: 'Show.hostName',
       many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+        labelField: 'name',
+      },
+    }),
+    manualOrderOfRelatedShows: json({
+      label: '關聯藝文節目手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     relatedSeries: relationship({
       label: '關聯節目單元',
       ref: 'Serie.relatedContacts',
       many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+        labelField: 'name',
+      },
+    }),
+    manualOrderOfRelatedSeries: json({
+      label: '關聯節目單元手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     bioApiData: text({
       label: 'bio API Data',
@@ -144,4 +174,21 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+// export default utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfRelatedShows',
+      targetFieldName: 'relatedShows',
+      targetListName: 'Show',
+      targetListLabelField: 'name',
+    },
+    {
+      fieldName: 'manualOrderOfRelatedSeries',
+      targetFieldName: 'relatedSeries',
+      targetListName: 'Serie',
+      targetListLabelField: 'name',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)
