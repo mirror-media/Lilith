@@ -1,6 +1,12 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
-import { text, relationship, checkbox, integer } from '@keystone-6/core/fields'
+import {
+  text,
+  relationship,
+  checkbox,
+  integer,
+  json,
+} from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -63,6 +69,17 @@ const listConfigurations = list({
       label: '主持人姓名',
       ref: 'Contact.relatedShows',
       many: true,
+      ui: {
+        views: './lists/views/post/contact-relationship/index',
+      },
+    }),
+    manualOrderOfHostNames: json({
+      label: '主持人手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     staffName: relationship({
       label: '工作人員姓名',
@@ -123,4 +140,15 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+// export default utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfHostNames',
+      targetFieldName: 'hostName',
+      targetListName: 'Contact',
+      targetListLabelField: 'name',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)

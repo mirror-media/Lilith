@@ -104,6 +104,17 @@ const listConfigurations = list({
       label: '導演',
       ref: 'Contact',
       many: true,
+      ui: {
+        views: './lists/views/post/contact-relationship/index',
+      },
+    }),
+    manualOrderOfAuthors: json({
+      label: '導演手動排序結果',
+      isFilterable: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
     series: relationship({
       label: '相關單元',
@@ -189,4 +200,15 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+// export default utils.addTrackingFields(listConfigurations)
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfAuthors',
+      targetFieldName: 'author',
+      targetListName: 'Contact',
+      targetListLabelField: 'name',
+    },
+  ],
+  utils.addTrackingFields(listConfigurations)
+)
