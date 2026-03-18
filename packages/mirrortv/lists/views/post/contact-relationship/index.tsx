@@ -1,41 +1,28 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState } from 'react'
 import { Button } from '@keystone-ui/button'
-// eslint-disable-next-line
-import { jsx, Stack, useTheme } from '@keystone-ui/core';
-import {
-  FieldContainer,
-  FieldDescription,
-  FieldLabel,
-} from '@keystone-ui/fields'
+import { jsx, Stack } from '@keystone-ui/core'
+import { FieldContainer, FieldDescription, FieldLabel, FieldLegend } from '@keystone-ui/fields'
 import { DrawerController } from '@keystone-ui/modals'
-import {
-  CardValueComponent,
-  CellComponent,
-  FieldControllerConfig,
-  FieldProps,
-} from '@keystone-6/core/types'
+import { CellComponent, FieldControllerConfig, FieldProps } from '@keystone-6/core/types'
 import { Link } from '@keystone-6/core/admin-ui/router'
 import { useList } from '@keystone-6/core/admin-ui/context'
-import { CellContainer } from '@keystone-6/core/admin-ui/components'
-import { CreateItemDrawer } from './CreateItemDrawer'
-import { RelationshipSelect } from './RelationshipSelect'
+import { CellContainer, CreateItemDrawer } from '@keystone-6/core/admin-ui/components'
 
-type RelationshipItem = {
-  id: string;
-  label: string;
-};
+import { Cards } from './cards'
+import { RelationshipSelect } from './RelationshipSelect'
 
 function LinkToRelatedItems({ itemId, value, list, refFieldKey }: any) {
   function constructQuery() {
     if (!!refFieldKey && itemId) return `!${refFieldKey}_matches="${itemId}"`
     const items = value.kind === 'many' ? value.value : value.value ? [value.value] : []
-    const ids = items.map((x: any) => x.id).join(',')
+    const ids = items.map((x: any) => x.id).filter(Boolean).join(',')
     return `!id_in="${ids}"`
   }
+
   const commonProps = { size: 'small', tone: 'active', weight: 'link' } as const
+  
   if (value.kind === 'many') {
     return (
       <Button {...commonProps} as={Link as any} href={`/${list.path}?${constructQuery()}`}>
@@ -43,14 +30,43 @@ function LinkToRelatedItems({ itemId, value, list, refFieldKey }: any) {
       </Button>
     )
   }
-  return <Button {...commonProps} as={Link as any} href={`/${list.path}/${value.value?.id}`}>View details</Button>
+  
+  if (value.value?.id) {
+    return (
+      <Button {...commonProps} as={Link as any} href={`/${list.path}/${value.value.id}`}>
+        View details
+      </Button>
+    )
+  }
+  return null
 }
 
-export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof controller>) => {
+export const Field = ({ field, autoFocus, value, onChange, forceValidation }: FieldProps<any>) => {
   const foreignList = useList(field.refListKey)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
-  if (!foreignList) return <div>Loading...</div>;
+  if (!foreignList) return null;
+
+  const hasValue = value.kind === 'many' ? (value.value?.length > 0) : !!value.value?.id;
+  const showViewRelated = hasValue || (!!field.refFieldKey && !!value.id);
+
+  if (value.kind === 'cards-view') {
+    return (
+      <FieldContainer as="fieldset">
+        <FieldLegend>{field.label}</FieldLegend>
+        <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
+        <Cards
+          forceValidation={forceValidation}
+          field={field}
+          id={value.id}
+          value={value}
+          onChange={onChange}
+          foreignList={foreignList}
+          localList={useList(field.listKey)}
+        />
+      </FieldContainer>
+    )
+  }
 
   return (
     <FieldContainer as="fieldset">
@@ -61,201 +77,216 @@ export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof c
           controlShouldRenderValue
           autoFocus={autoFocus}
           isDisabled={onChange === undefined}
-          labelField={field.refLabelField}
+          labelField={field.refLabelField || 'name'}
           searchFields={field.refSearchFields}
           list={foreignList}
+          portalMenu
           state={
             value.kind === 'many'
               ? {
                   kind: 'many',
-                  value: value.value,
+                  value: value.value || [],
                   onChange(newItems: any) {
                     onChange?.({ ...value, value: newItems })
                   },
                 }
               : {
                   kind: 'one',
-                  value: (value as any).value,
+                  value: value.value || null,
                   onChange(newVal: any) {
-                    if (value.kind === 'one') onChange?.({ ...value, value: newVal })
+                    onChange?.({ ...value, value: newVal })
                   },
                 }
           }
           orderBy={[{ id: 'desc' }]}
         />
-        <Stack across gap="small">
+        
+        <Stack across gap="small" align="center">
           {onChange !== undefined && !field.hideCreate && (
-            <Button size="small" onClick={() => setIsDrawerOpen(true)}>Create {foreignList.singular}</Button>
+            <Button size="small" onClick={() => setIsDrawerOpen(true)} look="ghost">
+              Create {foreignList.singular}
+            </Button>
           )}
-          {!!(value.kind === 'many' ? value.value.length : (value as any).value) && (
-            <LinkToRelatedItems itemId={value.id} refFieldKey={field.refFieldKey} list={foreignList} value={value as any} />
+          {showViewRelated && (
+            <LinkToRelatedItems 
+              itemId={value.id} 
+              value={value} 
+              list={foreignList} 
+              refFieldKey={field.refFieldKey} 
+            />
           )}
         </Stack>
       </Stack>
-      {onChange !== undefined && (
-        <DrawerController isOpen={isDrawerOpen}>
-          <CreateItemDrawer
-            listKey={foreignList.key}
-            onClose={() => setIsDrawerOpen(false)}
-            onCreate={(val: any) => {
-              setIsDrawerOpen(false)
-              window.dispatchEvent(new CustomEvent('REFRESH_RELATIONSHIPS'));
-              
-              const newVal: RelationshipItem = { 
-                id: String(val.id), 
-                label: val.label || val.name || String(val.id) 
-              };
 
-              if (value.kind === 'many') {
-                onChange({ ...value, value: [...value.value, newVal] })
-              } else if (value.kind === 'one') {
-                onChange({ ...value, value: newVal } as any)
-              }
-            }}
-          />
-        </DrawerController>
-      )}
+      <DrawerController isOpen={isDrawerOpen}>
+        <CreateItemDrawer
+          listKey={foreignList.key}
+          onClose={() => setIsDrawerOpen(false)}
+          onCreate={(val) => {
+            setIsDrawerOpen(false)
+            const newVal = { id: val.id, label: val.label || val.name || val.id };
+            if (value.kind === 'many') {
+              onChange?.({ ...value, value: [...(value.value || []), newVal] })
+            } else {
+              onChange?.({ ...value, value: newVal })
+            }
+          }}
+        />
+      </DrawerController>
     </FieldContainer>
   )
 }
 
-export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
+export const Cell: CellComponent<any> = ({ field, item }) => {
   const list = useList(field.refListKey)
   const data = item[field.path]
   const items = (Array.isArray(data) ? data : [data]).filter(Boolean)
   return (
     <CellContainer>
-      {items.slice(0, 3).map((it, i) => (
-        <Fragment key={it.id}>{i ? ', ' : ''}<Link href={`/${list.path}/${it.id}`}>{it.label || it.id}</Link></Fragment>
+      {items.map((it: any, i: number) => (
+        <Fragment key={it.id}>
+          {i > 0 && ', '}
+          <Link href={`/${list.path}/${it.id}`}>{it.label || it.name || it.id}</Link>
+        </Fragment>
       ))}
-      {items.length > 3 && ` +${items.length - 3}`}
     </CellContainer>
   )
 }
 
-export const CardValue: CardValueComponent<typeof controller> = ({ field, item }) => {
-  const list = useList(field.refListKey)
-  const data = item[field.path]
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {(Array.isArray(data) ? data : [data]).filter(Boolean).map((it, i) => (
-        <Fragment key={it.id}>{i ? ', ' : ''}<Link href={`/${list.path}/${it.id}`}>{it.label || it.id}</Link></Fragment>
-      ))}
-    </FieldContainer>
-  )
-}
-
 export const controller = (config: FieldControllerConfig<any>): any => {
-  const { refLabelField, refSearchFields } = config.fieldMeta;
-  
+  const { many, displayMode, refLabelField, refFieldKey } = config.fieldMeta;
   const fieldPath = config.path;
   const suffix = fieldPath.endsWith('s') ? '' : 's';
-  const ORDER_FIELD_NAME = `manualOrderOf${fieldPath.charAt(0).toUpperCase() + fieldPath.slice(1)}${suffix}`;
+  const orderFieldKey = many 
+    ? `manualOrderOf${fieldPath.charAt(0).toUpperCase() + fieldPath.slice(1)}${suffix}` 
+    : null;
 
   return {
     path: config.path,
     label: config.label,
     description: config.description,
-    display: config.fieldMeta.displayMode === 'count' ? 'count' : 'cards-or-select',
-    refLabelField,
-    refSearchFields,
+    listKey: config.listKey, 
+    refLabelField: refLabelField || 'name',
+    refSearchFields: config.fieldMeta.refSearchFields,
     refListKey: config.fieldMeta.refListKey,
-    listKey: config.listKey,
-    many: config.fieldMeta.many,
-    graphqlSelection: `${config.path} { id label: ${refLabelField} } ${ORDER_FIELD_NAME}`,
-
-    defaultValue: config.fieldMeta.many
-      ? { kind: 'many', id: null, initialValue: [], value: [] }
-      : { kind: 'one', id: null, initialValue: null, value: null },
+    refFieldKey,
+    many,
+    
+    graphqlSelection: `${config.path} { id label: ${refLabelField || 'name'} } ${orderFieldKey ? orderFieldKey : ''}`,
+    
+    defaultValue: displayMode === 'cards'
+      ? { 
+          kind: 'cards-view', 
+          id: null, 
+          initialIds: new Set<string>(), 
+          currentIds: new Set<string>(), 
+          itemsBeingEdited: new Set(), 
+          itemBeingCreated: false, 
+          displayOptions: config.fieldMeta 
+        }
+      : many 
+        ? { kind: 'many', id: null, initialValue: [], value: [] }
+        : { kind: 'one', id: null, initialValue: null, value: null },
 
     deserialize: (data: any) => {
-      const pathData = data[config.path] || [];
-      const myOrderData = Array.isArray(data[ORDER_FIELD_NAME]) ? data[ORDER_FIELD_NAME] : [];
-      
-      const currentItemsMap = new Map(
-        (Array.isArray(pathData) ? pathData : [pathData])
-          .filter(Boolean)
-          .map((x: any) => [String(x.id).trim(), x])
-      );
-      
-      let sortedValue: RelationshipItem[] = [];
+      const rawData = data[config.path];
+      const orderData = orderFieldKey && data[orderFieldKey] ? data[orderFieldKey] : [];
 
-      myOrderData.forEach((orderedItem: any) => {
-        const id = (orderedItem && typeof orderedItem === 'object') 
-          ? String(orderedItem.id).trim() 
-          : String(orderedItem).trim();
+      const items = (Array.isArray(rawData) ? rawData : rawData ? [rawData] : []).map((x: any) => ({
+        id: String(x.id),
+        label: x.label || x.id
+      }));
 
-        const item = currentItemsMap.get(id);
-        if (item) {
-          sortedValue.push({ id: String(item.id), label: item.label || String(item.id) });
-          currentItemsMap.delete(id); 
-        }
-      });
-
-      currentItemsMap.forEach((item: any) => {
-        sortedValue.push({ id: String(item.id), label: item.label || String(item.id) });
-      });
-
-      if (!config.fieldMeta.many) {
-        return { kind: 'one', id: data.id, initialValue: sortedValue[0] || null, value: sortedValue[0] || null };
+      if (many && orderFieldKey && Array.isArray(orderData) && orderData.length > 0) {
+        items.sort((a, b) => {
+          const getID = (it: any) => (it && typeof it === 'object' ? String(it.id) : String(it));
+          const indexA = orderData.findIndex((it: any) => getID(it) === a.id);
+          const indexB = orderData.findIndex((it: any) => getID(it) === b.id);
+          const posA = indexA === -1 ? 999999 : indexA;
+          const posB = indexB === -1 ? 999999 : indexB;
+          return posA - posB;
+        });
       }
 
-      return { kind: 'many', id: data.id, initialValue: sortedValue, value: sortedValue };
+      if (displayMode === 'cards') {
+        const ids = items.map(x => x.id);
+        return {
+          kind: 'cards-view',
+          id: data.id,
+          initialIds: new Set(ids), 
+          currentIds: new Set(ids), 
+          itemsBeingEdited: new Set(), 
+          itemBeingCreated: false, 
+          displayOptions: config.fieldMeta,
+        };
+      }
+
+      if (many) {
+        return { kind: 'many', id: data.id, initialValue: items, value: items };
+      }
+      return { kind: 'one', id: data.id, initialValue: items[0] || null, value: items[0] || null };
     },
 
     serialize: (state: any) => {
       const isUpdate = !!state.id;
 
-      if (state.kind === 'many') {
-        const newItems: RelationshipItem[] = state.value || [];
-        const oldItems: RelationshipItem[] = state.initialValue || [];
+      // --- 多選 (Many) 排序修正邏輯 ---
+      if (state.kind === 'many' || (state.kind === 'cards-view' && many)) {
+        const currentItems = state.kind === 'cards-view' 
+          ? Array.from(state.currentIds).map(id => ({ id: String(id) }))
+          : (state.value || []);
         
-        const newIds = newItems.map((x) => String(x.id).trim());
-        const oldIds = oldItems.map((x) => String(x.id).trim());
+        const initialIds = state.kind === 'cards-view'
+          ? Array.from(state.initialIds).map(id => String(id))
+          : (state.initialValue || []).map((x: any) => String(x.id));
 
-        const isOrderChanged = JSON.stringify(newIds) !== JSON.stringify(oldIds);
-        if (!isOrderChanged) return {};
-
-        const res: any = {
-          [ORDER_FIELD_NAME]: newItems.map((x) => ({ 
-            id: String(x.id), 
-            name: String(x.label || x.id) 
-          })),
-        };
-
-        const disconnect = oldIds
-          .filter((id) => !newIds.includes(id))
-          .map((id) => ({ id }));
+        const currentIds = currentItems.map((x: any) => String(x.id));
         
-        const connect = newIds
-          .filter((id) => !oldIds.includes(id))
-          .map((id) => ({ id }));
+        if (JSON.stringify(currentIds) === JSON.stringify(initialIds)) return {};
+
+        const res: any = {};
+        
+        if (orderFieldKey && many) {
+          res[orderFieldKey] = currentItems.map((x: any) => ({ id: x.id, name: x.label || x.id }));
+        }
 
         if (isUpdate) {
-          if (connect.length > 0 || disconnect.length > 0) {
-            res[config.path] = {
-              connect: connect.length > 0 ? connect : undefined,
-              disconnect: disconnect.length > 0 ? disconnect : undefined,
-            };
-          }
+          res[config.path] = { set: currentIds.map(id => ({ id })) };
         } else {
-          if (newIds.length > 0) {
-            res[config.path] = {
-              connect: newIds.map((id) => ({ id })),
-            };
+          if (currentIds.length) {
+            res[config.path] = { connect: currentIds.map(id => ({ id })) };
           }
         }
         return res;
       }
-      
-      if (state.value?.id !== state.initialValue?.id) {
-        if (!state.value) {
-          return isUpdate ? { [config.path]: { disconnect: true } } : {};
+
+      // --- 單選 (One) 邏輯 ---
+      if (state.kind === 'one' || (state.kind === 'cards-view' && !many)) {
+        let currentId: string | null = null;
+        let initialId: string | null = null;
+
+        if (state.kind === 'cards-view') {
+          const firstCurrent = Array.from(state.currentIds)[0];
+          const firstInitial = Array.from(state.initialIds)[0];
+          currentId = firstCurrent !== undefined ? String(firstCurrent) : null;
+          initialId = firstInitial !== undefined ? String(firstInitial) : null;
+        } else {
+          currentId = state.value?.id ? String(state.value.id) : null;
+          initialId = state.initialValue?.id ? String(state.initialValue.id) : null;
         }
-        return { [config.path]: { connect: { id: state.value.id } } };
+
+        if (initialId === currentId) return {};
+
+        if (isUpdate) {
+          if (!currentId) return { [config.path]: { disconnect: true } };
+          return { [config.path]: { connect: { id: currentId } } };
+        } else {
+          if (!currentId) return {};
+          return { [config.path]: { connect: { id: currentId } } };
+        }
       }
+
       return {};
     },
-  };
-};
+  }
+}
