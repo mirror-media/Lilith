@@ -28,6 +28,8 @@ import {
 
 import { RelationshipSelect } from './RelationshipSelect'
 
+type CustomController = typeof controller;
+
 function LinkToRelatedItems({
   itemId,
   value,
@@ -67,7 +69,7 @@ export const Field = ({
   autoFocus,
   value,
   onChange,
-}: FieldProps<typeof controller>) => {
+}: FieldProps<CustomController>) => {
   const foreignList = useList(field.refListKey)
   const localList = useList(field.listKey)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -148,7 +150,7 @@ export const Field = ({
   )
 }
 
-export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
+export const Cell: CellComponent<CustomController> = ({ field, item }) => {
   const list = useList(field.refListKey)
   const { colors } = useTheme()
 
@@ -176,7 +178,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   )
 }
 
-export const CardValue: CardValueComponent<typeof controller> = ({ field, item }) => {
+export const CardValue: CardValueComponent<CustomController> = ({ field, item }) => {
   const list = useList(field.refListKey)
   const data = item[field.path]
   return (
@@ -226,41 +228,35 @@ export const controller = (config: FieldControllerConfig<any>): any => {
       const pathData = data[config.path] || []
       const orderData = data[orderFieldKey];
       
-      const currentItemsMap = new Map((Array.isArray(pathData) ? pathData : [pathData])
+      const items = (Array.isArray(pathData) ? pathData : [pathData])
         .filter(Boolean)
-        .map((x: any) => [String(x.id), { id: x.id, label: x.label || x[refLabelField] || x.id }]));
+        .map((x: any) => ({ id: x.id, label: x.label || x[refLabelField] || x.id }));
 
-      let sortedValue: any[] = [];
-
-      if (config.fieldMeta.many && Array.isArray(orderData)) {
-        orderData.forEach((orderedItem: any) => {
-          const id = (typeof orderedItem === 'object' && orderedItem !== null) 
-            ? String(orderedItem.id) 
-            : String(orderedItem);
-
-          const item = currentItemsMap.get(id);
-          if (item) {
-            sortedValue.push(item);
-            currentItemsMap.delete(id);
-          }
+      if (config.fieldMeta.many && Array.isArray(orderData) && orderData.length > 0) {
+        const orderMap = new Map(
+          orderData.map((it: any, index: number) => {
+            const id = (it && typeof it === 'object' ? String(it.id) : String(it));
+            return [id, index];
+          })
+        );
+        items.sort((a, b) => {
+          const posA = orderMap.get(String(a.id)) ?? Infinity;
+          const posB = orderMap.get(String(b.id)) ?? Infinity;
+          return posA - posB;
         });
       }
-
-      currentItemsMap.forEach((item) => {
-        sortedValue.push(item);
-      });
 
       return { 
         kind: config.fieldMeta.many ? 'many' : 'one', 
         id: data.id, 
-        initialValue: sortedValue, 
-        value: config.fieldMeta.many ? sortedValue : sortedValue[0] || null 
+        initialValue: items, 
+        value: config.fieldMeta.many ? items : items[0] || null 
       }
     },
 
     serialize: (state: any) => {
       if (state.kind === 'many') {
-        const newItems = state.value;
+        const newItems = state.value || [];
         const newIds = newItems.map((x: any) => String(x.id));
         const oldIds = state.initialValue.map((x: any) => String(x.id));
         
@@ -278,19 +274,7 @@ export const controller = (config: FieldControllerConfig<any>): any => {
         const isUpdate = !!state.id;
 
         if (isUpdate) {
-          const disconnect = state.initialValue
-            .filter((iv: any) => !newIds.includes(String(iv.id)))
-            .map((x: any) => ({ id: x.id }));
-
-          const connect = newItems
-            .filter((v: any) => !oldIds.includes(String(v.id)))
-            .map((x: any) => ({ id: x.id }));
-
-          if (connect.length > 0 || disconnect.length > 0) {
-            result[config.path] = {};
-            if (connect.length > 0) result[config.path].connect = connect;
-            if (disconnect.length > 0) result[config.path].disconnect = disconnect;
-          }
+            result[config.path] = { set: newIds.map(id => ({ id })) };
         } else {
           if (newIds.length > 0) {
             result[config.path] = {
