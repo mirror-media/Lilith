@@ -28,6 +28,7 @@ const {
   AUTO_TAGGING,
   INVALID_CDN_CACHE_SERVER_URL,
   YOUTUBE_API_KEY,
+  DOMAIN_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -94,6 +95,7 @@ export default {
   topicServiceApi: TOPIC_SERVICE_API,
   autotagging: AUTO_TAGGING || 'false',
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
+  domainUrl: DOMAIN_URL || '',
   youtube: {
     apiKey: YOUTUBE_API_KEY,
   },
