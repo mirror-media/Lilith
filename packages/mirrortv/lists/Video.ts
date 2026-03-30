@@ -315,6 +315,7 @@ const listConfigurations = list({
         if (url === '') {
           inputData.youtubeUrl = ''
           inputData.youtubeDuration_internal = 'PT0S'
+          inputData.url = ''
 
           const existingItem = item as unknown as VideoItem | undefined
           if (existingItem?.youtubeUrl) {
@@ -334,6 +335,7 @@ const listConfigurations = list({
 
         if (isUrlChanged || isNewItem || isDurationMissing) {
           console.log('[Video Hook] Fetching YouTube duration for:', url)
+          inputData.url = url // 設定 url 欄位
           try {
             const duration = await getYouTubeDuration(url)
 
@@ -341,7 +343,6 @@ const listConfigurations = list({
               inputData.duration = duration
               inputData.youtubeDuration_internal =
                 secondsToISO8601Duration(duration)
-              inputData.url = url // 設定 url 欄位
             } else {
               inputData.duration = 0
               inputData.youtubeDuration_internal = 'PT0S'
