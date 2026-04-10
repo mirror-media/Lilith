@@ -4,6 +4,7 @@ import { relationship, select, integer } from '@keystone-6/core/fields'
 import { State } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+import envVar from '../environment-variables'
 
 enum PromoteTopicState {
   Draft = State.Draft,
@@ -90,7 +91,7 @@ const listConfigurations = list({
 
       if (isTurningPublished) {
         const publishedItems = await context.query.PromoteTopic.findMany({
-          where: { state: { equals: 'published' } },
+          where: { state: { equals: PromoteTopicState.Published } },
           orderBy: { updatedAt: 'asc' },
           query: 'id',
         })
@@ -102,15 +103,53 @@ const listConfigurations = list({
             Math.max(0, numToArchive)
           )
 
-          for (const targetItem of itemsToArchive) {
-            await context.db.PromoteTopic.updateOne({
-              where: { id: targetItem.id },
-              data: { state: PromoteTopicState.Archived },
+          if (itemsToArchive.length > 0) {
+            await context.db.PromoteTopic.updateMany({
+              data: itemsToArchive.map((targetItem) => ({
+                where: { id: targetItem.id },
+                data: { state: PromoteTopicState.Archived },
+              })),
             })
+
             console.log(
-              `[PromoteTopic] Limit reached. Auto-archived item ID: ${targetItem.id}`
+              `[PromoteTopic] Batch archived IDs: ${itemsToArchive
+                .map((i) => i.id)
+                .join(', ')}`
             )
           }
+        }
+      }
+    },
+    afterOperation: async ({ item, originalItem }) => {
+      const wasPublished = originalItem?.state === PromoteTopicState.Published
+      const isPublished = item?.state === PromoteTopicState.Published
+
+      if (wasPublished || isPublished) {
+        const promoteTopicSyncUrl = envVar.promoteTopicServiceUrl
+
+        if (promoteTopicSyncUrl) {
+          fetch(promoteTopicSyncUrl)
+            .then((res) => {
+              if (res.ok) {
+                console.log(
+                  '[Promote Topic Sync] Successfully triggered promote-topics.json update.'
+                )
+              } else {
+                console.error(
+                  `[Promote Topic Sync] Service returned error. Status: ${res.status}`
+                )
+              }
+            })
+            .catch((err) => {
+              console.error(
+                '[Promote Topic Sync Error] Network or URL error:',
+                err
+              )
+            })
+        } else {
+          console.warn(
+            '[Promote Topic Sync] Skip: promoteTopicServiceUrl is missing in env.'
+          )
         }
       }
     },
