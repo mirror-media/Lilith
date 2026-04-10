@@ -2,9 +2,8 @@ import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { relationship, select, integer } from '@keystone-6/core/fields'
 import { State } from '../type'
-
-const { allowRoles, admin, moderator, editor } = utils.accessControl
 import envVar from '../environment-variables'
+const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 enum PromoteTopicState {
   Draft = State.Draft,
