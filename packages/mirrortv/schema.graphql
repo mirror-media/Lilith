@@ -1791,6 +1791,69 @@ input PromotionVideoCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type PromoteTopic {
+  id: ID!
+  order: Int
+  topics: Topic
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input PromoteTopicWhereUniqueInput {
+  id: ID
+  order: Int
+}
+
+input PromoteTopicWhereInput {
+  AND: [PromoteTopicWhereInput!]
+  OR: [PromoteTopicWhereInput!]
+  NOT: [PromoteTopicWhereInput!]
+  id: IDFilter
+  order: IntNullableFilter
+  topics: TopicWhereInput
+  state: StringNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input PromoteTopicOrderByInput {
+  id: OrderDirection
+  order: OrderDirection
+  state: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PromoteTopicUpdateInput {
+  order: Int
+  topics: TopicRelateToOneForUpdateInput
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input PromoteTopicUpdateArgs {
+  where: PromoteTopicWhereUniqueInput!
+  data: PromoteTopicUpdateInput!
+}
+
+input PromoteTopicCreateInput {
+  order: Int
+  topics: TopicRelateToOneForCreateInput
+  state: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 type Sale {
   id: ID!
   sortOrder: Int
@@ -2983,6 +3046,12 @@ type Mutation {
   updatePromotionVideos(data: [PromotionVideoUpdateArgs!]!): [PromotionVideo]
   deletePromotionVideo(where: PromotionVideoWhereUniqueInput!): PromotionVideo
   deletePromotionVideos(where: [PromotionVideoWhereUniqueInput!]!): [PromotionVideo]
+  createPromoteTopic(data: PromoteTopicCreateInput!): PromoteTopic
+  createPromoteTopics(data: [PromoteTopicCreateInput!]!): [PromoteTopic]
+  updatePromoteTopic(where: PromoteTopicWhereUniqueInput!, data: PromoteTopicUpdateInput!): PromoteTopic
+  updatePromoteTopics(data: [PromoteTopicUpdateArgs!]!): [PromoteTopic]
+  deletePromoteTopic(where: PromoteTopicWhereUniqueInput!): PromoteTopic
+  deletePromoteTopics(where: [PromoteTopicWhereUniqueInput!]!): [PromoteTopic]
   createSale(data: SaleCreateInput!): Sale
   createSales(data: [SaleCreateInput!]!): [Sale]
   updateSale(where: SaleWhereUniqueInput!, data: SaleUpdateInput!): Sale
@@ -3106,6 +3175,9 @@ type Query {
   promotionVideos(where: PromotionVideoWhereInput! = {}, orderBy: [PromotionVideoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PromotionVideoWhereUniqueInput): [PromotionVideo!]
   promotionVideo(where: PromotionVideoWhereUniqueInput!): PromotionVideo
   promotionVideosCount(where: PromotionVideoWhereInput! = {}): Int
+  promoteTopics(where: PromoteTopicWhereInput! = {}, orderBy: [PromoteTopicOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PromoteTopicWhereUniqueInput): [PromoteTopic!]
+  promoteTopic(where: PromoteTopicWhereUniqueInput!): PromoteTopic
+  promoteTopicsCount(where: PromoteTopicWhereInput! = {}): Int
   sales(where: SaleWhereInput! = {}, orderBy: [SaleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SaleWhereUniqueInput): [Sale!]
   sale(where: SaleWhereUniqueInput!): Sale
   salesCount(where: SaleWhereInput! = {}): Int
