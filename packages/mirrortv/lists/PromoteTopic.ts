@@ -9,6 +9,7 @@ enum PromoteTopicState {
   Published = State.Published,
   Archived = State.Archived,
 }
+const MAX_PUBLISHED_ITEMS = 3
 
 const listConfigurations = list({
   fields: {
@@ -63,7 +64,7 @@ const listConfigurations = list({
       item,
     }) => {
       const { order } = resolvedData || {}
-      if (order !== undefined) {
+      if (order !== undefined && order !== null) {
         const existingCount = await context.query.PromoteTopic.count({
           where: {
             order: { equals: order },
@@ -94,8 +95,8 @@ const listConfigurations = list({
           query: 'id',
         })
 
-        if (publishedItems.length >= 3) {
-          const numToArchive = publishedItems.length - 2
+        if (publishedItems.length >= MAX_PUBLISHED_ITEMS) {
+          const numToArchive = publishedItems.length + 1 - MAX_PUBLISHED_ITEMS
           const itemsToArchive = publishedItems.slice(
             0,
             Math.max(0, numToArchive)
