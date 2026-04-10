@@ -21,6 +21,7 @@ import Sponsor from './Sponsor'
 import Download from './Download'
 import VideoEditorChoice from './VideoEditorChoice'
 import Video from './Video'
+import PromoteTopic from './PromoteTopic'
 
 export const listDefinition = {
   ArtShow,
@@ -36,6 +37,7 @@ export const listDefinition = {
   Partner,
   Post,
   PromotionVideo,
+  PromoteTopic,
   Sale,
   Section,
   Serie,
