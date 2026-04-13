@@ -69,7 +69,7 @@ Max upload size: **8 GB**
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `ACCESS_CONTROL_STRATEGY` | `cms` | `cms` / `gql` / `preview` |
+| `ACCESS_CONTROL_STRATEGY` | `cms` | `cms` / `gql` / `preview` / `restricted` |
 | `GCS_BUCKET` | `v2-static-mnews-tw-dev` | GCS bucket for media |
 | `PREVIEW_SERVER_ORIGIN` | — | Preview server URL |
 | `PREVIEW_SERVER_PATH` | — | Preview server path prefix |

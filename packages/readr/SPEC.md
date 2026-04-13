@@ -71,7 +71,7 @@ GCS image base URL 由 `GCS_BASE_URL` 設定（預設：`https://statics-readr-t
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `ACCESS_CONTROL_STRATEGY` | `cms` | `cms` / `gql` / `preview` |
+| `ACCESS_CONTROL_STRATEGY` | `cms` | `cms` / `gql` / `preview` / `restricted` |
 | `GCS_BUCKET` | `static-vision-tw-dev` | GCS bucket for media |
 | `GCS_BASE_URL` | `https://statics-readr-tw-dev.readr.tw` | GCS 圖片基礎 URL |
 | `PREVIEW_SERVER_ORIGIN` | — | Preview server URL |

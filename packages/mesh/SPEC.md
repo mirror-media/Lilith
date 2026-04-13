@@ -97,7 +97,7 @@ Preview mini-app 已在 `keystone.ts` 中定義但**已停用**（被 comment ou
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `ACCESS_CONTROL_STRATEGY` | `cms` | `cms` / `gql` / `preview` |
+| `ACCESS_CONTROL_STRATEGY` | `cms` | `cms` / `gql` / `preview` / `restricted` |
 | `GCS_BUCKET` | `static-mesh-tw-dev` | GCS bucket for media |
 | `PREVIEW_SERVER_ORIGIN` | — | Preview server URL |
 | `MEMORY_CACHE_TTL` | — | In-memory cache TTL (ms) |

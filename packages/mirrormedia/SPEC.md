@@ -62,7 +62,7 @@ Max upload size: **2 GB**
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `ACCESS_CONTROL_STRATEGY` | `cms` | `cms` / `gql` / `preview` |
+| `ACCESS_CONTROL_STRATEGY` | `cms` | `cms` / `gql` / `preview` / `restricted` |
 | `GCS_BUCKET` | `static-vision-tw-dev` | GCS bucket for media |
 | `PREVIEW_SERVER_ORIGIN` | — | Preview server URL |
 | `PREVIEW_SERVER_PATH` | — | Preview server path prefix |
@@ -83,7 +83,7 @@ Max upload size: **2 GB**
 ## Access Control
 
 - 使用 `utils.accessControl` from `@mirrormedia/lilith-core`
-- 策略由 `ACCESS_CONTROL_STRATEGY` 控制：`cms`（預設）/ `gql` / `preview`
+- 策略由 `ACCESS_CONTROL_STRATEGY` 控制：`cms`（預設）/ `gql` / `preview` / `restricted`
 - Roles：`admin`, `moderator`, `editor`, `contributor`
 - **Editor 特例**：list query 只看自己的 Post；mutation / 單筆查詢可看所有 Post
 

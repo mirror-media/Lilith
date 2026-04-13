@@ -18,8 +18,8 @@ Lilith 是 Mirror Media 系列媒體品牌的 CMS monorepo，基於 **KeystoneJS
 | `mirrormedia` | CMS App | 3000 | Mirror Media 週刊 CMS | [SPEC](packages/mirrormedia/SPEC.md) |
 | `mirrortv` | CMS App | 3004 | Mirror TV CMS | [SPEC](packages/mirrortv/SPEC.md) |
 | `mirrordaily` | CMS App | 3003 | Mirror Daily CMS | [SPEC](packages/mirrordaily/SPEC.md) |
-| `readr` | CMS App | — | Readr CMS | [SPEC](packages/readr/SPEC.md) |
-| `mesh` | CMS App | — | Mesh CMS | [SPEC](packages/mesh/SPEC.md) |
+| `readr` | CMS App | 3000 | Readr CMS | [SPEC](packages/readr/SPEC.md) |
+| `mesh` | CMS App | 3000 | Mesh CMS | [SPEC](packages/mesh/SPEC.md) |
 | `openrelationship` | CMS App | — | Open Relationship CMS | — |
 | `advertise` | CMS App | — | Advertising management CMS | — |
 | `editools` | CMS App | — | Editorial tools CMS | — |
