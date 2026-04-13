@@ -17,11 +17,15 @@ export function createImageAuthMiniApp({ keystoneContext }) {
    *  @param {express.NextFunction} next
    */
   const authenticationMw = async (req, res, next) => {
-    const context = await keystoneContext.withRequest(req, res)
-    if (context?.session?.data) {
-      return next()
+    try {
+      const context = await keystoneContext.withRequest(req, res)
+      if (context?.session?.data) {
+        return next()
+      }
+      res.status(401).send('Unauthorized')
+    } catch (error) {
+      next(error)
     }
-    res.status(401).send('Unauthorized')
   }
 
   // Protect /images path. /files and /video-files reserved for future use.
