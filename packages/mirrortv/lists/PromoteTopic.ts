@@ -2,6 +2,7 @@ import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { relationship, select, integer } from '@keystone-6/core/fields'
 import { State } from '../type'
+import envVar from '../environment-variables'
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 enum PromoteTopicState {
@@ -119,6 +120,33 @@ const listConfigurations = list({
                 .map((i) => i.id)
                 .join(', ')}`
             )
+          }
+        }
+      }
+    },
+    afterOperation: async ({ item, originalItem }) => {
+      const wasPublished = originalItem?.state === PromoteTopicState.Published
+      const isPublished = item?.state === PromoteTopicState.Published
+
+      if (wasPublished || isPublished) {
+        const promoteTopicSyncUrl = envVar.promoteTopicServiceUrl
+
+        if (promoteTopicSyncUrl) {
+          try {
+            const res = await fetch(promoteTopicSyncUrl, {
+              method: 'POST',
+            })
+
+            if (res.ok) {
+              console.log('[Promote Topic Sync] Triggered update successfully.')
+            } else {
+              const errorMsg = await res.text()
+              console.error(
+                `[Promote Topic Sync] HTTP Error: ${res.status}, Message: ${errorMsg}`
+              )
+            }
+          } catch (err) {
+            console.error('[Promote Topic Sync] Fetch Error:', err)
           }
         }
       }
