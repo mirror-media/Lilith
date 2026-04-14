@@ -132,25 +132,22 @@ const listConfigurations = list({
         const promoteTopicSyncUrl = envVar.promoteTopicServiceUrl
 
         if (promoteTopicSyncUrl) {
-          setTimeout(() => {
-            fetch(promoteTopicSyncUrl, {
+          try {
+            const res = await fetch(promoteTopicSyncUrl, {
               method: 'POST',
             })
-              .then(async (res) => {
-                if (res.ok) {
-                  console.log(
-                    '[Promote Topic Sync] Triggered update successfully.'
-                  )
-                } else {
-                  console.error(
-                    `[Promote Topic Sync] HTTP Error: ${res.status}`
-                  )
-                }
-              })
-              .catch((err) => {
-                console.error('[Promote Topic Sync] Fetch Error:', err)
-              })
-          }, 500)
+
+            if (res.ok) {
+              console.log('[Promote Topic Sync] Triggered update successfully.')
+            } else {
+              const errorMsg = await res.text()
+              console.error(
+                `[Promote Topic Sync] HTTP Error: ${res.status}, Message: ${errorMsg}`
+              )
+            }
+          } catch (err) {
+            console.error('[Promote Topic Sync] Fetch Error:', err)
+          }
         }
       }
     },
