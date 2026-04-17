@@ -18,6 +18,7 @@ import Header from './Header'
 import Group from './Group'
 import AnnouncementScope from './AnnouncementScope'
 import Announcement from './Announcement'
+import PromoteTopic from './PromoteTopic'
 
 export const listDefinition = {
   AudioFile: Audio,
@@ -34,6 +35,7 @@ export const listDefinition = {
   Partner,
   Photo: Image,
   Post,
+  PromoteTopic,
   Section,
   Tag,
   Topic,
