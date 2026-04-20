@@ -1,3 +1,4 @@
+import envVar from '../environment-variables'
 import { utils, customFields } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
 import {
@@ -192,14 +193,7 @@ const listConfigurations = list({
     labelField: 'label',
 
     listView: {
-      initialColumns: [
-        'name',
-        'slug',
-        'state',
-        'publishTime',
-        'partner',
-        'createdBy',
-      ],
+      initialColumns: ['name', 'slug', 'state', 'publishTime', 'partner'],
       initialSort: { field: 'publishTime', direction: 'DESC' },
       pageSize: 50,
     },
@@ -212,4 +206,32 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+const extendedListConfigurations = utils.addTrackingFields(listConfigurations)
+
+if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
+  extendedListConfigurations.hooks = {
+    ...extendedListConfigurations.hooks,
+    afterOperation: async ({ item, originalItem }) => {
+      if (item?.state !== originalItem?.state) {
+        const slug = item?.slug || originalItem?.slug
+        if (slug) {
+          try {
+            await fetch(`${envVar.invalidateCDNCacheServerURL}/external`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ slug }),
+            })
+            console.log(`[External CDN Cache] Refreshing external: ${slug}`)
+          } catch (error) {
+            console.error(
+              `[External CDN Cache] Failed to refresh external ${slug}:`,
+              error
+            )
+          }
+        }
+      }
+    },
+  }
+}
+
+export default extendedListConfigurations
