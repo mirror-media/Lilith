@@ -6,6 +6,7 @@ import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createPreviewMiniApp } from './express-mini-apps/preview/app'
+import { createImageAuthMiniApp } from './express-mini-apps/images/app'
 import Keyv from 'keyv'
 import { KeyvAdapter } from '@apollo/utils.keyvadapter'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
@@ -110,6 +111,13 @@ export default withAuth(
 
         const jsonBodyParser = express.json({ limit: '500mb' })
         app.use(jsonBodyParser)
+
+        // Protect static image files - must run before Keystone registers storage static middleware
+        app.use(
+          createImageAuthMiniApp({
+            keystoneContext: context,
+          })
+        )
 
         if (envVar.accessControlStrategy === ACL.CMS) {
           app.use(
