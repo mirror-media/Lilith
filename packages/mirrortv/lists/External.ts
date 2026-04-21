@@ -208,10 +208,18 @@ const listConfigurations = list({
 
 const extendedListConfigurations = utils.addTrackingFields(listConfigurations)
 
-if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
+if (envVar.invalidateCDNCacheServerURL) {
+  const originalAfterOperation =
+    extendedListConfigurations.hooks?.afterOperation
+
   extendedListConfigurations.hooks = {
     ...extendedListConfigurations.hooks,
-    afterOperation: async ({ item, originalItem }) => {
+    afterOperation: async (params) => {
+      if (typeof originalAfterOperation === 'function') {
+        await originalAfterOperation(params)
+      }
+
+      const { item, originalItem } = params
       if (item?.state !== originalItem?.state) {
         const slug = item?.slug || originalItem?.slug
         if (slug) {
