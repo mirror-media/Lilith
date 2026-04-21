@@ -193,7 +193,14 @@ const listConfigurations = list({
     labelField: 'label',
 
     listView: {
-      initialColumns: ['name', 'slug', 'state', 'publishTime', 'partner'],
+      initialColumns: [
+        'name',
+        'slug',
+        'state',
+        'publishTime',
+        'partner',
+        'createdBy',
+      ],
       initialSort: { field: 'publishTime', direction: 'DESC' },
       pageSize: 50,
     },
@@ -224,12 +231,23 @@ if (envVar.invalidateCDNCacheServerURL) {
         const slug = item?.slug || originalItem?.slug
         if (slug) {
           try {
-            await fetch(`${envVar.invalidateCDNCacheServerURL}/external`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ slug }),
-            })
-            console.log(`[External CDN Cache] Refreshing external: ${slug}`)
+            const res = await fetch(
+              `${envVar.invalidateCDNCacheServerURL}/external`,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ slug }),
+              }
+            )
+
+            if (!res.ok) {
+              const errorText = await res.text()
+              console.error(
+                `[External CDN Cache] Failed to refresh external ${slug}. Status: ${res.status}, Error: ${errorText}`
+              )
+            } else {
+              console.log(`[External CDN Cache] Refreshing external: ${slug}`)
+            }
           } catch (error) {
             console.error(
               `[External CDN Cache] Failed to refresh external ${slug}:`,
