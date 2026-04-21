@@ -8,6 +8,7 @@ This is a monorepo containing sub-packages:
 - [@mirrormedia/lilith-editools](./packages/editools): see `packages/editools`
 - [@mirrormedia/lilith-mesh](./packages/mesh): see `packages/mesh`
 - [@mirrormedia/lilith-mirrormedia](./packages/mirrormedia): see `packages/mirrormedia`
+- [@mirrormedia/lilith-mirrortv](./packages/mirrortv): see `packages/mirrortv`
 - [@mirrormedia/lilith-readr](./packages/readr): see `packages/readr`
 - [@mirrormedia/lilith-openrelationship](./packages/openrelationship): see `packages/openrelationship`
 - [@mirrormedia/lilith-mirrordaily](./packages/mirrordaily): see `packages/mirrordaily`
