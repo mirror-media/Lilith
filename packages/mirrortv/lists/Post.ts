@@ -375,6 +375,7 @@ const listConfigurations = list({
     }),
     sotVideoId: text({
       label: 'SOT Video ID',
+      isIndexed: true,
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
