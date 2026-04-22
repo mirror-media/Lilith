@@ -421,6 +421,7 @@ model Post {
   @@index([publishTime])
   @@index([heroVideoId])
   @@index([heroImageId])
+  @@index([sotVideoId])
   @@index([topicsId])
   @@index([audioId])
   @@index([relatedTopicId])
