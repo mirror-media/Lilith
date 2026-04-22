@@ -373,6 +373,13 @@ const listConfigurations = list({
         createView: { fieldMode: 'hidden' },
       },
     }),
+    sotVideoId: text({
+      label: 'SOT Video ID',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
 
     // --- Others ---
     topics: relationship({
@@ -551,9 +558,9 @@ const listConfigurations = list({
       // 清理控制字元
       for (const key in resolvedData) {
         if (Object.prototype.hasOwnProperty.call(resolvedData, key)) {
-          const val = resolvedData[key];
+          const val = resolvedData[key]
           if (typeof val === 'string' && val !== '') {
-            resolvedData[key] = removeControlCharacter(val);
+            resolvedData[key] = removeControlCharacter(val)
           }
         }
       }
