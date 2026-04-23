@@ -19,7 +19,18 @@ const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 // 用於在 beforeOperation 儲存 update 前的完整舊資料（含 relationship），
 // 讓 afterOperation 能以相同格式做比對，避免 Prisma raw row 與 GraphQL 格式不一致
-const preSaveSnapshot = new Map<string, Record<string, unknown>>()
+type SnapshotEntry = { data: Record<string, unknown>; ts: number }
+const preSaveSnapshot = new Map<string, SnapshotEntry>()
+
+// DB 操作失敗時 afterOperation 不會被呼叫，導致 snapshot 殘留
+// 每分鐘清除超過 5 分鐘的 stale entry
+const snapshotCleanupTimer = setInterval(() => {
+  const cutoff = Date.now() - 5 * 60 * 1000
+  for (const [key, val] of preSaveSnapshot) {
+    if (val.ts < cutoff) preSaveSnapshot.delete(key)
+  }
+}, 60 * 1000)
+snapshotCleanupTimer.unref()
 
 const POST_BASE_QUERY = `
   id slug title subtitle state publishedDate publishedDateString
@@ -914,7 +925,10 @@ const listConfigurations = list({
             query: buildPostQuery(includeRichText),
           })) as Record<string, unknown>
           if (snapshot) {
-            preSaveSnapshot.set(String(item.id), snapshot)
+            preSaveSnapshot.set(String(item.id), {
+              data: snapshot,
+              ts: Date.now(),
+            })
           }
         } catch (err) {
           console.error('[EditLog] beforeOperation snapshot 失敗:', err)
@@ -1069,10 +1083,8 @@ const listConfigurations = list({
                 })) as Record<string, unknown>)
               : null
 
-          // update/delete 時用 beforeOperation 儲存的 snapshot（GraphQL 格式，含 relationship）
-          // create 時 originalItem 不存在，oldItemBase 用不到
           const oldItemBase: Record<string, unknown> =
-            preSaveSnapshot.get(String(targetId)) ??
+            preSaveSnapshot.get(String(targetId))?.data ??
             (originalItem as Record<string, unknown>) ??
             {}
 
@@ -1140,8 +1152,8 @@ const listConfigurations = list({
             }
           } else {
             // create: 從 fullNewItem（GraphQL query）取得完整資料
-            // delete: afterOperation 觸發時文章已刪除，直接用 originalItem（Prisma raw row）
-            //         relationship 欄位只有 id，不會有展開的 name
+            // delete: 優先用 beforeOperation 儲存的 snapshot（GraphQL 格式，含展開的 relationship）
+            //         snapshot 失敗時退回 originalItem（Prisma raw row，relationship 欄位無展開）
             const target =
               operation === 'delete' ? oldItemBase : fullNewItem || {}
 
