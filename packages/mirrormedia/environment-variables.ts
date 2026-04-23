@@ -24,6 +24,7 @@ const {
   QUEUE_NAME,
   PROJECT_ID,
   LOCATION,
+  PROMOTE_TOPIC_SERVICE_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -85,4 +86,5 @@ export default {
   queueName: QUEUE_NAME || 'external-tagging-dev',
   projectID: PROJECT_ID || 'mirrormedia',
   location: LOCATION || 'asia-east1',
+  promoteTopicServiceUrl: PROMOTE_TOPIC_SERVICE_URL,
 }
