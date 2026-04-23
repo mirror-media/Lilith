@@ -35,6 +35,7 @@ enum PostStatus {
 type Session = {
   data: {
     id: string
+    name: string
     role: UserRole
   }
 }
@@ -973,6 +974,190 @@ const listConfigurations = list({
             lockExpireAt: null,
           },
         })
+      }
+
+      if (
+        operation === 'create' ||
+        operation === 'update' ||
+        operation === 'delete'
+      ) {
+        try {
+          const editorName = context.session?.data?.name || '未知用戶'
+
+          const formatValueForLog = (val: unknown): string | null => {
+            if (val === undefined || val === null) return null
+            if (Array.isArray(val)) {
+              if (val.length === 0) return null
+              return val
+                .map((v: unknown) => {
+                  if (v && typeof v === 'object') {
+                    const obj = v as Record<string, unknown>
+                    return String(obj.name ?? obj.slug ?? obj.id ?? '')
+                  }
+                  return String(v)
+                })
+                .join(',')
+            }
+            if (typeof val === 'object') {
+              const obj = val as Record<string, unknown>
+              if (obj.name) return String(obj.name)
+              if (obj.slug) return String(obj.slug)
+              if (obj.id) return String(obj.id)
+              return JSON.stringify(val)
+            }
+            return String(val)
+          }
+
+          const safeParse = (data: unknown): unknown => {
+            if (!data) return undefined
+            if (typeof data === 'object') return data
+            try {
+              return JSON.parse(String(data))
+            } catch (e) {
+              return undefined
+            }
+          }
+          const targetId = item?.id || originalItem?.id
+          if (!targetId) {
+            console.warn('[EditLog] 無法取得目標 ID，取消紀錄')
+            return
+          }
+
+          const fullQuery = `
+            id slug title subtitle state publishedDate publishedDateString
+            heroCaption style isMember memberFeed isFeatured isAdvertised
+            hiddenAdvertised isAdult auto_faq redirect adTrace css
+            og_title og_description extend_byline
+            sections { id name } categories { id name }
+            writers { id name } photographers { id name }
+            camera_man { id name } designers { id name }
+            engineers { id name } vocals { id name }
+            heroVideo { id name } heroImage { id name } og_image { id name }
+            topics { id name }
+            relatedsOne { id slug } relatedsTwo { id slug } relateds { id slug }
+            tags { id name } related_videos { id name }
+            brief content
+          `
+
+          const fullNewItem =
+            operation !== 'delete'
+              ? ((await context.sudo().query.Post.findOne({
+                  where: { id: String(targetId) },
+                  query: fullQuery,
+                })) as Record<string, unknown>)
+              : null
+
+          const oldItemBase = (originalItem as Record<string, unknown>) || {}
+
+          const blackList = [
+            'id',
+            'apiData',
+            'apiDataBrief',
+            'updatedAt',
+            'createdAt',
+            'publishedDateString',
+            'updateTimeStamp',
+            'lockBy',
+            'lockExpireAt',
+            'manualOrderOfWriters',
+            'manualOrderOfSections',
+            'manualOrderOfCategories',
+            'manualOrderOfRelateds',
+            'manualOrderOfRelatedVideos',
+            'tags_algo',
+            'faqs_algo',
+            'from_External_relateds',
+            'groups',
+          ]
+
+          const editedData: Record<string, string | null> = {}
+          let briefObject: unknown = undefined
+          let contentObject: unknown = undefined
+
+          if (operation === 'update') {
+            const newItem = fullNewItem || {}
+            Object.keys(resolvedData || {}).forEach((key) => {
+              if (
+                blackList.includes(key) ||
+                key === 'brief' ||
+                key === 'content'
+              )
+                return
+
+              const oldValue = formatValueForLog(oldItemBase[key])
+              const newValue = formatValueForLog(newItem[key])
+
+              if (oldValue !== newValue) {
+                editedData[key] = newValue ?? 'null'
+              }
+            })
+
+            // 只在 brief/content 有實際變動時才記錄
+            if (resolvedData.brief !== undefined) {
+              const oldBrief = JSON.stringify(oldItemBase.brief ?? null)
+              const newBrief = JSON.stringify(newItem.brief ?? null)
+
+              if (oldBrief !== newBrief) {
+                briefObject = newItem.brief
+              }
+            }
+            if (resolvedData.content !== undefined) {
+              const oldContent = JSON.stringify(oldItemBase.content ?? null)
+              const newContent = JSON.stringify(newItem.content ?? null)
+
+              if (oldContent !== newContent) {
+                contentObject = newItem.content
+              }
+            }
+          } else {
+            // create: 從 fullNewItem（GraphQL query）取得完整資料
+            // delete: afterOperation 觸發時文章已刪除，直接用 originalItem（Prisma raw row）
+            //         relationship 欄位只有 id，不會有展開的 name
+            const target =
+              operation === 'delete' ? oldItemBase : fullNewItem || {}
+
+            Object.keys(target).forEach((key) => {
+              if (
+                blackList.includes(key) ||
+                key === 'brief' ||
+                key === 'content'
+              )
+                return
+              editedData[key] = formatValueForLog(target[key])
+            })
+            briefObject = target.brief
+            contentObject = target.content
+          }
+
+          if (
+            operation === 'update' &&
+            Object.keys(editedData).length === 0 &&
+            briefObject === undefined &&
+            contentObject === undefined
+          ) {
+            return
+          }
+
+          const postSlug =
+            operation === 'delete'
+              ? oldItemBase?.slug || String(targetId)
+              : fullNewItem?.slug || String(targetId)
+
+          await context.sudo().query.EditLog.createOne({
+            data: {
+              name: editorName,
+              operation: operation,
+              postSlug: String(postSlug),
+              brief: safeParse(briefObject),
+              content: safeParse(contentObject),
+              changedList: JSON.stringify(editedData),
+            },
+          })
+
+          console.log(`[EditLog] ${operation} 成功紀錄: ${postSlug}`)
+        } catch (err) {
+          console.error(`[EditLog] ${operation} 發生錯誤:`, err)
+        }
       }
     },
   },
