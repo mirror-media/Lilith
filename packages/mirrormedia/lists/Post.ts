@@ -17,6 +17,28 @@ import { RawContentState } from 'draft-js'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
+// 用於在 beforeOperation 儲存 update 前的完整舊資料（含 relationship），
+// 讓 afterOperation 能以相同格式做比對，避免 Prisma raw row 與 GraphQL 格式不一致
+const preSaveSnapshot = new Map<string, Record<string, unknown>>()
+
+const POST_BASE_QUERY = `
+  id slug title subtitle state publishedDate publishedDateString
+  heroCaption style isMember memberFeed isFeatured isAdvertised
+  hiddenAdvertised isAdult auto_faq redirect adTrace css
+  og_title og_description extend_byline
+  sections { id name } categories { id name }
+  writers { id name } photographers { id name }
+  camera_man { id name } designers { id name }
+  engineers { id name } vocals { id name }
+  heroVideo { id name } heroImage { id name } og_image { id name }
+  topics { id name }
+  relatedsOne { id slug } relatedsTwo { id slug } relateds { id slug }
+  tags { id name } related_videos { id name }
+`
+
+const buildPostQuery = (includeRichText: boolean) =>
+  includeRichText ? POST_BASE_QUERY + ' brief content' : POST_BASE_QUERY
+
 enum UserRole {
   Admin = 'admin',
   Moderator = 'moderator',
@@ -879,8 +901,25 @@ const listConfigurations = list({
       }
       return resolvedData
     },
-    beforeOperation: async ({ operation, resolvedData }) => {
+    beforeOperation: async ({ operation, item, resolvedData, context }) => {
       /* ... */
+      if ((operation === 'update' || operation === 'delete') && item) {
+        try {
+          const includeRichText =
+            operation === 'delete' ||
+            resolvedData?.brief !== undefined ||
+            resolvedData?.content !== undefined
+          const snapshot = (await context.sudo().query.Post.findOne({
+            where: { id: String(item.id) },
+            query: buildPostQuery(includeRichText),
+          })) as Record<string, unknown>
+          if (snapshot) {
+            preSaveSnapshot.set(String(item.id), snapshot)
+          }
+        } catch (err) {
+          console.error('[EditLog] beforeOperation snapshot 失敗:', err)
+        }
+      }
       if (operation === 'create' || operation === 'update') {
         if (resolvedData.slug) {
           resolvedData.slug = resolvedData.slug.trim()
@@ -1010,12 +1049,7 @@ const listConfigurations = list({
 
           const safeParse = (data: unknown): unknown => {
             if (!data) return undefined
-            if (typeof data === 'object') return data
-            try {
-              return JSON.parse(String(data))
-            } catch (e) {
-              return undefined
-            }
+            return data
           }
           const targetId = item?.id || originalItem?.id
           if (!targetId) {
@@ -1023,31 +1057,26 @@ const listConfigurations = list({
             return
           }
 
-          const fullQuery = `
-            id slug title subtitle state publishedDate publishedDateString
-            heroCaption style isMember memberFeed isFeatured isAdvertised
-            hiddenAdvertised isAdult auto_faq redirect adTrace css
-            og_title og_description extend_byline
-            sections { id name } categories { id name }
-            writers { id name } photographers { id name }
-            camera_man { id name } designers { id name }
-            engineers { id name } vocals { id name }
-            heroVideo { id name } heroImage { id name } og_image { id name }
-            topics { id name }
-            relatedsOne { id slug } relatedsTwo { id slug } relateds { id slug }
-            tags { id name } related_videos { id name }
-            brief content
-          `
-
+          const includeRichText =
+            operation === 'create' ||
+            resolvedData?.brief !== undefined ||
+            resolvedData?.content !== undefined
           const fullNewItem =
             operation !== 'delete'
               ? ((await context.sudo().query.Post.findOne({
                   where: { id: String(targetId) },
-                  query: fullQuery,
+                  query: buildPostQuery(includeRichText),
                 })) as Record<string, unknown>)
               : null
 
-          const oldItemBase = (originalItem as Record<string, unknown>) || {}
+          // update/delete 時用 beforeOperation 儲存的 snapshot（GraphQL 格式，含 relationship）
+          // create 時 originalItem 不存在，oldItemBase 用不到
+          const oldItemBase: Record<string, unknown> =
+            preSaveSnapshot.get(String(targetId)) ??
+            (originalItem as Record<string, unknown>) ??
+            {}
+
+          preSaveSnapshot.delete(String(targetId))
 
           const blackList = [
             'id',

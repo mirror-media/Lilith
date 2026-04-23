@@ -13,7 +13,13 @@ type DraftContent = {
 const extractText = (val: unknown): string => {
   if (!val || typeof val !== 'object') return ''
   const content = val as DraftContent
-  return content.blocks?.find((b) => b.text)?.text ?? ''
+  return (
+    content.blocks
+      ?.map((b) => b.text)
+      .filter(Boolean)
+      .join(' ')
+      .substring(0, 200) ?? ''
+  )
 }
 
 const listConfigurations = list({
