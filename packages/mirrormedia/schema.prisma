@@ -586,6 +586,8 @@ model User {
   from_Video_updatedBy             Video[]             @relation("Video_updatedBy")
   from_Group_createdBy             Group[]             @relation("Group_createdBy")
   from_Group_updatedBy             Group[]             @relation("Group_updatedBy")
+  from_EditLog_createdBy           EditLog[]           @relation("EditLog_createdBy")
+  from_EditLog_updatedBy           EditLog[]           @relation("EditLog_updatedBy")
 }
 
 model Video {
@@ -631,6 +633,26 @@ model Group {
   updatedBy   User?      @relation("Group_updatedBy", fields: [updatedById], references: [id])
   updatedById Int?       @map("updatedBy")
 
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model EditLog {
+  id          Int       @id @default(autoincrement())
+  name        String    @default("")
+  operation   String    @default("")
+  postSlug    String    @default("")
+  changedList String    @default("")
+  brief       Json?
+  content     Json?
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("EditLog_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("EditLog_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([postSlug])
   @@index([createdById])
   @@index([updatedById])
 }
