@@ -1035,7 +1035,7 @@ const listConfigurations = list({
         operation === 'delete'
       ) {
         try {
-          const editorName = context.session?.data?.name || '未知用戶'
+          const editorName = context.session?.data?.name || '系統自動'
 
           const formatValueForLog = (val: unknown): string | null => {
             if (val === undefined || val === null) return null
