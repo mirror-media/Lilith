@@ -19,6 +19,7 @@ import Group from './Group'
 import AnnouncementScope from './AnnouncementScope'
 import Announcement from './Announcement'
 import PromoteTopic from './PromoteTopic'
+import EditLog from './EditLog'
 
 export const listDefinition = {
   AudioFile: Audio,
@@ -42,4 +43,5 @@ export const listDefinition = {
   User,
   Video,
   Group,
+  EditLog,
 }
