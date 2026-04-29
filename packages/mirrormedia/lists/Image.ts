@@ -1,10 +1,20 @@
+import { Storage } from '@google-cloud/storage'
 import envVar from '../environment-variables'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { file, image, text, select, virtual, checkbox } from '@keystone-6/core/fields'
+import {
+  file,
+  image,
+  text,
+  select,
+  virtual,
+  checkbox,
+} from '@keystone-6/core/fields'
 import { getFileURL } from '../utils/common'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
+
+const gcsBucket = new Storage().bucket(envVar.gcs.bucket)
 
 const listConfigurations = list({
   db: {
@@ -237,6 +247,46 @@ const listConfigurations = list({
       initialColumns: ['id', 'name', 'imageFile'],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
+    },
+  },
+
+  hooks: {
+    afterOperation: async ({ operation, item, originalItem }) => {
+      if (operation === 'delete') return
+      if (!item?.imageFile_id) return
+      // update 只有換圖才重新複製
+      if (
+        operation === 'update' &&
+        item.imageFile_id === originalItem?.imageFile_id
+      )
+        return
+
+      const filename = item.imageFile_id as string
+      const ext = item.imageFile_extension ? `.${item.imageFile_extension}` : ''
+      const gcsSourcePath = `images/${filename}${ext}`
+
+      const width =
+        typeof item.imageFile_width === 'number' ? item.imageFile_width : 0
+      const height =
+        typeof item.imageFile_height === 'number' ? item.imageFile_height : 0
+      const targets =
+        width >= height
+          ? ['w480', 'w800', 'w1600', 'w2400']
+          : ['w480', 'w800', 'w1200', 'w1600']
+
+      await Promise.all(
+        targets.map(async (target) => {
+          const gcsDestPath = `images/${filename}-${target}${ext}`
+          try {
+            await gcsBucket
+              .file(gcsSourcePath)
+              .copy(gcsBucket.file(gcsDestPath))
+            console.log(`[Image hook] Copied ${gcsSourcePath} → ${gcsDestPath}`)
+          } catch (err) {
+            console.error(`[Image hook] Failed to copy to ${gcsDestPath}:`, err)
+          }
+        })
+      )
     },
   },
 
