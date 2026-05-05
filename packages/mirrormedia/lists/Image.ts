@@ -1,4 +1,5 @@
 import { Storage } from '@google-cloud/storage'
+import { CloudTasksClient, protos } from '@google-cloud/tasks'
 import envVar from '../environment-variables'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
@@ -15,6 +16,41 @@ import { getFileURL } from '../utils/common'
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
 const gcsBucket = new Storage().bucket(envVar.gcs.bucket)
+const tasksClient = new CloudTasksClient()
+
+async function enqueueCopyTask(source: string, dest: string) {
+  try {
+    const parent = tasksClient.queuePath(
+      envVar.projectID,
+      envVar.location,
+      envVar.copyQueueName
+    )
+    const task = {
+      httpRequest: {
+        httpMethod: protos.google.cloud.tasks.v2.HttpMethod.POST,
+        url: `${envVar.imageProcessor.url}/copy_blob`,
+        headers: { 'Content-Type': 'application/json' },
+        body: Buffer.from(
+          JSON.stringify({
+            key: envVar.imageProcessor.schedulerKey,
+            bucket: envVar.gcs.bucket,
+            source,
+            dest,
+          })
+        ),
+      },
+    }
+    const [response] = await tasksClient.createTask({ parent, task })
+    console.log(
+      `[Image hook] Enqueued copy task: ${source} → ${dest}: ${response.name}`
+    )
+  } catch (error) {
+    console.error(
+      `[Image hook] CRITICAL: copy failed AND enqueue failed, manual recovery needed: ${source} → ${dest}:`,
+      error
+    )
+  }
+}
 
 const listConfigurations = list({
   db: {
@@ -283,7 +319,11 @@ const listConfigurations = list({
               .copy(gcsBucket.file(gcsDestPath))
             console.log(`[Image hook] Copied ${gcsSourcePath} → ${gcsDestPath}`)
           } catch (err) {
-            console.error(`[Image hook] Failed to copy to ${gcsDestPath}:`, err)
+            console.error(
+              `[Image hook] Copy failed, enqueuing retry: ${gcsDestPath}`,
+              err
+            )
+            await enqueueCopyTask(gcsSourcePath, gcsDestPath)
           }
         })
       )
