@@ -126,18 +126,17 @@ export default withAuth(
               keystoneContext: context,
             })
           )
-        }
 
-        const initWorker = async () => {
-          // 啟動 Video Worker
-          try {
-            await startVideoWorker(context)
-            console.log('Video Duration Processing Worker started')
-          } catch (error) {
-            console.error('Failed to start Video Duration Worker:', error)
+          const initWorker = async () => {
+            try {
+              await startVideoWorker(context)
+              console.log('Video Duration Processing Worker started')
+            } catch (error) {
+              console.error('Failed to start Video Duration Worker:', error)
+            }
           }
+          initWorker()
         }
-        initWorker()
       },
     },
   })

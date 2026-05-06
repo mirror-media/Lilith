@@ -38,7 +38,7 @@ export function createPreviewMiniApp({ previewServer, keystoneContext }) {
     target: previewServer.origin,
     changeOrigin: true,
     onProxyRes: (proxyRes) => {
-      // The response from preview nuxt server might be with Cache-Control header.
+      // The response from preview Next.js server might be with Cache-Control header.
       // However, we don't want to get cached responses for `draft` posts.
       // Therefore, we do not cache html response intentionlly by overwritting the Cache-Control header.
       proxyRes.headers['cache-control'] = 'no-store'
