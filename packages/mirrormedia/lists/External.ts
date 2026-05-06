@@ -264,43 +264,50 @@ if (envVar.invalidateCDNCacheServerURL) {
   extendedListConfigurations.hooks = {
     ...extendedListConfigurations.hooks,
     afterOperation: async (params) => {
+      const { operation, item, originalItem } = params
+      const tasks: Promise<unknown>[] = []
+
       if (typeof originalAfterOperation === 'function') {
-        await originalAfterOperation(params)
+        tasks.push(originalAfterOperation(params))
       }
 
-      const { operation, item, originalItem } = params
-      const isDelete = operation === 'delete'
-      const isUpdate = operation === 'update'
       const isStateChanged = item?.state !== originalItem?.state
 
-      if (isDelete || (isUpdate && isStateChanged)) {
+      if (
+        operation === 'delete' ||
+        (operation === 'update' && isStateChanged)
+      ) {
         const slug = item?.slug || originalItem?.slug
         if (slug) {
-          try {
-            const res = await fetch(
-              `${envVar.invalidateCDNCacheServerURL}/external`,
-              {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ slug }),
-              }
-            )
-            if (!res.ok) {
-              const errorText = await res.text()
-              console.error(
-                `[External CDN Cache] Failed to refresh external ${slug}. Status: ${res.status}, Error: ${errorText}`
-              )
-            } else {
-              console.log(`[External CDN Cache] Refreshing external: ${slug}`)
-            }
-          } catch (error) {
-            console.error(
-              `[External CDN Cache] Failed to refresh external ${slug}:`,
-              error
-            )
-          }
+          tasks.push(
+            fetch(`${envVar.invalidateCDNCacheServerURL}/external`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ slug }),
+            })
+              .then(async (res) => {
+                if (!res.ok) {
+                  const errorText = await res.text()
+                  console.error(
+                    `[External CDN Cache] Failed to refresh external ${slug}. Status: ${res.status}, Error: ${errorText}`
+                  )
+                } else {
+                  console.log(
+                    `[External CDN Cache] Refreshing external: ${slug}`
+                  )
+                }
+              })
+              .catch((error) => {
+                console.error(
+                  `[External CDN Cache] Failed to refresh external ${slug}:`,
+                  error
+                )
+              })
+          )
         }
       }
+
+      await Promise.allSettled(tasks)
     },
   }
 }
