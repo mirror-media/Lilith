@@ -1444,6 +1444,7 @@ type Post {
   lockBy: User
   lockExpireAt: DateTime
   trimmedApiData: JSON
+  preview: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User

@@ -490,6 +490,23 @@ const listConfigurations = list({
         },
       }),
     }),
+
+    preview: virtual({
+      field: graphql.field({
+        type: graphql.JSON,
+        resolve(item: Record<string, unknown>): Record<string, string> {
+          return {
+            href: `${envVar.previewServer.path}/story/${item?.slug}`,
+            label: 'Preview',
+          }
+        },
+      }),
+      ui: {
+        views: './lists/views/link-button',
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
   },
 
   ui: {
