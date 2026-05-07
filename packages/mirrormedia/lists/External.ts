@@ -255,4 +255,61 @@ const listConfigurations = list({
   },
 })
 
-export default utils.addTrackingFields(listConfigurations)
+const extendedListConfigurations = utils.addTrackingFields(listConfigurations)
+
+if (envVar.invalidateCDNCacheServerURL) {
+  const originalAfterOperation =
+    extendedListConfigurations.hooks?.afterOperation
+
+  extendedListConfigurations.hooks = {
+    ...extendedListConfigurations.hooks,
+    afterOperation: async (params) => {
+      const { operation, item, originalItem } = params
+      const tasks: Promise<unknown>[] = []
+
+      if (typeof originalAfterOperation === 'function') {
+        tasks.push(originalAfterOperation(params))
+      }
+
+      const isStateChanged = item?.state !== originalItem?.state
+
+      if (
+        operation === 'delete' ||
+        (operation === 'update' && isStateChanged)
+      ) {
+        const slug = item?.slug || originalItem?.slug
+        if (slug) {
+          tasks.push(
+            fetch(`${envVar.invalidateCDNCacheServerURL}/external`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ slug }),
+            })
+              .then(async (res) => {
+                if (!res.ok) {
+                  const errorText = await res.text()
+                  console.error(
+                    `[External CDN Cache] Failed to refresh external ${slug}. Status: ${res.status}, Error: ${errorText}`
+                  )
+                } else {
+                  console.log(
+                    `[External CDN Cache] Refreshing external: ${slug}`
+                  )
+                }
+              })
+              .catch((error) => {
+                console.error(
+                  `[External CDN Cache] Failed to refresh external ${slug}:`,
+                  error
+                )
+              })
+          )
+        }
+      }
+
+      await Promise.allSettled(tasks)
+    },
+  }
+}
+
+export default extendedListConfigurations
