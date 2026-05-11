@@ -35,7 +35,7 @@ snapshotCleanupTimer.unref()
 const POST_BASE_QUERY = `
   id slug title subtitle state publishedDate publishedDateString
   heroCaption style isMember memberFeed isFeatured isAdvertised
-  hiddenAdvertised isAdult auto_faq redirect adTrace css
+  hiddenAdvertised isAdult redirect adTrace css
   og_title og_description extend_byline
   sections { id name } categories { id name }
   writers { id name } photographers { id name }
