@@ -943,7 +943,13 @@ const listConfigurations = list({
       }
       return
     },
-    afterOperation: async ({ operation, item, context, resolvedData }) => {
+    afterOperation: async ({
+      operation,
+      item,
+      originalItem,
+      context,
+      resolvedData,
+    }) => {
       if (
         resolvedData &&
         resolvedData.state &&
