@@ -81,12 +81,11 @@ const listConfigurations = list({
     filter: {
       query: async (auth) => {
         if (admin(auth) || moderator(auth)) return true
-        else {
-          return {
-            id: {
-              equals: auth.session.data.id,
-            },
-          }
+        if (!auth.session) return false
+        return {
+          id: {
+            equals: auth.session.data.id,
+          },
         }
       },
     },
