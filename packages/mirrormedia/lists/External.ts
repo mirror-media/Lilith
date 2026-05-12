@@ -286,7 +286,7 @@ extendedListConfigurations.hooks = {
       (operation === 'update' || operation === 'delete') &&
       envVar.cache.isEnabled
     ) {
-      const slug = (originalItem?.slug ?? item?.slug) as string | undefined
+      const slug = (item?.slug || originalItem?.slug) as string | undefined
 
       if (slug) {
         try {
@@ -352,7 +352,7 @@ if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
         operation === 'delete' ||
         (operation === 'update' && isStateChanged)
       ) {
-        const slug = (originalItem?.slug ?? item?.slug) as string | undefined
+        const slug = (item?.slug || originalItem?.slug) as string | undefined
         if (slug) {
           tasks.push(
             fetch(`${envVar.invalidateCDNCacheServerURL}/external`, {
