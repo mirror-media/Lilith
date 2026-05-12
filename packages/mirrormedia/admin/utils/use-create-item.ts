@@ -202,37 +202,16 @@ function useCreateItemCore({
         const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '') // YYYYMMDD
         const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, '') // HHmmss
 
-        let writerId = ''
+        let userId = ''
         let slugCode = ''
-        const writersField = value.writers
 
-        if (writersField?.value?.value) {
-          const writersArray = writersField.value.value
-
-          if (Array.isArray(writersArray) && writersArray.length > 0) {
-            const firstWriter = writersArray[0]
-
-            if (firstWriter && typeof firstWriter === 'object') {
-              if (firstWriter?.id) {
-                writerId = String(firstWriter.id)
-              } else if (firstWriter?.label) {
-                writerId = firstWriter.label
-              } else if (firstWriter?.data?.name) {
-                writerId = firstWriter.data.name
-              } else if (firstWriter?.name) {
-                writerId = firstWriter.name
-              }
-            }
-          }
-        }
-
-        // Query current logged-in User's slugCode
         if (
           authenticatedItem &&
           'state' in authenticatedItem &&
           authenticatedItem.state === 'authenticated' &&
           authenticatedItem.id
         ) {
+          userId = String(authenticatedItem.id)
           try {
             const { data: userData } = await apolloClient.query({
               query: gql`
@@ -255,12 +234,10 @@ function useCreateItemCore({
           }
         }
 
-        const slug = writerId
+        const slug = userId
           ? slugCode
-            ? `${dateStr}-${writerId}${slugCode}-${timeStr}`
-            : `${dateStr}-${writerId}-${timeStr}`
-          : slugCode
-          ? `${dateStr}-${slugCode}-${timeStr}`
+            ? `${dateStr}-${userId}${slugCode}-${timeStr}`
+            : `${dateStr}-${userId}-${timeStr}`
           : `${dateStr}-${timeStr}`
 
         finalData = { ...finalData, slug }
