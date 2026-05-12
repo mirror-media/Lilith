@@ -235,9 +235,7 @@ function useCreateItemCore({
         }
 
         const slug = userId
-          ? slugCode
-            ? `${dateStr}-${userId}${slugCode}-${timeStr}`
-            : `${dateStr}-${userId}-${timeStr}`
+          ? `${dateStr}-${userId}${slugCode}-${timeStr}`
           : `${dateStr}-${timeStr}`
 
         finalData = { ...finalData, slug }
