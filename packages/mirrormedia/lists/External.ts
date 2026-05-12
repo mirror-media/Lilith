@@ -333,7 +333,7 @@ extendedListConfigurations.hooks = {
   },
 }
 
-if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
+if (envVar.invalidateCDNCacheServerURL) {
   const prevCDNHook = extendedListConfigurations.hooks?.afterOperation
 
   extendedListConfigurations.hooks = {
