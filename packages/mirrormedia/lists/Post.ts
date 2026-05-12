@@ -863,7 +863,11 @@ const listConfigurations = list({
       if (envVar.accessControlStrategy === 'gql') {
         return
       }
-      if (context.session?.data?.role !== UserRole.Admin) {
+      // system operations (cron, sudo) have no session; editor conflict check doesn't apply
+      if (!context.session) {
+        return
+      }
+      if (context.session.data?.role !== UserRole.Admin) {
         if (operation === 'update') {
           const { lockBy } = await context.prisma.Post.findUnique({
             where: { id: Number(item.id) },
