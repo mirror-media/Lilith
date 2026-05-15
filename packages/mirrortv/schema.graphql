@@ -1050,11 +1050,13 @@ type External {
   tagsCount(where: TagWhereInput! = {}): Int
   categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   categoriesCount(where: CategoryWhereInput! = {}): Int
+  manualOrderOfCategories: JSON
   source: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+  categoriesInInputOrder: [Category]
 }
 
 input ExternalWhereUniqueInput {
@@ -1120,6 +1122,7 @@ input ExternalUpdateInput {
   content: JSON
   tags: TagRelateToManyForUpdateInput
   categories: CategoryRelateToManyForUpdateInput
+  manualOrderOfCategories: JSON
   source: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1154,6 +1157,7 @@ input ExternalCreateInput {
   content: JSON
   tags: TagRelateToManyForCreateInput
   categories: CategoryRelateToManyForCreateInput
+  manualOrderOfCategories: JSON
   source: String
   createdAt: DateTime
   updatedAt: DateTime
