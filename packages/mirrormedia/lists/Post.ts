@@ -980,8 +980,9 @@ const listConfigurations = list({
         // Condition 2: already published, content changed, and no related articles
         if (!shouldTriggerAutoTag && wasAlreadyPublished && stateIsPublished) {
           const contentChanged =
+            resolvedData?.content !== undefined &&
             JSON.stringify(item.content) !==
-            JSON.stringify(originalItem?.content)
+              JSON.stringify(originalItem?.content)
           if (contentChanged) {
             try {
               const postData = await context.sudo().query.Post.findOne({
