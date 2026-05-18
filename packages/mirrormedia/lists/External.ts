@@ -3,6 +3,7 @@ import { list } from '@keystone-6/core'
 import { select, text, timestamp, relationship } from '@keystone-6/core/fields'
 import { CloudTasksClient, protos } from '@google-cloud/tasks'
 import envVar from '../environment-variables'
+import Redis from 'ioredis'
 
 const { allowRoles, admin, moderator } = utils.accessControl
 
@@ -26,6 +27,22 @@ type Session = {
     id: string
     role: UserRole
   }
+}
+
+let _redis: Redis | null = null
+
+const getRedis = () => {
+  if (!_redis) {
+    _redis = new Redis(envVar.cache.url, {
+      connectTimeout: envVar.cache.connectTimeOut || 10000,
+      maxRetriesPerRequest: 3,
+      lazyConnect: true,
+    })
+    _redis.on('error', (err) => {
+      console.error('[External Cache] Redis connection error:', err)
+    })
+  }
+  return _redis
 }
 
 const tasksClient = new CloudTasksClient()
@@ -257,9 +274,67 @@ const listConfigurations = list({
 
 const extendedListConfigurations = utils.addTrackingFields(listConfigurations)
 
+// 清除 Redis
+const originalAfterOperation = extendedListConfigurations.hooks?.afterOperation
+
+extendedListConfigurations.hooks = {
+  ...extendedListConfigurations.hooks,
+  afterOperation: async (args) => {
+    const { operation, item, originalItem } = args
+
+    if (
+      (operation === 'update' || operation === 'delete') &&
+      envVar.cache.isEnabled
+    ) {
+      const slug = (item?.slug || originalItem?.slug) as string | undefined
+
+      if (slug) {
+        try {
+          const redis = getRedis()
+          console.log(
+            `[External Cache] Purge started for: ${slug} (${operation})`
+          )
+
+          const escapedSlug = slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+          const searchRegex = new RegExp(`"${escapedSlug}"`)
+          const stream = redis.scanStream({ match: 'externals:*', count: 500 })
+          let deletedCount = 0
+
+          for await (const rawKeys of stream) {
+            const keys = rawKeys as string[]
+            if (!keys.length) continue
+
+            const values = await redis.mget(...keys)
+            const keysToDelete: string[] = []
+            values.forEach((data, index) => {
+              if (data && searchRegex.test(data)) {
+                keysToDelete.push(keys[index])
+              }
+            })
+
+            if (keysToDelete.length > 0) {
+              await redis.del(...keysToDelete)
+              deletedCount += keysToDelete.length
+            }
+          }
+
+          console.log(
+            `[External Cache] Purge done. Total ${deletedCount} keys deleted.`
+          )
+        } catch (err) {
+          console.error(`[External Cache] Purge failed: ${slug}`, err)
+        }
+      }
+    }
+
+    if (originalAfterOperation) {
+      await originalAfterOperation(args)
+    }
+  },
+}
+
 if (envVar.invalidateCDNCacheServerURL) {
-  const originalAfterOperation =
-    extendedListConfigurations.hooks?.afterOperation
+  const prevCDNHook = extendedListConfigurations.hooks?.afterOperation
 
   extendedListConfigurations.hooks = {
     ...extendedListConfigurations.hooks,
@@ -267,8 +342,8 @@ if (envVar.invalidateCDNCacheServerURL) {
       const { operation, item, originalItem } = params
       const tasks: Promise<unknown>[] = []
 
-      if (typeof originalAfterOperation === 'function') {
-        tasks.push(originalAfterOperation(params))
+      if (typeof prevCDNHook === 'function') {
+        tasks.push(prevCDNHook(params))
       }
 
       const isStateChanged = item?.state !== originalItem?.state
@@ -277,7 +352,7 @@ if (envVar.invalidateCDNCacheServerURL) {
         operation === 'delete' ||
         (operation === 'update' && isStateChanged)
       ) {
-        const slug = item?.slug || originalItem?.slug
+        const slug = (item?.slug || originalItem?.slug) as string | undefined
         if (slug) {
           tasks.push(
             fetch(`${envVar.invalidateCDNCacheServerURL}/external`, {
