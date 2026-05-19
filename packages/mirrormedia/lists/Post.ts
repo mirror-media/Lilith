@@ -976,19 +976,25 @@ const listConfigurations = list({
 
         // Condition 1: state transitions to published (any non-published state → published, or created directly as published)
         // only trigger if post has meaningful content (at least one block with non-empty text)
-        const contentBlocks = (item.content as any)?.blocks
+        // stateIsPublished short-circuits the block traversal when state is not published
         const hasContent =
-          Array.isArray(contentBlocks) &&
-          contentBlocks.some((b: any) => b?.text?.trim())
+          stateIsPublished &&
+          Array.isArray((item.content as any)?.blocks) &&
+          (item.content as any).blocks.some((b: any) => b?.text?.trim())
         let shouldTriggerAutoTag = firstTimePublished && hasContent
 
         // Condition 2: already published, content changed, and no related articles
-        if (!shouldTriggerAutoTag && wasAlreadyPublished && stateIsPublished) {
+        if (
+          !shouldTriggerAutoTag &&
+          wasAlreadyPublished &&
+          stateIsPublished &&
+          hasContent
+        ) {
           const contentChanged =
             resolvedData?.content !== undefined &&
             JSON.stringify(item.content) !==
               JSON.stringify(originalItem?.content)
-          if (contentChanged && hasContent) {
+          if (contentChanged) {
             try {
               const postData = await context.sudo().query.Post.findOne({
                 where: { id: String(item.id) },
