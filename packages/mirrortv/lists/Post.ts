@@ -884,9 +884,9 @@ const listConfigurations = list({
             },
           })
 
-          console.log(`[EditLog] ${operation} 成功紀錄: ${postSlug}`)
+          console.log(`[EditLog] ${operation} 成功紀錄 : ${postSlug}`)
         } catch (err) {
-          console.error(`[EditLog] ${operation} 發生錯誤:`, err)
+          console.error(`[EditLog] ${operation} 發生錯誤 :`, err)
         }
       }
     },
