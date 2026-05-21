@@ -257,6 +257,7 @@ model External {
   content                          Json?
   tags                             Tag[]          @relation("External_tags")
   categories                       Category[]     @relation("External_categories")
+  manualOrderOfCategories          Json?
   source                           String         @default("")
   createdAt                        DateTime?
   updatedAt                        DateTime?
