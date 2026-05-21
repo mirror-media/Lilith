@@ -954,27 +954,67 @@ const listConfigurations = list({
       context,
       resolvedData,
     }) => {
-      if (
-        resolvedData &&
-        resolvedData.state &&
-        resolvedData.state === PostStatus.Published &&
-        envVar.autotagging
-      ) {
-        try {
-          // trigger auto tagging and auto relation service
-          const response = await fetch(
-            envVar.dataServiceApi + '/post_tagging_with_relation?id=' + item.id,
-            {
-              method: 'GET',
+      if (envVar.autotagging && item) {
+        const stateIsPublished = item.state === PostStatus.Published
+        const wasAlreadyPublished = originalItem?.state === PostStatus.Published
+        const firstTimePublished = !wasAlreadyPublished && stateIsPublished
+
+        // Condition 1: state transitions to published (any non-published state → published, or created directly as published)
+        // only trigger if post has meaningful content (at least one block with non-empty text)
+        // stateIsPublished short-circuits the block traversal when state is not published
+        const hasContent =
+          stateIsPublished &&
+          Array.isArray((item.content as any)?.blocks) &&
+          (item.content as any).blocks.some((b: any) => b?.text?.trim())
+        let shouldTriggerAutoTag = firstTimePublished && hasContent
+
+        // Condition 2: already published, content changed, and no related articles
+        if (
+          !shouldTriggerAutoTag &&
+          wasAlreadyPublished &&
+          stateIsPublished &&
+          hasContent
+        ) {
+          const contentChanged =
+            resolvedData?.content !== undefined &&
+            JSON.stringify(item.content) !==
+              JSON.stringify(originalItem?.content)
+          if (contentChanged) {
+            try {
+              const postData = await context.sudo().query.Post.findOne({
+                where: { id: String(item.id) },
+                query: 'relateds { id }',
+              })
+              const hasNoRelateds = !postData?.relateds?.length
+              shouldTriggerAutoTag = hasNoRelateds
+            } catch (err) {
+              console.error(
+                `[AUTO-TAG-RELATION] Failed to check relateds for post ${item.id}:`,
+                err
+              )
             }
-          )
-          if (!response.ok) {
+          }
+        }
+
+        if (shouldTriggerAutoTag) {
+          try {
+            const response = await fetch(
+              envVar.dataServiceApi +
+                '/post_tagging_with_relation?id=' +
+                item.id,
+              { method: 'GET' }
+            )
+            if (!response.ok) {
+              console.error(
+                `[AUTO-TAG-RELATION] Failed: ${response.status} ${response.statusText}`
+              )
+            }
+          } catch (error) {
             console.error(
-              `[AUTO-TAG-RELATION] Failed: ${response.status} ${response.statusText}`
+              `[AUTO-TAG-RELATION] Error for post ${item.id}:`,
+              error
             )
           }
-        } catch (error) {
-          console.error(`[AUTO-TAG-RELATION] Error:`, error)
         }
       }
       if (operation === 'update') {
