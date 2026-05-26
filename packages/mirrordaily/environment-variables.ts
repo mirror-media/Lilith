@@ -7,6 +7,7 @@ const {
   PREVIEW_SERVER_PATH,
   DASHBOARD_SERVER_ORIGIN,
   DASHBOARD_SERVER_PATH,
+  TRAFFIC_DASHBOARD_ENABLED,
   DATABASE_PROVIDER,
   DATABASE_URL,
   SESSION_SECRET,
@@ -54,6 +55,7 @@ export default {
       'https://traffic-analytics-web-dev-151209114015.asia-east1.run.app',
     path: DASHBOARD_SERVER_PATH || '/dashboard',
   },
+  trafficDashboardEnabled: TRAFFIC_DASHBOARD_ENABLED !== 'false',
   database: {
     provider:
       DATABASE_PROVIDER === 'sqlite'

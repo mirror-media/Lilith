@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { config } from '@keystone-6/core'
+import { config, graphql } from '@keystone-6/core'
 import { listDefinition as lists } from './lists'
 import envVar from './environment-variables'
 import express from 'express'
@@ -68,6 +68,14 @@ export default withAuth(
     graphql: graphqlConfig,
     lists,
     session,
+    extendGraphqlSchema: graphql.extend(() => ({
+      query: {
+        trafficDashboardEnabled: graphql.field({
+          type: graphql.nonNull(graphql.Boolean),
+          resolve: () => envVar.trafficDashboardEnabled,
+        }),
+      },
+    })),
     storage: {
       files: {
         kind: 'local',
