@@ -55,7 +55,7 @@ export default {
       'https://traffic-analytics-web-dev-151209114015.asia-east1.run.app',
     path: DASHBOARD_SERVER_PATH || '/dashboard',
   },
-  trafficDashboardEnabled: TRAFFIC_DASHBOARD_ENABLED?.toLowerCase() !== 'false',
+  trafficDashboardEnabled: TRAFFIC_DASHBOARD_ENABLED?.toLowerCase() === 'true',
   database: {
     provider:
       DATABASE_PROVIDER === 'sqlite'
