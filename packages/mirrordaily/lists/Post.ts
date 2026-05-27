@@ -819,7 +819,12 @@ const listConfigurations = list({
       },
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
+        itemView: {
+          fieldMode: envVar.trafficDashboardEnabled ? 'read' : 'hidden',
+        },
+        listView: {
+          fieldMode: envVar.trafficDashboardEnabled ? 'read' : 'hidden',
+        },
       },
     }),
     preview: virtual({
