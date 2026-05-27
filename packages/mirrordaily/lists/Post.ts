@@ -1129,26 +1129,19 @@ const listConfigurations = list({
       if (operation === 'update' && resolvedData.state !== undefined) {
         const oldState = item?.state
         const newState = resolvedData.state
+        const reviewerId = context.session?.data?.id
 
-        // Admin approves: Pending → Published / Scheduled
+        // Admin reviews (approve / reject): Pending → Published / Scheduled / Rejected
         if (
           oldState === PostStatus.Pending &&
-          [PostStatus.Published, PostStatus.Scheduled].includes(newState)
+          [
+            PostStatus.Published,
+            PostStatus.Scheduled,
+            PostStatus.Rejected,
+          ].includes(newState) &&
+          reviewerId
         ) {
-          resolvedData.reviewedBy = {
-            connect: { id: Number(context.session?.data?.id) },
-          }
-          resolvedData.reviewedAt = new Date()
-        }
-
-        // Admin rejects: Pending → Rejected
-        if (
-          oldState === PostStatus.Pending &&
-          newState === PostStatus.Rejected
-        ) {
-          resolvedData.reviewedBy = {
-            connect: { id: Number(context.session?.data?.id) },
-          }
+          resolvedData.reviewedBy = { connect: { id: Number(reviewerId) } }
           resolvedData.reviewedAt = new Date()
         }
 
