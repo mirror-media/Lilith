@@ -1092,7 +1092,12 @@ const listConfigurations = list({
         }
 
         // Review workflow: state transition validation
-        if (operation === 'update' && resolvedData.state !== undefined) {
+        // Skip when there's no session (system / cron / sudo operations)
+        if (
+          operation === 'update' &&
+          resolvedData.state !== undefined &&
+          context.session
+        ) {
           const oldState = item?.state
           const newState = resolvedData.state
           const currentUserRole = context.session?.data?.role
