@@ -741,7 +741,7 @@ const listConfigurations = list({
             return
           }
 
-          // 定義抓取欄位
+          //  定義抓取欄位
           const fullQuery = `
             id slug name subtitle state publishTime publishedDateString
             otherbyline heroCaption heroImageSize style source
