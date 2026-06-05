@@ -5,6 +5,7 @@ import {
   selectSelectedFilename,
   selectShouldSetWatermarkToAll,
   selectUidsOfFile,
+  selectEventName,
 } from '../redux/features/multi-images/selector'
 import { isEqual } from 'lodash-es'
 import Button from './button'
@@ -14,6 +15,7 @@ import HiddenInput from './hidden-input'
 import {
   removeSelectedItems,
   setShouldSetWatermarkToAll,
+  setEventName,
 } from '../redux/features/multi-images/slice'
 import SubmissionButtonAndModal from './submission-button-and-modal'
 import Modal from './modal'
@@ -89,6 +91,44 @@ const ListGroup = styled.div`
   padding-right: 62px;
 `
 
+const EventNameWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  column-gap: 12px;
+  margin-top: 24px;
+  margin-left: 69px;
+  margin-right: 69px;
+
+  @media (max-width: 575px) {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+`
+
+const EventNameLabel = styled.label`
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+`
+
+const EventNameInput = styled.input`
+  padding: 6px 10px;
+  border: 1px solid #000;
+  font-size: 16px;
+  width: 220px;
+
+  @media (max-width: 575px) {
+    width: 100%;
+  }
+`
+
+const EventNameHint = styled.span`
+  font-size: 12px;
+  color: #888;
+`
+
 const AlertBody = styled.div`
   display: flex;
   width: 100%;
@@ -117,6 +157,7 @@ export default function EditorStep() {
   const shouldSetWatermarkToAll = useAppSelector(selectShouldSetWatermarkToAll)
   const hasItemSelected = useAppSelector(selectHasItemSelected)
   const filenames = useAppSelector(selectSelectedFilename)
+  const eventName = useAppSelector(selectEventName)
   const inputRef = useRef<HTMLInputElement>(null)
   const checkInputRef = useRef<HTMLInputElement>(null)
   const checkMediaInputRef = useRef<HTMLInputElement>(null)
@@ -127,6 +168,20 @@ export default function EditorStep() {
   return (
     <Body>
       <Container>
+        <EventNameWrapper>
+          <EventNameLabel htmlFor="event-name-input">
+            活動或事件名稱
+          </EventNameLabel>
+          <EventNameInput
+            id="event-name-input"
+            type="text"
+            value={eventName}
+            maxLength={10}
+            placeholder="最多 10 個字"
+            onChange={(e) => dispatch(setEventName(e.target.value))}
+          />
+          <EventNameHint>({eventName.length}/10)</EventNameHint>
+        </EventNameWrapper>
         <ControlGroup>
           <HiddenInput ref={inputRef} />
           <Button clickFn={() => inputRef.current?.click()}>Add images</Button>
