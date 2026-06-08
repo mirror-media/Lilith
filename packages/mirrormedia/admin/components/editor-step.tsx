@@ -180,7 +180,7 @@ export default function EditorStep() {
             placeholder="最多 10 個字"
             onChange={(e) => dispatch(setEventName(e.target.value))}
           />
-          <EventNameHint>({eventName.length}/10)</EventNameHint>
+          <EventNameHint>{eventName.trim().length}/10</EventNameHint>
         </EventNameWrapper>
         <ControlGroup>
           <HiddenInput ref={inputRef} />
