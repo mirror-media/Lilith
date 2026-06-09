@@ -21,3 +21,5 @@ export const selectSelectedFilename = (state: RootState) =>
   (state.multiImages.files.filter((file) => file.isSelected) ?? []).map(
     (file) => file.originalName
   )
+
+export const selectEventName = (state: RootState) => state.multiImages.eventName
