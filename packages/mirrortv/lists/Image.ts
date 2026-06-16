@@ -18,6 +18,12 @@ const gcsBucket = new Storage().bucket(envVar.gcs.bucket)
 const tasksClient = new CloudTasksClient()
 
 async function enqueueCopyTask(source: string, dest: string) {
+  if (!envVar.imageProcessor.url) {
+    console.error(
+      '[Image hook] IMAGE_PROCESSOR_URL is not configured. Skipping Cloud Tasks enqueue.'
+    )
+    return
+  }
   try {
     const parent = tasksClient.queuePath(
       envVar.projectID,
