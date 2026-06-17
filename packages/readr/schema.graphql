@@ -1239,6 +1239,7 @@ type Post {
   sortOrder: Int
   name: String
   subtitle: String
+  recommendedTitle: String
   state: String
   publishTime: DateTime
   categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
@@ -1413,6 +1414,7 @@ input PostUpdateInput {
   sortOrder: Int
   name: String
   subtitle: String
+  recommendedTitle: String
   state: String
   publishTime: DateTime
   categories: CategoryRelateToManyForUpdateInput
@@ -1515,6 +1517,7 @@ input PostCreateInput {
   sortOrder: Int
   name: String
   subtitle: String
+  recommendedTitle: String
   state: String
   publishTime: DateTime
   categories: CategoryRelateToManyForCreateInput
