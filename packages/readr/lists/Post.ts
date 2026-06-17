@@ -33,6 +33,16 @@ const listConfigurations = list({
         isNullable: true,
       },
     }),
+    recommendedTitle: text({
+      label: '建議標題',
+      ui: { displayMode: 'textarea' },
+      validation: { isRequired: false },
+      db: {
+        isNullable: true,
+      },
+      isFilterable: false,
+      isOrderable: false,
+    }),
     state: select({
       label: '狀態',
       options: [
