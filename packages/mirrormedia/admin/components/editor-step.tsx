@@ -176,11 +176,11 @@ export default function EditorStep() {
             id="event-name-input"
             type="text"
             value={eventName}
-            maxLength={10}
-            placeholder="最多 10 個字"
+            maxLength={25}
+            placeholder="最多 25 個字"
             onChange={(e) => dispatch(setEventName(e.target.value))}
           />
-          <EventNameHint>{eventName.trim().length}/10</EventNameHint>
+          <EventNameHint>{eventName.trim().length}/25</EventNameHint>
         </EventNameWrapper>
         <ControlGroup>
           <HiddenInput ref={inputRef} />
