@@ -261,6 +261,7 @@ const listConfigurations = list({
 
   hooks: {
     afterOperation: async ({ operation, item, originalItem }) => {
+      if (!envVar.imageCopyOnUploadEnabled) return
       if (operation === 'delete') return
       if (!item?.file_id) return
       if (operation === 'update' && item.file_id === originalItem?.file_id)
