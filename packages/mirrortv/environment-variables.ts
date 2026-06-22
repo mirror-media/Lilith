@@ -35,6 +35,7 @@ const {
   COPY_QUEUE_NAME,
   IMAGE_PROCESSOR_URL,
   SCHEDULER_KEY,
+  IMAGE_COPY_ON_UPLOAD_ENABLED,
 } = process.env
 
 enum DatabaseProvider {
@@ -113,4 +114,5 @@ export default {
     url: IMAGE_PROCESSOR_URL || '',
     schedulerKey: SCHEDULER_KEY || '',
   },
+  imageCopyOnUploadEnabled: IMAGE_COPY_ON_UPLOAD_ENABLED === 'true',
 }
