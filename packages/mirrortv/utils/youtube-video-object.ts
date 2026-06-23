@@ -142,15 +142,15 @@ export async function buildVideoObjects(
   hasInvalid: boolean
   hasConnectionError: boolean
 }> {
+  const results = await Promise.all(ids.map((id) => fetcher(id)))
   const objects: VideoObject[] = []
   let hasInvalid = false
   let hasConnectionError = false
-  for (const id of ids) {
-    const r = await fetcher(id)
+  results.forEach((r, i) => {
     if (r.status === 'invalid') hasInvalid = true
     else if (r.status === 'error') hasConnectionError = true
-    else objects.push(buildVideoObject(id, r.item))
-  }
+    else objects.push(buildVideoObject(ids[i], r.item))
+  })
   return { objects, hasInvalid, hasConnectionError }
 }
 
