@@ -2,7 +2,7 @@ import fetch from 'node-fetch'
 import envVar from '../environment-variables'
 
 const YT_ID_REGEX =
-  /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([^&\n?#]+)/
+  /(?:youtube\.com\/watch\?(?:[^#]*&)?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([^&\n?#]+)/
 
 export function parseYoutubeId(url: string | null | undefined): string | null {
   if (!url || typeof url !== 'string') return null
