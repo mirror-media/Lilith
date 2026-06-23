@@ -11,6 +11,11 @@ import {
   virtual,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
+import {
+  extractYoutubeIds,
+  buildVideoObjects,
+  sameStringSet,
+} from '../utils/youtube-video-object'
 
 const { allowRoles, admin, moderator, editor, contributor, owner } =
   utils.accessControl
@@ -71,6 +76,34 @@ function filterPosts(roles: UserRole[]) {
         return { state: { in: [PostState.Published] } }
     }
   }
+}
+
+async function getHeroVideoYoutubeUrl(
+  context: any,
+  resolvedData: any,
+  item: any
+): Promise<string> {
+  let videoId: string | number | undefined
+  const hv = resolvedData?.heroVideo
+  if (hv === null || hv?.disconnect) return ''
+  if (hv?.connect?.id !== undefined) videoId = hv.connect.id
+  else if (typeof hv?.connect === 'string') videoId = hv.connect
+  if (videoId === undefined) videoId = item?.heroVideoId
+  if (!videoId) return ''
+  const video = await context.sudo().query.Video.findOne({
+    where: { id: String(videoId) },
+    query: 'youtubeUrl',
+  })
+  return video?.youtubeUrl ?? ''
+}
+
+function isPublishTarget(resolvedData: any, item: any): boolean {
+  const publishTime = resolvedData?.publishTime ?? item?.publishTime
+  if (publishTime && new Date(publishTime).getTime() > Date.now()) {
+    return true // beforeOperation will convert state to scheduled
+  }
+  const state = resolvedData?.state ?? item?.state
+  return state === PostState.Published || state === PostState.Scheduled
 }
 
 const listConfigurations = list({
@@ -381,6 +414,13 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
+    videoObjects: json({
+      label: 'Video Objects (JSON-LD)',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'read' },
+      },
+    }),
 
     // --- Others ---
     topics: relationship({
@@ -572,7 +612,7 @@ const listConfigurations = list({
   },
 
   hooks: {
-    resolveInput: async ({ resolvedData, item }) => {
+    resolveInput: async ({ resolvedData, item, operation, context }) => {
       // 清理控制字元
       for (const key in resolvedData) {
         if (Object.prototype.hasOwnProperty.call(resolvedData, key)) {
@@ -643,6 +683,56 @@ const listConfigurations = list({
       // Slug 格式化
       if (resolvedData.slug) {
         resolvedData.slug = resolvedData.slug.trim().replace(/\s+/g, '_')
+      }
+
+      // --- videoObjects (YouTube JSON-LD) ---
+      // Only process when publishing / scheduling; drafts are left untouched
+      // (no fetch, no write, no clear, no block).
+      if (isPublishTarget(resolvedData, item)) {
+        const heroVideoYoutubeUrl = await getHeroVideoYoutubeUrl(
+          context,
+          resolvedData,
+          item
+        )
+        const contentApiData =
+          resolvedData.contentApiData ?? item?.contentApiData
+        const sotVideoId = (resolvedData.sotVideoId ?? item?.sotVideoId) as
+          | string
+          | null
+        const detectedIds = extractYoutubeIds({
+          contentApiData,
+          sotVideoId,
+          heroVideoYoutubeUrl,
+        })
+
+        const existing = Array.isArray(item?.videoObjects)
+          ? (item.videoObjects as any[])
+          : []
+        const existingIds = existing
+          .map((v) => v?._videoId)
+          .filter((x): x is string => typeof x === 'string' && !!x)
+
+        const isCreate = operation === 'create'
+
+        if (detectedIds.length === 0) {
+          resolvedData.videoObjects = []
+        } else if (!isCreate && sameStringSet(detectedIds, existingIds)) {
+          // id set unchanged: keep existing data, do not refetch
+          // (a YouTube takedown should retain the old JSON-LD).
+        } else {
+          const { objects, hasInvalid, hasConnectionError } =
+            await buildVideoObjects(detectedIds)
+          if (hasInvalid) {
+            throw new Error('影片網址無效或非公開影片，無法儲存')
+          }
+          if (hasConnectionError) {
+            // Connection failure: allow the save. On create store [];
+            // on update leave the existing videoObjects untouched.
+            if (isCreate) resolvedData.videoObjects = []
+          } else {
+            resolvedData.videoObjects = objects
+          }
+        }
       }
 
       return resolvedData
