@@ -164,8 +164,8 @@ const LightBoxWrapper = styled.div`
       width: 20px;
       margin: 0 5px 0 0;
       position: relative;
-      &:before,
-      :after {
+      &::before,
+      &::after {
         position: absolute;
         left: 8.5px;
         top: 5px;
@@ -175,10 +175,10 @@ const LightBoxWrapper = styled.div`
         width: 1.2px;
         background-color: #fff;
       }
-      &:before {
+      &::before {
         transform: rotate(45deg);
       }
-      &:after {
+      &::after {
         transform: rotate(-45deg);
       }
     }

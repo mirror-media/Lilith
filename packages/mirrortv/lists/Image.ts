@@ -1,3 +1,5 @@
+import { Storage } from '@google-cloud/storage'
+import { CloudTasksClient, protos } from '@google-cloud/tasks'
 import { list, graphql } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 import {
@@ -11,6 +13,49 @@ import {
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 import { getFileURL } from '../utils/common'
+
+const gcsBucket = new Storage().bucket(envVar.gcs.bucket)
+const tasksClient = new CloudTasksClient()
+
+async function enqueueCopyTask(source: string, dest: string) {
+  if (!envVar.imageProcessor.url) {
+    console.error(
+      '[Image hook] IMAGE_PROCESSOR_URL is not configured. Skipping Cloud Tasks enqueue.'
+    )
+    return
+  }
+  try {
+    const parent = tasksClient.queuePath(
+      envVar.projectID,
+      envVar.location,
+      envVar.copyQueueName
+    )
+    const task = {
+      httpRequest: {
+        httpMethod: protos.google.cloud.tasks.v2.HttpMethod.POST,
+        url: `${envVar.imageProcessor.url}/copy_blob`,
+        headers: { 'Content-Type': 'application/json' },
+        body: Buffer.from(
+          JSON.stringify({
+            key: envVar.imageProcessor.schedulerKey,
+            bucket: envVar.gcs.bucket,
+            source,
+            dest,
+          })
+        ),
+      },
+    }
+    const [response] = await tasksClient.createTask({ parent, task })
+    console.log(
+      `[Image hook] Enqueued copy task: ${source} → ${dest}: ${response.name}`
+    )
+  } catch (error) {
+    console.error(
+      `[Image hook] CRITICAL: copy failed AND enqueue failed, manual recovery needed: ${source} → ${dest}:`,
+      error
+    )
+  }
+}
 
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
@@ -123,7 +168,6 @@ const listConfigurations = list({
           const rtn: Record<string, string> = {}
 
           resizedTargets.forEach((target) => {
-            // rtn[target] = `${baseUrl}/${fileId}-${target}${ext}`
             rtn[target] = getFileURL(
               envVar.gcs.bucket,
               baseUrl,
@@ -131,7 +175,6 @@ const listConfigurations = list({
             )
           })
 
-          // rtn['original'] = `${baseUrl}/${fileId}${ext}`
           rtn['original'] = getFileURL(
             envVar.gcs.bucket,
             baseUrl,
@@ -195,7 +238,6 @@ const listConfigurations = list({
           const rtn: Record<string, string> = {}
 
           resizedTargets.forEach((target) => {
-            // rtn[target] = `${baseUrl}/${fileId}-${target}${ext}`
             rtn[target] = getFileURL(
               envVar.gcs.bucket,
               baseUrl,
@@ -203,7 +245,6 @@ const listConfigurations = list({
             )
           })
 
-          // rtn['original'] = `${baseUrl}/${fileId}${ext}`
           rtn['original'] = getFileURL(
             envVar.gcs.bucket,
             baseUrl,
@@ -219,6 +260,44 @@ const listConfigurations = list({
   },
 
   hooks: {
+    afterOperation: async ({ operation, item, originalItem }) => {
+      if (!envVar.imageCopyOnUploadEnabled) return
+      if (operation === 'delete') return
+      if (!item?.file_id) return
+      if (operation === 'update' && item.file_id === originalItem?.file_id)
+        return
+
+      if (!item.file_extension) return
+      const filename = item.file_id as string
+      const ext = `.${item.file_extension}`
+      const gcsSourcePath = `images/${filename}${ext}`
+
+      const width = typeof item.file_width === 'number' ? item.file_width : 0
+      const height = typeof item.file_height === 'number' ? item.file_height : 0
+      const targets =
+        width >= height
+          ? ['w480', 'w800', 'w1600', 'w2400']
+          : ['w480', 'w800', 'w1200', 'w1600']
+
+      await Promise.all(
+        targets.map(async (target) => {
+          const gcsDestPath = `images/${filename}-${target}${ext}`
+          try {
+            await gcsBucket
+              .file(gcsSourcePath)
+              .copy(gcsBucket.file(gcsDestPath))
+            console.log(`[Image hook] Copied ${gcsSourcePath} → ${gcsDestPath}`)
+          } catch (err) {
+            console.error(
+              `[Image hook] Copy failed, enqueuing retry: ${gcsDestPath}`,
+              err
+            )
+            await enqueueCopyTask(gcsSourcePath, gcsDestPath)
+          }
+        })
+      )
+    },
+
     resolveInput: async ({ resolvedData, item }) => {
       // Get file metadata from new upload or existing record
       const fileId = resolvedData.file?.id || item?.file_id
