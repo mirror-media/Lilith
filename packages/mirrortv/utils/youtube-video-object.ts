@@ -42,6 +42,7 @@ export function extractYoutubeIds({
 
 export function toTaipeiIso(publishedAt: string): string {
   const d = new Date(publishedAt)
+  if (isNaN(d.getTime())) return ''
   const shifted = new Date(d.getTime() + 8 * 60 * 60 * 1000)
   const p = (n: number) => String(n).padStart(2, '0')
   return `${shifted.getUTCFullYear()}-${p(shifted.getUTCMonth() + 1)}-${p(
