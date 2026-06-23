@@ -98,11 +98,11 @@ async function getHeroVideoYoutubeUrl(
 }
 
 function isPublishTarget(resolvedData: any, item: any): boolean {
-  const publishTime = resolvedData?.publishTime ?? item?.publishTime
+  let state = resolvedData?.state ?? item?.state
+  const publishTime = resolvedData?.publishTime
   if (publishTime && new Date(publishTime).getTime() > Date.now()) {
-    return true // beforeOperation will convert state to scheduled
+    state = PostState.Scheduled
   }
-  const state = resolvedData?.state ?? item?.state
   return state === PostState.Published || state === PostState.Scheduled
 }
 
