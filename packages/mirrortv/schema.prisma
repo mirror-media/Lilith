@@ -378,6 +378,7 @@ model Post {
   contentApiData                     Json?
   source                             String              @default("")
   sotVideoId                         String              @default("")
+  videoObjects                       Json?
   topics                             Topic?              @relation("Post_topics", fields: [topicsId], references: [id])
   topicsId                           Int?                @map("topics")
   tags                               Tag[]               @relation("Post_tags")
