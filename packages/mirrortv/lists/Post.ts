@@ -728,6 +728,14 @@ const listConfigurations = list({
           if (hasConnectionError) {
             // Connection failure: allow the save. On create store [];
             // on update leave the existing videoObjects untouched.
+            // Log a greppable alert so we can find posts whose videoObjects
+            // may be missing/stale due to a YouTube API outage (no auto-retry).
+            console.error(
+              `[videoObject][CONNECTION_ERROR] videoObjects not updated due to YouTube API failure. ` +
+                `operation=${operation} postId=${item?.id ?? '(new)'} ` +
+                `slug=${resolvedData.slug ?? item?.slug ?? ''} ` +
+                `videoIds=${detectedIds.join(',')}`
+            )
             if (isCreate) resolvedData.videoObjects = []
           } else {
             resolvedData.videoObjects = objects
