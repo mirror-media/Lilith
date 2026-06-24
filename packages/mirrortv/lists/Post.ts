@@ -418,7 +418,7 @@ const listConfigurations = list({
       label: 'Video Objects (JSON-LD)',
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
 
