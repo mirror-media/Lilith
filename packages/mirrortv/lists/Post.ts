@@ -15,6 +15,7 @@ import {
   extractYoutubeIds,
   buildVideoObjects,
   sameStringSet,
+  parseYoutubeId,
 } from '../utils/youtube-video-object'
 
 const { allowRoles, admin, moderator, editor, contributor, owner } =
@@ -418,7 +419,7 @@ const listConfigurations = list({
       label: 'Video Objects (JSON-LD)',
       ui: {
         createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
 
@@ -708,8 +709,10 @@ const listConfigurations = list({
         const existing = Array.isArray(item?.videoObjects)
           ? (item.videoObjects as any[])
           : []
+        // Derive existing video ids from embedUrl (always .../embed/{id}) so we
+        // don't need to store an internal _videoId on each videoObject.
         const existingIds = existing
-          .map((v) => v?._videoId)
+          .map((v) => parseYoutubeId(v?.embedUrl))
           .filter((x): x is string => typeof x === 'string' && !!x)
 
         const isCreate = operation === 'create'
@@ -728,6 +731,17 @@ const listConfigurations = list({
           if (hasConnectionError) {
             // Connection failure: allow the save. On create store [];
             // on update leave the existing videoObjects untouched.
+            // Log an Error (with stack) so it surfaces in Cloud Run Error
+            // Reporting, letting us find posts whose videoObjects may be
+            // missing/stale due to a YouTube API outage (no auto-retry).
+            console.error(
+              new Error(
+                `[videoObject][CONNECTION_ERROR] videoObjects not updated due to YouTube API failure. ` +
+                  `operation=${operation} postId=${item?.id ?? '(new)'} ` +
+                  `slug=${resolvedData.slug ?? item?.slug ?? ''} ` +
+                  `videoIds=${detectedIds.join(',')}`
+              )
+            )
             if (isCreate) resolvedData.videoObjects = []
           } else {
             resolvedData.videoObjects = objects

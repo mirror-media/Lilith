@@ -64,7 +64,6 @@ function collectThumbnails(thumbnails: any): string[] {
 }
 
 export type VideoObject = {
-  _videoId: string
   name: string
   description: string
   thumbnailUrl: string[]
@@ -72,14 +71,15 @@ export type VideoObject = {
   duration: string
   contentUrl: string
   embedUrl: string
-  regionsAllowed: string[]
+  // Omitted entirely when the video has no `allowed` whitelist, matching the
+  // YouTube API (which drops regionRestriction when unrestricted).
+  regionsAllowed?: string[]
 }
 
 export function buildVideoObject(id: string, item: any): VideoObject {
   const snippet = item?.snippet ?? {}
   const contentDetails = item?.contentDetails ?? {}
-  return {
-    _videoId: id,
+  const videoObject: VideoObject = {
     name: snippet.title ?? '',
     description: snippet.description ?? '',
     thumbnailUrl: collectThumbnails(snippet.thumbnails),
@@ -87,8 +87,12 @@ export function buildVideoObject(id: string, item: any): VideoObject {
     duration: contentDetails.duration ?? '',
     contentUrl: `https://www.youtube.com/watch?v=${id}`,
     embedUrl: `https://www.youtube.com/embed/${id}`,
-    regionsAllowed: contentDetails.regionRestriction?.allowed ?? [],
   }
+  const allowed = contentDetails.regionRestriction?.allowed
+  if (Array.isArray(allowed) && allowed.length > 0) {
+    videoObject.regionsAllowed = allowed
+  }
+  return videoObject
 }
 
 export type FetchStatus = 'ok' | 'invalid' | 'error'
