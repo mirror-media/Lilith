@@ -64,7 +64,6 @@ function collectThumbnails(thumbnails: any): string[] {
 }
 
 export type VideoObject = {
-  _videoId: string
   name: string
   description: string
   thumbnailUrl: string[]
@@ -79,7 +78,6 @@ export function buildVideoObject(id: string, item: any): VideoObject {
   const snippet = item?.snippet ?? {}
   const contentDetails = item?.contentDetails ?? {}
   return {
-    _videoId: id,
     name: snippet.title ?? '',
     description: snippet.description ?? '',
     thumbnailUrl: collectThumbnails(snippet.thumbnails),

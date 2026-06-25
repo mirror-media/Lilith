@@ -15,6 +15,7 @@ import {
   extractYoutubeIds,
   buildVideoObjects,
   sameStringSet,
+  parseYoutubeId,
 } from '../utils/youtube-video-object'
 
 const { allowRoles, admin, moderator, editor, contributor, owner } =
@@ -708,8 +709,10 @@ const listConfigurations = list({
         const existing = Array.isArray(item?.videoObjects)
           ? (item.videoObjects as any[])
           : []
+        // Derive existing video ids from embedUrl (always .../embed/{id}) so we
+        // don't need to store an internal _videoId on each videoObject.
         const existingIds = existing
-          .map((v) => v?._videoId)
+          .map((v) => parseYoutubeId(v?.embedUrl))
           .filter((x): x is string => typeof x === 'string' && !!x)
 
         const isCreate = operation === 'create'
