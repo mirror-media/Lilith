@@ -113,7 +113,10 @@ export default function EditorStep() {
   const filenames = useAppSelector(selectSelectedFilename)
   const inputRef = useRef<HTMLInputElement>(null)
   const checkInputRef = useRef<HTMLInputElement>(null)
+  const checkMediaInputRef = useRef<HTMLInputElement>(null)
+  const checkDailyInputRef = useRef<HTMLInputElement>(null)
   const [shouldShowAlert, setShouldShowAlert] = useState(false)
+  const [waterMarkType, setWaterMarkType] = useState('mirrordaily')
 
   return (
     <Body>
@@ -129,6 +132,24 @@ export default function EditorStep() {
               onClick={() => dispatch(setShouldSetWatermarkToAll())}
             />
             watermark
+          </Button>
+          <Button clickFn={() => checkMediaInputRef.current?.click()}>
+            <WatermarkIcon
+              ref={checkMediaInputRef}
+              type="checkbox"
+              checked={waterMarkType === 'mirrormedia'}
+              onClick={() => setWaterMarkType('mirrormedia')}
+            />
+            週刊
+          </Button>
+          <Button clickFn={() => checkDailyInputRef.current?.click()}>
+            <WatermarkIcon
+              ref={checkDailyInputRef}
+              type="checkbox"
+              checked={waterMarkType === 'mirrordaily'}
+              onClick={() => setWaterMarkType('mirrordaily')}
+            />
+            鏡報
           </Button>
           <Button
             color={'#FB1818'}
@@ -174,7 +195,7 @@ export default function EditorStep() {
             <Item key={uid} uid={uid} />
           ))}
         </ListGroup>
-        <SubmissionButtonAndModal />
+        <SubmissionButtonAndModal waterMarkType={waterMarkType} />
       </Container>
     </Body>
   )
