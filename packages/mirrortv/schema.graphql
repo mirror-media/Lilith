@@ -1423,6 +1423,7 @@ type Post {
   contentApiData: JSON
   source: String
   sotVideoId: String
+  videoObjects: JSON
   topics: Topic
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
@@ -1602,6 +1603,7 @@ input PostUpdateInput {
   contentApiData: JSON
   source: String
   sotVideoId: String
+  videoObjects: JSON
   topics: TopicRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
   manualOrderOfTags: JSON
@@ -1690,6 +1692,7 @@ input PostCreateInput {
   contentApiData: JSON
   source: String
   sotVideoId: String
+  videoObjects: JSON
   topics: TopicRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
   manualOrderOfTags: JSON
