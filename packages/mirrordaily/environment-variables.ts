@@ -32,6 +32,12 @@ const {
   YOUTUBE_API_KEY,
   TOPIC_SERVICE_URL,
   PROMOTE_TOPIC_SERVICE_URL,
+  PROJECT_ID,
+  LOCATION,
+  COPY_QUEUE_NAME,
+  IMAGE_PROCESSOR_URL,
+  SCHEDULER_KEY,
+  IMAGE_COPY_ON_UPLOAD_ENABLED,
 } = process.env
 
 enum DatabaseProvider {
@@ -107,4 +113,12 @@ export default {
   youtube: {
     apiKey: YOUTUBE_API_KEY,
   },
+  projectID: PROJECT_ID || 'mirrordaily',
+  location: LOCATION || 'asia-east1',
+  copyQueueName: COPY_QUEUE_NAME || 'image-copy-retry-dev',
+  imageProcessor: {
+    url: IMAGE_PROCESSOR_URL || '',
+    schedulerKey: SCHEDULER_KEY || '',
+  },
+  imageCopyOnUploadEnabled: IMAGE_COPY_ON_UPLOAD_ENABLED === 'true',
 }
