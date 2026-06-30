@@ -129,7 +129,10 @@ export default function EditorStep() {
               ref={checkInputRef}
               type="checkbox"
               checked={shouldSetWatermarkToAll}
-              onClick={() => dispatch(setShouldSetWatermarkToAll())}
+              onClick={(e) => {
+                e.stopPropagation()
+                dispatch(setShouldSetWatermarkToAll())
+              }}
             />
             watermark
           </Button>
@@ -138,7 +141,10 @@ export default function EditorStep() {
               ref={checkMediaInputRef}
               type="checkbox"
               checked={waterMarkType === 'mirrormedia'}
-              onClick={() => setWaterMarkType('mirrormedia')}
+              onClick={(e) => {
+                e.stopPropagation()
+                setWaterMarkType('mirrormedia')
+              }}
             />
             週刊
           </Button>
@@ -147,7 +153,10 @@ export default function EditorStep() {
               ref={checkDailyInputRef}
               type="checkbox"
               checked={waterMarkType === 'mirrordaily'}
-              onClick={() => setWaterMarkType('mirrordaily')}
+              onClick={(e) => {
+                e.stopPropagation()
+                setWaterMarkType('mirrordaily')
+              }}
             />
             鏡報
           </Button>
