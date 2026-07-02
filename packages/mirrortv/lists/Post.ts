@@ -422,6 +422,23 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
+    // Written on publish/schedule saves; consumed by the hourly backfill cron
+    // (a separate project) together with isVideoObjectsPending.
+    videoIds: json({
+      label: 'Video IDs',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
+    isVideoObjectsPending: checkbox({
+      label: 'Video Objects 待補撈',
+      defaultValue: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
 
     // --- Others ---
     topics: relationship({
@@ -567,6 +584,15 @@ const listConfigurations = list({
 
   graphql: {
     cacheHint: { maxAge: 3600, scope: 'PUBLIC' },
+  },
+
+  db: {
+    // checkbox does not support isIndexed, so inject the index into the
+    // generated Prisma model; keeping it in schema.prisma (instead of only in
+    // a hand-written migration) prevents prisma migrate from seeing drift and
+    // dropping it.
+    extendPrismaSchema: (schema) =>
+      schema.replace(/}\s*$/, '  @@index([isVideoObjectsPending])\n}'),
   },
 
   access: {
@@ -717,6 +743,9 @@ const listConfigurations = list({
 
         const isCreate = operation === 'create'
 
+        resolvedData.videoIds = detectedIds
+        resolvedData.isVideoObjectsPending = false
+
         if (detectedIds.length === 0) {
           resolvedData.videoObjects = []
         } else if (!isCreate && sameStringSet(detectedIds, existingIds)) {
@@ -725,24 +754,19 @@ const listConfigurations = list({
         } else {
           const { objects, hasInvalid, hasConnectionError } =
             await buildVideoObjects(detectedIds)
-          if (hasInvalid) {
-            throw new Error('影片網址無效或非公開影片，無法儲存')
-          }
-          if (hasConnectionError) {
-            // Connection failure: allow the save. On create store [];
-            // on update leave the existing videoObjects untouched.
-            // Log an Error (with stack) so it surfaces in Cloud Run Error
-            // Reporting, letting us find posts whose videoObjects may be
-            // missing/stale due to a YouTube API outage (no auto-retry).
-            console.error(
-              new Error(
-                `[videoObject][CONNECTION_ERROR] videoObjects not updated due to YouTube API failure. ` +
-                  `operation=${operation} postId=${item?.id ?? '(new)'} ` +
-                  `slug=${resolvedData.slug ?? item?.slug ?? ''} ` +
-                  `videoIds=${detectedIds.join(',')}`
-              )
+          if (hasInvalid || hasConnectionError) {
+            // Any unavailable video (unpublished / private / deleted / API
+            // failure): never block the save. Clear videoObjects and mark the
+            // post pending; the hourly backfill cron re-triggers an update,
+            // which re-runs this hook and refetches until every id resolves.
+            resolvedData.videoObjects = []
+            resolvedData.isVideoObjectsPending = true
+            console.log(
+              `[videoObject][PENDING] videoObjects deferred to backfill cron. ` +
+                `operation=${operation} postId=${item?.id ?? '(new)'} ` +
+                `slug=${resolvedData.slug ?? item?.slug ?? ''} ` +
+                `videoIds=${detectedIds.join(',')}`
             )
-            if (isCreate) resolvedData.videoObjects = []
           } else {
             resolvedData.videoObjects = objects
           }

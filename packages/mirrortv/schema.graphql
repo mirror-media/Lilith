@@ -1424,6 +1424,8 @@ type Post {
   source: String
   sotVideoId: String
   videoObjects: JSON
+  videoIds: JSON
+  isVideoObjectsPending: Boolean
   topics: Topic
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
@@ -1498,6 +1500,7 @@ input PostWhereInput {
   contentHtml: StringFilter
   source: StringFilter
   sotVideoId: StringFilter
+  isVideoObjectsPending: BooleanFilter
   topics: TopicWhereInput
   tags: TagManyRelationFilter
   audio: AudioWhereInput
@@ -1552,6 +1555,7 @@ input PostOrderByInput {
   contentHtml: OrderDirection
   source: OrderDirection
   sotVideoId: OrderDirection
+  isVideoObjectsPending: OrderDirection
   ogTitle: OrderDirection
   ogDescription: OrderDirection
   adTraceCode: OrderDirection
@@ -1604,6 +1608,8 @@ input PostUpdateInput {
   source: String
   sotVideoId: String
   videoObjects: JSON
+  videoIds: JSON
+  isVideoObjectsPending: Boolean
   topics: TopicRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
   manualOrderOfTags: JSON
@@ -1693,6 +1699,8 @@ input PostCreateInput {
   source: String
   sotVideoId: String
   videoObjects: JSON
+  videoIds: JSON
+  isVideoObjectsPending: Boolean
   topics: TopicRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
   manualOrderOfTags: JSON
