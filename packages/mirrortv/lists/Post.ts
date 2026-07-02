@@ -771,6 +771,12 @@ const listConfigurations = list({
             resolvedData.videoObjects = objects
           }
         }
+      } else if (item?.isVideoObjectsPending) {
+        // Leaving published/scheduled (archived / back to draft): drop the
+        // pending flag so the backfill cron stops retrying this post.
+        // videoObjects and videoIds stay untouched; re-publishing recomputes
+        // everything above.
+        resolvedData.isVideoObjectsPending = false
       }
 
       return resolvedData
