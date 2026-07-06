@@ -327,6 +327,10 @@ model Post {
   apiDataBrief               Json?
   apiData                    Json?
   publishedDateString        String         @default("")
+  reviewedBy                 User?          @relation("Post_reviewedBy", fields: [reviewedById], references: [id])
+  reviewedById               Int?           @map("reviewedBy")
+  reviewedAt                 DateTime?
+  reviewNote                 String         @default("")
   createdAt                  DateTime?
   updatedAt                  DateTime?
   createdBy                  User?          @relation("Post_createdBy", fields: [createdById], references: [id])
@@ -355,6 +359,7 @@ model Post {
   @@index([publishedDate])
   @@index([pv])
   @@index([WarningId])
+  @@index([reviewedById])
   @@index([createdById])
   @@index([updatedById])
 }
@@ -513,6 +518,7 @@ model User {
   from_Photo_createdBy        Photo[]        @relation("Photo_createdBy")
   from_Photo_updatedBy        Photo[]        @relation("Photo_updatedBy")
   from_Post_lockBy            Post[]         @relation("Post_lockBy")
+  from_Post_reviewedBy        Post[]         @relation("Post_reviewedBy")
   from_Post_createdBy         Post[]         @relation("Post_createdBy")
   from_Post_updatedBy         Post[]         @relation("Post_updatedBy")
   from_PromoteTopic_createdBy PromoteTopic[] @relation("PromoteTopic_createdBy")

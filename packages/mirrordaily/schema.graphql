@@ -1220,6 +1220,9 @@ type Post {
   apiDataBrief: JSON
   apiData: JSON
   publishedDateString: String
+  reviewedBy: User
+  reviewedAt: DateTime
+  reviewNote: String
   trimmedApiData: JSON
   createdAt: DateTime
   updatedAt: DateTime
@@ -1276,6 +1279,9 @@ input PostWhereInput {
   adTrace: StringFilter
   css: StringFilter
   publishedDateString: StringFilter
+  reviewedBy: UserWhereInput
+  reviewedAt: DateTimeNullableFilter
+  reviewNote: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
@@ -1317,6 +1323,8 @@ input PostOrderByInput {
   adTrace: OrderDirection
   css: OrderDirection
   publishedDateString: OrderDirection
+  reviewedAt: OrderDirection
+  reviewNote: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1378,6 +1386,9 @@ input PostUpdateInput {
   apiDataBrief: JSON
   apiData: JSON
   publishedDateString: String
+  reviewedBy: UserRelateToOneForUpdateInput
+  reviewedAt: DateTime
+  reviewNote: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForUpdateInput
@@ -1479,6 +1490,9 @@ input PostCreateInput {
   apiDataBrief: JSON
   apiData: JSON
   publishedDateString: String
+  reviewedBy: UserRelateToOneForCreateInput
+  reviewedAt: DateTime
+  reviewNote: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: UserRelateToOneForCreateInput
@@ -2780,6 +2794,7 @@ type Query {
   hotsCount(where: HotWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
+  trafficDashboardEnabled: Boolean!
 }
 
 union AuthenticatedItem = User
