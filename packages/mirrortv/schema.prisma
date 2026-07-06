@@ -379,6 +379,8 @@ model Post {
   source                             String              @default("")
   sotVideoId                         String              @default("")
   videoObjects                       Json?
+  videoIds                           Json?
+  isVideoObjectsPending              Boolean             @default(false)
   topics                             Topic?              @relation("Post_topics", fields: [topicsId], references: [id])
   topicsId                           Int?                @map("topics")
   tags                               Tag[]               @relation("Post_tags")
@@ -431,6 +433,7 @@ model Post {
   @@index([lockById])
   @@index([createdById])
   @@index([updatedById])
+  @@index([isVideoObjectsPending])
 }
 
 model PromotionVideo {
