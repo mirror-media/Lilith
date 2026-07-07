@@ -15,6 +15,7 @@ import envVar from '../environment-variables'
 // @ts-ignore draft-js does not have typescript definition
 import { RawContentState } from 'draft-js'
 import { ACL, UserRole, State, type Session } from '../type'
+import { computeLockExpireAt } from '../utils/post-lock'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -112,6 +113,87 @@ type MaybeItemFunction<T extends FieldMode, ListTypeInfo> =
   | T
   | ((args: ListTypeInfo) => Promise<T>)
 
+// Atomically (re)acquire the post lock for the current Editor/Moderator.
+// Returns true if the user now holds the lock. Idempotent for the holder, so it
+// is safe to call from multiple field-mode resolvers on the same request.
+const tryAcquireLock = async ({
+  currentUserId,
+  currentUserRole,
+  context,
+  itemId,
+}: {
+  currentUserId: number
+  currentUserRole: UserRole | undefined
+  context: KeystoneContext
+  itemId: number
+}): Promise<boolean> => {
+  // Editor can only edit posts they created
+  if (currentUserRole === UserRole.Editor) {
+    const postCreator = await context.prisma.Post.findUnique({
+      where: { id: itemId },
+      select: { createdBy: { select: { id: true } } },
+    })
+    if (
+      postCreator?.createdBy &&
+      Number(postCreator.createdBy.id) !== currentUserId
+    ) {
+      return false
+    }
+  }
+
+  const newLockExpireAt = computeLockExpireAt(envVar.lockDuration)
+
+  // Atomic lock acquisition: succeed only if unlocked, locked by self, or expired
+  const result = await context.prisma.Post.updateMany({
+    where: {
+      id: itemId,
+      OR: [
+        { lockById: null },
+        { lockById: currentUserId },
+        { lockExpireAt: { lt: new Date() } },
+      ],
+    },
+    data: {
+      lockById: currentUserId,
+      lockExpireAt: newLockExpireAt,
+    },
+  })
+
+  return result.count === 1
+}
+
+// itemView fieldMode resolvers run once per field, so a bare tryAcquireLock
+// would issue one updateMany per field on every item-page load. Memoize the
+// acquisition per request (keyed on the request object, which Keystone scopes
+// the context to) so the whole page resolves with a single acquisition.
+const lockAcquisitionByRequest = new WeakMap<
+  object,
+  Map<string, Promise<boolean>>
+>()
+
+const tryAcquireLockOnce = (args: {
+  currentUserId: number
+  currentUserRole: UserRole | undefined
+  context: KeystoneContext
+  itemId: number
+}): Promise<boolean> => {
+  const requestKey = (args.context.req ?? args.context) as object
+  let cache = lockAcquisitionByRequest.get(requestKey)
+  if (!cache) {
+    cache = new Map()
+    lockAcquisitionByRequest.set(requestKey, cache)
+  }
+  const key = `${args.currentUserId}:${args.itemId}`
+  let pending = cache.get(key)
+  if (!pending) {
+    pending = tryAcquireLock(args)
+    cache.set(key, pending)
+  }
+  return pending
+}
+
+// Field editability: Editor/Moderator may edit only while holding the lock,
+// otherwise read-only. Other roles (e.g. Admin) bypass the lock and may edit.
 const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
   session,
   context,
@@ -121,97 +203,38 @@ const itemViewFunction: MaybeItemFunction<FieldMode, ListTypeInfo> = async ({
   const currentUserRole = session?.data?.role
 
   // @ts-ignore next line
-  //if ([UserRole.Moderator, UserRole.Editor].includes(currentUserRole)) {
   if ([UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
-    const { lockBy, lockExpireAt, createdBy } =
-      await context.prisma.Post.findUnique({
-        where: { id: Number(item?.id) },
-        select: {
-          lockBy: {
-            select: {
-              id: true,
-            },
-          },
-          lockExpireAt: true,
-          createdBy: {
-            select: {
-              id: true,
-            },
-          },
-        },
-      })
-
-    const newLockExpireAt = new Date(
-      new Date().setMinutes(new Date().getMinutes() + envVar.lockDuration, 0, 0)
-    ).toISOString()
-
-    if (!lockBy) {
-      if (createdBy) {
-        if (
-          Number(createdBy?.id) !== currentUserId &&
-          currentUserRole === UserRole.Editor
-        ) {
-          return 'read'
-        }
-      }
-
-      const updatedPost = await context.prisma.Post.update({
-        where: { id: Number(item?.id) },
-        data: {
-          lockBy: {
-            connect: {
-              id: currentUserId,
-            },
-          },
-          lockExpireAt: newLockExpireAt,
-        },
-        select: {
-          lockBy: {
-            select: {
-              id: true,
-            },
-          },
-        },
-      })
-
-      return Number(updatedPost.lockBy?.id) === Number(session?.data?.id)
-        ? 'edit'
-        : 'read'
-    } else if (Number(lockBy?.id) == Number(session?.data?.id)) {
-      return 'edit'
-    } else if (new Date(lockExpireAt).valueOf() < Date.now()) {
-      // 過期的自動讓出，讓出對象為 Moderator 或者文章建立者
-      if (
-        currentUserRole === UserRole.Moderator ||
-        currentUserId === Number(createdBy?.id)
-      ) {
-        const updatedPost = await context.prisma.Post.update({
-          where: { id: Number(item?.id) },
-          data: {
-            lockBy: {
-              connect: {
-                id: currentUserId,
-              },
-            },
-            lockExpireAt: newLockExpireAt,
-          },
-          select: {
-            lockBy: {
-              select: {
-                id: true,
-              },
-            },
-          },
-        })
-
-        return Number(updatedPost.lockBy?.id) === Number(session?.data?.id)
-          ? 'edit'
-          : 'read'
-      }
-    }
-    return 'hidden'
+    const held = await tryAcquireLockOnce({
+      currentUserId,
+      currentUserRole,
+      context,
+      itemId: Number(item?.id),
+    })
+    return held ? 'edit' : 'read'
   }
   return 'edit'
+}
+
+// Heartbeat / release widget visibility: only the lock holder should run the
+// heartbeat, so non-holders and lock-bypassing roles (Admin) get 'hidden'.
+const lockStatusItemViewFunction: MaybeItemFunction<
+  FieldMode,
+  ListTypeInfo
+> = async ({ session, context, item }) => {
+  const currentUserId = Number(session?.data?.id)
+  const currentUserRole = session?.data?.role
+
+  // @ts-ignore next line
+  if ([UserRole.Editor, UserRole.Moderator].includes(currentUserRole)) {
+    const held = await tryAcquireLockOnce({
+      currentUserId,
+      currentUserRole,
+      context,
+      itemId: Number(item?.id),
+    })
+    return held ? 'edit' : 'hidden'
+  }
+  return 'hidden'
 }
 
 const lockByItemViewFunction: MaybeItemFunction<
@@ -282,6 +305,18 @@ const listConfigurations = list({
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
+      },
+    }),
+    lockStatus: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve: () => '',
+      }),
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: lockStatusItemViewFunction },
+        views: './lists/views/post-lock-status/index',
       },
     }),
     // TODO: slug field is deprecated, should be removed in the future
@@ -1062,11 +1097,11 @@ const listConfigurations = list({
       addValidationError,
     }) => {
       if (envVar.accessControlStrategy === ACL.CMS) {
-        // Lock check (existing logic, unchanged)
-        if (
-          context.session?.data?.role !== UserRole.Admin &&
-          context.session?.data?.role !== UserRole.Moderator
-        ) {
+        // Moderators are lock-bound in the editor UI (itemViewFunction), so
+        // they must also be lock-bound on save — otherwise a Moderator whose
+        // lock expired could silently overwrite the current holder's changes.
+        // Only Admin bypasses the lock.
+        if (context.session?.data?.role !== UserRole.Admin) {
           if (operation === 'update') {
             const { lockBy, lockExpireAt } =
               await context.prisma.Post.findUnique({

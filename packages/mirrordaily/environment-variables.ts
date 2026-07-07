@@ -94,7 +94,7 @@ export default {
     storagePath: VIDEOS_STORAGE_PATH || 'public/video-files',
   },
   lockDuration:
-    (typeof LOCK_DURATION === 'string' && parseInt(LOCK_DURATION)) || 30,
+    (typeof LOCK_DURATION === 'string' && parseInt(LOCK_DURATION)) || 10,
   cache: {
     isEnabled: IS_CACHE_ENABLED === 'true',
     identifier: CACHE_IDENTIFIER ?? 'weekly-cms',
