@@ -326,6 +326,7 @@ model Post {
   name                         String            @default("")
   subtitle                     String?
   recommendedTitle             String?
+  recommendedPoll              String?
   state                        String?           @default("draft")
   publishTime                  DateTime?
   categories                   Category[]        @relation("Category_relatedPost")
