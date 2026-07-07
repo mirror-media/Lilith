@@ -43,7 +43,7 @@ const POST_BASE_QUERY = `
   engineers { id name } vocals { id name }
   heroVideo { id name } heroImage { id name } og_image { id name }
   topics { id name }
-  relatedsOne { id slug } relatedsTwo { id slug } relateds { id slug }
+  relateds { id slug }
   tags { id name } related_videos { id name }
 `
 
@@ -577,20 +577,26 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
       },
     }),
+    // TODO: 觀察無影響後刪除欄位定義、schema.prisma 欄位，並執行 migration DROP COLUMN
     relatedsOne: relationship({
       label: '相關文章（一）',
       ref: 'Post',
       many: false,
       ui: {
         views: './lists/views/related-posts-all/index',
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
+    // TODO: 觀察無影響後刪除欄位定義、schema.prisma 欄位，並執行 migration DROP COLUMN
     relatedsTwo: relationship({
       label: '相關文章（二）',
       ref: 'Post',
       many: false,
       ui: {
         views: './lists/views/related-posts-all/index',
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     relateds: relationship({
