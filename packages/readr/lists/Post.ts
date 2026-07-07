@@ -43,6 +43,16 @@ const listConfigurations = list({
       isFilterable: false,
       isOrderable: false,
     }),
+    recommendedPoll: text({
+      label: '建議投票',
+      ui: { displayMode: 'textarea' },
+      validation: { isRequired: false },
+      db: {
+        isNullable: true,
+      },
+      isFilterable: false,
+      isOrderable: false,
+    }),
     state: select({
       label: '狀態',
       options: [
