@@ -586,6 +586,7 @@ const listConfigurations = list({
         views: './lists/views/related-posts-all/index',
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     // TODO: 觀察無影響後刪除欄位定義、schema.prisma 欄位，並執行 migration DROP COLUMN
@@ -597,6 +598,7 @@ const listConfigurations = list({
         views: './lists/views/related-posts-all/index',
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     relateds: relationship({
