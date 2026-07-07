@@ -22,9 +22,7 @@ const { allowRoles, admin, moderator, editor } = utils.accessControl
 enum PostStatus {
   Published = State.Published,
   Draft = State.Draft,
-  Pending = 'pending',
   Scheduled = State.Scheduled,
-  Rejected = 'rejected',
   Archived = State.Archived,
   Invisible = State.Invisible,
 }
@@ -825,16 +823,13 @@ const listConfigurations = list({
       label: '狀態',
       options: [
         { label: '草稿', value: PostStatus.Draft },
-        { label: '待審核', value: PostStatus.Pending },
         { label: '已發布', value: PostStatus.Published },
         { label: '預約發佈', value: PostStatus.Scheduled },
-        { label: '退回修改', value: PostStatus.Rejected },
         { label: '下線', value: PostStatus.Archived },
         { label: '前台不可見', value: PostStatus.Invisible },
       ],
       defaultValue: PostStatus.Draft,
       isIndexed: true,
-      isFilterable: true,
     }),
     publishedDate: timestamp({
       isIndexed: true,
@@ -989,31 +984,6 @@ const listConfigurations = list({
         listView: { fieldMode: 'hidden' },
       },
     }),
-    // Review fields
-    reviewedBy: relationship({
-      ref: 'User',
-      label: '審核人',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
-        listView: { fieldMode: 'read' },
-      },
-    }),
-    reviewedAt: timestamp({
-      label: '審核時間',
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
-        listView: { fieldMode: 'hidden' },
-      },
-    }),
-    reviewNote: text({
-      label: '審核備註',
-      ui: {
-        displayMode: 'textarea',
-        createView: { fieldMode: 'hidden' },
-      },
-    }),
     trimmedApiData: virtual({
       label: '擷取apiData中的前五段內容',
       isFilterable: false,
@@ -1089,13 +1059,7 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    validateInput: async ({
-      operation,
-      item,
-      context,
-      resolvedData,
-      addValidationError,
-    }) => {
+    validateInput: async ({ operation, item, context, addValidationError }) => {
       if (envVar.accessControlStrategy === ACL.CMS) {
         // Moderators are lock-bound in the editor UI (itemViewFunction), so
         // they must also be lock-bound on save — otherwise a Moderator whose
@@ -1125,70 +1089,13 @@ const listConfigurations = list({
             }
           }
         }
-
-        // Review workflow: state transition validation
-        // Skip when there's no session (system / cron / sudo operations)
-        if (
-          operation === 'update' &&
-          resolvedData.state !== undefined &&
-          context.session
-        ) {
-          const oldState = item?.state
-          const newState = resolvedData.state
-          const currentUserRole = context.session?.data?.role
-
-          // Admin has no restrictions
-          if (currentUserRole !== UserRole.Admin) {
-            // Editor / Moderator cannot move directly to Published or Scheduled
-            if (
-              [PostStatus.Published, PostStatus.Scheduled].includes(newState) &&
-              oldState !== PostStatus.Published &&
-              oldState !== PostStatus.Scheduled
-            ) {
-              addValidationError(
-                '文章需經 Admin 審核才能發布，請先提交審核（設為「待審核」）。'
-              )
-            }
-          }
-        }
       }
     },
-    resolveInput: async ({ operation, resolvedData, item, context }) => {
+    resolveInput: async ({ operation, resolvedData }) => {
       const { publishedDate, content, brief, updateTimeStamp } = resolvedData
       if (operation === 'create') {
         resolvedData.publishedDate = new Date(publishedDate.setSeconds(0, 0))
         resolvedData.updatedAt = new Date()
-      }
-
-      // Review workflow: auto-fill review metadata
-      if (operation === 'update' && resolvedData.state !== undefined) {
-        const oldState = item?.state
-        const newState = resolvedData.state
-        const reviewerId = context.session?.data?.id
-
-        // Admin reviews (approve / reject): Pending → Published / Scheduled / Rejected
-        if (
-          oldState === PostStatus.Pending &&
-          [
-            PostStatus.Published,
-            PostStatus.Scheduled,
-            PostStatus.Rejected,
-          ].includes(newState) &&
-          reviewerId
-        ) {
-          resolvedData.reviewedBy = { connect: { id: Number(reviewerId) } }
-          resolvedData.reviewedAt = new Date()
-        }
-
-        // Resubmit: Rejected → Pending (clear previous review metadata)
-        if (
-          oldState === PostStatus.Rejected &&
-          newState === PostStatus.Pending
-        ) {
-          resolvedData.reviewedBy = { disconnect: true }
-          resolvedData.reviewedAt = null
-          resolvedData.reviewNote = ''
-        }
       }
       if (content) {
         resolvedData.apiData = customFields.draftConverter
