@@ -313,7 +313,7 @@ model Post {
   manualOrderOfRelatedVideos Json?
   state                      String?        @default("draft")
   publishedDate              DateTime       @default(now())
-  updateTimeStamp            Boolean        @default(true)
+  updateTimeStamp            Boolean        @default(false)
   pv                         Int?           @default(0)
   isFeatured                 Boolean        @default(false)
   isAdvertised               Boolean        @default(false)
