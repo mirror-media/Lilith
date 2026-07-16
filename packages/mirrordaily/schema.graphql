@@ -1033,6 +1033,8 @@ type Photo {
   name: String
   imageFile: ImageFieldOutput
   waterMark: Boolean
+  watermarkType: String
+  waterMarkDescription: String
   defaultImage: Boolean
   resized: ResizedImages
   resizedWebp: ResizedWebPImages
@@ -1089,6 +1091,7 @@ input PhotoWhereInput {
   id: IDFilter
   name: StringFilter
   waterMark: BooleanFilter
+  watermarkType: StringNullableFilter
   defaultImage: BooleanFilter
   topicKeywords: StringFilter
   copyRight: BooleanFilter
@@ -1102,6 +1105,7 @@ input PhotoOrderByInput {
   id: OrderDirection
   name: OrderDirection
   waterMark: OrderDirection
+  watermarkType: OrderDirection
   defaultImage: OrderDirection
   topicKeywords: OrderDirection
   copyRight: OrderDirection
@@ -1113,6 +1117,7 @@ input PhotoUpdateInput {
   name: String
   imageFile: ImageFieldInput
   waterMark: Boolean
+  watermarkType: String
   defaultImage: Boolean
   topicKeywords: String
   copyRight: Boolean
@@ -1135,6 +1140,7 @@ input PhotoCreateInput {
   name: String
   imageFile: ImageFieldInput
   waterMark: Boolean
+  watermarkType: String
   defaultImage: Boolean
   topicKeywords: String
   copyRight: Boolean
@@ -2780,6 +2786,7 @@ type Query {
   hotsCount(where: HotWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
+  trafficDashboardEnabled: Boolean!
 }
 
 union AuthenticatedItem = User

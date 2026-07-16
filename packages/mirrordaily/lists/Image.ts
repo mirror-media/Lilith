@@ -3,7 +3,7 @@ import { CloudTasksClient, protos } from '@google-cloud/tasks'
 import envVar from '../environment-variables'
 import { utils } from '@mirrormedia/lilith-core'
 import { list, graphql } from '@keystone-6/core'
-import { image, text, virtual, checkbox } from '@keystone-6/core/fields'
+import { image, text, virtual, checkbox, select } from '@keystone-6/core/fields'
 import { getFileURL } from '../utils/common'
 
 const gcsBucket = new Storage().bucket(envVar.gcs.bucket)
@@ -68,8 +68,31 @@ const listConfigurations = list({
       label: '浮水印',
       defaultValue: false,
       ui: {
-        itemView: { fieldMode: 'read' },
+        itemView: { fieldMode: 'hidden' },
       },
+    }),
+    watermarkType: select({
+      label: '',
+      options: [
+        { label: '鏡週刊', value: 'mirrormedia' },
+        { label: '鏡報', value: 'mirrordaily' },
+      ],
+      defaultValue: 'mirrordaily',
+      isIndexed: false,
+    }),
+    waterMarkDescription: virtual({
+      label: '浮水印',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+      },
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item: Record<string, unknown>) {
+          return item.waterMark
+            ? '此圖片已含有浮水印，嵌入文章時會自動顯示，如需修改，請刪除後重新上傳'
+            : '此圖片不含有浮水印，如需修改，請刪除後重新上傳'
+        },
+      }),
     }),
     defaultImage: checkbox({
       label: '預設圖',
