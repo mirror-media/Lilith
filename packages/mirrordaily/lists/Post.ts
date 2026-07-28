@@ -841,7 +841,7 @@ const listConfigurations = list({
     updateTimeStamp: checkbox({
       label: '下次存檔時自動更改成「現在時間」',
       isFilterable: false,
-      defaultValue: true,
+      defaultValue: false,
     }),
     pv: integer({
       label: 'Page View',
