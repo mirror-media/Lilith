@@ -69,7 +69,14 @@ const listConfigurations = list({
   ui: {
     labelField: 'id',
     listView: {
-      initialColumns: ['id', 'order', 'choices'],
+      initialColumns: [
+        'id',
+        'order',
+        'choices',
+        'state',
+        'updatedAt',
+        'updatedBy',
+      ],
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },

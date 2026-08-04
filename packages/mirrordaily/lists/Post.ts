@@ -527,8 +527,6 @@ const listConfigurations = list({
       label: '前言',
       disabledButtons: [
         'code',
-        'bold',
-        'italic',
         'underline',
         'header-two',
         'header-three',
