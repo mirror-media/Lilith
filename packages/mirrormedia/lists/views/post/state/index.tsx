@@ -135,6 +135,12 @@ export const Field = ({
         isDisabled={onChange === undefined}
       />
 
+      <FieldDescription id={`${field.path}-hint`}>
+        <span style={{ color: '#000' }}>
+          未選擇大分類與小分類的文章將維持草稿，不會依發佈時間自動發佈。
+        </span>
+      </FieldDescription>
+
       {showModal && (
         <div
           style={{

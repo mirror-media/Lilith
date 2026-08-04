@@ -73,6 +73,58 @@ type Session = {
   }
 }
 
+// published/scheduled 分類確認邏輯
+type RelCountInput =
+  | {
+      set?: { id: unknown }[]
+      connect?: { id: unknown }[]
+      disconnect?: { id: unknown }[]
+    }
+  | undefined
+
+// 關聯欄位存檔後的最終數量:現有值套用 set/connect/disconnect(不含 nested create)
+function finalRelCount(
+  existing: { id: number | string }[],
+  input: RelCountInput
+): number {
+  if (input?.set) return input.set.length
+  const ids = new Set(existing.map((r) => String(r.id)))
+  for (const c of input?.connect ?? []) ids.add(String(c.id))
+  for (const d of input?.disconnect ?? []) ids.delete(String(d.id))
+  return ids.size
+}
+
+// 存檔後是否同時有大分類與小分類(update 需查 DB 現有值)
+async function willHaveSectionAndCategory(
+  operation: string,
+  item: { id?: string | number | unknown } | undefined,
+  resolvedData: Record<string, any>,
+  context: KeystoneContext
+): Promise<boolean> {
+  let existingSections: { id: number | string }[] = []
+  let existingCategories: { id: number | string }[] = []
+  if (operation === 'update' && item?.id != null) {
+    const existing = await context.prisma.Post.findUnique({
+      where: { id: Number(item.id) },
+      select: {
+        sections: { select: { id: true } },
+        categories: { select: { id: true } },
+      },
+    })
+    existingSections = existing?.sections ?? []
+    existingCategories = existing?.categories ?? []
+  }
+  const sectionCount = finalRelCount(
+    existingSections,
+    resolvedData.sections as RelCountInput
+  )
+  const categoryCount = finalRelCount(
+    existingCategories,
+    resolvedData.categories as RelCountInput
+  )
+  return sectionCount > 0 && categoryCount > 0
+}
+
 function filterPosts(roles: string[]) {
   return ({
     session,
@@ -885,63 +937,19 @@ const listConfigurations = list({
         return
       }
 
-      // published/scheduled 的文章必須至少有一個大分類(Section)與一個小分類(Category)。
-      // 涵蓋 create(主頁新建 + Create related Post 抽屜)與 update(編輯既有文章改狀態)。
+      // 明確選 published/scheduled 才強制要分類;「草稿+未來時間」交給 beforeOperation
       if (operation === 'create' || operation === 'update') {
-        let nextState = resolvedData.state ?? item?.state
-        // 對齊 beforeOperation:publishedDate 是未來 → 稍後會被強制轉成 scheduled,
-        // 所以這裡提前視為 scheduled 檢查,避免「草稿 + 未來發布時間」繞過分類檢查。
-        const pubDate = resolvedData.publishedDate
-        if (pubDate && new Date(pubDate).getTime() > Date.now()) {
-          nextState = 'scheduled'
-        }
+        const nextState = resolvedData.state ?? item?.state
         if (nextState === 'published' || nextState === 'scheduled') {
-          type RelInput =
-            | {
-                set?: { id: unknown }[]
-                connect?: { id: unknown }[]
-                disconnect?: { id: unknown }[]
-              }
-            | undefined
-
-          // 算某個關聯欄位「這次存檔後」的最終數量:從資料庫現有的關聯,套用這次的 set / connect / disconnect(select mode 不會送 nested create)。
-          const finalCount = (
-            existing: { id: number | string }[],
-            input: RelInput
-          ): number => {
-            if (input?.set) return input.set.length
-            const ids = new Set(existing.map((r) => String(r.id)))
-            for (const c of input?.connect ?? []) ids.add(String(c.id))
-            for (const d of input?.disconnect ?? []) ids.delete(String(d.id))
-            return ids.size
-          }
-
-          // create 沒有既有關聯;只有 update 才需要查 DB 現有的 sections/categories。
-          let existingSections: { id: number | string }[] = []
-          let existingCategories: { id: number | string }[] = []
-          if (operation === 'update' && item?.id != null) {
-            const existing = await context.prisma.Post.findUnique({
-              where: { id: Number(item.id) },
-              select: {
-                sections: { select: { id: true } },
-                categories: { select: { id: true } },
-              },
-            })
-            existingSections = existing?.sections ?? []
-            existingCategories = existing?.categories ?? []
-          }
-
-          const sectionCount = finalCount(
-            existingSections,
-            resolvedData.sections as RelInput
+          const ok = await willHaveSectionAndCategory(
+            operation,
+            item,
+            resolvedData,
+            context
           )
-          const categoryCount = finalCount(
-            existingCategories,
-            resolvedData.categories as RelInput
-          )
-          if (sectionCount === 0 || categoryCount === 0) {
+          if (!ok) {
             addValidationError(
-              '已發布／預約發布/已設定發布時間的文章必須至少選擇一個大分類（Section）與一個小分類（Category）'
+              '已發布／預約發布的文章必須至少選擇一個大分類（Section）與一個小分類（Category）'
             )
           }
         }
@@ -1023,20 +1031,45 @@ const listConfigurations = list({
           resolvedData.slug = resolvedData.slug.trim()
           resolvedData.slug = resolvedData.slug.replace(' ', '_')
         }
-        if (resolvedData.publishedDate) {
+        // date 沒被改時 fallback 到 DB, 讓「只補分類、沒動時間」也能觸發轉 scheduled
+        const nextPublishedDate =
+          resolvedData.publishedDate ?? item?.publishedDate
+        if (nextPublishedDate) {
           /* check the publishedDate */
-          if (resolvedData.publishedDate > Date.now()) {
-            resolvedData.state = 'scheduled'
+          if (new Date(nextPublishedDate).getTime() > Date.now()) {
+            // 未來時間→預約發布;archived/invisible 不碰;CMS 缺分類則維持原狀態,系統/API 照舊
+            const nextState = resolvedData.state ?? item?.state
+            const schedulable =
+              nextState === 'draft' ||
+              nextState === 'published' ||
+              nextState === 'scheduled'
+            const isCmsFlow =
+              envVar.accessControlStrategy !== 'gql' && !!context.session
+            if (
+              schedulable &&
+              (!isCmsFlow ||
+                (await willHaveSectionAndCategory(
+                  operation,
+                  item,
+                  resolvedData,
+                  context
+                )))
+            ) {
+              resolvedData.state = 'scheduled'
+            }
           }
           /* end publishedDate check */
-          resolvedData.publishedDateString = new Date(
-            resolvedData.publishedDate
-          ).toLocaleDateString('zh-TW', {
-            timeZone: 'Asia/Taipei',
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-          })
+          // publishedDateString 只在此次真的有改 date 時重算
+          if (resolvedData.publishedDate) {
+            resolvedData.publishedDateString = new Date(
+              resolvedData.publishedDate
+            ).toLocaleDateString('zh-TW', {
+              timeZone: 'Asia/Taipei',
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+            })
+          }
           return
         }
       }
