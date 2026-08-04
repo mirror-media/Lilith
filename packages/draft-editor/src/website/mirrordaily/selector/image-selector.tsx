@@ -487,13 +487,15 @@ export function ImageSelector(props: {
 
   const onImageMetaChange: ImageMetaOnChangeFn = (imageEntityWithMeta) => {
     if (enableMultiSelect) {
-      const foundIndex = selected.findIndex(
-        (ele) => ele?.image?.id === imageEntityWithMeta?.image?.id
+      // 用 map 產生新陣列(immutable)+ functional updater 取最新 state,
+      // React 才會偵測到變化重繪;舊寫法原地改陣列又傳同一 reference 會被跳過
+      setSelected((prev) =>
+        prev.map((ele) =>
+          ele?.image?.id === imageEntityWithMeta?.image?.id
+            ? imageEntityWithMeta
+            : ele
+        )
       )
-      if (foundIndex !== -1) {
-        selected[foundIndex] = imageEntityWithMeta
-        setSelected(selected)
-      }
       return
     }
     setSelected([imageEntityWithMeta])
