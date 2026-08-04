@@ -25,7 +25,8 @@ import {
   useApolloClient,
   useQuery,
 } from '@keystone-6/core/admin-ui/apollo'
-import { sectionsManager } from './sectionsContext'
+import { fieldFilterManager } from '../../shared/fieldFilterManager'
+import { useDialogScope } from '../../shared/useDialogScope'
 
 function useIntersectionObserver(
   cb: IntersectionObserverCallback,
@@ -162,6 +163,7 @@ export const RelationshipSelect = ({
   orderBy: Record<string, any>[]
   currentItemId: string | null
 }) => {
+  const { anchorRef, scopedKey } = useDialogScope()
   const [search, setSearch] = useState('')
   const [loadingIndicatorElement, setLoadingIndicatorElement] =
     useState<null | HTMLElement>(null)
@@ -189,20 +191,21 @@ export const RelationshipSelect = ({
     postData?.post?.sections?.map((s: any) => s.id) || []
   )
 
-  // 當從數據庫查詢到 sections 時，更新 state 並通知 manager
   useEffect(() => {
     if (postData?.post?.sections) {
       const sectionIds = postData.post.sections.map((s: any) => s.id)
       setCurrentSections(sectionIds)
-      sectionsManager.updateSections(sectionIds)
     }
   }, [postData?.post?.sections])
 
   // 訂閱 sections 的變化（來自用戶在表單中的選擇）
   useEffect(() => {
-    const unsubscribe = sectionsManager.subscribe((sectionIds) => {
-      setCurrentSections(sectionIds)
-    })
+    const unsubscribe = fieldFilterManager.subscribe(
+      scopedKey('sections'),
+      (sectionIds) => {
+        setCurrentSections(sectionIds)
+      }
+    )
     return unsubscribe
   }, [])
 
@@ -236,7 +239,7 @@ export const RelationshipSelect = ({
   // 建立完整的 where 條件，包括 sections 過濾
   const where = useMemo(() => {
     const conditions: any = {}
-    
+
     // 如果有搜尋條件，加入搜尋過濾
     if (searchFilter.OR && searchFilter.OR.length > 0) {
       Object.assign(conditions, searchFilter)
@@ -378,14 +381,25 @@ export const RelationshipSelect = ({
     { current: loadingIndicatorElement }
   )
 
+  // anchor 必須在每個 return 分支都 render,useDialogScope 才能在掛載時(不論當下
+  // 落在哪個分支)由它的 DOM 位置解析出正確的 dialog 命名空間。只放在空狀態分支的話,
+  // 若掛載時 sections 已有值(例如 Apollo cache 命中),anchor 不存在 → scope 誤判為 'main'。
+  const scopeAnchor = <span ref={anchorRef} hidden />
+
   if (error) {
-    return <span>Error</span>
+    return (
+      <span>
+        {scopeAnchor}
+        Error
+      </span>
+    )
   }
 
   // 如果沒有選中任何 section，顯示提示訊息
   if (selectedSections.length === 0) {
     return (
       <div style={{ padding: '8px', color: '#666', fontStyle: 'italic' }}>
+        {scopeAnchor}
         請先選擇大分類（Sections），才能選擇小分類（Categories）
       </div>
     )
@@ -394,6 +408,7 @@ export const RelationshipSelect = ({
   if (state.kind === 'one') {
     return (
       <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
+        {scopeAnchor}
         <Select
           onInputChange={(val) => setSearch(val)}
           isLoading={loading || isLoading}
@@ -434,6 +449,7 @@ export const RelationshipSelect = ({
 
   return (
     <LoadingIndicatorContext.Provider value={loadingIndicatorContextVal}>
+      {scopeAnchor}
       <MultiSelect
         onInputChange={(val) => setSearch(val)}
         isLoading={loading || isLoading}
@@ -479,4 +495,3 @@ const relationshipSelectComponents: Partial<typeof selectComponents> = {
     )
   },
 }
-

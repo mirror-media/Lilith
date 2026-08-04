@@ -272,6 +272,9 @@ const listConfigurations = list({
       ],
       defaultValue: 'draft',
       isIndexed: true,
+      ui: {
+        views: './lists/views/post/state/index',
+      },
     }),
     publishedDate: timestamp({
       isIndexed: true,
@@ -867,7 +870,13 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    validateInput: async ({ operation, item, context, addValidationError }) => {
+    validateInput: async ({
+      operation,
+      resolvedData,
+      item,
+      context,
+      addValidationError,
+    }) => {
       if (envVar.accessControlStrategy === 'gql') {
         return
       }
@@ -875,6 +884,69 @@ const listConfigurations = list({
       if (!context.session) {
         return
       }
+
+      // published/scheduled 的文章必須至少有一個大分類(Section)與一個小分類(Category)。
+      // 涵蓋 create(主頁新建 + Create related Post 抽屜)與 update(編輯既有文章改狀態)。
+      if (operation === 'create' || operation === 'update') {
+        let nextState = resolvedData.state ?? item?.state
+        // 對齊 beforeOperation:publishedDate 是未來 → 稍後會被強制轉成 scheduled,
+        // 所以這裡提前視為 scheduled 檢查,避免「草稿 + 未來發布時間」繞過分類檢查。
+        const pubDate = resolvedData.publishedDate
+        if (pubDate && new Date(pubDate).getTime() > Date.now()) {
+          nextState = 'scheduled'
+        }
+        if (nextState === 'published' || nextState === 'scheduled') {
+          type RelInput =
+            | {
+                set?: { id: unknown }[]
+                connect?: { id: unknown }[]
+                disconnect?: { id: unknown }[]
+              }
+            | undefined
+
+          // 算某個關聯欄位「這次存檔後」的最終數量:從資料庫現有的關聯,套用這次的 set / connect / disconnect(select mode 不會送 nested create)。
+          const finalCount = (
+            existing: { id: number | string }[],
+            input: RelInput
+          ): number => {
+            if (input?.set) return input.set.length
+            const ids = new Set(existing.map((r) => String(r.id)))
+            for (const c of input?.connect ?? []) ids.add(String(c.id))
+            for (const d of input?.disconnect ?? []) ids.delete(String(d.id))
+            return ids.size
+          }
+
+          // create 沒有既有關聯;只有 update 才需要查 DB 現有的 sections/categories。
+          let existingSections: { id: number | string }[] = []
+          let existingCategories: { id: number | string }[] = []
+          if (operation === 'update' && item?.id != null) {
+            const existing = await context.prisma.Post.findUnique({
+              where: { id: Number(item.id) },
+              select: {
+                sections: { select: { id: true } },
+                categories: { select: { id: true } },
+              },
+            })
+            existingSections = existing?.sections ?? []
+            existingCategories = existing?.categories ?? []
+          }
+
+          const sectionCount = finalCount(
+            existingSections,
+            resolvedData.sections as RelInput
+          )
+          const categoryCount = finalCount(
+            existingCategories,
+            resolvedData.categories as RelInput
+          )
+          if (sectionCount === 0 || categoryCount === 0) {
+            addValidationError(
+              '已發布／預約發布/已設定發布時間的文章必須至少選擇一個大分類（Section）與一個小分類（Category）'
+            )
+          }
+        }
+      }
+
       if (context.session.data?.role !== UserRole.Admin) {
         if (operation === 'update') {
           const { lockBy } = await context.prisma.Post.findUnique({
