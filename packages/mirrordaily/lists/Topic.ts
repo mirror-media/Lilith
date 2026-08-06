@@ -125,6 +125,15 @@ const listConfigurations = list({
     heroImage: relationship({
       ref: 'Photo',
       label: '首圖',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['imageFile'],
+        inlineCreate: {
+          fields: ['name', 'imageFile', 'waterMark'],
+        },
+        inlineConnect: true,
+        views: './lists/views/sorted-relationship/index',
+      },
     }),
     heroUrl: text({
       label: '首圖連結 URL',
