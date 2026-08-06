@@ -5,6 +5,7 @@ import Audio from './Audio'
 import Contact from './Contact'
 import Video from './Video'
 import EditorChoice from './EditorChoice'
+import EditLog from './EditLog'
 import User from './User'
 import Section from './Section'
 import Image from './Image'
@@ -42,4 +43,5 @@ export const listDefinition = {
   Warning,
   PopularTag,
   Hot: HotNews,
+  EditLog,
 }
