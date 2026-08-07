@@ -6,9 +6,6 @@ import envVar from './environment-variables'
 import express, { Request, Response, NextFunction } from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
-// @ts-ignore: no definition
-import { createMcpExpressHandler } from '@mirrormedia/lilith-core'
-import { isReadrMcpAuthorized, readrMcpTools } from './mcp'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -71,19 +68,6 @@ export default withAuth(
         // Set to 50mb because DraftJS Editor playload could be really large
         const jsonBodyParser = express.json({ limit: '50mb' })
         app.use(jsonBodyParser)
-
-        // MCP shares this Express process and restores the package's existing
-        // Keystone session for every request; no separate credentials exist.
-        app.post(
-          '/mcp',
-          createMcpExpressHandler({
-            name: 'lilith-readr',
-            version: '0.1.0',
-            context: commonContext,
-            tools: readrMcpTools,
-            isAuthorized: isReadrMcpAuthorized,
-          })
-        )
 
         // Check if the request is sent by an authenticated user
         const authenticationMw = async (
