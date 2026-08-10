@@ -18,6 +18,7 @@ const {
   OAUTH_ISSUER,
   OAUTH_SIGNING_SECRET,
   OAUTH_ACCESS_TOKEN_TTL_SECONDS,
+  MCP_RESOURCE_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -69,5 +70,6 @@ export default {
     accessTokenTtlSeconds: Number.isNaN(Number(OAUTH_ACCESS_TOKEN_TTL_SECONDS))
       ? 900
       : Math.max(60, Number(OAUTH_ACCESS_TOKEN_TTL_SECONDS)),
+    resourceUrl: MCP_RESOURCE_URL,
   },
 }

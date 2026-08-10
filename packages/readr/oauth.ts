@@ -170,6 +170,18 @@ export function createOAuthHandlers(commonContext: CommonContext) {
       scopes_supported: [...SUPPORTED_SCOPES],
     })
   }
+  const protectedResourceMetadata = (request: Request, response: Response) => {
+    if (!configured()) return oauthError(response, 'server_error', 'OAuth is not configured', 503)
+    const requestOrigin = `${request.protocol}://${request.get('host')}`
+    const resource = envVar.oauth.resourceUrl || `${requestOrigin}/mcp`
+    return response.json({
+      resource,
+      authorization_servers: [envVar.oauth.issuer!.replace(/\/$/, '')],
+      scopes_supported: [...SUPPORTED_SCOPES],
+      bearer_methods_supported: ['header'],
+      resource_name: 'READr CMS MCP',
+    })
+  }
   const authorize = async (request: Request, response: Response, next: NextFunction) => {
     try {
       if (!configured()) return oauthError(response, 'server_error', 'OAuth is not configured', 503)
@@ -256,5 +268,5 @@ export function createOAuthHandlers(commonContext: CommonContext) {
       return response.json({ access_token: accessToken, token_type: 'Bearer', expires_in: envVar.oauth.accessTokenTtlSeconds, scope: scope.join(' ') })
     } catch (error) { next(error) }
   }
-  return { metadata, authorize, token }
+  return { metadata, protectedResourceMetadata, authorize, token }
 }

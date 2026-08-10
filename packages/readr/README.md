@@ -63,6 +63,8 @@ CMS 管理員在 `OAuthClient` list 註冊 public client，設定唯一的 clien
 
 可設定 scope 為 `readr.posts.read`、`readr.posts.write`、`readr.posts.publish`；每個需要的 scope 都要列入 client 的 `allowedScopes` 與 authorization request 的 `scope`。OAuth metadata 位於 `/.well-known/oauth-authorization-server`。目前只支援 public client，因此禁止 client secret，且強制使用 `code_challenge_method=S256`。
 
+MCP 的 protected-resource metadata 位於 `/.well-known/oauth-protected-resource/mcp`。部署時將 `MCP_RESOURCE_URL` 設為外部 MCP endpoint 的完整 canonical URL（例如 `https://readr-cms-dev-4g6paft7cq-de.a.run.app/mcp`）；`OAUTH_ISSUER` 則維持 authorization server 的 canonical URL（例如 `https://cms-dev.readr.tw`）。
+
 ### Start GraphQL API server only
 我們也可以單獨把 lilith-readr 當作 GraphQL API server 使用。
 透過傳入 `IS_UI_DISABLED` 環境變數，我們可以把 CMS WEB UI 的部分關閉，只留下 GraphQL endpoint `/api/graphql`。

@@ -76,6 +76,10 @@ export default withAuth(
         // narrow package-local OAuth/MCP context interfaces.
         const oauth = createOAuthHandlers(commonContext as any)
         app.get('/.well-known/oauth-authorization-server', oauth.metadata)
+        app.get(
+          '/.well-known/oauth-protected-resource/mcp',
+          oauth.protectedResourceMetadata
+        )
         app.get('/oauth/authorize', oauth.authorize)
         app.post('/oauth/token', oauth.token)
         app.post('/mcp', createReadrMcpHandler(commonContext as any))

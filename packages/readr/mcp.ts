@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from 'express'
+import envVar from './environment-variables'
 import { CommonContext, verifyAccessToken } from './oauth'
 
 type McpTextContent = { type: 'text'; text: string }
@@ -397,6 +398,12 @@ function accessToken(request: Request) {
   return authorization.slice('Bearer '.length)
 }
 
+function protectedResourceMetadataUrl(request: Request) {
+  const resourceUrl =
+    envVar.oauth.resourceUrl || `${request.protocol}://${request.get('host')}/mcp`
+  return new URL('/.well-known/oauth-protected-resource/mcp', resourceUrl).toString()
+}
+
 async function getAuthorizedContext(
   commonContext: CommonContext,
   request: Request,
@@ -453,6 +460,10 @@ export function createReadrMcpHandler(commonContext: CommonContext) {
       const rpcRequest = request.body
       const context = await getAuthorizedContext(commonContext, request, response)
       if (!context) {
+        response.set(
+          'WWW-Authenticate',
+          `Bearer resource_metadata="${protectedResourceMetadataUrl(request)}"`
+        )
         return response.status(401).json({
           jsonrpc: JSON_RPC_VERSION,
           id: rpcRequest.id ?? null,
