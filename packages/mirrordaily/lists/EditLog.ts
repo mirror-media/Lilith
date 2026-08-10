@@ -4,7 +4,7 @@ import { relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
 
 import { formatChangedList } from '../utils/formatChangedList'
 
-const { allowRoles, admin, moderator } = utils.accessControl
+const { allowRoles, admin } = utils.accessControl
 
 type DraftContent = {
   blocks?: { text: string }[]
@@ -111,7 +111,7 @@ const listConfigurations = list({
 
   access: {
     operation: {
-      query: allowRoles(admin, moderator),
+      query: allowRoles(admin),
       create: () => false,
       update: () => false,
       delete: () => false,
