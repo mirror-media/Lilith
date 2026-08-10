@@ -63,6 +63,8 @@ CMS 管理員在 `OAuthClient` list 註冊 public client，設定唯一的 clien
 
 可設定 scope 為 `readr.posts.read`、`readr.posts.write`、`readr.posts.publish`；每個需要的 scope 都要列入 client 的 `allowedScopes` 與 authorization request 的 `scope`。OAuth metadata 位於 `/.well-known/oauth-authorization-server`。目前只支援 public client，因此禁止 client secret，且強制使用 `code_challenge_method=S256`。
 
+支援 Dynamic Client Registration：`POST /oauth/register`。僅接受 public client（`token_endpoint_auth_method: none`）、`authorization_code`、`code` response type，並要求 `redirect_uris` 為 HTTPS 或 localhost HTTP URI；成功回傳 `client_id`。
+
 MCP 的 protected-resource metadata 位於 `/.well-known/oauth-protected-resource/mcp`。部署時將 `MCP_RESOURCE_URL` 設為外部 MCP endpoint 的完整 canonical URL（例如 `https://readr-cms-dev-4g6paft7cq-de.a.run.app/mcp`）；`OAUTH_ISSUER` 則維持 authorization server 的 canonical URL（例如 `https://cms-dev.readr.tw`）。
 
 ### Start GraphQL API server only

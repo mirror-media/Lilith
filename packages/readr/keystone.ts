@@ -80,6 +80,7 @@ export default withAuth(
           '/.well-known/oauth-protected-resource/mcp',
           oauth.protectedResourceMetadata
         )
+        app.post('/oauth/register', oauth.register)
         app.get('/oauth/authorize', oauth.authorize)
         app.post('/oauth/token', oauth.token)
         app.post('/mcp', createReadrMcpHandler(commonContext as any))

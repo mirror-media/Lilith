@@ -99,6 +99,20 @@ function stringArray(value: unknown) {
     : []
 }
 
+function isValidRedirectUri(value: string) {
+  try {
+    const url = new URL(value)
+    if (url.hash) return false
+    return (
+      url.protocol === 'https:' ||
+      (url.protocol === 'http:' &&
+        (url.hostname === 'localhost' || url.hostname === '127.0.0.1'))
+    )
+  } catch {
+    return false
+  }
+}
+
 function signAccessToken(claims: Omit<AccessTokenClaims, 'iss' | 'exp'>) {
   const now = Math.floor(Date.now() / 1000)
   const payload: AccessTokenClaims = {
@@ -165,10 +179,61 @@ export function createOAuthHandlers(commonContext: CommonContext) {
       token_endpoint: `${issuer}/oauth/token`,
       response_types_supported: ['code'],
       grant_types_supported: ['authorization_code'],
+      registration_endpoint: `${issuer}/oauth/register`,
       code_challenge_methods_supported: ['S256'],
       token_endpoint_auth_methods_supported: ['none'],
       scopes_supported: [...SUPPORTED_SCOPES],
     })
+  }
+  const register = async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      if (!configured()) return oauthError(response, 'server_error', 'OAuth is not configured', 503)
+      const redirectUris = stringArray(request.body?.redirect_uris)
+      const clientName = getSingle(request.body?.client_name) || 'Dynamic OAuth client'
+      const requestedScopes = (getSingle(request.body?.scope) || 'readr.posts.read')
+        .split(' ')
+        .filter(Boolean)
+      const tokenEndpointAuthMethod =
+        getSingle(request.body?.token_endpoint_auth_method) || 'none'
+      const grantTypes = stringArray(request.body?.grant_types)
+      const responseTypes = stringArray(request.body?.response_types)
+      if (
+        redirectUris.length === 0 ||
+        redirectUris.some((uri) => !isValidRedirectUri(uri)) ||
+        requestedScopes.length === 0 ||
+        requestedScopes.some((scope) => !SUPPORTED_SCOPES.has(scope)) ||
+        tokenEndpointAuthMethod !== 'none' ||
+        (grantTypes.length > 0 && !grantTypes.every((type) => type === 'authorization_code')) ||
+        (responseTypes.length > 0 && !responseTypes.every((type) => type === 'code'))
+      ) {
+        return oauthError(
+          response,
+          'invalid_client_metadata',
+          'A public client needs valid redirect_uris, supported scopes, authorization_code, and token_endpoint_auth_method=none'
+        )
+      }
+      const clientId = `readr_${randomBytes(24).toString('base64url')}`
+      const context = await commonContext.withRequest(request, response)
+      await context.sudo().query.OAuthClient.createOne?.({
+        data: {
+          name: clientName,
+          clientId,
+          redirectUris,
+          allowedScopes: requestedScopes,
+          isActive: true,
+        },
+      })
+      return response.status(201).json({
+        client_id: clientId,
+        client_id_issued_at: Math.floor(Date.now() / 1000),
+        client_name: clientName,
+        redirect_uris: redirectUris,
+        grant_types: ['authorization_code'],
+        response_types: ['code'],
+        token_endpoint_auth_method: 'none',
+        scope: requestedScopes.join(' '),
+      })
+    } catch (error) { next(error) }
   }
   const protectedResourceMetadata = (request: Request, response: Response) => {
     if (!configured()) return oauthError(response, 'server_error', 'OAuth is not configured', 503)
@@ -268,5 +333,5 @@ export function createOAuthHandlers(commonContext: CommonContext) {
       return response.json({ access_token: accessToken, token_type: 'Bearer', expires_in: envVar.oauth.accessTokenTtlSeconds, scope: scope.join(' ') })
     } catch (error) { next(error) }
   }
-  return { metadata, protectedResourceMetadata, authorize, token }
+  return { metadata, protectedResourceMetadata, register, authorize, token }
 }
