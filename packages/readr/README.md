@@ -55,6 +55,13 @@ DATABASE_URL=postgres://anotherAccount:anotherPasswd@localhost:5433/anotherDatab
 ### GraphQL playground
 起 lilith-readr CMS 服務後，我們可以透過 [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql) 來使用 GraphQL playground。
 
+### MCP endpoint
+
+READr 也在同一個 Keystone/Express process 提供 MCP Streamable HTTP endpoint：`POST /mcp`。
+它不使用另一組 API key；每個 MCP request 都會由 Keystone 還原既有的 session，因此權限和 Admin UI 相同，且各 list 的 access control 仍由 `context.query` 強制執行。
+
+目前 READr tools 包含 `list_recent_posts`、`get_post`、`get_posts`、`search_posts` 和 `filter_posts`。`filter_posts` 的 category 即 CMS 中的文章 section，可依 category、writer、state、style 組合篩選。要讓其他 package 啟用 MCP，請在它們的 `extendExpressApp` 掛上 `createMcpExpressHandler`，並提供該 package 的 `commonContext`、tools，以及以本身 session 判斷的 `isAuthorized`。
+
 ### Start GraphQL API server only
 我們也可以單獨把 lilith-readr 當作 GraphQL API server 使用。
 透過傳入 `IS_UI_DISABLED` 環境變數，我們可以把 CMS WEB UI 的部分關閉，只留下 GraphQL endpoint `/api/graphql`。
