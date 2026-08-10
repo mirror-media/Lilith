@@ -18,8 +18,6 @@ import ProjectNote from './ProjectNote'
 import NoteCategory from './NoteCategory'
 import Award from './Award'
 import PageVariable from './PageVariable'
-import OAuthClient from './OAuthClient'
-import OAuthAuthorizationCode from './OAuthAuthorizationCode'
 
 export const listDefinition = {
   EditorChoice,
@@ -42,6 +40,4 @@ export const listDefinition = {
   ProjectNote,
   NoteCategory,
   Quote,
-  OAuthClient,
-  OAuthAuthorizationCode,
 }

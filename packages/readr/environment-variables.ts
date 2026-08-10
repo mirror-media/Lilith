@@ -15,9 +15,6 @@ const {
   MEMORY_CACHE_SIZE,
   GCS_BASE_URL,
   INVALID_CDN_CACHE_SERVER_URL,
-  OAUTH_ISSUER,
-  OAUTH_SIGNING_SECRET,
-  OAUTH_ACCESS_TOKEN_TTL_SECONDS,
 } = process.env
 
 enum DatabaseProvider {
@@ -63,11 +60,4 @@ export default {
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
-  oauth: {
-    issuer: OAUTH_ISSUER,
-    signingSecret: OAUTH_SIGNING_SECRET,
-    accessTokenTtlSeconds: Number.isNaN(Number(OAUTH_ACCESS_TOKEN_TTL_SECONDS))
-      ? 900
-      : Math.max(60, Number(OAUTH_ACCESS_TOKEN_TTL_SECONDS)),
-  },
 }

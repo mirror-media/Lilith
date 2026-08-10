@@ -317,35 +317,6 @@ model User {
   from_NoteCategory_updatedBy     NoteCategory[]     @relation("NoteCategory_updatedBy")
   from_Quote_createdBy            Quote[]            @relation("Quote_createdBy")
   from_Quote_updatedBy            Quote[]            @relation("Quote_updatedBy")
-  from_OAuthAuthorizationCode_user OAuthAuthorizationCode[] @relation("OAuthAuthorizationCode_user")
-}
-
-model OAuthClient {
-  id            Int                      @id @default(autoincrement())
-  name          String                   @default("")
-  clientId      String                   @unique @default("")
-  redirectUris  Json
-  allowedScopes Json
-  isActive      Boolean                  @default(true)
-  authorizationCodes OAuthAuthorizationCode[] @relation("OAuthAuthorizationCode_client")
-}
-
-model OAuthAuthorizationCode {
-  id            Int         @id @default(autoincrement())
-  codeHash      String      @unique @default("")
-  client        OAuthClient @relation("OAuthAuthorizationCode_client", fields: [clientId], references: [id])
-  clientId      Int         @map("client")
-  user          User        @relation("OAuthAuthorizationCode_user", fields: [userId], references: [id])
-  userId        Int         @map("user")
-  redirectUri   String      @default("")
-  codeChallenge String      @default("")
-  scope         String      @default("")
-  expiresAt     DateTime
-  usedAt        DateTime?
-
-  @@index([clientId])
-  @@index([userId])
-  @@index([expiresAt])
 }
 
 model Post {

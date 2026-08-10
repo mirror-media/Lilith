@@ -6,8 +6,6 @@ import envVar from './environment-variables'
 import express, { Request, Response, NextFunction } from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
-import { createReadrMcpHandler } from './mcp'
-import { createOAuthHandlers } from './oauth'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -70,15 +68,6 @@ export default withAuth(
         // Set to 50mb because DraftJS Editor playload could be really large
         const jsonBodyParser = express.json({ limit: '50mb' })
         app.use(jsonBodyParser)
-        app.use(express.urlencoded({ extended: false }))
-
-        // Keystone's generated context is structurally compatible with the
-        // narrow package-local OAuth/MCP context interfaces.
-        const oauth = createOAuthHandlers(commonContext as any)
-        app.get('/.well-known/oauth-authorization-server', oauth.metadata)
-        app.get('/oauth/authorize', oauth.authorize)
-        app.post('/oauth/token', oauth.token)
-        app.post('/mcp', createReadrMcpHandler(commonContext as any))
 
         // Check if the request is sent by an authenticated user
         const authenticationMw = async (
