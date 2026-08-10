@@ -6,8 +6,8 @@ import envVar from './environment-variables'
 import express, { Request, Response, NextFunction } from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
-import { createMcpExpressHandler } from '@mirrormedia/lilith-core'
-import { isReadrMcpAuthorized, readrMcpTools } from './mcp'
+import { createReadrMcpHandler } from './mcp'
+import { createOAuthHandlers } from './oauth'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -61,32 +61,29 @@ export default withAuth(
       },
     },
     server: {
-      healthCheck: {
-        path: '/health_check',
-        data: { status: 'healthy' },
-      },
+	  healthCheck: {
+	    path: '/health_check',
+	    data: { status: 'healthy' },
+	  },
       extendExpressApp: (app, commonContext) => {
         // This middleware is available in Express v4.16.0 onwards
         // Set to 50mb because DraftJS Editor playload could be really large
         const jsonBodyParser = express.json({ limit: '50mb' })
         app.use(jsonBodyParser)
+        app.use(express.urlencoded({ extended: false }))
 
-        // MCP shares this Express process and restores the package's existing
-        // Keystone session for every request; no separate credentials exist.
-        // Mounted only when IS_MCP_ENABLED=true on the target environment, so
-        // promoting this code to staging/prod does not expose the endpoint.
-        if (envVar.isMcpEnabled) {
-          app.post(
-            '/mcp',
-            createMcpExpressHandler({
-              name: 'lilith-readr',
-              version: '0.1.0',
-              context: commonContext,
-              tools: readrMcpTools,
-              isAuthorized: isReadrMcpAuthorized,
-            })
-          )
-        }
+        // Keystone's generated context is structurally compatible with the
+        // narrow package-local OAuth/MCP context interfaces.
+        const oauth = createOAuthHandlers(commonContext as any)
+        app.get('/.well-known/oauth-authorization-server', oauth.metadata)
+        app.get(
+          '/.well-known/oauth-protected-resource/mcp',
+          oauth.protectedResourceMetadata
+        )
+        app.post('/oauth/register', oauth.register)
+        app.get('/oauth/authorize', oauth.authorize)
+        app.post('/oauth/token', oauth.token)
+        app.post('/mcp', createReadrMcpHandler(commonContext as any))
 
         // Check if the request is sent by an authenticated user
         const authenticationMw = async (
