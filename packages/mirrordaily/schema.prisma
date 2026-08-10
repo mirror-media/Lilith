@@ -230,6 +230,7 @@ model Photo {
   imageFile_height            Int?
   imageFile_id                String?
   waterMark                   Boolean        @default(false)
+  watermarkType               String?        @default("mirrordaily")
   defaultImage                Boolean        @default(false)
   topicKeywords               String         @default("")
   copyRight                   Boolean        @default(false)
@@ -312,7 +313,7 @@ model Post {
   manualOrderOfRelatedVideos Json?
   state                      String?        @default("draft")
   publishedDate              DateTime       @default(now())
-  updateTimeStamp            Boolean        @default(true)
+  updateTimeStamp            Boolean        @default(false)
   pv                         Int?           @default(0)
   isFeatured                 Boolean        @default(false)
   isAdvertised               Boolean        @default(false)
@@ -535,6 +536,8 @@ model User {
   from_PopularTag_updatedBy   PopularTag[]   @relation("PopularTag_updatedBy")
   from_Hot_createdBy          Hot[]          @relation("Hot_createdBy")
   from_Hot_updatedBy          Hot[]          @relation("Hot_updatedBy")
+  from_EditLog_createdBy      EditLog[]      @relation("EditLog_createdBy")
+  from_EditLog_updatedBy      EditLog[]      @relation("EditLog_updatedBy")
 
   @@index([authorId])
 }
@@ -676,6 +679,26 @@ model Hot {
   @@index([hotexternalId])
   @@index([state])
   @@index([heroImageId])
+  @@index([createdById])
+  @@index([updatedById])
+}
+
+model EditLog {
+  id          Int       @id @default(autoincrement())
+  name        String    @default("")
+  operation   String    @default("")
+  postId      String    @default("")
+  changedList String    @default("")
+  brief       Json?
+  content     Json?
+  createdAt   DateTime?
+  updatedAt   DateTime?
+  createdBy   User?     @relation("EditLog_createdBy", fields: [createdById], references: [id])
+  createdById Int?      @map("createdBy")
+  updatedBy   User?     @relation("EditLog_updatedBy", fields: [updatedById], references: [id])
+  updatedById Int?      @map("updatedBy")
+
+  @@index([postId])
   @@index([createdById])
   @@index([updatedById])
 }

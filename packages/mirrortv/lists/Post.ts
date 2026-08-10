@@ -11,6 +11,12 @@ import {
   virtual,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
+import {
+  extractYoutubeIds,
+  buildVideoObjects,
+  sameStringSet,
+  parseYoutubeId,
+} from '../utils/youtube-video-object'
 
 const { allowRoles, admin, moderator, editor, contributor, owner } =
   utils.accessControl
@@ -71,6 +77,34 @@ function filterPosts(roles: UserRole[]) {
         return { state: { in: [PostState.Published] } }
     }
   }
+}
+
+async function getHeroVideoYoutubeUrl(
+  context: any,
+  resolvedData: any,
+  item: any
+): Promise<string> {
+  let videoId: string | number | undefined
+  const hv = resolvedData?.heroVideo
+  if (hv === null || hv?.disconnect) return ''
+  if (hv?.connect?.id !== undefined) videoId = hv.connect.id
+  else if (typeof hv?.connect === 'string') videoId = hv.connect
+  if (videoId === undefined) videoId = item?.heroVideoId
+  if (!videoId) return ''
+  const video = await context.sudo().query.Video.findOne({
+    where: { id: String(videoId) },
+    query: 'youtubeUrl',
+  })
+  return video?.youtubeUrl ?? ''
+}
+
+function isPublishTarget(resolvedData: any, item: any): boolean {
+  let state = resolvedData?.state ?? item?.state
+  const publishTime = resolvedData?.publishTime
+  if (publishTime && new Date(publishTime).getTime() > Date.now()) {
+    state = PostState.Scheduled
+  }
+  return state === PostState.Published || state === PostState.Scheduled
 }
 
 const listConfigurations = list({
@@ -381,6 +415,30 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
+    videoObjects: json({
+      label: 'Video Objects (JSON-LD)',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
+    // Written on publish/schedule saves; consumed by the hourly backfill cron
+    // (a separate project) together with isVideoObjectsPending.
+    videoIds: json({
+      label: 'Video IDs',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
+    isVideoObjectsPending: checkbox({
+      label: 'Video Objects 待補撈',
+      defaultValue: false,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
+    }),
 
     // --- Others ---
     topics: relationship({
@@ -404,6 +462,15 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
+      },
+    }),
+    tags_algo: relationship({
+      label: '演算法標籤',
+      ref: 'Tag',
+      many: true,
+      ui: {
+        views: './lists/views/sorted-relationship/index',
+        createView: { fieldMode: 'hidden' },
       },
     }),
     audio: relationship({ label: '音檔', ref: 'Audio' }),
@@ -490,6 +557,23 @@ const listConfigurations = list({
         },
       }),
     }),
+
+    preview: virtual({
+      field: graphql.field({
+        type: graphql.JSON,
+        resolve(item: Record<string, unknown>): Record<string, string> {
+          return {
+            href: `${envVar.previewServer.path}/story/${item?.slug}`,
+            label: 'Preview',
+          }
+        },
+      }),
+      ui: {
+        views: './lists/views/link-button',
+        createView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
   },
 
   ui: {
@@ -509,6 +593,15 @@ const listConfigurations = list({
 
   graphql: {
     cacheHint: { maxAge: 3600, scope: 'PUBLIC' },
+  },
+
+  db: {
+    // checkbox does not support isIndexed, so inject the index into the
+    // generated Prisma model; keeping it in schema.prisma (instead of only in
+    // a hand-written migration) prevents prisma migrate from seeing drift and
+    // dropping it.
+    extendPrismaSchema: (schema) =>
+      schema.replace(/}\s*$/, '  @@index([isVideoObjectsPending])\n}'),
   },
 
   access: {
@@ -555,7 +648,7 @@ const listConfigurations = list({
   },
 
   hooks: {
-    resolveInput: async ({ resolvedData, item }) => {
+    resolveInput: async ({ resolvedData, item, operation, context }) => {
       // 清理控制字元
       for (const key in resolvedData) {
         if (Object.prototype.hasOwnProperty.call(resolvedData, key)) {
@@ -626,6 +719,73 @@ const listConfigurations = list({
       // Slug 格式化
       if (resolvedData.slug) {
         resolvedData.slug = resolvedData.slug.trim().replace(/\s+/g, '_')
+      }
+
+      // --- videoObjects (YouTube JSON-LD) ---
+      // Only process when publishing / scheduling; drafts are left untouched
+      // (no fetch, no write, no clear, no block).
+      if (isPublishTarget(resolvedData, item)) {
+        const heroVideoYoutubeUrl = await getHeroVideoYoutubeUrl(
+          context,
+          resolvedData,
+          item
+        )
+        const contentApiData =
+          resolvedData.contentApiData ?? item?.contentApiData
+        const sotVideoId = (resolvedData.sotVideoId ?? item?.sotVideoId) as
+          | string
+          | null
+        const detectedIds = extractYoutubeIds({
+          contentApiData,
+          sotVideoId,
+          heroVideoYoutubeUrl,
+        })
+
+        const existing = Array.isArray(item?.videoObjects)
+          ? (item.videoObjects as any[])
+          : []
+        // Derive existing video ids from embedUrl (always .../embed/{id}) so we
+        // don't need to store an internal _videoId on each videoObject.
+        const existingIds = existing
+          .map((v) => parseYoutubeId(v?.embedUrl))
+          .filter((x): x is string => typeof x === 'string' && !!x)
+
+        const isCreate = operation === 'create'
+
+        resolvedData.videoIds = detectedIds
+        resolvedData.isVideoObjectsPending = false
+
+        if (detectedIds.length === 0) {
+          resolvedData.videoObjects = []
+        } else if (!isCreate && sameStringSet(detectedIds, existingIds)) {
+          // id set unchanged: keep existing data, do not refetch
+          // (a YouTube takedown should retain the old JSON-LD).
+        } else {
+          const { objects, hasInvalid, hasConnectionError } =
+            await buildVideoObjects(detectedIds)
+          if (hasInvalid || hasConnectionError) {
+            // Any unavailable video (unpublished / private / deleted / API
+            // failure): never block the save. Clear videoObjects and mark the
+            // post pending; the hourly backfill cron re-triggers an update,
+            // which re-runs this hook and refetches until every id resolves.
+            resolvedData.videoObjects = []
+            resolvedData.isVideoObjectsPending = true
+            console.log(
+              `[videoObject][PENDING] videoObjects deferred to backfill cron. ` +
+                `operation=${operation} postId=${item?.id ?? '(new)'} ` +
+                `slug=${resolvedData.slug ?? item?.slug ?? ''} ` +
+                `videoIds=${detectedIds.join(',')}`
+            )
+          } else {
+            resolvedData.videoObjects = objects
+          }
+        }
+      } else if (item?.isVideoObjectsPending) {
+        // Leaving published/scheduled (archived / back to draft): drop the
+        // pending flag so the backfill cron stops retrying this post.
+        // videoObjects and videoIds stay untouched; re-publishing recomputes
+        // everything above.
+        resolvedData.isVideoObjectsPending = false
       }
 
       return resolvedData
@@ -724,7 +884,7 @@ const listConfigurations = list({
             return
           }
 
-          // 定義抓取欄位
+          //  定義抓取欄位
           const fullQuery = `
             id slug name subtitle state publishTime publishedDateString
             otherbyline heroCaption heroImageSize style source
@@ -867,9 +1027,9 @@ const listConfigurations = list({
             },
           })
 
-          console.log(`[EditLog] ${operation} 成功紀錄: ${postSlug}`)
+          console.log(`[EditLog] ${operation} 成功紀錄 : ${postSlug}`)
         } catch (err) {
-          console.error(`[EditLog] ${operation} 發生錯誤:`, err)
+          console.error(`[EditLog] ${operation} 發生錯誤 :`, err)
         }
       }
     },

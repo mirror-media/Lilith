@@ -7,6 +7,7 @@ import {
   select,
   timestamp,
   virtual,
+  json,
 } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
@@ -173,6 +174,19 @@ const listConfigurations = list({
       label: '分類',
       ref: 'Category',
       many: true,
+      ui: {
+        labelField: 'name',
+        displayMode: 'select',
+        views: './lists/views/post/categories/index',
+      },
+    }),
+    manualOrderOfCategories: json({
+      isFilterable: false,
+      label: '分類手動排序結果',
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+      },
     }),
 
     source: text({
@@ -260,4 +274,14 @@ if (envVar.invalidateCDNCacheServerURL) {
   }
 }
 
-export default extendedListConfigurations
+export default utils.addManualOrderRelationshipFields(
+  [
+    {
+      fieldName: 'manualOrderOfCategories',
+      targetFieldName: 'categories',
+      targetListName: 'Category',
+      targetListLabelField: 'name',
+    },
+  ],
+  extendedListConfigurations
+)

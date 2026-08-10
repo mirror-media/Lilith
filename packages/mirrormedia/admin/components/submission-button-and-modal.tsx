@@ -3,7 +3,10 @@ import { convertStringToFile } from '../utils'
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import Button from './button'
 import { useAppSelector } from '../redux/hooks'
-import { selectFiles } from '../redux/features/multi-images/selector'
+import {
+  selectFiles,
+  selectEventName,
+} from '../redux/features/multi-images/selector'
 import { isEqual } from 'lodash-es'
 import { useDispatch } from 'react-redux'
 import { resetAllState } from '../redux/features/multi-images/slice'
@@ -48,6 +51,7 @@ export default function SubmissionButtonAndModal({
 }: SubmissionButtonAndModalProps) {
   const dispatch = useDispatch()
   const files = useAppSelector(selectFiles, isEqual)
+  const eventName = useAppSelector(selectEventName)
 
   const [addPhotos, { data, loading, error, reset }] = useMutation(gql`
     mutation AddPhotos($data: [PhotoCreateInput!]!) {
@@ -76,15 +80,18 @@ export default function SubmissionButtonAndModal({
       })
       .map((result) => result.value)
 
+    const trimmedEventName = eventName.trim()
+
     addPhotos({
       variables: {
         data: data.map((d) => ({
-          name: d.name,
+          name: trimmedEventName ? `${trimmedEventName}-${d.name}` : d.name,
           imageFile: {
             upload: d.file,
           },
           waterMark: d.shouldSetWatermark,
           watermarkType: waterMarkType || 'mirrormedia',
+          ...(trimmedEventName && { topicKeywords: trimmedEventName }),
         })),
       },
     })

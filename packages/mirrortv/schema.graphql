@@ -1050,11 +1050,13 @@ type External {
   tagsCount(where: TagWhereInput! = {}): Int
   categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   categoriesCount(where: CategoryWhereInput! = {}): Int
+  manualOrderOfCategories: JSON
   source: String
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
   updatedBy: User
+  categoriesInInputOrder: [Category]
 }
 
 input ExternalWhereUniqueInput {
@@ -1120,6 +1122,7 @@ input ExternalUpdateInput {
   content: JSON
   tags: TagRelateToManyForUpdateInput
   categories: CategoryRelateToManyForUpdateInput
+  manualOrderOfCategories: JSON
   source: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1154,6 +1157,7 @@ input ExternalCreateInput {
   content: JSON
   tags: TagRelateToManyForCreateInput
   categories: CategoryRelateToManyForCreateInput
+  manualOrderOfCategories: JSON
   source: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -1419,10 +1423,15 @@ type Post {
   contentApiData: JSON
   source: String
   sotVideoId: String
+  videoObjects: JSON
+  videoIds: JSON
+  isVideoObjectsPending: Boolean
   topics: Topic
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   manualOrderOfTags: JSON
+  tags_algo(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tags_algoCount(where: TagWhereInput! = {}): Int
   audio: Audio
   download(where: DownloadWhereInput! = {}, orderBy: [DownloadOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DownloadWhereUniqueInput): [Download!]
   downloadCount(where: DownloadWhereInput! = {}): Int
@@ -1444,6 +1453,7 @@ type Post {
   lockBy: User
   lockExpireAt: DateTime
   trimmedApiData: JSON
+  preview: JSON
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: User
@@ -1492,8 +1502,10 @@ input PostWhereInput {
   contentHtml: StringFilter
   source: StringFilter
   sotVideoId: StringFilter
+  isVideoObjectsPending: BooleanFilter
   topics: TopicWhereInput
   tags: TagManyRelationFilter
+  tags_algo: TagManyRelationFilter
   audio: AudioWhereInput
   download: DownloadManyRelationFilter
   relatedPosts: PostManyRelationFilter
@@ -1546,6 +1558,7 @@ input PostOrderByInput {
   contentHtml: OrderDirection
   source: OrderDirection
   sotVideoId: OrderDirection
+  isVideoObjectsPending: OrderDirection
   ogTitle: OrderDirection
   ogDescription: OrderDirection
   adTraceCode: OrderDirection
@@ -1597,9 +1610,13 @@ input PostUpdateInput {
   contentApiData: JSON
   source: String
   sotVideoId: String
+  videoObjects: JSON
+  videoIds: JSON
+  isVideoObjectsPending: Boolean
   topics: TopicRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
   manualOrderOfTags: JSON
+  tags_algo: TagRelateToManyForUpdateInput
   audio: AudioRelateToOneForUpdateInput
   download: DownloadRelateToManyForUpdateInput
   relatedPosts: PostRelateToManyForUpdateInput
@@ -1685,9 +1702,13 @@ input PostCreateInput {
   contentApiData: JSON
   source: String
   sotVideoId: String
+  videoObjects: JSON
+  videoIds: JSON
+  isVideoObjectsPending: Boolean
   topics: TopicRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
   manualOrderOfTags: JSON
+  tags_algo: TagRelateToManyForCreateInput
   audio: AudioRelateToOneForCreateInput
   download: DownloadRelateToManyForCreateInput
   relatedPosts: PostRelateToManyForCreateInput

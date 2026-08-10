@@ -7,6 +7,7 @@ const {
   PREVIEW_SERVER_PATH,
   DASHBOARD_SERVER_ORIGIN,
   DASHBOARD_SERVER_PATH,
+  TRAFFIC_DASHBOARD_ENABLED,
   DATABASE_PROVIDER,
   DATABASE_URL,
   SESSION_SECRET,
@@ -31,6 +32,12 @@ const {
   YOUTUBE_API_KEY,
   TOPIC_SERVICE_URL,
   PROMOTE_TOPIC_SERVICE_URL,
+  PROJECT_ID,
+  LOCATION,
+  COPY_QUEUE_NAME,
+  IMAGE_PROCESSOR_URL,
+  SCHEDULER_KEY,
+  IMAGE_COPY_ON_UPLOAD_ENABLED,
 } = process.env
 
 enum DatabaseProvider {
@@ -54,6 +61,7 @@ export default {
       'https://traffic-analytics-web-dev-151209114015.asia-east1.run.app',
     path: DASHBOARD_SERVER_PATH || '/dashboard',
   },
+  trafficDashboardEnabled: TRAFFIC_DASHBOARD_ENABLED?.toLowerCase() === 'true',
   database: {
     provider:
       DATABASE_PROVIDER === 'sqlite'
@@ -86,7 +94,7 @@ export default {
     storagePath: VIDEOS_STORAGE_PATH || 'public/video-files',
   },
   lockDuration:
-    (typeof LOCK_DURATION === 'string' && parseInt(LOCK_DURATION)) || 30,
+    (typeof LOCK_DURATION === 'string' && parseInt(LOCK_DURATION)) || 10,
   cache: {
     isEnabled: IS_CACHE_ENABLED === 'true',
     identifier: CACHE_IDENTIFIER ?? 'weekly-cms',
@@ -105,4 +113,12 @@ export default {
   youtube: {
     apiKey: YOUTUBE_API_KEY,
   },
+  projectID: PROJECT_ID || 'mirrordaily',
+  location: LOCATION || 'asia-east1',
+  copyQueueName: COPY_QUEUE_NAME || 'image-copy-retry-dev',
+  imageProcessor: {
+    url: IMAGE_PROCESSOR_URL || '',
+    schedulerKey: SCHEDULER_KEY || '',
+  },
+  imageCopyOnUploadEnabled: IMAGE_COPY_ON_UPLOAD_ENABLED === 'true',
 }

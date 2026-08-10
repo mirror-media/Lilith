@@ -35,7 +35,7 @@ snapshotCleanupTimer.unref()
 const POST_BASE_QUERY = `
   id slug title subtitle state publishedDate publishedDateString
   heroCaption style isMember memberFeed isFeatured isAdvertised
-  hiddenAdvertised isAdult auto_faq redirect adTrace css
+  hiddenAdvertised isAdult redirect adTrace css
   og_title og_description extend_byline
   sections { id name } categories { id name }
   writers { id name } photographers { id name }
@@ -43,7 +43,7 @@ const POST_BASE_QUERY = `
   engineers { id name } vocals { id name }
   heroVideo { id name } heroImage { id name } og_image { id name }
   topics { id name }
-  relatedsOne { id slug } relatedsTwo { id slug } relateds { id slug }
+  relateds { id slug }
   tags { id name } related_videos { id name }
 `
 
@@ -577,20 +577,28 @@ const listConfigurations = list({
         views: './lists/views/sorted-relationship/index',
       },
     }),
+    // TODO: 觀察無影響後刪除欄位定義、schema.prisma 欄位，並執行 migration DROP COLUMN
     relatedsOne: relationship({
       label: '相關文章（一）',
       ref: 'Post',
       many: false,
       ui: {
         views: './lists/views/related-posts-all/index',
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
+    // TODO: 觀察無影響後刪除欄位定義、schema.prisma 欄位，並執行 migration DROP COLUMN
     relatedsTwo: relationship({
       label: '相關文章（二）',
       ref: 'Post',
       many: false,
       ui: {
         views: './lists/views/related-posts-all/index',
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     relateds: relationship({
@@ -863,7 +871,11 @@ const listConfigurations = list({
       if (envVar.accessControlStrategy === 'gql') {
         return
       }
-      if (context.session?.data?.role !== UserRole.Admin) {
+      // system operations (cron, sudo) have no session; editor conflict check doesn't apply
+      if (!context.session) {
+        return
+      }
+      if (context.session.data?.role !== UserRole.Admin) {
         if (operation === 'update') {
           const { lockBy } = await context.prisma.Post.findUnique({
             where: { id: Number(item.id) },
@@ -965,27 +977,67 @@ const listConfigurations = list({
       context,
       resolvedData,
     }) => {
-      if (
-        resolvedData &&
-        resolvedData.state &&
-        resolvedData.state === PostStatus.Published &&
-        envVar.autotagging
-      ) {
-        try {
-          // trigger auto tagging and auto relation service
-          const response = await fetch(
-            envVar.dataServiceApi + '/post_tagging_with_relation?id=' + item.id,
-            {
-              method: 'GET',
+      if (envVar.autotagging && item) {
+        const stateIsPublished = item.state === PostStatus.Published
+        const wasAlreadyPublished = originalItem?.state === PostStatus.Published
+        const firstTimePublished = !wasAlreadyPublished && stateIsPublished
+
+        // Condition 1: state transitions to published (any non-published state → published, or created directly as published)
+        // only trigger if post has meaningful content (at least one block with non-empty text)
+        // stateIsPublished short-circuits the block traversal when state is not published
+        const hasContent =
+          stateIsPublished &&
+          Array.isArray((item.content as any)?.blocks) &&
+          (item.content as any).blocks.some((b: any) => b?.text?.trim())
+        let shouldTriggerAutoTag = firstTimePublished && hasContent
+
+        // Condition 2: already published, content changed, and no related articles
+        if (
+          !shouldTriggerAutoTag &&
+          wasAlreadyPublished &&
+          stateIsPublished &&
+          hasContent
+        ) {
+          const contentChanged =
+            resolvedData?.content !== undefined &&
+            JSON.stringify(item.content) !==
+              JSON.stringify(originalItem?.content)
+          if (contentChanged) {
+            try {
+              const postData = await context.sudo().query.Post.findOne({
+                where: { id: String(item.id) },
+                query: 'relateds { id }',
+              })
+              const hasNoRelateds = !postData?.relateds?.length
+              shouldTriggerAutoTag = hasNoRelateds
+            } catch (err) {
+              console.error(
+                `[AUTO-TAG-RELATION] Failed to check relateds for post ${item.id}:`,
+                err
+              )
             }
-          )
-          if (!response.ok) {
+          }
+        }
+
+        if (shouldTriggerAutoTag) {
+          try {
+            const response = await fetch(
+              envVar.dataServiceApi +
+                '/post_tagging_with_relation?id=' +
+                item.id,
+              { method: 'GET' }
+            )
+            if (!response.ok) {
+              console.error(
+                `[AUTO-TAG-RELATION] Failed: ${response.status} ${response.statusText}`
+              )
+            }
+          } catch (error) {
             console.error(
-              `[AUTO-TAG-RELATION] Failed: ${response.status} ${response.statusText}`
+              `[AUTO-TAG-RELATION] Error for post ${item.id}:`,
+              error
             )
           }
-        } catch (error) {
-          console.error(`[AUTO-TAG-RELATION] Error:`, error)
         }
       }
       if (

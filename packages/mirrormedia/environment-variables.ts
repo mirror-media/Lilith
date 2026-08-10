@@ -27,6 +27,9 @@ const {
   PROJECT_ID,
   LOCATION,
   PROMOTE_TOPIC_SERVICE_URL,
+  COPY_QUEUE_NAME,
+  IMAGE_PROCESSOR_URL,
+  SCHEDULER_KEY,
 } = process.env
 
 enum DatabaseProvider {
@@ -90,5 +93,10 @@ export default {
   queueName: QUEUE_NAME || 'external-tagging-dev',
   projectID: PROJECT_ID || 'mirrormedia',
   location: LOCATION || 'asia-east1',
+  copyQueueName: COPY_QUEUE_NAME || 'image-copy-retry-dev',
+  imageProcessor: {
+    url: IMAGE_PROCESSOR_URL || '',
+    schedulerKey: SCHEDULER_KEY || '',
+  },
   promoteTopicServiceUrl: PROMOTE_TOPIC_SERVICE_URL,
 }

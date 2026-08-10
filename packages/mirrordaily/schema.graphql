@@ -1033,6 +1033,8 @@ type Photo {
   name: String
   imageFile: ImageFieldOutput
   waterMark: Boolean
+  watermarkType: String
+  waterMarkDescription: String
   defaultImage: Boolean
   resized: ResizedImages
   resizedWebp: ResizedWebPImages
@@ -1089,6 +1091,7 @@ input PhotoWhereInput {
   id: IDFilter
   name: StringFilter
   waterMark: BooleanFilter
+  watermarkType: StringNullableFilter
   defaultImage: BooleanFilter
   topicKeywords: StringFilter
   copyRight: BooleanFilter
@@ -1102,6 +1105,7 @@ input PhotoOrderByInput {
   id: OrderDirection
   name: OrderDirection
   waterMark: OrderDirection
+  watermarkType: OrderDirection
   defaultImage: OrderDirection
   topicKeywords: OrderDirection
   copyRight: OrderDirection
@@ -1113,6 +1117,7 @@ input PhotoUpdateInput {
   name: String
   imageFile: ImageFieldInput
   waterMark: Boolean
+  watermarkType: String
   defaultImage: Boolean
   topicKeywords: String
   copyRight: Boolean
@@ -1135,6 +1140,7 @@ input PhotoCreateInput {
   name: String
   imageFile: ImageFieldInput
   waterMark: Boolean
+  watermarkType: String
   defaultImage: Boolean
   topicKeywords: String
   copyRight: Boolean
@@ -1148,6 +1154,7 @@ type Post {
   id: ID!
   lockBy: User
   lockExpireAt: DateTime
+  lockStatus: String
   slug: String
   title: String
   subtitle: String
@@ -2559,6 +2566,82 @@ input HotCreateInput {
   updatedBy: UserRelateToOneForCreateInput
 }
 
+type EditLog {
+  id: ID!
+  name: String
+  operation: String
+  postId: String
+  changedList: String
+  brief: JSON
+  briefPreview: String
+  content: JSON
+  contentPreview: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: User
+  updatedBy: User
+}
+
+input EditLogWhereUniqueInput {
+  id: ID
+}
+
+input EditLogWhereInput {
+  AND: [EditLogWhereInput!]
+  OR: [EditLogWhereInput!]
+  NOT: [EditLogWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  operation: StringFilter
+  postId: StringFilter
+  changedList: StringFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+  createdBy: UserWhereInput
+  updatedBy: UserWhereInput
+}
+
+input EditLogOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  operation: OrderDirection
+  postId: OrderDirection
+  changedList: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input EditLogUpdateInput {
+  name: String
+  operation: String
+  postId: String
+  changedList: String
+  brief: JSON
+  content: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForUpdateInput
+  updatedBy: UserRelateToOneForUpdateInput
+}
+
+input EditLogUpdateArgs {
+  where: EditLogWhereUniqueInput!
+  data: EditLogUpdateInput!
+}
+
+input EditLogCreateInput {
+  name: String
+  operation: String
+  postId: String
+  changedList: String
+  brief: JSON
+  content: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: UserRelateToOneForCreateInput
+  updatedBy: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2691,6 +2774,12 @@ type Mutation {
   updateHots(data: [HotUpdateArgs!]!): [Hot]
   deleteHot(where: HotWhereUniqueInput!): Hot
   deleteHots(where: [HotWhereUniqueInput!]!): [Hot]
+  createEditLog(data: EditLogCreateInput!): EditLog
+  createEditLogs(data: [EditLogCreateInput!]!): [EditLog]
+  updateEditLog(where: EditLogWhereUniqueInput!, data: EditLogUpdateInput!): EditLog
+  updateEditLogs(data: [EditLogUpdateArgs!]!): [EditLog]
+  deleteEditLog(where: EditLogWhereUniqueInput!): EditLog
+  deleteEditLogs(where: [EditLogWhereUniqueInput!]!): [EditLog]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -2778,8 +2867,12 @@ type Query {
   hots(where: HotWhereInput! = {}, orderBy: [HotOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: HotWhereUniqueInput): [Hot!]
   hot(where: HotWhereUniqueInput!): Hot
   hotsCount(where: HotWhereInput! = {}): Int
+  editLogs(where: EditLogWhereInput! = {}, orderBy: [EditLogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EditLogWhereUniqueInput): [EditLog!]
+  editLog(where: EditLogWhereUniqueInput!): EditLog
+  editLogsCount(where: EditLogWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
+  trafficDashboardEnabled: Boolean!
 }
 
 union AuthenticatedItem = User

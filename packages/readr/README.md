@@ -57,10 +57,11 @@ DATABASE_URL=postgres://anotherAccount:anotherPasswd@localhost:5433/anotherDatab
 
 ### MCP endpoint
 
-READr 也在同一個 Keystone/Express process 提供 MCP Streamable HTTP endpoint：`POST /mcp`。
-它不使用另一組 API key；每個 MCP request 都會由 Keystone 還原既有的 session，因此權限和 Admin UI 相同，且各 list 的 access control 仍由 `context.query` 強制執行。
+READr 在同一個 Keystone/Express process 提供 OAuth 2.0 Authorization Code with PKCE endpoints：`GET /oauth/authorize`、`POST /oauth/token`，以及 MCP Streamable HTTP endpoint：`POST /mcp`。設定 `OAUTH_ISSUER`（公開 HTTPS base URL）與 `OAUTH_SIGNING_SECRET`（至少 32 字元、由 Secret Manager 注入）後才會啟用。
 
-目前 READr tools 包含 `list_recent_posts`、`get_post`、`get_posts`、`search_posts` 和 `filter_posts`。`filter_posts` 的 category 即 CMS 中的文章 section，可依 category、writer、state、style 組合篩選。要讓其他 package 啟用 MCP，請在它們的 `extendExpressApp` 掛上 `createMcpExpressHandler`，並提供該 package 的 `commonContext`、tools，以及以本身 session 判斷的 `isAuthorized`。
+CMS 管理員在 `OAuthClient` list 註冊 public client，設定唯一的 client ID、精確的 redirect URI 白名單及可請求 scope。使用者先登入 CMS，再透過 `/oauth/authorize` 授權；client 以 authorization code 與 S256 PKCE verifier 向 `/oauth/token` 交換 15 分鐘 access token。MCP 每次驗證 token 的簽章、issuer、expiry、scope，並以 token 內的使用者建立 Keystone session，因此 list-level access control 和追蹤欄位仍由原本 CMS 規則執行。
+
+可設定 scope 為 `readr.posts.read`、`readr.posts.write`、`readr.posts.publish`；每個需要的 scope 都要列入 client 的 `allowedScopes` 與 authorization request 的 `scope`。OAuth metadata 位於 `/.well-known/oauth-authorization-server`。目前只支援 public client，因此禁止 client secret，且強制使用 `code_challenge_method=S256`。
 
 ### Start GraphQL API server only
 我們也可以單獨把 lilith-readr 當作 GraphQL API server 使用。

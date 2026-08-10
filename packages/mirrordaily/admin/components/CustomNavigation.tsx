@@ -16,6 +16,12 @@ const USER_ROLE_QUERY = gql`
   }
 `
 
+const TRAFFIC_DASHBOARD_ENABLED_QUERY = gql`
+  query TrafficDashboardEnabled {
+    trafficDashboardEnabled
+  }
+`
+
 export function CustomNavigation({
   lists,
   authenticatedItem,
@@ -35,10 +41,18 @@ export function CustomNavigation({
   })
   const isAdmin = data?.user?.role === 'admin'
 
+  const { data: trafficDashboardData } = useQuery(
+    TRAFFIC_DASHBOARD_ENABLED_QUERY
+  )
+  const isTrafficDashboardEnabled =
+    trafficDashboardData?.trafficDashboardEnabled === true
+
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
       <NavItem href="/">Dashboard</NavItem>
-      {isAdmin && <NavItem href="/dashboard">PV Dashboard</NavItem>}
+      {isAdmin && isTrafficDashboardEnabled && (
+        <NavItem href="/dashboard">PV Dashboard</NavItem>
+      )}
       {/* creat post shortcut */}
       <NavItem key="create-post-shortcut" href="/custom-post-creation">
         Create Post <PlusIcon size="smallish" color="blue" />

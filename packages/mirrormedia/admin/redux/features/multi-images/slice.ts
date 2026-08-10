@@ -20,11 +20,13 @@ type ImageFileData = {
 type MutilImageState = {
   files: ImageFileData[]
   shouldSetWatermarkToAll: boolean
+  eventName: string
 }
 
 const initialState: MutilImageState = {
   files: [],
   shouldSetWatermarkToAll: true,
+  eventName: '',
 }
 
 type RawImageFileData = Pick<ImageFileData, 'uid' | 'name' | 'blobURL' | 'type'>
@@ -119,6 +121,9 @@ export const multiImagesSlice = createSlice({
     removeSelectedItems: (state) => {
       state.files = state.files.filter((file) => file.isSelected === false)
     },
+    setEventName: (state, action: PayloadAction<string>) => {
+      state.eventName = action.payload
+    },
     resetAllState: () => initialState,
   },
   extraReducers: (builder) => {
@@ -149,6 +154,7 @@ export const {
   setShouldSetWatermarkToAll,
   setIsSelected,
   removeSelectedItems,
+  setEventName,
   resetAllState,
 } = multiImagesSlice.actions
 

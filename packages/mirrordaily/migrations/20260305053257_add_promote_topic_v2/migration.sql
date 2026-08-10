@@ -1,11 +1,6 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `isPromoted` on the `Topic` table. All the data in the column will be lost.
-
-*/
 -- AlterTable
-ALTER TABLE "Topic" DROP COLUMN "isPromoted";
+ALTER TABLE "Video" ALTER COLUMN "fileDuration" SET DEFAULT '',
+ALTER COLUMN "youtubeDuration" SET DEFAULT '';
 
 -- CreateTable
 CREATE TABLE "PromoteTopic" (
