@@ -58,6 +58,7 @@ DATABASE_URL=postgres://anotherAccount:anotherPasswd@localhost:5433/anotherDatab
 ### MCP endpoint
 
 READr 也在同一個 Keystone/Express process 提供 MCP Streamable HTTP endpoint：`POST /mcp`。
+此 endpoint 預設不啟用：只有在環境變數 `IS_MCP_ENABLED` 設為 `true` 的環境才會掛載，所以把程式碼 promote 到 staging/prod 不會自動開放 MCP。未來其他 package 啟用 MCP 時也沿用相同的 flag 慣例。
 它不使用另一組 API key；每個 MCP request 都會由 Keystone 還原既有的 session，因此權限和 Admin UI 相同，且各 list 的 access control 仍由 `context.query` 強制執行。
 
 目前 READr tools 包含 `list_recent_posts`、`get_post`、`get_posts`、`search_posts` 和 `filter_posts`。`filter_posts` 的 category 即 CMS 中的文章 section，可依 category、writer、state、style 組合篩選。要讓其他 package 啟用 MCP，請在它們的 `extendExpressApp` 掛上 `createMcpExpressHandler`，並提供該 package 的 `commonContext`、tools，以及以本身 session 判斷的 `isAuthorized`。
