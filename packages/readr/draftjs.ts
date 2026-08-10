@@ -90,11 +90,14 @@ function markdownBlocks(source: string): BlockInput[] {
     paragraph = []
   }
   for (const line of source.replace(/\r\n?/g, '\n').split('\n')) {
-    const heading = /^(#{1,2})\s+(.+)$/.exec(line)
+    const heading = /^(#{1,6})\s+(.+)$/.exec(line)
     const unordered = /^[-*+]\s+(.+)$/.exec(line)
     const ordered = /^\d+[.)]\s+(.+)$/.exec(line)
     const image = /^!\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)$/.exec(line.trim())
-    if (heading) { flush(); blocks.push({ text: heading[2], type: heading[1] === '#' ? 'header-one' : 'header-two' }) }
+    if (heading) {
+      flush()
+      blocks.push({ text: heading[2], type: `header-${['one', 'two', 'three', 'four', 'five', 'six'][heading[1].length - 1]}` })
+    }
     else if (unordered) { flush(); blocks.push({ text: unordered[1], type: 'unordered-list-item' }) }
     else if (ordered) { flush(); blocks.push({ text: ordered[1], type: 'ordered-list-item' }) }
     else if (image) {
@@ -114,7 +117,7 @@ function markdownBlocks(source: string): BlockInput[] {
 
 function htmlBlocks(source: string): BlockInput[] {
   const blocks: BlockInput[] = []
-  const pattern = /<(h1|h2|p|div|li|blockquote|img|video|iframe)(\s[^>]*)?(?:>([\s\S]*?)<\/\1>|\s*\/?>)/gi
+  const pattern = /<(h[1-6]|p|div|li|blockquote|img|video|iframe)(\s[^>]*)?(?:>([\s\S]*?)<\/\1>|\s*\/?>)/gi
   let match: RegExpExecArray | null
   while ((match = pattern.exec(source))) {
     const tag = match[1].toLowerCase()
@@ -137,7 +140,11 @@ function htmlBlocks(source: string): BlockInput[] {
       if (youtubeId) blocks.push({ text: ' ', type: 'atomic', entity: { type: 'YOUTUBE', mutability: 'IMMUTABLE', data: { id: youtubeId, description: attribute('title') || '' } } })
       continue
     }
-    let type = tag === 'h1' ? 'header-one' : tag === 'h2' ? 'header-two' : tag === 'blockquote' ? 'blockquote' : 'unstyled'
+    let type = /^h[1-6]$/.test(tag)
+      ? `header-${['one', 'two', 'three', 'four', 'five', 'six'][Number(tag[1]) - 1]}`
+      : tag === 'blockquote'
+        ? 'blockquote'
+        : 'unstyled'
     if (tag === 'li') {
       const before = source.slice(0, match.index)
       const lastOl = Math.max(before.lastIndexOf('<ol'), before.lastIndexOf('<OL'))
