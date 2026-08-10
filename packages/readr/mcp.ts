@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from 'express'
 import envVar from './environment-variables'
+import { convertToDraftJs } from './draftjs'
 import { CommonContext, verifyAccessToken } from './oauth'
 
 type McpTextContent = { type: 'text'; text: string }
@@ -282,6 +283,32 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
     },
   },
   {
+    name: 'convert_to_draftjs',
+    description:
+      'Convert Google Docs HTML, Markdown, or plain text into Draft.js Raw Content State for Post content fields. Review the returned JSON, then pass it as data.content, data.summary, data.actionList, or data.citation to create_post or update_post.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        source: { type: 'string', description: 'HTML exported or copied from Google Docs, Markdown, or plain text.' },
+        format: {
+          type: 'string',
+          enum: ['html', 'markdown', 'plain_text'],
+          default: 'html',
+        },
+      },
+      required: ['source'],
+      additionalProperties: false,
+    },
+    async execute(args) {
+      const source = getString(args.source, 'source', true)
+      const format = args.format === undefined ? 'html' : args.format
+      if (!['html', 'markdown', 'plain_text'].includes(format as string)) {
+        throw new Error('format must be html, markdown, or plain_text')
+      }
+      return result(convertToDraftJs(source, format as 'html' | 'markdown' | 'plain_text'))
+    },
+  },
+  {
     name: 'create_post',
     description:
       'Create a new READr article as a draft. Use publish_post to publish it after review.',
@@ -446,6 +473,7 @@ export function createReadrMcpHandler(commonContext: CommonContext) {
     get_posts: 'readr.posts.read',
     search_posts: 'readr.posts.read',
     filter_posts: 'readr.posts.read',
+    convert_to_draftjs: 'readr.posts.read',
     create_post: 'readr.posts.write',
     update_post: 'readr.posts.write',
     publish_post: 'readr.posts.publish',
