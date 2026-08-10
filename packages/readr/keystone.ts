@@ -73,16 +73,20 @@ export default withAuth(
 
         // MCP shares this Express process and restores the package's existing
         // Keystone session for every request; no separate credentials exist.
-        app.post(
-          '/mcp',
-          createMcpExpressHandler({
-            name: 'lilith-readr',
-            version: '0.1.0',
-            context: commonContext,
-            tools: readrMcpTools,
-            isAuthorized: isReadrMcpAuthorized,
-          })
-        )
+        // Mounted only when IS_MCP_ENABLED=true on the target environment, so
+        // promoting this code to staging/prod does not expose the endpoint.
+        if (envVar.isMcpEnabled) {
+          app.post(
+            '/mcp',
+            createMcpExpressHandler({
+              name: 'lilith-readr',
+              version: '0.1.0',
+              context: commonContext,
+              tools: readrMcpTools,
+              isAuthorized: isReadrMcpAuthorized,
+            })
+          )
+        }
 
         // Check if the request is sent by an authenticated user
         const authenticationMw = async (
