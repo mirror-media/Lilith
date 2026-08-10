@@ -67,7 +67,7 @@ CMS 管理員在 `OAuthClient` list 註冊 public client，設定唯一的 clien
 
 MCP 的 protected-resource metadata 位於 `/.well-known/oauth-protected-resource/mcp`。部署時將 `MCP_RESOURCE_URL` 設為外部 MCP endpoint 的完整 canonical URL（例如 `https://readr-cms-dev-4g6paft7cq-de.a.run.app/mcp`）；`OAUTH_ISSUER` 則維持 authorization server 的 canonical URL（例如 `https://cms-dev.readr.tw`）。
 
-`convert_to_draftjs` 可將 Google Docs 匯出或複製的 HTML、Markdown 或純文字轉為 Draft.js Raw Content State；轉換結果可直接放入 `create_post` 或 `update_post` 的 `data.content`、`data.summary`、`data.actionList`、`data.citation`。
+`convert_to_draftjs` 可將 Google Docs 匯出或複製的 HTML、Markdown 或純文字轉為 Draft.js Raw Content State；支援基本段落、標題、粗斜體、連結、`ol`／`ul`、圖片、HTML5 影片與 YouTube iframe。轉換結果可直接放入 `create_post` 或 `update_post` 的 `data.content`、`data.summary`、`data.actionList`、`data.citation`。
 
 ### Start GraphQL API server only
 我們也可以單獨把 lilith-readr 當作 GraphQL API server 使用。
