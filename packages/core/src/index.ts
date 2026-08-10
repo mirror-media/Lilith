@@ -8,6 +8,7 @@ import { createLoginLoggingPlugin } from './utils/login-logging'
 import { draftConverter } from '@mirrormedia/lilith-draft-editor'
 import { richTextEditor } from './custom-fields/rich-text-editor'
 import { selectWithColor } from './custom-fields/select-with-color'
+import * as mcp from './mcp'
 
 export const admin = {
   ListSearchMobileFix,
@@ -27,8 +28,12 @@ export const utils = {
   createLoginLoggingPlugin,
 }
 
+export { mcp }
+export * from './mcp'
+
 export default {
   admin,
   customFields,
   utils,
+  mcp,
 }
