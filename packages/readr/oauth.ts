@@ -103,6 +103,11 @@ function isValidRedirectUri(value: string) {
   try {
     const url = new URL(value)
     if (url.hash) return false
+    // Native OAuth clients commonly use a claimed custom scheme (for example,
+    // `com.example.app:/oauth/callback`) instead of an HTTPS callback.
+    if (!['http:', 'https:'].includes(url.protocol)) {
+      return !['data:', 'file:', 'javascript:'].includes(url.protocol)
+    }
     return (
       url.protocol === 'https:' ||
       (url.protocol === 'http:' &&
@@ -190,9 +195,10 @@ export function createOAuthHandlers(commonContext: CommonContext) {
       if (!configured()) return oauthError(response, 'server_error', 'OAuth is not configured', 503)
       const redirectUris = stringArray(request.body?.redirect_uris)
       const clientName = getSingle(request.body?.client_name) || 'Dynamic OAuth client'
-      const requestedScopes = (getSingle(request.body?.scope) || 'readr.posts.read')
-        .split(' ')
-        .filter(Boolean)
+      const scopeValue = getSingle(request.body?.scope)
+      const requestedScopes = scopeValue
+        ? scopeValue.split(' ').filter(Boolean)
+        : [...SUPPORTED_SCOPES]
       const tokenEndpointAuthMethod =
         getSingle(request.body?.token_endpoint_auth_method) || 'none'
       const grantTypes = stringArray(request.body?.grant_types)
@@ -203,8 +209,8 @@ export function createOAuthHandlers(commonContext: CommonContext) {
         requestedScopes.length === 0 ||
         requestedScopes.some((scope) => !SUPPORTED_SCOPES.has(scope)) ||
         tokenEndpointAuthMethod !== 'none' ||
-        (grantTypes.length > 0 && !grantTypes.every((type) => type === 'authorization_code')) ||
-        (responseTypes.length > 0 && !responseTypes.every((type) => type === 'code'))
+        (grantTypes.length > 0 && !grantTypes.includes('authorization_code')) ||
+        (responseTypes.length > 0 && !responseTypes.includes('code'))
       ) {
         return oauthError(
           response,
