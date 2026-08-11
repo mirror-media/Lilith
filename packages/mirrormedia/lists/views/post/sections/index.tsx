@@ -31,7 +31,8 @@ import {
 
 import { Cards } from './cards'
 import { RelationshipSelect } from './RelationshipSelect'
-import { sectionsManager } from '../categories/sectionsContext'
+import { fieldFilterManager } from '../../shared/fieldFilterManager'
+import { useDialogScope } from '../../shared/useDialogScope'
 
 function LinkToRelatedItems({
   itemId,
@@ -98,12 +99,20 @@ export const Field = ({
   const foreignList = useList(field.refListKey)
   const localList = useList(field.listKey)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const { anchorRef, scopedKey } = useDialogScope()
+
+  // 組件卸載時，移除此 scope 的全域狀態（用 clearField 連 key 一起刪，避免累積殘留）
+  useEffect(() => {
+    return () => {
+      fieldFilterManager.clearField(scopedKey('sections'))
+    }
+  }, [])
 
   // 當 sections 的值變化時，通知 categories
   useEffect(() => {
     if (value.kind === 'many' && Array.isArray(value.value)) {
       const sectionIds = value.value.map((item: any) => item.id).filter(Boolean)
-      sectionsManager.updateSections(sectionIds)
+      fieldFilterManager.updateField(scopedKey('sections'), sectionIds)
     }
   }, [value])
 
@@ -222,6 +231,7 @@ export const Field = ({
 
   return (
     <FieldContainer as="fieldset">
+      <span ref={anchorRef} hidden />
       <FieldLabel as="legend">{field.label}</FieldLabel>
       <FieldDescription id={`${field.path}-description`}>
         {field.description}
@@ -247,6 +257,11 @@ export const Field = ({
                     kind: 'many',
                     value: value.value,
                     onChange(newItems) {
+                      // 同步更新全域狀態，確保 Keystone 的 validate 函式能立刻讀到最新值
+                      fieldFilterManager.updateField(
+                        scopedKey('sections'),
+                        newItems.map((item: any) => item.id).filter(Boolean)
+                      )
                       onChange?.({
                         ...value,
                         value: newItems,
@@ -333,9 +348,15 @@ export const Field = ({
               onCreate={(val) => {
                 setIsDrawerOpen(false)
                 if (value.kind === 'many') {
+                  const newValue = [...value.value, val]
+                  // 同步更新全域狀態，確保新建完 Section 關閉抽屜後，驗證能立刻讀到最新值
+                  fieldFilterManager.updateField(
+                    scopedKey('sections'),
+                    newValue.map((item: any) => item.id).filter(Boolean)
+                  )
                   onChange({
                     ...value,
-                    value: [...value.value, val],
+                    value: newValue,
                   })
                 } else if (value.kind === 'one') {
                   onChange({
@@ -352,7 +373,7 @@ export const Field = ({
   )
 }
 
-// @ts-ignore
+// @ts-ignore keystone relationship view type
 export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const list = useList(field.refListKey)
   const { colors } = useTheme()
@@ -386,11 +407,8 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
       {displayItems.map((item, index) => (
         <Fragment key={item.id}>
           {index ? ', ' : ''}
-          {/* @ts-ignore */}
-          <Link
-            href={`/${list.path}/${item.id}`}
-            css={styles}
-          >
+          {/* @ts-ignore keystone Link type */}
+          <Link href={`/${list.path}/${item.id}`} css={styles}>
             {item.label || item.id}
           </Link>
         </Fragment>
@@ -400,7 +418,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   )
 }
 
-// @ts-ignore
+// @ts-ignore keystone relationship view type
 export const CardValue: CardValueComponent<typeof controller> = ({
   field,
   item,
@@ -415,7 +433,7 @@ export const CardValue: CardValueComponent<typeof controller> = ({
         .map((item, index) => (
           <Fragment key={item.id}>
             {index ? ', ' : ''}
-            {/* @ts-ignore */}
+            {/* @ts-ignore keystone Link type */}
             <Link href={`/${list.path}/${item.id}`}>
               {item.label || item.id}
             </Link>
@@ -522,11 +540,6 @@ export const controller = (
   const refLabelField = config.fieldMeta.refLabelField
   const refSearchFields = config.fieldMeta.refSearchFields
 
-  // 檢查是否有 manualOrder 支援（通過檢查 listKey 是否為 Post）
-  // 如果有 manualOrder，使用 InInputOrder；否則使用原始欄位
-  const hasManualOrder = config.listKey === 'Post'
-  const fieldPath = hasManualOrder ? `${config.path}InInputOrder` : config.path
-
   return {
     refFieldKey: config.fieldMeta.refFieldKey,
     many: config.fieldMeta.many,
@@ -598,10 +611,12 @@ export const controller = (
         }
       }
       if (config.fieldMeta.many) {
-        const value = (data[`${config.path}InInputOrder`] || []).map((x: any) => ({
-          id: x.id,
-          label: x.label || x.id,
-        }))
+        const value = (data[`${config.path}InInputOrder`] || []).map(
+          (x: any) => ({
+            id: x.id,
+            label: x.label || x.id,
+          })
+        )
         return {
           kind: 'many',
           id: data.id,
@@ -624,8 +639,14 @@ export const controller = (
       }
     },
     filter: {
-      // @ts-ignore
-      Filter: ({ onChange, value }) => {
+      // @ts-ignore keystone filter prop type
+      Filter: ({
+        onChange,
+        value,
+      }: {
+        onChange: (value: string) => void
+        value: string
+      }) => {
         const foreignList = useList(config.fieldMeta.refListKey)
         const { filterValues, loading } = useRelationshipFilterValues({
           value,
@@ -655,7 +676,7 @@ export const controller = (
           />
         )
       },
-      graphql: ({ value }) => {
+      graphql: ({ value }: { value: string }) => {
         const foreignIds = getForeignIds(value)
         if (config.fieldMeta.many) {
           return {
@@ -676,7 +697,7 @@ export const controller = (
           },
         }
       },
-      Label({ value }) {
+      Label({ value }: { value: string }) {
         const foreignList = useList(config.fieldMeta.refListKey)
         const { filterValues } = useRelationshipFilterValues({
           value,
