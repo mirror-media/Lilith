@@ -1,0 +1,28 @@
+{
+  "name": "@mirrormedia/lilith-mcp",
+  "version": "0.1.0",
+  "description": "Reusable MCP (Model Context Protocol) Streamable HTTP transport for Lilith Keystone CMS packages",
+  "main": "lib/index.js",
+  "types": "@types/index.d.ts",
+  "scripts": {
+    "build": "make build",
+    "clean": "make clean"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mirror-media/Lilith.git",
+    "directory": "packages/mcp"
+  },
+  "keywords": [
+    "MCP",
+    "Model Context Protocol",
+    "KeystoneJS",
+    "Keystone 6",
+    "CMS"
+  ],
+  "license": "MIT",
+  "files": [
+    "lib",
+    "@types"
+  ]
+}

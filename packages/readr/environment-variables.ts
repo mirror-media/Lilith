@@ -1,5 +1,6 @@
 const {
   IS_UI_DISABLED,
+  IS_MCP_ENABLED,
   ACCESS_CONTROL_STRATEGY,
   PREVIEW_SERVER_ORIGIN,
   DATABASE_PROVIDER,
@@ -15,6 +16,10 @@ const {
   MEMORY_CACHE_SIZE,
   GCS_BASE_URL,
   INVALID_CDN_CACHE_SERVER_URL,
+  OAUTH_ISSUER,
+  OAUTH_SIGNING_SECRET,
+  OAUTH_ACCESS_TOKEN_TTL_SECONDS,
+  MCP_RESOURCE_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -24,6 +29,9 @@ enum DatabaseProvider {
 
 export default {
   isUIDisabled: IS_UI_DISABLED === 'true',
+  // MCP endpoint is opt-in per environment: unset or any value other than
+  // 'true' keeps the /mcp route unmounted.
+  isMcpEnabled: IS_MCP_ENABLED === 'true',
   memoryCacheTtl: Number.isNaN(Number(MEMORY_CACHE_TTL))
     ? 300_000
     : Number(MEMORY_CACHE_TTL),
@@ -60,4 +68,12 @@ export default {
     storagePath: IMAGES_STORAGE_PATH || 'public/images',
   },
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
+  oauth: {
+    issuer: OAUTH_ISSUER,
+    signingSecret: OAUTH_SIGNING_SECRET,
+    accessTokenTtlSeconds: Number.isNaN(Number(OAUTH_ACCESS_TOKEN_TTL_SECONDS))
+      ? 900
+      : Math.max(60, Number(OAUTH_ACCESS_TOKEN_TTL_SECONDS)),
+    resourceUrl: MCP_RESOURCE_URL,
+  },
 }
