@@ -12,6 +12,8 @@ export type ExpressResponse = {
   status: (status: number) => ExpressResponse
   json: (body: unknown) => unknown
   end: () => unknown
+  /** Express `res.set`; optional so bare test doubles remain assignable. */
+  set?: (field: string, value: string) => unknown
 }
 
 export type ExpressNext = (error?: unknown) => void
@@ -63,4 +65,10 @@ export type McpServerOptions<Context> = {
    * session. This lets each package keep its own authentication model.
    */
   isAuthorized: McpAuthorization<Context>
+  /**
+   * Extra response headers for 401 responses, e.g. the RFC 9728
+   * `WWW-Authenticate: Bearer resource_metadata="..."` header that OAuth
+   * clients use to discover the authorization server.
+   */
+  unauthorizedHeaders?: (request: ExpressRequest) => Record<string, string>
 }

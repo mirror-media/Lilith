@@ -59,9 +59,15 @@ DATABASE_URL=postgres://anotherAccount:anotherPasswd@localhost:5433/anotherDatab
 
 READr 也在同一個 Keystone/Express process 提供 MCP Streamable HTTP endpoint：`POST /mcp`。
 此 endpoint 預設不啟用：只有在環境變數 `IS_MCP_ENABLED` 設為 `true` 的環境才會掛載，所以把程式碼 promote 到 staging/prod 不會自動開放 MCP。未來其他 package 啟用 MCP 時也沿用相同的 flag 慣例。
-它不使用另一組 API key；每個 MCP request 都會由 Keystone 還原既有的 session，因此權限和 Admin UI 相同，且各 list 的 access control 仍由 `context.query` 強制執行。
+認證接受兩種方式：OAuth Bearer token（以 token 內的使用者身分執行，並受 scope 限制），或 package 既有的 Keystone session cookie（權限與 Admin UI 相同）。兩種方式最終都以該使用者建立 Keystone session，因此各 list 的 access control 仍由 `context.query` 強制執行。
 
-目前 READr tools 包含 `list_recent_posts`、`get_post`、`get_posts`、`search_posts` 和 `filter_posts`。`filter_posts` 的 category 即 CMS 中的文章 section，可依 category、writer、state、style 組合篩選。要讓其他 package 啟用 MCP，請在它們的 `extendExpressApp` 掛上 `createMcpExpressHandler`，並提供該 package 的 `commonContext`、tools，以及以本身 session 判斷的 `isAuthorized`。
+READr 同時提供 OAuth 2.0 Authorization Code with PKCE endpoints：`GET /oauth/authorize`、`POST /oauth/token`、`POST /oauth/register`（Dynamic Client Registration）。設定 `OAUTH_ISSUER`（公開 HTTPS base URL）與 `OAUTH_SIGNING_SECRET`（至少 32 字元、由 Secret Manager 注入）後才會啟用。CMS 管理員也可直接在 `OAuthClient` list 管理 client：唯一的 client ID、精確的 redirect URI 白名單與可請求 scope。使用者先登入 CMS，再透過 `/oauth/authorize` 授權；client 以 authorization code 與 S256 PKCE verifier 向 `/oauth/token` 交換短效 access token。目前只支援 public client（禁止 client secret），並強制 `code_challenge_method=S256`。
+
+OAuth metadata 位於 `/.well-known/oauth-authorization-server`；MCP 的 protected-resource metadata 位於 `/.well-known/oauth-protected-resource/mcp`。部署時將 `MCP_RESOURCE_URL` 設為外部 MCP endpoint 的完整 canonical URL，`OAUTH_ISSUER` 維持 authorization server 的 canonical URL。
+
+Tools 與所需 scope：`list_recent_posts`、`get_post`、`get_posts`、`search_posts`、`filter_posts`、`convert_to_draftjs` 需要 `readr.posts.read`；`create_post`、`update_post` 需要 `readr.posts.write`；`publish_post` 需要 `readr.posts.publish`。session cookie 登入者不受 scope 限制（scope 用來限縮第三方 OAuth client，不限縮使用者本人）。`convert_to_draftjs` 可將 Google Docs 匯出或複製的 HTML、Markdown 或純文字轉為 Draft.js Raw Content State，轉換結果可放入 `create_post` / `update_post` 的 `data.content`、`data.summary`、`data.actionList`、`data.citation`。
+
+要讓其他 package 啟用 MCP，請在它們的 `extendExpressApp` 以自己的 `IS_MCP_ENABLED` flag 包住 `createMcpExpressHandler`，並提供該 package 的 context factory、tools 與 `isAuthorized`；transport 一律使用 `@mirrormedia/lilith-mcp` 的實作（獨立小套件、零依賴，不需要動該 package 的 `lilith-core` 版本）。
 
 ### Start GraphQL API server only
 我們也可以單獨把 lilith-readr 當作 GraphQL API server 使用。

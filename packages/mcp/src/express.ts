@@ -10,6 +10,13 @@ type JsonRpcRequest = {
 const JSON_RPC_VERSION = '2.0'
 const MCP_PROTOCOL_VERSION = '2025-03-26'
 
+/**
+ * Throw from a tool's `execute` to surface `message` to the MCP client as an
+ * `isError` tool result. Any other thrown error is replaced with a generic
+ * message, so only deliberately chosen text ever reaches the client.
+ */
+export class McpToolError extends Error {}
+
 function sendResult(
   response: Parameters<ExpressHandler>[1],
   id: JsonRpcRequest['id'],
@@ -57,6 +64,13 @@ export function createMcpExpressHandler<Context>(
       const rpcRequest = request.body
       const context = await options.context.withRequest(request, response)
       if (!(await options.isAuthorized(context, request))) {
+        if (options.unauthorizedHeaders && response.set) {
+          for (const [field, value] of Object.entries(
+            options.unauthorizedHeaders(request)
+          )) {
+            response.set(field, value)
+          }
+        }
         return response.status(401).json({
           jsonrpc: JSON_RPC_VERSION,
           id: rpcRequest.id ?? null,
@@ -123,12 +137,16 @@ export function createMcpExpressHandler<Context>(
             .get(name)!
             .execute(args as Record<string, unknown>, context)
           return sendResult(response, rpcRequest.id, { content })
-        } catch {
+        } catch (error) {
           // Tool failures are a successful MCP protocol response. This keeps
           // the transport usable while avoiding accidental disclosure of an
           // application/database error to the client.
           return sendResult(response, rpcRequest.id, {
-            content: textContent('The tool could not complete the request.'),
+            content: textContent(
+              error instanceof McpToolError
+                ? error.message
+                : 'The tool could not complete the request.'
+            ),
             isError: true,
           })
         }
