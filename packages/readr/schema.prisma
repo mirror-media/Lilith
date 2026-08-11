@@ -273,79 +273,51 @@ model Category {
 }
 
 model User {
-  id                              Int                @id @default(autoincrement())
-  name                            String             @default("")
-  email                           String             @unique @default("")
-  password                        String
-  role                            String
-  isProtected                     Boolean            @default(false)
-  from_EditorChoice_createdBy     EditorChoice[]     @relation("EditorChoice_createdBy")
-  from_EditorChoice_updatedBy     EditorChoice[]     @relation("EditorChoice_updatedBy")
-  from_Photo_createdBy            Photo[]            @relation("Photo_createdBy")
-  from_Photo_updatedBy            Photo[]            @relation("Photo_updatedBy")
-  from_Author_createdBy           Author[]           @relation("Author_createdBy")
-  from_Author_updatedBy           Author[]           @relation("Author_updatedBy")
-  from_PageVariable_createdBy     PageVariable[]     @relation("PageVariable_createdBy")
-  from_PageVariable_updatedBy     PageVariable[]     @relation("PageVariable_updatedBy")
-  from_Award_createdBy            Award[]            @relation("Award_createdBy")
-  from_Award_updatedBy            Award[]            @relation("Award_updatedBy")
-  from_Video_createdBy            Video[]            @relation("Video_createdBy")
-  from_Video_updatedBy            Video[]            @relation("Video_updatedBy")
-  from_AudioFile_createdBy        AudioFile[]        @relation("AudioFile_createdBy")
-  from_AudioFile_updatedBy        AudioFile[]        @relation("AudioFile_updatedBy")
-  from_Tag_createdBy              Tag[]              @relation("Tag_createdBy")
-  from_Tag_updatedBy              Tag[]              @relation("Tag_updatedBy")
-  from_Category_createdBy         Category[]         @relation("Category_createdBy")
-  from_Category_updatedBy         Category[]         @relation("Category_updatedBy")
-  from_Post_createdBy             Post[]             @relation("Post_createdBy")
-  from_Post_updatedBy             Post[]             @relation("Post_updatedBy")
-  from_Collaboration_createdBy    Collaboration[]    @relation("Collaboration_createdBy")
-  from_Collaboration_updatedBy    Collaboration[]    @relation("Collaboration_updatedBy")
-  from_DataSet_createdBy          DataSet[]          @relation("DataSet_createdBy")
-  from_DataSet_updatedBy          DataSet[]          @relation("DataSet_updatedBy")
-  from_Feature_createdBy          Feature[]          @relation("Feature_createdBy")
-  from_Feature_updatedBy          Feature[]          @relation("Feature_updatedBy")
-  from_Gallery_createdBy          Gallery[]          @relation("Gallery_createdBy")
-  from_Gallery_updatedBy          Gallery[]          @relation("Gallery_updatedBy")
-  from_Project_createdBy          Project[]          @relation("Project_createdBy")
-  from_Project_updatedBy          Project[]          @relation("Project_updatedBy")
-  from_ProjectChecklist_createdBy ProjectChecklist[] @relation("ProjectChecklist_createdBy")
-  from_ProjectChecklist_updatedBy ProjectChecklist[] @relation("ProjectChecklist_updatedBy")
-  from_ProjectNote_createdBy      ProjectNote[]      @relation("ProjectNote_createdBy")
-  from_ProjectNote_updatedBy      ProjectNote[]      @relation("ProjectNote_updatedBy")
-  from_NoteCategory_createdBy     NoteCategory[]     @relation("NoteCategory_createdBy")
-  from_NoteCategory_updatedBy     NoteCategory[]     @relation("NoteCategory_updatedBy")
-  from_Quote_createdBy            Quote[]            @relation("Quote_createdBy")
-  from_Quote_updatedBy            Quote[]            @relation("Quote_updatedBy")
+  id                               Int                      @id @default(autoincrement())
+  name                             String                   @default("")
+  email                            String                   @unique @default("")
+  password                         String
+  role                             String
+  isProtected                      Boolean                  @default(false)
+  from_EditorChoice_createdBy      EditorChoice[]           @relation("EditorChoice_createdBy")
+  from_EditorChoice_updatedBy      EditorChoice[]           @relation("EditorChoice_updatedBy")
+  from_Photo_createdBy             Photo[]                  @relation("Photo_createdBy")
+  from_Photo_updatedBy             Photo[]                  @relation("Photo_updatedBy")
+  from_Author_createdBy            Author[]                 @relation("Author_createdBy")
+  from_Author_updatedBy            Author[]                 @relation("Author_updatedBy")
+  from_PageVariable_createdBy      PageVariable[]           @relation("PageVariable_createdBy")
+  from_PageVariable_updatedBy      PageVariable[]           @relation("PageVariable_updatedBy")
+  from_Award_createdBy             Award[]                  @relation("Award_createdBy")
+  from_Award_updatedBy             Award[]                  @relation("Award_updatedBy")
+  from_Video_createdBy             Video[]                  @relation("Video_createdBy")
+  from_Video_updatedBy             Video[]                  @relation("Video_updatedBy")
+  from_AudioFile_createdBy         AudioFile[]              @relation("AudioFile_createdBy")
+  from_AudioFile_updatedBy         AudioFile[]              @relation("AudioFile_updatedBy")
+  from_Tag_createdBy               Tag[]                    @relation("Tag_createdBy")
+  from_Tag_updatedBy               Tag[]                    @relation("Tag_updatedBy")
+  from_Category_createdBy          Category[]               @relation("Category_createdBy")
+  from_Category_updatedBy          Category[]               @relation("Category_updatedBy")
+  from_Post_createdBy              Post[]                   @relation("Post_createdBy")
+  from_Post_updatedBy              Post[]                   @relation("Post_updatedBy")
+  from_Collaboration_createdBy     Collaboration[]          @relation("Collaboration_createdBy")
+  from_Collaboration_updatedBy     Collaboration[]          @relation("Collaboration_updatedBy")
+  from_DataSet_createdBy           DataSet[]                @relation("DataSet_createdBy")
+  from_DataSet_updatedBy           DataSet[]                @relation("DataSet_updatedBy")
+  from_Feature_createdBy           Feature[]                @relation("Feature_createdBy")
+  from_Feature_updatedBy           Feature[]                @relation("Feature_updatedBy")
+  from_Gallery_createdBy           Gallery[]                @relation("Gallery_createdBy")
+  from_Gallery_updatedBy           Gallery[]                @relation("Gallery_updatedBy")
+  from_Project_createdBy           Project[]                @relation("Project_createdBy")
+  from_Project_updatedBy           Project[]                @relation("Project_updatedBy")
+  from_ProjectChecklist_createdBy  ProjectChecklist[]       @relation("ProjectChecklist_createdBy")
+  from_ProjectChecklist_updatedBy  ProjectChecklist[]       @relation("ProjectChecklist_updatedBy")
+  from_ProjectNote_createdBy       ProjectNote[]            @relation("ProjectNote_createdBy")
+  from_ProjectNote_updatedBy       ProjectNote[]            @relation("ProjectNote_updatedBy")
+  from_NoteCategory_createdBy      NoteCategory[]           @relation("NoteCategory_createdBy")
+  from_NoteCategory_updatedBy      NoteCategory[]           @relation("NoteCategory_updatedBy")
+  from_Quote_createdBy             Quote[]                  @relation("Quote_createdBy")
+  from_Quote_updatedBy             Quote[]                  @relation("Quote_updatedBy")
   from_OAuthAuthorizationCode_user OAuthAuthorizationCode[] @relation("OAuthAuthorizationCode_user")
-}
-
-model OAuthClient {
-  id            Int                      @id @default(autoincrement())
-  name          String                   @default("")
-  clientId      String                   @unique @default("")
-  redirectUris  Json
-  allowedScopes Json
-  isActive      Boolean                  @default(true)
-  authorizationCodes OAuthAuthorizationCode[] @relation("OAuthAuthorizationCode_client")
-}
-
-model OAuthAuthorizationCode {
-  id            Int         @id @default(autoincrement())
-  codeHash      String      @unique @default("")
-  client        OAuthClient @relation("OAuthAuthorizationCode_client", fields: [clientId], references: [id])
-  clientId      Int         @map("client")
-  user          User        @relation("OAuthAuthorizationCode_user", fields: [userId], references: [id])
-  userId        Int         @map("user")
-  redirectUri   String      @default("")
-  codeChallenge String      @default("")
-  scope         String      @default("")
-  expiresAt     DateTime
-  usedAt        DateTime?
-
-  @@index([clientId])
-  @@index([userId])
-  @@index([expiresAt])
 }
 
 model Post {
@@ -668,4 +640,32 @@ model Quote {
   @@index([publishTime])
   @@index([createdById])
   @@index([updatedById])
+}
+
+model OAuthClient {
+  id                                 Int                      @id @default(autoincrement())
+  name                               String                   @default("")
+  clientId                           String                   @unique @default("")
+  redirectUris                       Json?
+  allowedScopes                      Json?                    @default("[\"readr.posts.read\"]")
+  isActive                           Boolean                  @default(true)
+  from_OAuthAuthorizationCode_client OAuthAuthorizationCode[] @relation("OAuthAuthorizationCode_client")
+}
+
+model OAuthAuthorizationCode {
+  id            Int          @id @default(autoincrement())
+  codeHash      String       @unique @default("")
+  client        OAuthClient? @relation("OAuthAuthorizationCode_client", fields: [clientId], references: [id])
+  clientId      Int?         @map("client")
+  user          User?        @relation("OAuthAuthorizationCode_user", fields: [userId], references: [id])
+  userId        Int?         @map("user")
+  redirectUri   String       @default("")
+  codeChallenge String       @default("")
+  scope         String       @default("")
+  expiresAt     DateTime
+  usedAt        DateTime?
+
+  @@index([clientId])
+  @@index([userId])
+  @@index([expiresAt])
 }

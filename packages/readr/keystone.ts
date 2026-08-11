@@ -6,7 +6,13 @@ import envVar from './environment-variables'
 import express, { Request, Response, NextFunction } from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
-import { createReadrMcpHandler } from './mcp'
+import { createMcpExpressHandler } from '@mirrormedia/lilith-mcp'
+import {
+  createReadrMcpContext,
+  isReadrMcpAuthorized,
+  readrMcpTools,
+  readrMcpUnauthorizedHeaders,
+} from './mcp'
 import { createOAuthHandlers } from './oauth'
 
 const { withAuth } = createAuth({
@@ -61,29 +67,51 @@ export default withAuth(
       },
     },
     server: {
-	  healthCheck: {
-	    path: '/health_check',
-	    data: { status: 'healthy' },
-	  },
+      healthCheck: {
+        path: '/health_check',
+        data: { status: 'healthy' },
+      },
       extendExpressApp: (app, commonContext) => {
         // This middleware is available in Express v4.16.0 onwards
         // Set to 50mb because DraftJS Editor playload could be really large
         const jsonBodyParser = express.json({ limit: '50mb' })
         app.use(jsonBodyParser)
+        // The OAuth token endpoint receives application/x-www-form-urlencoded.
         app.use(express.urlencoded({ extended: false }))
 
-        // Keystone's generated context is structurally compatible with the
-        // narrow package-local OAuth/MCP context interfaces.
-        const oauth = createOAuthHandlers(commonContext as any)
-        app.get('/.well-known/oauth-authorization-server', oauth.metadata)
-        app.get(
-          '/.well-known/oauth-protected-resource/mcp',
-          oauth.protectedResourceMetadata
-        )
-        app.post('/oauth/register', oauth.register)
-        app.get('/oauth/authorize', oauth.authorize)
-        app.post('/oauth/token', oauth.token)
-        app.post('/mcp', createReadrMcpHandler(commonContext as any))
+        // MCP shares this Express process. Auth accepts an OAuth Bearer token
+        // (scope-limited, acting as the token's user) or falls back to the
+        // package's regular session cookie. Everything below is mounted only
+        // when IS_MCP_ENABLED=true on the target environment, so promoting
+        // this code to staging/prod does not expose any endpoint. The OAuth
+        // endpoints additionally require OAUTH_ISSUER + OAUTH_SIGNING_SECRET
+        // before they serve anything.
+        if (envVar.isMcpEnabled) {
+          // Keystone's generated context is structurally compatible with the
+          // narrow package-local OAuth/MCP context interfaces.
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const oauth = createOAuthHandlers(commonContext as any)
+          app.get('/.well-known/oauth-authorization-server', oauth.metadata)
+          app.get(
+            '/.well-known/oauth-protected-resource/mcp',
+            oauth.protectedResourceMetadata
+          )
+          app.post('/oauth/register', oauth.register)
+          app.get('/oauth/authorize', oauth.authorize)
+          app.post('/oauth/token', oauth.token)
+          app.post(
+            '/mcp',
+            createMcpExpressHandler({
+              name: 'lilith-readr',
+              version: '0.1.0',
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              context: createReadrMcpContext(commonContext as any),
+              tools: readrMcpTools,
+              isAuthorized: isReadrMcpAuthorized,
+              unauthorizedHeaders: readrMcpUnauthorizedHeaders,
+            })
+          )
+        }
 
         // Check if the request is sent by an authenticated user
         const authenticationMw = async (

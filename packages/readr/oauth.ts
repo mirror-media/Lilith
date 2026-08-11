@@ -30,11 +30,14 @@ type OAuthCode = {
 
 type Context = {
   session?: { itemId?: string; data?: { name?: string; role?: string } }
-  query: Record<string, {
-    findOne?: (args: Record<string, unknown>) => Promise<unknown>
-    createOne?: (args: Record<string, unknown>) => Promise<unknown>
-    updateOne?: (args: Record<string, unknown>) => Promise<unknown>
-  }>
+  query: Record<
+    string,
+    {
+      findOne?: (args: Record<string, unknown>) => Promise<unknown>
+      createOne?: (args: Record<string, unknown>) => Promise<unknown>
+      updateOne?: (args: Record<string, unknown>) => Promise<unknown>
+    }
+  >
   sudo: () => Context
 }
 
@@ -89,7 +92,11 @@ function redirectError(redirectUri: string, error: string, state?: string) {
 }
 
 function scopes(value: unknown) {
-  if (!Array.isArray(value) || !value.every((scope) => typeof scope === 'string')) return []
+  if (
+    !Array.isArray(value) ||
+    !value.every((scope) => typeof scope === 'string')
+  )
+    return []
   return value.filter((scope) => SUPPORTED_SCOPES.has(scope))
 }
 
@@ -144,11 +151,19 @@ export function verifyAccessToken(token: string): AccessTokenClaims | null {
     .digest('base64url')
   const actualBytes = Buffer.from(signature)
   const expectedBytes = Buffer.from(expected)
-  if (actualBytes.length !== expectedBytes.length || !timingSafeEqual(actualBytes, expectedBytes)) return null
+  if (
+    actualBytes.length !== expectedBytes.length ||
+    !timingSafeEqual(actualBytes, expectedBytes)
+  )
+    return null
 
   try {
-    const header = JSON.parse(Buffer.from(encodedHeader, 'base64url').toString())
-    const claims = JSON.parse(Buffer.from(encodedPayload, 'base64url').toString()) as AccessTokenClaims
+    const header = JSON.parse(
+      Buffer.from(encodedHeader, 'base64url').toString()
+    )
+    const claims = JSON.parse(
+      Buffer.from(encodedPayload, 'base64url').toString()
+    ) as AccessTokenClaims
     if (
       header.alg !== 'HS256' ||
       header.typ !== 'JWT' ||
@@ -160,7 +175,8 @@ export function verifyAccessToken(token: string): AccessTokenClaims | null {
       claims.scope.some((scope) => !SUPPORTED_SCOPES.has(scope)) ||
       !Number.isInteger(claims.exp) ||
       claims.exp <= Math.floor(Date.now() / 1000)
-    ) return null
+    )
+      return null
     return claims
   } catch {
     return null
@@ -176,7 +192,13 @@ async function findClient(context: Context, clientId: string) {
 
 export function createOAuthHandlers(commonContext: CommonContext) {
   const metadata = (_request: Request, response: Response) => {
-    if (!configured()) return oauthError(response, 'server_error', 'OAuth is not configured', 503)
+    if (!configured())
+      return oauthError(
+        response,
+        'server_error',
+        'OAuth is not configured',
+        503
+      )
     const issuer = envVar.oauth.issuer!.replace(/\/$/, '')
     return response.json({
       issuer,
@@ -190,11 +212,22 @@ export function createOAuthHandlers(commonContext: CommonContext) {
       scopes_supported: [...SUPPORTED_SCOPES],
     })
   }
-  const register = async (request: Request, response: Response, next: NextFunction) => {
+  const register = async (
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) => {
     try {
-      if (!configured()) return oauthError(response, 'server_error', 'OAuth is not configured', 503)
+      if (!configured())
+        return oauthError(
+          response,
+          'server_error',
+          'OAuth is not configured',
+          503
+        )
       const redirectUris = stringArray(request.body?.redirect_uris)
-      const clientName = getSingle(request.body?.client_name) || 'Dynamic OAuth client'
+      const clientName =
+        getSingle(request.body?.client_name) || 'Dynamic OAuth client'
       const scopeValue = getSingle(request.body?.scope)
       const requestedScopes = scopeValue
         ? scopeValue.split(' ').filter(Boolean)
@@ -239,10 +272,18 @@ export function createOAuthHandlers(commonContext: CommonContext) {
         token_endpoint_auth_method: 'none',
         scope: requestedScopes.join(' '),
       })
-    } catch (error) { next(error) }
+    } catch (error) {
+      next(error)
+    }
   }
   const protectedResourceMetadata = (request: Request, response: Response) => {
-    if (!configured()) return oauthError(response, 'server_error', 'OAuth is not configured', 503)
+    if (!configured())
+      return oauthError(
+        response,
+        'server_error',
+        'OAuth is not configured',
+        503
+      )
     const requestOrigin = `${request.protocol}://${request.get('host')}`
     const resource = envVar.oauth.resourceUrl || `${requestOrigin}/mcp`
     return response.json({
@@ -253,38 +294,83 @@ export function createOAuthHandlers(commonContext: CommonContext) {
       resource_name: 'READr CMS MCP',
     })
   }
-  const authorize = async (request: Request, response: Response, next: NextFunction) => {
+  const authorize = async (
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) => {
     try {
-      if (!configured()) return oauthError(response, 'server_error', 'OAuth is not configured', 503)
+      if (!configured())
+        return oauthError(
+          response,
+          'server_error',
+          'OAuth is not configured',
+          503
+        )
       const clientId = getSingle(request.query.client_id)
       const redirectUri = getSingle(request.query.redirect_uri)
       const responseType = getSingle(request.query.response_type)
       const challenge = getSingle(request.query.code_challenge)
       const method = getSingle(request.query.code_challenge_method)
       const state = getSingle(request.query.state)
-      const requestedScopes = (getSingle(request.query.scope) || 'readr.posts.read').split(' ')
-      if (!clientId || !redirectUri || responseType !== 'code' || !challenge || method !== 'S256') {
-        return oauthError(response, 'invalid_request', 'client_id, redirect_uri, response_type=code, and S256 PKCE are required')
+      const requestedScopes = (
+        getSingle(request.query.scope) || 'readr.posts.read'
+      ).split(' ')
+      if (
+        !clientId ||
+        !redirectUri ||
+        responseType !== 'code' ||
+        !challenge ||
+        method !== 'S256'
+      ) {
+        return oauthError(
+          response,
+          'invalid_request',
+          'client_id, redirect_uri, response_type=code, and S256 PKCE are required'
+        )
       }
       const context = await commonContext.withRequest(request, response)
       const client = await findClient(context, clientId)
-      if (!client?.isActive || !stringArray(client.redirectUris).includes(redirectUri)) {
-        return oauthError(response, 'invalid_request', 'Unknown client or redirect URI')
+      if (
+        !client?.isActive ||
+        !stringArray(client.redirectUris).includes(redirectUri)
+      ) {
+        return oauthError(
+          response,
+          'invalid_request',
+          'Unknown client or redirect URI'
+        )
       }
       const allowedScopes = scopes(client.allowedScopes)
-      if (!requestedScopes.length || requestedScopes.some((scope) => !allowedScopes.includes(scope))) {
-        return response.redirect(redirectError(redirectUri, 'invalid_scope', state))
+      if (
+        !requestedScopes.length ||
+        requestedScopes.some((scope) => !allowedScopes.includes(scope))
+      ) {
+        return response.redirect(
+          redirectError(redirectUri, 'invalid_scope', state)
+        )
       }
       const userId = context.session?.itemId
-      if (!userId || !context.session?.data?.role || !context.session.data.name) {
-        return oauthError(response, 'login_required', 'Sign in to READr CMS, then retry the authorization request', 401)
+      if (
+        !userId ||
+        !context.session?.data?.role ||
+        !context.session.data.name
+      ) {
+        return oauthError(
+          response,
+          'login_required',
+          'Sign in to READr CMS, then retry the authorization request',
+          401
+        )
       }
       const user = (await context.sudo().query.User.findOne?.({
         where: { id: userId },
         query: 'id name role',
       })) as OAuthUser | null
       if (!user || !['admin', 'moderator', 'editor'].includes(user.role)) {
-        return response.redirect(redirectError(redirectUri, 'access_denied', state))
+        return response.redirect(
+          redirectError(redirectUri, 'access_denied', state)
+        )
       }
       const code = randomBytes(32).toString('base64url')
       await context.sudo().query.OAuthAuthorizationCode.createOne?.({
@@ -302,33 +388,72 @@ export function createOAuthHandlers(commonContext: CommonContext) {
       destination.searchParams.set('code', code)
       if (state) destination.searchParams.set('state', state)
       return response.redirect(destination.toString())
-    } catch (error) { next(error) }
+    } catch (error) {
+      next(error)
+    }
   }
 
-  const token = async (request: Request, response: Response, next: NextFunction) => {
+  const token = async (
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) => {
     try {
-      if (!configured()) return oauthError(response, 'server_error', 'OAuth is not configured', 503)
+      if (!configured())
+        return oauthError(
+          response,
+          'server_error',
+          'OAuth is not configured',
+          503
+        )
       const grantType = getSingle(request.body?.grant_type)
       const code = getSingle(request.body?.code)
       const verifier = getSingle(request.body?.code_verifier)
       const clientId = getSingle(request.body?.client_id)
       const redirectUri = getSingle(request.body?.redirect_uri)
-      if (grantType !== 'authorization_code' || !code || !verifier || !clientId || !redirectUri) {
-        return oauthError(response, 'invalid_request', 'authorization_code grant with code, verifier, client_id and redirect_uri is required')
+      if (
+        grantType !== 'authorization_code' ||
+        !code ||
+        !verifier ||
+        !clientId ||
+        !redirectUri
+      ) {
+        return oauthError(
+          response,
+          'invalid_request',
+          'authorization_code grant with code, verifier, client_id and redirect_uri is required'
+        )
       }
       const context = await commonContext.withRequest(request, response)
-      const record = (await context.sudo().query.OAuthAuthorizationCode.findOne?.({
-        where: { codeHash: hashCode(code) },
-        query: 'id redirectUri codeChallenge scope expiresAt usedAt client { id clientId redirectUris allowedScopes isActive } user { id name role }',
-      })) as OAuthCode | null
-      if (!record || record.usedAt || !record.client.isActive || record.client.clientId !== clientId || record.redirectUri !== redirectUri || new Date(record.expiresAt).getTime() <= Date.now() || sha256(verifier) !== record.codeChallenge) {
-        return oauthError(response, 'invalid_grant', 'Authorization code is invalid, expired, or already used')
+      const record = (await context
+        .sudo()
+        .query.OAuthAuthorizationCode.findOne?.({
+          where: { codeHash: hashCode(code) },
+          query:
+            'id redirectUri codeChallenge scope expiresAt usedAt client { id clientId redirectUris allowedScopes isActive } user { id name role }',
+        })) as OAuthCode | null
+      if (
+        !record ||
+        record.usedAt ||
+        !record.client.isActive ||
+        record.client.clientId !== clientId ||
+        record.redirectUri !== redirectUri ||
+        new Date(record.expiresAt).getTime() <= Date.now() ||
+        sha256(verifier) !== record.codeChallenge
+      ) {
+        return oauthError(
+          response,
+          'invalid_grant',
+          'Authorization code is invalid, expired, or already used'
+        )
       }
       await context.sudo().query.OAuthAuthorizationCode.updateOne?.({
         where: { id: record.id },
         data: { usedAt: new Date().toISOString() },
       })
-      const scope = record.scope.split(' ').filter((value) => SUPPORTED_SCOPES.has(value))
+      const scope = record.scope
+        .split(' ')
+        .filter((value) => SUPPORTED_SCOPES.has(value))
       const accessToken = signAccessToken({
         sub: record.user.id,
         name: record.user.name,
@@ -336,8 +461,15 @@ export function createOAuthHandlers(commonContext: CommonContext) {
         scope,
         aud: record.client.clientId,
       })
-      return response.json({ access_token: accessToken, token_type: 'Bearer', expires_in: envVar.oauth.accessTokenTtlSeconds, scope: scope.join(' ') })
-    } catch (error) { next(error) }
+      return response.json({
+        access_token: accessToken,
+        token_type: 'Bearer',
+        expires_in: envVar.oauth.accessTokenTtlSeconds,
+        scope: scope.join(' '),
+      })
+    } catch (error) {
+      next(error)
+    }
   }
   return { metadata, protectedResourceMetadata, register, authorize, token }
 }

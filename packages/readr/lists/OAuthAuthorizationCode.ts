@@ -9,7 +9,10 @@ const { allowRoles, admin } = utils.accessControl
 export default list({
   fields: {
     codeHash: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
-    client: relationship({ ref: 'OAuthClient', validation: { isRequired: true } }),
+    client: relationship({
+      ref: 'OAuthClient',
+      validation: { isRequired: true },
+    }),
     user: relationship({ ref: 'User', validation: { isRequired: true } }),
     redirectUri: text({ validation: { isRequired: true } }),
     codeChallenge: text({ validation: { isRequired: true } }),

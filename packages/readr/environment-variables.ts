@@ -1,5 +1,6 @@
 const {
   IS_UI_DISABLED,
+  IS_MCP_ENABLED,
   ACCESS_CONTROL_STRATEGY,
   PREVIEW_SERVER_ORIGIN,
   DATABASE_PROVIDER,
@@ -28,6 +29,9 @@ enum DatabaseProvider {
 
 export default {
   isUIDisabled: IS_UI_DISABLED === 'true',
+  // MCP endpoint is opt-in per environment: unset or any value other than
+  // 'true' keeps the /mcp route unmounted.
+  isMcpEnabled: IS_MCP_ENABLED === 'true',
   memoryCacheTtl: Number.isNaN(Number(MEMORY_CACHE_TTL))
     ? 300_000
     : Number(MEMORY_CACHE_TTL),
