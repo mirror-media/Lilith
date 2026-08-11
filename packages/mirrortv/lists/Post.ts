@@ -464,15 +464,6 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
-    tags_algo: relationship({
-      label: '演算法標籤',
-      ref: 'Tag',
-      many: true,
-      ui: {
-        views: './lists/views/sorted-relationship/index',
-        createView: { fieldMode: 'hidden' },
-      },
-    }),
     audio: relationship({ label: '音檔', ref: 'Audio' }),
     download: relationship({ label: '附加檔案', ref: 'Download', many: true }),
 
