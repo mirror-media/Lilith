@@ -29,6 +29,7 @@ const PICKED_FIELDS = [
   'slug',
   'title',
   'sections',
+  'categories',
   'writers',
   'content',
   'heroImage',
