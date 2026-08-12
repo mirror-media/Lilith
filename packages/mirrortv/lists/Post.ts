@@ -470,6 +470,8 @@ const listConfigurations = list({
       many: true,
       ui: {
         createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: envVar.autotagging ? 'edit' : 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
     audio: relationship({ label: '音檔', ref: 'Audio' }),
