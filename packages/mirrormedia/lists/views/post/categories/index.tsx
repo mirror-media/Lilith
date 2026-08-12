@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState, useEffect, useRef } from 'react'
 
 import { Button } from '@keystone-ui/button'
 // eslint-disable-next-line
@@ -23,12 +23,15 @@ import {
 } from '@keystone-6/core/types'
 import { Link } from '@keystone-6/core/admin-ui/router'
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
+import { gql, useApolloClient } from '@keystone-6/core/admin-ui/apollo'
 import {
   CellContainer,
   CreateItemDrawer,
 } from '@keystone-6/core/admin-ui/components'
 
 import { RelationshipSelect } from './RelationshipSelect'
+import { fieldFilterManager } from '../../shared/fieldFilterManager'
+import { useDialogScope } from '../../shared/useDialogScope'
 
 function LinkToRelatedItems({
   itemId,
@@ -89,12 +92,103 @@ export const Field = ({
   autoFocus,
   value,
   onChange,
-  forceValidation,
 }: FieldProps<typeof controller>) => {
   const keystone = useKeystone()
   const foreignList = useList(field.refListKey)
   const localList = useList(field.listKey)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const { anchorRef, scopedKey } = useDialogScope()
+
+  // 組件卸載時，移除此 scope 的全域狀態（用 clearField 連 key 一起刪，避免累積殘留）
+  useEffect(() => {
+    return () => {
+      fieldFilterManager.clearField(scopedKey('categories'))
+    }
+  }, [])
+
+  // 當 categories 值改變，把目前選取的 category IDs 存進 fieldFilterManager
+  // 讓 state 欄位的 validate 能判斷「已發布/預約發布時 categories 是否有值」
+  useEffect(() => {
+    if (value.kind === 'many' && Array.isArray(value.value)) {
+      const categoryIds = value.value
+        .map((item: any) => item.id)
+        .filter(Boolean)
+      fieldFilterManager.updateField(scopedKey('categories'), categoryIds)
+    }
+  }, [value])
+
+  // ── 大分類(sections)換掉時，自動移除「不再隸屬於目前大分類」的小分類
+  const apolloClient = useApolloClient()
+  const [selectedSections, setSelectedSections] = useState<string[]>([])
+  useEffect(() => {
+    const unsubscribe = fieldFilterManager.subscribe(
+      scopedKey('sections'),
+      (ids) => {
+        setSelectedSections((prevIds) => {
+          const same =
+            prevIds.length === ids.length &&
+            prevIds.every((id) => ids.includes(id))
+          return same ? prevIds : ids
+        })
+      }
+    )
+    return unsubscribe
+  }, [])
+
+  // 記住「上一次的非空大分類組合」,用來偵測是否有大分類被移除
+  const lastSectionsRef = useRef<string[] | null>(null)
+  useEffect(() => {
+    if (value.kind !== 'many') return
+    if (selectedSections.length === 0) return // 清空 → 保留;不更新 last(維持上一組非空)
+
+    const last = lastSectionsRef.current
+    lastSectionsRef.current = selectedSections
+
+    if (last === null) return
+
+    const removedAny = last.some((id) => !selectedSections.includes(id))
+    if (!removedAny) return
+
+    const selectedCategoryIds = value.value.map((c) => c.id).filter(Boolean)
+    if (selectedCategoryIds.length === 0) return
+
+    let cancelled = false
+    apolloClient
+      .query<{ items: { id: string }[] }>({
+        query: gql`
+          query CategoriesUnderSections($where: ${foreignList.gqlNames.whereInputName}!) {
+            items: ${foreignList.gqlNames.listQueryName}(where: $where) {
+              id
+            }
+          }
+        `,
+        variables: {
+          where: {
+            AND: [
+              { id: { in: selectedCategoryIds } },
+              { sections: { some: { id: { in: selectedSections } } } },
+            ],
+          },
+        },
+        fetchPolicy: 'network-only',
+      })
+      .then(({ data }) => {
+        if (cancelled || value.kind !== 'many') return
+        const validIds = new Set((data?.items ?? []).map((i) => i.id))
+        const kept = value.value.filter((c) => validIds.has(c.id))
+        if (kept.length !== value.value.length) {
+          onChange?.({ ...value, value: kept })
+        }
+      })
+      .catch((err) => {
+        // 查詢失敗就不動(fail-safe:不亂清小分類),但留下線索方便日後查問題
+        console.error('[categories] 檢查小分類是否隸屬大分類的查詢失敗:', err)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [selectedSections])
 
   if (value.kind === 'count') {
     return (
@@ -117,6 +211,7 @@ export const Field = ({
 
   return (
     <FieldContainer as="fieldset">
+      <span ref={anchorRef} hidden />
       <FieldLabel as="legend">{field.label}</FieldLabel>
       <FieldDescription id={`${field.path}-description`}>
         {field.description}
@@ -142,6 +237,11 @@ export const Field = ({
                     kind: 'many',
                     value: value.value,
                     onChange(newItems) {
+                      // 同步更新 fieldFilterManager，確保父元件重新 render 時 validate() 能讀到最新值
+                      fieldFilterManager.updateField(
+                        scopedKey('categories'),
+                        newItems.map((item: any) => item.id).filter(Boolean)
+                      )
                       onChange?.({
                         ...value,
                         value: newItems,
@@ -229,9 +329,14 @@ export const Field = ({
               onCreate={(val) => {
                 setIsDrawerOpen(false)
                 if (value.kind === 'many') {
+                  const newValue = [...value.value, val]
+                  fieldFilterManager.updateField(
+                    scopedKey('categories'),
+                    newValue.map((item: any) => item.id).filter(Boolean)
+                  )
                   onChange({
                     ...value,
-                    value: [...value.value, val],
+                    value: newValue,
                   })
                 } else if (value.kind === 'one') {
                   onChange({
@@ -248,7 +353,7 @@ export const Field = ({
   )
 }
 
-// @ts-ignore
+// @ts-ignore keystone relationship view type
 export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const list = useList(field.refListKey)
   const { colors } = useTheme()
@@ -282,11 +387,8 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
       {displayItems.map((item, index) => (
         <Fragment key={item.id}>
           {index ? ', ' : ''}
-          {/* @ts-ignore */}
-          <Link
-            href={`/${list.path}/${item.id}`}
-            css={styles}
-          >
+          {/* @ts-ignore keystone Link type */}
+          <Link href={`/${list.path}/${item.id}`} css={styles}>
             {item.label || item.id}
           </Link>
         </Fragment>
@@ -296,7 +398,7 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   )
 }
 
-// @ts-ignore
+// @ts-ignore keystone relationship view type
 export const CardValue: CardValueComponent<typeof controller> = ({
   field,
   item,
@@ -311,7 +413,7 @@ export const CardValue: CardValueComponent<typeof controller> = ({
         .map((item, index) => (
           <Fragment key={item.id}>
             {index ? ', ' : ''}
-            {/* @ts-ignore */}
+            {/* @ts-ignore keystone Link type */}
             <Link href={`/${list.path}/${item.id}`}>
               {item.label || item.id}
             </Link>
@@ -342,9 +444,7 @@ type CountRelationshipValue = {
 }
 
 type RelationshipController = FieldController<
-  | ManyRelationshipValue
-  | SingleRelationshipValue
-  | CountRelationshipValue,
+  ManyRelationshipValue | SingleRelationshipValue | CountRelationshipValue,
   string
 > & {
   display: 'count' | 'select'
@@ -379,11 +479,6 @@ export const controller = (
   const refLabelField = config.fieldMeta.refLabelField
   const refSearchFields = config.fieldMeta.refSearchFields
 
-  // 檢查是否有 manualOrder 支援（通過檢查 listKey 是否為 Post）
-  // 如果有 manualOrder，使用 InInputOrder；否則使用原始欄位
-  const hasManualOrder = config.listKey === 'Post'
-  const fieldPath = hasManualOrder ? `${config.path}InInputOrder` : config.path
-
   return {
     refFieldKey: config.fieldMeta.refFieldKey,
     many: config.fieldMeta.many,
@@ -391,8 +486,7 @@ export const controller = (
     path: config.path,
     label: config.label,
     description: config.description,
-    display:
-      config.fieldMeta.displayMode === 'count' ? 'count' : 'select',
+    display: config.fieldMeta.displayMode === 'count' ? 'count' : 'select',
     refLabelField,
     refSearchFields,
     refListKey: config.fieldMeta.refListKey,
@@ -421,10 +515,12 @@ export const controller = (
         }
       }
       if (config.fieldMeta.many) {
-        const value = (data[`${config.path}InInputOrder`] || []).map((x: any) => ({
-          id: x.id,
-          label: x.label || x.id,
-        }))
+        const value = (data[`${config.path}InInputOrder`] || []).map(
+          (x: any) => ({
+            id: x.id,
+            label: x.label || x.id,
+          })
+        )
         return {
           kind: 'many',
           id: data.id,
@@ -452,7 +548,7 @@ export const controller = (
       Label: () => '',
       types: {},
     },
-    validate(value) {
+    validate() {
       return true
     },
     serialize: (state) => {
@@ -497,4 +593,3 @@ export const controller = (
     },
   }
 }
-
