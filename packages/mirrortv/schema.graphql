@@ -1430,6 +1430,8 @@ type Post {
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   manualOrderOfTags: JSON
+  tags_algo(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tags_algoCount(where: TagWhereInput! = {}): Int
   audio: Audio
   download(where: DownloadWhereInput! = {}, orderBy: [DownloadOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DownloadWhereUniqueInput): [Download!]
   downloadCount(where: DownloadWhereInput! = {}): Int
@@ -1503,6 +1505,7 @@ input PostWhereInput {
   isVideoObjectsPending: BooleanFilter
   topics: TopicWhereInput
   tags: TagManyRelationFilter
+  tags_algo: TagManyRelationFilter
   audio: AudioWhereInput
   download: DownloadManyRelationFilter
   relatedPosts: PostManyRelationFilter
@@ -1613,6 +1616,7 @@ input PostUpdateInput {
   topics: TopicRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
   manualOrderOfTags: JSON
+  tags_algo: TagRelateToManyForUpdateInput
   audio: AudioRelateToOneForUpdateInput
   download: DownloadRelateToManyForUpdateInput
   relatedPosts: PostRelateToManyForUpdateInput
@@ -1704,6 +1708,7 @@ input PostCreateInput {
   topics: TopicRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
   manualOrderOfTags: JSON
+  tags_algo: TagRelateToManyForCreateInput
   audio: AudioRelateToOneForCreateInput
   download: DownloadRelateToManyForCreateInput
   relatedPosts: PostRelateToManyForCreateInput
