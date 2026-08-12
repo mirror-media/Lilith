@@ -2499,6 +2499,149 @@ input AuthorRelateToOneForCreateInput {
   connect: AuthorWhereUniqueInput
 }
 
+type OAuthClient {
+  id: ID!
+  name: String
+  clientId: String
+  redirectUris: JSON
+  allowedScopes: JSON
+  isActive: Boolean
+}
+
+input OAuthClientWhereUniqueInput {
+  id: ID
+  clientId: String
+}
+
+input OAuthClientWhereInput {
+  AND: [OAuthClientWhereInput!]
+  OR: [OAuthClientWhereInput!]
+  NOT: [OAuthClientWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  clientId: StringFilter
+  isActive: BooleanFilter
+}
+
+input OAuthClientOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  clientId: OrderDirection
+  isActive: OrderDirection
+}
+
+input OAuthClientUpdateInput {
+  name: String
+  clientId: String
+  redirectUris: JSON
+  allowedScopes: JSON
+  isActive: Boolean
+}
+
+input OAuthClientUpdateArgs {
+  where: OAuthClientWhereUniqueInput!
+  data: OAuthClientUpdateInput!
+}
+
+input OAuthClientCreateInput {
+  name: String
+  clientId: String
+  redirectUris: JSON
+  allowedScopes: JSON
+  isActive: Boolean
+}
+
+type OAuthAuthorizationCode {
+  id: ID!
+  codeHash: String
+  client: OAuthClient
+  user: User
+  redirectUri: String
+  codeChallenge: String
+  scope: String
+  expiresAt: DateTime
+  usedAt: DateTime
+}
+
+input OAuthAuthorizationCodeWhereUniqueInput {
+  id: ID
+  codeHash: String
+}
+
+input OAuthAuthorizationCodeWhereInput {
+  AND: [OAuthAuthorizationCodeWhereInput!]
+  OR: [OAuthAuthorizationCodeWhereInput!]
+  NOT: [OAuthAuthorizationCodeWhereInput!]
+  id: IDFilter
+  codeHash: StringFilter
+  client: OAuthClientWhereInput
+  user: UserWhereInput
+  redirectUri: StringFilter
+  codeChallenge: StringFilter
+  scope: StringFilter
+  expiresAt: DateTimeFilter
+  usedAt: DateTimeNullableFilter
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeFilter
+}
+
+input OAuthAuthorizationCodeOrderByInput {
+  id: OrderDirection
+  codeHash: OrderDirection
+  redirectUri: OrderDirection
+  codeChallenge: OrderDirection
+  scope: OrderDirection
+  expiresAt: OrderDirection
+  usedAt: OrderDirection
+}
+
+input OAuthAuthorizationCodeUpdateInput {
+  codeHash: String
+  client: OAuthClientRelateToOneForUpdateInput
+  user: UserRelateToOneForUpdateInput
+  redirectUri: String
+  codeChallenge: String
+  scope: String
+  expiresAt: DateTime
+  usedAt: DateTime
+}
+
+input OAuthClientRelateToOneForUpdateInput {
+  create: OAuthClientCreateInput
+  connect: OAuthClientWhereUniqueInput
+  disconnect: Boolean
+}
+
+input OAuthAuthorizationCodeUpdateArgs {
+  where: OAuthAuthorizationCodeWhereUniqueInput!
+  data: OAuthAuthorizationCodeUpdateInput!
+}
+
+input OAuthAuthorizationCodeCreateInput {
+  codeHash: String
+  client: OAuthClientRelateToOneForCreateInput
+  user: UserRelateToOneForCreateInput
+  redirectUri: String
+  codeChallenge: String
+  scope: String
+  expiresAt: DateTime
+  usedAt: DateTime
+}
+
+input OAuthClientRelateToOneForCreateInput {
+  create: OAuthClientCreateInput
+  connect: OAuthClientWhereUniqueInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -2625,6 +2768,18 @@ type Mutation {
   updateQuotes(data: [QuoteUpdateArgs!]!): [Quote]
   deleteQuote(where: QuoteWhereUniqueInput!): Quote
   deleteQuotes(where: [QuoteWhereUniqueInput!]!): [Quote]
+  createOAuthClient(data: OAuthClientCreateInput!): OAuthClient
+  createOAuthClients(data: [OAuthClientCreateInput!]!): [OAuthClient]
+  updateOAuthClient(where: OAuthClientWhereUniqueInput!, data: OAuthClientUpdateInput!): OAuthClient
+  updateOAuthClients(data: [OAuthClientUpdateArgs!]!): [OAuthClient]
+  deleteOAuthClient(where: OAuthClientWhereUniqueInput!): OAuthClient
+  deleteOAuthClients(where: [OAuthClientWhereUniqueInput!]!): [OAuthClient]
+  createOAuthAuthorizationCode(data: OAuthAuthorizationCodeCreateInput!): OAuthAuthorizationCode
+  createOAuthAuthorizationCodes(data: [OAuthAuthorizationCodeCreateInput!]!): [OAuthAuthorizationCode]
+  updateOAuthAuthorizationCode(where: OAuthAuthorizationCodeWhereUniqueInput!, data: OAuthAuthorizationCodeUpdateInput!): OAuthAuthorizationCode
+  updateOAuthAuthorizationCodes(data: [OAuthAuthorizationCodeUpdateArgs!]!): [OAuthAuthorizationCode]
+  deleteOAuthAuthorizationCode(where: OAuthAuthorizationCodeWhereUniqueInput!): OAuthAuthorizationCode
+  deleteOAuthAuthorizationCodes(where: [OAuthAuthorizationCodeWhereUniqueInput!]!): [OAuthAuthorizationCode]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -2709,6 +2864,12 @@ type Query {
   quotes(where: QuoteWhereInput! = {}, orderBy: [QuoteOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: QuoteWhereUniqueInput): [Quote!]
   quote(where: QuoteWhereUniqueInput!): Quote
   quotesCount(where: QuoteWhereInput! = {}): Int
+  oAuthClients(where: OAuthClientWhereInput! = {}, orderBy: [OAuthClientOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OAuthClientWhereUniqueInput): [OAuthClient!]
+  oAuthClient(where: OAuthClientWhereUniqueInput!): OAuthClient
+  oAuthClientsCount(where: OAuthClientWhereInput! = {}): Int
+  oAuthAuthorizationCodes(where: OAuthAuthorizationCodeWhereInput! = {}, orderBy: [OAuthAuthorizationCodeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OAuthAuthorizationCodeWhereUniqueInput): [OAuthAuthorizationCode!]
+  oAuthAuthorizationCode(where: OAuthAuthorizationCodeWhereUniqueInput!): OAuthAuthorizationCode
+  oAuthAuthorizationCodesCount(where: OAuthAuthorizationCodeWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
