@@ -4,6 +4,7 @@ import {
   RequestContextFactory,
   textContent,
 } from '@mirrormedia/lilith-mcp'
+import { Readable } from 'stream'
 import envVar from './environment-variables'
 import { convertToDraftJs } from './draftjs'
 import { AccessTokenClaims, CommonContext, verifyAccessToken } from './oauth'
@@ -15,6 +16,9 @@ type ReadrMcpContext = {
       findMany: (args: Record<string, unknown>) => Promise<unknown>
       createOne: (args: Record<string, unknown>) => Promise<unknown>
       updateOne: (args: Record<string, unknown>) => Promise<unknown>
+    }
+    Photo: {
+      createOne: (args: Record<string, unknown>) => Promise<unknown>
     }
     User: {
       findOne: (args: Record<string, unknown>) => Promise<unknown>
@@ -48,6 +52,18 @@ const POST_DETAIL_QUERY = `
   citationApiData
   createdAt updatedAt
 `
+const PHOTO_DETAIL_QUERY = `
+  id name
+  imageFile { id url filesize width height extension }
+  resized { original w480 w800 w1200 w1600 w2400 }
+  resizedWebp { original w480 w800 w1200 w1600 w2400 }
+`
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024
+
+type SupportedImage = {
+  mimeType: 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif'
+  extension: 'jpg' | 'png' | 'webp' | 'gif'
+}
 
 // Scopes granted by the OAuth token that produced a context. Cookie-session
 // (Admin UI) callers have no entry here: they keep their full CMS permissions,
@@ -149,6 +165,67 @@ function getPostData(value: unknown, operation: 'create' | 'update') {
 
 function getPostId(value: unknown) {
   return getString(value, 'id', true)
+}
+
+function imageType(bytes: Buffer): SupportedImage | undefined {
+  if (
+    bytes.length >= 3 &&
+    bytes[0] === 0xff &&
+    bytes[1] === 0xd8 &&
+    bytes[2] === 0xff
+  ) {
+    return { mimeType: 'image/jpeg', extension: 'jpg' }
+  }
+  if (
+    bytes.length >= 8 &&
+    bytes.subarray(0, 8).equals(Buffer.from('\x89PNG\r\n\x1a\n'))
+  ) {
+    return { mimeType: 'image/png', extension: 'png' }
+  }
+  if (bytes.length >= 6 && /^GIF8[79]a$/.test(bytes.subarray(0, 6).toString())) {
+    return { mimeType: 'image/gif', extension: 'gif' }
+  }
+  if (
+    bytes.length >= 12 &&
+    bytes.subarray(0, 4).equals(Buffer.from('RIFF')) &&
+    bytes.subarray(8, 12).equals(Buffer.from('WEBP'))
+  ) {
+    return { mimeType: 'image/webp', extension: 'webp' }
+  }
+}
+
+function imageUpload(value: unknown, mimeType: unknown) {
+  const valueString = getString(value, 'image', true)
+  const dataUrl = /^data:([^;,]+);base64,([a-z0-9+/=]+)$/i.exec(valueString)
+  const encoded = dataUrl ? dataUrl[2] : valueString
+  if (!dataUrl && !/^[a-z0-9+/=]+$/i.test(encoded)) {
+    throw new McpToolError('image must be a base64 string or image data URL.')
+  }
+
+  const bytes = Buffer.from(encoded, 'base64')
+  if (bytes.length === 0 || bytes.toString('base64') !== encoded) {
+    throw new McpToolError('image must contain valid base64-encoded image data.')
+  }
+  if (bytes.length > MAX_IMAGE_BYTES) {
+    throw new McpToolError('image must not exceed 10 MiB.')
+  }
+
+  const detected = imageType(bytes)
+  if (!detected) {
+    throw new McpToolError('Only JPEG, PNG, WebP, and GIF images are supported.')
+  }
+  const suppliedMimeType = dataUrl?.[1] || getString(mimeType, 'mimeType')
+  if (suppliedMimeType && suppliedMimeType.toLowerCase() !== detected.mimeType) {
+    throw new McpToolError('mimeType does not match the uploaded image.')
+  }
+  return { bytes, ...detected }
+}
+
+function imageFilename(value: unknown, extension: SupportedImage['extension']) {
+  const supplied = getString(value, 'filename')
+  const safe = supplied?.replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 180)
+  const stem = (safe || 'image').replace(/\.[^.]+$/, '') || 'image'
+  return `${stem}.${extension}`
 }
 
 export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
@@ -363,6 +440,61 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       return result(
         convertToDraftJs(source, format as 'html' | 'markdown' | 'plain_text')
       )
+    },
+  },
+  {
+    name: 'upload_image',
+    description:
+      'Upload a JPEG, PNG, WebP, or GIF to the READr CMS photo library. Supply base64 image data (or a data URL), then use the returned image URLs or photo ID in an article. The CMS storage backend writes the original file and triggers its normal resize pipeline.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'string',
+          description:
+            'Base64-encoded image data, optionally as a data URL. Maximum decoded size: 10 MiB.',
+        },
+        filename: {
+          type: 'string',
+          description: 'Optional source filename. Its extension is replaced with the detected image type.',
+        },
+        mimeType: {
+          type: 'string',
+          enum: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+          description:
+            'Required when image is raw base64; omit when image is a data URL.',
+        },
+        name: {
+          type: 'string',
+          description: 'Optional CMS photo title. Defaults to the filename.',
+        },
+      },
+      required: ['image'],
+      additionalProperties: false,
+    },
+    async execute(args, context) {
+      requireScope(context, 'readr.posts.write')
+      const upload = imageUpload(args.image, args.mimeType)
+      const filename = imageFilename(args.filename, upload.extension)
+      const name = getString(args.name, 'name') || filename
+      const photo = await context.query.Photo.createOne({
+        data: {
+          name,
+          imageFile: {
+            // Keystone's Upload scalar consumes this same stream-shaped value
+            // used by GraphQL multipart uploads, so its configured `images`
+            // storage remains the one and only write path.
+            upload: Promise.resolve({
+              createReadStream: () => Readable.from(upload.bytes),
+              filename,
+              mimetype: upload.mimeType,
+              encoding: '7bit',
+            }),
+          },
+        },
+        query: PHOTO_DETAIL_QUERY,
+      })
+      return result(photo)
     },
   },
   {
