@@ -1053,10 +1053,19 @@ const listConfigurations = list({
                 JSON.stringify(originalItem?.content)))
 
         if (firstTimePublished || contentChanged) {
+          // title/content changed after publish: previous algo tags may no
+          // longer fit, so ask data-services to replace the whole set
+          const query = contentChanged ? '?replace=true' : ''
+          console.log(
+            `[AutoTag] trigger post ${item.id} (${
+              contentChanged ? 'content-change' : 'publish'
+            })`
+          )
           // fire-and-forget: tagging takes ~30s and must not block the editor's save
-          fetch(`${envVar.dataServiceApi}/jobs/auto-tagging/posts/${item.id}`, {
-            method: 'POST',
-          })
+          fetch(
+            `${envVar.dataServiceApi}/jobs/auto-tagging/posts/${item.id}${query}`,
+            { method: 'POST' }
+          )
             .then((res) => {
               if (!res.ok) {
                 console.error(
