@@ -74,6 +74,14 @@ ACCESS_CONTROL_STRATEGY=gql npm run dev
 切換成 `gql` 模式後，GraphQL API server 就不會檢查使用者是否處於登入的狀態（意即 GraphQL API server 會處理所有的 requests）。
 注意：`gql` 模式的使用上，需要搭配「不允許外部網路的限制」來部署程式碼，以免門戶大開。
 
+## MCP endpoint
+
+Mirror Media 在同一個 Keystone/Express process 提供 MCP Streamable HTTP endpoint：`POST /mcp`，透過 `@mirrormedia/lilith-mcp` 共用套件實作。此 endpoint 預設不啟用：只有在環境變數 `IS_MCP_ENABLED` 設為 `true` 的環境才會掛載，所以把程式碼 promote 到 staging/prod 不會自動開放 MCP。
+
+認證接受 OAuth Bearer token（以 token 內的使用者身分執行，並受 scope 限制）或既有的 Keystone session cookie（權限與 Admin UI 相同）。兩者最終都以該使用者建立 Keystone session，因此各 list 的 access control 仍由 `context.query` 強制執行。OAuth 2.0 Authorization Code with PKCE endpoints（`GET /oauth/authorize`、`POST /oauth/token`、`POST /oauth/register`）需設定 `OAUTH_ISSUER`（公開 HTTPS base URL）與 `OAUTH_SIGNING_SECRET`（至少 32 字元、由 Secret Manager 注入）後才會啟用。部署時將 `MCP_RESOURCE_URL` 設為外部 MCP endpoint 的完整 canonical URL。
+
+Tools 與所需 scope：`list_recent_posts`、`get_post`、`get_posts`、`search_posts`、`filter_posts`、`convert_to_draftjs` 需要 `mirrormedia.posts.read`；`upload_image`、`create_post`、`update_post`、`update_post_content` 需要 `mirrormedia.posts.write`；`publish_post` 需要 `mirrormedia.posts.publish`。session cookie 登入者不受 scope 限制。可編輯的 rich-text 欄位為 `content` 與 `brief`。`create_post` 若未提供 `slug`，會自動產生一個佔位 slug，可於 CMS 內修改。
+
 ## How we upload images
 請見[圖片上傳與 resize — 以 openwarehouse-k6 為例](https://paper.dropbox.com/doc/resize-openwarehouse-k6---BgSS7fZlve8ejXyx8NAwLQ0eAg-nEMMAMYOoMLvaaI2bcyBf)。
 
