@@ -5,6 +5,8 @@ import {
   textContent,
 } from '@mirrormedia/lilith-mcp'
 import { Readable } from 'stream'
+// @ts-ignore graphql-upload does not publish TypeScript declarations for this internal export.
+import Upload from 'graphql-upload/Upload.js'
 import envVar from './environment-variables'
 import { convertToDraftJs } from './draftjs'
 import { AccessTokenClaims, CommonContext, verifyAccessToken } from './oauth'
@@ -59,6 +61,9 @@ const PHOTO_DETAIL_QUERY = `
   resizedWebp { original w480 w800 w1200 w1600 w2400 }
 `
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
+const PNG_SIGNATURE = Buffer.from([
+  0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+])
 
 type SupportedImage = {
   mimeType: 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif'
@@ -176,13 +181,13 @@ function imageType(bytes: Buffer): SupportedImage | undefined {
   ) {
     return { mimeType: 'image/jpeg', extension: 'jpg' }
   }
-  if (
-    bytes.length >= 8 &&
-    bytes.subarray(0, 8).equals(Buffer.from('\x89PNG\r\n\x1a\n'))
-  ) {
+  if (bytes.length >= 8 && bytes.subarray(0, 8).equals(PNG_SIGNATURE)) {
     return { mimeType: 'image/png', extension: 'png' }
   }
-  if (bytes.length >= 6 && /^GIF8[79]a$/.test(bytes.subarray(0, 6).toString())) {
+  if (
+    bytes.length >= 6 &&
+    /^GIF8[79]a$/.test(bytes.subarray(0, 6).toString())
+  ) {
     return { mimeType: 'image/gif', extension: 'gif' }
   }
   if (
@@ -196,15 +201,27 @@ function imageType(bytes: Buffer): SupportedImage | undefined {
 
 function imageUpload(value: unknown, mimeType: unknown) {
   const valueString = getString(value, 'image', true)
-  const dataUrl = /^data:([^;,]+);base64,([a-z0-9+/=]+)$/i.exec(valueString)
-  const encoded = dataUrl ? dataUrl[2] : valueString
-  if (!dataUrl && !/^[a-z0-9+/=]+$/i.test(encoded)) {
+  const dataUrl = /^data:([^;,]+);base64,([\s\S]+)$/i.exec(valueString)
+  const encoded = (dataUrl ? dataUrl[2] : valueString).replace(/\s+/g, '')
+  if (!/^[a-z0-9+/]*={0,2}$/i.test(encoded)) {
     throw new McpToolError('image must be a base64 string or image data URL.')
   }
 
-  const bytes = Buffer.from(encoded, 'base64')
-  if (bytes.length === 0 || bytes.toString('base64') !== encoded) {
-    throw new McpToolError('image must contain valid base64-encoded image data.')
+  const unpadded = encoded.replace(/=+$/, '')
+  if (!unpadded || unpadded.length % 4 === 1) {
+    throw new McpToolError(
+      'image must contain valid base64-encoded image data.'
+    )
+  }
+  const normalized = unpadded.padEnd(Math.ceil(unpadded.length / 4) * 4, '=')
+  const bytes = Buffer.from(normalized, 'base64')
+  if (
+    bytes.length === 0 ||
+    bytes.toString('base64').replace(/=+$/, '') !== unpadded
+  ) {
+    throw new McpToolError(
+      'image must contain valid base64-encoded image data.'
+    )
   }
   if (bytes.length > MAX_IMAGE_BYTES) {
     throw new McpToolError('image must not exceed 10 MiB.')
@@ -212,10 +229,15 @@ function imageUpload(value: unknown, mimeType: unknown) {
 
   const detected = imageType(bytes)
   if (!detected) {
-    throw new McpToolError('Only JPEG, PNG, WebP, and GIF images are supported.')
+    throw new McpToolError(
+      'Only JPEG, PNG, WebP, and GIF images are supported.'
+    )
   }
   const suppliedMimeType = dataUrl?.[1] || getString(mimeType, 'mimeType')
-  if (suppliedMimeType && suppliedMimeType.toLowerCase() !== detected.mimeType) {
+  if (
+    suppliedMimeType &&
+    suppliedMimeType.toLowerCase() !== detected.mimeType
+  ) {
     throw new McpToolError('mimeType does not match the uploaded image.')
   }
   return { bytes, ...detected }
@@ -226,6 +248,24 @@ function imageFilename(value: unknown, extension: SupportedImage['extension']) {
   const safe = supplied?.replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 180)
   const stem = (safe || 'image').replace(/\.[^.]+$/, '') || 'image'
   return `${stem}.${extension}`
+}
+
+function imageUploadValue(
+  bytes: Buffer,
+  filename: string,
+  mimeType: SupportedImage['mimeType']
+) {
+  // context.query reaches GraphQL's Upload scalar through `variableValues`.
+  // Its parseValue accepts only a graphql-upload Upload instance, not the
+  // Promise/FileUpload shape that field resolvers receive after parsing.
+  const upload = new Upload()
+  upload.resolve({
+    createReadStream: () => Readable.from(bytes),
+    filename,
+    mimetype: mimeType,
+    encoding: '7bit',
+  })
+  return upload
 }
 
 export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
@@ -445,7 +485,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
   {
     name: 'upload_image',
     description:
-      'Upload a JPEG, PNG, WebP, or GIF to the READr CMS photo library. Supply base64 image data (or a data URL), then use the returned image URLs or photo ID in an article. The CMS storage backend writes the original file and triggers its normal resize pipeline.',
+      'Upload a JPEG, PNG, WebP, or GIF to the READr CMS photo library. Supply base64 image data (or a data URL), then use the returned photo ID or original image URL in an article. Resize URLs are generated asynchronously and can return 404 until the CMS resize pipeline completes.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -456,7 +496,8 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
         },
         filename: {
           type: 'string',
-          description: 'Optional source filename. Its extension is replaced with the detected image type.',
+          description:
+            'Optional source filename. Its extension is replaced with the detected image type.',
         },
         mimeType: {
           type: 'string',
@@ -481,15 +522,9 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
         data: {
           name,
           imageFile: {
-            // Keystone's Upload scalar consumes this same stream-shaped value
-            // used by GraphQL multipart uploads, so its configured `images`
-            // storage remains the one and only write path.
-            upload: Promise.resolve({
-              createReadStream: () => Readable.from(upload.bytes),
-              filename,
-              mimetype: upload.mimeType,
-              encoding: '7bit',
-            }),
+            // Use the same Upload scalar path as GraphQL multipart uploads,
+            // so Keystone's configured `images` storage is the only writer.
+            upload: imageUploadValue(upload.bytes, filename, upload.mimeType),
           },
         },
         query: PHOTO_DETAIL_QUERY,

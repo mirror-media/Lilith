@@ -67,7 +67,7 @@ OAuth metadata 位於 `/.well-known/oauth-authorization-server`；MCP 的 protec
 
 Tools 與所需 scope：`list_recent_posts`、`get_post`、`get_posts`、`search_posts`、`filter_posts`、`convert_to_draftjs` 需要 `readr.posts.read`；`upload_image`、`create_post`、`update_post` 需要 `readr.posts.write`；`publish_post` 需要 `readr.posts.publish`。session cookie 登入者不受 scope 限制（scope 用來限縮第三方 OAuth client，不限縮使用者本人）。`convert_to_draftjs` 可將 Google Docs 匯出或複製的 HTML、Markdown 或純文字轉為 Draft.js Raw Content State，轉換結果可放入 `create_post` / `update_post` 的 `data.content`、`data.summary`、`data.actionList`、`data.citation`。
 
-`upload_image` 接受 JPEG、PNG、WebP 或 GIF 的 base64 字串（或 `data:image/...;base64,...` data URL），解碼後最大 10 MiB。它會以目前 OAuth/CMS 使用者身分建立 `Photo`，並把檔案交給 Keystone 的 `imageFile` storage；因此既有的 CMS 權限、GCS Fuse 寫入和後續 resize trigger 都會沿用。Cloud Run 環境必須把 `IMAGES_STORAGE_PATH` 設為 GCS Fuse 的圖片目錄（目前 container mount 為 `/app/gcs`，應設定為 `/app/gcs/images`），否則原檔會被寫入 ephemeral container filesystem。
+`upload_image` 接受 JPEG、PNG、WebP 或 GIF 的 base64 字串（或 `data:image/...;base64,...` data URL），解碼後最大 10 MiB；base64 中常見的換行、空白和省略 padding 皆可接受。它會以目前 OAuth/CMS 使用者身分建立 `Photo`，並把檔案交給 Keystone 的 `imageFile` storage；因此既有的 CMS 權限、GCS Fuse 寫入和後續 resize trigger 都會沿用。原圖在寫入成功後即可使用；`resized`／`resizedWebp` URL 則由非同步 resize pipeline 產生，完成前可能回傳 404。Cloud Run 環境必須把 `IMAGES_STORAGE_PATH` 設為 GCS Fuse 的圖片目錄（目前 container mount 為 `/app/gcs`，應設定為 `/app/gcs/images`），否則原檔會被寫入 ephemeral container filesystem。
 
 要讓其他 package 啟用 MCP，請在它們的 `extendExpressApp` 以自己的 `IS_MCP_ENABLED` flag 包住 `createMcpExpressHandler`，並提供該 package 的 context factory、tools 與 `isAuthorized`；transport 一律使用 `@mirrormedia/lilith-mcp` 的實作（獨立小套件、零依賴，不需要動該 package 的 `lilith-core` 版本）。
 

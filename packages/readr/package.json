@@ -23,6 +23,7 @@
     "@mirrormedia/lilith-core": "^3.0.1",
     "@mirrormedia/lilith-mcp": "0.1.0",
     "express": "^4.17.1",
+    "graphql-upload": "^15.0.2",
     "http-proxy-middleware": "^2.0.3",
     "http2-proxy": "^5.0.53",
     "patch-package": "^6.4.7"
