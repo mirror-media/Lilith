@@ -4,11 +4,12 @@ import {
   RequestContextFactory,
   textContent,
 } from '@mirrormedia/lilith-mcp'
+import { randomBytes } from 'crypto'
 import { Readable } from 'stream'
 // @ts-ignore graphql-upload does not publish TypeScript declarations for this internal export.
 import Upload from 'graphql-upload/Upload.js'
 import envVar from './environment-variables'
-import { convertToDraftJs } from './draftjs'
+import { convertToDraftJs, createAtomicDraftJsEntity } from './draftjs'
 import { AccessTokenClaims, CommonContext, verifyAccessToken } from './oauth'
 
 type ReadrMcpContext = {
@@ -21,6 +22,13 @@ type ReadrMcpContext = {
     }
     Photo: {
       createOne: (args: Record<string, unknown>) => Promise<unknown>
+      findOne: (args: Record<string, unknown>) => Promise<unknown>
+    }
+    Video: {
+      findOne: (args: Record<string, unknown>) => Promise<unknown>
+    }
+    AudioFile: {
+      findOne: (args: Record<string, unknown>) => Promise<unknown>
     }
     User: {
       findOne: (args: Record<string, unknown>) => Promise<unknown>
@@ -59,6 +67,15 @@ const PHOTO_DETAIL_QUERY = `
   imageFile { id url filesize width height extension }
   resized { original w480 w800 w1200 w1600 w2400 }
   resizedWebp { original w480 w800 w1200 w1600 w2400 }
+`
+const VIDEO_DETAIL_QUERY = `
+  id name url youtubeUrl description
+  file { filename filesize url }
+  coverPhoto { ${PHOTO_DETAIL_QUERY} }
+`
+const AUDIO_DETAIL_QUERY = `
+  id name url description
+  file { filename filesize url }
 `
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 const PNG_SIGNATURE = Buffer.from([
@@ -106,6 +123,152 @@ function result(posts: unknown) {
 
 function singleResult(posts: unknown) {
   return result(Array.isArray(posts) ? posts[0] || null : posts)
+}
+
+type RawDraftBlock = {
+  key: string
+  text: string
+  type: string
+  depth: number
+  inlineStyleRanges: unknown[]
+  entityRanges: Array<{ offset: number; length: number; key: number }>
+  data: Record<string, unknown>
+}
+
+type RawDraftEntity = {
+  type: string
+  mutability: 'MUTABLE' | 'IMMUTABLE'
+  data: Record<string, unknown>
+}
+
+type RawDraftContent = {
+  blocks: RawDraftBlock[]
+  entityMap: Record<string, RawDraftEntity>
+}
+
+const RICH_TEXT_FIELDS = new Set([
+  'content',
+  'summary',
+  'actionList',
+  'citation',
+])
+
+function contentState(value: unknown): RawDraftContent {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return { blocks: [], entityMap: {} }
+  }
+  const draft = value as Partial<RawDraftContent>
+  if (
+    !Array.isArray(draft.blocks) ||
+    typeof draft.entityMap !== 'object' ||
+    !draft.entityMap
+  ) {
+    return { blocks: [], entityMap: {} }
+  }
+  return {
+    blocks: draft.blocks.map((block) => ({
+      key: String(block.key),
+      text: typeof block.text === 'string' ? block.text : '',
+      type: typeof block.type === 'string' ? block.type : 'unstyled',
+      depth: typeof block.depth === 'number' ? block.depth : 0,
+      inlineStyleRanges: Array.isArray(block.inlineStyleRanges)
+        ? block.inlineStyleRanges
+        : [],
+      entityRanges: Array.isArray(block.entityRanges) ? block.entityRanges : [],
+      data:
+        typeof block.data === 'object' &&
+        block.data !== null &&
+        !Array.isArray(block.data)
+          ? block.data
+          : {},
+    })),
+    entityMap: draft.entityMap as Record<string, RawDraftEntity>,
+  }
+}
+
+function uniqueBlockKey(content: RawDraftContent) {
+  const keys = new Set(content.blocks.map((block) => block.key))
+  let key = ''
+  do key = randomBytes(5).toString('base64url')
+  while (keys.has(key))
+  return key
+}
+
+function nextEntityKey(content: RawDraftContent) {
+  const keys = Object.keys(content.entityMap)
+    .map((key) => Number(key))
+    .filter((key) => Number.isInteger(key) && key >= 0)
+  return keys.length ? Math.max(...keys) + 1 : 0
+}
+
+function blockIndex(content: RawDraftContent, key: unknown) {
+  const blockKey = getString(key, 'blockKey', true)
+  const index = content.blocks.findIndex((block) => block.key === blockKey)
+  if (index < 0) throw new McpToolError(`No block exists with key ${blockKey}.`)
+  return index
+}
+
+function atomicBlock(
+  content: RawDraftContent,
+  entity: RawDraftEntity
+): RawDraftBlock {
+  const key = nextEntityKey(content)
+  content.entityMap[String(key)] = entity
+  return {
+    key: uniqueBlockKey(content),
+    text: ' ',
+    type: 'atomic',
+    depth: 0,
+    inlineStyleRanges: [],
+    entityRanges: [{ offset: 0, length: 1, key }],
+    data: {},
+  }
+}
+
+function insertBlock(
+  content: RawDraftContent,
+  afterBlockKey: unknown,
+  block: RawDraftBlock
+) {
+  if (afterBlockKey === undefined || afterBlockKey === null) {
+    content.blocks.push(block)
+    return
+  }
+  const index = blockIndex(content, afterBlockKey)
+  content.blocks.splice(index + 1, 0, block)
+}
+
+function requiredItem(value: unknown, label: string): Record<string, unknown> {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    throw new McpToolError(`${label} was not found or is not accessible.`)
+  }
+  return value as Record<string, unknown>
+}
+
+function imageEntity(
+  photo: Record<string, unknown>,
+  args: Record<string, unknown>
+): RawDraftEntity {
+  return {
+    type: 'image',
+    mutability: 'IMMUTABLE',
+    data: {
+      ...photo,
+      desc: getString(args.caption, 'caption') || '',
+      url: getString(args.url, 'url') || '',
+      alignment:
+        args.alignment === 'left' || args.alignment === 'right'
+          ? args.alignment
+          : 'center',
+    },
+  }
+}
+
+function removeEntityIfUnused(content: RawDraftContent, entityKey: number) {
+  const stillUsed = content.blocks.some((block) =>
+    block.entityRanges.some((range) => range.key === entityKey)
+  )
+  if (!stillUsed) delete content.entityMap[String(entityKey)]
 }
 
 const WRITABLE_POST_FIELDS = new Set([
@@ -485,7 +648,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
   {
     name: 'upload_image',
     description:
-      'Upload a JPEG, PNG, WebP, or GIF to the READr CMS photo library. Supply base64 image data (or a data URL), then use the returned photo ID or original image URL in an article. Resize URLs are generated asynchronously and can return 404 until the CMS resize pipeline completes.',
+      'Upload a JPEG, PNG, WebP, or GIF to the READr CMS photo library. The result includes the Photo record and a native `draftjs` image block with editable caption, link, and alignment; append that block to a converted article content entityMap/blocks. Resize URLs are generated asynchronously and can return 404 until the CMS resize pipeline completes.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -509,6 +672,21 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
           type: 'string',
           description: 'Optional CMS photo title. Defaults to the filename.',
         },
+        caption: {
+          type: 'string',
+          description:
+            'Optional editable image caption shown below the image in the READr CMS editor.',
+        },
+        url: {
+          type: 'string',
+          description: 'Optional destination URL when readers click the image.',
+        },
+        alignment: {
+          type: 'string',
+          enum: ['left', 'center', 'right'],
+          default: 'center',
+          description: 'Image alignment in the article.',
+        },
       },
       required: ['image'],
       additionalProperties: false,
@@ -518,6 +696,12 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       const upload = imageUpload(args.image, args.mimeType)
       const filename = imageFilename(args.filename, upload.extension)
       const name = getString(args.name, 'name') || filename
+      const caption = getString(args.caption, 'caption') || ''
+      const url = getString(args.url, 'url') || ''
+      const alignment =
+        args.alignment === 'left' || args.alignment === 'right'
+          ? args.alignment
+          : 'center'
       const photo = await context.query.Photo.createOne({
         data: {
           name,
@@ -529,7 +713,23 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
         },
         query: PHOTO_DETAIL_QUERY,
       })
-      return result(photo)
+      // `imageLink` is only an external URL and the CMS editor cannot edit a
+      // caption for it. Return the native lower-case `image` entity instead,
+      // using the same flat photo data shape as the Image toolbar button.
+      const photoData = photo as Record<string, unknown>
+      return result({
+        ...photoData,
+        draftjs: createAtomicDraftJsEntity({
+          type: 'image',
+          mutability: 'IMMUTABLE',
+          data: {
+            ...photoData,
+            desc: caption,
+            url,
+            alignment,
+          },
+        }),
+      })
     },
   },
   {
@@ -583,6 +783,251 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
         query: POST_DETAIL_QUERY,
       })
       return result(post)
+    },
+  },
+  {
+    name: 'update_post_content',
+    description:
+      'Safely edit one READr Draft.js rich-text field using block-aware operations. Use get_post first to obtain stable block keys. Insert operations read the referenced CMS media record and create the native entity data automatically; they never create or upload media.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', description: 'Keystone Post ID' },
+        field: {
+          type: 'string',
+          enum: ['content', 'summary', 'actionList', 'citation'],
+          default: 'content',
+          description: 'The Draft.js field to edit.',
+        },
+        expectedUpdatedAt: {
+          type: 'string',
+          description:
+            'Optional updatedAt value returned by get_post. The operation fails if the post changed before this update.',
+        },
+        operations: {
+          type: 'array',
+          minItems: 1,
+          items: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                enum: [
+                  'insert_image',
+                  'insert_video',
+                  'insert_audio',
+                  'insert_youtube',
+                  'replace_block',
+                  'remove_block',
+                ],
+              },
+              afterBlockKey: {
+                type: 'string',
+                description:
+                  'Insert after this block key. Omit only to append at the end of the field.',
+              },
+              blockKey: {
+                type: 'string',
+                description:
+                  'Existing block key for replace_block or remove_block.',
+              },
+              photoId: { type: 'string' },
+              videoId: { type: 'string' },
+              audioId: { type: 'string' },
+              youtubeId: {
+                type: 'string',
+                description: 'An 11-character YouTube video ID or YouTube URL.',
+              },
+              caption: { type: 'string' },
+              description: { type: 'string' },
+              url: { type: 'string' },
+              alignment: { type: 'string', enum: ['left', 'center', 'right'] },
+              block: {
+                type: 'object',
+                description:
+                  'Replacement text block. Supported properties: text, type, depth, data, inlineStyleRanges. Atomic blocks must use an insert operation instead.',
+              },
+            },
+            required: ['type'],
+            additionalProperties: false,
+          },
+        },
+      },
+      required: ['id', 'operations'],
+      additionalProperties: false,
+    },
+    async execute(args, context) {
+      requireScope(context, 'readr.posts.write')
+      const field = args.field === undefined ? 'content' : args.field
+      if (typeof field !== 'string' || !RICH_TEXT_FIELDS.has(field)) {
+        throw new Error(
+          'field must be content, summary, actionList, or citation'
+        )
+      }
+      if (!Array.isArray(args.operations) || args.operations.length === 0) {
+        throw new Error('operations must be a non-empty array')
+      }
+      const postId = getPostId(args.id)
+      const posts = await context.query.Post.findMany({
+        take: 1,
+        where: { id: { equals: postId } },
+        query: `id updatedAt ${field}`,
+      })
+      const post = Array.isArray(posts)
+        ? requiredItem(posts[0], 'Post')
+        : requiredItem(posts, 'Post')
+      const expectedUpdatedAt = getString(
+        args.expectedUpdatedAt,
+        'expectedUpdatedAt'
+      )
+      if (expectedUpdatedAt && post.updatedAt !== expectedUpdatedAt) {
+        throw new McpToolError(
+          'The post changed since it was read. Fetch it again before editing.'
+        )
+      }
+      const content = contentState(post[field])
+
+      for (const operation of args.operations) {
+        if (
+          typeof operation !== 'object' ||
+          operation === null ||
+          Array.isArray(operation)
+        ) {
+          throw new Error('Each operation must be an object')
+        }
+        const input = operation as Record<string, unknown>
+        const type = getString(input.type, 'operation.type', true)
+        if (type === 'insert_image') {
+          const photo = requiredItem(
+            await context.query.Photo.findOne({
+              where: { id: getString(input.photoId, 'photoId', true) },
+              query: PHOTO_DETAIL_QUERY,
+            }),
+            'Photo'
+          )
+          insertBlock(
+            content,
+            input.afterBlockKey,
+            atomicBlock(content, imageEntity(photo, input))
+          )
+        } else if (type === 'insert_video') {
+          const video = requiredItem(
+            await context.query.Video.findOne({
+              where: { id: getString(input.videoId, 'videoId', true) },
+              query: VIDEO_DETAIL_QUERY,
+            }),
+            'Video'
+          )
+          insertBlock(
+            content,
+            input.afterBlockKey,
+            atomicBlock(content, {
+              type: 'VIDEO',
+              mutability: 'IMMUTABLE',
+              data: {
+                video,
+                desc: getString(input.description, 'description') || '',
+              },
+            })
+          )
+        } else if (type === 'insert_audio') {
+          const audio = requiredItem(
+            await context.query.AudioFile.findOne({
+              where: { id: getString(input.audioId, 'audioId', true) },
+              query: AUDIO_DETAIL_QUERY,
+            }),
+            'AudioFile'
+          )
+          insertBlock(
+            content,
+            input.afterBlockKey,
+            atomicBlock(content, {
+              type: 'AUDIO',
+              mutability: 'IMMUTABLE',
+              data: { audio },
+            })
+          )
+        } else if (type === 'insert_youtube') {
+          const youtubeValue = getString(input.youtubeId, 'youtubeId', true)
+          const youtubeId = youtubeValue.match(/[a-zA-Z0-9_-]{11}/)?.[0]
+          if (!youtubeId) {
+            throw new McpToolError(
+              'youtubeId must contain a valid YouTube video ID.'
+            )
+          }
+          insertBlock(
+            content,
+            input.afterBlockKey,
+            atomicBlock(content, {
+              // READr's existing editor and public renderer support the
+              // editable EMBEDDEDCODE block. Its separate YOUTUBE entity is
+              // not wired into the READr entry, so use the native supported
+              // embed shape without changing shared Draft packages.
+              type: 'EMBEDDEDCODE',
+              mutability: 'IMMUTABLE',
+              data: {
+                caption: getString(input.description, 'description') || '',
+                embeddedCode: `<iframe src="https://www.youtube.com/embed/${youtubeId}" title="YouTube video" loading="lazy" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`,
+              },
+            })
+          )
+        } else if (type === 'remove_block') {
+          const index = blockIndex(content, input.blockKey)
+          const [removed] = content.blocks.splice(index, 1)
+          for (const range of removed.entityRanges) {
+            removeEntityIfUnused(content, range.key)
+          }
+        } else if (type === 'replace_block') {
+          const index = blockIndex(content, input.blockKey)
+          if (
+            typeof input.block !== 'object' ||
+            input.block === null ||
+            Array.isArray(input.block)
+          ) {
+            throw new Error('replace_block requires a block object')
+          }
+          const replacement = input.block as Record<string, unknown>
+          if (replacement.type === 'atomic') {
+            throw new McpToolError('Use an insert operation for atomic blocks.')
+          }
+          const oldBlock = content.blocks[index]
+          content.blocks[index] = {
+            key: oldBlock.key,
+            text:
+              typeof replacement.text === 'string'
+                ? replacement.text
+                : oldBlock.text,
+            type:
+              typeof replacement.type === 'string'
+                ? replacement.type
+                : oldBlock.type,
+            depth:
+              typeof replacement.depth === 'number'
+                ? replacement.depth
+                : oldBlock.depth,
+            inlineStyleRanges: Array.isArray(replacement.inlineStyleRanges)
+              ? replacement.inlineStyleRanges
+              : oldBlock.inlineStyleRanges,
+            entityRanges: oldBlock.entityRanges,
+            data:
+              typeof replacement.data === 'object' &&
+              replacement.data !== null &&
+              !Array.isArray(replacement.data)
+                ? (replacement.data as Record<string, unknown>)
+                : oldBlock.data,
+          }
+        } else {
+          throw new Error(`Unsupported operation type: ${type}`)
+        }
+      }
+
+      return result(
+        await context.query.Post.updateOne({
+          where: { id: postId },
+          data: { [field]: content },
+          query: POST_DETAIL_QUERY,
+        })
+      )
     },
   },
   {
