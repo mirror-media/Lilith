@@ -25,6 +25,27 @@ export type RawDraftContentState = {
 
 type BlockInput = { text: string; type?: string; entity?: RawEntity }
 
+/** Creates a single atomic block in the shape expected by Draft.js Raw Content State. */
+export function createAtomicDraftJsEntity(
+  entity: RawEntity
+): RawDraftContentState {
+  const text = ' '
+  return {
+    blocks: [
+      {
+        key: keyFor(0, text),
+        text,
+        type: 'atomic',
+        depth: 0,
+        inlineStyleRanges: [],
+        entityRanges: [{ offset: 0, length: 1, key: 0 }],
+        data: {},
+      },
+    ],
+    entityMap: { '0': entity },
+  }
+}
+
 function decodeHtml(value: string) {
   return value
     .replace(/&nbsp;/gi, ' ')
@@ -149,7 +170,7 @@ function markdownBlocks(source: string): BlockInput[] {
 function htmlBlocks(source: string): BlockInput[] {
   const blocks: BlockInput[] = []
   const pattern =
-    /<(h[1-6]|p|div|li|blockquote|img|video|iframe)(\s[^>]*)?(?:>([\s\S]*?)<\/\1>|\s*\/?>)/gi
+    /<(h[1-6]|p|div|li|blockquote|img|audio|video|iframe)(\s[^>]*)?(?:>([\s\S]*?)<\/\1>|\s*\/?>)/gi
   let match: RegExpExecArray | null
   while ((match = pattern.exec(source))) {
     const tag = match[1].toLowerCase()
@@ -171,13 +192,17 @@ function htmlBlocks(source: string): BlockInput[] {
         })
       continue
     }
-    if (tag === 'video') {
+    if (tag === 'audio' || tag === 'video') {
       const src = attribute('src')
       if (src)
         blocks.push({
           text: ' ',
           type: 'atomic',
-          entity: { type: 'videoLink', mutability: 'IMMUTABLE', data: { src } },
+          entity: {
+            type: tag === 'audio' ? 'audioLink' : 'videoLink',
+            mutability: 'IMMUTABLE',
+            data: { src },
+          },
         })
       continue
     }
@@ -193,7 +218,10 @@ function htmlBlocks(source: string): BlockInput[] {
           entity: {
             type: 'YOUTUBE',
             mutability: 'IMMUTABLE',
-            data: { id: youtubeId, description: attribute('title') || '' },
+            data: {
+              youtubeId,
+              description: attribute('title') || '',
+            },
           },
         })
       continue

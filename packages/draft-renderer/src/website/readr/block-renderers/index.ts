@@ -12,6 +12,7 @@ import { SlideshowBlock, SlideshowBlockV2 } from './slideshow-block'
 import { TableBlock } from './table-block'
 import { VideoBlock } from './video-block'
 import { AudioBlock } from './audio-block'
+import { YoutubeBlock } from './youtube-block'
 
 export const blockRenderers = {
   BGImageBlock,
@@ -29,4 +30,5 @@ export const blockRenderers = {
   TableBlock,
   VideoBlock,
   AudioBlock,
+  YoutubeBlock,
 }

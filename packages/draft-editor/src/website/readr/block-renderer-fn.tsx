@@ -17,6 +17,7 @@ const {
   RelatedPostBlock,
   VideoBlock,
   AudioBlock,
+  YoutubeBlock,
 } = Readr.blockRenderers
 
 const AtomicBlock = (props) => {
@@ -69,8 +70,17 @@ const AtomicBlock = (props) => {
     case 'VIDEO': {
       return VideoBlock(entity)
     }
+    case 'VIDEO-V2': {
+      return VideoBlock(entity)
+    }
     case 'AUDIO': {
       return AudioBlock(entity)
+    }
+    case 'AUDIO-V2': {
+      return AudioBlock(entity)
+    }
+    case 'YOUTUBE': {
+      return YoutubeBlock(entity)
     }
   }
   return null

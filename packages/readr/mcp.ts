@@ -8,7 +8,7 @@ import { Readable } from 'stream'
 // @ts-ignore graphql-upload does not publish TypeScript declarations for this internal export.
 import Upload from 'graphql-upload/Upload.js'
 import envVar from './environment-variables'
-import { convertToDraftJs } from './draftjs'
+import { convertToDraftJs, createAtomicDraftJsEntity } from './draftjs'
 import { AccessTokenClaims, CommonContext, verifyAccessToken } from './oauth'
 
 type ReadrMcpContext = {
@@ -485,7 +485,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
   {
     name: 'upload_image',
     description:
-      'Upload a JPEG, PNG, WebP, or GIF to the READr CMS photo library. Supply base64 image data (or a data URL), then use the returned photo ID or original image URL in an article. Resize URLs are generated asynchronously and can return 404 until the CMS resize pipeline completes.',
+      'Upload a JPEG, PNG, WebP, or GIF to the READr CMS photo library. The result includes the Photo record and a native `draftjs` image block with editable caption, link, and alignment; append that block to a converted article content entityMap/blocks. Resize URLs are generated asynchronously and can return 404 until the CMS resize pipeline completes.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -509,6 +509,21 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
           type: 'string',
           description: 'Optional CMS photo title. Defaults to the filename.',
         },
+        caption: {
+          type: 'string',
+          description:
+            'Optional editable image caption shown below the image in the READr CMS editor.',
+        },
+        url: {
+          type: 'string',
+          description: 'Optional destination URL when readers click the image.',
+        },
+        alignment: {
+          type: 'string',
+          enum: ['left', 'center', 'right'],
+          default: 'center',
+          description: 'Image alignment in the article.',
+        },
       },
       required: ['image'],
       additionalProperties: false,
@@ -518,6 +533,12 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       const upload = imageUpload(args.image, args.mimeType)
       const filename = imageFilename(args.filename, upload.extension)
       const name = getString(args.name, 'name') || filename
+      const caption = getString(args.caption, 'caption') || ''
+      const url = getString(args.url, 'url') || ''
+      const alignment =
+        args.alignment === 'left' || args.alignment === 'right'
+          ? args.alignment
+          : 'center'
       const photo = await context.query.Photo.createOne({
         data: {
           name,
@@ -529,7 +550,23 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
         },
         query: PHOTO_DETAIL_QUERY,
       })
-      return result(photo)
+      // `imageLink` is only an external URL and the CMS editor cannot edit a
+      // caption for it. Return the native lower-case `image` entity instead,
+      // using the same flat photo data shape as the Image toolbar button.
+      const photoData = photo as Record<string, unknown>
+      return result({
+        ...photoData,
+        draftjs: createAtomicDraftJsEntity({
+          type: 'image',
+          mutability: 'IMMUTABLE',
+          data: {
+            ...photoData,
+            desc: caption,
+            url,
+            alignment,
+          },
+        }),
+      })
     },
   },
   {
