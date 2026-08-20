@@ -98,6 +98,15 @@ function singleResult(posts: unknown) {
   return result(Array.isArray(posts) ? posts[0] || null : posts)
 }
 
+function getIdArray(value: unknown, name: string) {
+  if (value === undefined) return undefined
+  if (!Array.isArray(value) || !value.every((id) => typeof id === 'string')) {
+    throw new McpToolError(`${name} must be an array of ID strings.`)
+  }
+  const ids = value.map((id) => id.trim()).filter(Boolean)
+  return ids.length ? ids : undefined
+}
+
 type RawDraftBlock = {
   key: string
   text: string
@@ -977,7 +986,7 @@ export const mirrormediaMcpTools: McpTool<MirrormediaMcpContext>[] = [
   {
     name: 'publish_post',
     description:
-      'Publish an existing Mirror Media article now, or schedule it by providing publishedDate as an RFC 3339 timestamp.',
+      'Publish an existing Mirror Media article now, or schedule it by providing publishedDate as an RFC 3339 timestamp. Publishing requires the post to end up with at least one section (大分類) and one category (小分類); pass sectionIds/categoryIds to attach them in the same call, or set them beforehand with update_post. Use filter_posts or the CMS to find the IDs.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -986,6 +995,18 @@ export const mirrormediaMcpTools: McpTool<MirrormediaMcpContext>[] = [
           type: 'string',
           format: 'date-time',
           description: 'Optional RFC 3339 publication time; defaults to now.',
+        },
+        sectionIds: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'Optional Section (大分類) IDs to attach before publishing. Added to any sections the post already has.',
+        },
+        categoryIds: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'Optional Category (小分類) IDs to attach before publishing. Added to any categories the post already has.',
         },
       },
       required: ['id'],
@@ -998,15 +1019,24 @@ export const mirrormediaMcpTools: McpTool<MirrormediaMcpContext>[] = [
         throw new Error('publishedDate must be an RFC 3339 timestamp')
       }
       const effectivePublishTime = publishTime || new Date().toISOString()
+      const sectionIds = getIdArray(args.sectionIds, 'sectionIds')
+      const categoryIds = getIdArray(args.categoryIds, 'categoryIds')
+      const data: Record<string, unknown> = {
+        state:
+          new Date(effectivePublishTime).getTime() > Date.now()
+            ? 'scheduled'
+            : 'published',
+        publishedDate: effectivePublishTime,
+      }
+      if (sectionIds) {
+        data.sections = { connect: sectionIds.map((id) => ({ id })) }
+      }
+      if (categoryIds) {
+        data.categories = { connect: categoryIds.map((id) => ({ id })) }
+      }
       const post = await context.query.Post.updateOne({
         where: { id: getPostId(args.id) },
-        data: {
-          state:
-            new Date(effectivePublishTime).getTime() > Date.now()
-              ? 'scheduled'
-              : 'published',
-          publishedDate: effectivePublishTime,
-        },
+        data,
         query: POST_DETAIL_QUERY,
       })
       return result(post)

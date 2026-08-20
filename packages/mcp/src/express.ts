@@ -17,6 +17,30 @@ const MCP_PROTOCOL_VERSION = '2025-03-26'
  */
 export class McpToolError extends Error {}
 
+/**
+ * Decides what an MCP client may see when a tool throws. Keystone validation
+ * and access-denied errors carry editor-facing messages (the Admin UI shows
+ * them verbatim to the same users), so they are surfaced for every tool in
+ * every package — an agent can only self-correct when it sees the reason.
+ * Everything else stays behind a generic message.
+ */
+function toolErrorText(error: unknown): string {
+  if (error instanceof McpToolError) return error.message
+  const code = (error as { extensions?: { code?: string } } | null)?.extensions
+    ?.code
+  const message = (error as { message?: string } | null)?.message
+  if (
+    typeof message === 'string' &&
+    (code === 'KS_VALIDATION_FAILURE' ||
+      code === 'KS_ACCESS_DENIED' ||
+      message.startsWith('You provided invalid data for this operation') ||
+      message.startsWith('Access denied:'))
+  ) {
+    return message
+  }
+  return 'The tool could not complete the request.'
+}
+
 function sendResult(
   response: Parameters<ExpressHandler>[1],
   id: JsonRpcRequest['id'],
@@ -139,14 +163,9 @@ export function createMcpExpressHandler<Context>(
           return sendResult(response, rpcRequest.id, { content })
         } catch (error) {
           // Tool failures are a successful MCP protocol response. This keeps
-          // the transport usable while avoiding accidental disclosure of an
-          // application/database error to the client.
+          // the transport usable; toolErrorText decides what is safe to show.
           return sendResult(response, rpcRequest.id, {
-            content: textContent(
-              error instanceof McpToolError
-                ? error.message
-                : 'The tool could not complete the request.'
-            ),
+            content: textContent(toolErrorText(error)),
             isError: true,
           })
         }
