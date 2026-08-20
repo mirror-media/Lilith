@@ -6,6 +6,14 @@ import express from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createPreviewMiniApp } from './express-mini-apps/preview/app'
+import { createMcpExpressHandler } from '@mirrormedia/lilith-mcp'
+import {
+  createMirrormediaMcpContext,
+  isMirrormediaMcpAuthorized,
+  mirrormediaMcpTools,
+  mirrormediaMcpUnauthorizedHeaders,
+} from './mcp'
+import { createOAuthHandlers } from './oauth'
 import Keyv from 'keyv'
 import { KeyvAdapter } from '@apollo/utils.keyvadapter'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
@@ -199,6 +207,42 @@ export default withAuth(
 
         const jsonBodyParser = express.json({ limit: '500mb' })
         app.use(jsonBodyParser)
+        // The OAuth token endpoint receives application/x-www-form-urlencoded.
+        app.use(express.urlencoded({ extended: false }))
+
+        // MCP shares this Express process. Auth accepts an OAuth Bearer token
+        // (scope-limited, acting as the token's user) or falls back to the
+        // package's regular session cookie. Everything below is mounted only
+        // when IS_MCP_ENABLED=true on the target environment, so promoting
+        // this code to staging/prod does not expose any endpoint. The OAuth
+        // endpoints additionally require OAUTH_ISSUER + OAUTH_SIGNING_SECRET
+        // before they serve anything.
+        if (envVar.isMcpEnabled) {
+          // Keystone's generated context is structurally compatible with the
+          // narrow package-local OAuth/MCP context interfaces.
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const oauth = createOAuthHandlers(context as any)
+          app.get('/.well-known/oauth-authorization-server', oauth.metadata)
+          app.get(
+            '/.well-known/oauth-protected-resource/mcp',
+            oauth.protectedResourceMetadata
+          )
+          app.post('/oauth/register', oauth.register)
+          app.get('/oauth/authorize', oauth.authorize)
+          app.post('/oauth/token', oauth.token)
+          app.post(
+            '/mcp',
+            createMcpExpressHandler({
+              name: 'lilith-mirrormedia',
+              version: '0.1.0',
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              context: createMirrormediaMcpContext(context as any),
+              tools: mirrormediaMcpTools,
+              isAuthorized: isMirrormediaMcpAuthorized,
+              unauthorizedHeaders: mirrormediaMcpUnauthorizedHeaders,
+            })
+          )
+        }
 
         if (envVar.accessControlStrategy === 'cms') {
           app.use(
