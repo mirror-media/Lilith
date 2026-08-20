@@ -1,16 +1,10 @@
-import {
-  McpTool,
-  McpToolError,
-  RequestContextFactory,
-  textContent,
-} from '@mirrormedia/lilith-mcp'
+import { McpTool, McpToolError, textContent } from '@mirrormedia/lilith-mcp'
 import { randomBytes } from 'crypto'
 import { Readable } from 'stream'
 // @ts-ignore graphql-upload does not publish TypeScript declarations for this internal export.
 import Upload from 'graphql-upload/Upload.js'
-import envVar from './environment-variables'
 import { convertToDraftJs, createAtomicDraftJsEntity } from './draftjs'
-import { AccessTokenClaims, CommonContext, verifyAccessToken } from './oauth'
+import { CommonContext, readrMcpAuth } from './oauth'
 
 type ReadrMcpContext = {
   session?: { data?: { role?: string } }
@@ -43,10 +37,6 @@ type ReadrMcpContext = {
     listKey: 'User'
     data: { id: string; name: string; role: string }
   }) => ReadrMcpContext
-}
-
-type StructuralRequest = {
-  headers: Record<string, string | string[] | undefined>
 }
 
 const POST_SUMMARY_QUERY = `id name slug state publishTime subtitle
@@ -87,24 +77,9 @@ type SupportedImage = {
   extension: 'jpg' | 'png' | 'webp' | 'gif'
 }
 
-// Scopes granted by the OAuth token that produced a context. Cookie-session
-// (Admin UI) callers have no entry here: they keep their full CMS permissions,
-// because scopes exist to narrow third-party OAuth clients, not the user.
-const contextScopes = new WeakMap<object, string[]>()
-// Contexts whose request carried an invalid/expired Bearer token. An explicit
-// token that fails verification must 401 even when a session cookie is also
-// present, so the client re-runs its OAuth flow instead of silently
-// downgrading to cookie auth.
-const rejectedContexts = new WeakSet<object>()
-
-function requireScope(context: ReadrMcpContext, scope: string) {
-  const scopes = contextScopes.get(context as unknown as object)
-  if (scopes && !scopes.includes(scope)) {
-    throw new McpToolError(
-      'The OAuth token does not include the required scope.'
-    )
-  }
-}
+// Scope enforcement and the bearer-first request context live in
+// @mirrormedia/lilith-mcp; readr only supplies its OAuth config (./oauth).
+const requireScope = readrMcpAuth.requireScope
 
 function getLimit(value: unknown, defaultLimit = 20) {
   const requestedLimit = typeof value === 'number' ? value : defaultLimit
@@ -1070,87 +1045,14 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
   },
 ]
 
-function bearerToken(request: StructuralRequest) {
-  const header = request.headers['authorization']
-  const value = Array.isArray(header) ? header[0] : header
-  if (!value?.startsWith('Bearer ')) return undefined
-  return value.slice('Bearer '.length)
-}
-
-async function bearerContext(
-  base: ReadrMcpContext,
-  claims: AccessTokenClaims
-): Promise<ReadrMcpContext | null> {
-  const client = (await base.sudo().query.OAuthClient.findOne({
-    where: { clientId: claims.aud },
-    query: 'id isActive',
-  })) as { isActive?: boolean } | null
-  if (!client?.isActive) return null
-  const user = (await base.sudo().query.User.findOne({
-    where: { id: claims.sub },
-    query: 'id name role',
-  })) as { id?: string; name?: string; role?: string } | null
-  if (
-    !user?.id ||
-    !user.name ||
-    !['admin', 'moderator', 'editor', 'contributor'].includes(user.role || '')
-  ) {
-    return null
-  }
-  const authorized = base.withSession({
-    itemId: user.id,
-    listKey: 'User',
-    data: { id: user.id, name: user.name, role: user.role as string },
-  })
-  contextScopes.set(authorized as unknown as object, claims.scope)
-  return authorized
-}
-
 /**
- * Bearer-first request context: a valid OAuth access token acts as the
- * token's user (with its scopes); no token falls back to the package's
- * regular session cookie; an invalid token is remembered so authorization
- * fails even when a session cookie is also present.
+ * Bearer-first request context, authorization gate, and 401 discovery
+ * headers — all provided by @mirrormedia/lilith-mcp, configured in ./oauth.
  */
-export function createReadrMcpContext(
-  commonContext: CommonContext
-): RequestContextFactory<ReadrMcpContext> {
-  return {
-    async withRequest(request, response) {
-      const base = (await commonContext.withRequest(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        request as any,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        response as any
-      )) as unknown as ReadrMcpContext
-      const token = bearerToken(request as StructuralRequest)
-      if (!token) return base
-      const claims = verifyAccessToken(token)
-      const authorized = claims ? await bearerContext(base, claims) : null
-      if (authorized) return authorized
-      rejectedContexts.add(base as unknown as object)
-      return base
-    },
-  }
+export function createReadrMcpContext(commonContext: CommonContext) {
+  return readrMcpAuth.contextFactory<ReadrMcpContext>(commonContext)
 }
 
-export function isReadrMcpAuthorized(context: ReadrMcpContext) {
-  if (rejectedContexts.has(context as unknown as object)) return false
-  return Boolean(context.session?.data?.role)
-}
+export const isReadrMcpAuthorized = readrMcpAuth.isAuthorized
 
-export function readrMcpUnauthorizedHeaders(request: StructuralRequest) {
-  if (!envVar.oauth.issuer || !envVar.oauth.signingSecret) return {}
-  const hostHeader = request.headers['host']
-  const protoHeader = request.headers['x-forwarded-proto']
-  const host = Array.isArray(hostHeader) ? hostHeader[0] : hostHeader
-  const proto = Array.isArray(protoHeader) ? protoHeader[0] : protoHeader
-  const base =
-    envVar.oauth.resourceUrl ||
-    `${proto || 'http'}://${host || 'localhost'}/mcp`
-  const metadataUrl = new URL(
-    '/.well-known/oauth-protected-resource/mcp',
-    base
-  ).toString()
-  return { 'WWW-Authenticate': `Bearer resource_metadata="${metadataUrl}"` }
-}
+export const readrMcpUnauthorizedHeaders = readrMcpAuth.unauthorizedHeaders
