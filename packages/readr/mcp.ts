@@ -25,6 +25,9 @@ type ReadrMcpContext = {
     AudioFile: {
       findOne: (args: Record<string, unknown>) => Promise<unknown>
     }
+    Tag: {
+      findMany: (args: Record<string, unknown>) => Promise<unknown>
+    }
     User: {
       findOne: (args: Record<string, unknown>) => Promise<unknown>
     }
@@ -42,6 +45,11 @@ type ReadrMcpContext = {
 
 const POST_SUMMARY_QUERY = `id name slug state publishTime subtitle
    categories { id slug title } writers { id name }`
+const RELATED_POST_QUERY = `
+  id name slug subtitle state publishTime
+  categories { id slug title }
+  tags { id name }
+`
 const POST_DETAIL_QUERY = `
   id slug sortOrder name subtitle state publishTime
   categories { id slug title } writers { id name name_en title }
@@ -49,6 +57,7 @@ const POST_DETAIL_QUERY = `
   engineers { id name } dataAnalysts { id name } otherByline
   heroCaption heroImageSize style summary content actionList citation
   readringTime wordCount readingTime tags { id name }
+  relatedPosts { id name slug subtitle state publishTime }
   ogTitle ogDescription isFeatured css summaryApiData apiData actionlistApiData
   citationApiData
   createdAt updatedAt
@@ -68,6 +77,7 @@ const AUDIO_DETAIL_QUERY = `
   id name url description
   file { filename filesize url }
 `
+const TAG_SUMMARY_QUERY = `id name brief state`
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 const PNG_SIGNATURE = Buffer.from([
   0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
@@ -245,6 +255,148 @@ function removeEntityIfUnused(content: RawDraftContent, entityKey: number) {
     block.entityRanges.some((range) => range.key === entityKey)
   )
   if (!stillUsed) delete content.entityMap[String(entityKey)]
+}
+
+function stringIds(value: unknown, name: string, max = 100) {
+  if (!Array.isArray(value) || value.length > max) {
+    throw new McpToolError(`${name} must be an array with at most ${max} IDs`)
+  }
+  const ids = value.map((id) => getString(id, name, true))
+  if (new Set(ids).size !== ids.length) {
+    throw new McpToolError(`${name} must not contain duplicate IDs`)
+  }
+  return ids
+}
+
+function relationIds(value: unknown) {
+  if (!Array.isArray(value)) return []
+  return value.flatMap((item) => {
+    if (typeof item !== 'object' || item === null || Array.isArray(item)) {
+      return []
+    }
+    return typeof (item as Record<string, unknown>).id === 'string'
+      ? [(item as Record<string, unknown>).id as string]
+      : []
+  })
+}
+
+async function verifyTagIds(context: ReadrMcpContext, ids: string[]) {
+  if (ids.length === 0) return
+  const tags = await context.query.Tag.findMany({
+    take: ids.length,
+    where: { id: { in: ids }, state: { equals: 'active' } },
+    query: TAG_SUMMARY_QUERY,
+  })
+  const found = new Set(relationIds(tags))
+  const missing = ids.filter((id) => !found.has(id))
+  if (missing.length) {
+    throw new McpToolError(`Tag IDs are unavailable: ${missing.join(', ')}`)
+  }
+}
+
+async function verifyPostIds(
+  context: ReadrMcpContext,
+  ids: string[],
+  excludedPostId: string
+) {
+  if (ids.includes(excludedPostId)) {
+    throw new McpToolError('A post cannot be related to itself.')
+  }
+  if (ids.length === 0) return
+  const posts = await context.query.Post.findMany({
+    take: ids.length,
+    where: { id: { in: ids }, state: { equals: 'published' } },
+    query: RELATED_POST_QUERY,
+  })
+  const found = new Set(relationIds(posts))
+  const missing = ids.filter((id) => !found.has(id))
+  if (missing.length) {
+    throw new McpToolError(
+      `Related posts must exist, be published, and be accessible: ${missing.join(
+        ', '
+      )}`
+    )
+  }
+}
+
+function namedRelations(value: unknown) {
+  if (!Array.isArray(value)) return []
+  return value.flatMap((item) => {
+    if (typeof item !== 'object' || item === null || Array.isArray(item)) {
+      return []
+    }
+    const relation = item as Record<string, unknown>
+    return typeof relation.id === 'string'
+      ? [
+          {
+            id: relation.id,
+            name:
+              typeof relation.name === 'string'
+                ? relation.name
+                : typeof relation.title === 'string'
+                ? relation.title
+                : relation.id,
+          },
+        ]
+      : []
+  })
+}
+
+function relatedCandidate(
+  post: Record<string, unknown>,
+  categoryIds: Set<string>,
+  tagIds: Set<string>,
+  sourcePublishTime: unknown
+) {
+  const matchingCategories = namedRelations(post.categories).filter(
+    (category) => categoryIds.has(category.id)
+  )
+  const matchingTags = namedRelations(post.tags).filter((tag) =>
+    tagIds.has(tag.id)
+  )
+  const reasons = [
+    ...matchingCategories.map((category) => `same category: ${category.name}`),
+    ...matchingTags.map((tag) => `shared tag: ${tag.name}`),
+  ]
+  const candidatePublishTime =
+    typeof post.publishTime === 'string'
+      ? Date.parse(post.publishTime)
+      : Number.NaN
+  const sourceTime =
+    typeof sourcePublishTime === 'string'
+      ? Date.parse(sourcePublishTime)
+      : Number.NaN
+  let publicationScore = 0
+  let publishedDateDistanceDays: number | null = null
+  if (!Number.isNaN(candidatePublishTime)) {
+    // News coverage is most useful when it is close to the source article's
+    // reporting window. Also retain a smaller global-recency signal so a
+    // timely follow-up can outrank an otherwise identical old article.
+    if (!Number.isNaN(sourceTime)) {
+      publishedDateDistanceDays = Math.round(
+        Math.abs(candidatePublishTime - sourceTime) / 86_400_000
+      )
+      publicationScore += 8 * Math.exp(-publishedDateDistanceDays / 30)
+      reasons.push(
+        `published ${publishedDateDistanceDays} day(s) from source article`
+      )
+    }
+    const ageDays = Math.max(
+      0,
+      (Date.now() - candidatePublishTime) / 86_400_000
+    )
+    publicationScore += 4 * Math.exp(-ageDays / 180)
+  }
+  return {
+    ...post,
+    score:
+      matchingCategories.length * 3 +
+      matchingTags.length * 5 +
+      Number(publicationScore.toFixed(2)),
+    publicationScore: Number(publicationScore.toFixed(2)),
+    publishedDateDistanceDays,
+    reasons,
+  }
 }
 
 const WRITABLE_POST_FIELDS = new Set([
@@ -724,6 +876,109 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
     },
   },
   {
+    name: 'search_tags',
+    description:
+      'Search the existing READr tag vocabulary. Use this after analyzing an article, so suggested concepts can be resolved to controlled tag IDs instead of creating near-duplicate tags.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        query: {
+          type: 'string',
+          description: 'Optional tag name fragment. Omit to list active tags.',
+        },
+        limit: { type: 'integer', minimum: 1, maximum: 100, default: 20 },
+      },
+      additionalProperties: false,
+    },
+    async execute(args, context) {
+      requireScope(context, 'readr.posts.read')
+      const query = getString(args.query, 'query')
+      return result(
+        await context.query.Tag.findMany({
+          take: getLimit(args.limit),
+          orderBy: { name: 'asc' },
+          where: query
+            ? {
+                AND: [
+                  { state: { equals: 'active' } },
+                  { name: { contains: query, mode: 'insensitive' } },
+                ],
+              }
+            : { state: { equals: 'active' } },
+          query: TAG_SUMMARY_QUERY,
+        })
+      )
+    },
+  },
+  {
+    name: 'suggest_related_posts',
+    description:
+      'Return lightweight related-post candidates for editorial review. Candidates are published posts sharing categories or tags with the source post, scored by tag/category overlap and publication-date proximity/recency. Read shortlisted articles with get_posts before asking a person to confirm.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', description: 'Source Post ID' },
+        limit: { type: 'integer', minimum: 1, maximum: 20, default: 10 },
+      },
+      required: ['id'],
+      additionalProperties: false,
+    },
+    async execute(args, context) {
+      requireScope(context, 'readr.posts.read')
+      const postId = getPostId(args.id)
+      const sourceRows = await context.query.Post.findMany({
+        take: 1,
+        where: { id: { equals: postId } },
+        query: `${RELATED_POST_QUERY} relatedPosts { id }`,
+      })
+      const source = Array.isArray(sourceRows)
+        ? requiredItem(sourceRows[0], 'Post')
+        : requiredItem(sourceRows, 'Post')
+      const categoryIds = new Set(relationIds(source.categories))
+      const tagIds = new Set(relationIds(source.tags))
+      if (categoryIds.size === 0 && tagIds.size === 0) {
+        throw new McpToolError(
+          'The post has no categories or tags. Add reviewed tags before requesting related-post candidates.'
+        )
+      }
+      const excludedIds = [postId, ...relationIds(source.relatedPosts)]
+      const relations: Record<string, unknown>[] = []
+      if (categoryIds.size) {
+        relations.push({
+          categories: { some: { id: { in: [...categoryIds] } } },
+        })
+      }
+      if (tagIds.size) {
+        relations.push({ tags: { some: { id: { in: [...tagIds] } } } })
+      }
+      const candidates = await context.query.Post.findMany({
+        take: 50,
+        orderBy: { publishTime: 'desc' },
+        where: {
+          AND: [
+            { state: { equals: 'published' } },
+            { id: { notIn: excludedIds } },
+            { OR: relations },
+          ],
+        },
+        query: RELATED_POST_QUERY,
+      })
+      const limit = Math.min(getLimit(args.limit, 10), 20)
+      const ranked = (Array.isArray(candidates) ? candidates : [])
+        .map((candidate) =>
+          relatedCandidate(
+            requiredItem(candidate, 'Candidate post'),
+            categoryIds,
+            tagIds,
+            source.publishTime
+          )
+        )
+        .sort((left, right) => right.score - left.score)
+        .slice(0, limit)
+      return result({ sourcePostId: postId, candidates: ranked })
+    },
+  },
+  {
     name: 'convert_to_draftjs',
     description:
       'Convert Google Docs HTML, Markdown, or plain text into Draft.js Raw Content State for Post content fields. Review the returned JSON, then pass it as data.content, data.summary, data.actionList, or data.citation to create_post or update_post.',
@@ -1155,6 +1410,124 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
         await context.query.Post.updateOne({
           where: { id: postId },
           data: { [field]: content },
+          query: POST_DETAIL_QUERY,
+        })
+      )
+    },
+  },
+  {
+    name: 'update_post_tags',
+    description:
+      'Apply reviewed existing tags to a post. This tool never creates tags; use search_tags to resolve the agent’s content-based suggestions to controlled tag IDs first.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', description: 'Keystone Post ID' },
+        tagIds: {
+          type: 'array',
+          maxItems: 100,
+          items: { type: 'string' },
+          description:
+            'Existing Tag IDs. An empty list is allowed only with mode=replace.',
+        },
+        mode: { type: 'string', enum: ['replace', 'add', 'remove'] },
+      },
+      required: ['id', 'tagIds', 'mode'],
+      additionalProperties: false,
+    },
+    async execute(args, context) {
+      requireScope(context, 'readr.posts.write')
+      const postId = getPostId(args.id)
+      const tagIds = stringIds(args.tagIds, 'tagIds')
+      const mode = getString(args.mode, 'mode', true)
+      if (!['replace', 'add', 'remove'].includes(mode)) {
+        throw new McpToolError('mode must be replace, add, or remove')
+      }
+      if (mode !== 'replace' && tagIds.length === 0) {
+        throw new McpToolError(
+          'tagIds must not be empty unless mode is replace'
+        )
+      }
+      if (mode !== 'remove') await verifyTagIds(context, tagIds)
+      const rows = await context.query.Post.findMany({
+        take: 1,
+        where: { id: { equals: postId } },
+        query: 'id tags { id }',
+      })
+      const post = Array.isArray(rows)
+        ? requiredItem(rows[0], 'Post')
+        : requiredItem(rows, 'Post')
+      const currentIds = relationIds(post.tags)
+      const requested = new Set(tagIds)
+      const nextIds =
+        mode === 'replace'
+          ? tagIds
+          : mode === 'add'
+          ? [...new Set([...currentIds, ...tagIds])]
+          : currentIds.filter((id) => !requested.has(id))
+      return result(
+        await context.query.Post.updateOne({
+          where: { id: postId },
+          data: { tags: { set: nextIds.map((id) => ({ id })) } },
+          query: POST_DETAIL_QUERY,
+        })
+      )
+    },
+  },
+  {
+    name: 'set_related_posts',
+    description:
+      'Update the Post form’s relatedPosts relationship after a person confirms the agent’s shortlisted candidates. This does not insert an in-content RELATEDPOST Draft.js block.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', description: 'Keystone Post ID' },
+        postIds: {
+          type: 'array',
+          maxItems: 20,
+          items: { type: 'string' },
+          description:
+            'Published Post IDs to relate. An empty list is allowed only with mode=replace.',
+        },
+        mode: { type: 'string', enum: ['replace', 'add', 'remove'] },
+      },
+      required: ['id', 'postIds', 'mode'],
+      additionalProperties: false,
+    },
+    async execute(args, context) {
+      requireScope(context, 'readr.posts.write')
+      const postId = getPostId(args.id)
+      const postIds = stringIds(args.postIds, 'postIds', 20)
+      const mode = getString(args.mode, 'mode', true)
+      if (!['replace', 'add', 'remove'].includes(mode)) {
+        throw new McpToolError('mode must be replace, add, or remove')
+      }
+      if (mode !== 'replace' && postIds.length === 0) {
+        throw new McpToolError(
+          'postIds must not be empty unless mode is replace'
+        )
+      }
+      if (mode !== 'remove') await verifyPostIds(context, postIds, postId)
+      const rows = await context.query.Post.findMany({
+        take: 1,
+        where: { id: { equals: postId } },
+        query: 'id relatedPosts { id }',
+      })
+      const post = Array.isArray(rows)
+        ? requiredItem(rows[0], 'Post')
+        : requiredItem(rows, 'Post')
+      const currentIds = relationIds(post.relatedPosts)
+      const requested = new Set(postIds)
+      const nextIds =
+        mode === 'replace'
+          ? postIds
+          : mode === 'add'
+          ? [...new Set([...currentIds, ...postIds])]
+          : currentIds.filter((id) => !requested.has(id))
+      return result(
+        await context.query.Post.updateOne({
+          where: { id: postId },
+          data: { relatedPosts: { set: nextIds.map((id) => ({ id })) } },
           query: POST_DETAIL_QUERY,
         })
       )
