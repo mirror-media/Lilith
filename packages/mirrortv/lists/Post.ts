@@ -1048,13 +1048,16 @@ const listConfigurations = list({
           stateIsPublished &&
           ((resolvedData?.name !== undefined &&
             item.name !== originalItem?.name) ||
+            (resolvedData?.brief !== undefined &&
+              JSON.stringify(item.brief) !==
+                JSON.stringify(originalItem?.brief)) ||
             (resolvedData?.content !== undefined &&
               JSON.stringify(item.content) !==
                 JSON.stringify(originalItem?.content)))
 
         if (firstTimePublished || contentChanged) {
-          // title/content changed after publish: previous algo tags may no
-          // longer fit, so ask data-services to replace the whole set
+          // title/brief/content changed after publish: previous algo tags may
+          // no longer fit, so ask data-services to replace the whole set
           const query = contentChanged ? '?replace=true' : ''
           console.log(
             `[AutoTag] trigger post ${item.id} (${
