@@ -283,11 +283,11 @@ function removeEntityIfUnused(content: RawDraftContent, entityKey: number) {
 
 function stringIds(value: unknown, name: string, max = 100) {
   if (!Array.isArray(value) || value.length > max) {
-    throw new Error(`${name} must be an array with at most ${max} IDs`)
+    throw new McpToolError(`${name} must be an array with at most ${max} IDs`)
   }
   const ids = value.map((id) => getString(id, name, true))
   if (new Set(ids).size !== ids.length) {
-    throw new Error(`${name} must not contain duplicate IDs`)
+    throw new McpToolError(`${name} must not contain duplicate IDs`)
   }
   return ids
 }
@@ -308,7 +308,7 @@ async function verifyTagIds(context: ReadrMcpContext, ids: string[]) {
   if (ids.length === 0) return
   const tags = await context.query.Tag.findMany({
     take: ids.length,
-    where: { id: { in: ids } },
+    where: { id: { in: ids }, state: { equals: 'active' } },
     query: TAG_SUMMARY_QUERY,
   })
   const found = new Set(relationIds(tags))
@@ -355,7 +355,11 @@ function namedRelations(value: unknown) {
           {
             id: relation.id,
             name:
-              typeof relation.name === 'string' ? relation.name : relation.id,
+              typeof relation.name === 'string'
+                ? relation.name
+                : typeof relation.title === 'string'
+                ? relation.title
+                : relation.id,
           },
         ]
       : []
@@ -1307,12 +1311,14 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       const tagIds = stringIds(args.tagIds, 'tagIds')
       const mode = getString(args.mode, 'mode', true)
       if (!['replace', 'add', 'remove'].includes(mode)) {
-        throw new Error('mode must be replace, add, or remove')
+        throw new McpToolError('mode must be replace, add, or remove')
       }
       if (mode !== 'replace' && tagIds.length === 0) {
-        throw new Error('tagIds must not be empty unless mode is replace')
+        throw new McpToolError(
+          'tagIds must not be empty unless mode is replace'
+        )
       }
-      await verifyTagIds(context, tagIds)
+      if (mode !== 'remove') await verifyTagIds(context, tagIds)
       const rows = await context.query.Post.findMany({
         take: 1,
         where: { id: { equals: postId } },
@@ -1364,12 +1370,14 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       const postIds = stringIds(args.postIds, 'postIds', 20)
       const mode = getString(args.mode, 'mode', true)
       if (!['replace', 'add', 'remove'].includes(mode)) {
-        throw new Error('mode must be replace, add, or remove')
+        throw new McpToolError('mode must be replace, add, or remove')
       }
       if (mode !== 'replace' && postIds.length === 0) {
-        throw new Error('postIds must not be empty unless mode is replace')
+        throw new McpToolError(
+          'postIds must not be empty unless mode is replace'
+        )
       }
-      await verifyPostIds(context, postIds, postId)
+      if (mode !== 'remove') await verifyPostIds(context, postIds, postId)
       const rows = await context.query.Post.findMany({
         take: 1,
         where: { id: { equals: postId } },
