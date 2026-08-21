@@ -365,7 +365,8 @@ function namedRelations(value: unknown) {
 function relatedCandidate(
   post: Record<string, unknown>,
   categoryIds: Set<string>,
-  tagIds: Set<string>
+  tagIds: Set<string>,
+  sourcePublishTime: unknown
 ) {
   const matchingCategories = namedRelations(post.categories).filter(
     (category) => categoryIds.has(category.id)
@@ -377,9 +378,43 @@ function relatedCandidate(
     ...matchingCategories.map((category) => `same category: ${category.name}`),
     ...matchingTags.map((tag) => `shared tag: ${tag.name}`),
   ]
+  const candidatePublishTime =
+    typeof post.publishTime === 'string'
+      ? Date.parse(post.publishTime)
+      : Number.NaN
+  const sourceTime =
+    typeof sourcePublishTime === 'string'
+      ? Date.parse(sourcePublishTime)
+      : Number.NaN
+  let publicationScore = 0
+  let publishedDateDistanceDays: number | null = null
+  if (!Number.isNaN(candidatePublishTime)) {
+    // News coverage is most useful when it is close to the source article's
+    // reporting window. Also retain a smaller global-recency signal so a
+    // timely follow-up can outrank an otherwise identical old article.
+    if (!Number.isNaN(sourceTime)) {
+      publishedDateDistanceDays = Math.round(
+        Math.abs(candidatePublishTime - sourceTime) / 86_400_000
+      )
+      publicationScore += 8 * Math.exp(-publishedDateDistanceDays / 30)
+      reasons.push(
+        `published ${publishedDateDistanceDays} day(s) from source article`
+      )
+    }
+    const ageDays = Math.max(
+      0,
+      (Date.now() - candidatePublishTime) / 86_400_000
+    )
+    publicationScore += 4 * Math.exp(-ageDays / 180)
+  }
   return {
     ...post,
-    score: matchingCategories.length * 3 + matchingTags.length * 5,
+    score:
+      matchingCategories.length * 3 +
+      matchingTags.length * 5 +
+      Number(publicationScore.toFixed(2)),
+    publicationScore: Number(publicationScore.toFixed(2)),
+    publishedDateDistanceDays,
     reasons,
   }
 }
@@ -763,7 +798,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
   {
     name: 'suggest_related_posts',
     description:
-      'Return lightweight related-post candidates for editorial review. Candidates are published posts sharing categories or tags with the source post, scored by tag/category overlap. Read shortlisted articles with get_posts before asking a person to confirm.',
+      'Return lightweight related-post candidates for editorial review. Candidates are published posts sharing categories or tags with the source post, scored by tag/category overlap and publication-date proximity/recency. Read shortlisted articles with get_posts before asking a person to confirm.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -819,7 +854,8 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
           relatedCandidate(
             requiredItem(candidate, 'Candidate post'),
             categoryIds,
-            tagIds
+            tagIds,
+            source.publishTime
           )
         )
         .sort((left, right) => right.score - left.score)
