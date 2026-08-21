@@ -86,7 +86,7 @@ function getLimit(value: unknown, defaultLimit = 20) {
 
 function getString(value: unknown, name: string, required = false) {
   if (typeof value === 'string' && value.trim()) return value.trim()
-  if (required) throw new Error(`${name} is required`)
+  if (required) throw new McpToolError(`${name} is required`)
   return undefined
 }
 
@@ -278,20 +278,21 @@ const WRITABLE_POST_FIELDS = new Set([
 
 function getPostData(value: unknown, operation: 'create' | 'update') {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-    throw new Error('data must be an object')
+    throw new McpToolError('data must be an object')
   }
 
   const data: Record<string, unknown> = {}
   for (const [key, fieldValue] of Object.entries(value)) {
     if (!WRITABLE_POST_FIELDS.has(key)) {
-      throw new Error(`${key} cannot be set through MCP`)
+      throw new McpToolError(`${key} cannot be set through MCP`)
     }
     data[key] = fieldValue
   }
   if (operation === 'create' && !getString(data.title, 'data.title')) {
-    throw new Error('data.title is required')
+    throw new McpToolError('data.title is required')
   }
-  if (Object.keys(data).length === 0) throw new Error('data must not be empty')
+  if (Object.keys(data).length === 0)
+    throw new McpToolError('data must not be empty')
   return data
 }
 
@@ -436,7 +437,7 @@ export const mirrormediaMcpTools: McpTool<MirrormediaMcpContext>[] = [
       const id = getString(args.id, 'id')
       const slug = getString(args.slug, 'slug')
       if ((id && slug) || (!id && !slug)) {
-        throw new Error('Provide exactly one of id or slug')
+        throw new McpToolError('Provide exactly one of id or slug')
       }
 
       return singleResult(
@@ -471,10 +472,10 @@ export const mirrormediaMcpTools: McpTool<MirrormediaMcpContext>[] = [
         !Array.isArray(args.ids) ||
         !args.ids.every((id) => typeof id === 'string')
       ) {
-        throw new Error('ids must be an array of post IDs')
+        throw new McpToolError('ids must be an array of post IDs')
       }
       const ids = args.ids.slice(0, 100)
-      if (ids.length === 0) throw new Error('ids must not be empty')
+      if (ids.length === 0) throw new McpToolError('ids must not be empty')
 
       return result(
         await context.query.Post.findMany({
@@ -565,7 +566,7 @@ export const mirrormediaMcpTools: McpTool<MirrormediaMcpContext>[] = [
       if (state) conditions.push({ state: { equals: state } })
       if (style) conditions.push({ style: { equals: style } })
       if (conditions.length === 0)
-        throw new Error('Provide at least one filter')
+        throw new McpToolError('Provide at least one filter')
 
       return result(
         await context.query.Post.findMany({
@@ -603,7 +604,7 @@ export const mirrormediaMcpTools: McpTool<MirrormediaMcpContext>[] = [
       const source = getString(args.source, 'source', true)
       const format = args.format === undefined ? 'html' : args.format
       if (!['html', 'markdown', 'plain_text'].includes(format as string)) {
-        throw new Error('format must be html, markdown, or plain_text')
+        throw new McpToolError('format must be html, markdown, or plain_text')
       }
       return result(
         convertToDraftJs(source, format as 'html' | 'markdown' | 'plain_text')
@@ -817,10 +818,10 @@ export const mirrormediaMcpTools: McpTool<MirrormediaMcpContext>[] = [
       requireScope(context, 'mirrormedia.posts.write')
       const field = args.field === undefined ? 'content' : args.field
       if (typeof field !== 'string' || !RICH_TEXT_FIELDS.has(field)) {
-        throw new Error('field must be content or brief')
+        throw new McpToolError('field must be content or brief')
       }
       if (!Array.isArray(args.operations) || args.operations.length === 0) {
-        throw new Error('operations must be a non-empty array')
+        throw new McpToolError('operations must be a non-empty array')
       }
       const postId = getPostId(args.id)
       const posts = await context.query.Post.findMany({
@@ -848,7 +849,7 @@ export const mirrormediaMcpTools: McpTool<MirrormediaMcpContext>[] = [
           operation === null ||
           Array.isArray(operation)
         ) {
-          throw new Error('Each operation must be an object')
+          throw new McpToolError('Each operation must be an object')
         }
         const input = operation as Record<string, unknown>
         const type = getString(input.type, 'operation.type', true)
@@ -937,7 +938,7 @@ export const mirrormediaMcpTools: McpTool<MirrormediaMcpContext>[] = [
             input.block === null ||
             Array.isArray(input.block)
           ) {
-            throw new Error('replace_block requires a block object')
+            throw new McpToolError('replace_block requires a block object')
           }
           const replacement = input.block as Record<string, unknown>
           if (replacement.type === 'atomic') {
@@ -970,7 +971,7 @@ export const mirrormediaMcpTools: McpTool<MirrormediaMcpContext>[] = [
                 : oldBlock.data,
           }
         } else {
-          throw new Error(`Unsupported operation type: ${type}`)
+          throw new McpToolError(`Unsupported operation type: ${type}`)
         }
       }
 
@@ -1016,7 +1017,7 @@ export const mirrormediaMcpTools: McpTool<MirrormediaMcpContext>[] = [
       requireScope(context, 'mirrormedia.posts.publish')
       const publishTime = getString(args.publishedDate, 'publishedDate')
       if (publishTime && Number.isNaN(Date.parse(publishTime))) {
-        throw new Error('publishedDate must be an RFC 3339 timestamp')
+        throw new McpToolError('publishedDate must be an RFC 3339 timestamp')
       }
       const effectivePublishTime = publishTime || new Date().toISOString()
       const sectionIds = getIdArray(args.sectionIds, 'sectionIds')
