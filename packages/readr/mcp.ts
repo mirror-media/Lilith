@@ -1,5 +1,6 @@
 import { McpTool, McpToolError, textContent } from '@mirrormedia/lilith-mcp'
 import { randomBytes } from 'crypto'
+import { lookup } from 'dns/promises'
 import { Readable } from 'stream'
 // @ts-ignore graphql-upload does not publish TypeScript declarations for this internal export.
 import Upload from 'graphql-upload/Upload.js'
@@ -338,6 +339,25 @@ function imageType(bytes: Buffer): SupportedImage | undefined {
   }
 }
 
+function checkImageBytes(bytes: Buffer, suppliedMimeType?: string) {
+  if (bytes.length > MAX_IMAGE_BYTES) {
+    throw new McpToolError('image must not exceed 10 MiB.')
+  }
+  const detected = imageType(bytes)
+  if (!detected) {
+    throw new McpToolError(
+      'Only JPEG, PNG, WebP, and GIF images are supported.'
+    )
+  }
+  if (
+    suppliedMimeType &&
+    suppliedMimeType.toLowerCase() !== detected.mimeType
+  ) {
+    throw new McpToolError('mimeType does not match the uploaded image.')
+  }
+  return { bytes, ...detected }
+}
+
 function imageUpload(value: unknown, mimeType: unknown) {
   const valueString = getString(value, 'image', true)
   const dataUrl = /^data:([^;,]+);base64,([\s\S]+)$/i.exec(valueString)
@@ -362,24 +382,139 @@ function imageUpload(value: unknown, mimeType: unknown) {
       'image must contain valid base64-encoded image data.'
     )
   }
-  if (bytes.length > MAX_IMAGE_BYTES) {
-    throw new McpToolError('image must not exceed 10 MiB.')
-  }
+  return checkImageBytes(bytes, dataUrl?.[1] || getString(mimeType, 'mimeType'))
+}
 
-  const detected = imageType(bytes)
-  if (!detected) {
-    throw new McpToolError(
-      'Only JPEG, PNG, WebP, and GIF images are supported.'
+// Node 18 ships fetch globally, but this workspace's @types/node predates its
+// typings; declare the small structural surface used below.
+declare const fetch: (
+  url: URL,
+  init: { redirect: 'manual'; signal: AbortSignal }
+) => Promise<{
+  status: number
+  ok: boolean
+  headers: { get(name: string): string | null }
+  body: {
+    getReader(): {
+      read(): Promise<{ done: boolean; value?: Uint8Array }>
+      cancel(): Promise<void>
+    }
+  } | null
+}>
+
+function isPrivateAddress(ip: string): boolean {
+  const lower = ip.toLowerCase()
+  if (lower.includes(':')) {
+    if (lower.startsWith('::ffff:')) return isPrivateAddress(lower.slice(7))
+    return (
+      lower === '::1' ||
+      lower === '::' ||
+      lower.startsWith('fe80') ||
+      lower.startsWith('fc') ||
+      lower.startsWith('fd')
     )
   }
-  const suppliedMimeType = dataUrl?.[1] || getString(mimeType, 'mimeType')
-  if (
-    suppliedMimeType &&
-    suppliedMimeType.toLowerCase() !== detected.mimeType
-  ) {
-    throw new McpToolError('mimeType does not match the uploaded image.')
+  const [a, b] = lower.split('.').map(Number)
+  return (
+    a === 0 ||
+    a === 10 ||
+    a === 127 ||
+    (a === 100 && b >= 64 && b <= 127) ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168) ||
+    (a === 169 && b === 254) ||
+    a >= 224
+  )
+}
+
+const IMAGE_FETCH_TIMEOUT_MS = 20_000
+const IMAGE_FETCH_MAX_REDIRECTS = 3
+
+/**
+ * Downloads an image on the server so MCP clients without a local runtime can
+ * upload by URL instead of streaming base64 through the model. Every hop is
+ * restricted to https on a public address; the DNS check runs before the
+ * request, which leaves a small resolve-then-fetch race but keeps the tool
+ * dependency-free.
+ */
+async function fetchImageBytes(rawUrl: string): Promise<Buffer> {
+  let url: URL
+  try {
+    url = new URL(rawUrl)
+  } catch {
+    throw new McpToolError('imageUrl must be a valid URL.')
   }
-  return { bytes, ...detected }
+  for (let hop = 0; hop <= IMAGE_FETCH_MAX_REDIRECTS; hop++) {
+    if (url.protocol !== 'https:') {
+      throw new McpToolError('imageUrl must use https.')
+    }
+    const addresses = await lookup(url.hostname, { all: true }).catch(() => [])
+    if (addresses.length === 0) {
+      throw new McpToolError('imageUrl host could not be resolved.')
+    }
+    if (addresses.some((entry) => isPrivateAddress(entry.address))) {
+      throw new McpToolError(
+        'imageUrl must not point to a private or internal address.'
+      )
+    }
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), IMAGE_FETCH_TIMEOUT_MS)
+    let response: Awaited<ReturnType<typeof fetch>>
+    try {
+      response = await fetch(url, {
+        redirect: 'manual',
+        signal: controller.signal,
+      })
+    } catch {
+      throw new McpToolError('The image could not be downloaded from imageUrl.')
+    } finally {
+      clearTimeout(timer)
+    }
+    if ([301, 302, 303, 307, 308].includes(response.status)) {
+      await response.body
+        ?.getReader()
+        .cancel()
+        .catch(() => undefined)
+      const location = response.headers.get('location')
+      if (!location) {
+        throw new McpToolError(
+          'imageUrl redirect is missing a Location header.'
+        )
+      }
+      try {
+        url = new URL(location, url)
+      } catch {
+        throw new McpToolError('imageUrl redirect target is not a valid URL.')
+      }
+      continue
+    }
+    if (!response.ok) {
+      throw new McpToolError(`imageUrl returned HTTP ${response.status}.`)
+    }
+    if (!response.body) {
+      throw new McpToolError('imageUrl returned an empty response.')
+    }
+    const reader = response.body.getReader()
+    const chunks: Buffer[] = []
+    let total = 0
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) break
+      if (value) {
+        total += value.byteLength
+        if (total > MAX_IMAGE_BYTES) {
+          await reader.cancel().catch(() => undefined)
+          throw new McpToolError('image must not exceed 10 MiB.')
+        }
+        chunks.push(Buffer.from(value))
+      }
+    }
+    if (total === 0) {
+      throw new McpToolError('imageUrl returned an empty response.')
+    }
+    return Buffer.concat(chunks)
+  }
+  throw new McpToolError('imageUrl has too many redirects.')
 }
 
 function imageFilename(value: unknown, extension: SupportedImage['extension']) {
@@ -631,18 +766,23 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
         image: {
           type: 'string',
           description:
-            'Base64-encoded image data, optionally as a data URL. Maximum decoded size: 10 MiB.',
+            'Base64-encoded image data, optionally as a data URL. Maximum decoded size: 10 MiB. Provide exactly one of image or imageUrl.',
+        },
+        imageUrl: {
+          type: 'string',
+          description:
+            'Public https image URL for the CMS server to download directly (e.g. a googleusercontent URL from a Google Docs export), so the image data never passes through the model. Maximum size: 10 MiB. Provide exactly one of image or imageUrl.',
         },
         filename: {
           type: 'string',
           description:
-            'Optional source filename. Its extension is replaced with the detected image type.',
+            'Optional source filename. Its extension is replaced with the detected image type. Defaults to the imageUrl basename when uploading by URL.',
         },
         mimeType: {
           type: 'string',
           enum: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
           description:
-            'Required when image is raw base64; omit when image is a data URL.',
+            'Required when image is raw base64; omit when image is a data URL. Optional cross-check when using imageUrl.',
         },
         name: {
           type: 'string',
@@ -664,13 +804,27 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
           description: 'Image alignment in the article.',
         },
       },
-      required: ['image'],
       additionalProperties: false,
     },
     async execute(args, context) {
       requireScope(context, 'readr.posts.write')
-      const upload = imageUpload(args.image, args.mimeType)
-      const filename = imageFilename(args.filename, upload.extension)
+      const imageUrl = getString(args.imageUrl, 'imageUrl')
+      if ((args.image === undefined) === (imageUrl === undefined)) {
+        throw new McpToolError('Provide exactly one of image or imageUrl.')
+      }
+      const upload = imageUrl
+        ? checkImageBytes(
+            await fetchImageBytes(imageUrl),
+            getString(args.mimeType, 'mimeType')
+          )
+        : imageUpload(args.image, args.mimeType)
+      const urlBasename = imageUrl
+        ? new URL(imageUrl).pathname.split('/').pop() || undefined
+        : undefined
+      const filename = imageFilename(
+        args.filename ?? urlBasename,
+        upload.extension
+      )
       const name = getString(args.name, 'name') || filename
       const caption = getString(args.caption, 'caption') || ''
       const url = getString(args.url, 'url') || ''
