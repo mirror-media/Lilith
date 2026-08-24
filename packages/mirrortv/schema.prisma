@@ -391,6 +391,7 @@ model Post {
   download                           Download[]          @relation("Post_download")
   relatedPosts                       Post[]              @relation("Post_relatedPosts")
   manualOrderOfRelatedPosts          Json?
+  relatedPosts_algo                  Post[]              @relation("Post_relatedPosts_algo")
   relatedTopic                       Topic?              @relation("Post_relatedTopic", fields: [relatedTopicId], references: [id])
   relatedTopicId                     Int?                @map("relatedTopic")
   ogTitle                            String              @default("")
@@ -416,6 +417,7 @@ model Post {
   updatedById                        Int?                @map("updatedBy")
   from_EditorChoice_choice           EditorChoice[]      @relation("EditorChoice_choice")
   from_Post_relatedPosts             Post[]              @relation("Post_relatedPosts")
+  from_Post_relatedPosts_algo        Post[]              @relation("Post_relatedPosts_algo")
   from_Sale_adPost                   Sale[]              @relation("Sale_adPost")
   from_Topic_slideshow               Topic[]             @relation("Topic_slideshow")
   from_Topic_post                    Topic[]             @relation("Topic_post")

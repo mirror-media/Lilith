@@ -1438,6 +1438,8 @@ type Post {
   relatedPosts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedPostsCount(where: PostWhereInput! = {}): Int
   manualOrderOfRelatedPosts: JSON
+  relatedPosts_algo(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  relatedPosts_algoCount(where: PostWhereInput! = {}): Int
   relatedTopic: Topic
   ogTitle: String
   ogDescription: String
@@ -1509,6 +1511,7 @@ input PostWhereInput {
   audio: AudioWhereInput
   download: DownloadManyRelationFilter
   relatedPosts: PostManyRelationFilter
+  relatedPosts_algo: PostManyRelationFilter
   relatedTopic: TopicWhereInput
   ogTitle: StringFilter
   ogDescription: StringFilter
@@ -1621,6 +1624,7 @@ input PostUpdateInput {
   download: DownloadRelateToManyForUpdateInput
   relatedPosts: PostRelateToManyForUpdateInput
   manualOrderOfRelatedPosts: JSON
+  relatedPosts_algo: PostRelateToManyForUpdateInput
   relatedTopic: TopicRelateToOneForUpdateInput
   ogTitle: String
   ogDescription: String
@@ -1713,6 +1717,7 @@ input PostCreateInput {
   download: DownloadRelateToManyForCreateInput
   relatedPosts: PostRelateToManyForCreateInput
   manualOrderOfRelatedPosts: JSON
+  relatedPosts_algo: PostRelateToManyForCreateInput
   relatedTopic: TopicRelateToOneForCreateInput
   ogTitle: String
   ogDescription: String

@@ -493,6 +493,16 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
+    relatedPosts_algo: relationship({
+      label: '演算法相關文章',
+      ref: 'Post',
+      many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: envVar.autoRelatedPosts ? 'edit' : 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
 
     relatedTopic: relationship({
       label: '相關專題',
