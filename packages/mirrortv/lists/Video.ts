@@ -19,6 +19,7 @@ import { getFileURL } from '../utils/common'
 // 引入 Queue
 import { initializeQueue } from '../utils/videoQueue'
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor, owner } =
   utils.accessControl
 
@@ -245,7 +246,7 @@ const listConfigurations = list({
     operation: {
       query: () => true,
       update: allowRoles(admin, moderator, editor, owner),
-      create: allowRoles(admin, moderator, editor, contributor),
+      create: allowRoles(admin, moderator, editor, contributor, reporter),
       delete: allowRoles(admin, moderator),
     },
   },

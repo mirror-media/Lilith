@@ -18,15 +18,11 @@ import {
   parseYoutubeId,
 } from '../utils/youtube-video-object'
 
+import { reporter } from '../utils/access-control'
+import { UserRole } from '../type'
+
 const { allowRoles, admin, moderator, editor, contributor, owner } =
   utils.accessControl
-
-enum UserRole {
-  Admin = 'admin',
-  Moderator = 'moderator',
-  Editor = 'editor',
-  Contributor = 'contributor',
-}
 
 enum PostState {
   Draft = 'draft',
@@ -153,6 +149,27 @@ const listConfigurations = list({
       access: {
         create: allowRoles(admin, moderator),
         update: allowRoles(admin, moderator),
+      },
+      ui: {
+        // Field-level access alone does not drive the Admin UI fieldMode:
+        // without this, restricted roles get an editable dropdown whose
+        // save then fails with an access error.
+        createView: {
+          fieldMode: ({ session }) => {
+            const role = session?.data?.role
+            return role === UserRole.Admin || role === UserRole.Moderator
+              ? 'edit'
+              : 'hidden'
+          },
+        },
+        itemView: {
+          fieldMode: ({ session }) => {
+            const role = session?.data?.role
+            return role === UserRole.Admin || role === UserRole.Moderator
+              ? 'edit'
+              : 'read'
+          },
+        },
       },
     }),
     publishTime: timestamp({
@@ -617,8 +634,15 @@ const listConfigurations = list({
 
   access: {
     operation: {
-      query: allowRoles(admin, moderator, editor, contributor, owner),
-      update: allowRoles(admin, moderator, editor, contributor, owner),
+      query: allowRoles(admin, moderator, editor, contributor, owner, reporter),
+      update: allowRoles(
+        admin,
+        moderator,
+        editor,
+        contributor,
+        owner,
+        reporter
+      ),
       create: allowRoles(admin, moderator, editor, contributor),
       delete: allowRoles(admin, moderator),
     },
@@ -628,13 +652,20 @@ const listConfigurations = list({
         UserRole.Moderator,
         UserRole.Editor,
         UserRole.Contributor,
+        UserRole.Reporter,
       ]),
       update: ({ session }) => {
         const role = session?.data?.role
         const userId = session?.data?.id
 
-        if (role === UserRole.Admin || role === UserRole.Moderator) {
-          console.log('[Access Debug] Admin/Moderator bypass')
+        // Reporter may edit any post (but cannot create, delete, or change
+        // state; those are blocked at the operation / field level).
+        if (
+          role === UserRole.Admin ||
+          role === UserRole.Moderator ||
+          role === UserRole.Reporter
+        ) {
+          console.log('[Access Debug] Admin/Moderator/Reporter bypass')
           return true
         }
 

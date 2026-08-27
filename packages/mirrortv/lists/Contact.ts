@@ -9,6 +9,7 @@ import {
 } from '@keystone-6/core/fields'
 import { v4 as uuidv4 } from 'uuid'
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
 
@@ -144,9 +145,9 @@ const listConfigurations = list({
   },
   access: {
     operation: {
-      query: allowRoles(admin, moderator, editor, contributor),
+      query: allowRoles(admin, moderator, editor, contributor, reporter),
       update: allowRoles(admin, moderator, editor),
-      create: allowRoles(admin, moderator, editor, contributor),
+      create: allowRoles(admin, moderator, editor, contributor, reporter),
       delete: allowRoles(admin, moderator),
     },
   },
