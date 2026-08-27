@@ -2,9 +2,9 @@ import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { integer, text, select, relationship } from '@keystone-6/core/fields'
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
-import { reporter } from '../utils/access-control'
 
 const listConfigurations = list({
   fields: {

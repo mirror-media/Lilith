@@ -3,9 +3,9 @@ import { utils } from '@mirrormedia/lilith-core'
 import { text, relationship } from '@keystone-6/core/fields'
 import { v4 as uuidv4 } from 'uuid'
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
-import { reporter } from '../utils/access-control'
 
 const listConfigurations = list({
   fields: {

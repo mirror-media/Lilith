@@ -4,9 +4,9 @@ import { text } from '@keystone-6/core/fields'
 
 import { formatChangedList } from '../utils/formatChangedList'
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
-import { reporter } from '../utils/access-control'
 
 const listConfigurations = list({
   fields: {

@@ -24,9 +24,9 @@ import { Storage } from '@google-cloud/storage'
 ffmpeg.setFfmpegPath(ffmpegInstaller.path)
 ffmpeg.setFfprobePath(ffprobeInstaller.path)
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
-import { reporter } from '../utils/access-control'
 type GcsConfig = { bucket: string; projectId?: string; keyFilename?: string }
 type FileField = { filename: string; filesize: number }
 

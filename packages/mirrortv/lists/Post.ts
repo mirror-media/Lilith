@@ -18,11 +18,11 @@ import {
   parseYoutubeId,
 } from '../utils/youtube-video-object'
 
+import { reporter } from '../utils/access-control'
+import { UserRole } from '../type'
+
 const { allowRoles, admin, moderator, editor, contributor, owner } =
   utils.accessControl
-import { reporter } from '../utils/access-control'
-
-import { UserRole } from '../type'
 
 enum PostState {
   Draft = 'draft',

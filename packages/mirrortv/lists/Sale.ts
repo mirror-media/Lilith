@@ -7,9 +7,9 @@ import {
   timestamp,
 } from '@keystone-6/core/fields'
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor, owner } =
   utils.accessControl
-import { reporter } from '../utils/access-control'
 
 import envVar from '../environment-variables'
 import { ACL, UserRole, type Session } from '../type'

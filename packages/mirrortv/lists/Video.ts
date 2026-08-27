@@ -19,9 +19,9 @@ import { getFileURL } from '../utils/common'
 // 引入 Queue
 import { initializeQueue } from '../utils/videoQueue'
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor, owner } =
   utils.accessControl
-import { reporter } from '../utils/access-control'
 
 enum VideoState {
   Draft = 'draft',

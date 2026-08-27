@@ -57,9 +57,9 @@ async function enqueueCopyTask(source: string, dest: string) {
   }
 }
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
-import { reporter } from '../utils/access-control'
 
 const listConfigurations = list({
   db: {

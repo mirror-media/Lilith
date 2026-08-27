@@ -8,9 +8,9 @@ import {
   json,
 } from '@keystone-6/core/fields'
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
-import { reporter } from '../utils/access-control'
 
 enum ArtShowState {
   Draft = 'draft',

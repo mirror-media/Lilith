@@ -2,9 +2,9 @@ import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { relationship, select, float } from '@keystone-6/core/fields'
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
-import { reporter } from '../utils/access-control'
 
 import envVar from '../environment-variables'
 import { ACL, UserRole, type Session } from '../type'
