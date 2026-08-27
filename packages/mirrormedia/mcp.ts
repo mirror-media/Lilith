@@ -5,9 +5,9 @@ import { Readable } from 'stream'
 // @ts-ignore graphql-upload does not publish TypeScript declarations for this internal export.
 import Upload from 'graphql-upload/Upload.js'
 import { convertToDraftJs, createAtomicDraftJsEntity } from './draftjs'
-import { CommonContext, readrMcpAuth } from './oauth'
+import { CommonContext, mirrormediaMcpAuth } from './oauth'
 
-type ReadrMcpContext = {
+type MirrormediaMcpContext = {
   session?: { data?: { role?: string } }
   query: {
     Post: {
@@ -25,9 +25,6 @@ type ReadrMcpContext = {
     AudioFile: {
       findOne: (args: Record<string, unknown>) => Promise<unknown>
     }
-    Tag: {
-      findMany: (args: Record<string, unknown>) => Promise<unknown>
-    }
     User: {
       findOne: (args: Record<string, unknown>) => Promise<unknown>
     }
@@ -35,31 +32,24 @@ type ReadrMcpContext = {
       findOne: (args: Record<string, unknown>) => Promise<unknown>
     }
   }
-  sudo: () => ReadrMcpContext
+  sudo: () => MirrormediaMcpContext
   withSession: (session: {
     itemId: string
     listKey: 'User'
     data: { id: string; name: string; role: string }
-  }) => ReadrMcpContext
+  }) => MirrormediaMcpContext
 }
 
-const POST_SUMMARY_QUERY = `id name slug state publishTime subtitle
-   categories { id slug title } writers { id name }`
-const RELATED_POST_QUERY = `
-  id name slug subtitle state publishTime
-  categories { id slug title }
-  tags { id name }
-`
+const POST_SUMMARY_QUERY = `id title slug state publishedDate subtitle
+   sections { id slug name } writers { id name }`
 const POST_DETAIL_QUERY = `
-  id slug sortOrder name subtitle state publishTime
-  categories { id slug title } writers { id name name_en title }
-  photographers { id name } cameraOperators { id name } designers { id name }
-  engineers { id name } dataAnalysts { id name } otherByline
-  heroCaption heroImageSize style summary content actionList citation
-  readringTime wordCount readingTime tags { id name }
-  relatedPosts { id name slug subtitle state publishTime }
-  ogTitle ogDescription isFeatured css summaryApiData apiData actionlistApiData
-  citationApiData
+  id slug title subtitle state publishedDate
+  sections { id slug name } categories { id slug name }
+  writers { id name } photographers { id name } camera_man { id name }
+  designers { id name } engineers { id name } vocals { id name }
+  extend_byline heroCaption style brief content
+  topics { id slug name } tags { id name }
+  og_title og_description isFeatured isAdult css
   createdAt updatedAt
 `
 const PHOTO_DETAIL_QUERY = `
@@ -69,15 +59,12 @@ const PHOTO_DETAIL_QUERY = `
   resizedWebp { original w480 w800 w1200 w1600 w2400 }
 `
 const VIDEO_DETAIL_QUERY = `
-  id name url youtubeUrl description
-  file { filename filesize url }
-  coverPhoto { ${PHOTO_DETAIL_QUERY} }
+  id name urlOriginal videoSrc
+  heroImage { ${PHOTO_DETAIL_QUERY} }
 `
 const AUDIO_DETAIL_QUERY = `
-  id name url description
-  file { filename filesize url }
+  id name urlOriginal audioSrc
 `
-const TAG_SUMMARY_QUERY = `id name brief state`
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 const PNG_SIGNATURE = Buffer.from([
   0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
@@ -89,8 +76,9 @@ type SupportedImage = {
 }
 
 // Scope enforcement and the bearer-first request context live in
-// @mirrormedia/lilith-mcp; readr only supplies its OAuth config (./oauth).
-const requireScope = readrMcpAuth.requireScope
+// @mirrormedia/lilith-mcp; this package only supplies its OAuth config
+// (./oauth).
+const requireScope = mirrormediaMcpAuth.requireScope
 
 function getLimit(value: unknown, defaultLimit = 20) {
   const requestedLimit = typeof value === 'number' ? value : defaultLimit
@@ -109,6 +97,15 @@ function result(posts: unknown) {
 
 function singleResult(posts: unknown) {
   return result(Array.isArray(posts) ? posts[0] || null : posts)
+}
+
+function getIdArray(value: unknown, name: string) {
+  if (value === undefined) return undefined
+  if (!Array.isArray(value) || !value.every((id) => typeof id === 'string')) {
+    throw new McpToolError(`${name} must be an array of ID strings.`)
+  }
+  const ids = value.map((id) => id.trim()).filter(Boolean)
+  return ids.length ? ids : undefined
 }
 
 type RawDraftBlock = {
@@ -132,12 +129,7 @@ type RawDraftContent = {
   entityMap: Record<string, RawDraftEntity>
 }
 
-const RICH_TEXT_FIELDS = new Set([
-  'content',
-  'summary',
-  'actionList',
-  'citation',
-])
+const RICH_TEXT_FIELDS = new Set(['content', 'brief'])
 
 function contentState(value: unknown): RawDraftContent {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) {
@@ -242,10 +234,6 @@ function imageEntity(
       ...photo,
       desc: getString(args.caption, 'caption') || '',
       url: getString(args.url, 'url') || '',
-      alignment:
-        args.alignment === 'left' || args.alignment === 'right'
-          ? args.alignment
-          : 'center',
     },
   }
 }
@@ -257,186 +245,35 @@ function removeEntityIfUnused(content: RawDraftContent, entityKey: number) {
   if (!stillUsed) delete content.entityMap[String(entityKey)]
 }
 
-function stringIds(value: unknown, name: string, max = 100) {
-  if (!Array.isArray(value) || value.length > max) {
-    throw new McpToolError(`${name} must be an array with at most ${max} IDs`)
-  }
-  const ids = value.map((id) => getString(id, name, true))
-  if (new Set(ids).size !== ids.length) {
-    throw new McpToolError(`${name} must not contain duplicate IDs`)
-  }
-  return ids
-}
-
-function relationIds(value: unknown) {
-  if (!Array.isArray(value)) return []
-  return value.flatMap((item) => {
-    if (typeof item !== 'object' || item === null || Array.isArray(item)) {
-      return []
-    }
-    return typeof (item as Record<string, unknown>).id === 'string'
-      ? [(item as Record<string, unknown>).id as string]
-      : []
-  })
-}
-
-async function verifyTagIds(context: ReadrMcpContext, ids: string[]) {
-  if (ids.length === 0) return
-  const tags = await context.query.Tag.findMany({
-    take: ids.length,
-    where: { id: { in: ids }, state: { equals: 'active' } },
-    query: TAG_SUMMARY_QUERY,
-  })
-  const found = new Set(relationIds(tags))
-  const missing = ids.filter((id) => !found.has(id))
-  if (missing.length) {
-    throw new McpToolError(`Tag IDs are unavailable: ${missing.join(', ')}`)
-  }
-}
-
-async function verifyPostIds(
-  context: ReadrMcpContext,
-  ids: string[],
-  excludedPostId: string
-) {
-  if (ids.includes(excludedPostId)) {
-    throw new McpToolError('A post cannot be related to itself.')
-  }
-  if (ids.length === 0) return
-  const posts = await context.query.Post.findMany({
-    take: ids.length,
-    where: { id: { in: ids }, state: { equals: 'published' } },
-    query: RELATED_POST_QUERY,
-  })
-  const found = new Set(relationIds(posts))
-  const missing = ids.filter((id) => !found.has(id))
-  if (missing.length) {
-    throw new McpToolError(
-      `Related posts must exist, be published, and be accessible: ${missing.join(
-        ', '
-      )}`
-    )
-  }
-}
-
-function namedRelations(value: unknown) {
-  if (!Array.isArray(value)) return []
-  return value.flatMap((item) => {
-    if (typeof item !== 'object' || item === null || Array.isArray(item)) {
-      return []
-    }
-    const relation = item as Record<string, unknown>
-    return typeof relation.id === 'string'
-      ? [
-          {
-            id: relation.id,
-            name:
-              typeof relation.name === 'string'
-                ? relation.name
-                : typeof relation.title === 'string'
-                ? relation.title
-                : relation.id,
-          },
-        ]
-      : []
-  })
-}
-
-function relatedCandidate(
-  post: Record<string, unknown>,
-  categoryIds: Set<string>,
-  tagIds: Set<string>,
-  sourcePublishTime: unknown
-) {
-  const matchingCategories = namedRelations(post.categories).filter(
-    (category) => categoryIds.has(category.id)
-  )
-  const matchingTags = namedRelations(post.tags).filter((tag) =>
-    tagIds.has(tag.id)
-  )
-  const reasons = [
-    ...matchingCategories.map((category) => `same category: ${category.name}`),
-    ...matchingTags.map((tag) => `shared tag: ${tag.name}`),
-  ]
-  const candidatePublishTime =
-    typeof post.publishTime === 'string'
-      ? Date.parse(post.publishTime)
-      : Number.NaN
-  const sourceTime =
-    typeof sourcePublishTime === 'string'
-      ? Date.parse(sourcePublishTime)
-      : Number.NaN
-  let publicationScore = 0
-  let publishedDateDistanceDays: number | null = null
-  if (!Number.isNaN(candidatePublishTime)) {
-    // News coverage is most useful when it is close to the source article's
-    // reporting window. Also retain a smaller global-recency signal so a
-    // timely follow-up can outrank an otherwise identical old article.
-    if (!Number.isNaN(sourceTime)) {
-      publishedDateDistanceDays = Math.round(
-        Math.abs(candidatePublishTime - sourceTime) / 86_400_000
-      )
-      publicationScore += 8 * Math.exp(-publishedDateDistanceDays / 30)
-      reasons.push(
-        `published ${publishedDateDistanceDays} day(s) from source article`
-      )
-    }
-    const ageDays = Math.max(
-      0,
-      (Date.now() - candidatePublishTime) / 86_400_000
-    )
-    publicationScore += 4 * Math.exp(-ageDays / 180)
-  }
-  return {
-    ...post,
-    score:
-      matchingCategories.length * 3 +
-      matchingTags.length * 5 +
-      Number(publicationScore.toFixed(2)),
-    publicationScore: Number(publicationScore.toFixed(2)),
-    publishedDateDistanceDays,
-    reasons,
-  }
-}
-
 const WRITABLE_POST_FIELDS = new Set([
   'slug',
-  'sortOrder',
-  'name',
+  'title',
   'subtitle',
-  'publishTime',
+  'publishedDate',
+  'sections',
+  'manualOrderOfSections',
   'categories',
   'writers',
   'photographers',
-  'cameraOperators',
+  'camera_man',
   'designers',
   'engineers',
-  'dataAnalysts',
-  'otherByline',
-  'leadingEmbeddedCode',
+  'vocals',
+  'extend_byline',
   'heroVideo',
   'heroImage',
   'heroCaption',
-  'heroImageSize',
   'style',
-  'summary',
+  'brief',
   'content',
-  'actionList',
-  'citation',
-  'readringTime',
-  'projects',
+  'topics',
+  'relateds',
   'tags',
-  'wordCount',
-  'readingTime',
-  'collabration',
-  'relatedPosts',
-  'data',
-  'ogTitle',
-  'ogDescription',
-  'ogImage',
+  'og_title',
+  'og_description',
+  'og_image',
   'isFeatured',
-  'note',
-  'project',
+  'isAdult',
   'css',
 ])
 
@@ -452,8 +289,8 @@ function getPostData(value: unknown, operation: 'create' | 'update') {
     }
     data[key] = fieldValue
   }
-  if (operation === 'create' && !getString(data.name, 'data.name')) {
-    throw new McpToolError('data.name is required')
+  if (operation === 'create' && !getString(data.title, 'data.title')) {
+    throw new McpToolError('data.title is required')
   }
   if (Object.keys(data).length === 0)
     throw new McpToolError('data must not be empty')
@@ -694,10 +531,11 @@ function imageUploadValue(
   return upload
 }
 
-export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
+export const mirrormediaMcpTools: McpTool<MirrormediaMcpContext>[] = [
   {
     name: 'list_recent_posts',
-    description: 'List recent READr posts that the signed-in user may view.',
+    description:
+      'List recent Mirror Media posts that the signed-in user may view.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -706,11 +544,11 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       additionalProperties: false,
     },
     async execute(args, context) {
-      requireScope(context, 'readr.posts.read')
+      requireScope(context, 'mirrormedia.posts.read')
       return result(
         await context.query.Post.findMany({
           take: getLimit(args.limit),
-          orderBy: { publishTime: 'desc' },
+          orderBy: { publishedDate: 'desc' },
           query: POST_SUMMARY_QUERY,
         })
       )
@@ -719,7 +557,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
   {
     name: 'get_post',
     description:
-      'Get the complete READr article by its Keystone post ID or slug.',
+      'Get the complete Mirror Media article by its Keystone post ID or slug.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -730,7 +568,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       additionalProperties: false,
     },
     async execute(args, context) {
-      requireScope(context, 'readr.posts.read')
+      requireScope(context, 'mirrormedia.posts.read')
       const id = getString(args.id, 'id')
       const slug = getString(args.slug, 'slug')
       if ((id && slug) || (!id && !slug)) {
@@ -749,7 +587,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
   {
     name: 'get_posts',
     description:
-      'Get complete details for up to 100 READr posts by their Keystone IDs.',
+      'Get complete details for up to 100 Mirror Media posts by their Keystone IDs.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -764,7 +602,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       additionalProperties: false,
     },
     async execute(args, context) {
-      requireScope(context, 'readr.posts.read')
+      requireScope(context, 'mirrormedia.posts.read')
       if (
         !Array.isArray(args.ids) ||
         !args.ids.every((id) => typeof id === 'string')
@@ -785,7 +623,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
   },
   {
     name: 'search_posts',
-    description: 'Search READr post titles, subtitles, and slugs.',
+    description: 'Search Mirror Media post titles, subtitles, and slugs.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -796,15 +634,15 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       additionalProperties: false,
     },
     async execute(args, context) {
-      requireScope(context, 'readr.posts.read')
+      requireScope(context, 'mirrormedia.posts.read')
       const searchTerm = getString(args.query, 'query', true)
       return result(
         await context.query.Post.findMany({
           take: getLimit(args.limit),
-          orderBy: { publishTime: 'desc' },
+          orderBy: { publishedDate: 'desc' },
           where: {
             OR: [
-              { name: { contains: searchTerm, mode: 'insensitive' } },
+              { title: { contains: searchTerm, mode: 'insensitive' } },
               { subtitle: { contains: searchTerm, mode: 'insensitive' } },
               { slug: { contains: searchTerm, mode: 'insensitive' } },
             ],
@@ -817,7 +655,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
   {
     name: 'filter_posts',
     description:
-      'Filter READr posts by category (section), writer, state, or style.',
+      'Filter Mirror Media posts by category (section), writer, state, or style.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -832,7 +670,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       additionalProperties: false,
     },
     async execute(args, context) {
-      requireScope(context, 'readr.posts.read')
+      requireScope(context, 'mirrormedia.posts.read')
       const conditions: Record<string, unknown>[] = []
       const categoryId = getString(args.categoryId, 'categoryId')
       const categorySlug = getString(args.categorySlug, 'categorySlug')
@@ -868,114 +706,11 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       return result(
         await context.query.Post.findMany({
           take: getLimit(args.limit),
-          orderBy: { publishTime: 'desc' },
+          orderBy: { publishedDate: 'desc' },
           where: { AND: conditions },
           query: POST_SUMMARY_QUERY,
         })
       )
-    },
-  },
-  {
-    name: 'search_tags',
-    description:
-      'Search the existing READr tag vocabulary. Use this after analyzing an article, so suggested concepts can be resolved to controlled tag IDs instead of creating near-duplicate tags.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        query: {
-          type: 'string',
-          description: 'Optional tag name fragment. Omit to list active tags.',
-        },
-        limit: { type: 'integer', minimum: 1, maximum: 100, default: 20 },
-      },
-      additionalProperties: false,
-    },
-    async execute(args, context) {
-      requireScope(context, 'readr.posts.read')
-      const query = getString(args.query, 'query')
-      return result(
-        await context.query.Tag.findMany({
-          take: getLimit(args.limit),
-          orderBy: { name: 'asc' },
-          where: query
-            ? {
-                AND: [
-                  { state: { equals: 'active' } },
-                  { name: { contains: query, mode: 'insensitive' } },
-                ],
-              }
-            : { state: { equals: 'active' } },
-          query: TAG_SUMMARY_QUERY,
-        })
-      )
-    },
-  },
-  {
-    name: 'suggest_related_posts',
-    description:
-      'Return lightweight related-post candidates for editorial review. Candidates are published posts sharing categories or tags with the source post, scored by tag/category overlap and publication-date proximity/recency. Read shortlisted articles with get_posts before asking a person to confirm.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        id: { type: 'string', description: 'Source Post ID' },
-        limit: { type: 'integer', minimum: 1, maximum: 20, default: 10 },
-      },
-      required: ['id'],
-      additionalProperties: false,
-    },
-    async execute(args, context) {
-      requireScope(context, 'readr.posts.read')
-      const postId = getPostId(args.id)
-      const sourceRows = await context.query.Post.findMany({
-        take: 1,
-        where: { id: { equals: postId } },
-        query: `${RELATED_POST_QUERY} relatedPosts { id }`,
-      })
-      const source = Array.isArray(sourceRows)
-        ? requiredItem(sourceRows[0], 'Post')
-        : requiredItem(sourceRows, 'Post')
-      const categoryIds = new Set(relationIds(source.categories))
-      const tagIds = new Set(relationIds(source.tags))
-      if (categoryIds.size === 0 && tagIds.size === 0) {
-        throw new McpToolError(
-          'The post has no categories or tags. Add reviewed tags before requesting related-post candidates.'
-        )
-      }
-      const excludedIds = [postId, ...relationIds(source.relatedPosts)]
-      const relations: Record<string, unknown>[] = []
-      if (categoryIds.size) {
-        relations.push({
-          categories: { some: { id: { in: [...categoryIds] } } },
-        })
-      }
-      if (tagIds.size) {
-        relations.push({ tags: { some: { id: { in: [...tagIds] } } } })
-      }
-      const candidates = await context.query.Post.findMany({
-        take: 50,
-        orderBy: { publishTime: 'desc' },
-        where: {
-          AND: [
-            { state: { equals: 'published' } },
-            { id: { notIn: excludedIds } },
-            { OR: relations },
-          ],
-        },
-        query: RELATED_POST_QUERY,
-      })
-      const limit = Math.min(getLimit(args.limit, 10), 20)
-      const ranked = (Array.isArray(candidates) ? candidates : [])
-        .map((candidate) =>
-          relatedCandidate(
-            requiredItem(candidate, 'Candidate post'),
-            categoryIds,
-            tagIds,
-            source.publishTime
-          )
-        )
-        .sort((left, right) => right.score - left.score)
-        .slice(0, limit)
-      return result({ sourcePostId: postId, candidates: ranked })
     },
   },
   {
@@ -1000,7 +735,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       additionalProperties: false,
     },
     async execute(args, context) {
-      requireScope(context, 'readr.posts.read')
+      requireScope(context, 'mirrormedia.posts.read')
       const source = getString(args.source, 'source', true)
       const format = args.format === undefined ? 'html' : args.format
       if (!['html', 'markdown', 'plain_text'].includes(format as string)) {
@@ -1014,7 +749,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
   {
     name: 'upload_image',
     description:
-      'Upload a JPEG, PNG, WebP, or GIF to the READr CMS photo library. The result includes the Photo record and a native `draftjs` image block with editable caption, link, and alignment; append that block to a converted article content entityMap/blocks. Resize URLs are generated asynchronously and can return 404 until the CMS resize pipeline completes.',
+      'Upload a JPEG, PNG, WebP, or GIF to the Mirror Media CMS photo library. The result includes the Photo record and a native `draftjs` image block with editable caption, link, and alignment; append that block to a converted article content entityMap/blocks. Resize URLs are generated asynchronously and can return 404 until the CMS resize pipeline completes.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1046,23 +781,17 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
         caption: {
           type: 'string',
           description:
-            'Optional editable image caption shown below the image in the READr CMS editor.',
+            'Optional editable image caption shown below the image in the Mirror Media CMS editor.',
         },
         url: {
           type: 'string',
           description: 'Optional destination URL when readers click the image.',
         },
-        alignment: {
-          type: 'string',
-          enum: ['left', 'center', 'right'],
-          default: 'center',
-          description: 'Image alignment in the article.',
-        },
       },
       additionalProperties: false,
     },
     async execute(args, context) {
-      requireScope(context, 'readr.posts.write')
+      requireScope(context, 'mirrormedia.posts.write')
       const imageUrl = getString(args.imageUrl, 'imageUrl')
       if ((args.image === undefined) === (imageUrl === undefined)) {
         throw new McpToolError('Provide exactly one of image or imageUrl.')
@@ -1083,10 +812,6 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       const name = getString(args.name, 'name') || filename
       const caption = getString(args.caption, 'caption') || ''
       const url = getString(args.url, 'url') || ''
-      const alignment =
-        args.alignment === 'left' || args.alignment === 'right'
-          ? args.alignment
-          : 'center'
       const photo = await context.query.Photo.createOne({
         data: {
           name,
@@ -1111,7 +836,6 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
             ...photoData,
             desc: caption,
             url,
-            alignment,
           },
         }),
       })
@@ -1120,7 +844,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
   {
     name: 'create_post',
     description:
-      'Create a new READr article as a draft. Use publish_post to publish it after review.',
+      'Create a new Mirror Media article as a draft. Use publish_post to publish it after review.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1134,10 +858,14 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       additionalProperties: false,
     },
     async execute(args, context) {
-      requireScope(context, 'readr.posts.write')
+      requireScope(context, 'mirrormedia.posts.write')
       const data = getPostData(args.data, 'create')
+      // Mirror Media requires a unique slug. Generate a placeholder when the
+      // caller omits one so drafts can be created, then edited in the CMS.
+      const slug =
+        getString(data.slug, 'slug') || `mcp-${randomBytes(6).toString('hex')}`
       const post = await context.query.Post.createOne({
-        data: { ...data, state: 'draft' },
+        data: { ...data, slug, state: 'draft' },
         query: POST_DETAIL_QUERY,
       })
       return result(post)
@@ -1146,7 +874,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
   {
     name: 'update_post',
     description:
-      'Update editable fields on an existing READr article. This tool cannot change publication state; use publish_post.',
+      'Update editable fields on an existing Mirror Media article. This tool cannot change publication state; use publish_post.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1161,7 +889,7 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       additionalProperties: false,
     },
     async execute(args, context) {
-      requireScope(context, 'readr.posts.write')
+      requireScope(context, 'mirrormedia.posts.write')
       const post = await context.query.Post.updateOne({
         where: { id: getPostId(args.id) },
         data: getPostData(args.data, 'update'),
@@ -1173,14 +901,14 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
   {
     name: 'update_post_content',
     description:
-      'Safely edit one READr Draft.js rich-text field using block-aware operations. Use get_post first to obtain stable block keys. Insert operations read the referenced CMS media record and create the native entity data automatically; they never create or upload media.',
+      'Safely edit one Mirror Media Draft.js rich-text field using block-aware operations. Use get_post first to obtain stable block keys. Insert operations read the referenced CMS media record and create the native entity data automatically; they never create or upload media.',
     inputSchema: {
       type: 'object',
       properties: {
         id: { type: 'string', description: 'Keystone Post ID' },
         field: {
           type: 'string',
-          enum: ['content', 'summary', 'actionList', 'citation'],
+          enum: ['content', 'brief'],
           default: 'content',
           description: 'The Draft.js field to edit.',
         },
@@ -1226,7 +954,6 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
               caption: { type: 'string' },
               description: { type: 'string' },
               url: { type: 'string' },
-              alignment: { type: 'string', enum: ['left', 'center', 'right'] },
               block: {
                 type: 'object',
                 description:
@@ -1242,12 +969,10 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
       additionalProperties: false,
     },
     async execute(args, context) {
-      requireScope(context, 'readr.posts.write')
+      requireScope(context, 'mirrormedia.posts.write')
       const field = args.field === undefined ? 'content' : args.field
       if (typeof field !== 'string' || !RICH_TEXT_FIELDS.has(field)) {
-        throw new McpToolError(
-          'field must be content, summary, actionList, or citation'
-        )
+        throw new McpToolError('field must be content or brief')
       }
       if (!Array.isArray(args.operations) || args.operations.length === 0) {
         throw new McpToolError('operations must be a non-empty array')
@@ -1344,15 +1069,13 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
             content,
             input.afterBlockKey,
             atomicBlock(content, {
-              // READr's existing editor and public renderer support the
-              // editable EMBEDDEDCODE block. Its separate YOUTUBE entity is
-              // not wired into the READr entry, so use the native supported
-              // embed shape without changing shared Draft packages.
-              type: 'EMBEDDEDCODE',
+              // Mirror Media's editor and public renderer both support the
+              // native YOUTUBE entity, so no embed-code fallback is needed.
+              type: 'YOUTUBE',
               mutability: 'IMMUTABLE',
               data: {
-                caption: getString(input.description, 'description') || '',
-                embeddedCode: `<iframe src="https://www.youtube.com/embed/${youtubeId}" title="YouTube video" loading="lazy" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`,
+                youtubeId,
+                description: getString(input.description, 'description') || '',
               },
             })
           )
@@ -1416,156 +1139,59 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
     },
   },
   {
-    name: 'update_post_tags',
-    description:
-      'Apply reviewed existing tags to a post. This tool never creates tags; use search_tags to resolve the agent’s content-based suggestions to controlled tag IDs first.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        id: { type: 'string', description: 'Keystone Post ID' },
-        tagIds: {
-          type: 'array',
-          maxItems: 100,
-          items: { type: 'string' },
-          description:
-            'Existing Tag IDs. An empty list is allowed only with mode=replace.',
-        },
-        mode: { type: 'string', enum: ['replace', 'add', 'remove'] },
-      },
-      required: ['id', 'tagIds', 'mode'],
-      additionalProperties: false,
-    },
-    async execute(args, context) {
-      requireScope(context, 'readr.posts.write')
-      const postId = getPostId(args.id)
-      const tagIds = stringIds(args.tagIds, 'tagIds')
-      const mode = getString(args.mode, 'mode', true)
-      if (!['replace', 'add', 'remove'].includes(mode)) {
-        throw new McpToolError('mode must be replace, add, or remove')
-      }
-      if (mode !== 'replace' && tagIds.length === 0) {
-        throw new McpToolError(
-          'tagIds must not be empty unless mode is replace'
-        )
-      }
-      if (mode !== 'remove') await verifyTagIds(context, tagIds)
-      const rows = await context.query.Post.findMany({
-        take: 1,
-        where: { id: { equals: postId } },
-        query: 'id tags { id }',
-      })
-      const post = Array.isArray(rows)
-        ? requiredItem(rows[0], 'Post')
-        : requiredItem(rows, 'Post')
-      const currentIds = relationIds(post.tags)
-      const requested = new Set(tagIds)
-      const nextIds =
-        mode === 'replace'
-          ? tagIds
-          : mode === 'add'
-          ? [...new Set([...currentIds, ...tagIds])]
-          : currentIds.filter((id) => !requested.has(id))
-      return result(
-        await context.query.Post.updateOne({
-          where: { id: postId },
-          data: { tags: { set: nextIds.map((id) => ({ id })) } },
-          query: POST_DETAIL_QUERY,
-        })
-      )
-    },
-  },
-  {
-    name: 'set_related_posts',
-    description:
-      'Update the Post form’s relatedPosts relationship after a person confirms the agent’s shortlisted candidates. This does not insert an in-content RELATEDPOST Draft.js block.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        id: { type: 'string', description: 'Keystone Post ID' },
-        postIds: {
-          type: 'array',
-          maxItems: 20,
-          items: { type: 'string' },
-          description:
-            'Published Post IDs to relate. An empty list is allowed only with mode=replace.',
-        },
-        mode: { type: 'string', enum: ['replace', 'add', 'remove'] },
-      },
-      required: ['id', 'postIds', 'mode'],
-      additionalProperties: false,
-    },
-    async execute(args, context) {
-      requireScope(context, 'readr.posts.write')
-      const postId = getPostId(args.id)
-      const postIds = stringIds(args.postIds, 'postIds', 20)
-      const mode = getString(args.mode, 'mode', true)
-      if (!['replace', 'add', 'remove'].includes(mode)) {
-        throw new McpToolError('mode must be replace, add, or remove')
-      }
-      if (mode !== 'replace' && postIds.length === 0) {
-        throw new McpToolError(
-          'postIds must not be empty unless mode is replace'
-        )
-      }
-      if (mode !== 'remove') await verifyPostIds(context, postIds, postId)
-      const rows = await context.query.Post.findMany({
-        take: 1,
-        where: { id: { equals: postId } },
-        query: 'id relatedPosts { id }',
-      })
-      const post = Array.isArray(rows)
-        ? requiredItem(rows[0], 'Post')
-        : requiredItem(rows, 'Post')
-      const currentIds = relationIds(post.relatedPosts)
-      const requested = new Set(postIds)
-      const nextIds =
-        mode === 'replace'
-          ? postIds
-          : mode === 'add'
-          ? [...new Set([...currentIds, ...postIds])]
-          : currentIds.filter((id) => !requested.has(id))
-      return result(
-        await context.query.Post.updateOne({
-          where: { id: postId },
-          data: { relatedPosts: { set: nextIds.map((id) => ({ id })) } },
-          query: POST_DETAIL_QUERY,
-        })
-      )
-    },
-  },
-  {
     name: 'publish_post',
     description:
-      'Publish an existing READr article now, or schedule it by providing publishTime as an RFC 3339 timestamp.',
+      'Publish an existing Mirror Media article now, or schedule it by providing publishedDate as an RFC 3339 timestamp. Publishing requires the post to end up with at least one section (大分類) and one category (小分類); pass sectionIds/categoryIds to attach them in the same call, or set them beforehand with update_post. Use filter_posts or the CMS to find the IDs.',
     inputSchema: {
       type: 'object',
       properties: {
         id: { type: 'string', description: 'Keystone Post ID' },
-        publishTime: {
+        publishedDate: {
           type: 'string',
           format: 'date-time',
           description: 'Optional RFC 3339 publication time; defaults to now.',
+        },
+        sectionIds: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'Optional Section (大分類) IDs to attach before publishing. Added to any sections the post already has.',
+        },
+        categoryIds: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'Optional Category (小分類) IDs to attach before publishing. Added to any categories the post already has.',
         },
       },
       required: ['id'],
       additionalProperties: false,
     },
     async execute(args, context) {
-      requireScope(context, 'readr.posts.publish')
-      const publishTime = getString(args.publishTime, 'publishTime')
+      requireScope(context, 'mirrormedia.posts.publish')
+      const publishTime = getString(args.publishedDate, 'publishedDate')
       if (publishTime && Number.isNaN(Date.parse(publishTime))) {
-        throw new McpToolError('publishTime must be an RFC 3339 timestamp')
+        throw new McpToolError('publishedDate must be an RFC 3339 timestamp')
       }
       const effectivePublishTime = publishTime || new Date().toISOString()
+      const sectionIds = getIdArray(args.sectionIds, 'sectionIds')
+      const categoryIds = getIdArray(args.categoryIds, 'categoryIds')
+      const data: Record<string, unknown> = {
+        state:
+          new Date(effectivePublishTime).getTime() > Date.now()
+            ? 'scheduled'
+            : 'published',
+        publishedDate: effectivePublishTime,
+      }
+      if (sectionIds) {
+        data.sections = { connect: sectionIds.map((id) => ({ id })) }
+      }
+      if (categoryIds) {
+        data.categories = { connect: categoryIds.map((id) => ({ id })) }
+      }
       const post = await context.query.Post.updateOne({
         where: { id: getPostId(args.id) },
-        data: {
-          state:
-            new Date(effectivePublishTime).getTime() > Date.now()
-              ? 'scheduled'
-              : 'published',
-          publishTime: effectivePublishTime,
-        },
+        data,
         query: POST_DETAIL_QUERY,
       })
       return result(post)
@@ -1577,10 +1203,11 @@ export const readrMcpTools: McpTool<ReadrMcpContext>[] = [
  * Bearer-first request context, authorization gate, and 401 discovery
  * headers — all provided by @mirrormedia/lilith-mcp, configured in ./oauth.
  */
-export function createReadrMcpContext(commonContext: CommonContext) {
-  return readrMcpAuth.contextFactory<ReadrMcpContext>(commonContext)
+export function createMirrormediaMcpContext(commonContext: CommonContext) {
+  return mirrormediaMcpAuth.contextFactory<MirrormediaMcpContext>(commonContext)
 }
 
-export const isReadrMcpAuthorized = readrMcpAuth.isAuthorized
+export const isMirrormediaMcpAuthorized = mirrormediaMcpAuth.isAuthorized
 
-export const readrMcpUnauthorizedHeaders = readrMcpAuth.unauthorizedHeaders
+export const mirrormediaMcpUnauthorizedHeaders =
+  mirrormediaMcpAuth.unauthorizedHeaders

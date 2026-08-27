@@ -1430,12 +1430,16 @@ type Post {
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
   manualOrderOfTags: JSON
+  tags_algo(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
+  tags_algoCount(where: TagWhereInput! = {}): Int
   audio: Audio
   download(where: DownloadWhereInput! = {}, orderBy: [DownloadOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: DownloadWhereUniqueInput): [Download!]
   downloadCount(where: DownloadWhereInput! = {}): Int
   relatedPosts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   relatedPostsCount(where: PostWhereInput! = {}): Int
   manualOrderOfRelatedPosts: JSON
+  relatedPosts_algo(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  relatedPosts_algoCount(where: PostWhereInput! = {}): Int
   relatedTopic: Topic
   ogTitle: String
   ogDescription: String
@@ -1503,9 +1507,11 @@ input PostWhereInput {
   isVideoObjectsPending: BooleanFilter
   topics: TopicWhereInput
   tags: TagManyRelationFilter
+  tags_algo: TagManyRelationFilter
   audio: AudioWhereInput
   download: DownloadManyRelationFilter
   relatedPosts: PostManyRelationFilter
+  relatedPosts_algo: PostManyRelationFilter
   relatedTopic: TopicWhereInput
   ogTitle: StringFilter
   ogDescription: StringFilter
@@ -1613,10 +1619,12 @@ input PostUpdateInput {
   topics: TopicRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
   manualOrderOfTags: JSON
+  tags_algo: TagRelateToManyForUpdateInput
   audio: AudioRelateToOneForUpdateInput
   download: DownloadRelateToManyForUpdateInput
   relatedPosts: PostRelateToManyForUpdateInput
   manualOrderOfRelatedPosts: JSON
+  relatedPosts_algo: PostRelateToManyForUpdateInput
   relatedTopic: TopicRelateToOneForUpdateInput
   ogTitle: String
   ogDescription: String
@@ -1704,10 +1712,12 @@ input PostCreateInput {
   topics: TopicRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
   manualOrderOfTags: JSON
+  tags_algo: TagRelateToManyForCreateInput
   audio: AudioRelateToOneForCreateInput
   download: DownloadRelateToManyForCreateInput
   relatedPosts: PostRelateToManyForCreateInput
   manualOrderOfRelatedPosts: JSON
+  relatedPosts_algo: PostRelateToManyForCreateInput
   relatedTopic: TopicRelateToOneForCreateInput
   ogTitle: String
   ogDescription: String

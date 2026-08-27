@@ -385,11 +385,13 @@ model Post {
   topicsId                           Int?                @map("topics")
   tags                               Tag[]               @relation("Post_tags")
   manualOrderOfTags                  Json?
+  tags_algo                          Tag[]               @relation("Post_tags_algo")
   audio                              Audio?              @relation("Post_audio", fields: [audioId], references: [id])
   audioId                            Int?                @map("audio")
   download                           Download[]          @relation("Post_download")
   relatedPosts                       Post[]              @relation("Post_relatedPosts")
   manualOrderOfRelatedPosts          Json?
+  relatedPosts_algo                  Post[]              @relation("Post_relatedPosts_algo")
   relatedTopic                       Topic?              @relation("Post_relatedTopic", fields: [relatedTopicId], references: [id])
   relatedTopicId                     Int?                @map("relatedTopic")
   ogTitle                            String              @default("")
@@ -415,6 +417,7 @@ model Post {
   updatedById                        Int?                @map("updatedBy")
   from_EditorChoice_choice           EditorChoice[]      @relation("EditorChoice_choice")
   from_Post_relatedPosts             Post[]              @relation("Post_relatedPosts")
+  from_Post_relatedPosts_algo        Post[]              @relation("Post_relatedPosts_algo")
   from_Sale_adPost                   Sale[]              @relation("Sale_adPost")
   from_Topic_slideshow               Topic[]             @relation("Topic_slideshow")
   from_Topic_post                    Topic[]             @relation("Topic_post")
@@ -605,25 +608,26 @@ model Sponsor {
 }
 
 model Tag {
-  id                 Int        @id @default(autoincrement())
-  slug               String     @unique @default("")
-  name               String     @unique @default("")
-  ogTitle            String     @default("")
-  ogDescription      String     @default("")
-  ogImage            Image?     @relation("Tag_ogImage", fields: [ogImageId], references: [id])
-  ogImageId          Int?       @map("ogImage")
-  createdAt          DateTime?
-  updatedAt          DateTime?
-  createdBy          User?      @relation("Tag_createdBy", fields: [createdById], references: [id])
-  createdById        Int?       @map("createdBy")
-  updatedBy          User?      @relation("Tag_updatedBy", fields: [updatedById], references: [id])
-  updatedById        Int?       @map("updatedBy")
-  from_Audio_tags    Audio[]    @relation("Audio_tags")
-  from_External_tags External[] @relation("External_tags")
-  from_Image_tags    Image[]    @relation("Image_tags")
-  from_Post_tags     Post[]     @relation("Post_tags")
-  from_Topic_tags    Topic[]    @relation("Topic_tags")
-  from_Video_tags    Video[]    @relation("Video_tags")
+  id                  Int        @id @default(autoincrement())
+  slug                String     @unique @default("")
+  name                String     @unique @default("")
+  ogTitle             String     @default("")
+  ogDescription       String     @default("")
+  ogImage             Image?     @relation("Tag_ogImage", fields: [ogImageId], references: [id])
+  ogImageId           Int?       @map("ogImage")
+  createdAt           DateTime?
+  updatedAt           DateTime?
+  createdBy           User?      @relation("Tag_createdBy", fields: [createdById], references: [id])
+  createdById         Int?       @map("createdBy")
+  updatedBy           User?      @relation("Tag_updatedBy", fields: [updatedById], references: [id])
+  updatedById         Int?       @map("updatedBy")
+  from_Audio_tags     Audio[]    @relation("Audio_tags")
+  from_External_tags  External[] @relation("External_tags")
+  from_Image_tags     Image[]    @relation("Image_tags")
+  from_Post_tags      Post[]     @relation("Post_tags")
+  from_Post_tags_algo Post[]     @relation("Post_tags_algo")
+  from_Topic_tags     Topic[]    @relation("Topic_tags")
+  from_Video_tags     Video[]    @relation("Video_tags")
 
   @@index([ogImageId])
   @@index([createdById])

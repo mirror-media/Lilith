@@ -464,6 +464,16 @@ const listConfigurations = list({
         itemView: { fieldMode: 'hidden' },
       },
     }),
+    tags_algo: relationship({
+      label: '演算法標籤',
+      ref: 'Tag',
+      many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: envVar.autotagging ? 'edit' : 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
     audio: relationship({ label: '音檔', ref: 'Audio' }),
     download: relationship({ label: '附加檔案', ref: 'Download', many: true }),
 
@@ -481,6 +491,16 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'hidden' },
+      },
+    }),
+    relatedPosts_algo: relationship({
+      label: '演算法相關文章',
+      ref: 'Post',
+      many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: envVar.autotagging ? 'edit' : 'hidden' },
+        listView: { fieldMode: 'hidden' },
       },
     }),
 
@@ -1021,6 +1041,54 @@ const listConfigurations = list({
           console.log(`[EditLog] ${operation} 成功紀錄 : ${postSlug}`)
         } catch (err) {
           console.error(`[EditLog] ${operation} 發生錯誤 :`, err)
+        }
+      }
+
+      if (
+        envVar.autotagging &&
+        typeof envVar.dataServiceApi === 'string' &&
+        item &&
+        (operation === 'create' || operation === 'update')
+      ) {
+        const stateIsPublished = item.state === PostState.Published
+        const wasAlreadyPublished = originalItem?.state === PostState.Published
+        const firstTimePublished = stateIsPublished && !wasAlreadyPublished
+        const contentChanged =
+          wasAlreadyPublished &&
+          stateIsPublished &&
+          ((resolvedData?.name !== undefined &&
+            item.name !== originalItem?.name) ||
+            (resolvedData?.brief !== undefined &&
+              JSON.stringify(item.brief) !==
+                JSON.stringify(originalItem?.brief)) ||
+            (resolvedData?.content !== undefined &&
+              JSON.stringify(item.content) !==
+                JSON.stringify(originalItem?.content)))
+
+        if (firstTimePublished || contentChanged) {
+          // title/brief/content changed after publish: previous algo tags may
+          // no longer fit, so ask data-services to replace the whole set
+          const query = contentChanged ? '?replace=true' : ''
+          console.log(
+            `[AutoTag] trigger post ${item.id} (${
+              contentChanged ? 'content-change' : 'publish'
+            })`
+          )
+          // fire-and-forget: tagging takes ~30s and must not block the editor's save
+          fetch(
+            `${envVar.dataServiceApi}/jobs/auto-tagging/posts/${item.id}${query}`,
+            { method: 'POST' }
+          )
+            .then((res) => {
+              if (!res.ok) {
+                console.error(
+                  `[AutoTag] failed for post ${item.id}: ${res.status}`
+                )
+              }
+            })
+            .catch((err) => {
+              console.error(`[AutoTag] error for post ${item.id}:`, err)
+            })
         }
       }
     },
