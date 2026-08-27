@@ -21,6 +21,7 @@ import { initializeQueue } from '../utils/videoQueue'
 
 const { allowRoles, admin, moderator, editor, contributor, owner } =
   utils.accessControl
+import { reporter } from '../utils/access-control'
 
 enum VideoState {
   Draft = 'draft',
@@ -245,7 +246,7 @@ const listConfigurations = list({
     operation: {
       query: () => true,
       update: allowRoles(admin, moderator, editor, owner),
-      create: allowRoles(admin, moderator, editor, contributor),
+      create: allowRoles(admin, moderator, editor, contributor, reporter),
       delete: allowRoles(admin, moderator),
     },
   },

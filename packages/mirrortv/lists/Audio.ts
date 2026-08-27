@@ -26,6 +26,7 @@ ffmpeg.setFfprobePath(ffprobeInstaller.path)
 
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
+import { reporter } from '../utils/access-control'
 type GcsConfig = { bucket: string; projectId?: string; keyFilename?: string }
 type FileField = { filename: string; filesize: number }
 
@@ -117,7 +118,7 @@ const listConfigurations = list({
     operation: {
       query: allowAll,
       update: allowRoles(admin, moderator, editor),
-      create: allowRoles(admin, moderator, editor, contributor),
+      create: allowRoles(admin, moderator, editor, contributor, reporter),
       delete: allowRoles(admin, moderator),
     },
   },

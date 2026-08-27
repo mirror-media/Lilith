@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
+import { reporter } from '../utils/access-control'
 
 const listConfigurations = list({
   fields: {
@@ -42,9 +43,9 @@ const listConfigurations = list({
   },
   access: {
     operation: {
-      query: allowRoles(admin, moderator, editor, contributor),
+      query: allowRoles(admin, moderator, editor, contributor, reporter),
       update: allowRoles(admin, moderator, editor),
-      create: allowRoles(admin, moderator, editor, contributor),
+      create: allowRoles(admin, moderator, editor, contributor, reporter),
       delete: allowRoles(admin, moderator),
     },
   },

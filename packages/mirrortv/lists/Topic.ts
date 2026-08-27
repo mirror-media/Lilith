@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
+import { reporter } from '../utils/access-control'
 
 // 移除亂碼/隱形字元
 function filterControlCharacters(resolvedData: Record<string, any>) {
@@ -249,8 +250,8 @@ const listConfigurations = list({
   access: {
     operation: {
       query: () => true,
-      update: allowRoles(admin, moderator, editor, contributor),
-      create: allowRoles(admin, moderator, editor, contributor),
+      update: allowRoles(admin, moderator, editor, contributor, reporter),
+      create: allowRoles(admin, moderator, editor, contributor, reporter),
       delete: allowRoles(admin, moderator),
     },
   },

@@ -6,6 +6,7 @@ import { formatChangedList } from '../utils/formatChangedList'
 
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
+import { reporter } from '../utils/access-control'
 
 const listConfigurations = list({
   fields: {
@@ -64,7 +65,7 @@ const listConfigurations = list({
     operation: {
       query: allowRoles(admin, moderator),
       update: allowRoles(admin),
-      create: allowRoles(admin, contributor, editor, moderator),
+      create: allowRoles(admin, contributor, editor, moderator, reporter),
       delete: allowRoles(admin),
     },
   },

@@ -4,6 +4,7 @@ import { relationship, select, float } from '@keystone-6/core/fields'
 
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
+import { reporter } from '../utils/access-control'
 
 import envVar from '../environment-variables'
 import { ACL, UserRole, type Session } from '../type'
@@ -59,7 +60,7 @@ const listConfigurations = list({
   },
   access: {
     operation: {
-      query: allowRoles(admin, moderator, editor, contributor),
+      query: allowRoles(admin, moderator, editor, contributor, reporter),
       update: allowRoles(admin, moderator, editor),
       create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin, moderator),
@@ -71,6 +72,7 @@ const listConfigurations = list({
         UserRole.Moderator,
         UserRole.Editor,
         UserRole.Contributor,
+        UserRole.Reporter,
       ]),
     },
   },

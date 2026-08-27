@@ -1,6 +1,7 @@
 import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 import { text, password, select, checkbox } from '@keystone-6/core/fields'
+import { reporter } from '../utils/access-control'
 const { allowRolesForUsers, allowAllRoles, admin, moderator } =
   utils.accessControl
 
@@ -29,6 +30,7 @@ const listConfigurations = list({
         { label: 'contributor', value: 'contributor' },
         { label: 'editor', value: 'editor' },
         { label: 'moderator', value: 'moderator' },
+        { label: 'reporter', value: 'reporter' },
       ],
       defaultValue: 'contributor',
       validation: { isRequired: true },
@@ -55,7 +57,7 @@ const listConfigurations = list({
 
   access: {
     operation: {
-      query: allowAllRoles(),
+      query: allowAllRoles(reporter),
       update: allowRolesForUsers(admin),
       create: allowRolesForUsers(admin),
       delete: allowRolesForUsers(admin),
