@@ -2,8 +2,54 @@ import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 import { text, password, select, checkbox } from '@keystone-6/core/fields'
 import { reporter } from '../utils/access-control'
-const { allowRolesForUsers, allowAllRoles, admin, moderator } =
-  utils.accessControl
+const {
+  allowRolesForUsers,
+  allowAllRoles,
+  admin,
+  moderator,
+  editor,
+  contributor,
+} = utils.accessControl
+
+// Self-service password change (Asana 1217892227794539), mirroring the
+// mirrormedia User.ts "default-deny" design:
+//   - operation.update: widened to the self-service roles. allowRolesForUsers
+//     (not allowAllRoles) keeps gql/preview deployments denied and preserves
+//     the first-user bootstrap bypass.
+//   - filter.update: row scope — non-admins can only target their own record.
+//   - ui.itemView.defaultFieldMode: every field read-only for non-admins; only
+//     the password field opts back into edit mode, and only on one's own record.
+//   - hooks.validateInput: column scope — a non-admin update may only change
+//     the password (updatedAt/updatedBy are injected by addTrackingFields'
+//     resolveInput on every update, so they must be exempt).
+type FieldMode = 'edit' | 'read'
+type FieldModeArgs = {
+  session?: { data?: { id?: string; role?: string } }
+  item?: { id?: unknown }
+}
+
+const SELF_PASSWORD_ROLES = ['moderator', 'editor', 'contributor', 'reporter']
+
+const itemViewDefaultFieldMode = ({ session }: FieldModeArgs): FieldMode =>
+  session?.data?.role === 'admin' ? 'edit' : 'read'
+
+// Editable for admin anywhere, or for a self-service role on its OWN record.
+// The item check matters here because mirrortv moderators can see every user
+// (unlike mirrormedia, where non-admins only ever see themselves).
+const passwordFieldMode = ({ session, item }: FieldModeArgs): FieldMode => {
+  const role = session?.data?.role
+  if (role === 'admin') return 'edit'
+  const isSelf =
+    item?.id !== undefined && String(item.id) === String(session?.data?.id)
+  return role && SELF_PASSWORD_ROLES.includes(role) && isSelf ? 'edit' : 'read'
+}
+
+// Fields a non-admin update may carry besides nothing at all.
+const SELF_SERVICE_ALLOWED_FIELDS = new Set([
+  'password',
+  'updatedAt',
+  'updatedBy',
+])
 
 const listConfigurations = list({
   fields: {
@@ -20,6 +66,11 @@ const listConfigurations = list({
     password: password({
       label: '密碼',
       validation: { isRequired: true },
+      ui: {
+        itemView: {
+          fieldMode: passwordFieldMode,
+        },
+      },
     }),
     role: select({
       label: '角色權限',
@@ -53,12 +104,21 @@ const listConfigurations = list({
       initialSort: { field: 'id', direction: 'DESC' },
       pageSize: 50,
     },
+    itemView: {
+      defaultFieldMode: itemViewDefaultFieldMode,
+    },
   },
 
   access: {
     operation: {
       query: allowAllRoles(reporter),
-      update: allowRolesForUsers(admin),
+      update: allowRolesForUsers(
+        admin,
+        moderator,
+        editor,
+        contributor,
+        reporter
+      ),
       create: allowRolesForUsers(admin),
       delete: allowRolesForUsers(admin),
     },
@@ -73,6 +133,14 @@ const listConfigurations = list({
           }
         }
       },
+      // Row scope for self-service password change: non-admins can only
+      // target their own record.
+      update: async (auth) => {
+        if (admin(auth)) return true
+        const userId = auth.session?.data?.id
+        if (!userId) return false
+        return { id: { equals: userId } }
+      },
     },
   },
   hooks: {
@@ -80,8 +148,29 @@ const listConfigurations = list({
       operation,
       item,
       resolvedData,
+      context,
       addValidationError,
     }) => {
+      // Column guard for self-service updates: any non-admin (already scoped
+      // to their own record by filter.update) may only change the password.
+      // Runs on every update mutation, so it cannot be bypassed via GraphQL.
+      if (operation === 'update' && context.session?.data?.role !== 'admin') {
+        const changedFields = Object.keys(resolvedData).filter(
+          (field) =>
+            !SELF_SERVICE_ALLOWED_FIELDS.has(field) &&
+            resolvedData[field] !== undefined &&
+            resolvedData[field] !== item?.[field]
+        )
+        if (changedFields.length > 0) {
+          addValidationError(
+            `你只能修改自己的密碼，不可變更其他欄位（${changedFields.join(
+              '、'
+            )}）。`
+          )
+          return
+        }
+      }
+
       if (operation === 'update' && item?.isProtected) {
         if (resolvedData.isProtected !== false) {
           const protectedFields = ['name', 'email', 'role']
