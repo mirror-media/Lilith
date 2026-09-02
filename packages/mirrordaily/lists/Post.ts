@@ -147,6 +147,36 @@ type MaybeItemFunction<T extends FieldMode, ListTypeInfo> =
   | T
   | ((args: ListTypeInfo) => Promise<T>)
 
+const relatedPostFieldKeys = [
+  'relatedsOne',
+  'relatedsTwo',
+  'relatedsThree',
+] as const
+
+// 算出相關文章一/二/三存檔後最終會連到哪篇文章：
+// 有 connect 就用新值、有 disconnect 就是空、都沒異動就沿用原本的值。
+const resolveRelatedPostId = (
+  resolvedData: Record<string, any>,
+  item:
+    | {
+        relatedsOneId?: number | null
+        relatedsTwoId?: number | null
+        relatedsThreeId?: number | null
+      }
+    | undefined,
+  key: (typeof relatedPostFieldKeys)[number]
+): number | null => {
+  const relation = resolvedData[key]
+  if (relation?.connect?.id != null) {
+    return Number(relation.connect.id)
+  }
+  if (relation?.disconnect) {
+    return null
+  }
+  const existingId = item?.[`${key}Id` as const]
+  return existingId != null ? Number(existingId) : null
+}
+
 // Atomically (re)acquire the post lock for the current Editor/Moderator.
 // Returns true if the user now holds the lock. Idempotent for the holder, so it
 // is safe to call from multiple field-mode resolvers on the same request.
@@ -1093,7 +1123,25 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    validateInput: async ({ operation, item, context, addValidationError }) => {
+    validateInput: async ({
+      operation,
+      item,
+      resolvedData,
+      context,
+      addValidationError,
+    }) => {
+      // 相關文章一/二/三不可選到同一篇文章，避免版面上出現重複內容。
+      const relatedPostIds = relatedPostFieldKeys
+        .map((key) => resolveRelatedPostId(resolvedData, item, key))
+        .filter((id): id is number => id !== null)
+      const hasDuplicateRelatedPost =
+        new Set(relatedPostIds).size !== relatedPostIds.length
+      if (hasDuplicateRelatedPost) {
+        addValidationError(
+          '相關文章不可重複選擇，請確認相關文章一、二、三皆為不同稿件。'
+        )
+      }
+
       if (envVar.accessControlStrategy === ACL.CMS) {
         // Moderators are lock-bound in the editor UI (itemViewFunction), so
         // they must also be lock-bound on save — otherwise a Moderator whose
