@@ -2,6 +2,7 @@ import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { relationship, select, float } from '@keystone-6/core/fields'
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
 
@@ -59,7 +60,7 @@ const listConfigurations = list({
   },
   access: {
     operation: {
-      query: allowRoles(admin, moderator, editor, contributor),
+      query: allowRoles(admin, moderator, editor, contributor, reporter),
       update: allowRoles(admin, moderator, editor),
       create: allowRoles(admin, moderator, editor),
       delete: allowRoles(admin, moderator),
@@ -71,6 +72,7 @@ const listConfigurations = list({
         UserRole.Moderator,
         UserRole.Editor,
         UserRole.Contributor,
+        UserRole.Reporter,
       ]),
     },
   },

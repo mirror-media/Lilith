@@ -57,6 +57,7 @@ async function enqueueCopyTask(source: string, dest: string) {
   }
 }
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
 
@@ -385,7 +386,7 @@ const listConfigurations = list({
     operation: {
       query: () => true,
       update: allowRoles(admin, moderator, editor),
-      create: allowRoles(admin, moderator, editor, contributor),
+      create: allowRoles(admin, moderator, editor, contributor, reporter),
       delete: allowRoles(admin, moderator),
     },
   },

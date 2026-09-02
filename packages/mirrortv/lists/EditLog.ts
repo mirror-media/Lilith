@@ -4,6 +4,7 @@ import { text } from '@keystone-6/core/fields'
 
 import { formatChangedList } from '../utils/formatChangedList'
 
+import { reporter } from '../utils/access-control'
 const { allowRoles, admin, moderator, editor, contributor } =
   utils.accessControl
 
@@ -64,7 +65,7 @@ const listConfigurations = list({
     operation: {
       query: allowRoles(admin, moderator),
       update: allowRoles(admin),
-      create: allowRoles(admin, contributor, editor, moderator),
+      create: allowRoles(admin, contributor, editor, moderator, reporter),
       delete: allowRoles(admin),
     },
   },
