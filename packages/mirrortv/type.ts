@@ -3,6 +3,7 @@ export enum UserRole {
   Moderator = 'moderator',
   Editor = 'editor',
   Contributor = 'contributor',
+  Reporter = 'reporter',
 }
 
 export enum State {

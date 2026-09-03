@@ -100,7 +100,7 @@ export default {
   },
   dataServiceApi: DATA_SERVICE_API,
   topicServiceApi: TOPIC_SERVICE_API,
-  autotagging: AUTO_TAGGING || 'false',
+  autotagging: AUTO_TAGGING === 'true',
   invalidateCDNCacheServerURL: INVALID_CDN_CACHE_SERVER_URL,
   domainUrl: DOMAIN_URL || '',
   promoteTopicServiceUrl: PROMOTE_TOPIC_SERVICE_URL,

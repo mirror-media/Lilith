@@ -1,7 +1,7 @@
 {
   "name": "@mirrormedia/lilith-mcp",
-  "version": "0.1.0",
-  "description": "Reusable MCP (Model Context Protocol) Streamable HTTP transport for Lilith Keystone CMS packages",
+  "version": "0.3.0",
+  "description": "Reusable MCP (Model Context Protocol) Streamable HTTP transport, OAuth 2.1 endpoints, and bearer-auth wiring for Lilith Keystone CMS packages",
   "main": "lib/index.js",
   "types": "@types/index.d.ts",
   "scripts": {

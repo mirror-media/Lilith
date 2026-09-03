@@ -8,31 +8,36 @@ import {
 import envVar from './environment-variables'
 
 /**
- * READr's OAuth/MCP auth configuration. All protocol logic lives in
+ * Mirror Media's OAuth/MCP auth configuration. All protocol logic lives in
  * @mirrormedia/lilith-mcp; this file only supplies the package-specific
  * values and re-exports the configured instances.
  */
-export const readrOAuthConfig: OAuthConfig = {
-  scopes: ['readr.posts.read', 'readr.posts.write', 'readr.posts.publish'],
-  clientIdPrefix: 'readr_',
+export const mirrormediaOAuthConfig: OAuthConfig = {
+  scopes: [
+    'mirrormedia.posts.read',
+    'mirrormedia.posts.write',
+    'mirrormedia.posts.publish',
+  ],
+  clientIdPrefix: 'mirrormedia_',
   tokenRoles: ['admin', 'moderator', 'editor', 'contributor'],
   authorizeRoles: ['admin', 'moderator', 'editor'],
   issuer: envVar.oauth.issuer,
   signingSecret: envVar.oauth.signingSecret,
   accessTokenTtlSeconds: envVar.oauth.accessTokenTtlSeconds,
   resourceUrl: envVar.oauth.resourceUrl,
-  resourceName: 'READr CMS MCP',
-  signInHint: 'Sign in to READr CMS, then retry the authorization request',
-  defaultScope: 'readr.posts.read',
+  resourceName: 'Mirror Media CMS MCP',
+  signInHint:
+    'Sign in to Mirror Media CMS, then retry the authorization request',
+  defaultScope: 'mirrormedia.posts.read',
 }
 
-export const readrMcpAuth = createMcpAuth(readrOAuthConfig)
+export const mirrormediaMcpAuth = createMcpAuth(mirrormediaOAuthConfig)
 
-export const verifyAccessToken = readrMcpAuth.verifyAccessToken
+export const verifyAccessToken = mirrormediaMcpAuth.verifyAccessToken
 
 export type { AccessTokenClaims }
 export type CommonContext = OAuthCommonContext
 
 export function createOAuthHandlers(commonContext: CommonContext) {
-  return createOAuthEndpoints(commonContext, readrOAuthConfig)
+  return createOAuthEndpoints(commonContext, mirrormediaOAuthConfig)
 }

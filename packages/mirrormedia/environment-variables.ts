@@ -30,6 +30,11 @@ const {
   COPY_QUEUE_NAME,
   IMAGE_PROCESSOR_URL,
   SCHEDULER_KEY,
+  IS_MCP_ENABLED,
+  OAUTH_ISSUER,
+  OAUTH_SIGNING_SECRET,
+  OAUTH_ACCESS_TOKEN_TTL_SECONDS,
+  MCP_RESOURCE_URL,
 } = process.env
 
 enum DatabaseProvider {
@@ -99,4 +104,15 @@ export default {
     schedulerKey: SCHEDULER_KEY || '',
   },
   promoteTopicServiceUrl: PROMOTE_TOPIC_SERVICE_URL,
+  // MCP endpoint is opt-in per environment: unset or any value other than
+  // 'true' keeps the /mcp route unmounted.
+  isMcpEnabled: IS_MCP_ENABLED === 'true',
+  oauth: {
+    issuer: OAUTH_ISSUER,
+    signingSecret: OAUTH_SIGNING_SECRET,
+    accessTokenTtlSeconds: Number.isNaN(Number(OAUTH_ACCESS_TOKEN_TTL_SECONDS))
+      ? 900
+      : Math.max(60, Number(OAUTH_ACCESS_TOKEN_TTL_SECONDS)),
+    resourceUrl: MCP_RESOURCE_URL,
+  },
 }
