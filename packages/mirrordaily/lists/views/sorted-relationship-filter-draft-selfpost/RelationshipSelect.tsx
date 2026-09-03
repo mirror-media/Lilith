@@ -142,6 +142,7 @@ export const RelationshipSelect = ({
   extraSelection = '',
   orderBy,
   currentPostId,
+  excludeIds,
 }: {
   autoFocus?: boolean
   controlShouldRenderValue: boolean
@@ -170,6 +171,7 @@ export const RelationshipSelect = ({
   extraSelection?: string
   orderBy: Record<string, any>[]
   currentPostId?: string
+  excludeIds?: string[]
 }) => {
   const [search, setSearch] = useState('')
   const [loadingIndicatorElement, setLoadingIndicatorElement] =
@@ -177,9 +179,10 @@ export const RelationshipSelect = ({
 
   const QUERY: TypedDocumentNode<
     {
-      items: { [idFieldAlias]: string; 
-               [labelFieldAlias]: string | null;
-               state: string
+      items: {
+        [idFieldAlias]: string
+        [labelFieldAlias]: string | null
+        state: string
       }[]
       count: number
     },
@@ -254,17 +257,22 @@ export const RelationshipSelect = ({
         data,
       })
     ) || []
-    const includesStates = [PostStatus.Published, PostStatus.Scheduled, PostStatus.Invisible];
-    const filteredOptions = useMemo(() => {
-      return options.filter((option) => {
-        const isCurrent = option.value === currentPostId;
-        const optionState = option.data?.state as PostStatus;
-        const shouldInclude = includesStates.includes(optionState);
-    
-        return !isCurrent && shouldInclude;
-      });
-    }, [options, currentPostId]);
-    
+  const includesStates = [
+    PostStatus.Published,
+    PostStatus.Scheduled,
+    PostStatus.Invisible,
+  ]
+  const filteredOptions = useMemo(() => {
+    return options.filter((option) => {
+      const isCurrent = option.value === currentPostId
+      // 排除相關文章一/二/三裡「其他欄位」已經選過的稿件，避免選到重複內容。
+      const isSelectedBySiblingField = excludeIds?.includes(option.value)
+      const optionState = option.data?.state as PostStatus
+      const shouldInclude = includesStates.includes(optionState)
+
+      return !isCurrent && !isSelectedBySiblingField && shouldInclude
+    })
+  }, [options, currentPostId, excludeIds])
 
   const loadingIndicatorContextVal = useMemo(
     () => ({
