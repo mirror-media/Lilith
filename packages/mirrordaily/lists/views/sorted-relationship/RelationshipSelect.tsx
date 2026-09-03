@@ -410,8 +410,8 @@ export const RelationshipSelect = ({
               {list.label === 'Photos' && (
                 <img
                   src={option?.data?.imageFile?.url}
-                  width={50}
-                  height={50}
+                  width={80}
+                  height={80}
                   style={{ objectFit: 'cover', marginLeft: 'auto' }}
                 ></img>
               )}

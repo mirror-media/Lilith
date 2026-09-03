@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import debounce from 'lodash/debounce'
 import styled, { createGlobalStyle } from 'styled-components'
 import { TextInput } from '@keystone-ui/fields'
@@ -104,6 +105,26 @@ const Image = styled.img`
   object-fit: contain;
 `
 
+// 浮動預覽的邊長(寬 / 最大高);夾邊計算也共用此值,避免兩處不同步
+const PREVIEW_SIZE = 200
+
+// hover 選圖格線縮圖時的浮動大圖預覽:portal 到 body + position:fixed,
+// 不受格線 overflow 裁切,pointer-events:none 避免擋到滑鼠造成閃爍
+const FloatingPreview = styled.img`
+  position: fixed;
+  /* 以自身中心對齊給定的中心點,達到「維持中心、原地放大」 */
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  width: ${PREVIEW_SIZE}px;
+  max-height: ${PREVIEW_SIZE}px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+`
+
 const Label = styled.label`
   display: block;
   margin: 10px 0;
@@ -198,8 +219,49 @@ function ImageGrid(props: {
   onSelect: ImageEntityOnSelectFn
 }) {
   const { image, onSelect, isSelected } = props
+  // hover 時以縮圖中心為中心,原地放大顯示浮動大圖預覽(不跟游標)
+  const [previewPos, setPreviewPos] = useState<{
+    top: number
+    left: number
+  } | null>(null)
+  const previewSrc = image?.resized?.w800 ?? image?.imageFile?.url
+
+  const showPreview = (e: React.MouseEvent<HTMLDivElement>) => {
+    // 預覽是「能 hover 的精準指標」專屬(桌機滑鼠、平板接滑鼠);
+    // 純觸控(手機/手指平板)沒有 hover,不啟用,避免窄寬超出或預覽卡住
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      !window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    ) {
+      return
+    }
+    // 以縮圖中心點為中心,原地整個放大;
+    // 靠視窗邊緣時把中心夾回範圍內,避免預覽超出視窗(中間的圖仍完美置中)
+    const rect = e.currentTarget.getBoundingClientRect()
+    const half = PREVIEW_SIZE / 2
+    const margin = 8
+    const cx = rect.left + rect.width / 2
+    const cy = rect.top + rect.height / 2
+    setPreviewPos({
+      left: Math.min(
+        Math.max(cx, half + margin),
+        window.innerWidth - half - margin
+      ),
+      top: Math.min(
+        Math.max(cy, half + margin),
+        window.innerHeight - half - margin
+      ),
+    })
+  }
+
   return (
-    <ImageGridWrapper key={image?.id} onClick={() => onSelect(image)}>
+    <ImageGridWrapper
+      key={image?.id}
+      onClick={() => onSelect(image)}
+      onMouseEnter={showPreview}
+      onMouseLeave={() => setPreviewPos(null)}
+    >
       <ImageSelected>
         {isSelected ? <i className="fas fa-check-circle"></i> : null}
       </ImageSelected>
@@ -207,6 +269,16 @@ function ImageGrid(props: {
         src={image?.resized?.w800}
         onError={(e) => (e.currentTarget.src = image?.imageFile?.url)}
       />
+      {previewPos &&
+        previewSrc &&
+        createPortal(
+          <FloatingPreview
+            src={previewSrc}
+            onError={(e) => (e.currentTarget.src = image?.imageFile?.url ?? '')}
+            style={{ top: previewPos.top, left: previewPos.left }}
+          />,
+          document.body
+        )}
     </ImageGridWrapper>
   )
 }
@@ -405,7 +477,7 @@ export function ImageSelector(props: {
       prev.concat(
         images.map((image) => ({
           image,
-          desc: '',
+          desc: image?.name ?? '',
           url: '',
         }))
       )
@@ -415,13 +487,15 @@ export function ImageSelector(props: {
 
   const onImageMetaChange: ImageMetaOnChangeFn = (imageEntityWithMeta) => {
     if (enableMultiSelect) {
-      const foundIndex = selected.findIndex(
-        (ele) => ele?.image?.id === imageEntityWithMeta?.image?.id
+      // 用 map 產生新陣列(immutable)+ functional updater 取最新 state,
+      // React 才會偵測到變化重繪;舊寫法原地改陣列又傳同一 reference 會被跳過
+      setSelected((prev) =>
+        prev.map((ele) =>
+          ele?.image?.id === imageEntityWithMeta?.image?.id
+            ? imageEntityWithMeta
+            : ele
+        )
       )
-      if (foundIndex !== -1) {
-        selected[foundIndex] = imageEntityWithMeta
-        setSelected(selected)
-      }
       return
     }
     setSelected([imageEntityWithMeta])
@@ -439,12 +513,15 @@ export function ImageSelector(props: {
       }
 
       // add new selected one
+      // 選圖後,預設把圖片 name 帶入圖說(desc),編輯者可再自行修改
       if (enableMultiSelect) {
-        return selected.concat([{ image: imageEntity, desc: '' }])
+        return selected.concat([
+          { image: imageEntity, desc: imageEntity?.name ?? '' },
+        ])
       }
 
       // single select
-      return [{ image: imageEntity, desc: '' }]
+      return [{ image: imageEntity, desc: imageEntity?.name ?? '' }]
     })
   }
 
