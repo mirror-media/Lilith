@@ -32,6 +32,10 @@ import {
 import { Cards } from './cards'
 import { RelationshipSelect } from './RelationshipSelect'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
+import {
+  useRegisterRelatedSelection,
+  useSiblingSelectedIds,
+} from './relatedFieldsStore'
 
 const Link = NextLink as any
 
@@ -103,9 +107,17 @@ export const Field = ({
   const router = useRouter()
   const { id: routeId } = router.query
   const currentPostId =
-    localList.key === 'Post' && typeof routeId === 'string'
-      ? routeId
-      : ''
+    localList.key === 'Post' && typeof routeId === 'string' ? routeId : ''
+  // relatedsOne/relatedsTwo/relatedsThree 共用這個 view，用 post id 當 scope，
+  // 讓三個欄位可以互相知道彼此選了什麼，藉此在下拉選單裡排除重複選項。
+  // 新增文章時還沒有 id，用固定的 key 當作暫時 scope。
+  const relatedFieldsScopeId = currentPostId || '__new__'
+  const selfSelectedId = value.kind === 'one' ? value.value?.id ?? null : null
+  useRegisterRelatedSelection(relatedFieldsScopeId, field.path, selfSelectedId)
+  const siblingSelectedIds = useSiblingSelectedIds(
+    relatedFieldsScopeId,
+    field.path
+  )
   if (value.kind === 'cards-view') {
     return (
       <FieldContainer as="fieldset">
@@ -192,7 +204,10 @@ export const Field = ({
                   }
             }
             orderBy={[{ publishedDate: 'desc' }]}
-            currentPostId={typeof currentPostId === 'string' ? currentPostId : ''}
+            currentPostId={
+              typeof currentPostId === 'string' ? currentPostId : ''
+            }
+            excludeIds={siblingSelectedIds}
           />
           <Stack across gap="small">
             {/* {onChange !== undefined && !field.hideCreate && (
@@ -711,7 +726,7 @@ function useRelationshipFilterValues({
   const { data, loading } = useQuery(query, {
     variables: {
       where,
-	  orderBy,
+      orderBy,
     },
   })
 

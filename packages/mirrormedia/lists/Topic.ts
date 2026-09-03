@@ -8,6 +8,7 @@ import {
   integer,
   json,
 } from '@keystone-6/core/fields'
+import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -68,9 +69,9 @@ const listConfigurations = list({
     }),
     heroUrl: text({
       label: '首圖連結 URL',
-	  db: {
-		isNullable: true,
-	  },
+      db: {
+        isNullable: true,
+      },
     }),
     leading: select({
       label: '標頭樣式',
@@ -172,6 +173,18 @@ const listConfigurations = list({
   },
 })
 
+let extendedListConfigurations = utils.addTrackingFields(listConfigurations)
+
+if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
+  extendedListConfigurations = utils.invalidateCacheAfterOperation(
+    extendedListConfigurations,
+    `${envVar.invalidateCDNCacheServerURL}/topic`,
+    (item, originalItem) => ({
+      slug: originalItem?.slug ?? item?.slug,
+    })
+  )
+}
+
 export default utils.addManualOrderRelationshipFields(
   [
     {
@@ -181,5 +194,5 @@ export default utils.addManualOrderRelationshipFields(
       targetListLabelField: 'name',
     },
   ],
-  utils.addTrackingFields(listConfigurations)
+  extendedListConfigurations
 )
