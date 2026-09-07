@@ -20,8 +20,6 @@ import AnnouncementScope from './AnnouncementScope'
 import Announcement from './Announcement'
 import PromoteTopic from './PromoteTopic'
 import EditLog from './EditLog'
-import OAuthClient from './OAuthClient'
-import OAuthAuthorizationCode from './OAuthAuthorizationCode'
 
 export const listDefinition = {
   AudioFile: Audio,
@@ -46,6 +44,4 @@ export const listDefinition = {
   Video,
   Group,
   EditLog,
-  OAuthClient,
-  OAuthAuthorizationCode,
 }
