@@ -569,6 +569,7 @@ const listConfigurations = list({
       validation: { isRequired: false },
       ui: {
         displayMode: 'textarea',
+        views: './lists/views/hero-caption/index',
       },
     }),
     style: select({

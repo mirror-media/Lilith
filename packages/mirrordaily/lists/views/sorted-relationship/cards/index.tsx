@@ -31,6 +31,7 @@ import { RelationshipSelect } from '../RelationshipSelect'
 import { useItemState } from './useItemState'
 import { InlineEdit } from './InlineEdit'
 import { InlineCreate } from './InlineCreate'
+import { fieldFilterManager } from '../../shared/fieldFilterManager'
 
 type CardContainerProps = {
   children: ReactNode
@@ -117,6 +118,14 @@ export function Cards({
   })
 
   const client = useApolloClient()
+
+  // 發布已連結/新建項目的 label(name),以 field.path 命名空間,供其他欄位
+  // (例如 heroCaption 訂閱 'heroImage:label')自動帶入;connect 與 inlineCreate 共用
+  const publishLabels = (labels: string[]) => {
+    if (labels.length) {
+      fieldFilterManager.updateField(`${field.path}:label`, labels)
+    }
+  }
 
   const [isLoadingLazyItems, setIsLoadingLazyItems] = useState(false)
   const [showConnectItems, setShowConnectItems] = useState(false)
@@ -338,6 +347,13 @@ export function Cards({
                       itemsToFetchAndConnect.push(item.id)
                     }
                   })
+                  // 發布新連結項目的 label(name)供其他欄位(如 heroCaption)自動帶入
+                  publishLabels(
+                    options
+                      .filter((o) => itemsToFetchAndConnect.includes(o.id))
+                      .map((o) => o.label)
+                      .filter(Boolean)
+                  )
                   if (itemsToFetchAndConnect.length) {
                     try {
                       const { data, errors } = await client.query({
@@ -407,6 +423,9 @@ export function Cards({
             }}
             onCreate={(itemGetter) => {
               const id = itemGetter.data.id
+              // inlineCreate 新建的圖也發布 label(name)供 heroCaption 等訂閱自動帶入
+              const label = itemGetter.data?.[foreignList.labelField]
+              publishLabels(label ? [label] : [])
               setItems({ ...items, [id]: itemGetter })
               onChange({
                 ...value,
