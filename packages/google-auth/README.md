@@ -10,19 +10,21 @@ No dependency on `@keystone-6/core`: Keystone is typed structurally, so any pack
 
 ## Usage
 
-`withGoogleAuth` is the recommended integration: one wrapper around the exported config.
+`withGoogleAuth` is the recommended integration: one wrapper around the exported config. Name the existing config and wrap it on the way out, so adopting the feature leaves the config body untouched and its indentation unchanged.
 
 ```ts
 import { withGoogleAuth } from '@mirrormedia/lilith-google-auth'
 
-export default withGoogleAuth(
-  withAuth(
-    config({
-      /* unchanged */
-    })
-  ),
-  { ...envVar.googleAuth, stateSecret: envVar.session.secret }
+const keystoneConfig = withAuth(
+  config({
+    /* unchanged */
+  })
 )
+
+export default withGoogleAuth(keystoneConfig, {
+  ...envVar.googleAuth,
+  stateSecret: envVar.session.secret,
+})
 ```
 
 What it does:
