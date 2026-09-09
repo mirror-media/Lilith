@@ -84,8 +84,10 @@ export default {
       60 * 60 * 24 * 1, // 1 days
   },
   googleAuth: {
-    isEnabled: !!GOOGLE_AUTH_CLIENT_ID,
-    clientId: GOOGLE_AUTH_CLIENT_ID || '',
+    // A blank value must read as "not configured": the mini-app throws on an
+    // empty clientId, which would otherwise take the whole CMS down at boot.
+    isEnabled: !!GOOGLE_AUTH_CLIENT_ID?.trim(),
+    clientId: GOOGLE_AUTH_CLIENT_ID?.trim() || '',
     clientSecret: GOOGLE_AUTH_CLIENT_SECRET || '',
     callbackUrl:
       GOOGLE_AUTH_CALLBACK_URL || 'http://localhost:3003/auth/google/callback',

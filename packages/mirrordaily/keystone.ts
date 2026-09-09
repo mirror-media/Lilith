@@ -8,7 +8,11 @@ import { statelessSessions } from '@keystone-6/core/session'
 import { createPreviewMiniApp } from './express-mini-apps/preview/app'
 import { createDashboardMiniApp } from './express-mini-apps/dashboard/app'
 import { createPostLockMiniApp } from './express-mini-apps/post-lock'
-import { createGoogleAuthMiniApp } from '@mirrormedia/lilith-google-auth'
+import {
+  createGoogleAuthMiniApp,
+  createPasswordLoginBlockPlugin,
+} from '@mirrormedia/lilith-google-auth'
+import type { KeystoneContext } from '@mirrormedia/lilith-google-auth'
 import Keyv from 'keyv'
 import { KeyvAdapter } from '@apollo/utils.keyvadapter'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
@@ -30,24 +34,43 @@ const { withAuth } = createAuth({
 
 const session = statelessSessions(envVar.session)
 
+const cacheEnabled =
+  envVar.accessControlStrategy === ACL.GraphQL && envVar.cache.isEnabled
+
+// The mini-app's HTTP guard cannot see a multipart request, because Keystone
+// mounts graphqlUploadExpress after extendExpressApp. This plugin is the layer
+// that actually holds the password kill switch.
+const apolloPlugins = [
+  ...(envVar.googleAuth.isEnabled && !envVar.googleAuth.passwordLoginEnabled
+    ? [createPasswordLoginBlockPlugin()]
+    : []),
+  ...(cacheEnabled
+    ? [
+        responseCachePlugin(),
+        ApolloServerPluginCacheControl({
+          defaultMaxAge: envVar.cache.maxAge,
+        }),
+      ]
+    : []),
+]
+
 const graphqlConfig: GraphQLConfig = {
   apolloConfig:
-    envVar.accessControlStrategy === ACL.GraphQL && envVar.cache.isEnabled
+    apolloPlugins.length > 0 || cacheEnabled
       ? {
-          plugins: [
-            responseCachePlugin(),
-            ApolloServerPluginCacheControl({
-              defaultMaxAge: envVar.cache.maxAge,
-            }),
-          ],
-          cache: new KeyvAdapter(
-            new Keyv(envVar.cache.url, {
-              lazyConnect: true,
-              namespace: envVar.cache.identifier,
-              connectionName: envVar.cache.identifier,
-              connectTimeout: envVar.cache.connectTimeOut,
-            })
-          ),
+          plugins: apolloPlugins,
+          ...(cacheEnabled
+            ? {
+                cache: new KeyvAdapter(
+                  new Keyv(envVar.cache.url, {
+                    lazyConnect: true,
+                    namespace: envVar.cache.identifier,
+                    connectionName: envVar.cache.identifier,
+                    connectTimeout: envVar.cache.connectTimeOut,
+                  })
+                ),
+              }
+            : {}),
         }
       : undefined,
 }
@@ -135,8 +158,7 @@ export default withAuth(
             createGoogleAuthMiniApp({
               // Keystone's generated context is structurally compatible with
               // the package's narrow interface.
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              keystoneContext: context as any,
+              keystoneContext: context as unknown as KeystoneContext,
               clientId: envVar.googleAuth.clientId,
               clientSecret: envVar.googleAuth.clientSecret,
               callbackUrl: envVar.googleAuth.callbackUrl,
