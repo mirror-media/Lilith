@@ -2,7 +2,12 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import express from 'express'
 import type { Server } from 'node:http'
+import { parse } from 'graphql'
+// Same specifier Keystone core uses (see @keystone-6/core's
+// createAdminUIMiddleware bundle), so this test exercises the real middleware.
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
 import { createGoogleAuthMiniApp } from './mini-app'
+import { documentSelectsPasswordLogin } from './password-plugin'
 import type { GoogleClient, GoogleIdentity } from './google'
 import { STATE_COOKIE_NAME, unsealAuthState } from './state-cookie'
 import type {
@@ -297,8 +302,16 @@ test('callback signs in an existing user and redirects to from', async () => {
       )
       assert.equal(events.length, 1)
       assert.equal(events[0].outcome, 'success')
-      assert.equal(events[0].id, '7')
+      assert.equal(events[0].userId, '7')
       assert.equal(events[0].role, 'editor')
+      assert.equal(events[0].email, 'a@mirrormedia.mg')
+      assert.equal(events[0].name, 'A')
+      // Aligned with lilith-core's login-logging plugin.
+      assert.equal(
+        new Date(events[0].timestamp).toISOString(),
+        events[0].timestamp
+      )
+      assert.equal(events[0].ipAddress, '127.0.0.1')
     }
   )
 })
@@ -480,4 +493,284 @@ test('callback still redirects and clears the state cookie when the logger throw
       )
     }
   )
+})
+
+const PASSWORD_MUTATION =
+  'mutation { authenticateUserWithPassword(email:"a",password:"b"){__typename} }'
+
+function baseOptions(
+  overrides: Partial<GoogleAuthOptions> = {}
+): GoogleAuthOptions {
+  return {
+    keystoneContext: fakeKeystone(null).context,
+    clientId: 'cid',
+    clientSecret: 'sec',
+    callbackUrl: 'https://cms.example/auth/google/callback',
+    allowedDomains: ['mirrormedia.mg'],
+    stateSecret,
+    ...overrides,
+  }
+}
+
+test('rejects options that cannot produce a working flow', () => {
+  const cases: { options: Partial<GoogleAuthOptions>; match: RegExp }[] = [
+    { options: { clientId: '' }, match: /clientId/ },
+    { options: { clientId: '   ' }, match: /clientId/ },
+    { options: { clientSecret: '' }, match: /clientSecret/ },
+    { options: { stateSecret: '' }, match: /stateSecret/ },
+    { options: { stateSecret: 'a'.repeat(31) }, match: /32/ },
+    { options: { allowedDomains: [] }, match: /allowedDomains/ },
+    { options: { allowedDomains: ['', '  '] }, match: /allowedDomains/ },
+    {
+      options: { callbackUrl: '/auth/google/callback' },
+      match: /callbackUrl/,
+    },
+    { options: { callbackUrl: 'ftp://cms.example/cb' }, match: /callbackUrl/ },
+    { options: { callbackUrl: 'https://cms.example/' }, match: /callbackUrl/ },
+    {
+      options: { callbackUrl: 'https://cms.example/auth/:id/callback' },
+      match: /callbackUrl/,
+    },
+  ]
+  for (const c of cases) {
+    assert.throws(
+      () => createGoogleAuthMiniApp(baseOptions(c.options)),
+      (err: unknown) => {
+        assert.ok(err instanceof Error)
+        assert.match(err.message, /^\[google-auth\] /)
+        assert.match(err.message, c.match)
+        return true
+      },
+      JSON.stringify(c.options)
+    )
+  }
+})
+
+test('accepts a valid option set', () => {
+  assert.doesNotThrow(() => createGoogleAuthMiniApp(baseOptions()))
+})
+
+test('state cookie is scoped to the callback path and marked Secure on https', async () => {
+  const { context } = fakeKeystone(null)
+  const app = express()
+  app.use(
+    createGoogleAuthMiniApp(baseOptions({ keystoneContext: context }), {
+      google: fakeGoogle({}).client,
+    })
+  )
+  const server: Server = await new Promise((resolve) => {
+    const s = app.listen(0, () => resolve(s))
+  })
+  const address = server.address()
+  const port = typeof address === 'object' && address ? address.port : 0
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/auth/google`, {
+      redirect: 'manual',
+    })
+    const setCookie = res.headers.get('set-cookie') ?? ''
+    assert.match(setCookie, /Path=\/auth\/google\/callback/)
+    assert.match(setCookie, /Secure/)
+    assert.equal(res.headers.get('cache-control'), 'no-store')
+  } finally {
+    await new Promise((resolve) => server.close(resolve))
+  }
+})
+
+test('state cookie is not Secure when the callback URL is http', async () => {
+  const { context } = fakeKeystone(null)
+  await withApp(
+    { keystoneContext: context },
+    fakeGoogle({}).client,
+    async (base) => {
+      const res = await fetch(`${base}/auth/google`, { redirect: 'manual' })
+      const setCookie = res.headers.get('set-cookie') ?? ''
+      assert.match(setCookie, /Path=\/auth\/google\/callback/)
+      assert.ok(!/Secure/.test(setCookie))
+    }
+  )
+})
+
+test('callback clears the state cookie and sends no-store on the domain failure', async () => {
+  const { context } = fakeKeystone({ id: 7 })
+  await withApp(
+    { keystoneContext: context },
+    fakeGoogle({ hd: 'gmail.com' }).client,
+    async (base) => {
+      const { cookie, state } = await startFlow(base)
+      const res = await fetch(
+        `${base}/auth/google/callback?code=c1&state=${state}`,
+        { redirect: 'manual', headers: { cookie } }
+      )
+      assert.equal(res.headers.get('location'), '/signin?error=domain')
+      assert.equal(res.headers.get('cache-control'), 'no-store')
+      const setCookies = res.headers.getSetCookie()
+      assert.ok(
+        setCookies.some(
+          (c) => c.startsWith(`${STATE_COOKIE_NAME}=;`) && /Max-Age=0/.test(c)
+        )
+      )
+    }
+  )
+})
+
+test('log event prefers x-forwarded-for, then x-real-ip, then the socket', async () => {
+  const cases: { headers: Record<string, string>; expected: string }[] = [
+    {
+      headers: {
+        'x-forwarded-for': '203.0.113.5, 70.41.3.18',
+        'x-real-ip': '198.51.100.7',
+      },
+      expected: '203.0.113.5',
+    },
+    { headers: { 'x-real-ip': '198.51.100.7' }, expected: '198.51.100.7' },
+    { headers: {}, expected: '127.0.0.1' },
+  ]
+  for (const c of cases) {
+    const { context } = fakeKeystone({ id: 7, email: 'a@mirrormedia.mg' })
+    await withApp(
+      { keystoneContext: context },
+      fakeGoogle({}).client,
+      async (base, events) => {
+        const { cookie, state } = await startFlow(base)
+        await fetch(`${base}/auth/google/callback?code=c1&state=${state}`, {
+          redirect: 'manual',
+          headers: { cookie, 'user-agent': 'test-agent', ...c.headers },
+        })
+        assert.equal(events[0].ipAddress, c.expected, JSON.stringify(c.headers))
+        assert.equal(events[0].userAgent, 'test-agent')
+      }
+    )
+  }
+})
+
+test('the HTTP guard honours a custom graphqlPath', async () => {
+  const { context } = fakeKeystone(null)
+  const app = express()
+  app.use(
+    createGoogleAuthMiniApp(
+      baseOptions({
+        keystoneContext: context,
+        passwordLoginEnabled: false,
+        graphqlPath: '/graphql',
+      }),
+      { google: fakeGoogle({}).client }
+    )
+  )
+  app.post('/graphql', express.json(), (_req, res) => res.json({ data: 'ok' }))
+  app.post('/api/graphql', express.json(), (_req, res) =>
+    res.json({ data: 'ok' })
+  )
+  const server: Server = await new Promise((resolve) => {
+    const s = app.listen(0, () => resolve(s))
+  })
+  const address = server.address()
+  const port = typeof address === 'object' && address ? address.port : 0
+  const post = (path: string) =>
+    fetch(`http://127.0.0.1:${port}${path}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: PASSWORD_MUTATION }),
+    })
+  try {
+    assert.equal((await post('/graphql')).status, 403)
+    // The default path is no longer guarded once graphqlPath is overridden.
+    assert.equal((await post('/api/graphql')).status, 200)
+  } finally {
+    await new Promise((resolve) => server.close(resolve))
+  }
+})
+
+/**
+ * Reproduces Keystone core's middleware order: extendExpressApp (and therefore
+ * this mini-app's HTTP guard) runs first, `graphqlUploadExpress` afterwards.
+ * `blockAtApollo` stands in for createPasswordLoginBlockPlugin().
+ */
+async function withUploadStack(
+  blockAtApollo: boolean,
+  fn: (base: string) => Promise<void>
+) {
+  const { context } = fakeKeystone(null)
+  const app = express()
+  app.use(
+    createGoogleAuthMiniApp(
+      baseOptions({ keystoneContext: context, passwordLoginEnabled: false }),
+      { google: fakeGoogle({}).client }
+    )
+  )
+  app.use(graphqlUploadExpress())
+  app.post('/api/graphql', (req, res) => {
+    const query = (req.body as { query?: unknown } | undefined)?.query
+    if (
+      blockAtApollo &&
+      typeof query === 'string' &&
+      documentSelectsPasswordLogin(parse(query))
+    ) {
+      res.status(403).json({
+        errors: [{ extensions: { code: 'PASSWORD_LOGIN_DISABLED' } }],
+      })
+      return
+    }
+    res.json({ data: 'ok' })
+  })
+  const server: Server = await new Promise((resolve) => {
+    const s = app.listen(0, () => resolve(s))
+  })
+  const address = server.address()
+  const port = typeof address === 'object' && address ? address.port : 0
+  try {
+    await fn(`http://127.0.0.1:${port}`)
+  } finally {
+    await new Promise((resolve) => server.close(resolve))
+  }
+}
+
+function multipart(query: string): FormData {
+  const form = new FormData()
+  form.append('operations', JSON.stringify({ query, variables: {} }))
+  form.append('map', '{}')
+  return form
+}
+
+test('the HTTP guard alone cannot see a multipart password mutation', async () => {
+  await withUploadStack(false, async (base) => {
+    const json = await fetch(`${base}/api/graphql`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: PASSWORD_MUTATION }),
+    })
+    assert.equal(json.status, 403)
+    const bypass = await fetch(`${base}/api/graphql`, {
+      method: 'POST',
+      body: multipart(PASSWORD_MUTATION),
+    })
+    // graphql-upload refills req.body after the guard has already passed it.
+    assert.equal(bypass.status, 200)
+  })
+})
+
+test('the document check closes the multipart bypass', async () => {
+  await withUploadStack(true, async (base) => {
+    const json = await fetch(`${base}/api/graphql`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: PASSWORD_MUTATION }),
+    })
+    assert.equal(json.status, 403)
+
+    const blocked = await fetch(`${base}/api/graphql`, {
+      method: 'POST',
+      body: multipart(PASSWORD_MUTATION),
+    })
+    assert.equal(blocked.status, 403)
+    const body = (await blocked.json()) as {
+      errors: { extensions: { code: string } }[]
+    }
+    assert.equal(body.errors[0].extensions.code, 'PASSWORD_LOGIN_DISABLED')
+
+    const harmless = await fetch(`${base}/api/graphql`, {
+      method: 'POST',
+      body: multipart('mutation { createInitialUser(data:{}){__typename} }'),
+    })
+    assert.equal(harmless.status, 200)
+  })
 })

@@ -21,3 +21,10 @@ test('rejects absolute and protocol-relative URLs', () => {
 test('rejects CR/LF injection', () => {
   assert.equal(sanitizeRedirectPath('/ok\r\nSet-Cookie: a=b'), '/')
 })
+
+test('rejects any other C0 control character or DEL', () => {
+  assert.equal(sanitizeRedirectPath('/ok\tbad'), '/')
+  assert.equal(sanitizeRedirectPath('/ok\u0000bad'), '/')
+  assert.equal(sanitizeRedirectPath('/ok\u001fbad'), '/')
+  assert.equal(sanitizeRedirectPath('/ok\u007fbad'), '/')
+})
