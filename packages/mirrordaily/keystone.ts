@@ -8,6 +8,7 @@ import { statelessSessions } from '@keystone-6/core/session'
 import { createPreviewMiniApp } from './express-mini-apps/preview/app'
 import { createDashboardMiniApp } from './express-mini-apps/dashboard/app'
 import { createPostLockMiniApp } from './express-mini-apps/post-lock'
+import { createGoogleAuthMiniApp } from '@mirrormedia/lilith-google-auth'
 import Keyv from 'keyv'
 import { KeyvAdapter } from '@apollo/utils.keyvadapter'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
@@ -118,6 +119,25 @@ export default withAuth(
 
         const jsonBodyParser = express.json({ limit: '500mb' })
         app.use(jsonBodyParser)
+
+        // Google Workspace sign-in. Mounted only when GOOGLE_AUTH_CLIENT_ID is
+        // set; it must sit before the Admin UI so it can serve /signin.
+        if (envVar.googleAuth.isEnabled) {
+          app.use(
+            createGoogleAuthMiniApp({
+              // Keystone's generated context is structurally compatible with
+              // the package's narrow interface.
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              keystoneContext: context as any,
+              clientId: envVar.googleAuth.clientId,
+              clientSecret: envVar.googleAuth.clientSecret,
+              callbackUrl: envVar.googleAuth.callbackUrl,
+              allowedDomains: envVar.googleAuth.allowedDomains,
+              passwordLoginEnabled: envVar.googleAuth.passwordLoginEnabled,
+              stateSecret: envVar.session.secret,
+            })
+          )
+        }
 
         // Apply X-Robots-Tag header to all Keystone backend responses
         app.use((_, res, next) => {
