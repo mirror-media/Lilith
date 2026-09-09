@@ -120,8 +120,16 @@ export default withAuth(
         const jsonBodyParser = express.json({ limit: '500mb' })
         app.use(jsonBodyParser)
 
+        // Apply X-Robots-Tag header to all Keystone backend responses
+        app.use((_, res, next) => {
+          res.set('X-Robots-Tag', 'noindex, nofollow, noimageindex')
+          next()
+        })
+
         // Google Workspace sign-in. Mounted only when GOOGLE_AUTH_CLIENT_ID is
-        // set; it must sit before the Admin UI so it can serve /signin.
+        // set. It sits after the X-Robots-Tag middleware so its pages carry
+        // the header, and before the other mini-apps and the Admin UI so it
+        // can serve /signin.
         if (envVar.googleAuth.isEnabled) {
           app.use(
             createGoogleAuthMiniApp({
@@ -138,12 +146,6 @@ export default withAuth(
             })
           )
         }
-
-        // Apply X-Robots-Tag header to all Keystone backend responses
-        app.use((_, res, next) => {
-          res.set('X-Robots-Tag', 'noindex, nofollow, noimageindex')
-          next()
-        })
 
         // Post lock heartbeat & release endpoints (available in all modes)
         app.use(
