@@ -774,3 +774,79 @@ test('the document check closes the multipart bypass', async () => {
     assert.equal(harmless.status, 200)
   })
 })
+
+const ROBOTS = 'noindex, nofollow, noimageindex'
+
+test('the mini-app sets X-Robots-Tag on the pages it serves itself', async () => {
+  const { context } = fakeKeystone(null)
+  await withApp(
+    { keystoneContext: context },
+    fakeGoogle({}).client,
+    async (base) => {
+      const signin = await fetch(`${base}/signin`)
+      assert.equal(signin.headers.get('x-robots-tag'), ROBOTS)
+
+      const auth = await fetch(`${base}/auth/google`, { redirect: 'manual' })
+      assert.equal(auth.headers.get('x-robots-tag'), ROBOTS)
+
+      // The host owns /signin?password=1, so the mini-app must not stamp it.
+      const passthrough = await fetch(`${base}/signin?password=1`)
+      assert.equal(await passthrough.text(), 'KEYSTONE_SIGNIN')
+      assert.equal(passthrough.headers.get('x-robots-tag'), null)
+    }
+  )
+})
+
+test('the callback carries X-Robots-Tag on success and on failure', async () => {
+  const { context } = fakeKeystone({
+    id: 7,
+    email: 'a@mirrormedia.mg',
+    name: 'A',
+    role: 'editor',
+  })
+  await withApp(
+    { keystoneContext: context },
+    fakeGoogle({}).client,
+    async (base) => {
+      const { cookie, state } = await startFlow(base)
+      const ok = await fetch(
+        `${base}/auth/google/callback?code=c1&state=${state}`,
+        { redirect: 'manual', headers: { cookie } }
+      )
+      assert.equal(ok.headers.get('location'), '/posts')
+      assert.equal(ok.headers.get('x-robots-tag'), ROBOTS)
+    }
+  )
+
+  const { context: rejecting } = fakeKeystone({ id: 7 })
+  await withApp(
+    { keystoneContext: rejecting },
+    fakeGoogle({ hd: 'gmail.com' }).client,
+    async (base) => {
+      const { cookie, state } = await startFlow(base)
+      const failed = await fetch(
+        `${base}/auth/google/callback?code=c1&state=${state}`,
+        { redirect: 'manual', headers: { cookie } }
+      )
+      assert.equal(failed.headers.get('location'), '/signin?error=domain')
+      assert.equal(failed.headers.get('x-robots-tag'), ROBOTS)
+    }
+  )
+})
+
+test('the password guard response carries no X-Robots-Tag', async () => {
+  const { context } = fakeKeystone(null)
+  await withApp(
+    { keystoneContext: context, passwordLoginEnabled: false },
+    fakeGoogle({}).client,
+    async (base) => {
+      const blocked = await fetch(`${base}/api/graphql`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ query: PASSWORD_MUTATION }),
+      })
+      assert.equal(blocked.status, 403)
+      assert.equal(blocked.headers.get('x-robots-tag'), null)
+    }
+  )
+})

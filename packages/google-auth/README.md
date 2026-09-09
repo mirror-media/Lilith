@@ -10,6 +10,37 @@ No dependency on `@keystone-6/core`: Keystone is typed structurally, so any pack
 
 ## Usage
 
+`withGoogleAuth` is the recommended integration: one wrapper around the exported config.
+
+```ts
+import { withGoogleAuth } from '@mirrormedia/lilith-google-auth'
+
+export default withGoogleAuth(
+  withAuth(
+    config({
+      /* unchanged */
+    })
+  ),
+  { ...envVar.googleAuth, stateSecret: envVar.session.secret }
+)
+```
+
+What it does:
+
+- `options.isEnabled === false` returns the same `config` object, untouched. An env block whose `isEnabled` is derived from `GOOGLE_AUTH_CLIENT_ID` therefore turns the feature off without a conditional at the call site.
+- Otherwise it rebuilds `server.extendExpressApp` so the mini-app is mounted **first**, then awaits the host's original hook. Mounting first is what lets `/signin` be answered before Keystone's Admin UI middleware claims it.
+- With `passwordLoginEnabled: false` it also prepends `createPasswordLoginBlockPlugin()` to `graphql.apolloConfig.plugins`, preserving every other `graphql` and `apolloConfig` key (`cache`, existing plugins, ...). With password login enabled, `graphql` is left exactly as it was.
+
+`WithGoogleAuthOptions` is `GoogleAuthOptions` without `keystoneContext` (the wrapper passes `extendExpressApp`'s own `context`) plus the optional `isEnabled`. The Keystone config is typed structurally (`KeystoneConfigLike`), so the wrapper still imports nothing from `@keystone-6/core` and returns the config type it was given.
+
+Because the mini-app runs before the host's middleware, it sets `X-Robots-Tag: noindex, nofollow, noimageindex` on the pages it serves itself (`/signin`, `/auth/google`, and the callback, on every outcome) instead of relying on a host-side header middleware. Requests it passes through are left to the host.
+
+The mini-app is constructed when Keystone calls `extendExpressApp`, and throws there (prefix `[google-auth]`) when the options cannot produce a working flow: an empty `clientId`, `clientSecret` or `stateSecret`, a `stateSecret` shorter than 32 characters, an empty `allowedDomains`, or a `callbackUrl` that is not an absolute http(s) URL whose path is usable as an Express route.
+
+### Low-level API
+
+`createGoogleAuthMiniApp` and `createPasswordLoginBlockPlugin` stay exported for hosts that need to control the mount point themselves. Both edits are required; the wrapper exists so they cannot drift apart.
+
 ```ts
 import {
   createGoogleAuthMiniApp,
@@ -17,7 +48,7 @@ import {
 } from '@mirrormedia/lilith-google-auth'
 import type { KeystoneContext } from '@mirrormedia/lilith-google-auth'
 
-// inside config.server.extendExpressApp(app, context), after the JSON body parser:
+// inside config.server.extendExpressApp(app, context):
 if (envVar.googleAuth.isEnabled) {
   app.use(
     createGoogleAuthMiniApp({
@@ -35,13 +66,13 @@ if (envVar.googleAuth.isEnabled) {
 }
 ```
 
-`createGoogleAuthMiniApp` throws at construction (prefix `[google-auth]`) when the options cannot produce a working flow: an empty `clientId`, `clientSecret` or `stateSecret`, a `stateSecret` shorter than 32 characters, an empty `allowedDomains`, or a `callbackUrl` that is not an absolute http(s) URL whose path is usable as an Express route.
+Mounting it after the host's own `X-Robots-Tag` middleware is harmless: the mini-app overwrites the header with the same value.
 
 ## Options
 
 | Option                  | Required | Default                            | Meaning                                                                                                                                                |
 | ----------------------- | -------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `keystoneContext`       | yes      |                                    | Keystone's context, cast to the package's `KeystoneContext`.                                                                                           |
+| `keystoneContext`       | yes      |                                    | Keystone's context, cast to the package's `KeystoneContext`. Supplied by `withGoogleAuth`.                                                             |
 | `clientId`              | yes      |                                    | OAuth 2.0 Web client ID.                                                                                                                               |
 | `clientSecret`          | yes      |                                    | OAuth 2.0 client secret.                                                                                                                               |
 | `callbackUrl`           | yes      |                                    | Absolute http(s) URL of the callback. Its path becomes the callback route and the state cookie's `Path`; `https` also makes the state cookie `Secure`. |
@@ -51,13 +82,16 @@ if (envVar.googleAuth.isEnabled) {
 | `graphqlPath`           | no       | `/api/graphql`                     | Where the HTTP guard is mounted. Must equal the host's `config.graphql.path`.                                                                          |
 | `signinRedirectDefault` | no       | `/`                                | Where to send the user after login when no `from` is present.                                                                                          |
 | `logger`                | no       | `console.log('[登入日誌]', event)` | Receives a `GoogleAuthLogEvent`. A throwing logger never blocks the redirect.                                                                          |
+| `isEnabled`             | no       | `true`                             | `withGoogleAuth` only. `false` returns the host config untouched.                                                                                      |
 
 ## Password-login kill switch: two layers
 
 Turning `passwordLoginEnabled` off needs **both** layers. Registering only one leaves the mutation reachable.
 
 1. **HTTP guard** (automatic). The mini-app mounts an Express guard on `graphqlPath` that answers 403 to any JSON body selecting `authenticateUserWithPassword`.
-2. **Apollo plugin** (the consumer must add it). Keystone core mounts `graphqlUploadExpress` _after_ `extendExpressApp`, so a multipart request reaches the guard with `req.body` still `{}` and passes; `graphql-upload` then fills `req.body` from the `operations` field and Apollo executes the mutation. `createPasswordLoginBlockPlugin()` inspects the parsed `DocumentNode` inside Apollo, after that rewrite, and is therefore immune:
+2. **Apollo plugin** (automatic with `withGoogleAuth`; a low-level host must add it). Keystone core mounts `graphqlUploadExpress` _after_ `extendExpressApp`, so a multipart request reaches the guard with `req.body` still `{}` and passes; `graphql-upload` then fills `req.body` from the `operations` field and Apollo executes the mutation. `createPasswordLoginBlockPlugin()` inspects the parsed `DocumentNode` inside Apollo, after that rewrite, and is therefore immune:
+
+`withGoogleAuth` registers this plugin for you. A low-level host does it by hand:
 
 ```ts
 import { createPasswordLoginBlockPlugin } from '@mirrormedia/lilith-google-auth'

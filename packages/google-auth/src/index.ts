@@ -16,3 +16,8 @@ export type {
   KeystoneSessionStrategy,
 } from './types'
 export type { GoogleClient, GoogleIdentity } from './google'
+export { withGoogleAuth } from './with-google-auth'
+export type {
+  KeystoneConfigLike,
+  WithGoogleAuthOptions,
+} from './with-google-auth'

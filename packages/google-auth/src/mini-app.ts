@@ -28,6 +28,14 @@ export type GoogleAuthDependencies = {
 /** Express path syntax that would silently turn callbackPath into a pattern. */
 const PATH_PATTERN_CHARS = /[:()*?+]/
 
+/**
+ * The mini-app is mounted before the host's own middleware (see
+ * withGoogleAuth), so it cannot inherit a host X-Robots-Tag middleware and
+ * stamps its own pages instead. Pass-through and guard responses are left
+ * alone: those belong to the host.
+ */
+const ROBOTS_TAG = 'noindex, nofollow, noimageindex'
+
 function fail(reason: string): never {
   throw new Error(`[google-auth] ${reason}`)
 }
@@ -106,6 +114,7 @@ export function createGoogleAuthMiniApp(
       .status(200)
       .type('html')
       .set('Cache-Control', 'no-store')
+      .set('X-Robots-Tag', ROBOTS_TAG)
       .send(renderSigninPage({ passwordLoginEnabled, from, error }))
   })
 
@@ -113,6 +122,7 @@ export function createGoogleAuthMiniApp(
     const from = sanitizeRedirectPath(req.query.from, redirectDefault)
     const state = createAuthState(from)
     res.setHeader('Cache-Control', 'no-store')
+    res.setHeader('X-Robots-Tag', ROBOTS_TAG)
     res.setHeader(
       'Set-Cookie',
       serializeCookie(
@@ -139,6 +149,7 @@ export function createGoogleAuthMiniApp(
 
   router.get(callbackPath, async (req, res) => {
     res.setHeader('Cache-Control', 'no-store')
+    res.setHeader('X-Robots-Tag', ROBOTS_TAG)
     const clearState = serializeCookie(STATE_COOKIE_NAME, '', {
       httpOnly: true,
       secure: secureCookie,
