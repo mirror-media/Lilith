@@ -143,6 +143,21 @@ function cookieHeader(res: Response): string {
   return raw.split(';')[0]
 }
 
+/** Temporarily records console output; caller restores it in a finally block. */
+function captureConsole(method: 'log' | 'error') {
+  const calls: unknown[][] = []
+  const original = console[method]
+  console[method] = (...args: unknown[]) => {
+    calls.push(args)
+  }
+  return {
+    calls,
+    restore: () => {
+      console[method] = original
+    },
+  }
+}
+
 test('GET /signin serves the custom page and passes through with ?password=1', async () => {
   const { context } = fakeKeystone(null)
   await withApp(
@@ -435,64 +450,126 @@ test('callback with a Google error param goes back to signin', async () => {
 
 test('callback fails closed to session when the user lookup throws', async () => {
   const { context, started } = fakeKeystoneThrowing()
-  await withApp(
-    { keystoneContext: context },
-    fakeGoogle({}).client,
-    async (base, events) => {
-      const { cookie, state } = await startFlow(base)
-      const res = await fetch(
-        `${base}/auth/google/callback?code=c1&state=${state}`,
-        {
-          redirect: 'manual',
-          headers: { cookie },
-        }
-      )
-      assert.equal(res.status, 302)
-      assert.equal(res.headers.get('location'), '/signin?error=session')
-      const setCookies = res.headers.getSetCookie()
-      assert.ok(!setCookies.some((c) => c.startsWith('keystonejs-session=')))
-      assert.ok(
-        setCookies.some(
-          (c) => c.startsWith(`${STATE_COOKIE_NAME}=;`) && /Max-Age=0/.test(c)
+  const capture = captureConsole('error')
+  try {
+    await withApp(
+      { keystoneContext: context },
+      fakeGoogle({}).client,
+      async (base, events) => {
+        const { cookie, state } = await startFlow(base)
+        const res = await fetch(
+          `${base}/auth/google/callback?code=c1&state=${state}`,
+          {
+            redirect: 'manual',
+            headers: { cookie },
+          }
         )
-      )
-      assert.equal(started.length, 0)
-      assert.equal(events.length, 1)
-      assert.equal(events[0].outcome, 'failure')
-      assert.equal(events[0].reason, 'session')
-    }
-  )
+        assert.equal(res.status, 302)
+        assert.equal(res.headers.get('location'), '/signin?error=session')
+        const setCookies = res.headers.getSetCookie()
+        assert.ok(!setCookies.some((c) => c.startsWith('keystonejs-session=')))
+        assert.ok(
+          setCookies.some(
+            (c) => c.startsWith(`${STATE_COOKIE_NAME}=;`) && /Max-Age=0/.test(c)
+          )
+        )
+        assert.equal(started.length, 0)
+        assert.equal(events.length, 1)
+        assert.equal(events[0].outcome, 'failure')
+        assert.equal(events[0].reason, 'session')
+      }
+    )
+    // The catch-all logs the raw error as one JSON line instead of the
+    // default multi-line stack trace.
+    assert.equal(capture.calls.length, 1)
+    assert.equal(capture.calls[0].length, 1)
+    const entry = JSON.parse(capture.calls[0][0] as string)
+    assert.equal(entry.severity, 'ERROR')
+    assert.equal(entry.type, 'google-login')
+    assert.equal(entry.stage, 'callback')
+  } finally {
+    capture.restore()
+  }
 })
 
 test('callback still redirects and clears the state cookie when the logger throws', async () => {
   const { context } = fakeKeystone({ id: 7 })
-  await withApp(
-    {
-      keystoneContext: context,
-      logger: () => {
-        throw new Error('logger boom')
+  const capture = captureConsole('error')
+  try {
+    await withApp(
+      {
+        keystoneContext: context,
+        logger: () => {
+          throw new Error('logger boom')
+        },
       },
-    },
-    fakeGoogle({}).client,
-    async (base) => {
-      const { cookie } = await startFlow(base)
-      const res = await fetch(
-        `${base}/auth/google/callback?code=c1&state=wrong`,
-        {
-          redirect: 'manual',
-          headers: { cookie },
-        }
-      )
-      assert.equal(res.status, 302)
-      assert.equal(res.headers.get('location'), '/signin?error=state')
-      const setCookies = res.headers.getSetCookie()
-      assert.ok(
-        setCookies.some(
-          (c) => c.startsWith(`${STATE_COOKIE_NAME}=;`) && /Max-Age=0/.test(c)
+      fakeGoogle({}).client,
+      async (base) => {
+        const { cookie } = await startFlow(base)
+        const res = await fetch(
+          `${base}/auth/google/callback?code=c1&state=wrong`,
+          {
+            redirect: 'manual',
+            headers: { cookie },
+          }
         )
-      )
-    }
-  )
+        assert.equal(res.status, 302)
+        assert.equal(res.headers.get('location'), '/signin?error=state')
+        const setCookies = res.headers.getSetCookie()
+        assert.ok(
+          setCookies.some(
+            (c) => c.startsWith(`${STATE_COOKIE_NAME}=;`) && /Max-Age=0/.test(c)
+          )
+        )
+      }
+    )
+    // safeLog's catch logs the logger's own throw as one JSON line instead
+    // of the default multi-line stack trace.
+    assert.equal(capture.calls.length, 1)
+    assert.equal(capture.calls[0].length, 1)
+    const entry = JSON.parse(capture.calls[0][0] as string)
+    assert.equal(entry.severity, 'ERROR')
+    assert.equal(entry.type, 'google-login')
+    assert.equal(entry.stage, 'logger')
+  } finally {
+    capture.restore()
+  }
+})
+
+test('callback with no custom logger emits a single-line JSON entry on success', async () => {
+  const { context } = fakeKeystone({
+    id: 7,
+    email: 'a@mirrormedia.mg',
+    name: 'A',
+    role: 'editor',
+  })
+  const capture = captureConsole('log')
+  try {
+    await withApp(
+      { keystoneContext: context, logger: undefined },
+      fakeGoogle({}).client,
+      async (base) => {
+        const { cookie, state } = await startFlow(base)
+        const res = await fetch(
+          `${base}/auth/google/callback?code=c1&state=${state}`,
+          {
+            redirect: 'manual',
+            headers: { cookie },
+          }
+        )
+        assert.equal(res.status, 302)
+        assert.equal(res.headers.get('location'), '/posts')
+      }
+    )
+    assert.equal(capture.calls.length, 1)
+    assert.equal(capture.calls[0].length, 1)
+    const entry = JSON.parse(capture.calls[0][0] as string)
+    assert.equal(entry.severity, 'INFO')
+    assert.equal(entry.type, 'google-login')
+    assert.equal(entry.userId, '7')
+  } finally {
+    capture.restore()
+  }
 })
 
 const PASSWORD_MUTATION =

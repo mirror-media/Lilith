@@ -3,6 +3,7 @@ import type { Request, Response } from 'express'
 import { parse as parseCookies, serialize as serializeCookie } from 'cookie'
 import { createGoogleClient } from './google'
 import type { GoogleClient, GoogleIdentity } from './google'
+import { emitLogEntry, formatErrorEntry, formatLogEntry } from './log'
 import { createPasswordLoginGuard } from './password-guard'
 import { sanitizeRedirectPath } from './redirect'
 import { signInByEmail } from './session'
@@ -163,7 +164,9 @@ export function createGoogleAuthMiniApp(
       try {
         log(event)
       } catch (err) {
-        console.error('[google-auth] logger threw, ignoring', err)
+        emitLogEntry(
+          formatErrorEntry(err, { type: 'google-login', stage: 'logger' })
+        )
       }
     }
     const failWith = (reason: GoogleAuthErrorCode, email: string | null) => {
@@ -233,7 +236,13 @@ export function createGoogleAuthMiniApp(
       appendSetCookie(res, clearState)
       res.redirect(302, sanitizeRedirectPath(state.from, redirectDefault))
     } catch (err) {
-      console.error('[google-auth] unexpected error in OAuth callback', err)
+      emitLogEntry(
+        formatErrorEntry(err, {
+          type: 'google-login',
+          stage: 'callback',
+          email,
+        })
+      )
       return failWith('session', email)
     }
   })
@@ -285,6 +294,6 @@ function buildEvent(
 }
 
 function defaultLogger(event: GoogleAuthLogEvent) {
-  // Same prefix as lilith-core's login-logging plugin so log queries match.
-  console.log('[登入日誌]', event)
+  // Same field names as lilith-core's login-logging plugin so log queries match.
+  emitLogEntry(formatLogEntry(event))
 }

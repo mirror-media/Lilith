@@ -83,7 +83,7 @@ Mounting it after the host's own `X-Robots-Tag` middleware is harmless: the mini
 | `passwordLoginEnabled`  | no       | `true`                             | `false` hides the password page and turns on the kill switch.                                                                                          |
 | `graphqlPath`           | no       | `/api/graphql`                     | Where the HTTP guard is mounted. Must equal the host's `config.graphql.path`.                                                                          |
 | `signinRedirectDefault` | no       | `/`                                | Where to send the user after login when no `from` is present.                                                                                          |
-| `logger`                | no       | `console.log('[登入日誌]', event)` | Receives a `GoogleAuthLogEvent`. A throwing logger never blocks the redirect.                                                                          |
+| `logger`                | no       | single-line JSON to stdout/stderr  | Receives a `GoogleAuthLogEvent`. A throwing logger never blocks the redirect. See [Log events](#log-events).                                           |
 | `isEnabled`             | no       | `true`                             | `withGoogleAuth` only. `false` returns the host config untouched.                                                                                      |
 
 ## Password-login kill switch: two layers
@@ -160,7 +160,7 @@ The callback looks the `User` row up by the Google account's email, lower-cased.
 
 ## Log events
 
-The default logger prints `[登入日誌]` with the same field names as `@mirrormedia/lilith-core`'s login-logging plugin, so one log query covers password and Google logins:
+The `GoogleAuthLogEvent` field names match `@mirrormedia/lilith-core`'s login-logging plugin, so one log query covers password and Google logins:
 
 ```ts
 type GoogleAuthLogEvent = {
@@ -178,6 +178,46 @@ type GoogleAuthLogEvent = {
 ```
 
 `::1` and `::ffff:127.0.0.1` are normalised to `127.0.0.1`.
+
+### Structured JSON output
+
+The default logger, and the two places an unexpected error is logged (the callback's catch-all, and a caller-supplied `logger` that throws), all print a single-line JSON object with a `severity` field, so Cloud Logging parses `jsonPayload` instead of a multi-line `textPayload`, and an `ERROR` entry (whose `message` is the stack trace) is picked up by Error Reporting. No dependency on `@twreporter/errors`; the shape is a hand-rolled envelope shared with the equivalent change in `@mirrormedia/lilith-core`.
+
+```ts
+type LogEntry = {
+  severity: 'INFO' | 'WARNING' | 'ERROR'
+  message: string
+} & Record<string, unknown>
+```
+
+Severity mapping:
+
+- `outcome: 'success'` → `severity: 'INFO'`, `message: 'google-login success'`, every `GoogleAuthLogEvent` field top-level (no nesting).
+- `outcome: 'failure'` → `severity: 'WARNING'`, `message: 'google-login failure: <reason>'`, every `GoogleAuthLogEvent` field top-level.
+- An unexpected throw (callback catch-all, or a `logger` that throws) → `severity: 'ERROR'`, `message` is the `Error`'s stack trace (or `String(err)` for a non-`Error`), plus `type: 'google-login'`, `stage: 'callback' | 'logger'`, `email`, `timestamp`.
+
+`formatLogEntry` and the `LogEntry` type are exported for a caller that wants the same envelope from a custom `logger`:
+
+```ts
+import { formatLogEntry } from '@mirrormedia/lilith-google-auth'
+import type { LogEntry } from '@mirrormedia/lilith-google-auth'
+
+const logger = (event: GoogleAuthLogEvent) => {
+  const entry: LogEntry = formatLogEntry(event)
+  const line = JSON.stringify(entry)
+  entry.severity === 'ERROR' ? console.error(line) : console.log(line)
+}
+```
+
+Example Logs Explorer query, scoped to failed and errored Google logins in a given service:
+
+```
+resource.type="cloud_run_revision"
+jsonPayload.type="google-login"
+severity>=WARNING
+```
+
+Add `jsonPayload.stage="callback"` to isolate unexpected errors raised during the OAuth callback, or `severity="ERROR"` to see only entries Error Reporting also tracks.
 
 ## Google Cloud setup
 

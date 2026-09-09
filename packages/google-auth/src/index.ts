@@ -1,5 +1,7 @@
 export { createGoogleAuthMiniApp } from './mini-app'
 export type { GoogleAuthDependencies } from './mini-app'
+export { formatLogEntry } from './log'
+export type { LogEntry } from './log'
 export {
   PASSWORD_MUTATION_FIELD,
   createPasswordLoginBlockPlugin,
