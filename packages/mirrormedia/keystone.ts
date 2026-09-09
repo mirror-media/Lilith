@@ -12,6 +12,7 @@ import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheContr
 import responseCachePlugin from '@apollo/server-plugin-response-cache'
 import { GraphQLConfig } from '@keystone-6/core/types'
 import { utils } from '@mirrormedia/lilith-core'
+import { withGoogleAuth } from '@mirrormedia/lilith-google-auth'
 
 // 获取 createLoginLoggingPlugin 函数（兼容新旧版本）
 const createLoginLoggingPlugin =
@@ -68,7 +69,7 @@ const graphqlConfig: GraphQLConfig = {
   } as any,
 } as GraphQLConfig
 
-export default withAuth(
+const keystoneConfig = withAuth(
   config({
     db: {
       provider: envVar.database.provider,
@@ -212,3 +213,12 @@ export default withAuth(
     },
   })
 )
+
+// Google Workspace sign-in. withGoogleAuth mounts the mini-app at the head
+// of server.extendExpressApp and, when the password kill switch is on, adds
+// the Apollo plugin that blocks the password mutation. isEnabled comes from
+// envVar.googleAuth: a blank GOOGLE_AUTH_CLIENT_ID returns the config as is.
+export default withGoogleAuth(keystoneConfig, {
+  ...envVar.googleAuth,
+  stateSecret: envVar.session.secret,
+})

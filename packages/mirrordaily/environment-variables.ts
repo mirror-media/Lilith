@@ -38,6 +38,11 @@ const {
   IMAGE_PROCESSOR_URL,
   SCHEDULER_KEY,
   IMAGE_COPY_ON_UPLOAD_ENABLED,
+  GOOGLE_AUTH_CLIENT_ID,
+  GOOGLE_AUTH_CLIENT_SECRET,
+  GOOGLE_AUTH_CALLBACK_URL,
+  GOOGLE_AUTH_ALLOWED_DOMAINS,
+  GOOGLE_AUTH_PASSWORD_LOGIN_ENABLED,
 } = process.env
 
 enum DatabaseProvider {
@@ -77,6 +82,21 @@ export default {
     maxAge:
       (typeof SESSION_MAX_AGE === 'string' && parseInt(SESSION_MAX_AGE)) ||
       60 * 60 * 24 * 1, // 1 days
+  },
+  googleAuth: {
+    // A blank value must read as "not configured": the mini-app throws on an
+    // empty clientId, which would otherwise take the whole CMS down at boot.
+    isEnabled: !!GOOGLE_AUTH_CLIENT_ID?.trim(),
+    clientId: GOOGLE_AUTH_CLIENT_ID?.trim() || '',
+    clientSecret: GOOGLE_AUTH_CLIENT_SECRET || '',
+    callbackUrl:
+      GOOGLE_AUTH_CALLBACK_URL || 'http://localhost:3003/auth/google/callback',
+    allowedDomains: (GOOGLE_AUTH_ALLOWED_DOMAINS || '')
+      .split(',')
+      .map((d) => d.trim())
+      .filter(Boolean),
+    passwordLoginEnabled:
+      GOOGLE_AUTH_PASSWORD_LOGIN_ENABLED?.toLowerCase() !== 'false',
   },
   gcs: {
     bucket: GCS_BUCKET || 'static-vision-tw-dev',

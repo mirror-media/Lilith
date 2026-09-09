@@ -1,0 +1,46 @@
+{
+  "name": "@mirrormedia/lilith-google-auth",
+  "version": "0.1.0",
+  "description": "Google Workspace sign-in mini-app for Lilith Keystone CMS packages",
+  "main": "lib/index.js",
+  "types": "@types/index.d.ts",
+  "scripts": {
+    "build": "make build",
+    "clean": "make clean",
+    "test": "tsx --test 'src/**/*.test.ts'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mirror-media/Lilith.git",
+    "directory": "packages/google-auth"
+  },
+  "keywords": [
+    "Google Workspace",
+    "OAuth",
+    "KeystoneJS",
+    "Keystone 6",
+    "CMS"
+  ],
+  "license": "MIT",
+  "files": [
+    "lib",
+    "@types"
+  ],
+  "dependencies": {
+    "@types/express": "^4.17.14",
+    "cookie": "^0.5.0",
+    "google-auth-library": "^10.5.0"
+  },
+  "peerDependencies": {
+    "express": "^4.17.1",
+    "graphql": "^16"
+  },
+  "devDependencies": {
+    "@types/cookie": "^0.5.1",
+    "express": "^4.17.1",
+    "graphql": "^16.12.0",
+    "graphql-upload": "^15.0.2",
+    "tsx": "^4.23.13",
+    "typescript": "^4.7.4"
+  }
+}
