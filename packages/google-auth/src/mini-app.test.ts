@@ -64,6 +64,37 @@ function fakeKeystone(user: Record<string, unknown> | null) {
   return { context, started }
 }
 
+/** A Keystone context whose User lookup throws, e.g. a DB/Prisma failure. */
+function fakeKeystoneThrowing() {
+  const started: unknown[] = []
+  const context: KeystoneContext = {
+    sudo: () => ({
+      query: {
+        User: {
+          findOne: async () => {
+            throw new Error('db unavailable')
+          },
+        },
+      },
+    }),
+    async withRequest(_req, res) {
+      return {
+        sessionStrategy: {
+          async start(args) {
+            started.push(args.data)
+            res.setHeader(
+              'Set-Cookie',
+              'keystonejs-session=sealed; Path=/; HttpOnly'
+            )
+            return 'sealed'
+          },
+        },
+      }
+    },
+  }
+  return { context, started }
+}
+
 async function withApp(
   options: Partial<GoogleAuthOptions> & { keystoneContext: KeystoneContext },
   google: GoogleClient,
@@ -385,6 +416,68 @@ test('callback with a Google error param goes back to signin', async () => {
         }
       )
       assert.equal(res.headers.get('location'), '/signin?error=token')
+    }
+  )
+})
+
+test('callback fails closed to session when the user lookup throws', async () => {
+  const { context, started } = fakeKeystoneThrowing()
+  await withApp(
+    { keystoneContext: context },
+    fakeGoogle({}).client,
+    async (base, events) => {
+      const { cookie, state } = await startFlow(base)
+      const res = await fetch(
+        `${base}/auth/google/callback?code=c1&state=${state}`,
+        {
+          redirect: 'manual',
+          headers: { cookie },
+        }
+      )
+      assert.equal(res.status, 302)
+      assert.equal(res.headers.get('location'), '/signin?error=session')
+      const setCookies = res.headers.getSetCookie()
+      assert.ok(!setCookies.some((c) => c.startsWith('keystonejs-session=')))
+      assert.ok(
+        setCookies.some(
+          (c) => c.startsWith(`${STATE_COOKIE_NAME}=;`) && /Max-Age=0/.test(c)
+        )
+      )
+      assert.equal(started.length, 0)
+      assert.equal(events.length, 1)
+      assert.equal(events[0].outcome, 'failure')
+      assert.equal(events[0].reason, 'session')
+    }
+  )
+})
+
+test('callback still redirects and clears the state cookie when the logger throws', async () => {
+  const { context } = fakeKeystone({ id: 7 })
+  await withApp(
+    {
+      keystoneContext: context,
+      logger: () => {
+        throw new Error('logger boom')
+      },
+    },
+    fakeGoogle({}).client,
+    async (base) => {
+      const { cookie } = await startFlow(base)
+      const res = await fetch(
+        `${base}/auth/google/callback?code=c1&state=wrong`,
+        {
+          redirect: 'manual',
+          headers: { cookie },
+        }
+      )
+      assert.equal(res.status, 302)
+      assert.equal(res.headers.get('location'), '/signin?error=state')
+      const setCookies = res.headers.getSetCookie()
+      assert.ok(
+        setCookies.some(
+          (c) => c.startsWith(`${STATE_COOKIE_NAME}=;`) && /Max-Age=0/.test(c)
+        )
+      )
     }
   )
 })

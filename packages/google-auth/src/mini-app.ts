@@ -96,8 +96,17 @@ export function createGoogleAuthMiniApp(
       path: callbackPath,
       maxAge: 0,
     })
+    // A caller-supplied logger must never be able to block the redirect or
+    // the state-cookie clear that follow it.
+    const safeLog = (event: GoogleAuthLogEvent) => {
+      try {
+        log(event)
+      } catch (err) {
+        console.error('[google-auth] logger threw, ignoring', err)
+      }
+    }
     const fail = (reason: GoogleAuthErrorCode, email: string | null) => {
-      log(buildEvent(req, { outcome: 'failure', reason, email }))
+      safeLog(buildEvent(req, { outcome: 'failure', reason, email }))
       res.setHeader('Set-Cookie', clearState)
       res.redirect(302, `/signin?error=${reason}`)
     }
@@ -108,50 +117,64 @@ export function createGoogleAuthMiniApp(
       options.stateSecret
     )
     if (!state) return fail('state', null)
-    if (typeof req.query.error === 'string') return fail('token', null)
-    if (
-      typeof req.query.state !== 'string' ||
-      req.query.state !== state.state
-    ) {
-      return fail('state', null)
-    }
-    if (typeof req.query.code !== 'string' || req.query.code.length === 0) {
-      return fail('token', null)
-    }
 
-    let identity: GoogleIdentity
+    // Everything below can call out to Google, Keystone/Prisma, or a
+    // caller-supplied logger. Express 4 does not route a rejected async
+    // handler's promise to the error middleware, so any unexpected throw
+    // here must be caught and fail closed rather than hang the request or
+    // crash the process.
+    let email: string | null = null
     try {
-      identity = await google.exchangeCode(req.query.code)
-    } catch {
-      return fail('token', null)
-    }
-    if (!identity.email || identity.nonce !== state.nonce)
-      return fail('token', identity.email)
-    if (!identity.emailVerified) return fail('unverified_email', identity.email)
-    if (!identity.hd || !allowedDomains.includes(identity.hd.toLowerCase())) {
-      return fail('domain', identity.email)
-    }
+      if (typeof req.query.error === 'string') return fail('token', null)
+      if (
+        typeof req.query.state !== 'string' ||
+        req.query.state !== state.state
+      ) {
+        return fail('state', null)
+      }
+      if (typeof req.query.code !== 'string' || req.query.code.length === 0) {
+        return fail('token', null)
+      }
 
-    const result = await signInByEmail(
-      options.keystoneContext,
-      req,
-      res,
-      identity.email
-    )
-    if (!result.ok) return fail(result.reason, identity.email)
+      let identity: GoogleIdentity
+      try {
+        identity = await google.exchangeCode(req.query.code)
+      } catch {
+        return fail('token', null)
+      }
+      email = identity.email
+      if (!identity.email || identity.nonce !== state.nonce)
+        return fail('token', identity.email)
+      if (!identity.emailVerified)
+        return fail('unverified_email', identity.email)
+      if (!identity.hd || !allowedDomains.includes(identity.hd.toLowerCase())) {
+        return fail('domain', identity.email)
+      }
 
-    log(
-      buildEvent(req, {
-        outcome: 'success',
-        email: result.user.email ?? identity.email,
-        id: result.user.id,
-        name: result.user.name,
-        role: result.user.role,
-      })
-    )
-    // sessionStrategy.start() already set the session cookie; append the clear.
-    appendSetCookie(res, clearState)
-    res.redirect(302, sanitizeRedirectPath(state.from, redirectDefault))
+      const result = await signInByEmail(
+        options.keystoneContext,
+        req,
+        res,
+        identity.email
+      )
+      if (!result.ok) return fail(result.reason, identity.email)
+
+      safeLog(
+        buildEvent(req, {
+          outcome: 'success',
+          email: result.user.email ?? identity.email,
+          id: result.user.id,
+          name: result.user.name,
+          role: result.user.role,
+        })
+      )
+      // sessionStrategy.start() already set the session cookie; append the clear.
+      appendSetCookie(res, clearState)
+      res.redirect(302, sanitizeRedirectPath(state.from, redirectDefault))
+    } catch (err) {
+      console.error('[google-auth] unexpected error in OAuth callback', err)
+      return fail('session', email)
+    }
   })
 
   return router
