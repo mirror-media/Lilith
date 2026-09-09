@@ -8,11 +8,7 @@ import { statelessSessions } from '@keystone-6/core/session'
 import { createPreviewMiniApp } from './express-mini-apps/preview/app'
 import { createDashboardMiniApp } from './express-mini-apps/dashboard/app'
 import { createPostLockMiniApp } from './express-mini-apps/post-lock'
-import {
-  createGoogleAuthMiniApp,
-  createPasswordLoginBlockPlugin,
-} from '@mirrormedia/lilith-google-auth'
-import type { KeystoneContext } from '@mirrormedia/lilith-google-auth'
+import { withGoogleAuth } from '@mirrormedia/lilith-google-auth'
 import Keyv from 'keyv'
 import { KeyvAdapter } from '@apollo/utils.keyvadapter'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
@@ -34,171 +30,139 @@ const { withAuth } = createAuth({
 
 const session = statelessSessions(envVar.session)
 
-const cacheEnabled =
-  envVar.accessControlStrategy === ACL.GraphQL && envVar.cache.isEnabled
-
-// The mini-app's HTTP guard cannot see a multipart request, because Keystone
-// mounts graphqlUploadExpress after extendExpressApp. This plugin is the layer
-// that actually holds the password kill switch.
-const apolloPlugins = [
-  ...(envVar.googleAuth.isEnabled && !envVar.googleAuth.passwordLoginEnabled
-    ? [createPasswordLoginBlockPlugin()]
-    : []),
-  ...(cacheEnabled
-    ? [
-        responseCachePlugin(),
-        ApolloServerPluginCacheControl({
-          defaultMaxAge: envVar.cache.maxAge,
-        }),
-      ]
-    : []),
-]
-
 const graphqlConfig: GraphQLConfig = {
   apolloConfig:
-    apolloPlugins.length > 0 || cacheEnabled
+    envVar.accessControlStrategy === ACL.GraphQL && envVar.cache.isEnabled
       ? {
-          plugins: apolloPlugins,
-          ...(cacheEnabled
-            ? {
-                cache: new KeyvAdapter(
-                  new Keyv(envVar.cache.url, {
-                    lazyConnect: true,
-                    namespace: envVar.cache.identifier,
-                    connectionName: envVar.cache.identifier,
-                    connectTimeout: envVar.cache.connectTimeOut,
-                  })
-                ),
-              }
-            : {}),
+          plugins: [
+            responseCachePlugin(),
+            ApolloServerPluginCacheControl({
+              defaultMaxAge: envVar.cache.maxAge,
+            }),
+          ],
+          cache: new KeyvAdapter(
+            new Keyv(envVar.cache.url, {
+              lazyConnect: true,
+              namespace: envVar.cache.identifier,
+              connectionName: envVar.cache.identifier,
+              connectTimeout: envVar.cache.connectTimeOut,
+            })
+          ),
         }
       : undefined,
 }
 
-export default withAuth(
-  config({
-    db: {
-      provider: envVar.database.provider,
-      url: envVar.database.url,
-      idField: {
-        kind: 'autoincrement',
-      },
-    },
-    ui: {
-      // If `isDisabled` is set to `true` then the Admin UI will be completely disabled.
-      isDisabled: envVar.isUIDisabled,
-      // For our starter, we check that someone has session data before letting them see the Admin UI.
-      isAccessAllowed: (context) => !!context.session?.data,
-    },
-    graphql: graphqlConfig,
-    lists,
-    session,
-    extendGraphqlSchema: graphql.extend(() => ({
-      query: {
-        trafficDashboardEnabled: graphql.field({
-          type: graphql.nonNull(graphql.Boolean),
-          resolve: () => envVar.trafficDashboardEnabled,
-        }),
-      },
-    })),
-    storage: {
-      files: {
-        kind: 'local',
-        type: 'file',
-        storagePath: envVar.files.storagePath,
-        serverRoute: {
-          path: envVar.files.baseUrl,
+// Google Workspace sign-in. withGoogleAuth mounts the mini-app at the head
+// of server.extendExpressApp and, when the password kill switch is on, adds
+// the Apollo plugin that blocks the password mutation. isEnabled comes from
+// envVar.googleAuth: a blank GOOGLE_AUTH_CLIENT_ID returns the config as is.
+export default withGoogleAuth(
+  withAuth(
+    config({
+      db: {
+        provider: envVar.database.provider,
+        url: envVar.database.url,
+        idField: {
+          kind: 'autoincrement',
         },
-        generateUrl: (path) => `${envVar.files.baseUrl}${path}`,
       },
-      images: {
-        kind: 'local',
-        type: 'image',
-        storagePath: envVar.images.storagePath,
-        serverRoute: {
-          path: envVar.images.baseUrl,
+      ui: {
+        // If `isDisabled` is set to `true` then the Admin UI will be completely disabled.
+        isDisabled: envVar.isUIDisabled,
+        // For our starter, we check that someone has session data before letting them see the Admin UI.
+        isAccessAllowed: (context) => !!context.session?.data,
+      },
+      graphql: graphqlConfig,
+      lists,
+      session,
+      extendGraphqlSchema: graphql.extend(() => ({
+        query: {
+          trafficDashboardEnabled: graphql.field({
+            type: graphql.nonNull(graphql.Boolean),
+            resolve: () => envVar.trafficDashboardEnabled,
+          }),
         },
-        generateUrl: (path) => `${envVar.images.baseUrl}${path}`,
-      },
-      videos: {
-        kind: 'local',
-        type: 'file',
-        storagePath: envVar.videos.storagePath,
-        serverRoute: {
-          path: envVar.videos.baseUrl,
+      })),
+      storage: {
+        files: {
+          kind: 'local',
+          type: 'file',
+          storagePath: envVar.files.storagePath,
+          serverRoute: {
+            path: envVar.files.baseUrl,
+          },
+          generateUrl: (path) => `${envVar.files.baseUrl}${path}`,
         },
-        generateUrl: (path) => `${envVar.videos.baseUrl}${path}`,
+        images: {
+          kind: 'local',
+          type: 'image',
+          storagePath: envVar.images.storagePath,
+          serverRoute: {
+            path: envVar.images.baseUrl,
+          },
+          generateUrl: (path) => `${envVar.images.baseUrl}${path}`,
+        },
+        videos: {
+          kind: 'local',
+          type: 'file',
+          storagePath: envVar.videos.storagePath,
+          serverRoute: {
+            path: envVar.videos.baseUrl,
+          },
+          generateUrl: (path) => `${envVar.videos.baseUrl}${path}`,
+        },
       },
-    },
-    server: {
-      healthCheck: {
-        path: '/health_check',
-        data: { status: 'healthy' },
-      },
-      maxFileSize: 8000 * 1024 * 1024,
-      extendExpressApp: (app, context) => {
-        // This middleware is available in Express v4.16.0 onwards
-        // Set to 50mb because DraftJS Editor playload could be really large
+      server: {
+        healthCheck: {
+          path: '/health_check',
+          data: { status: 'healthy' },
+        },
+        maxFileSize: 8000 * 1024 * 1024,
+        extendExpressApp: (app, context) => {
+          // This middleware is available in Express v4.16.0 onwards
+          // Set to 50mb because DraftJS Editor playload could be really large
 
-        const jsonBodyParser = express.json({ limit: '500mb' })
-        app.use(jsonBodyParser)
+          const jsonBodyParser = express.json({ limit: '500mb' })
+          app.use(jsonBodyParser)
 
-        // Apply X-Robots-Tag header to all Keystone backend responses
-        app.use((_, res, next) => {
-          res.set('X-Robots-Tag', 'noindex, nofollow, noimageindex')
-          next()
-        })
+          // Apply X-Robots-Tag header to all Keystone backend responses
+          app.use((_, res, next) => {
+            res.set('X-Robots-Tag', 'noindex, nofollow, noimageindex')
+            next()
+          })
 
-        // Google Workspace sign-in. Mounted only when GOOGLE_AUTH_CLIENT_ID is
-        // set. It sits after the X-Robots-Tag middleware so its pages carry
-        // the header, and before the other mini-apps and the Admin UI so it
-        // can serve /signin.
-        if (envVar.googleAuth.isEnabled) {
+          // Post lock heartbeat & release endpoints (available in all modes)
           app.use(
-            createGoogleAuthMiniApp({
-              // Keystone's generated context is structurally compatible with
-              // the package's narrow interface.
-              keystoneContext: context as unknown as KeystoneContext,
-              clientId: envVar.googleAuth.clientId,
-              clientSecret: envVar.googleAuth.clientSecret,
-              callbackUrl: envVar.googleAuth.callbackUrl,
-              allowedDomains: envVar.googleAuth.allowedDomains,
-              passwordLoginEnabled: envVar.googleAuth.passwordLoginEnabled,
-              stateSecret: envVar.session.secret,
+            createPostLockMiniApp({
+              keystoneContext: context,
             })
           )
-        }
 
-        // Post lock heartbeat & release endpoints (available in all modes)
-        app.use(
-          createPostLockMiniApp({
-            keystoneContext: context,
-          })
-        )
-
-        if (envVar.accessControlStrategy === ACL.CMS) {
-          // Serve robots.txt only in CMS domain to block all crawlers.
-          app.get('/robots.txt', (_, res) => {
-            res.type('text/plain')
-            res.send(`User-agent: *
+          if (envVar.accessControlStrategy === ACL.CMS) {
+            // Serve robots.txt only in CMS domain to block all crawlers.
+            app.get('/robots.txt', (_, res) => {
+              res.type('text/plain')
+              res.send(`User-agent: *
 Disallow: /`)
-          })
-
-          app.use(
-            createPreviewMiniApp({
-              previewServer: envVar.previewServer,
-              keystoneContext: context,
             })
-          )
 
-          app.use(
-            createDashboardMiniApp({
-              dashboardServer: envVar.dashboardServer,
-              keystoneContext: context,
-            })
-          )
-        }
+            app.use(
+              createPreviewMiniApp({
+                previewServer: envVar.previewServer,
+                keystoneContext: context,
+              })
+            )
+
+            app.use(
+              createDashboardMiniApp({
+                dashboardServer: envVar.dashboardServer,
+                keystoneContext: context,
+              })
+            )
+          }
+        },
       },
-    },
-  })
+    })
+  ),
+  { ...envVar.googleAuth, stateSecret: envVar.session.secret }
 )
