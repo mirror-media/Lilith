@@ -6,6 +6,7 @@ import envVar from './environment-variables'
 import express, { Request, Response, NextFunction } from 'express'
 import { createAuth } from '@keystone-6/auth'
 import { statelessSessions } from '@keystone-6/core/session'
+import { withGoogleAuth } from '@mirrormedia/lilith-google-auth'
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -21,7 +22,7 @@ const { withAuth } = createAuth({
 
 const session = statelessSessions(appConfig.session)
 
-export default withAuth(
+const keystoneConfig = withAuth(
   config({
     db: {
       provider: appConfig.database.provider,
@@ -117,3 +118,12 @@ export default withAuth(
     },
   })
 )
+
+// Google Workspace sign-in. withGoogleAuth mounts the mini-app at the head
+// of server.extendExpressApp and, when the password kill switch is on, adds
+// the Apollo plugin that blocks the password mutation. isEnabled comes from
+// envVar.googleAuth: a blank GOOGLE_AUTH_CLIENT_ID returns the config as is.
+export default withGoogleAuth(keystoneConfig, {
+  ...envVar.googleAuth,
+  stateSecret: appConfig.session.secret,
+})
