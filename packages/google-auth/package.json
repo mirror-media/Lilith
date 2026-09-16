@@ -1,6 +1,6 @@
 {
   "name": "@mirrormedia/lilith-google-auth",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Google Workspace sign-in mini-app for Lilith Keystone CMS packages",
   "main": "lib/index.js",
   "types": "@types/index.d.ts",

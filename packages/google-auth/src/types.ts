@@ -67,6 +67,17 @@ export type GoogleAuthOptions = {
   /** Default true. When false, password login is hidden and its mutation is rejected. */
   passwordLoginEnabled?: boolean
   /**
+   * User field name that keeps password login working for allow-listed
+   * accounts (e.g. `'isPasswordLoginAllowed'`) while `passwordLoginEnabled`
+   * is `false`. Absent = block every password login (unchanged default
+   * behaviour). When set, the mini-app's HTTP guard is not mounted; the
+   * Apollo plugin `withGoogleAuth` registers becomes the single enforcement
+   * point, consulted with the field's own list key. Allow-listed accounts
+   * bypass Google entirely, so this is meant for service accounts, not
+   * people. See README "Allowing service accounts to keep password login".
+   */
+  passwordLoginAllowListField?: string
+  /**
    * Path the host serves GraphQL on; must equal `config.graphql.path`.
    * Default '/api/graphql'. Only used to mount the password HTTP guard.
    */

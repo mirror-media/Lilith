@@ -81,6 +81,7 @@ Mounting it after the host's own `X-Robots-Tag` middleware is harmless: the mini
 | `allowedDomains`        | yes      |                                    | Google `hd` allow-list. At least one entry.                                                                                                            |
 | `stateSecret`           | yes      |                                    | HMAC key for the short-lived state cookie. Reuse `SESSION_SECRET`; at least 32 characters.                                                             |
 | `passwordLoginEnabled`  | no       | `true`                             | `false` hides the password page and turns on the kill switch.                                                                                          |
+| `passwordLoginAllowListField` | no | none (block all)                  | With `passwordLoginEnabled: false`, name of a `User` boolean field that lets that account keep logging in with a password. See [Allowing service accounts to keep password login](#allowing-service-accounts-to-keep-password-login). |
 | `graphqlPath`           | no       | `/api/graphql`                     | Where the HTTP guard is mounted. Must equal the host's `config.graphql.path`.                                                                          |
 | `signinRedirectDefault` | no       | `/`                                | Where to send the user after login when no `from` is present.                                                                                          |
 | `logger`                | no       | single-line JSON to stdout/stderr  | Receives a `GoogleAuthLogEvent`. A throwing logger never blocks the redirect. See [Log events](#log-events).                                           |
@@ -141,6 +142,74 @@ curl -s -o /dev/null -w '%{http_code}\n' -X POST http://localhost:3003/api/graph
 ```
 
 If step 2 returns 200, the Apollo plugin is not registered.
+
+## Allowing service accounts to keep password login
+
+`passwordLoginEnabled: false` blocks every `authenticateUserWithPassword`
+call, including programs that log in with a service account's password
+(e.g. an internal tool authenticating as a dedicated CMS account). Setting
+`passwordLoginAllowListField` lets specific accounts keep working without
+turning password login back on for everyone.
+
+Add a boolean field to the package's `User` list:
+
+```ts
+isPasswordLoginAllowed: checkbox({
+  label: '允許密碼登入',
+  defaultValue: false,
+  access: {
+    read: () => true,
+    create: ({ session }) => session?.data?.role === 'admin',
+    update: ({ session }) => session?.data?.role === 'admin',
+  },
+  ui: {
+    description:
+      '警告：勾選後此帳號可用帳號密碼透過 GraphQL 登入，等於繞過 Google 登入。僅限程式用的服務帳號，不要給一般使用者。',
+    itemView: {
+      fieldMode: ({ session }) =>
+        envVar.googleAuth.isEnabled && session?.data?.role === 'admin' ? 'edit' : 'read',
+    },
+    createView: {
+      fieldMode: ({ session }) =>
+        envVar.googleAuth.isEnabled && session?.data?.role === 'admin' ? 'edit' : 'hidden',
+    },
+  },
+}),
+```
+
+Then pass the field name to `withGoogleAuth`:
+
+```ts
+export default withGoogleAuth(keystoneConfig, {
+  ...envVar.googleAuth,
+  stateSecret: envVar.session.secret,
+  passwordLoginAllowListField: 'isPasswordLoginAllowed',
+})
+```
+
+**Warning:** a `true` flag on this field lets that account sign in with a
+password over GraphQL, bypassing Google sign-in entirely. Only ever set it on
+service accounts used by programs, never on accounts a person can log into.
+
+What changes in allow-list mode:
+
+- The sign-in page is unchanged: with `passwordLoginEnabled: false` the
+  password option stays hidden and `?password=1` is still ignored. Allow-listed
+  accounts are for programs calling GraphQL, not for people using `/signin`.
+- The mini-app's HTTP guard (step 1 above) is **not mounted**. It can only
+  reject every password mutation or none; it cannot resolve which user is
+  logging in. The Apollo plugin becomes the single enforcement point (it
+  already has to be, since it is the only layer that sees a multipart
+  request).
+- The plugin resolves the mutation's `email` argument and looks the user up
+  with `contextValue.sudo().query.User.findOne({ where: { email }, query: passwordLoginAllowListField })`,
+  allowing the request only when that field is strictly `true`.
+- The lookup uses the email **exactly as sent in the mutation** (no trimming,
+  no case-folding), matching Keystone's own `validateSecret`, which looks the
+  user up with the same raw string. `User.email` is a case-sensitive unique
+  `text()` field, so `bot@x.com` and `Bot@X.com` can be two different rows;
+  normalizing here could let the plugin approve one row while Keystone goes
+  on to authenticate a different one.
 
 ## Environment variables (consumer side)
 

@@ -203,6 +203,35 @@ test('password disabled: no pass-through and mutation blocked', async () => {
   )
 })
 
+test('password disabled with an allow-list field: HTTP guard is not mounted, but /signin still hides the password link', async () => {
+  const { context } = fakeKeystone(null)
+  await withApp(
+    {
+      keystoneContext: context,
+      passwordLoginEnabled: false,
+      passwordLoginAllowListField: 'isPasswordLoginAllowed',
+    },
+    fakeGoogle({}).client,
+    async (base) => {
+      const page = await (await fetch(`${base}/signin?password=1`)).text()
+      assert.ok(page.includes('使用 Google 帳號登入'))
+      assert.ok(!page.includes('password=1'))
+      // The HTTP guard is not mounted in allow-list mode: the plugin (Apollo
+      // layer) is the single enforcement point, so a JSON password mutation
+      // reaches the stand-in /api/graphql instead of being blocked here.
+      const ok = await fetch(`${base}/api/graphql`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          query:
+            'mutation { authenticateUserWithPassword(email:"a",password:"b"){__typename} }',
+        }),
+      })
+      assert.equal(ok.status, 200)
+    }
+  )
+})
+
 test('password enabled: mutation is not blocked', async () => {
   const { context } = fakeKeystone(null)
   await withApp(

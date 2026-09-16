@@ -100,9 +100,12 @@ export function createGoogleAuthMiniApp(
 
   const router = Router()
 
-  if (!passwordLoginEnabled) {
+  if (!passwordLoginEnabled && !options.passwordLoginAllowListField) {
     // First of two layers. This one never sees a multipart request, so the
     // host must also register createPasswordLoginBlockPlugin() (see README).
+    // Not mounted in allow-list mode: this guard can only reject everything
+    // or nothing (it never resolves a specific user's flag), so the Apollo
+    // plugin is the single enforcement point there.
     router.use(graphqlPath, ...createPasswordLoginGuard())
   }
 
