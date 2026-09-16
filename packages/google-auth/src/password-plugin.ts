@@ -1,6 +1,8 @@
 import { GraphQLError, Kind } from 'graphql'
 import type {
+  ArgumentNode,
   DocumentNode,
+  FieldNode,
   FragmentDefinitionNode,
   SelectionNode,
 } from 'graphql'
@@ -19,6 +21,22 @@ const BLOCKED_MESSAGE = 'Password login is disabled. Sign in with Google.'
  * in a multipart `operations` field.
  */
 export function documentSelectsPasswordLogin(document: DocumentNode): boolean {
+  return extractPasswordLoginEmails(document).selected
+}
+
+/**
+ * Collects the `email` argument of every top-level `authenticateUserWithPassword`
+ * field selected by a mutation operation in the document (aliases and
+ * fragments included), one entry per selected field, in document order. An
+ * entry is `null` when the `email` argument is missing, is not a string
+ * literal, or is a variable that does not resolve to a string in `variables`.
+ * `selected` is false (and `emails` empty) when the document selects no
+ * password mutation field at all.
+ */
+export function extractPasswordLoginEmails(
+  document: DocumentNode,
+  variables?: Record<string, unknown> | null
+): { selected: boolean; emails: Array<string | null> } {
   const fragments = new Map<string, FragmentDefinitionNode>()
   for (const definition of document.definitions) {
     if (definition.kind === Kind.FRAGMENT_DEFINITION) {
@@ -26,33 +44,103 @@ export function documentSelectsPasswordLogin(document: DocumentNode): boolean {
     }
   }
 
-  const selectsPasswordLogin = (
+  const emails: Array<string | null> = []
+  const visit = (
     selections: readonly SelectionNode[],
     visited: Set<string>
-  ): boolean =>
-    selections.some((selection) => {
+  ) => {
+    for (const selection of selections) {
       if (selection.kind === Kind.FIELD) {
-        return selection.name.value === PASSWORD_MUTATION_FIELD
+        if (selection.name.value === PASSWORD_MUTATION_FIELD) {
+          emails.push(emailArgument(selection, variables))
+        }
+      } else if (selection.kind === Kind.INLINE_FRAGMENT) {
+        visit(selection.selectionSet.selections, visited)
+      } else {
+        const name = selection.name.value
+        // A self-referential fragment would otherwise recurse forever.
+        if (visited.has(name)) continue
+        visited.add(name)
+        const fragment = fragments.get(name)
+        if (fragment) visit(fragment.selectionSet.selections, visited)
       }
-      if (selection.kind === Kind.INLINE_FRAGMENT) {
-        return selectsPasswordLogin(selection.selectionSet.selections, visited)
-      }
-      const name = selection.name.value
-      // A self-referential fragment would otherwise recurse forever.
-      if (visited.has(name)) return false
-      visited.add(name)
-      const fragment = fragments.get(name)
-      return fragment
-        ? selectsPasswordLogin(fragment.selectionSet.selections, visited)
-        : false
-    })
+    }
+  }
 
-  return document.definitions.some(
-    (definition) =>
+  for (const definition of document.definitions) {
+    if (
       definition.kind === Kind.OPERATION_DEFINITION &&
-      definition.operation === 'mutation' &&
-      selectsPasswordLogin(definition.selectionSet.selections, new Set())
+      definition.operation === 'mutation'
+    ) {
+      visit(definition.selectionSet.selections, new Set())
+    }
+  }
+
+  return { selected: emails.length > 0, emails }
+}
+
+function emailArgument(
+  field: FieldNode,
+  variables?: Record<string, unknown> | null
+): string | null {
+  const arg: ArgumentNode | undefined = field.arguments?.find(
+    (a) => a.name.value === 'email'
   )
+  if (!arg) return null
+  if (arg.value.kind === Kind.STRING) return arg.value.value
+  if (arg.value.kind === Kind.VARIABLE) {
+    const v = variables?.[arg.value.name.value]
+    return typeof v === 'string' ? v : null
+  }
+  return null
+}
+
+function blocked(): GraphQLError {
+  return new GraphQLError(BLOCKED_MESSAGE, {
+    extensions: { code: 'PASSWORD_LOGIN_DISABLED', http: { status: 403 } },
+  })
+}
+
+/** Options for {@link createPasswordLoginBlockPlugin}. */
+export type PasswordLoginBlockPluginOptions = {
+  /**
+   * User field name that permits password login when strictly `true`.
+   * Absent = block every password login (unchanged default behaviour).
+   */
+  allowListField?: string
+  /** Keystone list holding the field. Default `'User'`. */
+  listKey?: string
+}
+
+/**
+ * Structural view of the slice of a Keystone `sudo` context this package
+ * needs to look up the allow-list field. Typed by hand so the package does
+ * not depend on @keystone-6/core.
+ */
+export type SudoQueryContext = {
+  sudo(): {
+    query: Record<
+      string,
+      {
+        findOne(args: {
+          where: Record<string, unknown>
+          query?: string
+        }): Promise<Record<string, unknown> | null>
+      }
+    >
+  }
+}
+
+/**
+ * The slice of Apollo Server 4's `GraphQLRequestContext` this plugin reads:
+ * the parsed document, the request's variables (for a variable `email`
+ * argument), and the request's `contextValue` (a `KeystoneContext` at
+ * runtime, consulted only in allow-list mode).
+ */
+export type PasswordLoginRequestContext = {
+  document: DocumentNode
+  request?: { variables?: Record<string, unknown> | null }
+  contextValue?: unknown
 }
 
 /**
@@ -62,29 +150,56 @@ export function documentSelectsPasswordLogin(document: DocumentNode): boolean {
  */
 export type PasswordLoginBlockPlugin = {
   requestDidStart(): Promise<{
-    didResolveOperation(requestContext: {
-      document: DocumentNode
-    }): Promise<void>
+    didResolveOperation(
+      requestContext: PasswordLoginRequestContext
+    ): Promise<void>
   }>
 }
 
 /**
- * Apollo Server plugin that rejects the password mutation with 403. Add it to
+ * Apollo Server plugin that guards the password mutation. With no
+ * `allowListField` it rejects every password login with 403, unchanged from
+ * block-all mode. With `allowListField` set, it instead resolves the
+ * mutation's `email` argument(s), looks each user up via
+ * `contextValue.sudo().query[listKey].findOne(...)`, and allows the request
+ * only when every selected password login's email resolves and that user's
+ * `allowListField` is strictly `true`. Add it to
  * `config.graphql.apolloConfig.plugins` whenever the password kill switch is
  * on; the mini-app's HTTP guard alone cannot see multipart requests.
  */
-export function createPasswordLoginBlockPlugin(): PasswordLoginBlockPlugin {
+export function createPasswordLoginBlockPlugin(
+  options: PasswordLoginBlockPluginOptions = {}
+): PasswordLoginBlockPlugin {
+  const { allowListField, listKey = 'User' } = options
   return {
     async requestDidStart() {
       return {
         async didResolveOperation(requestContext) {
-          if (documentSelectsPasswordLogin(requestContext.document)) {
-            throw new GraphQLError(BLOCKED_MESSAGE, {
-              extensions: {
-                code: 'PASSWORD_LOGIN_DISABLED',
-                http: { status: 403 },
-              },
-            })
+          const { selected, emails } = extractPasswordLoginEmails(
+            requestContext.document,
+            requestContext.request?.variables
+          )
+          if (!selected) return
+          if (!allowListField) throw blocked()
+          if (emails.some((e) => e === null)) throw blocked()
+
+          const context = requestContext.contextValue as
+            | Partial<SudoQueryContext>
+            | undefined
+          if (!context || typeof context.sudo !== 'function') throw blocked()
+
+          for (const raw of emails as string[]) {
+            const email = raw.trim().toLowerCase()
+            let row: Record<string, unknown> | null
+            try {
+              row = await context.sudo().query[listKey].findOne({
+                where: { email },
+                query: allowListField,
+              })
+            } catch {
+              throw blocked()
+            }
+            if (!row || row[allowListField] !== true) throw blocked()
           }
         },
       }
