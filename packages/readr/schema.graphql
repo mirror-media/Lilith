@@ -1182,6 +1182,7 @@ type User {
   password: PasswordState
   role: String
   isProtected: Boolean
+  isPasswordLoginAllowed: Boolean
 }
 
 type PasswordState {
@@ -1202,6 +1203,7 @@ input UserWhereInput {
   email: StringFilter
   role: StringFilter
   isProtected: BooleanFilter
+  isPasswordLoginAllowed: BooleanFilter
 }
 
 input UserOrderByInput {
@@ -1210,6 +1212,7 @@ input UserOrderByInput {
   email: OrderDirection
   role: OrderDirection
   isProtected: OrderDirection
+  isPasswordLoginAllowed: OrderDirection
 }
 
 input UserUpdateInput {
@@ -1218,6 +1221,7 @@ input UserUpdateInput {
   password: String
   role: String
   isProtected: Boolean
+  isPasswordLoginAllowed: Boolean
 }
 
 input UserUpdateArgs {
@@ -1231,6 +1235,7 @@ input UserCreateInput {
   password: String
   role: String
   isProtected: Boolean
+  isPasswordLoginAllowed: Boolean
 }
 
 type Post {
