@@ -228,6 +228,13 @@ const PW = q(
   'mutation { authenticateUserWithPassword(email: " Bot@X.com ", password: "p") { __typename } }'
 )
 
+// Same mutation as PW, but with the email exactly matching fakeContext's
+// 'bot@x.com' row key, for cases that must reach the row lookup rather than
+// short-circuit on a lookup miss.
+const PW_EXACT = q(
+  'mutation { authenticateUserWithPassword(email: "bot@x.com", password: "p") { __typename } }'
+)
+
 test('allow-list: allowed user passes and the lookup uses the exact email from the mutation', async () => {
   const ctx = fakeContext({ 'bot@x.com': { isPasswordLoginAllowed: true } })
   const doc = q(
@@ -257,34 +264,47 @@ test('allow-list: flag false, unknown user, non-boolean flag, throwing lookup, m
   const plugin = createPasswordLoginBlockPlugin({
     allowListField: 'isPasswordLoginAllowed',
   })
-  const cases: Array<[string, unknown]> = [
+  // Exact-match fixtures for the cases that must reach the row: with the
+  // lookup now exact (see the near-miss test above), driving these through
+  // the mismatched PW email would make them reject on `!row` before ever
+  // reading the flag, duplicating the 'unknown user' case.
+  const truthyNotTrue = fakeContext({
+    'bot@x.com': { isPasswordLoginAllowed: 1 },
+  })
+  const cases: Array<[string, DocumentNode, unknown]> = [
     [
       'flag false',
+      PW_EXACT,
       fakeContext({ 'bot@x.com': { isPasswordLoginAllowed: false } })
         .contextValue,
     ],
-    ['unknown user', fakeContext({}).contextValue],
-    [
-      'flag truthy but not true',
-      fakeContext({ 'bot@x.com': { isPasswordLoginAllowed: 1 } }).contextValue,
-    ],
+    ['unknown user', PW, fakeContext({}).contextValue],
+    ['flag truthy but not true', PW_EXACT, truthyNotTrue.contextValue],
     [
       'lookup throws',
+      PW_EXACT,
       fakeContext(
         { 'bot@x.com': { isPasswordLoginAllowed: true } },
         { throws: true }
       ).contextValue,
     ],
-    ['no context', undefined],
-    ['context without sudo', {}],
+    ['no context', PW, undefined],
+    ['context without sudo', PW, {}],
   ]
-  for (const [name, contextValue] of cases) {
+  for (const [name, document, contextValue] of cases) {
     await assert.rejects(
-      run(plugin, PW, contextValue),
+      run(plugin, document, contextValue),
       (e: GraphQLError) => e.extensions.code === 'PASSWORD_LOGIN_DISABLED',
       name
     )
   }
+  // Proves the 'flag truthy but not true' case actually reached the row
+  // (rejected via `row[allowListField] !== true`) rather than missing it.
+  assert.equal(
+    truthyNotTrue.calls.length,
+    1,
+    'flag truthy but not true should reach the row lookup exactly once'
+  )
 })
 
 test('allow-list: every selected field must be allowed', async () => {
