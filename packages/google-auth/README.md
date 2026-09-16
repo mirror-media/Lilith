@@ -41,7 +41,7 @@ The mini-app is constructed when Keystone calls `extendExpressApp`, and throws t
 
 ### Low-level API
 
-`createGoogleAuthMiniApp` and `createPasswordLoginBlockPlugin` stay exported for hosts that need to control the mount point themselves. Both edits are required; the wrapper exists so they cannot drift apart.
+`createGoogleAuthMiniApp` and `createPasswordLoginBlockPlugin` stay exported for hosts that need to control the mount point themselves. Both edits are required; the wrapper exists so they cannot drift apart. If the host also sets `passwordLoginAllowListField`, the matching `allowListField` on `createPasswordLoginBlockPlugin` is not optional: see the warning in [Allowing service accounts to keep password login](#allowing-service-accounts-to-keep-password-login).
 
 ```ts
 import {
@@ -62,10 +62,17 @@ if (envVar.googleAuth.isEnabled) {
       callbackUrl: envVar.googleAuth.callbackUrl,
       allowedDomains: envVar.googleAuth.allowedDomains,
       passwordLoginEnabled: envVar.googleAuth.passwordLoginEnabled,
+      passwordLoginAllowListField: envVar.googleAuth.passwordLoginAllowListField,
       stateSecret: envVar.session.secret,
     })
   )
 }
+
+// graphql.apolloConfig.plugins, wherever the host builds it. The
+// allowListField here must be the exact same value passed above.
+createPasswordLoginBlockPlugin({
+  allowListField: envVar.googleAuth.passwordLoginAllowListField,
+})
 ```
 
 Mounting it after the host's own `X-Robots-Tag` middleware is harmless: the mini-app overwrites the header with the same value.
@@ -210,6 +217,21 @@ What changes in allow-list mode:
   `text()` field, so `bot@x.com` and `Bot@X.com` can be two different rows;
   normalizing here could let the plugin approve one row while Keystone goes
   on to authenticate a different one.
+
+**A host using the low-level API (not `withGoogleAuth`) must register the
+Apollo plugin itself:** pass `passwordLoginAllowListField` to
+`createGoogleAuthMiniApp` and, separately, add
+`createPasswordLoginBlockPlugin({ allowListField: <the same field> })` to
+`graphql.apolloConfig.plugins`. Skipping the plugin degrades very differently
+here than in block-all mode. In block-all mode a skipped plugin still leaves
+the mini-app's HTTP guard rejecting every plain JSON mutation, so only the
+multipart path bypasses it (see
+[Password-login kill switch: two layers](#password-login-kill-switch-two-layers)).
+In allow-list mode the HTTP guard is not mounted at all, so a skipped plugin
+leaves `authenticateUserWithPassword` completely unguarded, JSON included:
+every request succeeds regardless of the allow-list field. `withGoogleAuth`
+registers the plugin for you and cannot be misconfigured this way; this
+warning applies only to the low-level API.
 
 ## Environment variables (consumer side)
 
