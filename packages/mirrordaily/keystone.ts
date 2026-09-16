@@ -8,6 +8,7 @@ import { statelessSessions } from '@keystone-6/core/session'
 import { createPreviewMiniApp } from './express-mini-apps/preview/app'
 import { createDashboardMiniApp } from './express-mini-apps/dashboard/app'
 import { createPostLockMiniApp } from './express-mini-apps/post-lock'
+import { withGoogleAuth } from '@mirrormedia/lilith-google-auth'
 import Keyv from 'keyv'
 import { KeyvAdapter } from '@apollo/utils.keyvadapter'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
@@ -51,7 +52,7 @@ const graphqlConfig: GraphQLConfig = {
       : undefined,
 }
 
-export default withAuth(
+const keystoneConfig = withAuth(
   config({
     db: {
       provider: envVar.database.provider,
@@ -158,3 +159,12 @@ Disallow: /`)
     },
   })
 )
+
+// Google Workspace sign-in. withGoogleAuth mounts the mini-app at the head
+// of server.extendExpressApp and, when the password kill switch is on, adds
+// the Apollo plugin that blocks the password mutation. isEnabled comes from
+// envVar.googleAuth: a blank GOOGLE_AUTH_CLIENT_ID returns the config as is.
+export default withGoogleAuth(keystoneConfig, {
+  ...envVar.googleAuth,
+  stateSecret: envVar.session.secret,
+})
