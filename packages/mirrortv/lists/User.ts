@@ -2,6 +2,7 @@ import { list } from '@keystone-6/core'
 import { utils } from '@mirrormedia/lilith-core'
 import { text, password, select, checkbox } from '@keystone-6/core/fields'
 import { reporter } from '../utils/access-control'
+import envVar from '../environment-variables'
 const {
   allowRolesForUsers,
   allowAllRoles,
@@ -94,6 +95,31 @@ const listConfigurations = list({
       defaultValue: false,
       access: {
         update: allowRolesForUsers(admin),
+      },
+    }),
+    isPasswordLoginAllowed: checkbox({
+      label: '允許密碼登入',
+      defaultValue: false,
+      access: {
+        read: () => true,
+        create: ({ session }) => session?.data?.role === 'admin',
+        update: ({ session }) => session?.data?.role === 'admin',
+      },
+      ui: {
+        description:
+          '警告：勾選後此帳號可用帳號密碼透過 GraphQL 登入，等於繞過 Google 登入。僅限程式用的服務帳號，不要給一般使用者。',
+        itemView: {
+          fieldMode: ({ session }) =>
+            envVar.googleAuth.isEnabled && session?.data?.role === 'admin'
+              ? 'edit'
+              : 'read',
+        },
+        createView: {
+          fieldMode: ({ session }) =>
+            envVar.googleAuth.isEnabled && session?.data?.role === 'admin'
+              ? 'edit'
+              : 'hidden',
+        },
       },
     }),
   },

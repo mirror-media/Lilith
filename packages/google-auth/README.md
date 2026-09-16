@@ -41,7 +41,7 @@ The mini-app is constructed when Keystone calls `extendExpressApp`, and throws t
 
 ### Low-level API
 
-`createGoogleAuthMiniApp` and `createPasswordLoginBlockPlugin` stay exported for hosts that need to control the mount point themselves. Both edits are required; the wrapper exists so they cannot drift apart.
+`createGoogleAuthMiniApp` and `createPasswordLoginBlockPlugin` stay exported for hosts that need to control the mount point themselves. Both edits are required; the wrapper exists so they cannot drift apart. If the host also sets `passwordLoginAllowListField`, the matching `allowListField` on `createPasswordLoginBlockPlugin` is not optional: see the warning in [Allowing service accounts to keep password login](#allowing-service-accounts-to-keep-password-login).
 
 ```ts
 import {
@@ -62,10 +62,17 @@ if (envVar.googleAuth.isEnabled) {
       callbackUrl: envVar.googleAuth.callbackUrl,
       allowedDomains: envVar.googleAuth.allowedDomains,
       passwordLoginEnabled: envVar.googleAuth.passwordLoginEnabled,
+      passwordLoginAllowListField: 'isPasswordLoginAllowed',
       stateSecret: envVar.session.secret,
     })
   )
 }
+
+// graphql.apolloConfig.plugins, wherever the host builds it. The
+// allowListField here must be the exact same value passed above.
+createPasswordLoginBlockPlugin({
+  allowListField: 'isPasswordLoginAllowed',
+})
 ```
 
 Mounting it after the host's own `X-Robots-Tag` middleware is harmless: the mini-app overwrites the header with the same value.
@@ -81,6 +88,7 @@ Mounting it after the host's own `X-Robots-Tag` middleware is harmless: the mini
 | `allowedDomains`        | yes      |                                    | Google `hd` allow-list. At least one entry.                                                                                                            |
 | `stateSecret`           | yes      |                                    | HMAC key for the short-lived state cookie. Reuse `SESSION_SECRET`; at least 32 characters.                                                             |
 | `passwordLoginEnabled`  | no       | `true`                             | `false` hides the password page and turns on the kill switch.                                                                                          |
+| `passwordLoginAllowListField` | no | none (block all)                  | With `passwordLoginEnabled: false`, name of a `User` boolean field that lets that account keep logging in with a password. See [Allowing service accounts to keep password login](#allowing-service-accounts-to-keep-password-login). |
 | `graphqlPath`           | no       | `/api/graphql`                     | Where the HTTP guard is mounted. Must equal the host's `config.graphql.path`.                                                                          |
 | `signinRedirectDefault` | no       | `/`                                | Where to send the user after login when no `from` is present.                                                                                          |
 | `logger`                | no       | single-line JSON to stdout/stderr  | Receives a `GoogleAuthLogEvent`. A throwing logger never blocks the redirect. See [Log events](#log-events).                                           |
@@ -141,6 +149,97 @@ curl -s -o /dev/null -w '%{http_code}\n' -X POST http://localhost:3003/api/graph
 ```
 
 If step 2 returns 200, the Apollo plugin is not registered.
+
+## Allowing service accounts to keep password login
+
+`passwordLoginEnabled: false` blocks every `authenticateUserWithPassword`
+call, including programs that log in with a service account's password
+(e.g. an internal tool authenticating as a dedicated CMS account). Setting
+`passwordLoginAllowListField` lets specific accounts keep working without
+turning password login back on for everyone.
+
+Add a boolean field to the package's `User` list:
+
+```ts
+isPasswordLoginAllowed: checkbox({
+  label: '允許密碼登入',
+  defaultValue: false,
+  access: {
+    read: () => true,
+    create: ({ session }) => session?.data?.role === 'admin',
+    update: ({ session }) => session?.data?.role === 'admin',
+  },
+  ui: {
+    description:
+      '警告：勾選後此帳號可用帳號密碼透過 GraphQL 登入，等於繞過 Google 登入。僅限程式用的服務帳號，不要給一般使用者。',
+    itemView: {
+      fieldMode: ({ session }) =>
+        envVar.googleAuth.isEnabled && session?.data?.role === 'admin' ? 'edit' : 'read',
+    },
+    createView: {
+      fieldMode: ({ session }) =>
+        envVar.googleAuth.isEnabled && session?.data?.role === 'admin' ? 'edit' : 'hidden',
+    },
+  },
+}),
+```
+
+Then pass the field name to `withGoogleAuth`:
+
+```ts
+export default withGoogleAuth(keystoneConfig, {
+  ...envVar.googleAuth,
+  stateSecret: envVar.session.secret,
+  passwordLoginAllowListField: 'isPasswordLoginAllowed',
+})
+```
+
+**Warning:** a `true` flag on this field lets that account sign in with a
+password over GraphQL, bypassing Google sign-in entirely. Only ever set it on
+service accounts used by programs, never on accounts a person can log into.
+
+What changes in allow-list mode:
+
+- The sign-in page is unchanged: with `passwordLoginEnabled: false` the
+  password option stays hidden and `?password=1` is still ignored. Allow-listed
+  accounts are for programs calling GraphQL, not for people using `/signin`.
+- The mini-app's HTTP guard (step 1 above) is **not mounted**. It can only
+  reject every password mutation or none; it cannot resolve which user is
+  logging in. The Apollo plugin becomes the single enforcement point (it
+  already has to be, since it is the only layer that sees a multipart
+  request).
+- The plugin resolves the mutation's `email` argument and looks the user up
+  with `contextValue.sudo().query.User.findOne({ where: { email }, query: passwordLoginAllowListField })`,
+  allowing the request only when that field is strictly `true`.
+- A variable `email` must be supplied in the request's `variables`. A default
+  value declared on the operation (`mutation ($email: String = "bot@x.com")`)
+  is **not** honoured: the plugin reads `variables` only, and rejects the
+  request when the variable is absent.
+- One request may select only **one** distinct email. A document selecting two
+  different emails is rejected before any lookup (aliases repeating the same
+  email still cost a single lookup), so a single request cannot be turned into
+  a bulk probe of the allow-list.
+- The lookup uses the email **exactly as sent in the mutation** (no trimming,
+  no case-folding), matching Keystone's own `validateSecret`, which looks the
+  user up with the same raw string. `User.email` is a case-sensitive unique
+  `text()` field, so `bot@x.com` and `Bot@X.com` can be two different rows;
+  normalizing here could let the plugin approve one row while Keystone goes
+  on to authenticate a different one.
+
+**A host using the low-level API (not `withGoogleAuth`) must register the
+Apollo plugin itself:** pass `passwordLoginAllowListField` to
+`createGoogleAuthMiniApp` and, separately, add
+`createPasswordLoginBlockPlugin({ allowListField: <the same field> })` to
+`graphql.apolloConfig.plugins`. Skipping the plugin degrades very differently
+here than in block-all mode. In block-all mode a skipped plugin still leaves
+the mini-app's HTTP guard rejecting every plain JSON mutation, so only the
+multipart path bypasses it (see
+[Password-login kill switch: two layers](#password-login-kill-switch-two-layers)).
+In allow-list mode the HTTP guard is not mounted at all, so a skipped plugin
+leaves `authenticateUserWithPassword` completely unguarded, JSON included:
+every request succeeds regardless of the allow-list field. `withGoogleAuth`
+registers the plugin for you and cannot be misconfigured this way; this
+warning applies only to the low-level API.
 
 ## Environment variables (consumer side)
 

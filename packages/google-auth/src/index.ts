@@ -6,8 +6,14 @@ export {
   PASSWORD_MUTATION_FIELD,
   createPasswordLoginBlockPlugin,
   documentSelectsPasswordLogin,
+  extractPasswordLoginEmails,
 } from './password-plugin'
-export type { PasswordLoginBlockPlugin } from './password-plugin'
+export type {
+  PasswordLoginBlockPlugin,
+  PasswordLoginBlockPluginOptions,
+  PasswordLoginRequestContext,
+  SudoQueryContext,
+} from './password-plugin'
 export { ERROR_MESSAGES } from './signin-page'
 export type {
   GoogleAuthErrorCode,

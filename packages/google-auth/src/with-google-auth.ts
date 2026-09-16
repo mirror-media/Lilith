@@ -85,7 +85,9 @@ export function withGoogleAuth<C extends KeystoneConfigLike>(
       apolloConfig: {
         ...config.graphql?.apolloConfig,
         plugins: [
-          createPasswordLoginBlockPlugin(),
+          createPasswordLoginBlockPlugin({
+            allowListField: options.passwordLoginAllowListField,
+          }),
           ...(config.graphql?.apolloConfig?.plugins ?? []),
         ],
       },

@@ -694,6 +694,7 @@ model User {
   password                         String
   role                             String              @default("contributor")
   isProtected                      Boolean             @default(false)
+  isPasswordLoginAllowed           Boolean             @default(false)
   createdAt                        DateTime?
   updatedAt                        DateTime?
   createdBy                        User?               @relation("User_createdBy", fields: [createdById], references: [id])

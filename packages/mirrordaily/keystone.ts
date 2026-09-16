@@ -167,4 +167,5 @@ Disallow: /`)
 export default withGoogleAuth(keystoneConfig, {
   ...envVar.googleAuth,
   stateSecret: envVar.session.secret,
+  passwordLoginAllowListField: 'isPasswordLoginAllowed',
 })
