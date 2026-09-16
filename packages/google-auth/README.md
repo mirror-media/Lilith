@@ -62,7 +62,7 @@ if (envVar.googleAuth.isEnabled) {
       callbackUrl: envVar.googleAuth.callbackUrl,
       allowedDomains: envVar.googleAuth.allowedDomains,
       passwordLoginEnabled: envVar.googleAuth.passwordLoginEnabled,
-      passwordLoginAllowListField: envVar.googleAuth.passwordLoginAllowListField,
+      passwordLoginAllowListField: 'isPasswordLoginAllowed',
       stateSecret: envVar.session.secret,
     })
   )
@@ -71,7 +71,7 @@ if (envVar.googleAuth.isEnabled) {
 // graphql.apolloConfig.plugins, wherever the host builds it. The
 // allowListField here must be the exact same value passed above.
 createPasswordLoginBlockPlugin({
-  allowListField: envVar.googleAuth.passwordLoginAllowListField,
+  allowListField: 'isPasswordLoginAllowed',
 })
 ```
 
@@ -211,6 +211,14 @@ What changes in allow-list mode:
 - The plugin resolves the mutation's `email` argument and looks the user up
   with `contextValue.sudo().query.User.findOne({ where: { email }, query: passwordLoginAllowListField })`,
   allowing the request only when that field is strictly `true`.
+- A variable `email` must be supplied in the request's `variables`. A default
+  value declared on the operation (`mutation ($email: String = "bot@x.com")`)
+  is **not** honoured: the plugin reads `variables` only, and rejects the
+  request when the variable is absent.
+- One request may select only **one** distinct email. A document selecting two
+  different emails is rejected before any lookup (aliases repeating the same
+  email still cost a single lookup), so a single request cannot be turned into
+  a bulk probe of the allow-list.
 - The lookup uses the email **exactly as sent in the mutation** (no trimming,
   no case-folding), matching Keystone's own `validateSecret`, which looks the
   user up with the same raw string. `User.email` is a case-sensitive unique

@@ -7,7 +7,10 @@ import { parse } from 'graphql'
 // createAdminUIMiddleware bundle), so this test exercises the real middleware.
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
 import { createGoogleAuthMiniApp } from './mini-app'
-import { documentSelectsPasswordLogin } from './password-plugin'
+import {
+  createPasswordLoginBlockPlugin,
+  documentSelectsPasswordLogin,
+} from './password-plugin'
 import type { GoogleClient, GoogleIdentity } from './google'
 import { STATE_COOKIE_NAME, unsealAuthState } from './state-cookie'
 import type {
@@ -878,6 +881,109 @@ test('the document check closes the multipart bypass', async () => {
       body: multipart('mutation { createInitialUser(data:{}){__typename} }'),
     })
     assert.equal(harmless.status, 200)
+  })
+})
+
+/**
+ * Same middleware order as withUploadStack, but in allow-list mode: the
+ * mini-app mounts no HTTP guard, so the stand-in /api/graphql runs the real
+ * plugin's didResolveOperation as the single enforcement point, exactly as
+ * Apollo would.
+ */
+async function withAllowListUploadStack(fn: (base: string) => Promise<void>) {
+  const { context } = fakeKeystone(null)
+  const plugin = createPasswordLoginBlockPlugin({
+    allowListField: 'isPasswordLoginAllowed',
+  })
+  const contextValue = {
+    sudo: () => ({
+      query: {
+        User: {
+          async findOne(args: { where: Record<string, unknown> }) {
+            return args.where.email === 'bot@x.com'
+              ? { isPasswordLoginAllowed: true }
+              : null
+          },
+        },
+      },
+    }),
+  }
+  const app = express()
+  app.use(
+    createGoogleAuthMiniApp(
+      baseOptions({
+        keystoneContext: context,
+        passwordLoginEnabled: false,
+        passwordLoginAllowListField: 'isPasswordLoginAllowed',
+      }),
+      { google: fakeGoogle({}).client }
+    )
+  )
+  app.use(graphqlUploadExpress())
+  // graphql-upload fills req.body for multipart; Apollo's own JSON parsing
+  // stands in here for the plain-JSON path.
+  app.use(express.json())
+  app.post('/api/graphql', async (req, res) => {
+    const body = (req.body ?? {}) as {
+      query?: string
+      variables?: Record<string, unknown> | null
+    }
+    const hooks = await plugin.requestDidStart()
+    try {
+      await hooks.didResolveOperation({
+        document: parse(String(body.query)),
+        request: { variables: body.variables },
+        contextValue,
+      })
+    } catch {
+      res.status(403).json({
+        errors: [{ extensions: { code: 'PASSWORD_LOGIN_DISABLED' } }],
+      })
+      return
+    }
+    res.json({ data: 'ok' })
+  })
+  const server: Server = await new Promise((resolve) => {
+    const s = app.listen(0, () => resolve(s))
+  })
+  const address = server.address()
+  const port = typeof address === 'object' && address ? address.port : 0
+  try {
+    await fn(`http://127.0.0.1:${port}`)
+  } finally {
+    await new Promise((resolve) => server.close(resolve))
+  }
+}
+
+const passwordMutationFor = (email: string) =>
+  `mutation { authenticateUserWithPassword(email:"${email}",password:"b"){__typename} }`
+
+test('allow-list mode: the plugin decides multipart and JSON requests alike', async () => {
+  await withAllowListUploadStack(async (base) => {
+    const allowed = await fetch(`${base}/api/graphql`, {
+      method: 'POST',
+      body: multipart(passwordMutationFor('bot@x.com')),
+    })
+    assert.equal(allowed.status, 200)
+
+    const denied = await fetch(`${base}/api/graphql`, {
+      method: 'POST',
+      body: multipart(passwordMutationFor('someone@x.com')),
+    })
+    assert.equal(denied.status, 403)
+    const body = (await denied.json()) as {
+      errors: { extensions: { code: string } }[]
+    }
+    assert.equal(body.errors[0].extensions.code, 'PASSWORD_LOGIN_DISABLED')
+
+    // The HTTP guard is not mounted in allow-list mode, so plain JSON reaches
+    // the plugin too and the allow-listed account gets through.
+    const json = await fetch(`${base}/api/graphql`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: passwordMutationFor('bot@x.com') }),
+    })
+    assert.equal(json.status, 200)
   })
 })
 

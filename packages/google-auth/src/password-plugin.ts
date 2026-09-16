@@ -6,10 +6,22 @@ import type {
   FragmentDefinitionNode,
   SelectionNode,
 } from 'graphql'
+import { emitLogEntry, formatErrorEntry } from './log'
 import type { KeystoneListQuery } from './types'
 
 /** Field name of Keystone's password mutation for listKey 'User'. */
 export const PASSWORD_MUTATION_FIELD = 'authenticateUserWithPassword'
+
+/**
+ * Keystone names the password mutation after the list the password field
+ * lives on, so a host that keeps its users in another list gets
+ * `authenticate<ListKey>WithPassword`. Derived here so `listKey` alone stays
+ * the single source of truth for both the field inspected in the document and
+ * the list queried for the allow-list flag.
+ */
+function passwordMutationField(listKey: string): string {
+  return `authenticate${listKey}WithPassword`
+}
 
 const BLOCKED_MESSAGE = 'Password login is disabled. Sign in with Google.'
 
@@ -21,8 +33,11 @@ const BLOCKED_MESSAGE = 'Password login is disabled. Sign in with Google.'
  * `extendExpressApp`, so an HTTP-layer guard never sees the operation carried
  * in a multipart `operations` field.
  */
-export function documentSelectsPasswordLogin(document: DocumentNode): boolean {
-  return extractPasswordLoginEmails(document).selected
+export function documentSelectsPasswordLogin(
+  document: DocumentNode,
+  fieldName: string = PASSWORD_MUTATION_FIELD
+): boolean {
+  return extractPasswordLoginEmails(document, undefined, fieldName).selected
 }
 
 /**
@@ -31,12 +46,17 @@ export function documentSelectsPasswordLogin(document: DocumentNode): boolean {
  * fragments included), one entry per selected field, in document order. An
  * entry is `null` when the `email` argument is missing, is not a string
  * literal, or is a variable that does not resolve to a string in `variables`.
- * `selected` is false (and `emails` empty) when the document selects no
- * password mutation field at all.
+ * A variable's default value in the operation definition is deliberately not
+ * honoured: the variable must be supplied in `variables`, otherwise the entry
+ * is `null` and the request is rejected. `selected` is false (and `emails`
+ * empty) when the document selects no password mutation field at all.
+ * `fieldName` defaults to the `User` list's mutation; a host with another
+ * `listKey` passes that list's field name.
  */
 export function extractPasswordLoginEmails(
   document: DocumentNode,
-  variables?: Record<string, unknown> | null
+  variables?: Record<string, unknown> | null,
+  fieldName: string = PASSWORD_MUTATION_FIELD
 ): { selected: boolean; emails: Array<string | null> } {
   const fragments = new Map<string, FragmentDefinitionNode>()
   for (const definition of document.definitions) {
@@ -52,7 +72,7 @@ export function extractPasswordLoginEmails(
   ) => {
     for (const selection of selections) {
       if (selection.kind === Kind.FIELD) {
-        if (selection.name.value === PASSWORD_MUTATION_FIELD) {
+        if (selection.name.value === fieldName) {
           emails.push(emailArgument(selection, variables))
         }
       } else if (selection.kind === Kind.INLINE_FRAGMENT) {
@@ -177,33 +197,58 @@ export function createPasswordLoginBlockPlugin(
   options: PasswordLoginBlockPluginOptions = {}
 ): PasswordLoginBlockPlugin {
   const { allowListField, listKey = 'User' } = options
+  const mutationField = passwordMutationField(listKey)
   return {
     async requestDidStart() {
       return {
         async didResolveOperation(requestContext) {
           const { selected, emails } = extractPasswordLoginEmails(
             requestContext.document,
-            requestContext.request?.variables
+            requestContext.request?.variables,
+            mutationField
           )
           if (!selected) return
           if (!allowListField) throw blocked()
           if (emails.some((e) => e === null)) throw blocked()
+
+          // One request, one lookup. A legitimate client never sends two
+          // password logins at once, so a document selecting more than one
+          // distinct email is rejected outright: without the cap a single
+          // request could fan out into an unbounded number of sudo lookups
+          // (and, once allowed, of Keystone's own bcrypt comparisons).
+          // Aliases naming the same email still cost exactly one lookup.
+          const distinctEmails = new Set(
+            emails.filter((e): e is string => e !== null)
+          )
+          if (distinctEmails.size > 1) throw blocked()
 
           const context = requestContext.contextValue as
             | Partial<SudoQueryContext>
             | undefined
           if (!context || typeof context.sudo !== 'function') throw blocked()
 
-          const resolvedEmails = emails.filter((e): e is string => e !== null)
-          const listQuery = context.sudo().query[listKey]
-          for (const email of resolvedEmails) {
+          for (const email of distinctEmails) {
             let row: Record<string, unknown> | null
             try {
-              row = await listQuery.findOne({
+              // `sudo()` and the list lookup are both inside the try: a
+              // throwing sudo(), a list key that does not exist on this
+              // deployment, and a failing query must all fail closed the same
+              // way rather than escape as a 500.
+              row = await context.sudo().query[listKey].findOne({
                 where: { email },
                 query: allowListField,
               })
-            } catch {
+            } catch (err) {
+              // Failing closed is silent to the caller by design, so this is
+              // the only signal an operator gets that the allow-list is
+              // rejecting because the lookup itself is broken.
+              emitLogEntry(
+                formatErrorEntry(err, {
+                  type: 'password-login',
+                  stage: 'allow-list-lookup',
+                  email,
+                })
+              )
               throw blocked()
             }
             if (!row || row[allowListField] !== true) throw blocked()
