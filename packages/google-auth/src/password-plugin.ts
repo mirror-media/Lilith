@@ -6,6 +6,7 @@ import type {
   FragmentDefinitionNode,
   SelectionNode,
 } from 'graphql'
+import type { KeystoneListQuery } from './types'
 
 /** Field name of Keystone's password mutation for listKey 'User'. */
 export const PASSWORD_MUTATION_FIELD = 'authenticateUserWithPassword'
@@ -67,6 +68,12 @@ export function extractPasswordLoginEmails(
     }
   }
 
+  // Every mutation operation in the document is inspected, not just the one
+  // Apollo would execute for a given `operationName`, and `visit` above does
+  // not look at `@skip`/`@include` directives on the field. That makes this a
+  // superset of what will actually run: a denial decision can never be
+  // bypassed by naming a different operation or attaching an execution-time
+  // directive, since both are irrelevant to what gets inspected here.
   for (const definition of document.definitions) {
     if (
       definition.kind === Kind.OPERATION_DEFINITION &&
@@ -114,21 +121,13 @@ export type PasswordLoginBlockPluginOptions = {
 
 /**
  * Structural view of the slice of a Keystone `sudo` context this package
- * needs to look up the allow-list field. Typed by hand so the package does
- * not depend on @keystone-6/core.
+ * needs to look up the allow-list field, built from the same
+ * `KeystoneListQuery` shape `KeystoneContext` uses (`./types`) so the two
+ * cannot drift; still typed by hand so the package does not depend on
+ * @keystone-6/core.
  */
 export type SudoQueryContext = {
-  sudo(): {
-    query: Record<
-      string,
-      {
-        findOne(args: {
-          where: Record<string, unknown>
-          query?: string
-        }): Promise<Record<string, unknown> | null>
-      }
-    >
-  }
+  sudo(): { query: Record<string, KeystoneListQuery> }
 }
 
 /**
@@ -163,9 +162,16 @@ export type PasswordLoginBlockPlugin = {
  * mutation's `email` argument(s), looks each user up via
  * `contextValue.sudo().query[listKey].findOne(...)`, and allows the request
  * only when every selected password login's email resolves and that user's
- * `allowListField` is strictly `true`. Add it to
- * `config.graphql.apolloConfig.plugins` whenever the password kill switch is
- * on; the mini-app's HTTP guard alone cannot see multipart requests.
+ * `allowListField` is strictly `true`. The lookup uses the email exactly as
+ * given in the mutation, with no trimming or case-folding: Keystone's own
+ * `validateSecret` looks the user up the same way
+ * (`findOne({ where: { email: identity } })` on the raw string), and
+ * `User.email` is a case-sensitive unique `text()`, so `bot@x.com` and
+ * `Bot@X.com` can be two different rows. Normalizing here would let this
+ * plugin approve one row while Keystone goes on to authenticate a different
+ * one. Add it to `config.graphql.apolloConfig.plugins` whenever the password
+ * kill switch is on; the mini-app's HTTP guard alone cannot see multipart
+ * requests.
  */
 export function createPasswordLoginBlockPlugin(
   options: PasswordLoginBlockPluginOptions = {}
@@ -188,11 +194,12 @@ export function createPasswordLoginBlockPlugin(
             | undefined
           if (!context || typeof context.sudo !== 'function') throw blocked()
 
-          for (const raw of emails as string[]) {
-            const email = raw.trim().toLowerCase()
+          const resolvedEmails = emails.filter((e): e is string => e !== null)
+          const listQuery = context.sudo().query[listKey]
+          for (const email of resolvedEmails) {
             let row: Record<string, unknown> | null
             try {
-              row = await context.sudo().query[listKey].findOne({
+              row = await listQuery.findOne({
                 where: { email },
                 query: allowListField,
               })

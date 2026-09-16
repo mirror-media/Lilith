@@ -228,14 +228,28 @@ const PW = q(
   'mutation { authenticateUserWithPassword(email: " Bot@X.com ", password: "p") { __typename } }'
 )
 
-test('allow-list: allowed user passes and lookup is lower-cased and trimmed', async () => {
+test('allow-list: allowed user passes and the lookup uses the exact email from the mutation', async () => {
+  const ctx = fakeContext({ 'bot@x.com': { isPasswordLoginAllowed: true } })
+  const doc = q(
+    'mutation { authenticateUserWithPassword(email: "bot@x.com", password: "p") { __typename } }'
+  )
+  const plugin = createPasswordLoginBlockPlugin({
+    allowListField: 'isPasswordLoginAllowed',
+  })
+  await run(plugin, doc, ctx.contextValue)
+  assert.deepEqual(ctx.calls, [
+    { where: { email: 'bot@x.com' }, query: 'isPasswordLoginAllowed' },
+  ])
+})
+
+test('allow-list: lookup is exact, not normalized, so a near-miss is rejected', async () => {
   const ctx = fakeContext({ 'bot@x.com': { isPasswordLoginAllowed: true } })
   const plugin = createPasswordLoginBlockPlugin({
     allowListField: 'isPasswordLoginAllowed',
   })
-  await run(plugin, PW, ctx.contextValue)
+  await assert.rejects(run(plugin, PW, ctx.contextValue))
   assert.deepEqual(ctx.calls, [
-    { where: { email: 'bot@x.com' }, query: 'isPasswordLoginAllowed' },
+    { where: { email: ' Bot@X.com ' }, query: 'isPasswordLoginAllowed' },
   ])
 })
 
@@ -281,6 +295,58 @@ test('allow-list: every selected field must be allowed', async () => {
     'ok@x.com': { isPasswordLoginAllowed: true },
     'no@x.com': { isPasswordLoginAllowed: false },
   })
+  await assert.rejects(
+    run(
+      createPasswordLoginBlockPlugin({
+        allowListField: 'isPasswordLoginAllowed',
+      }),
+      doc,
+      ctx.contextValue
+    )
+  )
+})
+
+test('allow-list: every mutation operation in the document is inspected, regardless of operationName', async () => {
+  const doc = q(`
+    mutation A { authenticateUserWithPassword(email: "ok@x.com", password: "p") { __typename } }
+    mutation B { authenticateUserWithPassword(email: "no@x.com", password: "p") { __typename } }
+  `)
+  const ctx = fakeContext({
+    'ok@x.com': { isPasswordLoginAllowed: true },
+    'no@x.com': { isPasswordLoginAllowed: false },
+  })
+  await assert.rejects(
+    run(
+      createPasswordLoginBlockPlugin({
+        allowListField: 'isPasswordLoginAllowed',
+      }),
+      doc,
+      ctx.contextValue
+    )
+  )
+})
+
+test('allow-list: a password field under @skip(if: true) is still checked', async () => {
+  const doc = q(
+    'mutation { authenticateUserWithPassword(email: "no@x.com", password: "p") @skip(if: true) { __typename } }'
+  )
+  const ctx = fakeContext({ 'no@x.com': { isPasswordLoginAllowed: false } })
+  await assert.rejects(
+    run(
+      createPasswordLoginBlockPlugin({
+        allowListField: 'isPasswordLoginAllowed',
+      }),
+      doc,
+      ctx.contextValue
+    )
+  )
+})
+
+test('allow-list: an email inside an inline fragment on Mutation is collected', async () => {
+  const doc = q(
+    'mutation { ... on Mutation { authenticateUserWithPassword(email: "no@x.com", password: "p") { __typename } } }'
+  )
+  const ctx = fakeContext({ 'no@x.com': { isPasswordLoginAllowed: false } })
   await assert.rejects(
     run(
       createPasswordLoginBlockPlugin({
