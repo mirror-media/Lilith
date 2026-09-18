@@ -91,7 +91,7 @@ const listConfigurations = list({
       defaultValue: false,
     }),
     isPasswordLoginAllowed: checkbox({
-      label: '允許密碼登入',
+      label: '允許 API 登入',
       defaultValue: false,
       access: {
         read: () => true,

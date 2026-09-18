@@ -162,7 +162,7 @@ Add a boolean field to the package's `User` list:
 
 ```ts
 isPasswordLoginAllowed: checkbox({
-  label: '允許密碼登入',
+  label: '允許 API 登入',
   defaultValue: false,
   access: {
     read: () => true,
