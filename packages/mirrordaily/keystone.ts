@@ -115,7 +115,7 @@ const keystoneConfig = withAuth(
       maxFileSize: 8000 * 1024 * 1024,
       extendExpressApp: (app, context) => {
         // This middleware is available in Express v4.16.0 onwards
-        // Set to 50mb because DraftJS Editor playload could be really large
+        // Set to 50mb because DraftJS Editor payload could be really large
 
         const jsonBodyParser = express.json({ limit: '500mb' })
         app.use(jsonBodyParser)
