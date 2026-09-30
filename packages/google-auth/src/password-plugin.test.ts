@@ -1,9 +1,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { GraphQLError, parse } from 'graphql'
+import type { DocumentNode } from 'graphql'
 import {
   createPasswordLoginBlockPlugin,
   documentSelectsPasswordLogin,
+  extractPasswordLoginEmails,
 } from './password-plugin'
 
 const PASSWORD_MUTATION = `
@@ -117,4 +119,545 @@ test('plugin allows createInitialUser', async () => {
 
 test('plugin allows the authenticatedItem query', async () => {
   await runPlugin(AUTHENTICATED_ITEM)
+})
+
+const q = (s: string) => parse(s)
+
+test('extract: literal email', () => {
+  assert.deepEqual(
+    extractPasswordLoginEmails(
+      q(
+        'mutation { authenticateUserWithPassword(email: "A@x.com", password: "p") { __typename } }'
+      )
+    ),
+    { selected: true, emails: ['A@x.com'] }
+  )
+})
+
+test('extract: variable email resolves from variables', () => {
+  assert.deepEqual(
+    extractPasswordLoginEmails(
+      q(
+        'mutation L($e: String!, $p: String!) { authenticateUserWithPassword(email: $e, password: $p) { __typename } }'
+      ),
+      { e: 'bot@x.com', p: 'p' }
+    ),
+    { selected: true, emails: ['bot@x.com'] }
+  )
+})
+
+test('extract: alias, fragment, and multiple fields', () => {
+  const doc = q(`
+    mutation { a: authenticateUserWithPassword(email: "a@x.com", password: "p") { __typename } ...F }
+    fragment F on Mutation { authenticateUserWithPassword(email: "b@x.com", password: "p") { __typename } }
+  `)
+  assert.deepEqual(extractPasswordLoginEmails(doc), {
+    selected: true,
+    emails: ['a@x.com', 'b@x.com'],
+  })
+})
+
+test('extract: missing or unresolvable email yields null', () => {
+  assert.deepEqual(
+    extractPasswordLoginEmails(
+      q(
+        'mutation($e: String!) { authenticateUserWithPassword(email: $e, password: "p") { __typename } }'
+      ),
+      {}
+    ),
+    { selected: true, emails: [null] }
+  )
+  assert.deepEqual(
+    extractPasswordLoginEmails(
+      q(
+        'mutation { authenticateUserWithPassword(password: "p") { __typename } }'
+      )
+    ),
+    { selected: true, emails: [null] }
+  )
+})
+
+test('extract: not selected for queries', () => {
+  assert.deepEqual(
+    extractPasswordLoginEmails(q('{ authenticatedItem { __typename } }')),
+    { selected: false, emails: [] }
+  )
+})
+
+/**
+ * Temporarily records `console.error` lines; the caller restores it in a
+ * finally block. Needed wherever a test drives the allow-list lookup into its
+ * catch, which now emits an operator-facing ERROR entry.
+ */
+function captureError() {
+  const calls: unknown[][] = []
+  const original = console.error
+  console.error = (...args: unknown[]) => {
+    calls.push(args)
+  }
+  return {
+    calls,
+    restore: () => {
+      console.error = original
+    },
+  }
+}
+
+function parseEntry(call: unknown[]): Record<string, unknown> {
+  assert.equal(call.length, 1)
+  const line = call[0]
+  assert.equal(typeof line, 'string')
+  assert.ok(
+    !(line as string).includes('\n'),
+    'the log entry must be a single line'
+  )
+  return JSON.parse(line as string) as Record<string, unknown>
+}
+
+function fakeContext(
+  rows: Record<string, Record<string, unknown> | null>,
+  opts: { throws?: boolean } = {}
+) {
+  const calls: unknown[] = []
+  return {
+    calls,
+    contextValue: {
+      sudo: () => ({
+        query: {
+          User: {
+            async findOne(args: {
+              where: Record<string, unknown>
+              query?: string
+            }) {
+              calls.push(args)
+              if (opts.throws) throw new Error('db down')
+              return rows[String(args.where.email)] ?? null
+            },
+          },
+        },
+      }),
+    },
+  }
+}
+
+async function run(
+  plugin: ReturnType<typeof createPasswordLoginBlockPlugin>,
+  document: DocumentNode,
+  contextValue: unknown,
+  variables?: Record<string, unknown>
+) {
+  const hooks = await plugin.requestDidStart()
+  return hooks.didResolveOperation({
+    document,
+    request: { variables },
+    contextValue,
+  })
+}
+
+const PW = q(
+  'mutation { authenticateUserWithPassword(email: " Bot@X.com ", password: "p") { __typename } }'
+)
+
+// Same mutation as PW, but with the email exactly matching fakeContext's
+// 'bot@x.com' row key, for cases that must reach the row lookup rather than
+// short-circuit on a lookup miss.
+const PW_EXACT = q(
+  'mutation { authenticateUserWithPassword(email: "bot@x.com", password: "p") { __typename } }'
+)
+
+test('allow-list: allowed user passes and the lookup uses the exact email from the mutation', async () => {
+  const ctx = fakeContext({ 'bot@x.com': { isPasswordLoginAllowed: true } })
+  const doc = q(
+    'mutation { authenticateUserWithPassword(email: "bot@x.com", password: "p") { __typename } }'
+  )
+  const plugin = createPasswordLoginBlockPlugin({
+    allowListField: 'isPasswordLoginAllowed',
+  })
+  await run(plugin, doc, ctx.contextValue)
+  assert.deepEqual(ctx.calls, [
+    { where: { email: 'bot@x.com' }, query: 'isPasswordLoginAllowed' },
+  ])
+})
+
+test('allow-list: lookup is exact, not normalized, so a near-miss is rejected', async () => {
+  const ctx = fakeContext({ 'bot@x.com': { isPasswordLoginAllowed: true } })
+  const plugin = createPasswordLoginBlockPlugin({
+    allowListField: 'isPasswordLoginAllowed',
+  })
+  await assert.rejects(run(plugin, PW, ctx.contextValue))
+  assert.deepEqual(ctx.calls, [
+    { where: { email: ' Bot@X.com ' }, query: 'isPasswordLoginAllowed' },
+  ])
+})
+
+test('allow-list: flag false, unknown user, non-boolean flag, throwing lookup, missing context all reject', async () => {
+  const plugin = createPasswordLoginBlockPlugin({
+    allowListField: 'isPasswordLoginAllowed',
+  })
+  // Exact-match fixtures for the cases that must reach the row: with the
+  // lookup now exact (see the near-miss test above), driving these through
+  // the mismatched PW email would make them reject on `!row` before ever
+  // reading the flag, duplicating the 'unknown user' case.
+  const truthyNotTrue = fakeContext({
+    'bot@x.com': { isPasswordLoginAllowed: 1 },
+  })
+  const cases: Array<[string, DocumentNode, unknown]> = [
+    [
+      'flag false',
+      PW_EXACT,
+      fakeContext({ 'bot@x.com': { isPasswordLoginAllowed: false } })
+        .contextValue,
+    ],
+    ['unknown user', PW, fakeContext({}).contextValue],
+    ['flag truthy but not true', PW_EXACT, truthyNotTrue.contextValue],
+    [
+      'lookup throws',
+      PW_EXACT,
+      fakeContext(
+        { 'bot@x.com': { isPasswordLoginAllowed: true } },
+        { throws: true }
+      ).contextValue,
+    ],
+    ['no context', PW, undefined],
+    ['context without sudo', PW, {}],
+  ]
+  // 'lookup throws' now emits an ERROR entry (see the logging test below);
+  // captured only so the suite's output stays readable.
+  const capture = captureError()
+  try {
+    for (const [name, document, contextValue] of cases) {
+      await assert.rejects(
+        run(plugin, document, contextValue),
+        (e: GraphQLError) => e.extensions.code === 'PASSWORD_LOGIN_DISABLED',
+        name
+      )
+    }
+  } finally {
+    capture.restore()
+  }
+  // Proves the 'flag truthy but not true' case actually reached the row
+  // (rejected via `row[allowListField] !== true`) rather than missing it.
+  assert.equal(
+    truthyNotTrue.calls.length,
+    1,
+    'flag truthy but not true should reach the row lookup exactly once'
+  )
+})
+
+test('allow-list: a request selecting two distinct emails is rejected without any lookup', async () => {
+  const doc = q(
+    'mutation { a: authenticateUserWithPassword(email: "ok@x.com", password: "p") { __typename } b: authenticateUserWithPassword(email: "no@x.com", password: "p") { __typename } }'
+  )
+  const ctx = fakeContext({
+    'ok@x.com': { isPasswordLoginAllowed: true },
+    'no@x.com': { isPasswordLoginAllowed: false },
+  })
+  await assert.rejects(
+    run(
+      createPasswordLoginBlockPlugin({
+        allowListField: 'isPasswordLoginAllowed',
+      }),
+      doc,
+      ctx.contextValue
+    ),
+    assertBlocked
+  )
+  // No amplification: one request never fans out into several lookups, so a
+  // caller cannot probe the allow-list (or the password table) in bulk.
+  assert.equal(ctx.calls.length, 0)
+})
+
+test('allow-list: the same email selected twice is looked up exactly once', async () => {
+  const doc = q(
+    'mutation { a: authenticateUserWithPassword(email: "bot@x.com", password: "p") { __typename } b: authenticateUserWithPassword(email: "bot@x.com", password: "p") { __typename } }'
+  )
+  const ctx = fakeContext({ 'bot@x.com': { isPasswordLoginAllowed: true } })
+  await run(
+    createPasswordLoginBlockPlugin({
+      allowListField: 'isPasswordLoginAllowed',
+    }),
+    doc,
+    ctx.contextValue
+  )
+  assert.deepEqual(ctx.calls, [
+    { where: { email: 'bot@x.com' }, query: 'isPasswordLoginAllowed' },
+  ])
+})
+
+test('allow-list: every mutation operation in the document is inspected, regardless of operationName', async () => {
+  const doc = q(`
+    mutation A { authenticateUserWithPassword(email: "ok@x.com", password: "p") { __typename } }
+    mutation B { authenticateUserWithPassword(email: "no@x.com", password: "p") { __typename } }
+  `)
+  const ctx = fakeContext({
+    'ok@x.com': { isPasswordLoginAllowed: true },
+    'no@x.com': { isPasswordLoginAllowed: false },
+  })
+  await assert.rejects(
+    run(
+      createPasswordLoginBlockPlugin({
+        allowListField: 'isPasswordLoginAllowed',
+      }),
+      doc,
+      ctx.contextValue
+    )
+  )
+})
+
+test('allow-list: a password field under @skip(if: true) is still checked', async () => {
+  const doc = q(
+    'mutation { authenticateUserWithPassword(email: "no@x.com", password: "p") @skip(if: true) { __typename } }'
+  )
+  const ctx = fakeContext({ 'no@x.com': { isPasswordLoginAllowed: false } })
+  await assert.rejects(
+    run(
+      createPasswordLoginBlockPlugin({
+        allowListField: 'isPasswordLoginAllowed',
+      }),
+      doc,
+      ctx.contextValue
+    )
+  )
+})
+
+test('allow-list: an email inside an inline fragment on Mutation is collected', async () => {
+  const doc = q(
+    'mutation { ... on Mutation { authenticateUserWithPassword(email: "no@x.com", password: "p") { __typename } } }'
+  )
+  const ctx = fakeContext({ 'no@x.com': { isPasswordLoginAllowed: false } })
+  await assert.rejects(
+    run(
+      createPasswordLoginBlockPlugin({
+        allowListField: 'isPasswordLoginAllowed',
+      }),
+      doc,
+      ctx.contextValue
+    )
+  )
+})
+
+test('allow-list: unresolvable email rejects without a lookup', async () => {
+  const ctx = fakeContext({ 'bot@x.com': { isPasswordLoginAllowed: true } })
+  const doc = q(
+    'mutation($e: String!) { authenticateUserWithPassword(email: $e, password: "p") { __typename } }'
+  )
+  await assert.rejects(
+    run(
+      createPasswordLoginBlockPlugin({
+        allowListField: 'isPasswordLoginAllowed',
+      }),
+      doc,
+      ctx.contextValue,
+      {}
+    )
+  )
+  assert.equal(ctx.calls.length, 0)
+})
+
+test('allow-list: a custom listKey drives both the list queried and the mutation field name', async () => {
+  const calls: unknown[] = []
+  const contextValue = {
+    sudo: () => ({
+      query: {
+        Account: {
+          async findOne(a: unknown) {
+            calls.push(a)
+            return { ok: true }
+          },
+        },
+      },
+    }),
+  }
+  await run(
+    createPasswordLoginBlockPlugin({
+      allowListField: 'ok',
+      listKey: 'Account',
+    }),
+    q(
+      'mutation { authenticateAccountWithPassword(email: "bot@x.com", password: "p") { __typename } }'
+    ),
+    contextValue
+  )
+  assert.deepEqual(calls, [{ where: { email: 'bot@x.com' }, query: 'ok' }])
+})
+
+test('allow-list: with listKey Account, authenticateUserWithPassword is not a password login', async () => {
+  const ctx = fakeContext({ 'bot@x.com': { isPasswordLoginAllowed: true } })
+  await run(
+    createPasswordLoginBlockPlugin({
+      allowListField: 'isPasswordLoginAllowed',
+      listKey: 'Account',
+    }),
+    PW_EXACT,
+    ctx.contextValue
+  )
+  assert.equal(ctx.calls.length, 0)
+  assert.equal(
+    documentSelectsPasswordLogin(PW_EXACT, 'authenticateAccountWithPassword'),
+    false
+  )
+})
+
+test('block-all mode (no allowListField) still rejects regardless of context', async () => {
+  const ctx = fakeContext({ 'bot@x.com': { isPasswordLoginAllowed: true } })
+  await assert.rejects(
+    run(createPasswordLoginBlockPlugin(), PW, ctx.contextValue)
+  )
+  assert.equal(ctx.calls.length, 0)
+})
+
+test('non-password operations never touch the context', async () => {
+  const ctx = fakeContext({})
+  await run(
+    createPasswordLoginBlockPlugin({ allowListField: 'x' }),
+    q('{ authenticatedItem { __typename } }'),
+    ctx.contextValue
+  )
+  assert.equal(ctx.calls.length, 0)
+})
+
+test('allow-list: a failing lookup emits one ERROR entry and still rejects', async () => {
+  const ctx = fakeContext(
+    { 'bot@x.com': { isPasswordLoginAllowed: true } },
+    { throws: true }
+  )
+  const capture = captureError()
+  try {
+    await assert.rejects(
+      run(
+        createPasswordLoginBlockPlugin({
+          allowListField: 'isPasswordLoginAllowed',
+        }),
+        PW_EXACT,
+        ctx.contextValue
+      ),
+      assertBlocked
+    )
+  } finally {
+    capture.restore()
+  }
+  assert.equal(capture.calls.length, 1)
+  const entry = parseEntry(capture.calls[0])
+  assert.equal(entry.severity, 'ERROR')
+  assert.equal(entry.type, 'password-login')
+  assert.equal(entry.stage, 'allow-list-lookup')
+  assert.equal(entry.email, 'bot@x.com')
+  assert.ok(String(entry.message).includes('db down'))
+})
+
+test('allow-list: a throwing sudo() and a missing list both reject and log', async () => {
+  const plugin = createPasswordLoginBlockPlugin({
+    allowListField: 'isPasswordLoginAllowed',
+  })
+  const cases: Array<[string, unknown]> = [
+    [
+      'sudo() throws',
+      {
+        sudo: () => {
+          throw new Error('sudo unavailable')
+        },
+      },
+    ],
+    ['list missing from the sudo context', { sudo: () => ({ query: {} }) }],
+  ]
+  const capture = captureError()
+  try {
+    for (const [name, contextValue] of cases) {
+      await assert.rejects(
+        run(plugin, PW_EXACT, contextValue),
+        assertBlocked,
+        name
+      )
+    }
+  } finally {
+    capture.restore()
+  }
+  assert.equal(capture.calls.length, cases.length)
+  for (const call of capture.calls) {
+    const entry = parseEntry(call)
+    assert.equal(entry.severity, 'ERROR')
+    assert.equal(entry.type, 'password-login')
+    assert.equal(entry.stage, 'allow-list-lookup')
+    assert.equal(entry.email, 'bot@x.com')
+  }
+})
+
+test('allow-list: a non-string email literal is rejected without a lookup', async () => {
+  const plugin = createPasswordLoginBlockPlugin({
+    allowListField: 'isPasswordLoginAllowed',
+  })
+  for (const literal of ['123', 'null']) {
+    const ctx = fakeContext({ 'bot@x.com': { isPasswordLoginAllowed: true } })
+    await assert.rejects(
+      run(
+        plugin,
+        q(
+          `mutation { authenticateUserWithPassword(email: ${literal}, password: "p") { __typename } }`
+        ),
+        ctx.contextValue
+      ),
+      assertBlocked,
+      literal
+    )
+    assert.equal(ctx.calls.length, 0, literal)
+  }
+})
+
+test('allow-list: a row that does not carry the field at all is rejected', async () => {
+  const ctx = fakeContext({ 'bot@x.com': {} })
+  await assert.rejects(
+    run(
+      createPasswordLoginBlockPlugin({
+        allowListField: 'isPasswordLoginAllowed',
+      }),
+      PW_EXACT,
+      ctx.contextValue
+    ),
+    assertBlocked
+  )
+  // Proves the row was fetched and then rejected on the missing field, rather
+  // than short-circuiting earlier.
+  assert.equal(ctx.calls.length, 1)
+})
+
+test('allow-list: a password mutation in a second operation is still inspected', async () => {
+  // The single-email cap (see the two-distinct-emails test) means this can no
+  // longer be shown with one allowed and one denied email in the same request,
+  // so the first operation is a harmless mutation instead.
+  const doc = q(`
+    mutation A { createInitialUser(data: {}) { __typename } }
+    mutation B { authenticateUserWithPassword(email: "no@x.com", password: "p") { __typename } }
+  `)
+  const ctx = fakeContext({ 'no@x.com': { isPasswordLoginAllowed: false } })
+  await assert.rejects(
+    run(
+      createPasswordLoginBlockPlugin({
+        allowListField: 'isPasswordLoginAllowed',
+      }),
+      doc,
+      ctx.contextValue
+    ),
+    assertBlocked
+  )
+  assert.deepEqual(ctx.calls, [
+    { where: { email: 'no@x.com' }, query: 'isPasswordLoginAllowed' },
+  ])
+})
+
+test('extract: fieldName selects the mutation named after a custom list key', () => {
+  const doc = q(
+    'mutation { authenticateAccountWithPassword(email: "bot@x.com", password: "p") { __typename } }'
+  )
+  assert.deepEqual(
+    extractPasswordLoginEmails(
+      doc,
+      undefined,
+      'authenticateAccountWithPassword'
+    ),
+    { selected: true, emails: ['bot@x.com'] }
+  )
+  assert.deepEqual(extractPasswordLoginEmails(doc), {
+    selected: false,
+    emails: [],
+  })
 })

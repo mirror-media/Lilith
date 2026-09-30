@@ -279,6 +279,7 @@ model User {
   password                        String
   role                            String
   isProtected                     Boolean            @default(false)
+  isPasswordLoginAllowed          Boolean            @default(false)
   from_EditorChoice_createdBy     EditorChoice[]     @relation("EditorChoice_createdBy")
   from_EditorChoice_updatedBy     EditorChoice[]     @relation("EditorChoice_updatedBy")
   from_Photo_createdBy            Photo[]            @relation("Photo_createdBy")

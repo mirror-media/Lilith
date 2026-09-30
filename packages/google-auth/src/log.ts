@@ -36,7 +36,11 @@ export function formatLogEntry(event: GoogleAuthLogEvent): LogEntry {
  */
 export function formatErrorEntry(
   err: unknown,
-  context: { type: 'google-login'; stage: string; email?: string | null }
+  context: {
+    type: 'google-login' | 'password-login'
+    stage: string
+    email?: string | null
+  }
 ): LogEntry {
   const message = err instanceof Error && err.stack ? err.stack : String(err)
   return {
