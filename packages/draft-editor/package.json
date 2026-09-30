@@ -1,6 +1,6 @@
 {
   "name": "@mirrormedia/lilith-draft-editor",
-  "version": "3.0.15",
+  "version": "3.0.16",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -20,7 +20,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@mirrormedia/lilith-draft-renderer": "^1.4.6",
+    "@mirrormedia/lilith-draft-renderer": "^1.4.8",
     "draft-js": "^0.11.7",
     "js-sha256": "^0.11.0",
     "usehooks-ts": "^2"
