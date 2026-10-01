@@ -545,6 +545,7 @@ model User {
   role                             String
   slugCode                         String              @default("")
   isProtected                      Boolean             @default(false)
+  isPasswordLoginAllowed           Boolean             @default(false)
   from_AudioFile_createdBy         AudioFile[]         @relation("AudioFile_createdBy")
   from_AudioFile_updatedBy         AudioFile[]         @relation("AudioFile_updatedBy")
   from_AnnouncementScope_createdBy AnnouncementScope[] @relation("AnnouncementScope_createdBy")

@@ -12,6 +12,8 @@ import {
 } from '../selector/image-selector'
 
 const { ImageBlock } = MirrorMedia.blockRenderers
+const { ThemeProvider: MirrorMediaThemeProvider, theme: mirrorMediaTheme } =
+  MirrorMedia
 
 const ImageBlockWrapper = styled.div`
   img {
@@ -97,7 +99,9 @@ export function ImageEditorBlock(props: ImageBlockProps) {
         />
       )}
       <ImageBlockWrapper>
-        <ImageBlock {...props} />
+        <MirrorMediaThemeProvider theme={mirrorMediaTheme}>
+          <ImageBlock {...props} />
+        </MirrorMediaThemeProvider>
       </ImageBlockWrapper>
       <ImageEditButton
         onClick={() => {

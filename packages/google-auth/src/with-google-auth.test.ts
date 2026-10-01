@@ -165,6 +165,79 @@ test('passwordLoginEnabled false prepends the block plugin and preserves apolloC
   )
 })
 
+function fakeSudoContext(row: Record<string, unknown> | null) {
+  return {
+    sudo: () => ({
+      query: { User: { findOne: async () => row } },
+    }),
+  }
+}
+
+const ALLOW_LIST_MUTATION =
+  'mutation { authenticateUserWithPassword(email:"bot@x.com",password:"b"){__typename} }'
+
+test('passwordLoginAllowListField is forwarded to the block plugin: allows an allow-listed email, rejects an unknown one', async () => {
+  const config: FakeConfig = { graphql: { apolloConfig: { plugins: [] } } }
+  const wrapped = withGoogleAuth(
+    config,
+    options({
+      passwordLoginEnabled: false,
+      passwordLoginAllowListField: 'isPasswordLoginAllowed',
+    })
+  )
+  const plugin = wrapped.graphql?.apolloConfig?.plugins?.[0] as {
+    requestDidStart(): Promise<{
+      didResolveOperation(ctx: {
+        document: unknown
+        contextValue?: unknown
+      }): Promise<void>
+    }>
+  }
+  const listener = await plugin.requestDidStart()
+  const doc = parse(ALLOW_LIST_MUTATION)
+
+  await assert.doesNotReject(
+    listener.didResolveOperation({
+      document: doc,
+      contextValue: fakeSudoContext({ isPasswordLoginAllowed: true }),
+    })
+  )
+
+  await assert.rejects(
+    listener.didResolveOperation({
+      document: doc,
+      contextValue: fakeSudoContext(null),
+    }),
+    /Password login is disabled/
+  )
+})
+
+test('without passwordLoginAllowListField, the block plugin rejects regardless of contextValue', async () => {
+  const config: FakeConfig = { graphql: { apolloConfig: { plugins: [] } } }
+  const wrapped = withGoogleAuth(
+    config,
+    options({ passwordLoginEnabled: false })
+  )
+  const plugin = wrapped.graphql?.apolloConfig?.plugins?.[0] as {
+    requestDidStart(): Promise<{
+      didResolveOperation(ctx: {
+        document: unknown
+        contextValue?: unknown
+      }): Promise<void>
+    }>
+  }
+  const listener = await plugin.requestDidStart()
+  const doc = parse(ALLOW_LIST_MUTATION)
+
+  await assert.rejects(
+    listener.didResolveOperation({
+      document: doc,
+      contextValue: fakeSudoContext({ isPasswordLoginAllowed: true }),
+    }),
+    /Password login is disabled/
+  )
+})
+
 test('passwordLoginEnabled false creates graphql and apolloConfig when absent', () => {
   const config: FakeConfig = { db: { provider: 'postgresql' } }
   const wrapped = withGoogleAuth(

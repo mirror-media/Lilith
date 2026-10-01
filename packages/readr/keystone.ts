@@ -126,4 +126,5 @@ const keystoneConfig = withAuth(
 export default withGoogleAuth(keystoneConfig, {
   ...envVar.googleAuth,
   stateSecret: appConfig.session.secret,
+  passwordLoginAllowListField: 'isPasswordLoginAllowed',
 })

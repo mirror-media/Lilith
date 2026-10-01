@@ -2277,6 +2277,7 @@ type User {
   role: String
   slugCode: String
   isProtected: Boolean
+  isPasswordLoginAllowed: Boolean
 }
 
 type PasswordState {
@@ -2298,6 +2299,7 @@ input UserWhereInput {
   role: StringFilter
   slugCode: StringFilter
   isProtected: BooleanFilter
+  isPasswordLoginAllowed: BooleanFilter
 }
 
 input UserOrderByInput {
@@ -2307,6 +2309,7 @@ input UserOrderByInput {
   role: OrderDirection
   slugCode: OrderDirection
   isProtected: OrderDirection
+  isPasswordLoginAllowed: OrderDirection
 }
 
 input UserUpdateInput {
@@ -2316,6 +2319,7 @@ input UserUpdateInput {
   role: String
   slugCode: String
   isProtected: Boolean
+  isPasswordLoginAllowed: Boolean
 }
 
 input UserUpdateArgs {
@@ -2330,6 +2334,7 @@ input UserCreateInput {
   role: String
   slugCode: String
   isProtected: Boolean
+  isPasswordLoginAllowed: Boolean
 }
 
 type Video {

@@ -2020,6 +2020,7 @@ type User {
   sectionsCount(where: SectionWhereInput! = {}): Int
   author: Contact
   isProtected: Boolean
+  isPasswordLoginAllowed: Boolean
 }
 
 type PasswordState {
@@ -2042,6 +2043,7 @@ input UserWhereInput {
   sections: SectionManyRelationFilter
   author: ContactWhereInput
   isProtected: BooleanFilter
+  isPasswordLoginAllowed: BooleanFilter
 }
 
 input UserOrderByInput {
@@ -2050,6 +2052,7 @@ input UserOrderByInput {
   email: OrderDirection
   role: OrderDirection
   isProtected: OrderDirection
+  isPasswordLoginAllowed: OrderDirection
 }
 
 input UserUpdateInput {
@@ -2060,6 +2063,7 @@ input UserUpdateInput {
   sections: SectionRelateToManyForUpdateInput
   author: ContactRelateToOneForUpdateInput
   isProtected: Boolean
+  isPasswordLoginAllowed: Boolean
 }
 
 input ContactRelateToOneForUpdateInput {
@@ -2081,6 +2085,7 @@ input UserCreateInput {
   sections: SectionRelateToManyForCreateInput
   author: ContactRelateToOneForCreateInput
   isProtected: Boolean
+  isPasswordLoginAllowed: Boolean
 }
 
 input ContactRelateToOneForCreateInput {

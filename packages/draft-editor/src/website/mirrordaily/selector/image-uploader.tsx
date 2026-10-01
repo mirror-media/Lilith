@@ -228,7 +228,7 @@ export function ImageUploader({
       .filter((file) => !existedImageUids.has(file.uid))
       .map((rawFile) => ({
         ...rawFile,
-        shouldSetWatermark: true,
+        shouldSetWatermark: false,
       }))
 
     setFiles((prev) => prev.concat(newFiles))

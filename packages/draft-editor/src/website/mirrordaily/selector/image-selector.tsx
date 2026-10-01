@@ -92,8 +92,8 @@ const ImageMetaGridsWrapper = styled.div`
   overflow: auto;
 `
 
-const ImageMetaGridWrapper = styled.div`
-  width: 33.3333%;
+const ImageMetaGridWrapper = styled.div<{ $fullWidth?: boolean }>`
+  width: ${({ $fullWidth }) => ($fullWidth ? '100%' : '33.3333%')};
   cursor: pointer;
   padding: 0 10px 10px;
 `
@@ -290,8 +290,10 @@ function ImageMetaGrids(props: {
   onChange: ImageMetaOnChangeFn
   enableCaption: boolean
   enableUrl: boolean
+  enableMultiSelect: boolean
 }) {
-  const { imageMetas, onChange, enableCaption, enableUrl } = props
+  const { imageMetas, onChange, enableCaption, enableUrl, enableMultiSelect } =
+    props
   return (
     <ImageMetaGridsWrapper>
       {imageMetas.map((imageMeta) => (
@@ -300,6 +302,7 @@ function ImageMetaGrids(props: {
           imageMeta={imageMeta}
           enableCaption={enableCaption}
           enableUrl={enableUrl}
+          fullWidth={!enableMultiSelect}
           onChange={onChange}
         />
       ))}
@@ -312,12 +315,13 @@ function ImageMetaGrid(props: {
   onChange: ImageMetaOnChangeFn
   enableCaption: boolean
   enableUrl: boolean
+  fullWidth?: boolean
 }): React.ReactElement {
-  const { imageMeta, enableCaption, enableUrl, onChange } = props
+  const { imageMeta, enableCaption, enableUrl, fullWidth, onChange } = props
   const { image, desc, url } = imageMeta
 
   return (
-    <ImageMetaGridWrapper>
+    <ImageMetaGridWrapper $fullWidth={fullWidth}>
       <Image
         src={image?.resized?.w800}
         onError={(e) => (e.currentTarget.src = image?.imageFile?.url)}
@@ -611,6 +615,7 @@ export function ImageSelector(props: {
                 onChange={onImageMetaChange}
                 enableCaption={enableCaption}
                 enableUrl={enableUrl}
+                enableMultiSelect={enableMultiSelect}
               />
             </ImageSelectionWrapper>
             <ImageBlockMetaWrapper>
