@@ -62,9 +62,9 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    resolveInput: ({ resolvedData }) => {
+    resolveInput: ({ operation, resolvedData }) => {
       const { slug } = resolvedData
-      if (!slug || !slug.trim()) {
+      if (operation === 'create' && (!slug || !slug.trim())) {
         /**
          * @see https://www.mongodb.com/docs/manual/reference/method/ObjectId/
          */
