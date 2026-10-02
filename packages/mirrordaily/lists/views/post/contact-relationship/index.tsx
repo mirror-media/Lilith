@@ -487,6 +487,14 @@ export const controller = (
   const refLabelField = config.fieldMeta.refLabelField
   const refSearchFields = config.fieldMeta.refSearchFields
 
+  // only `writers` has a manual-order JSON field on daily's Post
+  const orderFieldKey =
+    config.fieldMeta.many &&
+    config.listKey === 'Post' &&
+    config.path === 'writers'
+      ? 'manualOrderOfWriters'
+      : null
+
   return {
     refFieldKey: config.fieldMeta.refFieldKey,
     many: config.fieldMeta.many,
@@ -505,7 +513,7 @@ export const controller = (
         : `${config.path} {
               id
               label: ${refLabelField}
-            }`,
+            }${orderFieldKey ? ` ${orderFieldKey}` : ''}`,
     hideCreate: config.fieldMeta.hideCreate,
     // note we're not making the state kind: 'count' when ui.displayMode is set to 'count'.
     // that ui.displayMode: 'count' is really just a way to have reasonable performance
@@ -562,6 +570,23 @@ export const controller = (
           id: x.id,
           label: x.label || x.id,
         }))
+        const orderData =
+          orderFieldKey && Array.isArray(data[orderFieldKey])
+            ? data[orderFieldKey]
+            : []
+        if (orderData.length > 0) {
+          const position = new Map(
+            orderData.map((it: any, index: number) => [
+              String(it && typeof it === 'object' ? it.id : it),
+              index,
+            ])
+          )
+          value.sort(
+            (a: any, b: any) =>
+              (position.get(String(a.id)) ?? Infinity) -
+              (position.get(String(b.id)) ?? Infinity)
+          )
+        }
         return {
           kind: 'many',
           id: data.id,
@@ -668,6 +693,28 @@ export const controller = (
       )
     },
     serialize: (state) => {
+      if (state.kind === 'many' && orderFieldKey) {
+        const currentIds = state.value.map((x) => String(x.id))
+        const initialIds = state.initialValue.map((x) => String(x.id))
+        const unchanged =
+          currentIds.length === initialIds.length &&
+          currentIds.every((id, i) => id === initialIds[i])
+        if (unchanged) {
+          return {}
+        }
+        const output: Record<string, unknown> = {
+          [orderFieldKey]: state.value.map((x) => ({
+            id: x.id,
+            name: x.label || x.id,
+          })),
+        }
+        if (state.id) {
+          output[config.path] = { set: currentIds.map((id) => ({ id })) }
+        } else if (currentIds.length) {
+          output[config.path] = { connect: currentIds.map((id) => ({ id })) }
+        }
+        return output
+      }
       if (state.kind === 'many') {
         const newAllIds = new Set(state.value.map((x) => x.id))
         const initialIds = new Set(state.initialValue.map((x) => x.id))
