@@ -276,6 +276,43 @@ if (envVar.invalidateCDNCacheServerURL) {
   }
 }
 
+if (envVar.externalAutotagging && typeof envVar.dataServiceApi === 'string') {
+  const previousAfterOperation =
+    extendedListConfigurations.hooks?.afterOperation
+
+  extendedListConfigurations.hooks = {
+    ...extendedListConfigurations.hooks,
+    afterOperation: async (params) => {
+      if (typeof previousAfterOperation === 'function') {
+        await previousAfterOperation(params)
+      }
+
+      const { operation, item } = params
+      // externals are retagged never: feed updates every few minutes, so only
+      // the initial import triggers tagging (data-services also skips any
+      // external that already carries a non-partner tag)
+      if (operation === 'create' && item?.state === 'published') {
+        console.log(`[AutoTag] trigger external ${item.id} (create)`)
+        // fire-and-forget: tagging takes ~30s and must not block the import
+        fetch(
+          `${envVar.dataServiceApi}/jobs/auto-tagging/externals/${item.id}`,
+          { method: 'POST' }
+        )
+          .then((res) => {
+            if (!res.ok) {
+              console.error(
+                `[AutoTag] failed for external ${item.id}: ${res.status}`
+              )
+            }
+          })
+          .catch((err) => {
+            console.error(`[AutoTag] error for external ${item.id}:`, err)
+          })
+      }
+    },
+  }
+}
+
 export default utils.addManualOrderRelationshipFields(
   [
     {
