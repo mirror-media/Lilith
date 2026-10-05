@@ -269,6 +269,7 @@ model External {
 
   @@index([partnerId])
   @@index([state])
+  @@index([publishTime])
   @@index([createdById])
   @@index([updatedById])
 }
