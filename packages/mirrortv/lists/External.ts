@@ -67,6 +67,8 @@ const listConfigurations = list({
 
     publishTime: timestamp({
       label: '發佈時間',
+      isIndexed: true,
+      isFilterable: true,
     }),
 
     byline: text({

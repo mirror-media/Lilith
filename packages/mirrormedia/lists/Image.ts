@@ -298,7 +298,9 @@ const listConfigurations = list({
         return
 
       const filename = item.imageFile_id as string
-      const ext = item.imageFile_extension ? `.${item.imageFile_extension}` : ''
+      const rawExt = item.imageFile_extension as string | null
+      const ext = rawExt ? `.${rawExt}` : ''
+      const destExt = rawExt?.toLowerCase() === 'webp' ? '.webP' : ext
       const gcsSourcePath = `images/${filename}${ext}`
 
       const width =
@@ -312,7 +314,7 @@ const listConfigurations = list({
 
       await Promise.all(
         targets.map(async (target) => {
-          const gcsDestPath = `images/${filename}-${target}${ext}`
+          const gcsDestPath = `images/${filename}-${target}${destExt}`
           try {
             await gcsBucket
               .file(gcsSourcePath)

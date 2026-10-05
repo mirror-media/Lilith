@@ -1563,14 +1563,12 @@ if (typeof envVar.invalidateCDNCacheServerURL === 'string') {
 
 export default utils.addManualOrderRelationshipFields(
   [
-    /*
-	{
+    {
       fieldName: 'manualOrderOfWriters',
       targetFieldName: 'writers',
       targetListName: 'Contact',
       targetListLabelField: 'name',
     },
-	*/
     {
       fieldName: 'manualOrderOfSections',
       targetFieldName: 'sections',
