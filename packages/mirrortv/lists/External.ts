@@ -172,6 +172,27 @@ const listConfigurations = list({
       many: true,
     }),
 
+    relatedPosts: relationship({
+      label: '相關文章',
+      ref: 'Post',
+      many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: envVar.externalAutotagging ? 'edit' : 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
+    relatedExternals: relationship({
+      label: '相關外部文章',
+      ref: 'External',
+      many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: envVar.externalAutotagging ? 'edit' : 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
+
     categories: relationship({
       label: '分類',
       ref: 'Category',

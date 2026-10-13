@@ -256,6 +256,8 @@ model External {
   brief                            Json?
   content                          Json?
   tags                             Tag[]          @relation("External_tags")
+  relatedPosts                     Post[]         @relation("External_relatedPosts")
+  relatedExternals                 External[]     @relation("External_relatedExternals")
   categories                       Category[]     @relation("External_categories")
   manualOrderOfCategories          Json?
   source                           String         @default("")
@@ -266,6 +268,7 @@ model External {
   updatedBy                        User?          @relation("External_updatedBy", fields: [updatedById], references: [id])
   updatedById                      Int?           @map("updatedBy")
   from_EditorChoice_externalChoice EditorChoice[] @relation("EditorChoice_externalChoice")
+  from_External_relatedExternals   External[]     @relation("External_relatedExternals")
 
   @@index([partnerId])
   @@index([state])
@@ -417,6 +420,7 @@ model Post {
   updatedBy                          User?               @relation("Post_updatedBy", fields: [updatedById], references: [id])
   updatedById                        Int?                @map("updatedBy")
   from_EditorChoice_choice           EditorChoice[]      @relation("EditorChoice_choice")
+  from_External_relatedPosts         External[]          @relation("External_relatedPosts")
   from_Post_relatedPosts             Post[]              @relation("Post_relatedPosts")
   from_Post_relatedPosts_algo        Post[]              @relation("Post_relatedPosts_algo")
   from_Sale_adPost                   Sale[]              @relation("Sale_adPost")
