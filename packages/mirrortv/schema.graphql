@@ -1048,6 +1048,10 @@ type External {
   content: JSON
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+  relatedPosts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  relatedPostsCount(where: PostWhereInput! = {}): Int
+  relatedExternals(where: ExternalWhereInput! = {}, orderBy: [ExternalOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExternalWhereUniqueInput): [External!]
+  relatedExternalsCount(where: ExternalWhereInput! = {}): Int
   categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   categoriesCount(where: CategoryWhereInput! = {}): Int
   manualOrderOfCategories: JSON
@@ -1081,12 +1085,26 @@ input ExternalWhereInput {
   brief_original: StringFilter
   content_original: StringFilter
   tags: TagManyRelationFilter
+  relatedPosts: PostManyRelationFilter
+  relatedExternals: ExternalManyRelationFilter
   categories: CategoryManyRelationFilter
   source: StringFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
   createdBy: UserWhereInput
   updatedBy: UserWhereInput
+}
+
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
+}
+
+input ExternalManyRelationFilter {
+  every: ExternalWhereInput
+  some: ExternalWhereInput
+  none: ExternalWhereInput
 }
 
 input ExternalOrderByInput {
@@ -1121,6 +1139,8 @@ input ExternalUpdateInput {
   brief: JSON
   content: JSON
   tags: TagRelateToManyForUpdateInput
+  relatedPosts: PostRelateToManyForUpdateInput
+  relatedExternals: ExternalRelateToManyForUpdateInput
   categories: CategoryRelateToManyForUpdateInput
   manualOrderOfCategories: JSON
   source: String
@@ -1134,6 +1154,20 @@ input PartnerRelateToOneForUpdateInput {
   create: PartnerCreateInput
   connect: PartnerWhereUniqueInput
   disconnect: Boolean
+}
+
+input PostRelateToManyForUpdateInput {
+  disconnect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
+}
+
+input ExternalRelateToManyForUpdateInput {
+  disconnect: [ExternalWhereUniqueInput!]
+  set: [ExternalWhereUniqueInput!]
+  create: [ExternalCreateInput!]
+  connect: [ExternalWhereUniqueInput!]
 }
 
 input ExternalUpdateArgs {
@@ -1156,6 +1190,8 @@ input ExternalCreateInput {
   brief: JSON
   content: JSON
   tags: TagRelateToManyForCreateInput
+  relatedPosts: PostRelateToManyForCreateInput
+  relatedExternals: ExternalRelateToManyForCreateInput
   categories: CategoryRelateToManyForCreateInput
   manualOrderOfCategories: JSON
   source: String
@@ -1168,6 +1204,16 @@ input ExternalCreateInput {
 input PartnerRelateToOneForCreateInput {
   create: PartnerCreateInput
   connect: PartnerWhereUniqueInput
+}
+
+input PostRelateToManyForCreateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
+}
+
+input ExternalRelateToManyForCreateInput {
+  create: [ExternalCreateInput!]
+  connect: [ExternalWhereUniqueInput!]
 }
 
 type Image {
@@ -1538,12 +1584,6 @@ input DownloadManyRelationFilter {
   none: DownloadWhereInput
 }
 
-input PostManyRelationFilter {
-  every: PostWhereInput
-  some: PostWhereInput
-  none: PostWhereInput
-}
-
 input PostOrderByInput {
   id: OrderDirection
   slug: OrderDirection
@@ -1658,13 +1698,6 @@ input DownloadRelateToManyForUpdateInput {
   connect: [DownloadWhereUniqueInput!]
 }
 
-input PostRelateToManyForUpdateInput {
-  disconnect: [PostWhereUniqueInput!]
-  set: [PostWhereUniqueInput!]
-  create: [PostCreateInput!]
-  connect: [PostWhereUniqueInput!]
-}
-
 input PostUpdateArgs {
   where: PostWhereUniqueInput!
   data: PostUpdateInput!
@@ -1746,11 +1779,6 @@ input AudioRelateToOneForCreateInput {
 input DownloadRelateToManyForCreateInput {
   create: [DownloadCreateInput!]
   connect: [DownloadWhereUniqueInput!]
-}
-
-input PostRelateToManyForCreateInput {
-  create: [PostCreateInput!]
-  connect: [PostWhereUniqueInput!]
 }
 
 type PromotionVideo {
