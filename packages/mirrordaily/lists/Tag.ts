@@ -42,7 +42,13 @@ const listConfigurations = list({
     topics: relationship({
       ref: 'Topic.tags',
       many: true,
-      ui: { hideCreate: true },
+      ui: {
+        // 只隱藏 CMS 畫面，欄位/關聯/GraphQL 仍在
+        hideCreate: true,
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
   },
   ui: {
@@ -91,6 +97,37 @@ const listConfigurations = list({
       const { slug } = resolvedData
       if (slug === '') {
         addValidationError('slug 不得為空值')
+      }
+    },
+    afterOperation: async ({ operation, originalItem, context }) => {
+      // Tag 刪除時，把 group 專題 groupTags 裡指向此 tag 的那格清空（含對應文字）
+      if (operation !== 'delete' || !originalItem?.id) return
+      const deletedTagId = String(originalItem.id)
+      try {
+        const prisma = (context as any).prisma
+        const needle = JSON.stringify([{ tagId: deletedTagId }])
+        await prisma.$executeRaw`
+          UPDATE "Topic" t
+          SET "groupTags" = (
+            CASE WHEN EXISTS (
+              SELECT 1 FROM jsonb_array_elements(t."groupTags") x
+              WHERE (x->>'tagId') IS NOT NULL AND (x->>'tagId') <> ${deletedTagId}
+            )
+            THEN (
+              SELECT jsonb_agg(
+                CASE WHEN e.elem->>'tagId' = ${deletedTagId}
+                     THEN jsonb_build_object('tagId', NULL, 'text', '')
+                     ELSE e.elem END
+                ORDER BY e.ord
+              )
+              FROM jsonb_array_elements(t."groupTags") WITH ORDINALITY AS e(elem, ord)
+            )
+            ELSE NULL END
+          )
+          WHERE t.type = 'group' AND t."groupTags" @> ${needle}::jsonb
+        `
+      } catch (err) {
+        console.error('[Tag Delete → clean groupTags] Failed:', err)
       }
     },
   },
