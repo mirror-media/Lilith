@@ -1,6 +1,7 @@
 import { utils } from '@mirrormedia/lilith-core'
 import { list } from '@keystone-6/core'
 import { relationship, text } from '@keystone-6/core/fields'
+import envVar from '../environment-variables'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -106,7 +107,8 @@ const listConfigurations = list({
       try {
         const prisma = (context as any).prisma
         const needle = JSON.stringify([{ tagId: deletedTagId }])
-        await prisma.$executeRaw`
+        const affected: Array<{ id: number; state: string | null }> =
+          await prisma.$queryRaw`
           UPDATE "Topic" t
           SET "groupTags" = (
             CASE WHEN EXISTS (
@@ -125,7 +127,22 @@ const listConfigurations = list({
             ELSE NULL END
           )
           WHERE t.type = 'group' AND t."groupTags" @> ${needle}::jsonb
+          RETURNING t.id, t.state
         `
+        // 已發佈的專題要重新產生 JSON，否則會是 tag 的舊資料
+        for (const row of affected) {
+          if (row.state === 'published') {
+            fetch(envVar.topicServiceApi + '?topic_id=' + row.id, {
+              method: 'GET',
+            }).catch((e) =>
+              console.error(
+                '[Tag Delete → regen topic json] Failed:',
+                row.id,
+                e
+              )
+            )
+          }
+        }
       } catch (err) {
         console.error('[Tag Delete → clean groupTags] Failed:', err)
       }

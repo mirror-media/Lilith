@@ -384,14 +384,12 @@ const listConfigurations = list({
         groupTags !== null &&
         !Array.isArray(groupTags)
       ) {
-        addValidationError('Group tags must be an array')
+        addValidationError('Group 標籤格式錯誤')
       }
       if (Array.isArray(groupTags)) {
         // 固定 6 格，擋超量列數
         if (groupTags.length > GROUP_TAGS_ROW_COUNT) {
-          addValidationError(
-            `Group tags cannot exceed ${GROUP_TAGS_ROW_COUNT} rows`
-          )
+          addValidationError(`Group 標籤最多 ${GROUP_TAGS_ROW_COUNT} 組`)
         }
         groupTags.forEach((row, idx) => {
           const tagId = row && typeof row.tagId === 'string' ? row.tagId : ''
@@ -401,19 +399,13 @@ const listConfigurations = list({
 
           // 對應文字每格最多 6 個字（以 code point 計，中文一個字算一個）
           if (Array.from(text).length > 6) {
-            addValidationError(
-              `Group tag row ${
-                idx + 1
-              }: label text must be 6 characters or fewer`
-            )
+            addValidationError(`第 ${idx + 1} 組：對應文字最多 6 個字`)
           }
 
           // 一組必須「標籤與對應文字同時填寫」，或整格留空
           if (hasTag !== hasText) {
             addValidationError(
-              `Group tag row ${
-                idx + 1
-              }: tag and label text must both be filled, or both left empty`
+              `第 ${idx + 1} 組：標籤與對應文字需同時填寫，或整組留空`
             )
           }
         })
@@ -426,9 +418,7 @@ const listConfigurations = list({
           .filter((id): id is string => !!id)
         const hasDuplicate = new Set(tagIds).size !== tagIds.length
         if (hasDuplicate) {
-          addValidationError(
-            'Group tags cannot reference the same Tag more than once'
-          )
+          addValidationError('Group 標籤不可重複選擇同一個標籤')
         }
       }
     },
