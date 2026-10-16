@@ -172,6 +172,27 @@ const listConfigurations = list({
       many: true,
     }),
 
+    relatedPosts: relationship({
+      label: '相關文章',
+      ref: 'Post',
+      many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: envVar.externalAutotagging ? 'edit' : 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
+    relatedExternals: relationship({
+      label: '相關外部文章',
+      ref: 'External',
+      many: true,
+      ui: {
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: envVar.externalAutotagging ? 'edit' : 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
+    }),
+
     categories: relationship({
       label: '分類',
       ref: 'Category',
@@ -271,6 +292,43 @@ if (envVar.invalidateCDNCacheServerURL) {
             )
           }
         }
+      }
+    },
+  }
+}
+
+if (envVar.externalAutotagging && typeof envVar.dataServiceApi === 'string') {
+  const previousAfterOperation =
+    extendedListConfigurations.hooks?.afterOperation
+
+  extendedListConfigurations.hooks = {
+    ...extendedListConfigurations.hooks,
+    afterOperation: async (params) => {
+      if (typeof previousAfterOperation === 'function') {
+        await previousAfterOperation(params)
+      }
+
+      const { operation, item } = params
+      // externals are retagged never: feed updates every few minutes, so only
+      // the initial import triggers tagging (data-services also skips any
+      // external that already carries a non-partner tag)
+      if (operation === 'create' && item?.state === 'published') {
+        console.log(`[AutoTag] trigger external ${item.id} (create)`)
+        // fire-and-forget: tagging takes ~30s and must not block the import
+        fetch(
+          `${envVar.dataServiceApi}/jobs/auto-tagging/externals/${item.id}`,
+          { method: 'POST' }
+        )
+          .then((res) => {
+            if (!res.ok) {
+              console.error(
+                `[AutoTag] failed for external ${item.id}: ${res.status}`
+              )
+            }
+          })
+          .catch((err) => {
+            console.error(`[AutoTag] error for external ${item.id}:`, err)
+          })
       }
     },
   }
