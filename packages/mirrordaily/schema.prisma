@@ -455,6 +455,7 @@ model Topic {
   og_image                     Photo?         @relation("Topic_og_image", fields: [og_imageId], references: [id])
   og_imageId                   Int?           @map("og_image")
   type                         String?        @default("list")
+  groupTags                    Json?
   tags                         Tag[]          @relation("Tag_topics")
   posts                        Post[]         @relation("Post_topics")
   externals                    External[]     @relation("External_topics")
