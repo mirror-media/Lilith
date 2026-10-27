@@ -1,4 +1,4 @@
-FROM node:16-slim
+FROM node:24-slim
 
 ## Install system dependencies, `gcsfuse` in particular.
 RUN set -e; \
@@ -34,6 +34,9 @@ COPY package.json yarn.lock $APP_DIR/
 RUN SKIP_POSTINSTALL=1 yarn install
 
 COPY . $APP_DIR/
+
+## 移除 Node 21+ 內建的 navigator(詳見 strip-navigator.js);設成 ENV 讓 postinstall/build/runtime 皆套用。
+ENV NODE_OPTIONS="--require /app/scripts/strip-navigator.js"
 
 ## Run yarn postinstall
 RUN yarn postinstall
