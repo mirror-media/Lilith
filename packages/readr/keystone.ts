@@ -13,11 +13,14 @@ const { withAuth } = createAuth({
   identityField: 'email',
   sessionData: 'name role',
   secretField: 'password',
-  initFirstItem: {
-    // If there are no items in the database, keystone will ask you to create
-    // a new user, filling in these fields.
-    fields: ['name', 'email', 'password', 'role'],
-  },
+  initFirstItem:
+    envVar.accessControlStrategy === 'gql'
+      ? undefined
+      : {
+          // If there are no items in the database, keystone will ask you to create
+          // a new user, filling in these fields.
+          fields: ['name', 'email', 'password', 'role'],
+        },
 })
 
 const session = statelessSessions(appConfig.session)
