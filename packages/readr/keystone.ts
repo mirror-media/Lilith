@@ -20,11 +20,14 @@ const { withAuth } = createAuth({
   identityField: 'email',
   sessionData: 'name role',
   secretField: 'password',
-  initFirstItem: {
-    // If there are no items in the database, keystone will ask you to create
-    // a new user, filling in these fields.
-    fields: ['name', 'email', 'password', 'role'],
-  },
+  initFirstItem:
+    envVar.accessControlStrategy === 'gql'
+      ? undefined
+      : {
+          // If there are no items in the database, keystone will ask you to create
+          // a new user, filling in these fields.
+          fields: ['name', 'email', 'password', 'role'],
+        },
 })
 
 const session = statelessSessions(appConfig.session)
@@ -96,9 +99,13 @@ export default withAuth(
             '/.well-known/oauth-protected-resource/mcp',
             oauth.protectedResourceMetadata
           )
-          app.post('/oauth/register', oauth.register)
-          app.get('/oauth/authorize', oauth.authorize)
-          app.post('/oauth/token', oauth.token)
+          // OAuth handlers use sudo() to write clients and authorization codes.
+          // Keep them off the read-only API server as well.
+          if (envVar.accessControlStrategy !== 'gql') {
+            app.post('/oauth/register', oauth.register)
+            app.get('/oauth/authorize', oauth.authorize)
+            app.post('/oauth/token', oauth.token)
+          }
           app.post(
             '/mcp',
             createMcpExpressHandler({
