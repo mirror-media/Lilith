@@ -20,6 +20,7 @@ import Award from './Award'
 import PageVariable from './PageVariable'
 import OAuthClient from './OAuthClient'
 import OAuthAuthorizationCode from './OAuthAuthorizationCode'
+import envVar from '../environment-variables'
 
 export const listDefinition = {
   EditorChoice,
@@ -44,4 +45,22 @@ export const listDefinition = {
   Quote,
   OAuthClient,
   OAuthAuthorizationCode,
+}
+
+// Enforce read-only access for every READr list, including User's bootstrap
+// access rules, without changing the shared ACL used by other packages.
+if (envVar.accessControlStrategy === 'gql') {
+  for (const list of Object.values(listDefinition)) {
+    const access = list.access
+    const operation = typeof access === 'function' ? access : access.operation
+    list.access = {
+      ...(typeof access === 'function' ? {} : access),
+      operation: (args) => {
+        if (args.operation !== 'query') return false
+        return typeof operation === 'function'
+          ? operation(args)
+          : operation.query({ ...args, operation: 'query' })
+      },
+    }
+  }
 }

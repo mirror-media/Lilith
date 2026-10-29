@@ -85,8 +85,11 @@ IS_UI_DISABLED=true npm run dev
 ```
 ACCESS_CONTROL_STRATEGY=gql npm run dev
 ```
-切換成 `gql` 模式後，GraphQL API server 就不會檢查使用者是否處於登入的狀態（意即 GraphQL API server 會處理所有的 requests）。
-注意：`gql` 模式的使用上，需要搭配「不允許外部網路的限制」來部署程式碼，以免門戶大開。
+切換成 `gql` 模式後，所有 list 的新增、更新、刪除都會被拒絕，包含已登入的管理員與 `User` list；查詢則沿用既有規則（一般 list 可免登入查詢，`User` 仍受原本的角色權限限制）。此限制只套用於 READr，不影響其他 package 的 `gql` 模式，也不改變 `cms`、`preview` 的權限行為。
+
+`gql` 模式也會停用首次建立使用者的 mutation，以及會透過 `sudo()` 寫入資料的 `/oauth/register`、`/oauth/authorize`、`/oauth/token` endpoints。若啟用 MCP，其透過 `context.query` 執行的寫入同樣會被 list access control 拒絕。
+
+注意：`gql` 模式仍可能提供未公開內容的查詢，需要搭配「不允許外部網路的限制」來部署程式碼。
 
 ## How we upload images
 請見[圖片上傳與 resize — 以 openwarehouse-k6 為例](https://paper.dropbox.com/doc/resize-openwarehouse-k6---BgSS7fZlve8ejXyx8NAwLQ0eAg-nEMMAMYOoMLvaaI2bcyBf)。
