@@ -59,8 +59,8 @@ async function createTaggingTask(externalId: string) {
     )
 
     if (!envVar.dataServiceInvokerServiceAccount) {
-      console.warn(
-        '[EXTERNAL-HOOK] DATA_SERVICE_INVOKER_SA is not set: tagging task will call data-services without an ID token'
+      throw new Error(
+        'DATA_SERVICE_INVOKER_SA is not set: refusing to create a tagging task without an ID token'
       )
     }
 
@@ -78,14 +78,10 @@ async function createTaggingTask(externalId: string) {
         ),
         // Cloud Tasks signs an ID token as this service account so the
         // request passes data-services' invoker IAM check.
-        ...(envVar.dataServiceInvokerServiceAccount
-          ? {
-              oidcToken: {
-                serviceAccountEmail: envVar.dataServiceInvokerServiceAccount,
-                audience: dataServiceAudience(),
-              },
-            }
-          : {}),
+        oidcToken: {
+          serviceAccountEmail: envVar.dataServiceInvokerServiceAccount,
+          audience: dataServiceAudience(),
+        },
       },
     }
     const [response] = await tasksClient.createTask({ parent, task })
