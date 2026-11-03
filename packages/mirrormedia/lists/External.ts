@@ -3,6 +3,7 @@ import { list } from '@keystone-6/core'
 import { select, text, timestamp, relationship } from '@keystone-6/core/fields'
 import { CloudTasksClient, protos } from '@google-cloud/tasks'
 import envVar from '../environment-variables'
+import { dataServiceAudience } from '../utils/data-service'
 import Redis from 'ioredis'
 
 const { allowRoles, admin, moderator } = utils.accessControl
@@ -69,6 +70,16 @@ async function createTaggingTask(externalId: string) {
             externalId: externalId,
           })
         ),
+        // Cloud Tasks signs an ID token as this service account so the
+        // request passes data-services' invoker IAM check.
+        ...(envVar.dataServiceInvokerServiceAccount
+          ? {
+              oidcToken: {
+                serviceAccountEmail: envVar.dataServiceInvokerServiceAccount,
+                audience: dataServiceAudience(),
+              },
+            }
+          : {}),
       },
     }
     const [response] = await tasksClient.createTask({ parent, task })

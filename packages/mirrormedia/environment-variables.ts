@@ -19,6 +19,7 @@ const {
   CACHE_CONNECT_TIMEOUT,
   CACHE_MAXAGE,
   DATA_SERVICE_API,
+  DATA_SERVICE_INVOKER_SA,
   INVALID_CDN_CACHE_SERVER_URL,
   AUTO_TAGGING,
   AUTO_FAQ_POST,
@@ -106,6 +107,8 @@ export default {
     maxAge: Number.isNaN(cacheMaxAge) ? 60 : cacheMaxAge, // unit: second
   },
   dataServiceApi: DATA_SERVICE_API,
+  // Service account Cloud Tasks signs ID tokens as when calling data-services.
+  dataServiceInvokerServiceAccount: DATA_SERVICE_INVOKER_SA || '',
   autotagging: AUTO_TAGGING === 'true',
   autoFaqPost: AUTO_FAQ_POST === 'true',
   autoFaqExternal: AUTO_FAQ_EXTERNAL === 'true',
