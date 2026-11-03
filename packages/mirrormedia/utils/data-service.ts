@@ -33,11 +33,14 @@ function getIdTokenClient(): Promise<IdTokenClient> {
 async function getAuthorization(): Promise<string | undefined> {
   try {
     const client = await getIdTokenClient()
-    const { Authorization } = await client.getRequestHeaders()
+    // google-auth-library v9 returns a plain object, v10 a Headers instance.
+    const Authorization = new Headers(
+      (await client.getRequestHeaders()) as HeadersInit
+    ).get('Authorization')
     if (Authorization) {
       lastAuthorization = Authorization
     }
-    return Authorization
+    return Authorization ?? undefined
   } catch (err) {
     console.warn(
       `[DATA-SERVICE] Failed to get ID token${
