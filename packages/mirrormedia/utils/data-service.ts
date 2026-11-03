@@ -4,8 +4,7 @@ import envVar from '../environment-variables'
 const auth = new GoogleAuth()
 let idTokenClient: Promise<IdTokenClient> | undefined
 // Last Authorization header that was successfully minted. Reused when a
-// refresh fails (e.g. metadata server hiccup): a possibly-stale token has a
-// better chance than an anonymous request once the invoker is restricted.
+// refresh fails (e.g. metadata server hiccup).
 let lastAuthorization: string | undefined
 
 function baseUrl(): string {
@@ -30,34 +29,36 @@ function getIdTokenClient(): Promise<IdTokenClient> {
   return idTokenClient
 }
 
-async function getAuthorization(): Promise<string | undefined> {
+async function getAuthorization(): Promise<string> {
   try {
     const client = await getIdTokenClient()
     // google-auth-library v9 returns a plain object, v10 a Headers instance.
     const Authorization = new Headers(
       (await client.getRequestHeaders()) as HeadersInit
     ).get('Authorization')
-    if (Authorization) {
-      lastAuthorization = Authorization
+    if (!Authorization) {
+      throw new Error('no Authorization header returned')
     }
-    return Authorization ?? undefined
+    lastAuthorization = Authorization
+    return Authorization
   } catch (err) {
-    console.warn(
-      `[DATA-SERVICE] Failed to get ID token${
-        lastAuthorization
-          ? ', reusing the previous one'
-          : ', sending anonymous request'
-      }:`,
-      (err as Error).message
+    if (lastAuthorization) {
+      console.warn(
+        '[DATA-SERVICE] Failed to refresh ID token, reusing the previous one:',
+        (err as Error).message
+      )
+      return lastAuthorization
+    }
+    throw new Error(
+      `[DATA-SERVICE] Failed to get ID token: ${(err as Error).message}`
     )
-    return lastAuthorization
   }
 }
 
 /**
  * fetch() against data-services with a Google-signed ID token so the call
- * passes Cloud Run's invoker IAM check. Falls back to an anonymous request
- * when no credential is available (local development).
+ * passes Cloud Run's invoker IAM check. Never sends an anonymous request:
+ * throws when no ID token can be obtained.
  */
 export async function fetchDataService(
   path: string,
@@ -65,9 +66,6 @@ export async function fetchDataService(
 ): Promise<Response> {
   const url = baseUrl() + path
   const headers = new Headers(init.headers)
-  const authorization = await getAuthorization()
-  if (authorization) {
-    headers.set('Authorization', authorization)
-  }
+  headers.set('Authorization', await getAuthorization())
   return fetch(url, { ...init, headers })
 }
