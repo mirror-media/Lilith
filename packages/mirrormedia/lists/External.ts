@@ -58,6 +58,12 @@ async function createTaggingTask(externalId: string) {
       queueName
     )
 
+    if (!envVar.dataServiceInvokerServiceAccount) {
+      console.warn(
+        '[EXTERNAL-HOOK] DATA_SERVICE_INVOKER_SA is not set: tagging task will call data-services without an ID token'
+      )
+    }
+
     const task = {
       httpRequest: {
         httpMethod: protos.google.cloud.tasks.v2.HttpMethod.POST,
