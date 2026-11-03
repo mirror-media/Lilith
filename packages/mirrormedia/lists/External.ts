@@ -3,6 +3,7 @@ import { list } from '@keystone-6/core'
 import { select, text, timestamp, relationship } from '@keystone-6/core/fields'
 import { CloudTasksClient, protos } from '@google-cloud/tasks'
 import envVar from '../environment-variables'
+import { dataServiceAudience } from '../utils/data-service'
 import Redis from 'ioredis'
 
 const { allowRoles, admin, moderator } = utils.accessControl
@@ -57,6 +58,12 @@ async function createTaggingTask(externalId: string) {
       queueName
     )
 
+    if (!envVar.dataServiceInvokerServiceAccount) {
+      throw new Error(
+        'DATA_SERVICE_INVOKER_SA is not set: refusing to create a tagging task without an ID token'
+      )
+    }
+
     const task = {
       httpRequest: {
         httpMethod: protos.google.cloud.tasks.v2.HttpMethod.POST,
@@ -69,6 +76,12 @@ async function createTaggingTask(externalId: string) {
             externalId: externalId,
           })
         ),
+        // Cloud Tasks signs an ID token as this service account so the
+        // request passes data-services' invoker IAM check.
+        oidcToken: {
+          serviceAccountEmail: envVar.dataServiceInvokerServiceAccount,
+          audience: dataServiceAudience(),
+        },
       },
     }
     const [response] = await tasksClient.createTask({ parent, task })

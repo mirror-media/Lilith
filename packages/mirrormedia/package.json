@@ -32,6 +32,7 @@
     "@twreporter/errors": "^1.1.2",
     "express": "^4.17.1",
     "firebase-admin": "^11.4.1",
+    "google-auth-library": "^9.15.1",
     "graphql-upload": "^15.0.2",
     "http-proxy-middleware": "^2.0.3",
     "http2-proxy": "^5.0.53",
