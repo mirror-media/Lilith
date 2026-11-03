@@ -63,23 +63,25 @@ const listConfigurations = list({
   },
   hooks: {
     afterOperation: async () => {
-      try {
-        const response = await fetchDataService(
-          '/gql_to_json?bucket=' +
-            envVar.gcs.bucket +
-            '&dest_file=files/json/promoting-video.json&gql_string=query { promoteVideos( where: { state: { equals: "published" } OR: [ { videoLink: { contains: "youtube.com" } } { videoLink: { contains: "youtu.be" } } ] } take: 6 orderBy: [{ order: asc }]) { id videoLink } }',
-          {
-            method: 'GET',
-          }
-        )
-        if (!response.ok) {
-          console.error(
-            `[PROMOTE-VIDEO] Failed: ${response.status} ${response.statusText}`
-          )
+      // Fire-and-forget: regenerating the JSON must not block the save.
+      void fetchDataService(
+        '/gql_to_json?bucket=' +
+          envVar.gcs.bucket +
+          '&dest_file=files/json/promoting-video.json&gql_string=query { promoteVideos( where: { state: { equals: "published" } OR: [ { videoLink: { contains: "youtube.com" } } { videoLink: { contains: "youtu.be" } } ] } take: 6 orderBy: [{ order: asc }]) { id videoLink } }',
+        {
+          method: 'GET',
         }
-      } catch (error) {
-        console.error('[PROMOTE-VIDEO] Error:', error)
-      }
+      )
+        .then((response) => {
+          if (!response.ok) {
+            console.error(
+              `[PROMOTE-VIDEO] Failed: ${response.status} ${response.statusText}`
+            )
+          }
+        })
+        .catch((error) => {
+          console.error('[PROMOTE-VIDEO] Error:', error)
+        })
     },
   },
 })
