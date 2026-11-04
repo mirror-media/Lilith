@@ -44,6 +44,11 @@ import {
   CUSTOM_STYLE_PREFIX_FONT_COLOR,
   CUSTOM_STYLE_PREFIX_BACKGROUND_COLOR,
 } from '../../draft-js/const'
+import {
+  getHeadingBlockType,
+  getHeadingShortcutCommand,
+} from '../../draft-js/heading-shortcuts'
+import type { HeadingShortcutCommand } from '../../draft-js/heading-shortcuts'
 import { ImageEntity, ImageSelector } from './selector/image-selector'
 import { VideoEntity, VideoSelector } from './selector/video-selector'
 import { PostEntity, PostSelector } from './selector/post-selector'
@@ -493,10 +498,19 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
   }
 
   handleKeyCommand = (
-    command: DraftEditorCommand,
+    command: DraftEditorCommand | HeadingShortcutCommand,
     editorState: EditorState
   ): DraftHandleValue => {
-    const newState = RichUtils.handleKeyCommand(editorState, command)
+    const headingBlockType = getHeadingBlockType(command)
+    if (headingBlockType) {
+      this.onChange(RichUtils.toggleBlockType(editorState, headingBlockType))
+      return 'handled'
+    }
+
+    const newState = RichUtils.handleKeyCommand(
+      editorState,
+      command as DraftEditorCommand
+    )
     if (newState) {
       this.onChange(newState)
       return 'handled'
@@ -526,6 +540,16 @@ class RichTextEditor extends React.Component<RichTextEditorProps, State> {
       }
       return null
     }
+
+    const headingCommand = getHeadingShortcutCommand(
+      e,
+      KeyBindingUtil.usesMacOSHeuristics(),
+      this.props.disabledButtons ?? []
+    )
+    if (headingCommand) {
+      return headingCommand
+    }
+
     return getDefaultKeyBinding(e)
   }
 
