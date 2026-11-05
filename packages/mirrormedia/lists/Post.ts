@@ -11,6 +11,7 @@ import {
   virtual,
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
+import { fetchDataService } from '../utils/data-service'
 import Redis from 'ioredis'
 // @ts-ignore draft-js does not have typescript definition
 import { RawContentState } from 'draft-js'
@@ -1126,10 +1127,8 @@ const listConfigurations = list({
 
         if (shouldTriggerAutoTag) {
           try {
-            const response = await fetch(
-              envVar.dataServiceApi +
-                '/post_tagging_with_relation?id=' +
-                item.id,
+            const response = await fetchDataService(
+              '/post_tagging_with_relation?id=' + item.id,
               { method: 'GET' }
             )
             if (!response.ok) {
@@ -1162,10 +1161,9 @@ const listConfigurations = list({
           JSON.stringify(item.brief) !== JSON.stringify(originalItem?.brief)
         if (stateChangedToPublished || autoFaqJustEnabled || contentChanged) {
           try {
-            const response = await fetch(
-              envVar.dataServiceApi + '/post_faq?id=' + item.id,
-              { method: 'GET' }
-            )
+            const response = await fetchDataService('/post_faq?id=' + item.id, {
+              method: 'GET',
+            })
             if (!response.ok) {
               console.error(
                 `[AUTO-FAQ] Failed: ${response.status} ${response.statusText}`
