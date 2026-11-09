@@ -1,5 +1,13 @@
 # @mirrormedia/lilith-core Changelog
 
+## 2026-11-06, Version 3.0.11-beta.13
+
+### Notable Changes
+- add `ANONYMOUS_WRITE_MODE` (`off` / `log` / `enforce`, default `log`) to `allowRoles` in `gql` and `preview` access control strategies
+- `log` keeps behaviour and writes one `[anonymous-write]` line per anonymous create/update/delete; `enforce` rejects them; queries, `cms` and `restricted` are unchanged
+- unrecognised `ANONYMOUS_WRITE_MODE` values fall back to `log` with a one-time warning
+- add a minimal `tsx --test` setup to core; test files are not published
+
 ## 2025-12-02, Version 3.0.11-beta.2
 
 ### Notable Changes
