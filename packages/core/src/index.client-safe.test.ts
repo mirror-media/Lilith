@@ -10,13 +10,21 @@ import path from 'node:path'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const NODE_BUILTINS: string[] = require('module').builtinModules
 
-// 先去掉註解與「只引入型別」的語句（編譯後會被抹掉，不會進打包），
+// 先去掉註解與「只引入型別」的語句（編譯後會被抹掉，不會進打包）；型別語句只比對
+// import type / export type 的固定寫法，不能用「到分號為止」，這個 repo 沒有分號，
 // 再找 from、require(、import( 與只有副作用的 import '...'
 const importsOf = (source: string) => {
   const code = source
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/^\s*\/\/.*$/gm, '')
-    .replace(/\b(?:import|export)\s+type\s[^;]*?from\s*['"][^'"]+['"]/g, '')
+    .replace(
+      /\bimport\s+type\s+(?:[\w$]+|\*\s+as\s+[\w$]+|\{[^}]*\})\s*from\s*['"][^'"]+['"]/g,
+      ''
+    )
+    .replace(
+      /\bexport\s+type\s+(?:\*(?:\s+as\s+[\w$]+)?|\{[^}]*\})\s*from\s*['"][^'"]+['"]/g,
+      ''
+    )
   return [
     ...code.matchAll(
       /(?:\bfrom|\brequire\s*\(|\bimport\s*\(|\bimport)\s*['"]([^'"]+)['"]/g
@@ -110,6 +118,22 @@ test('守護測試本身抓得到:相對路徑找不到檔案時明確報錯,不
 test('守護測試不誤判:只引入型別的 Node 模組不算', () => {
   const entry = fixture({
     'index.ts': "import type { Socket } from 'net'\nexport type S = Socket\n",
+  })
+  assert.deepEqual(findNodeBuiltinImports(entry), [])
+})
+
+test('守護測試本身抓得到:無分號的型別別名後面再引入 Node 模組', () => {
+  const entry = fixture({
+    'index.ts':
+      "export type A = {\n  x: 1\n}\nimport { isIP } from 'net'\nexport const f = isIP\n",
+  })
+  assert.deepEqual(findNodeBuiltinImports(entry), ['index.ts 載入了 net'])
+})
+
+test('守護測試不誤判:跨行的 import type 不算', () => {
+  const entry = fixture({
+    'index.ts':
+      "import type {\n  Socket,\n  Server,\n} from 'net'\nexport type S = Socket | Server\n",
   })
   assert.deepEqual(findNodeBuiltinImports(entry), [])
 })

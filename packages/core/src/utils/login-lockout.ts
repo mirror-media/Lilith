@@ -5,6 +5,7 @@ import type { GraphQLSchema } from 'graphql'
 // 登入失敗鎖定（環境變數 LOGIN_LOCKOUT_MODE）：
 // off：不計次、不攔截；log：計次並記錄「會被鎖定」但不拒絕（預設）；
 // enforce：超過門檻後直接回與一般登入失敗相同的結果，不進入真正的登入
+// enforce 必須明確設定 LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS，沒設會退回 log
 //
 // 包住 Keystone 的 authenticate<List>WithPassword resolver，帳號與密碼取自
 // 已解析的參數，不檢查查詢文字或回應
@@ -298,14 +299,14 @@ export function createLoginLockout(options: LoginLockoutOptions = {}) {
   }
 
   const settings = () => {
-    const envHops = Number.parseInt(
-      process.env.LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS ?? '',
-      10
-    )
+    // 整段都要是數字：1abc、1.5 這類值不算明確設定
+    const envRaw = process.env.LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS?.trim()
     const configuredHops =
-      options.trustedProxyHops ??
-      (Number.isFinite(envHops) ? envHops : undefined)
-    const hopsExplicit = configuredHops !== undefined && configuredHops >= 1
+      options.trustedProxyHops ?? (envRaw ? Number(envRaw) : undefined)
+    const hopsExplicit =
+      configuredHops !== undefined &&
+      Number.isInteger(configuredHops) &&
+      configuredHops >= 1
 
     return {
       mode: resolveMode(options.mode ?? getMode(), hopsExplicit),

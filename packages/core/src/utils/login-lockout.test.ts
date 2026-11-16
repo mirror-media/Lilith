@@ -41,7 +41,9 @@ const makeApp = (options: Options = {}) => {
   let realLogins = 0
 
   const schema = buildSchema(sdl)
-  const mutation = schema.getMutationType()!.getFields()
+  const mutationType = schema.getMutationType()
+  if (!mutationType) throw new Error('測試用的結構沒有 Mutation')
+  const mutation = mutationType.getFields()
   mutation.authenticateUserWithPassword.resolve = (
     _root: unknown,
     args: { email: string; password: string }
@@ -487,6 +489,53 @@ test('enforce 沒有明確設定 trustedProxyHops 時退回 log,只警告一次,
     .filter((w) => w.includes('LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS'))
   assert.equal(warns.length, 1)
   assert.ok(out.logs().some((l) => l.includes('would-block')))
+})
+
+test('hops 不是整數(1.5)不算明確設定:enforce 退回 log 並警告', async (t) => {
+  const out = await withApp(t, { trustedProxyHops: 1.5 }, async (app) => {
+    for (let i = 0; i < 6; i++) {
+      await app.login('alice@example.com', 'bad', '203.0.113.7')
+    }
+    assert.equal(
+      (await app.login('alice@example.com', 'right', '203.0.113.7')).body,
+      SUCCESS_BODY
+    )
+  })
+
+  assert.ok(
+    out.warns().some((w) => w.includes('LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS'))
+  )
+})
+
+test('環境變數 hops 帶了多餘的字(1abc、1.5)不算明確設定', async (t) => {
+  const previous = process.env.LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS
+  try {
+    for (const bad of ['1abc', '1.5']) {
+      process.env.LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS = bad
+      const out = await withApp(
+        t,
+        { trustedProxyHops: undefined },
+        async (app) => {
+          for (let i = 0; i < 6; i++) {
+            await app.login('alice@example.com', 'bad', '203.0.113.7')
+          }
+          assert.equal(
+            (await app.login('alice@example.com', 'right', '203.0.113.7')).body,
+            SUCCESS_BODY,
+            bad
+          )
+        }
+      )
+      assert.ok(
+        out.warns().some((w) => w.includes('LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS')),
+        bad
+      )
+    }
+  } finally {
+    if (previous === undefined)
+      delete process.env.LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS
+    else process.env.LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS = previous
+  }
 })
 
 test('用環境變數明確設定 LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS 就能 enforce', async (t) => {

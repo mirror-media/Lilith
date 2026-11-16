@@ -9,7 +9,7 @@
 - add `createMemoryLockoutStore` (per instance) and `createRedisLockoutStore` (pass an ioredis-compatible client; shared across instances)
 - these use Node-only modules, so they are NOT exported from the package entry (the Admin UI bundles the entry and would fail with `Can't resolve 'net'`); load them on the server side with `require('@mirrormedia/lilith-core/lib/utils/login-lockout')` (the subpath has no type declarations for TypeScript consumers, so use `require`, as `login-logging` does)
 - `createRedisLockoutStore` needs Redis 5.0 or later; create the ioredis client with `enableOfflineQueue: false` and a small `maxRetriesPerRequest`
-- `enforce` requires an explicit `LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS` (1 or more, counted from the right of `x-forwarded-for`); without it the mode falls back to `log` with a one-time warning. In `log` mode every attempt writes an `attempt` line with `ip` and `forwardedCount` (how many `x-forwarded-for` entries), so the value can be checked against real traffic first
+- `enforce` requires an explicit `LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS` (an integer, 1 or more, counted from the right of `x-forwarded-for`); without it the mode falls back to `log` with a one-time warning. In `log` mode every attempt writes an `attempt` line with `ip` and `forwardedCount` (how many `x-forwarded-for` entries), so the value can be checked against real traffic first
 - nothing is wired into any app yet
 
 ## 2026-11-06, Version 3.0.11-beta.13
