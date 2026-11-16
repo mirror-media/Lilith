@@ -1214,6 +1214,8 @@ type Post {
   updateTimeStamp: Boolean
   pv: Int
   preview: JSON
+  notYahoo: Boolean
+  notLine: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
@@ -1274,6 +1276,8 @@ input PostWhereInput {
   state: StringNullableFilter
   publishedDate: DateTimeFilter
   pv: IntNullableFilter
+  notYahoo: BooleanFilter
+  notLine: BooleanFilter
   isFeatured: BooleanFilter
   isAdvertised: BooleanFilter
   hiddenAdvertised: BooleanFilter
@@ -1317,6 +1321,8 @@ input PostOrderByInput {
   publishedDate: OrderDirection
   updateTimeStamp: OrderDirection
   pv: OrderDirection
+  notYahoo: OrderDirection
+  notLine: OrderDirection
   isFeatured: OrderDirection
   isAdvertised: OrderDirection
   hiddenAdvertised: OrderDirection
@@ -1374,6 +1380,8 @@ input PostUpdateInput {
   publishedDate: DateTime
   updateTimeStamp: Boolean
   pv: Int
+  notYahoo: Boolean
+  notLine: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean
@@ -1475,6 +1483,8 @@ input PostCreateInput {
   publishedDate: DateTime
   updateTimeStamp: Boolean
   pv: Int
+  notYahoo: Boolean
+  notLine: Boolean
   isFeatured: Boolean
   isAdvertised: Boolean
   hiddenAdvertised: Boolean

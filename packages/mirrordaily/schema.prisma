@@ -315,6 +315,8 @@ model Post {
   publishedDate              DateTime       @default(now())
   updateTimeStamp            Boolean        @default(false)
   pv                         Int?           @default(0)
+  notYahoo                   Boolean        @default(false)
+  notLine                    Boolean        @default(false)
   isFeatured                 Boolean        @default(false)
   isAdvertised               Boolean        @default(false)
   hiddenAdvertised           Boolean        @default(false)
