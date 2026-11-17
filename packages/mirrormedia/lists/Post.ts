@@ -36,7 +36,7 @@ snapshotCleanupTimer.unref()
 const POST_BASE_QUERY = `
   id slug title subtitle state publishedDate publishedDateString
   heroCaption style isMember memberFeed isFeatured isAdvertised
-  hiddenAdvertised isAdult redirect adTrace css
+  hiddenAdvertised isAdult notYahoo notLine redirect adTrace css
   og_title og_description extend_byline
   sections { id name } categories { id name }
   writers { id name } photographers { id name }
@@ -780,6 +780,14 @@ const listConfigurations = list({
     }),
     isAdult: checkbox({
       label: '18禁',
+      defaultValue: false,
+    }),
+    notYahoo: checkbox({
+      label: '不供稿給 Yahoo',
+      defaultValue: false,
+    }),
+    notLine: checkbox({
+      label: '不供稿給 Line',
       defaultValue: false,
     }),
     auto_faq: checkbox({
