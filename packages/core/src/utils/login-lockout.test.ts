@@ -814,3 +814,153 @@ test(
     await client.quit()
   }
 )
+
+// ---- 數值設定與儲存提示 ----
+
+const withEnv = async (
+  vars: Record<string, string>,
+  fn: () => Promise<void>
+) => {
+  const previous: Record<string, string | undefined> = {}
+  for (const [name, value] of Object.entries(vars)) {
+    previous[name] = process.env[name]
+    process.env[name] = value
+  }
+  try {
+    await fn()
+  } finally {
+    for (const [name, value] of Object.entries(previous)) {
+      if (value === undefined) delete process.env[name]
+      else process.env[name] = value
+    }
+  }
+}
+
+const hasWarning = (warns: string[], text: string) =>
+  warns.some((w) => w.includes('[login-lockout]') && w.includes(text))
+
+test('失敗門檻填 0 會退回預設,不會第一次就鎖', async (t) => {
+  await withEnv({ LOGIN_LOCKOUT_MAX_FAILURES: '0' }, async () => {
+    const out = await withApp(t, { maxFailures: undefined }, async (app) => {
+      for (let i = 0; i < 3; i++) await app.login('alice@example.com', 'bad')
+      assert.equal(
+        (await app.login('alice@example.com', 'right')).body,
+        SUCCESS_BODY
+      )
+    })
+    assert.ok(hasWarning(out.warns(), 'LOGIN_LOCKOUT_MAX_FAILURES'))
+  })
+})
+
+test('計次視窗填 0 會退回預設,不會永遠不鎖', async (t) => {
+  await withEnv({ LOGIN_LOCKOUT_WINDOW_SECONDS: '0' }, async () => {
+    const out = await withApp(t, { windowSeconds: undefined }, async (app) => {
+      for (let i = 0; i < 5; i++) await app.login('alice@example.com', 'bad')
+      app.advance(1)
+      assert.equal(
+        (await app.login('alice@example.com', 'bad')).body,
+        FAILURE_BODY
+      )
+      assert.equal(
+        (await app.login('alice@example.com', 'right')).body,
+        FAILURE_BODY
+      )
+    })
+    assert.ok(hasWarning(out.warns(), 'LOGIN_LOCKOUT_WINDOW_SECONDS'))
+  })
+})
+
+test('鎖定時長填 0 會退回預設,不會等於沒鎖', async (t) => {
+  await withEnv({ LOGIN_LOCKOUT_DURATION_SECONDS: '0' }, async () => {
+    const out = await withApp(
+      t,
+      { durationSeconds: undefined },
+      async (app) => {
+        for (let i = 0; i < 6; i++) await app.login('alice@example.com', 'bad')
+        assert.equal(
+          (await app.login('alice@example.com', 'right')).body,
+          FAILURE_BODY
+        )
+      }
+    )
+    assert.ok(hasWarning(out.warns(), 'LOGIN_LOCKOUT_DURATION_SECONDS'))
+  })
+})
+
+test('儲存逾時填 0 會退回預設,不會每次都放行', async (t) => {
+  await withEnv({ LOGIN_LOCKOUT_STORE_TIMEOUT_MS: '0' }, async () => {
+    const inner = createMemoryLockoutStore()
+    const slow = {
+      hit: async (key: string, rule: unknown) => {
+        await new Promise((resolve) => setTimeout(resolve, 20))
+        return inner.hit(key, rule)
+      },
+      reset: (key: string) => inner.reset(key),
+    }
+    const out = await withApp(t, { store: slow }, async (app) => {
+      for (let i = 0; i < 6; i++) await app.login('alice@example.com', 'bad')
+      assert.equal(
+        (await app.login('alice@example.com', 'right')).body,
+        FAILURE_BODY
+      )
+    })
+    assert.ok(hasWarning(out.warns(), 'LOGIN_LOCKOUT_STORE_TIMEOUT_MS'))
+  })
+})
+
+test('用選項傳 0 也退回預設', async (t) => {
+  const out = await withApp(t, { maxFailures: 0 }, async (app) => {
+    for (let i = 0; i < 3; i++) await app.login('alice@example.com', 'bad')
+    assert.equal(
+      (await app.login('alice@example.com', 'right')).body,
+      SUCCESS_BODY
+    )
+  })
+  assert.ok(hasWarning(out.warns(), 'maxFailures'))
+})
+
+test('鎖定時的假等待可以填 0,不警告', async (t) => {
+  await withEnv({ LOGIN_LOCKOUT_LOCKED_DELAY_MS: '0' }, async () => {
+    const out = await withApp(t, { lockedDelayMs: undefined }, async (app) => {
+      await app.login('alice@example.com', 'bad')
+    })
+    assert.equal(
+      hasWarning(out.warns(), 'LOGIN_LOCKOUT_LOCKED_DELAY_MS'),
+      false
+    )
+  })
+})
+
+test('沒傳 store 時使用預設記憶體,警告一次,說明多實例各自計次', async (t) => {
+  const out = await withApp(
+    t,
+    { mode: 'log', store: undefined },
+    async (app) => {
+      await app.login('alice@example.com', 'bad')
+      await app.login('alice@example.com', 'bad')
+    }
+  )
+  const warns = out.warns().filter((w) => w.includes('預設的記憶體'))
+  assert.equal(warns.length, 1)
+})
+
+test('有傳 store 就不顯示預設記憶體的警告', async (t) => {
+  const out = await withApp(t, { mode: 'log' }, async (app) => {
+    await app.login('alice@example.com', 'bad')
+  })
+  assert.equal(out.warns().filter((w) => w.includes('預設的記憶體')).length, 0)
+})
+
+test('enforce 沒有明確傳入 store 時退回 log 並警告,不拒絕登入', async (t) => {
+  const out = await withApp(t, { store: undefined }, async (app) => {
+    for (let i = 0; i < 8; i++) {
+      await app.login('alice@example.com', 'bad', '203.0.113.7')
+    }
+    assert.equal(
+      (await app.login('alice@example.com', 'right', '203.0.113.7')).body,
+      SUCCESS_BODY
+    )
+  })
+  assert.ok(hasWarning(out.warns(), 'store'))
+  assert.ok(out.logs().some((l) => l.includes('would-block')))
+})

@@ -5,7 +5,7 @@ import type { GraphQLSchema } from 'graphql'
 // 登入失敗鎖定（環境變數 LOGIN_LOCKOUT_MODE）：
 // off：不計次、不攔截；log：計次並記錄「會被鎖定」但不拒絕（預設）；
 // enforce：超過門檻後直接回與一般登入失敗相同的結果，不進入真正的登入
-// enforce 必須明確設定 LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS，沒設會退回 log
+// enforce 必須明確設定 LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS 並明確傳入 store，缺一退回 log
 //
 // 包住 Keystone 的 authenticate<List>WithPassword resolver，帳號與密碼取自
 // 已解析的參數，不檢查查詢文字或回應
@@ -57,11 +57,6 @@ type LockoutState = {
 
 // 與 Keystone auth 對「帳號不存在」與「密碼錯誤」回傳的物件一致
 const FAILURE_RESULT = { code: 'FAILURE', message: 'Authentication failed.' }
-
-const intFromEnv = (name: string, fallback: number) => {
-  const value = Number.parseInt(process.env[name] ?? '', 10)
-  return Number.isFinite(value) && value >= 0 ? value : fallback
-}
 
 const warnedModes = new Set<string>()
 
@@ -282,20 +277,59 @@ const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> =>
 export function createLoginLockout(options: LoginLockoutOptions = {}) {
   const now = options.now ?? Date.now
   const store = options.store ?? createMemoryLockoutStore(now)
+  const usingDefaultStore = !options.store
   const mutationField = options.mutationField ?? 'authenticateUserWithPassword'
   const identityField = options.identityField ?? 'email'
 
-  // enforce 要明確設定 hops：預設值猜錯時，經過代理的所有人會共用同一個鑰匙
-  let warnedHops = false
-  const resolveMode = (mode: LoginLockoutMode, hopsExplicit: boolean) => {
-    if (mode !== 'enforce' || hopsExplicit) return mode
-    if (!warnedHops) {
-      warnedHops = true
-      console.warn(
-        '[login-lockout] enforce 需要明確設定 LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS（至少 1），已改用 log（只記錄、不拒絕）'
-      )
+  const warned = new Set<string>()
+  const warnOnce = (key: string, message: string) => {
+    if (warned.has(key)) return
+    warned.add(key)
+    console.warn(`[login-lockout] ${message}`)
+  }
+
+  // enforce 要明確設定 hops 與 store：hops 預設值猜錯時，經過代理的所有人會共用
+  // 同一個鑰匙；預設的記憶體在多個實例各自計次、重啟歸零，鎖定會悄悄失效
+  const resolveMode = (
+    mode: LoginLockoutMode,
+    hopsExplicit: boolean
+  ): LoginLockoutMode => {
+    if (mode !== 'enforce') return mode
+    const missing: string[] = []
+    if (!hopsExplicit) {
+      missing.push('LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS（至少 1 的整數）')
     }
+    if (usingDefaultStore) missing.push('store（請明確傳入儲存）')
+    if (missing.length === 0) return mode
+    warnOnce(
+      `enforce:${missing.join()}`,
+      `enforce 需要明確設定 ${missing.join('、')}，已改用 log（只記錄、不拒絕）`
+    )
     return 'log'
+  }
+
+  // 數值設定：選項優先，其次環境變數；必須是不小於 min 的整數，否則警告一次並
+  // 退回預設值（填 0 會讓門檻、視窗、時長、逾時靜默失效）
+  const numberSetting = (
+    optionValue: number | undefined,
+    optionName: string,
+    envName: string,
+    fallback: number,
+    min: number
+  ) => {
+    const envRaw = process.env[envName]?.trim()
+    const raw = optionValue ?? (envRaw ? Number(envRaw) : undefined)
+    if (raw === undefined) return fallback
+    if (Number.isInteger(raw) && raw >= min) return raw
+    warnOnce(
+      `setting:${optionValue !== undefined ? optionName : envName}`,
+      `${
+        optionValue !== undefined ? optionName : envName
+      } 的值 ${JSON.stringify(
+        String(raw)
+      )} 無效（需要 ${min} 以上的整數），已改用預設值 ${fallback}`
+    )
+    return fallback
   }
 
   const settings = () => {
@@ -308,25 +342,55 @@ export function createLoginLockout(options: LoginLockoutOptions = {}) {
       Number.isInteger(configuredHops) &&
       configuredHops >= 1
 
+    const mode = resolveMode(options.mode ?? getMode(), hopsExplicit)
+    if (mode !== 'off' && usingDefaultStore) {
+      warnOnce(
+        'default-store',
+        '沒有傳入 store，使用預設的記憶體：多個實例各自計次、重啟會歸零，鎖定效果有限'
+      )
+    }
+
     return {
-      mode: resolveMode(options.mode ?? getMode(), hopsExplicit),
+      mode,
       rule: {
-        maxFailures:
-          options.maxFailures ?? intFromEnv('LOGIN_LOCKOUT_MAX_FAILURES', 5),
-        windowSeconds:
-          options.windowSeconds ??
-          intFromEnv('LOGIN_LOCKOUT_WINDOW_SECONDS', 900),
-        durationSeconds:
-          options.durationSeconds ??
-          intFromEnv('LOGIN_LOCKOUT_DURATION_SECONDS', 900),
+        maxFailures: numberSetting(
+          options.maxFailures,
+          'maxFailures',
+          'LOGIN_LOCKOUT_MAX_FAILURES',
+          5,
+          1
+        ),
+        windowSeconds: numberSetting(
+          options.windowSeconds,
+          'windowSeconds',
+          'LOGIN_LOCKOUT_WINDOW_SECONDS',
+          900,
+          1
+        ),
+        durationSeconds: numberSetting(
+          options.durationSeconds,
+          'durationSeconds',
+          'LOGIN_LOCKOUT_DURATION_SECONDS',
+          900,
+          1
+        ),
       },
       hops: hopsExplicit ? (configuredHops as number) : 1,
-      delayMs:
-        options.lockedDelayMs ??
-        intFromEnv('LOGIN_LOCKOUT_LOCKED_DELAY_MS', 100),
-      timeoutMs:
-        options.storeTimeoutMs ??
-        intFromEnv('LOGIN_LOCKOUT_STORE_TIMEOUT_MS', 500),
+      // 假等待可以是 0（不等待）
+      delayMs: numberSetting(
+        options.lockedDelayMs,
+        'lockedDelayMs',
+        'LOGIN_LOCKOUT_LOCKED_DELAY_MS',
+        100,
+        0
+      ),
+      timeoutMs: numberSetting(
+        options.storeTimeoutMs,
+        'storeTimeoutMs',
+        'LOGIN_LOCKOUT_STORE_TIMEOUT_MS',
+        500,
+        1
+      ),
     }
   }
 
