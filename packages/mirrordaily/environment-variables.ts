@@ -13,6 +13,7 @@ const {
   SESSION_SECRET,
   SESSION_MAX_AGE,
   GCS_BUCKET,
+  GCS_PUBLIC_HOST,
   FILES_BASE_URL,
   FILES_STORAGE_PATH,
   IMAGES_BASE_URL,
@@ -100,6 +101,8 @@ export default {
   },
   gcs: {
     bucket: GCS_BUCKET || 'static-vision-tw-dev',
+    // Host used in public file URLs; defaults to the bucket name (domain-named buckets).
+    publicHost: GCS_PUBLIC_HOST || GCS_BUCKET || 'static-vision-tw-dev',
   },
   files: {
     baseUrl: FILES_BASE_URL || '/files',
