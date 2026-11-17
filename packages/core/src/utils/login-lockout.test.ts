@@ -964,3 +964,166 @@ test('enforce 沒有明確傳入 store 時退回 log 並警告,不拒絕登入',
   assert.ok(hasWarning(out.warns(), 'store'))
   assert.ok(out.logs().some((l) => l.includes('would-block')))
 })
+
+// ---- 設定值的上下限、嚴格解析與警告 ----
+
+const settingCases: [string, string, string, string][] = [
+  ['LOGIN_LOCKOUT_MAX_FAILURES', 'maxFailures', '1001', '失敗門檻'],
+  ['LOGIN_LOCKOUT_WINDOW_SECONDS', 'windowSeconds', '86401', '計次視窗'],
+  ['LOGIN_LOCKOUT_DURATION_SECONDS', 'durationSeconds', '86401', '鎖定時長'],
+  ['LOGIN_LOCKOUT_LOCKED_DELAY_MS', 'lockedDelayMs', '10001', '假等待'],
+  ['LOGIN_LOCKOUT_STORE_TIMEOUT_MS', 'storeTimeoutMs', '60001', '儲存逾時'],
+]
+
+for (const [envName, optionName, tooBig, label] of settingCases) {
+  test(`${label}超過上限會警告並退回預設,環境變數與選項都一樣`, async (t) => {
+    await withEnv({ [envName]: tooBig }, async () => {
+      const out = await withApp(t, { [optionName]: undefined }, async (app) => {
+        await app.login('alice@example.com', 'bad')
+      })
+      assert.ok(hasWarning(out.warns(), envName), '環境變數')
+    })
+    const out = await withApp(
+      t,
+      { [optionName]: Number(tooBig) },
+      async (app) => {
+        await app.login('alice@example.com', 'bad')
+      }
+    )
+    assert.ok(hasWarning(out.warns(), optionName), '選項')
+  })
+}
+
+test('只接受純數字:0x5、5e0、+5、1.5、abc 都警告,警告顯示原本的文字', async (t) => {
+  for (const bad of ['0x5', '5e0', '+5', '1.5', 'abc']) {
+    await withEnv({ LOGIN_LOCKOUT_MAX_FAILURES: bad }, async () => {
+      const out = await withApp(t, { maxFailures: undefined }, async (app) => {
+        await app.login('alice@example.com', 'bad')
+      })
+      const warn = out
+        .warns()
+        .find((w) => w.includes('LOGIN_LOCKOUT_MAX_FAILURES'))
+      assert.ok(warn, bad)
+      assert.ok(warn.includes(bad), `警告要顯示 ${bad}:${warn}`)
+      assert.ok(!warn.includes('NaN'), bad)
+    })
+  }
+})
+
+test('前後有空白的純數字可以接受,不警告', async (t) => {
+  await withEnv({ LOGIN_LOCKOUT_MAX_FAILURES: ' 5 ' }, async () => {
+    const out = await withApp(t, { maxFailures: undefined }, async (app) => {
+      await app.login('alice@example.com', 'bad')
+    })
+    assert.equal(hasWarning(out.warns(), 'LOGIN_LOCKOUT_MAX_FAILURES'), false)
+  })
+})
+
+test('選項傳小數(2.5)會警告並退回預設', async (t) => {
+  const out = await withApp(t, { maxFailures: 2.5 }, async (app) => {
+    await app.login('alice@example.com', 'bad')
+  })
+  assert.ok(hasWarning(out.warns(), 'maxFailures'))
+})
+
+test('同一個錯誤值只警告一次,不同的錯誤值會再警告一次', async (t) => {
+  const out = quiet(t)
+  const app = makeApp({ maxFailures: undefined })
+  await app.server.start()
+  const previous = process.env.LOGIN_LOCKOUT_MAX_FAILURES
+  try {
+    process.env.LOGIN_LOCKOUT_MAX_FAILURES = 'abc'
+    await app.login('alice@example.com', 'bad')
+    await app.login('alice@example.com', 'bad')
+    process.env.LOGIN_LOCKOUT_MAX_FAILURES = 'xyz'
+    await app.login('alice@example.com', 'bad')
+  } finally {
+    if (previous === undefined) delete process.env.LOGIN_LOCKOUT_MAX_FAILURES
+    else process.env.LOGIN_LOCKOUT_MAX_FAILURES = previous
+    await app.server.stop()
+  }
+  const warns = out
+    .warns()
+    .filter((w) => w.includes('LOGIN_LOCKOUT_MAX_FAILURES'))
+  assert.equal(warns.length, 2)
+  assert.ok(warns[0].includes('abc') && warns[1].includes('xyz'))
+})
+
+test('off 模式完全安靜:設定值錯誤、沒傳 store 都不警告', async (t) => {
+  await withEnv(
+    {
+      LOGIN_LOCKOUT_MAX_FAILURES: '0',
+      LOGIN_LOCKOUT_STORE_TIMEOUT_MS: 'abc',
+      LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS: 'abc',
+    },
+    async () => {
+      const out = await withApp(
+        t,
+        {
+          mode: 'off',
+          store: undefined,
+          maxFailures: undefined,
+          trustedProxyHops: undefined,
+        },
+        async (app) => {
+          await app.login('alice@example.com', 'bad')
+        }
+      )
+      assert.deepEqual(out.warns(), [])
+    }
+  )
+})
+
+test('enforce 同時缺 hops 與 store 時,只有一則警告,兩項都列出', async (t) => {
+  const out = await withApp(
+    t,
+    { store: undefined, trustedProxyHops: undefined },
+    async (app) => {
+      await app.login('alice@example.com', 'bad')
+      await app.login('alice@example.com', 'bad')
+    }
+  )
+  const warns = out.warns().filter((w) => w.includes('enforce'))
+  assert.equal(warns.length, 1)
+  assert.ok(warns[0].includes('LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS'))
+  assert.ok(warns[0].includes('store'))
+})
+
+test('hops 只接受 1 到 10 的純數字,0x2、2e0、11 都不算明確設定', async (t) => {
+  for (const bad of ['0x2', '2e0', '11', '+2']) {
+    await withEnv({ LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS: bad }, async () => {
+      const out = await withApp(
+        t,
+        { trustedProxyHops: undefined },
+        async (app) => {
+          for (let i = 0; i < 6; i++) {
+            await app.login('alice@example.com', 'bad', '203.0.113.7')
+          }
+          assert.equal(
+            (await app.login('alice@example.com', 'right', '203.0.113.7')).body,
+            SUCCESS_BODY,
+            bad
+          )
+        }
+      )
+      assert.ok(
+        hasWarning(out.warns(), 'LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS'),
+        bad
+      )
+    })
+  }
+})
+
+test('hops 前後有空白的純數字(" 2 ")可以接受', async (t) => {
+  await withEnv({ LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS: ' 1 ' }, async () => {
+    await withApp(t, { trustedProxyHops: undefined }, async (app) => {
+      for (let i = 0; i < 6; i++) {
+        await app.login('alice@example.com', 'bad', '203.0.113.7')
+      }
+      assert.equal(
+        (await app.login('alice@example.com', 'right', '203.0.113.7')).body,
+        FAILURE_BODY
+      )
+    })
+  })
+})

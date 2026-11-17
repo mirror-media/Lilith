@@ -58,6 +58,18 @@ type LockoutState = {
 // 與 Keystone auth 對「帳號不存在」與「密碼錯誤」回傳的物件一致
 const FAILURE_RESULT = { code: 'FAILURE', message: 'Authentication failed.' }
 
+// 設定值只接受純數字的整數：0x5、5e0、+5、1.5 都不算（前後空白可以）
+const parseWhole = (value: unknown): number | undefined => {
+  if (typeof value === 'number') {
+    return Number.isInteger(value) ? value : undefined
+  }
+  if (typeof value === 'string' && /^\d+$/.test(value.trim())) {
+    const parsed = Number(value.trim())
+    return Number.isFinite(parsed) ? parsed : undefined
+  }
+  return undefined
+}
+
 const warnedModes = new Set<string>()
 
 const getMode = (): LoginLockoutMode => {
@@ -281,11 +293,49 @@ export function createLoginLockout(options: LoginLockoutOptions = {}) {
   const mutationField = options.mutationField ?? 'authenticateUserWithPassword'
   const identityField = options.identityField ?? 'email'
 
+  // 警告只出現一次（相同的內容）；上限是避免環境變數一直換值時集合無限變大
   const warned = new Set<string>()
   const warnOnce = (key: string, message: string) => {
-    if (warned.has(key)) return
+    if (warned.has(key) || warned.size >= 100) return
     warned.add(key)
     console.warn(`[login-lockout] ${message}`)
+  }
+
+  // 設定來源：選項優先，其次環境變數；沒有設定回傳 undefined
+  const sourceOf = (
+    optionValue: unknown,
+    optionName: string,
+    envName: string
+  ) => {
+    if (optionValue !== undefined) return { name: optionName, raw: optionValue }
+    const envRaw = process.env[envName]
+    if (envRaw !== undefined && envRaw.trim() !== '') {
+      return { name: envName, raw: envRaw }
+    }
+    return undefined
+  }
+
+  // 數值設定：必須是 min 到 max 的整數，否則警告一次並退回預設值
+  // （填 0 或很大的值，會讓門檻、視窗、時長、逾時靜默失效）
+  const numberSetting = (
+    optionValue: number | undefined,
+    optionName: string,
+    envName: string,
+    fallback: number,
+    min: number,
+    max: number
+  ) => {
+    const source = sourceOf(optionValue, optionName, envName)
+    if (!source) return fallback
+    const value = parseWhole(source.raw)
+    if (value !== undefined && value >= min && value <= max) return value
+    warnOnce(
+      `setting:${source.name}=${String(source.raw)}`,
+      `${source.name} 的值 ${JSON.stringify(
+        String(source.raw).slice(0, 50)
+      )} 無效（需要 ${min} 到 ${max} 的整數），已改用預設值 ${fallback}`
+    )
+    return fallback
   }
 
   // enforce 要明確設定 hops 與 store：hops 預設值猜錯時，經過代理的所有人會共用
@@ -297,7 +347,7 @@ export function createLoginLockout(options: LoginLockoutOptions = {}) {
     if (mode !== 'enforce') return mode
     const missing: string[] = []
     if (!hopsExplicit) {
-      missing.push('LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS（至少 1 的整數）')
+      missing.push('LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS（1 到 10 的整數）')
     }
     if (usingDefaultStore) missing.push('store（請明確傳入儲存）')
     if (missing.length === 0) return mode
@@ -308,42 +358,30 @@ export function createLoginLockout(options: LoginLockoutOptions = {}) {
     return 'log'
   }
 
-  // 數值設定：選項優先，其次環境變數；必須是不小於 min 的整數，否則警告一次並
-  // 退回預設值（填 0 會讓門檻、視窗、時長、逾時靜默失效）
-  const numberSetting = (
-    optionValue: number | undefined,
-    optionName: string,
-    envName: string,
-    fallback: number,
-    min: number
-  ) => {
-    const envRaw = process.env[envName]?.trim()
-    const raw = optionValue ?? (envRaw ? Number(envRaw) : undefined)
-    if (raw === undefined) return fallback
-    if (Number.isInteger(raw) && raw >= min) return raw
-    warnOnce(
-      `setting:${optionValue !== undefined ? optionName : envName}`,
-      `${
-        optionValue !== undefined ? optionName : envName
-      } 的值 ${JSON.stringify(
-        String(raw)
-      )} 無效（需要 ${min} 以上的整數），已改用預設值 ${fallback}`
-    )
-    return fallback
-  }
-
   const settings = () => {
-    // 整段都要是數字：1abc、1.5 這類值不算明確設定
-    const envRaw = process.env.LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS?.trim()
-    const configuredHops =
-      options.trustedProxyHops ?? (envRaw ? Number(envRaw) : undefined)
-    const hopsExplicit =
-      configuredHops !== undefined &&
-      Number.isInteger(configuredHops) &&
-      configuredHops >= 1
+    const requested = options.mode ?? getMode()
+    // off 完全安靜：不檢查設定、不警告
+    if (requested === 'off') return { mode: 'off' as const }
 
-    const mode = resolveMode(options.mode ?? getMode(), hopsExplicit)
-    if (mode !== 'off' && usingDefaultStore) {
+    const hopsSource = sourceOf(
+      options.trustedProxyHops,
+      'trustedProxyHops',
+      'LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS'
+    )
+    const parsedHops = hopsSource ? parseWhole(hopsSource.raw) : undefined
+    const hopsExplicit =
+      parsedHops !== undefined && parsedHops >= 1 && parsedHops <= 10
+    if (hopsSource && !hopsExplicit) {
+      warnOnce(
+        `setting:${hopsSource.name}=${String(hopsSource.raw)}`,
+        `${hopsSource.name} 的值 ${JSON.stringify(
+          String(hopsSource.raw).slice(0, 50)
+        )} 無效（需要 1 到 10 的整數），視為沒有設定`
+      )
+    }
+
+    const mode = resolveMode(requested, hopsExplicit)
+    if (usingDefaultStore) {
       warnOnce(
         'default-store',
         '沒有傳入 store，使用預設的記憶體：多個實例各自計次、重啟會歸零，鎖定效果有限'
@@ -358,38 +396,43 @@ export function createLoginLockout(options: LoginLockoutOptions = {}) {
           'maxFailures',
           'LOGIN_LOCKOUT_MAX_FAILURES',
           5,
-          1
+          1,
+          1000
         ),
         windowSeconds: numberSetting(
           options.windowSeconds,
           'windowSeconds',
           'LOGIN_LOCKOUT_WINDOW_SECONDS',
           900,
-          1
+          1,
+          86400
         ),
         durationSeconds: numberSetting(
           options.durationSeconds,
           'durationSeconds',
           'LOGIN_LOCKOUT_DURATION_SECONDS',
           900,
-          1
+          1,
+          86400
         ),
       },
-      hops: hopsExplicit ? (configuredHops as number) : 1,
+      hops: hopsExplicit ? (parsedHops as number) : 1,
       // 假等待可以是 0（不等待）
       delayMs: numberSetting(
         options.lockedDelayMs,
         'lockedDelayMs',
         'LOGIN_LOCKOUT_LOCKED_DELAY_MS',
         100,
-        0
+        0,
+        10000
       ),
       timeoutMs: numberSetting(
         options.storeTimeoutMs,
         'storeTimeoutMs',
         'LOGIN_LOCKOUT_STORE_TIMEOUT_MS',
         500,
-        1
+        1,
+        60000
       ),
     }
   }
