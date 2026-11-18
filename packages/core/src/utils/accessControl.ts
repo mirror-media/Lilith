@@ -19,7 +19,10 @@ const accessControlStrategy = process.env.ACCESS_CONTROL_STRATEGY
  * ACCESS_CONTROL_RESTRICTED_UPDATE_LISTS=User,SecretList
  * ACCESS_CONTROL_RESTRICTED_DELETE_LISTS=User,SecretList
  */
-const parseListEnvToSet = (value: string | undefined, defaults: string[] = []) => {
+const parseListEnvToSet = (
+  value: string | undefined,
+  defaults: string[] = []
+) => {
   const set = new Set(defaults)
   ;(value || '')
     .split(',')
@@ -75,6 +78,89 @@ const bypassWithRestrictions: ListOperationAccessControl<
   return true
 }
 
+// gql / preview 模式下匿名寫入的處理方式（環境變數 ANONYMOUS_WRITE_MODE）：
+// off：放行且不記錄；log：放行並記錄一筆日誌（dry-run，預設）；enforce：拒絕
+type AnonymousWriteMode = 'off' | 'log' | 'enforce'
+
+// 每次檢查時才讀取，未設定或無法辨識一律退回 log，避免打錯字就變成拒絕
+// 無法辨識的值（例如把 enforce 打錯）每個值只警告一次，以免靜默地一直放行
+const warnedModes = new Set<string>()
+
+const getAnonymousWriteMode = (): AnonymousWriteMode => {
+  const mode = process.env.ANONYMOUS_WRITE_MODE
+  if (mode === 'off' || mode === 'enforce') return mode
+
+  if (mode && mode !== 'log' && !warnedModes.has(mode)) {
+    warnedModes.add(mode)
+    console.warn(
+      `[anonymous-write] ANONYMOUS_WRITE_MODE 的值 ${JSON.stringify(
+        mode.slice(0, 50)
+      )} 無法辨識，已改用 log（只記錄、不拒絕）`
+    )
+  }
+  return 'log'
+}
+
+const firstHeader = (value: string | string[] | undefined) =>
+  Array.isArray(value) ? value[0] : value
+
+// 只記錄來源資訊，不記請求內容與 authorization 的值
+const logAnonymousWrite = ({
+  listKey,
+  operation,
+  context,
+}: {
+  listKey: string
+  operation: string
+  context: { req?: unknown }
+}) => {
+  const req = context?.req as
+    | {
+        headers?: Record<string, string | string[] | undefined>
+        socket?: { remoteAddress?: string }
+        body?: { operationName?: unknown }
+      }
+    | undefined
+  const headers = req?.headers ?? {}
+
+  console.log(
+    '[anonymous-write]',
+    JSON.stringify({
+      timestamp: new Date().toISOString(),
+      mode: 'log',
+      listKey,
+      operation,
+      // 來自用戶端，只接受字串並截短，避免日誌被塞入大量內容
+      operationName:
+        typeof req?.body?.operationName === 'string'
+          ? req.body.operationName.slice(0, 100)
+          : null,
+      ip:
+        firstHeader(headers['x-forwarded-for']) ??
+        req?.socket?.remoteAddress ??
+        null,
+      userAgent: firstHeader(headers['user-agent']) ?? null,
+      isHttpRequest: Boolean(req),
+      hasAuthorizationHeader: Boolean(headers['authorization']),
+    })
+  )
+}
+
+const anonymousWriteGate: ListOperationAccessControl<
+  AccessOperation,
+  BaseListTypeInfo
+> = ({ listKey, operation, session, context }) => {
+  // 查詢維持匿名可用；有登入資料的寫入維持原本的放行
+  if (operation === 'query' || session?.data) return true
+
+  const mode = getAnonymousWriteMode()
+  if (mode === 'off') return true
+  if (mode === 'enforce') return false
+
+  logAnonymousWrite({ listKey, operation, context })
+  return true
+}
+
 type ACLCheckFunction = (
   auth: BaseAccessArgs<BaseListTypeInfo>
 ) => MaybePromise<boolean>
@@ -95,7 +181,7 @@ export const allowRoles: ListACLFunction = (...args) => {
   switch (accessControlStrategy) {
     case 'gql':
     case 'preview': {
-      return () => true
+      return anonymousWriteGate
     }
     case 'restricted': {
       // 可透過環境變數指定部分 list 的 query/update/delete 禁用

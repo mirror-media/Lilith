@@ -77,3 +77,6 @@ substitutions:
   _TARGET_PACKAGE: '' # default value
   _IMAGE_NAME: '' # default value
   _CLOUD_RUN_SERVICE_NAMES: '' # default value
+
+options:
+  logging: CLOUD_LOGGING_ONLY
