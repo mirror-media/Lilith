@@ -28,7 +28,8 @@ const getRedis = async () => {
       console.error('[login-lockout] Redis connection error:', err.message)
     })
   }
-  if (redis.status === 'wait') {
+  // end：連線被放棄後不會自己重連，要重新 connect 才能恢復計次
+  if (redis.status === 'wait' || redis.status === 'end') {
     connecting ??= redis.connect().finally(() => {
       connecting = undefined
     })
