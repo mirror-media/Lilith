@@ -1,5 +1,20 @@
 # @mirrormedia/lilith-core Changelog
 
+## 2026-11-12, Version 3.0.11-beta.14
+
+### Notable Changes
+- add `createLoginLockout` to lock repeated failed password logins per account and client IP; wraps the `authenticateUserWithPassword` mutation resolver in `extendGraphqlSchema`, so aliases, fragments and variable defaults are all counted
+- `LOGIN_LOCKOUT_MODE` (`off` / `log` / `enforce`, default `log`); `LOGIN_LOCKOUT_MAX_FAILURES` (5), `LOGIN_LOCKOUT_WINDOW_SECONDS` (900), `LOGIN_LOCKOUT_DURATION_SECONDS` (900), `LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS` (no default; required for `enforce`), `LOGIN_LOCKOUT_LOCKED_DELAY_MS` (100), `LOGIN_LOCKOUT_STORE_TIMEOUT_MS` (500)
+- a locked account gets exactly the same `Authentication failed.` result as a wrong password or an unknown account
+- add `createMemoryLockoutStore` (per instance) and `createRedisLockoutStore` (pass an ioredis-compatible client; shared across instances)
+- these use Node-only modules, so they are NOT exported from the package entry (the Admin UI bundles the entry and would fail with `Can't resolve 'net'`); load them on the server side with `require('@mirrormedia/lilith-core/lib/utils/login-lockout')` (the subpath has no type declarations for TypeScript consumers, so use `require`, as `login-logging` does)
+- `createRedisLockoutStore` needs Redis 5.0 or later; create the ioredis client with `enableOfflineQueue: false` and a small `maxRetriesPerRequest`
+- `enforce` requires an explicit `LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS` (an integer from 1 to 10, counted from the right of `x-forwarded-for`) and an explicit `store` option; without either the mode falls back to `log` with a one-time warning (pass `createMemoryLockoutStore()` to accept the per-instance memory store knowingly)
+- when no `store` is passed, the default in-memory store is used (per instance, reset on restart) and a one-time warning is logged, unless the mode is `off`
+- numeric settings must be plain whole numbers (`0x5`, `5e0`, `+5`, `1.5` are rejected) within a range: `LOGIN_LOCKOUT_MAX_FAILURES` 1 to 1000, `_WINDOW_SECONDS` and `_DURATION_SECONDS` 1 to 86400, `_STORE_TIMEOUT_MS` 1 to 60000, `_LOCKED_DELAY_MS` 0 to 10000, `_TRUSTED_PROXY_HOPS` 1 to 10; the same applies to the matching options; an invalid value falls back to the default and logs a warning once per distinct value (a 0 or a huge value would silently disable the lockout); mode `off` never warns
+- in `log` mode every attempt writes an `attempt` line with `ip` and `forwardedCount` (how many `x-forwarded-for` entries), so `LOGIN_LOCKOUT_TRUSTED_PROXY_HOPS` can be checked against real traffic before using `enforce`
+- nothing is wired into any app yet
+
 ## 2026-11-06, Version 3.0.11-beta.13
 
 ### Notable Changes
