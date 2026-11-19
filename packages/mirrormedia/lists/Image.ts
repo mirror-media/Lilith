@@ -157,14 +157,14 @@ const listConfigurations = list({
 
           resizedTargets.forEach((target) => {
             rtn[target] = getFileURL(
-              envVar.gcs.bucket,
+              envVar.gcs.publicHost,
               envVar.images.baseUrl,
               `${filename}-${target}${extension}`
             )
           })
 
           rtn['original'] = getFileURL(
-            envVar.gcs.bucket,
+            envVar.gcs.publicHost,
             envVar.images.baseUrl,
             `${filename}${extension}`
           )
@@ -236,14 +236,14 @@ const listConfigurations = list({
 
           resizedTargets.forEach((target) => {
             rtn[target] = getFileURL(
-              envVar.gcs.bucket,
+              envVar.gcs.publicHost,
               envVar.images.baseUrl,
               `${filename}-${target}${extension}`
             )
           })
 
           rtn['original'] = getFileURL(
-            envVar.gcs.bucket,
+            envVar.gcs.publicHost,
             envVar.images.baseUrl,
             `${filename}${extension}`
           )

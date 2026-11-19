@@ -1,11 +1,11 @@
 {
   "name": "@mirrormedia/lilith-core",
-  "version": "3.0.11-beta.12",
+  "version": "3.0.11-beta.13",
   "description": "",
   "main": "lib/index.js",
   "types": "@types/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tsx --test 'src/**/*.test.ts'",
     "build": "make build",
     "clean": "make clean"
   },

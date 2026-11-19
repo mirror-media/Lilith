@@ -34,7 +34,7 @@ const listConfigurations = list({
           if (!filename || typeof filename !== 'string') {
             return ''
           }
-          return getFileURL(envVar.gcs.bucket, envVar.files.baseUrl, filename)
+          return getFileURL(envVar.gcs.publicHost, envVar.files.baseUrl, filename)
         },
       }),
     }),

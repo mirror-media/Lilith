@@ -121,7 +121,11 @@ const listConfigurations = list({
           if (!filename || typeof filename !== 'string') {
             return ''
           }
-          return getFileURL(envVar.gcs.bucket, envVar.videos.baseUrl, filename)
+          return getFileURL(
+            envVar.gcs.publicHost,
+            envVar.videos.baseUrl,
+            filename
+          )
         },
       }),
     }),
