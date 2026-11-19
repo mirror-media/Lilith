@@ -9,6 +9,7 @@ import { createPreviewMiniApp } from './express-mini-apps/preview/app'
 import { createDashboardMiniApp } from './express-mini-apps/dashboard/app'
 import { createPostLockMiniApp } from './express-mini-apps/post-lock'
 import { withGoogleAuth } from '@mirrormedia/lilith-google-auth'
+import { withLoginLockout } from './utils/login-lockout'
 import Keyv from 'keyv'
 import { KeyvAdapter } from '@apollo/utils.keyvadapter'
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl'
@@ -164,8 +165,14 @@ Disallow: /`)
 // of server.extendExpressApp and, when the password kill switch is on, adds
 // the Apollo plugin that blocks the password mutation. isEnabled comes from
 // envVar.googleAuth: a blank GOOGLE_AUTH_CLIENT_ID returns the config as is.
-export default withGoogleAuth(keystoneConfig, {
-  ...envVar.googleAuth,
-  stateSecret: envVar.session.secret,
-  passwordLoginAllowListField: 'isPasswordLoginAllowed',
-})
+export default withGoogleAuth(
+  {
+    ...keystoneConfig,
+    extendGraphqlSchema: withLoginLockout(keystoneConfig.extendGraphqlSchema),
+  },
+  {
+    ...envVar.googleAuth,
+    stateSecret: envVar.session.secret,
+    passwordLoginAllowListField: 'isPasswordLoginAllowed',
+  }
+)
