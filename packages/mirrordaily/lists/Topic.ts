@@ -14,6 +14,9 @@ import { State, ACL, UserRole, type Session } from '../type'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
+// group 專題固定 6 組「標籤＋對應文字」，須與 views/topic-group-tags 的 ROW_COUNT 一致
+const GROUP_TAGS_ROW_COUNT = 6
+
 enum TopicState {
   Draft = State.Draft,
   Published = State.Published,
@@ -198,11 +201,29 @@ const listConfigurations = list({
         { label: 'List', value: 'list' },
         { label: 'Group', value: 'group' },
       ],
+      ui: {
+        views: './lists/views/topic-type-select/index',
+      },
+    }),
+    groupTags: json({
+      label: 'Group 標籤',
+      // 固定 6 組「標籤＋對應文字(限6字)」，type=group 才顯示
+      // 前端讀此 json：text 當分區標題、tagId 過濾文章、陣列順序即排序
+      isFilterable: false,
+      ui: {
+        views: './lists/views/topic-group-tags/index',
+      },
     }),
     tags: relationship({
       ref: 'Tag.topics',
       label: '標籤',
       many: true,
+      ui: {
+        // 只隱藏 CMS 畫面，欄位/關聯/GraphQL 仍在；group 改用 groupTags
+        createView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
+        listView: { fieldMode: 'hidden' },
+      },
     }),
     posts: relationship({
       ref: 'Post.topics',
@@ -337,14 +358,69 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    resolveInput: async ({ resolvedData }) => {
+    resolveInput: async ({ resolvedData, item }) => {
       const { brief } = resolvedData
       if (brief) {
         resolvedData.apiDataBrief = customFields.draftConverter
           .convertToApiData(brief)
           .toJS()
       }
+      // 非 group 清空 groupTags；只在有動到 groupTags 或 type 時處理，避免每次更新多寫 null
+      const touchedGroup =
+        'groupTags' in resolvedData || resolvedData.type !== undefined
+      if (touchedGroup) {
+        const effectiveType = resolvedData.type ?? item?.type
+        if (effectiveType !== 'group') {
+          resolvedData.groupTags = null
+        }
+      }
       return resolvedData
+    },
+    validateInput: async ({ resolvedData, addValidationError }) => {
+      const groupTags = resolvedData.groupTags
+      // 防呆（擋 API 直連）：有帶值時只接受 null 或陣列
+      if (
+        groupTags !== undefined &&
+        groupTags !== null &&
+        !Array.isArray(groupTags)
+      ) {
+        addValidationError('Group 標籤格式錯誤')
+      }
+      if (Array.isArray(groupTags)) {
+        // 固定 6 格，擋超量列數
+        if (groupTags.length > GROUP_TAGS_ROW_COUNT) {
+          addValidationError(`Group 標籤最多 ${GROUP_TAGS_ROW_COUNT} 組`)
+        }
+        groupTags.forEach((row, idx) => {
+          const tagId = row && typeof row.tagId === 'string' ? row.tagId : ''
+          const text = row && typeof row.text === 'string' ? row.text : ''
+          const hasTag = tagId.length > 0
+          const hasText = text.trim().length > 0
+
+          // 對應文字每格最多 6 個字（以 code point 計，中文一個字算一個）
+          if (Array.from(text).length > 6) {
+            addValidationError(`第 ${idx + 1} 組：對應文字最多 6 個字`)
+          }
+
+          // 一組必須「標籤與對應文字同時填寫」，或整格留空
+          if (hasTag !== hasText) {
+            addValidationError(
+              `第 ${idx + 1} 組：標籤與對應文字需同時填寫，或整組留空`
+            )
+          }
+        })
+
+        // 6 格的標籤必須互斥，不可重複選到同一個 Tag
+        const tagIds = groupTags
+          .map((row) =>
+            row && typeof row.tagId === 'string' ? row.tagId : null
+          )
+          .filter((id): id is string => !!id)
+        const hasDuplicate = new Set(tagIds).size !== tagIds.length
+        if (hasDuplicate) {
+          addValidationError('Group 標籤不可重複選擇同一個標籤')
+        }
+      }
     },
     afterOperation: async ({ item }) => {
       if (item?.id && item.state == 'published') {
