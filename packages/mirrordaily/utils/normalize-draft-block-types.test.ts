@@ -66,9 +66,9 @@ test('the input is not mutated', () => {
   assert.equal(raw.blocks[0].type, 'article')
 })
 
-test('a draft without wrapper blocks is returned unchanged', () => {
+test('a draft without wrapper blocks is returned as the same object', () => {
   const raw = { blocks: [block('unstyled')], entityMap: {} }
-  assert.deepEqual(normalizeWrapperBlockTypes(raw), raw)
+  assert.equal(normalizeWrapperBlockTypes(raw), raw)
 })
 
 test('non-draft values are returned as they are', () => {

@@ -9,10 +9,12 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 export const normalizeWrapperBlockTypes = <T>(raw: T): T => {
   if (!isRecord(raw) || !Array.isArray(raw.blocks)) return raw
 
-  const blocks = raw.blocks.map((block: unknown) =>
+  const isWrapper = (block: unknown) =>
     isRecord(block) && WRAPPER_BLOCK_TYPES.has(block.type as string)
-      ? { ...block, type: 'unstyled' }
-      : block
+  if (!raw.blocks.some(isWrapper)) return raw
+
+  const blocks = raw.blocks.map((block: unknown) =>
+    isWrapper(block) ? { ...(block as object), type: 'unstyled' } : block
   )
   return { ...raw, blocks } as T
 }
