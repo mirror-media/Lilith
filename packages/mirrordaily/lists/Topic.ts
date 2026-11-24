@@ -11,6 +11,7 @@ import {
 } from '@keystone-6/core/fields'
 import envVar from '../environment-variables'
 import { State, ACL, UserRole, type Session } from '../type'
+import { normalizeWrapperBlockTypes } from '../utils/normalize-draft-block-types'
 
 const { allowRoles, admin, moderator, editor } = utils.accessControl
 
@@ -361,8 +362,10 @@ const listConfigurations = list({
     resolveInput: async ({ resolvedData, item }) => {
       const { brief } = resolvedData
       if (brief) {
+        // 前台只渲染 unstyled，貼上網頁文字可能帶進 article/section 區塊
+        resolvedData.brief = normalizeWrapperBlockTypes(brief)
         resolvedData.apiDataBrief = customFields.draftConverter
-          .convertToApiData(brief)
+          .convertToApiData(resolvedData.brief)
           .toJS()
       }
       // 非 group 清空 groupTags；只在有動到 groupTags 或 type 時處理，避免每次更新多寫 null
