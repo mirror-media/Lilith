@@ -38,7 +38,7 @@ snapshotCleanupTimer.unref()
 const POST_BASE_QUERY = `
   id title subtitle state publishedDate publishedDateString
   heroCaption style isMember isFeatured isAdvertised
-  hiddenAdvertised isAdult notYahoo notLine redirect adTrace css
+  hiddenAdvertised isAdult notExternalFeed notPartnerCms redirect adTrace css
   og_title og_description extend_byline
   sections { id name } categories { id name }
   writers { id name } photographers { id name }
@@ -948,12 +948,12 @@ const listConfigurations = list({
         },
       },
     }),
-    notYahoo: checkbox({
-      label: '不供稿給 Yahoo',
+    notExternalFeed: checkbox({
+      label: '不串平台（Line / Yahoo / MSN）',
       defaultValue: false,
     }),
-    notLine: checkbox({
-      label: '不供稿給 Line',
+    notPartnerCms: checkbox({
+      label: '不串週刊電視（版權問題）',
       defaultValue: false,
     }),
     isFeatured: checkbox({
@@ -962,10 +962,11 @@ const listConfigurations = list({
       ui: {
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     isAdvertised: checkbox({
-      label: '廣告文案',
+      label: '只放本官網（廣告文案）',
       defaultValue: false,
       ui: {
         //createView: { fieldMode: 'hidden' },
@@ -976,8 +977,9 @@ const listConfigurations = list({
       label: 'google廣告違規',
       defaultValue: false,
       ui: {
-        //createView: { fieldMode: 'hidden' },
+        createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: 'hidden' },
       },
     }),
     isAdult: checkbox({
