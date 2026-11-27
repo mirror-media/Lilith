@@ -87,12 +87,12 @@ const listConfigurations = list({
           },
           take: 6,
           orderBy: [{ order: 'asc' }],
-          query: 'id order',
+          query: 'id order videoLink',
         })
-        .then((rows: { id: string; order: number }[]) => {
+        .then((rows) => {
           console.log(
             `[PROMOTE-VIDEO] Expected top 6: ${JSON.stringify(
-              rows.map(({ id, order }) => ({ id, order }))
+              rows.map(({ id, order, videoLink }) => ({ id, order, videoLink }))
             )}`
           )
         })
