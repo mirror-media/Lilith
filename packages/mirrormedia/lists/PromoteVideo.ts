@@ -110,7 +110,7 @@ const listConfigurations = list({
       )
         .then(async (response) => {
           const elapsedMs = Date.now() - startedAt
-          const body = (await response.text()).slice(0, 200)
+          const body = (await response.text().catch(() => '')).slice(0, 200)
           if (!response.ok) {
             console.error(
               `[PROMOTE-VIDEO] Failed: ${response.status} ${response.statusText} (${elapsedMs}ms) ${body}`
