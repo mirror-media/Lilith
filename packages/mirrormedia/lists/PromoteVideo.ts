@@ -62,7 +62,43 @@ const listConfigurations = list({
     },
   },
   hooks: {
-    afterOperation: async () => {
+    afterOperation: async ({ operation, item, originalItem, context }) => {
+      const target = item ?? originalItem
+      const startedAt = Date.now()
+      console.log(
+        `[PROMOTE-VIDEO] Triggered: ${JSON.stringify({
+          operation,
+          id: target?.id,
+          order: target?.order,
+          state: target?.state,
+        })}`
+      )
+      // What the JSON should contain right now (same filter as the query
+      // below). Compare it with the generated file to spot stale data.
+      void context
+        .sudo()
+        .query.PromoteVideo.findMany({
+          where: {
+            state: { equals: 'published' },
+            OR: [
+              { videoLink: { contains: 'youtube.com' } },
+              { videoLink: { contains: 'youtu.be' } },
+            ],
+          },
+          take: 6,
+          orderBy: [{ order: 'asc' }],
+          query: 'id order',
+        })
+        .then((rows: { id: string; order: number }[]) => {
+          console.log(
+            `[PROMOTE-VIDEO] Expected top 6: ${JSON.stringify(
+              rows.map(({ id, order }) => ({ id, order }))
+            )}`
+          )
+        })
+        .catch((error: unknown) => {
+          console.error('[PROMOTE-VIDEO] Expected list query error:', error)
+        })
       // Fire-and-forget: regenerating the JSON must not block the save.
       void fetchDataService(
         '/gql_to_json?bucket=' +
@@ -72,15 +108,24 @@ const listConfigurations = list({
           method: 'GET',
         }
       )
-        .then((response) => {
+        .then(async (response) => {
+          const elapsedMs = Date.now() - startedAt
+          const body = (await response.text()).slice(0, 200)
           if (!response.ok) {
             console.error(
-              `[PROMOTE-VIDEO] Failed: ${response.status} ${response.statusText}`
+              `[PROMOTE-VIDEO] Failed: ${response.status} ${response.statusText} (${elapsedMs}ms) ${body}`
             )
+            return
           }
+          console.log(
+            `[PROMOTE-VIDEO] Regenerated: ${response.status} (${elapsedMs}ms) ${body}`
+          )
         })
         .catch((error) => {
-          console.error('[PROMOTE-VIDEO] Error:', error)
+          console.error(
+            `[PROMOTE-VIDEO] Error after ${Date.now() - startedAt}ms:`,
+            error
+          )
         })
     },
   },
